@@ -34,15 +34,6 @@
       compile project(':react-native-purchases')
   	```
 
-#### Windows
-[Read it! :D](https://github.com/ReactWindows/react-native)
-
-1. In Visual Studio add the `RNPurchases.sln` in `node_modules/react-native-purchases/windows/RNPurchases.sln` folder to their solution, reference from their app.
-2. Open up your `MainPage.cs` app
-  - Add `using Purchases.RNPurchases;` to the usings at the top of the file
-  - Add `new RNPurchasesPackage()` to the `List<IReactPackage>` returned by the `Packages` method
-
-
 ## Usage
 ```javascript
 import RNPurchases from 'react-native-purchases';
