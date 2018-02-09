@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		35493AC9202D4BCD004DFA39 /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35493AB3202D4ACD004DFA39 /* Purchases.framework */; };
+		35493AF2202DFD47004DFA39 /* RCPurchaserInfo+React.m in Sources */ = {isa = PBXBuildFile; fileRef = 35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPurchases.m */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,8 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPurchases.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPurchases.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Purchases.xcodeproj; path = Purchases/Purchases.xcodeproj; sourceTree = "<group>"; };
+		35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCPurchaserInfo+React.h"; sourceTree = "<group>"; };
+		35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCPurchaserInfo+React.m"; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNPurchases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPurchases.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNPurchases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPurchases.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,6 +96,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */,
+				35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */,
 				35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */,
 				B3E7B5881CC2AC0600A0062D /* RNPurchases.h */,
 				B3E7B5891CC2AC0600A0062D /* RNPurchases.m */,
@@ -181,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35493AF2202DFD47004DFA39 /* RCPurchaserInfo+React.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
