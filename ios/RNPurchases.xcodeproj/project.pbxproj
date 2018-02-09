@@ -96,11 +96,11 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */,
-				35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */,
 				35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */,
 				B3E7B5881CC2AC0600A0062D /* RNPurchases.h */,
 				B3E7B5891CC2AC0600A0062D /* RNPurchases.m */,
+				35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */,
+				35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				35493AC8202D4BCD004DFA39 /* Frameworks */,
 			);
