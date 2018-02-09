@@ -10,4 +10,3 @@
 @interface RNPurchases : NSObject <RCTBridgeModule>
 
 @end
-  

@@ -8,18 +8,24 @@ export default class Purchases {
       @param {String} apiKey RevenueCat API Key
       @param {String} appUserID A unique id for identifying the user
   */
-  static setup(apiKey, appUserID) {}
+  static setup(apiKey, appUserID) {
+    RNPurchases.setupPurchases(apiKey, appUserID);
+  }
 
   /** Fetch the product info.
-      @param {[String]} products Array of product identifiers
+      @param {[String]} productIdentifiers Array of product identifiers
       @returns {Promise<Array>} A promise of product arrays
   */
-  static getProductInfo(products) {}
+  static getProducts(productIdentifiers) {
+    return RNPurchases.getProductInfo(productIdentifiers);
+  }
 
   /** Make a purchase
       @param {String} productIdentifier The product identifier of the product you want to purchase.
   */
-  static makePurchase(productIdentifier) {}
+  static makePurchase(productIdentifier) {
+    RNPurchases.makePurchase(productIdentifier);
+  }
 
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. */
   static restoreTransactions() {}
@@ -43,4 +49,13 @@ export default class Purchases {
       @param {RestoreHandler} restoreHandler Called when a restore completes or fails
   */
   static setRestoreHandler(restoreHandler) {}
+
+  /** @callback PurchaserInfoHandler
+      @param {Object} purchaseInfo All the subscription info for a user
+  */
+
+  /** Set purchaser info handler. Called when new purchaser info is available.
+      @param {PurchaserInfoHandler} handler 
+  */
+  static setPurchaserInfoHandler(purchaserInfoHandler) {}
 };
