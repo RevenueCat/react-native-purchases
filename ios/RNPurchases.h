@@ -5,6 +5,8 @@
 #import <React/RCTBridgeModule.h>
 #endif
 
+#import <Purchases/RCPurchases.h>
+
 @interface RNPurchases : NSObject <RCTBridgeModule>
 
 @end
