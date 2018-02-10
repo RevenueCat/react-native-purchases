@@ -63,6 +63,10 @@ export default class Purchases {
     RNPurchases.restoreTransactions();
   }
 
+  static getLatestPurchaserInfo() {
+    return RNPurchases.getLatestPurchaserInfo();
+  }
+
   /** @callback PurchaseHandler
       @param {String} productIdentifier for the purchase
       @param {Object} purchaserInfo will be non-null if the purchases was successful

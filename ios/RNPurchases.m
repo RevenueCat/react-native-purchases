@@ -84,6 +84,17 @@ RCT_EXPORT_METHOD(restoreTransactions) {
              RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
+RCT_REMAP_METHOD(getLatestPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+{
+    [self.purchases getLatestPurchaserInfo:^(RCPurchaserInfo *purchaserInfo) {
+        if (purchaserInfo) {
+            resolve(purchaserInfo.dictionary);
+        } else {
+            reject(@"no_events", @"Failed to fetch purchaser info", nil);
+        }
+    }];
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 

@@ -120,6 +120,13 @@
     }];
 }
 
+- (void)getLatestPurchaserInfo:(RCUpdatePurchaserInfoBlock)complete {
+    [self.backend getSubscriberDataWithAppUserID:self.appUserID
+                                      completion:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
+                                          complete(purchaserInfo);
+                                      }];
+}
+
 - (void)productsWithIdentifiers:(NSSet<NSString *> *)productIdentifiers
                      completion:(void (^)(NSArray<SKProduct *>* products))completion
 {

@@ -12,6 +12,7 @@
 @protocol RCPurchasesDelegate;
 
 typedef void (^RCDeferredPromotionalPurchaseBlock)(void);
+typedef void (^RCUpdatePurchaserInfoBlock)(RCPurchaserInfo *);
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -83,6 +84,11 @@ NS_ASSUME_NONNULL_BEGIN
  @warning Calling this method requires that the optional delegate methods `purchases:restoredTransactionsWithPurchaserInfo:` and `purchases:failedToRestoreTransactionsWithReason:` are implemented.
  */
 - (void)restoreTransactionsForAppStoreAccount;
+
+/**
+ TODO: Document this.
+ */
+- (void)getLatestPurchaserInfo:(RCUpdatePurchaserInfoBlock)complete;
 
 /**
  This version of the Purchases framework
