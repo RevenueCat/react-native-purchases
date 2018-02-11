@@ -43,7 +43,7 @@
                 notificationCenter:[NSNotificationCenter defaultCenter]];
 }
 + (NSString *)frameworkVersion {
-    return @"0.6.0";
+    return @"0.7.0";
 }
 
 - (instancetype _Nullable)initWithAppUserID:(NSString *)appUserID
@@ -120,13 +120,6 @@
     }];
 }
 
-- (void)getLatestPurchaserInfo:(RCUpdatePurchaserInfoBlock)complete {
-    [self.backend getSubscriberDataWithAppUserID:self.appUserID
-                                      completion:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
-                                          complete(purchaserInfo);
-                                      }];
-}
-
 - (void)productsWithIdentifiers:(NSSet<NSString *> *)productIdentifiers
                      completion:(void (^)(NSArray<SKProduct *>* products))completion
 {
@@ -140,7 +133,7 @@
     }];
 }
 
-- (void)purchaserInfoWithCompletion:(void (^)(RCPurchaserInfo * _Nullable purchaserInfo))completion
+- (void)updatedPurchaserInfo:(RCReceivePurchaserInfoBlock)receivePurchaserInfo
 {
     [self.backend getSubscriberDataWithAppUserID:self.appUserID completion:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
 
@@ -148,20 +141,13 @@
             RCLog(@"Error fetching purchaser info: %@", error.localizedDescription);
         }
 
-        completion(purchaserInfo);
+        receivePurchaserInfo(purchaserInfo, error);
     }];
 }
 
 - (void)makePurchase:(SKProduct *)product
 {
-    [self makePurchase:product quantity:1];
-}
-
-- (void)makePurchase:(SKProduct *)product
-            quantity:(NSInteger)quantity
-{
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
-    payment.quantity = quantity;
     payment.applicationUsername = self.appUserID;
 
     [self.storeKitWrapper addPayment:payment];
@@ -261,7 +247,17 @@
 
         NSString *productIdentifier = product.productIdentifier;
         NSDecimalNumber *price = product.price;
-        NSDecimalNumber *introPrice = nil; // TODO: Implement introductory prices
+
+        RCPaymentMode paymentMode = RCPaymentModeNone;
+        NSDecimalNumber *introPrice = nil;
+
+        if (@available(iOS 11.2, *)) {
+            if (product.introductoryPrice) {
+                paymentMode = RCPaymentModeFromSKProductDiscountPaymentMode(product.introductoryPrice.paymentMode);
+                introPrice = product.introductoryPrice.price;
+            }
+        }
+
         NSString *currencyCode = product.priceLocale.rc_currencyCode;
 
         [self.backend postReceiptData:data
@@ -269,6 +265,7 @@
                             isRestore:NO
                     productIdentifier:productIdentifier
                                 price:price
+                          paymentMode:paymentMode
                     introductoryPrice:introPrice
                          currencyCode:currencyCode
                            completion:^(RCPurchaserInfo * _Nullable info,
@@ -280,7 +277,7 @@
     }];
 }
 
-- (void)restoreTransactionsForAppStoreAccount
+- (void)restoreTransactionsForAppStoreAccount:(RCReceivePurchaserInfoBlock)receivePurchaserInfo
 {
     // Refresh the receipt and post to backend, this will allow the transactions to be transferred.
     // https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StoreKitGuide/Chapters/Restoring.html
@@ -290,18 +287,10 @@
                             isRestore:YES
                     productIdentifier:nil
                                 price:nil
+                          paymentMode:RCPaymentModeNone
                     introductoryPrice:nil
                          currencyCode:nil
-                           completion:^(RCPurchaserInfo * _Nullable info,
-                                        NSError * _Nullable error) {
-                               if (info) {
-                                   [self.delegate purchases:self restoredTransactionsWithPurchaserInfo:info];
-                               } else if (error) {
-                                   [self.delegate purchases:self failedToRestoreTransactionsWithReason:error];
-                               } else {
-                                   RCLog(@"Unexpected error restoring transactions");
-                               }
-                           }];
+                           completion:receivePurchaserInfo];
     }];
 }
 
