@@ -13,7 +13,6 @@
 @end
 
 NSString *RNPurchasesPurchaseCompletedEvent = @"Purchases-PurchaseCompleted";
-NSString *RNPurchasesRestoreCompletedEvent = @"Purchases-RestoreCompleted";
 NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdated";
 
 @implementation RNPurchases
@@ -72,21 +71,28 @@ RCT_EXPORT_METHOD(makePurchase:(NSString *)productIdentifier)
     [self.purchases makePurchase:self.products[productIdentifier]];
 }
 
-RCT_EXPORT_METHOD(restoreTransactions) {
+RCT_REMAP_METHOD(restoreTransactionsForAppStoreAccount,
+                 restoreTransactionsWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
     NSAssert(self.purchases, @"You must call setup first.");
-    [self.purchases restoreTransactionsForAppStoreAccount];
+    [self.purchases restoreTransactionsForAppStoreAccount:^(RCPurchaserInfo * _Nullable info, NSError * _Nullable error) {
+        if (info) {
+            resolve(@{@"": info.dictionary});
+        } else {
+            reject(@"restore_error", @"Failed to restore transactions", nil);
+        }
+    }];
 }
 
 - (NSArray<NSString *> *)supportedEvents
 {
     return @[RNPurchasesPurchaseCompletedEvent,
-             RNPurchasesRestoreCompletedEvent,
              RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
-RCT_REMAP_METHOD(getLatestPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_REMAP_METHOD(getUpdatedPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 {
-    [self.purchases getLatestPurchaserInfo:^(RCPurchaserInfo *purchaserInfo) {
+    [self.purchases updatedPurchaserInfo:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (purchaserInfo) {
             resolve(purchaserInfo.dictionary);
         } else {
@@ -110,7 +116,8 @@ RCT_REMAP_METHOD(getLatestPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseResol
                                                                      @"productIdentifier": transaction.payment.productIdentifier,
                                                                      @"error": @{
                                                                              @"message": failureReason.localizedDescription,
-                                                                             @"code": @(failureReason.code)
+                                                                             @"code": @(failureReason.code),
+                                                                             @"domain": failureReason.domain
                                                                              }
                                                                      }];
 }
@@ -119,21 +126,6 @@ RCT_REMAP_METHOD(getLatestPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseResol
     [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:@{
                                                                         @"purchaserInfo": purchaserInfo.dictionary
                                                                         }];
-}
-
-- (void)purchases:(RCPurchases *)purchases restoredTransactionsWithPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
-    [self sendEventWithName:RNPurchasesRestoreCompletedEvent body:@{
-                                                                    @"purchaserInfo": purchaserInfo.dictionary
-                                                                    }];
-}
-
-- (void)purchases:(RCPurchases *)purchases failedToRestoreTransactionsWithReason:(NSError *)failureReason {
-    [self sendEventWithName:RNPurchasesRestoreCompletedEvent body:@{
-                                                                    @"error": @{
-                                                                            @"message": failureReason.localizedDescription,
-                                                                            @"code": @(failureReason.code)
-                                                                            }
-                                                                    }];
 }
 
 @end
