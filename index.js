@@ -31,7 +31,7 @@ export default class Purchases {
 
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
       @param {String} apiKey RevenueCat API Key
-      @param {String} appUserID A unique id for identifying the user
+      @param {String?} appUserID A unique id for identifying the user
   */
   static setup(apiKey, appUserID, listener_) {
     listener = listener_;
