@@ -77,7 +77,7 @@ RCT_REMAP_METHOD(restoreTransactionsForAppStoreAccount,
     NSAssert(self.purchases, @"You must call setup first.");
     [self.purchases restoreTransactionsForAppStoreAccount:^(RCPurchaserInfo * _Nullable info, NSError * _Nullable error) {
         if (info) {
-            resolve(@{@"": info.dictionary});
+            resolve(info.dictionary);
         } else {
             reject(@"restore_error", @"Failed to restore transactions", nil);
         }
