@@ -47,9 +47,9 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
             self.products[p.productIdentifier] = p;
             formatter.locale = p.priceLocale;
             NSDictionary *d = @{
-                                @"identifier": p.productIdentifier,
-                                @"description": p.localizedDescription,
-                                @"title": p.localizedTitle,
+                                @"identifier": p.productIdentifier ?: @"",
+                                @"description": p.localizedDescription ?: @"",
+                                @"title": p.localizedTitle ?: @"",
                                 @"price": @(p.price.floatValue),
                                 @"price_string": [formatter stringFromNumber:p.price]
                                 };
