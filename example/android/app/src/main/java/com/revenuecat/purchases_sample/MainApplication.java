@@ -1,7 +1,8 @@
-package com.example;
+package com.revenuecat.purchases_sample;
 
 import android.app.Application;
 
+import com.revenuecat.purchases_sample.BuildConfig;
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.RNPurchasesPackage;
 import com.facebook.react.ReactNativeHost;

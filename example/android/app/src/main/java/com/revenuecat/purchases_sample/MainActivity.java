@@ -1,4 +1,4 @@
-package com.example;
+package com.revenuecat.purchases_sample;
 
 import com.facebook.react.ReactActivity;
 
