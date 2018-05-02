@@ -54,7 +54,7 @@ NSString * RCAppUserDefaultsKey = @"com.revenuecat.userdefaults.appUserID";
                       userDefaults:userDefaults];
 }
 + (NSString *)frameworkVersion {
-    return @"0.8.0";
+    return @"0.10.2";
 }
 
 - (instancetype _Nullable)initWithAppUserID:(NSString *)appUserID
@@ -80,7 +80,7 @@ NSString * RCAppUserDefaultsKey = @"com.revenuecat.userdefaults.appUserID";
         self.requestFetcher = requestFetcher;
         self.backend = backend;
         self.storeKitWrapper = storeKitWrapper;
-        self.storeKitWrapper.delegate = self;
+        
         self.notificationCenter = notificationCenter;
 
         self.productsByIdentifier = [NSMutableDictionary new];
@@ -167,6 +167,17 @@ NSString * RCAppUserDefaultsKey = @"com.revenuecat.userdefaults.appUserID";
     }];
 }
 
+- (void)checkTrialOrIntroductoryPriceEligibility:(NSArray<NSString *> *)productIdentifiers
+                                      completion:(RCReceiveIntroEligibilityBlock)receiveEligibility
+{
+    [self receiptData:^(NSData * _Nonnull data) {
+        [self.backend getIntroElgibilityForAppUserID:self.appUserID
+                                         receiptData:data
+                                  productIdentifiers:productIdentifiers
+                                          completion:receiveEligibility];
+    }];
+}
+
 - (void)makePurchase:(SKProduct *)product
 {
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
@@ -240,7 +251,6 @@ NSString * RCAppUserDefaultsKey = @"com.revenuecat.userdefaults.appUserID";
 }
 
 - (BOOL)storeKitWrapper:(nonnull RCStoreKitWrapper *)storeKitWrapper shouldAddStorePayment:(nonnull SKPayment *)payment forProduct:(nonnull SKProduct *)product {
-    
     @synchronized(self) {
         self.productsByIdentifier[product.productIdentifier] = product;
     }
@@ -313,6 +323,29 @@ NSString * RCAppUserDefaultsKey = @"com.revenuecat.userdefaults.appUserID";
                     introductoryPrice:nil
                          currencyCode:nil
                            completion:receivePurchaserInfo];
+    }];
+}
+
+- (void)updateOriginalApplicationVersion:(RCReceivePurchaserInfoBlock)receivePurchaserInfo
+{
+    [self updatedPurchaserInfo:^(RCPurchaserInfo * info, NSError * error) {
+        if (error) {
+            receivePurchaserInfo(nil, error);
+        } else if (info.originalApplicationVersion) {
+            receivePurchaserInfo(info, nil);
+        } else {
+            [self receiptData:^(NSData * _Nonnull data) {
+                [self.backend postReceiptData:data
+                                    appUserID:self.appUserID
+                                    isRestore:NO
+                            productIdentifier:nil
+                                        price:nil
+                                  paymentMode:RCPaymentModeNone
+                            introductoryPrice:nil
+                                 currencyCode:nil
+                                   completion:receivePurchaserInfo];
+            }];
+        }
     }];
 }
 
