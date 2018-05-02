@@ -13,7 +13,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", null, (productIdentifier, purchaserInfo, error) => {
+    Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", "jerry", (productIdentifier, purchaserInfo, error) => {
       if (error) {
         if (error.domain == "SKErrorDomain" && error.code == 2) {
           console.log("This is a normal cancel.");
@@ -44,11 +44,16 @@ export default class App extends React.Component {
               </Text>
             </TouchableOpacity>)
         }
-        <Text>Purchaser Info</Text>
+        <Text>Purchaser Info - {this.state.purchaserInfo ? "Received" : "Null"}</Text>
         {
           this.state.purchaserInfo && Object.keys(this.state.purchaserInfo.allExpirationDates).map( key => {
             let date = this.state.purchaserInfo.allExpirationDates[key];
-            return <Text key={key}>{key} - {date}</Text>;
+            let parsedDate = Date.parse(date);
+
+            let subscribed = parsedDate > Date.now();
+            let expiredIcon = subscribed ? "✅" : "❌";
+
+            return <Text key={key}>{key} - {expiredIcon} - {date}</Text>;
           })
         }
       </View>
