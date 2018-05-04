@@ -46,14 +46,14 @@ export default class App extends React.Component {
         }
         <Text>Purchaser Info - {this.state.purchaserInfo ? "Received" : "Null"}</Text>
         {
-          this.state.purchaserInfo && Object.keys(this.state.purchaserInfo.allExpirationDates).map( key => {
+          this.state.purchaserInfo && Object.keys(this.state.purchaserInfo.allExpirationDates).sort().map( key => {
             let date = this.state.purchaserInfo.allExpirationDates[key];
             let parsedDate = Date.parse(date);
 
             let subscribed = parsedDate > Date.now();
             let expiredIcon = subscribed ? "✅" : "❌";
 
-            return <Text key={key}>{key} - {expiredIcon} - {date}</Text>;
+            return <Text key={key}>{key} - {expiredIcon}</Text>;
           })
         }
       </View>
