@@ -23,7 +23,7 @@
              @"activeSubscriptions": self.activeSubscriptions.allObjects,
              @"allPurchasedProductIdentifiers": self.allPurchasedProductIdentifiers.allObjects,
              @"latestExpirationDate": self.latestExpirationDate ?: [NSNull null],
-             @"allExpirations": allExpirations
+             @"allExpirationDates": allExpirations
              };
 }
 
