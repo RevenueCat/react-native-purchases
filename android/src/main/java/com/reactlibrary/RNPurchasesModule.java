@@ -2,17 +2,14 @@
 package com.reactlibrary;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.billingclient.api.SkuDetails;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -20,7 +17,6 @@ import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.util.Iso8601Utils;
 
-import java.sql.Wrapper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,7 +92,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     @ReactMethod
     public void makePurchase(String productIdentifier, String type) {
         checkPurchases();
-        purchases.makePurchase(reactContext.getCurrentActivity(), productIdentifier, type);
+        purchases.makePurchase(getCurrentActivity(), productIdentifier, type);
     }
 
     private void sendEvent(String eventName,
