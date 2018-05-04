@@ -15,11 +15,7 @@ export default class App extends React.Component {
   componentDidMount() {
     Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", "jerry", (productIdentifier, purchaserInfo, error) => {
       if (error) {
-        if (error.domain == "SKErrorDomain" && error.code == 2) {
-          console.log("This is a normal cancel.");
-        } else {
-          this.setState({error: error.message})
-        }
+        this.setState({error: error.message});
         return;
       }
 
