@@ -33,6 +33,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey appUserID:(NSString *)appUse
 }
 
 RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
+                  type:(NSString *)type
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
@@ -59,7 +60,8 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
     }];
 }
 
-RCT_EXPORT_METHOD(makePurchase:(NSString *)productIdentifier)
+RCT_EXPORT_METHOD(makePurchase:(NSString *)productIdentifier
+                  type:(NSString *)type)
 {
     NSAssert(self.purchases, @"You must call setup first.");
 
