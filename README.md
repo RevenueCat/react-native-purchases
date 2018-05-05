@@ -36,9 +36,24 @@
 
 ## Usage
 ```javascript
-import RNPurchases from 'react-native-purchases';
+import Purchases from 'react-native-purchases';
 
-// TODO: What to do with the module?
-RNPurchases;
+Purchases.setup("revenuecat_api_key", "app_user_id", (productIdentifier, purchaserInfo, error) => {
+  if (error) {
+    this.setState({error: error.message});
+    return;
+  }
+
+  this.setState({purchaserInfo})
+});
+
+Purchases.getProducts(["onemonth_freetrial"]).then((products) => {
+  this.setState({products})
+
+  Purchases.makePurchase("onemonth_freetrial");
+});
+
 ```
+
+Take a look at the example app in the `example` folder.
   
