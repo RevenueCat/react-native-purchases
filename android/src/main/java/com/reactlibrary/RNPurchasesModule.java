@@ -24,6 +24,9 @@ import java.util.Map;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements Purchases.PurchasesListener {
 
+    private static final String PURCHASE_COMPLETED_EVENT = "Purchases-PurchaseCompleted";
+    private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
+
     private final ReactApplicationContext reactContext;
     private Purchases purchases;
 
@@ -141,22 +144,31 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         WritableMap map = Arguments.createMap();
         map.putString("productIdentifier", sku);
         map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
-        sendEvent("Purchases-PurchaseCompleted", map);
+        sendEvent(PURCHASE_COMPLETED_EVENT, map);
     }
 
     @Override
-    public void onFailedPurchase(Exception e) {
+    public void onFailedPurchase(int domain, int code, String message) {
         WritableMap map = Arguments.createMap();
         WritableMap errorMap = Arguments.createMap();
+        String domainString;
 
-        // TODO improve error handling
-        errorMap.putString("message", e.getMessage());
-        errorMap.putInt("code", 0);
-        errorMap.putString("domain", "Android");
+        switch (domain) {
+            case Purchases.ErrorDomains.REVENUECAT_BACKEND:
+                domainString = "RevenueCat Backend";
+            case Purchases.ErrorDomains.PLAY_BILLING:
+                domainString = "Play Billing";
+            default:
+                domainString = "Unknown";
+        }
+
+        errorMap.putString("message", message);
+        errorMap.putInt("code", code);
+        errorMap.putString("domain", domainString);
 
         map.putMap("error", errorMap);
 
-        sendEvent("Purchases-PurchaseCompleted", map);
+        sendEvent(PURCHASE_COMPLETED_EVENT, map);
     }
 
     @Override
@@ -165,6 +177,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
         map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
 
-        sendEvent("Purchases-PurchaserInfoUpdated", map);
+        sendEvent(PURCHASER_INFO_UPDATED, map);
     }
 }
