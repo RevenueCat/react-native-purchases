@@ -9,6 +9,14 @@
 
 `$ react-native link react-native-purchases`
 
+#### Add iOS Framework to Copy Frameworks Phase
+
+1. In Xcode, in project manager, select your app target.
+2. Open the `Build Phases` tabe
+3. Add a new `Copy Files Phase`, name it `Copy Frameworks`
+4. Set destination to `Frameworks`
+5. Add `Purchases.framework` to the phase
+
 ### Manual installation
 
 
