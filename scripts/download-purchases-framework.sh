@@ -3,11 +3,7 @@
 cd ios/
 
 VERSION=$1
-if type /usr/libexec/PlistBuddy &> /dev/null; then
-  CURRENT_VERSION=$(/usr/libexec/PlistBuddy -c "Print :MGLSemanticVersionString" Purchases.framework/Info.plist)
-else
-  CURRENT_VERSION=$(cat .framework_version)
-fi
+CURRENT_VERSION=$(cat .framework_version)
 
 if [ "$VERSION" == "$CURRENT_VERSION" ]; then
   echo "The newest version is already installed. Exiting."
