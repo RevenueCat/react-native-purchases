@@ -8,6 +8,12 @@ var listener = () => {}
 
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
   if (listener) {
+
+    if (error) {
+      console.log(error);
+      error.userCancelled = (error.domain == "SKErrorDomain" && error.code == 2)
+    }
+
     listener(productIdentifier, purchaserInfo, error);
   } else {
     console.log("Purchase completed but no listener set.");
@@ -42,15 +48,15 @@ export default class Purchases {
       @param {[String]} productIdentifiers Array of product identifiers
       @returns {Promise<Array>} A promise of product arrays
   */
-  static getProducts(productIdentifiers) {
-    return RNPurchases.getProductInfo(productIdentifiers);
+  static getProducts(productIdentifiers, type="subs") {
+    return RNPurchases.getProductInfo(productIdentifiers, type);
   }
 
   /** Make a purchase
       @param {String} productIdentifier The product identifier of the product you want to purchase.
   */
-  static makePurchase(productIdentifier) {
-    RNPurchases.makePurchase(productIdentifier);
+  static makePurchase(productIdentifier, type="subs") {
+    RNPurchases.makePurchase(productIdentifier, type);
   }
 
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 
