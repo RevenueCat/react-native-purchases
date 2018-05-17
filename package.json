@@ -1,9 +1,10 @@
 {
   "name": "react-native-purchases",
-  "version": "0.3.3",
+  "version": "0.4.1",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 0.10.2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

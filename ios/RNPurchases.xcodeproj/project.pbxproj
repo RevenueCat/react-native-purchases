@@ -7,34 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		35493AC9202D4BCD004DFA39 /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35493AB3202D4ACD004DFA39 /* Purchases.framework */; };
 		35493AF2202DFD47004DFA39 /* RCPurchaserInfo+React.m in Sources */ = {isa = PBXBuildFile; fileRef = 35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */; };
+		35D0736B20AD0F740012EB8C /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D0736A20AD0F740012EB8C /* Purchases.framework */; };
 		B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPurchases.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		35493AB2202D4ACD004DFA39 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 352629FE1F7C4B9100C04F2C;
-			remoteInfo = Purchases;
-		};
-		35493AB4202D4ACD004DFA39 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 35262A1E1F7D77E600C04F2C;
-			remoteInfo = PurchasesTests;
-		};
-		35493AC4202D4BC7004DFA39 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 352629FD1F7C4B9100C04F2C;
-			remoteInfo = Purchases;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
@@ -50,9 +26,9 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPurchases.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPurchases.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Purchases.xcodeproj; path = Purchases/Purchases.xcodeproj; sourceTree = "<group>"; };
 		35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCPurchaserInfo+React.h"; sourceTree = "<group>"; };
 		35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCPurchaserInfo+React.m"; sourceTree = "<group>"; };
+		35D0736A20AD0F740012EB8C /* Purchases.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Purchases.framework; sourceTree = SOURCE_ROOT; };
 		B3E7B5881CC2AC0600A0062D /* RNPurchases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPurchases.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNPurchases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPurchases.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -62,7 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35493AC9202D4BCD004DFA39 /* Purchases.framework in Frameworks */,
+				35D0736B20AD0F740012EB8C /* Purchases.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,15 +53,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		35493AAE202D4ACD004DFA39 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				35493AB3202D4ACD004DFA39 /* Purchases.framework */,
-				35493AB5202D4ACD004DFA39 /* PurchasesTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		35493AC8202D4BCD004DFA39 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -96,7 +63,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */,
+				35D0736A20AD0F740012EB8C /* Purchases.framework */,
 				B3E7B5881CC2AC0600A0062D /* RNPurchases.h */,
 				B3E7B5891CC2AC0600A0062D /* RNPurchases.m */,
 				35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */,
@@ -120,7 +87,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				35493AC5202D4BC7004DFA39 /* PBXTargetDependency */,
 			);
 			name = RNPurchases;
 			productName = RCTDataManager;
@@ -151,35 +117,12 @@
 			mainGroup = 58B511D21A9E6C8500147676;
 			productRefGroup = 58B511D21A9E6C8500147676;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 35493AAE202D4ACD004DFA39 /* Products */;
-					ProjectRef = 35493AAD202D4ACD004DFA39 /* Purchases.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				58B511DA1A9E6C8500147676 /* RNPurchases */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		35493AB3202D4ACD004DFA39 /* Purchases.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Purchases.framework;
-			remoteRef = 35493AB2202D4ACD004DFA39 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		35493AB5202D4ACD004DFA39 /* PurchasesTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = PurchasesTests.xctest;
-			remoteRef = 35493AB4202D4ACD004DFA39 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		58B511D71A9E6C8500147676 /* Sources */ = {
@@ -192,14 +135,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		35493AC5202D4BC7004DFA39 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Purchases;
-			targetProxy = 35493AC4202D4BC7004DFA39 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		58B511ED1A9E6C8500147676 /* Debug */ = {
@@ -286,6 +221,10 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -302,6 +241,10 @@
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
