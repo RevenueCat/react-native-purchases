@@ -98,6 +98,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         purchases.makePurchase(getCurrentActivity(), productIdentifier, type);
     }
 
+    @ReactMethod
+    public void getAppUserID(final Promise promise) {
+        promise.resolve(purchases.getAppUserID());
+    }
+
     private void sendEvent(String eventName,
                            @Nullable WritableMap params) {
         reactContext

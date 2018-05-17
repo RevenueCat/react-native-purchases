@@ -66,7 +66,7 @@ export default class Purchases {
     return RNPurchases.restoreTransactionsForAppStoreAccount();
   }
 
-  static getUpdatedPurchaserInfo() {
-    return RNPurchases.getUpdatedPurchaserInfo();
+  static getAppUserID() {
+    return RNPurchases.getAppUserID();
   }
 };

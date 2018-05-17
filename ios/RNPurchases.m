@@ -1,7 +1,8 @@
 
 #import "RNPurchases.h"
 
-#import <StoreKit/StoreKit.h>
+@import StoreKit;
+@import Purchases;
 
 #import "RCPurchaserInfo+React.h"
 
@@ -42,7 +43,7 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
     formatter.numberStyle = NSNumberFormatterCurrencyStyle;
 
-    [self.purchases productsWithIdentifiers:[NSSet setWithArray:products] completion:^(NSArray<SKProduct *> * _Nonnull products) {
+    [self.purchases productsWithIdentifiers:products completion:^(NSArray<SKProduct *> * _Nonnull products) {
         NSMutableArray *productObjects = [NSMutableArray new];
         for (SKProduct *p in products) {
             self.products[p.productIdentifier] = p;
@@ -103,10 +104,19 @@ RCT_REMAP_METHOD(getUpdatedPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseReso
     }];
 }
 
+RCT_REMAP_METHOD(getAppUserID,
+                 getAppUserIDWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject)
+{
+    resolve(self.purchases.appUserID);
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 
-- (void)purchases:(nonnull RCPurchases *)purchases completedTransaction:(nonnull SKPaymentTransaction *)transaction withUpdatedInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
+- (void)purchases:(nonnull RCPurchases *)purchases
+completedTransaction:(nonnull SKPaymentTransaction *)transaction
+  withUpdatedInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
     [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{
                                                                      @"productIdentifier": transaction.payment.productIdentifier,
                                                                      @"purchaserInfo": purchaserInfo.dictionary
@@ -129,6 +139,7 @@ RCT_REMAP_METHOD(getUpdatedPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseReso
                                                                         @"purchaserInfo": purchaserInfo.dictionary
                                                                         }];
 }
+
 
 @end
   
