@@ -74,17 +74,9 @@ RCT_EXPORT_METHOD(makePurchase:(NSString *)productIdentifier
     [self.purchases makePurchase:self.products[productIdentifier]];
 }
 
-RCT_REMAP_METHOD(restoreTransactionsForAppStoreAccount,
-                 restoreTransactionsWithResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(restoreTransactions) {
     NSAssert(self.purchases, @"You must call setup first.");
-    [self.purchases restoreTransactionsForAppStoreAccount:^(RCPurchaserInfo * _Nullable info, NSError * _Nullable error) {
-        if (info) {
-            resolve(info.dictionary);
-        } else {
-            reject(@"restore_error", @"Failed to restore transactions", nil);
-        }
-    }];
+    [self.purchases restoreTransactionsForAppStoreAccount];
 }
 
 - (NSArray<NSString *> *)supportedEvents
@@ -93,15 +85,9 @@ RCT_REMAP_METHOD(restoreTransactionsForAppStoreAccount,
              RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
-RCT_REMAP_METHOD(getUpdatedPurchaserInfo, getLatestPurchaserInfo:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(getUpdatedPurchaserInfo)
 {
-    [self.purchases updatedPurchaserInfo:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
-        if (purchaserInfo) {
-            resolve(purchaserInfo.dictionary);
-        } else {
-            reject(@"no_events", @"Failed to fetch purchaser info", nil);
-        }
-    }];
+    [self.purchases updatePurchaserInfo];
 }
 
 RCT_REMAP_METHOD(getAppUserID,
@@ -136,9 +122,20 @@ completedTransaction:(nonnull SKPaymentTransaction *)transaction
 
 - (void)purchases:(nonnull RCPurchases *)purchases receivedUpdatedPurchaserInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
     [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:@{
-                                                                        @"purchaserInfo": purchaserInfo.dictionary
+                                                                        @"purchaserInfo": purchaserInfo.dictionary,
                                                                         }];
 }
+
+- (void)purchases:(nonnull RCPurchases *)purchases failedToUpdatePurchaserInfoWithError:(nonnull NSError *)error {
+    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{
+                                                                     @"error": @{
+                                                                             @"message": error.localizedDescription,
+                                                                             @"code": @(error.code),
+                                                                             @"domain": error.domain
+                                                                             }
+                                                                     }];
+}
+
 
 
 @end

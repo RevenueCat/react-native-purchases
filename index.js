@@ -20,9 +20,9 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
   }
 });
 
-eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo}) => {
+eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
   if (listener) {
-    listener(null, purchaserInfo, null);
+    listener(null, purchaserInfo, error);
   } else {
     console.log("Purchaser info received but no listener set.");
   }
@@ -62,8 +62,8 @@ export default class Purchases {
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 
     @returns {Promise<Object>} A promise of a purchaser info object
   */
-  static restoreTransactionsForAppStoreAccount() {
-    return RNPurchases.restoreTransactionsForAppStoreAccount();
+  static restoreTransactions() {
+    return RNPurchases.restoreTransactions();
   }
 
   static getAppUserID() {
