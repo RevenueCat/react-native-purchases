@@ -103,6 +103,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         promise.resolve(purchases.getAppUserID());
     }
 
+    @ReactMethod
+    public void restoreTransactions() {
+        checkPurchases();
+        purchases.restorePurchasesForPlayStoreAccount();
+    }
+
     private void sendEvent(String eventName,
                            @Nullable WritableMap params) {
         reactContext
