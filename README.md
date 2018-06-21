@@ -64,4 +64,6 @@ Purchases.getProducts(["onemonth_freetrial"]).then((products) => {
 ```
 
 Take a look at the example app in the `example` folder.
+
+Support for entitlements is coming soon.
   
