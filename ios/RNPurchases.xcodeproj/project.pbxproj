@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		35493AF2202DFD47004DFA39 /* RCPurchaserInfo+React.m in Sources */ = {isa = PBXBuildFile; fileRef = 35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */; };
+		3535581A20E1574500DB9004 /* RCEntitlement+RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = 3535581920E1574500DB9004 /* RCEntitlement+RNPurchases.m */; };
+		3535581D20E1586200DB9004 /* SKProduct+RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = 3535581C20E1586200DB9004 /* SKProduct+RNPurchases.m */; };
+		35493AF2202DFD47004DFA39 /* RCPurchaserInfo+RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = 35493AF1202DFD47004DFA39 /* RCPurchaserInfo+RNPurchases.m */; };
 		35D0736B20AD0F740012EB8C /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D0736A20AD0F740012EB8C /* Purchases.framework */; };
 		B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPurchases.m */; };
 /* End PBXBuildFile section */
@@ -26,8 +28,12 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPurchases.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPurchases.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCPurchaserInfo+React.h"; sourceTree = "<group>"; };
-		35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCPurchaserInfo+React.m"; sourceTree = "<group>"; };
+		3535581820E1574500DB9004 /* RCEntitlement+RNPurchases.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCEntitlement+RNPurchases.h"; sourceTree = "<group>"; };
+		3535581920E1574500DB9004 /* RCEntitlement+RNPurchases.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCEntitlement+RNPurchases.m"; sourceTree = "<group>"; };
+		3535581B20E1586200DB9004 /* SKProduct+RNPurchases.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SKProduct+RNPurchases.h"; sourceTree = "<group>"; };
+		3535581C20E1586200DB9004 /* SKProduct+RNPurchases.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SKProduct+RNPurchases.m"; sourceTree = "<group>"; };
+		35493AF0202DFD47004DFA39 /* RCPurchaserInfo+RNPurchases.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCPurchaserInfo+RNPurchases.h"; sourceTree = "<group>"; };
+		35493AF1202DFD47004DFA39 /* RCPurchaserInfo+RNPurchases.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCPurchaserInfo+RNPurchases.m"; sourceTree = "<group>"; };
 		35D0736A20AD0F740012EB8C /* Purchases.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Purchases.framework; sourceTree = SOURCE_ROOT; };
 		B3E7B5881CC2AC0600A0062D /* RNPurchases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPurchases.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNPurchases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPurchases.m; sourceTree = "<group>"; };
@@ -66,8 +72,12 @@
 				35D0736A20AD0F740012EB8C /* Purchases.framework */,
 				B3E7B5881CC2AC0600A0062D /* RNPurchases.h */,
 				B3E7B5891CC2AC0600A0062D /* RNPurchases.m */,
-				35493AF0202DFD47004DFA39 /* RCPurchaserInfo+React.h */,
-				35493AF1202DFD47004DFA39 /* RCPurchaserInfo+React.m */,
+				35493AF0202DFD47004DFA39 /* RCPurchaserInfo+RNPurchases.h */,
+				35493AF1202DFD47004DFA39 /* RCPurchaserInfo+RNPurchases.m */,
+				3535581B20E1586200DB9004 /* SKProduct+RNPurchases.h */,
+				3535581C20E1586200DB9004 /* SKProduct+RNPurchases.m */,
+				3535581820E1574500DB9004 /* RCEntitlement+RNPurchases.h */,
+				3535581920E1574500DB9004 /* RCEntitlement+RNPurchases.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				35493AC8202D4BCD004DFA39 /* Frameworks */,
 			);
@@ -129,8 +139,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35493AF2202DFD47004DFA39 /* RCPurchaserInfo+React.m in Sources */,
+				35493AF2202DFD47004DFA39 /* RCPurchaserInfo+RNPurchases.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */,
+				3535581D20E1586200DB9004 /* SKProduct+RNPurchases.m in Sources */,
+				3535581A20E1574500DB9004 /* RCEntitlement+RNPurchases.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

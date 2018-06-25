@@ -4,7 +4,9 @@
 @import StoreKit;
 @import Purchases;
 
-#import "RCPurchaserInfo+React.h"
+#import "RCPurchaserInfo+RNPurchases.h"
+#import "RCEntitlement+RNPurchases.h"
+#import "SKProduct+RNPurchases.h"
 
 @interface RNPurchases () <RCPurchasesDelegate>
 
@@ -15,6 +17,7 @@
 
 NSString *RNPurchasesPurchaseCompletedEvent = @"Purchases-PurchaseCompleted";
 NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdated";
+NSString *RNPurchasesRestoredTransactionsEvent = @"Purchases-RestoredTransactions";
 
 @implementation RNPurchases
 
@@ -22,15 +25,51 @@ NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdate
 {
     return dispatch_get_main_queue();
 }
+
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[RNPurchasesPurchaseCompletedEvent,
+             RNPurchasesPurchaserInfoUpdatedEvent,
+             RNPurchasesRestoredTransactionsEvent];
+}
+
 RCT_EXPORT_MODULE();
 
 
-RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey appUserID:(NSString *)appUserID)
+RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
+                  appUserID:(NSString *)appUserID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     self.purchases.delegate = nil;
     self.products = [NSMutableDictionary new];
     self.purchases = [[RCPurchases alloc] initWithAPIKey:apiKey appUserID:appUserID];
     self.purchases.delegate = self;
+    resolve(nil);
+}
+
+RCT_REMAP_METHOD(getEntitlements,
+                 getEntitlementsWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject)
+{
+    NSAssert(self.purchases, @"You must call setup first.");
+    [self.purchases entitlements:^(NSDictionary<NSString *,RCEntitlement *> * _Nonnull entitlements) {
+        NSMutableDictionary *result = [NSMutableDictionary new];
+        for (NSString *entId in entitlements) {
+            RCEntitlement *entitlement = entitlements[entId];
+            result[entId] = entitlement.dictionary;
+        }
+
+        for (RCEntitlement *entitlement in entitlements.allValues) {
+            for (RCOffering *offering in entitlement.offerings.allValues)
+            {
+                SKProduct *product = offering.activeProduct;
+                self.products[product.productIdentifier] = product;
+            }
+        }
+
+        resolve([NSDictionary dictionaryWithDictionary:result]);
+    }];
 }
 
 RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
@@ -40,22 +79,11 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
 {
     NSAssert(self.purchases, @"You must call setup first.");
 
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.numberStyle = NSNumberFormatterCurrencyStyle;
-
     [self.purchases productsWithIdentifiers:products completion:^(NSArray<SKProduct *> * _Nonnull products) {
         NSMutableArray *productObjects = [NSMutableArray new];
         for (SKProduct *p in products) {
             self.products[p.productIdentifier] = p;
-            formatter.locale = p.priceLocale;
-            NSDictionary *d = @{
-                                @"identifier": p.productIdentifier ?: @"",
-                                @"description": p.localizedDescription ?: @"",
-                                @"title": p.localizedTitle ?: @"",
-                                @"price": @(p.price.floatValue),
-                                @"price_string": [formatter stringFromNumber:p.price]
-                                };
-            [productObjects addObject:d];
+            [productObjects addObject:p.dictionary];
         }
         resolve(productObjects);
     }];
@@ -79,17 +107,6 @@ RCT_EXPORT_METHOD(restoreTransactions) {
     [self.purchases restoreTransactionsForAppStoreAccount];
 }
 
-- (NSArray<NSString *> *)supportedEvents
-{
-    return @[RNPurchasesPurchaseCompletedEvent,
-             RNPurchasesPurchaserInfoUpdatedEvent];
-}
-
-RCT_EXPORT_METHOD(getUpdatedPurchaserInfo)
-{
-    [self.purchases updatePurchaserInfo];
-}
-
 RCT_REMAP_METHOD(getAppUserID,
                  getAppUserIDWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
@@ -110,14 +127,9 @@ completedTransaction:(nonnull SKPaymentTransaction *)transaction
 }
 
 - (void)purchases:(nonnull RCPurchases *)purchases failedTransaction:(nonnull SKPaymentTransaction *)transaction withReason:(nonnull NSError *)failureReason {
-    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{
-                                                                     @"productIdentifier": transaction.payment.productIdentifier,
-                                                                     @"error": @{
-                                                                             @"message": failureReason.localizedDescription,
-                                                                             @"code": @(failureReason.code),
-                                                                             @"domain": failureReason.domain
-                                                                             }
-                                                                     }];
+    NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:failureReason]];
+    payload[@"productIdentifier"] = transaction.payment.productIdentifier;
+    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:payload];
 }
 
 - (void)purchases:(nonnull RCPurchases *)purchases receivedUpdatedPurchaserInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
@@ -127,14 +139,33 @@ completedTransaction:(nonnull SKPaymentTransaction *)transaction
 }
 
 - (void)purchases:(nonnull RCPurchases *)purchases failedToUpdatePurchaserInfoWithError:(nonnull NSError *)error {
-    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{
-                                                                     @"error": @{
-                                                                             @"message": error.localizedDescription,
-                                                                             @"code": @(error.code),
-                                                                             @"domain": error.domain
-                                                                             }
-                                                                     }];
+    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:[self payloadForError:error]];
 }
+
+- (void)purchases:(nonnull RCPurchases *)purchases failedToRestoreTransactionsWithError:(nonnull NSError *)error {
+    [self sendEventWithName:RNPurchasesRestoredTransactionsEvent body:[self payloadForError:error]];
+}
+
+
+- (void)purchases:(nonnull RCPurchases *)purchases restoredTransactionsWithPurchaserInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
+    [self sendEventWithName:RNPurchasesRestoredTransactionsEvent body:@{
+                                                                        @"purchaserInfo": purchaserInfo.dictionary
+                                                                        }];
+}
+
+#pragma mark Response Payload Helpers
+
+- (NSDictionary *)payloadForError:(NSError *)error
+{
+    return @{
+             @"error": @{
+                     @"message": error.localizedDescription,
+                     @"code": @(error.code),
+                     @"domain": error.domain
+                     }
+             };
+}
+
 
 
 

@@ -4,7 +4,7 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-var listener = () => {}
+var listener = undefined;
 
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
   if (listener) {
@@ -14,7 +14,7 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
       error.userCancelled = (error.domain == "SKErrorDomain" && error.code == 2)
     }
 
-    listener(productIdentifier, purchaserInfo, error);
+    listener(productIdentifier, purchaserInfo, error, false);
   } else {
     console.log("Purchase completed but no listener set.");
   }
@@ -22,26 +22,42 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
 
 eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
   if (listener) {
-    listener(null, purchaserInfo, error);
+    listener(null, purchaserInfo, error, false);
   } else {
     console.log("Purchaser info received but no listener set.");
   }
 });
 
+eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
+  if (listener) {
+    listener(null, purchaserInfo, error, true);
+  } else {
+    console.log("Purchaser info received but no listener set.");
+  }
+})
+
 export default class Purchases {
   /** @callback PurchasesListener
-      @param {String} productIdentifier for the purchase, null if just an info update
+      @param {String} productIdentifier for the purchase, null if just a purchaser info update
       @param {Object} purchaserInfo will be non-null if the purchases was successful
-      @param {Object} error Will be non-null if purchase failed to complete for some reason.
+      @param {Object} error Will be non-null if purchase failed to complete for some reason
+      @param {Boolean} isRestore Will be true if this call was triggered by a restoreTransactions call
   */
 
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
       @param {String} apiKey RevenueCat API Key
       @param {String?} appUserID A unique id for identifying the user
+      @param {PurchasesListener} listener_ A function that is called on purchase or purchaser info update.
+
+      @returns {Promise<Object>} A promise of a purchaser info object
   */
   static setup(apiKey, appUserID, listener_) {
     listener = listener_;
-    RNPurchases.setupPurchases(apiKey, appUserID);
+    return RNPurchases.setupPurchases(apiKey, appUserID);
+  }
+
+  static getEntitlements() {
+    return RNPurchases.getEntitlements();
   }
 
   /** Fetch the product info.
@@ -63,7 +79,7 @@ export default class Purchases {
     @returns {Promise<Object>} A promise of a purchaser info object
   */
   static restoreTransactions() {
-    return RNPurchases.restoreTransactions();
+    RNPurchases.restoreTransactions();
   }
 
   static getAppUserID() {

@@ -1,14 +1,14 @@
 //
-//  RCPurchaserInfo+React.h
+//  RCEntitlement+RNPurchases.h
 //  RNPurchases
 //
-//  Created by Jacob Eiting on 2/9/18.
+//  Created by Jacob Eiting on 6/25/18.
 //  Copyright © 2018 Facebook. All rights reserved.
 //
 
 #import <Purchases/Purchases.h>
 
-@interface RCPurchaserInfo (React)
+@interface RCEntitlement (RNPurchases)
 
 - (NSDictionary *)dictionary;
 

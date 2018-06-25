@@ -13,12 +13,15 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.revenuecat.purchases.Entitlement;
+import com.revenuecat.purchases.Offering;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.util.Iso8601Utils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +29,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
     private static final String PURCHASE_COMPLETED_EVENT = "Purchases-PurchaseCompleted";
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
+    private static final String TRANSACTIONS_RESTORED = "Purchases-RestoredTransactions";
 
     private final ReactApplicationContext reactContext;
     private Purchases purchases;
@@ -47,8 +51,55 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @ReactMethod
-    public void setupPurchases(String apiKey, String appUserID) {
+    public void setupPurchases(String apiKey, String appUserID, final Promise promise) {
         purchases = new Purchases.Builder(reactContext, apiKey, this).appUserID(appUserID).build();
+        promise.resolve(null);
+    }
+
+    private WritableMap mapForSkuDetails(final SkuDetails detail) {
+        WritableMap map = Arguments.createMap();
+
+        map.putString("identifier", detail.getSku());
+        map.putString("description", detail.getDescription());
+        map.putString("title", detail.getTitle());
+        map.putDouble("price", detail.getPriceAmountMicros() / 1000);
+        map.putString("price_string", detail.getPrice());
+
+        map.putString("intro_price", detail.getIntroductoryPriceAmountMicros());
+        map.putString("intro_price_string", detail.getIntroductoryPrice());
+        map.putString("intro_price_period", detail.getIntroductoryPricePeriod());
+        map.putString("intro_price_cycles", detail.getIntroductoryPriceCycles());
+
+        return map;
+    }
+
+    @ReactMethod
+    public void getEntitlements(final Promise promise) {
+        checkPurchases();
+
+        purchases.getEntitlements(new Purchases.GetEntitlementsHandler() {
+            @Override
+            public void onReceiveEntitlements(Map<String, Entitlement> entitlementMap) {
+                WritableMap response = Arguments.createMap();
+
+                for (String entId : entitlementMap.keySet()) {
+                    Entitlement ent = entitlementMap.get(entId);
+
+                    WritableMap offeringsMap = Arguments.createMap();
+                    Map<String, Offering> offerings = ent.getOfferings();
+
+                    for (String offeringId : offerings.keySet()) {
+                        Offering offering = offerings.get(offeringId);
+                        SkuDetails skuDetails = offering.getSkuDetails();
+                        WritableMap skuMap = mapForSkuDetails(skuDetails);
+                        offeringsMap.putMap(offeringId, skuMap);
+                    }
+                    response.putMap(entId, offeringsMap);
+                }
+
+                promise.resolve(response);
+            }
+        });
     }
 
     @ReactMethod
@@ -65,20 +116,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
             public void onReceiveSkus(List<SkuDetails> skus) {
                 WritableArray writableArray = Arguments.createArray();
                 for (SkuDetails detail : skus) {
-                    WritableMap map = Arguments.createMap();
-
-                    map.putString("identifier", detail.getSku());
-                    map.putString("description", detail.getDescription());
-                    map.putString("title", detail.getTitle());
-                    map.putDouble("price", detail.getPriceAmountMicros() / 1000);
-                    map.putString("price_string", detail.getPrice());
-
-                    map.putString("intro_price", detail.getIntroductoryPriceAmountMicros());
-                    map.putString("intro_price_string", detail.getIntroductoryPrice());
-                    map.putString("intro_price_period", detail.getIntroductoryPricePeriod());
-                    map.putString("intro_price_cycles", detail.getIntroductoryPriceCycles());
-
-                    writableArray.pushMap(map);
+                    writableArray.pushMap(mapForSkuDetails(detail));
                 }
 
                 promise.resolve(writableArray);
@@ -119,6 +157,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     private WritableMap createPurchaserInfoMap(PurchaserInfo purchaserInfo) {
         WritableMap map = Arguments.createMap();
 
+        WritableArray allActiveEntitlements = Arguments.createArray();
+        for (String activeEntitlement : purchaserInfo.getActiveEntitlements()) {
+            allActiveEntitlements.pushString(activeEntitlement);
+        }
+        map.putArray("activeEntitlements", allActiveEntitlements);
+
         WritableArray allActiveSubscriptions = Arguments.createArray();
         for (String activeSubscription : purchaserInfo.getActiveSubscriptions()) {
             allActiveSubscriptions.pushString(activeSubscription);
@@ -139,13 +183,22 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         }
 
         WritableMap allExpirationDates = Arguments.createMap();
-        Map<String, Date> dates = purchaserInfo.getAllExpirationDates();
+        Map<String, Date> dates = purchaserInfo.getAllExpirationDatesByProduct();
         for (String key : dates.keySet()) {
             Date date = dates.get(key);
             allExpirationDates.putString(key, Iso8601Utils
                     .format(date));
         }
         map.putMap("allExpirationDates", allExpirationDates);
+
+        WritableMap allEntitlementExpirationDates = Arguments.createMap();
+
+        for (String entitlementId : purchaserInfo.getActiveEntitlements()) {
+            Date date = purchaserInfo.getExpirationDateForEntitlement(entitlementId);
+            allEntitlementExpirationDates.putString(entitlementId, Iso8601Utils
+                    .format(date));
+        }
+        map.putMap("expirationsForActiveEntitlements", allEntitlementExpirationDates);
 
         return map;
     }
@@ -158,9 +211,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         sendEvent(PURCHASE_COMPLETED_EVENT, map);
     }
 
-    @Override
-    public void onFailedPurchase(int domain, int code, String message) {
-        WritableMap map = Arguments.createMap();
+    private WritableMap errorMap(int domain, int code, String message) {
         WritableMap errorMap = Arguments.createMap();
         String domainString;
 
@@ -177,7 +228,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         errorMap.putInt("code", code);
         errorMap.putString("domain", domainString);
 
-        map.putMap("error", errorMap);
+        return errorMap;
+    }
+
+    @Override
+    public void onFailedPurchase(int domain, int code, String message) {
+        WritableMap map = Arguments.createMap();
+
+        map.putMap("error", errorMap(domain, code, message));
 
         sendEvent(PURCHASE_COMPLETED_EVENT, map);
     }
@@ -190,4 +248,18 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
         sendEvent(PURCHASER_INFO_UPDATED, map);
     }
+
+    @Override
+    public void onRestoreTransactions(PurchaserInfo purchaserInfo) {
+        WritableMap map = Arguments.createMap();
+        map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
+
+        sendEvent(TRANSACTIONS_RESTORED, map);
+    }
+
+    @Override
+    public void onRestoreTransactionsFailed(int domain, int code, String reason) {
+        sendEvent(TRANSACTIONS_RESTORED, errorMap(domain, code, reason));
+    }
+
 }
