@@ -30,18 +30,21 @@ eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, erro
 
 export default class Purchases {
   /** @callback PurchasesListener
-      @param {String} productIdentifier for the purchase, null if just an info update
+      @param {String} productIdentifier for the purchase, null if just a purchaser info update
       @param {Object} purchaserInfo will be non-null if the purchases was successful
-      @param {Object} error Will be non-null if purchase failed to complete for some reason.
+      @param {Object} error Will be non-null if purchase failed to complete for some reason
   */
 
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
       @param {String} apiKey RevenueCat API Key
       @param {String?} appUserID A unique id for identifying the user
+      @param {PurchasesListener} listener_ A function that is called on purchase or purchaser info update.
+
+      @returns {Promise<Object>} A promise of a purchaser info object
   */
   static setup(apiKey, appUserID, listener_) {
     listener = listener_;
-    RNPurchases.setupPurchases(apiKey, appUserID);
+    return RNPurchases.setupPurchases(apiKey, appUserID);
   }
 
   /** Fetch the product info.

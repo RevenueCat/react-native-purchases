@@ -25,12 +25,16 @@ NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdate
 RCT_EXPORT_MODULE();
 
 
-RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey appUserID:(NSString *)appUserID)
+RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
+                  appUserID:(NSString *)appUserID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     self.purchases.delegate = nil;
     self.products = [NSMutableDictionary new];
     self.purchases = [[RCPurchases alloc] initWithAPIKey:apiKey appUserID:appUserID];
     self.purchases.delegate = self;
+    resolve(nil);
 }
 
 RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
