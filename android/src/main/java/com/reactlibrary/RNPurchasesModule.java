@@ -29,6 +29,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
     private static final String PURCHASE_COMPLETED_EVENT = "Purchases-PurchaseCompleted";
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
+    private static final String TRANSACTIONS_RESTORED = "Purchases-RestoredTransactions";
 
     private final ReactApplicationContext reactContext;
     private Purchases purchases;
@@ -210,9 +211,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         sendEvent(PURCHASE_COMPLETED_EVENT, map);
     }
 
-    @Override
-    public void onFailedPurchase(int domain, int code, String message) {
-        WritableMap map = Arguments.createMap();
+    private WritableMap errorMap(int domain, int code, String message) {
         WritableMap errorMap = Arguments.createMap();
         String domainString;
 
@@ -229,7 +228,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         errorMap.putInt("code", code);
         errorMap.putString("domain", domainString);
 
-        map.putMap("error", errorMap);
+        return errorMap;
+    }
+
+    @Override
+    public void onFailedPurchase(int domain, int code, String message) {
+        WritableMap map = Arguments.createMap();
+
+        map.putMap("error", errorMap(domain, code, message));
 
         sendEvent(PURCHASE_COMPLETED_EVENT, map);
     }
@@ -241,6 +247,19 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
 
         sendEvent(PURCHASER_INFO_UPDATED, map);
+    }
+
+    @Override
+    public void onRestoreTransactions(PurchaserInfo purchaserInfo) {
+        WritableMap map = Arguments.createMap();
+        map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
+
+        sendEvent(TRANSACTIONS_RESTORED, map);
+    }
+
+    @Override
+    public void onRestoreTransactionsFailed(int domain, int code, String reason) {
+        sendEvent(TRANSACTIONS_RESTORED, errorMap(domain, code, reason));
     }
 
 }
