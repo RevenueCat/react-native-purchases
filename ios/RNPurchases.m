@@ -15,6 +15,7 @@
 
 NSString *RNPurchasesPurchaseCompletedEvent = @"Purchases-PurchaseCompleted";
 NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdated";
+NSString *RNPurchasesRestoredTransactionsEvent = @"Purchases-RestoredTransactions";
 
 @implementation RNPurchases
 
@@ -89,11 +90,6 @@ RCT_EXPORT_METHOD(restoreTransactions) {
              RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
-RCT_EXPORT_METHOD(getUpdatedPurchaserInfo)
-{
-    [self.purchases updatePurchaserInfo];
-}
-
 RCT_REMAP_METHOD(getAppUserID,
                  getAppUserIDWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
@@ -114,14 +110,9 @@ completedTransaction:(nonnull SKPaymentTransaction *)transaction
 }
 
 - (void)purchases:(nonnull RCPurchases *)purchases failedTransaction:(nonnull SKPaymentTransaction *)transaction withReason:(nonnull NSError *)failureReason {
-    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{
-                                                                     @"productIdentifier": transaction.payment.productIdentifier,
-                                                                     @"error": @{
-                                                                             @"message": failureReason.localizedDescription,
-                                                                             @"code": @(failureReason.code),
-                                                                             @"domain": failureReason.domain
-                                                                             }
-                                                                     }];
+    NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:failureReason]];
+    payload[@"productIdentifier"] = transaction.payment.productIdentifier;
+    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:payload];
 }
 
 - (void)purchases:(nonnull RCPurchases *)purchases receivedUpdatedPurchaserInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
@@ -131,14 +122,33 @@ completedTransaction:(nonnull SKPaymentTransaction *)transaction
 }
 
 - (void)purchases:(nonnull RCPurchases *)purchases failedToUpdatePurchaserInfoWithError:(nonnull NSError *)error {
-    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{
-                                                                     @"error": @{
-                                                                             @"message": error.localizedDescription,
-                                                                             @"code": @(error.code),
-                                                                             @"domain": error.domain
-                                                                             }
-                                                                     }];
+    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:[self payloadForError:error]];
 }
+
+- (void)purchases:(nonnull RCPurchases *)purchases failedToRestoreTransactionsWithError:(nonnull NSError *)error {
+    [self sendEventWithName:RNPurchasesRestoredTransactionsEvent body:[self payloadForError:error]];
+}
+
+
+- (void)purchases:(nonnull RCPurchases *)purchases restoredTransactionsWithPurchaserInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
+    [self sendEventWithName:RNPurchasesRestoredTransactionsEvent body:@{
+                                                                        @"purchaserInfo": purchaserInfo.dictionary
+                                                                        }];
+}
+
+#pragma mark Response Payload Helpers
+
+- (NSDictionary *)payloadForError:(NSError *)error
+{
+    return @{
+             @"error": @{
+                     @"message": error.localizedDescription,
+                     @"code": @(error.code),
+                     @"domain": error.domain
+                     }
+             };
+}
+
 
 
 

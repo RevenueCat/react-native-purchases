@@ -4,7 +4,7 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-var listener = () => {}
+var listener = undefined;
 
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
   if (listener) {
@@ -27,6 +27,14 @@ eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, erro
     console.log("Purchaser info received but no listener set.");
   }
 });
+
+eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
+  if (listener) {
+    listener(null, purchaserInfo, error);
+  } else {
+    console.log("Purchaser info received but no listener set.");
+  }
+})
 
 export default class Purchases {
   /** @callback PurchasesListener
@@ -66,7 +74,7 @@ export default class Purchases {
     @returns {Promise<Object>} A promise of a purchaser info object
   */
   static restoreTransactions() {
-    return RNPurchases.restoreTransactions();
+    RNPurchases.restoreTransactions();
   }
 
   static getAppUserID() {
