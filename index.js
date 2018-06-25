@@ -14,7 +14,7 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
       error.userCancelled = (error.domain == "SKErrorDomain" && error.code == 2)
     }
 
-    listener(productIdentifier, purchaserInfo, error);
+    listener(productIdentifier, purchaserInfo, error, false);
   } else {
     console.log("Purchase completed but no listener set.");
   }
@@ -22,7 +22,7 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
 
 eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
   if (listener) {
-    listener(null, purchaserInfo, error);
+    listener(null, purchaserInfo, error, false);
   } else {
     console.log("Purchaser info received but no listener set.");
   }
@@ -30,7 +30,7 @@ eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, erro
 
 eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
   if (listener) {
-    listener(null, purchaserInfo, error);
+    listener(null, purchaserInfo, error, true);
   } else {
     console.log("Purchaser info received but no listener set.");
   }
@@ -41,6 +41,7 @@ export default class Purchases {
       @param {String} productIdentifier for the purchase, null if just a purchaser info update
       @param {Object} purchaserInfo will be non-null if the purchases was successful
       @param {Object} error Will be non-null if purchase failed to complete for some reason
+      @param {Boolean} isRestore Will be true if this call was triggered by a restoreTransactions call
   */
 
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
