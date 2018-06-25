@@ -56,6 +56,10 @@ export default class Purchases {
     return RNPurchases.setupPurchases(apiKey, appUserID);
   }
 
+  static getEntitlements() {
+    return RNPurchases.getEntitlements();
+  }
+
   /** Fetch the product info.
       @param {[String]} productIdentifiers Array of product identifiers
       @returns {Promise<Array>} A promise of product arrays

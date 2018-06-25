@@ -5,6 +5,8 @@
 @import Purchases;
 
 #import "RCPurchaserInfo+React.h"
+#import "RCEntitlement+React.h"
+#import "SKProduct+RNPurchases.h"
 
 @interface RNPurchases () <RCPurchasesDelegate>
 
@@ -23,6 +25,14 @@ NSString *RNPurchasesRestoredTransactionsEvent = @"Purchases-RestoredTransaction
 {
     return dispatch_get_main_queue();
 }
+
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[RNPurchasesPurchaseCompletedEvent,
+             RNPurchasesPurchaserInfoUpdatedEvent,
+             RNPurchasesRestoredTransactionsEvent];
+}
+
 RCT_EXPORT_MODULE();
 
 
@@ -38,6 +48,30 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
     resolve(nil);
 }
 
+RCT_REMAP_METHOD(getEntitlements,
+                 getEntitlementsWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject)
+{
+    NSAssert(self.purchases, @"You must call setup first.");
+    [self.purchases entitlements:^(NSDictionary<NSString *,RCEntitlement *> * _Nonnull entitlements) {
+        NSMutableDictionary *result = [NSMutableDictionary new];
+        for (NSString *entId in entitlements) {
+            RCEntitlement *entitlement = entitlements[entId];
+            result[entId] = entitlement.dictionary;
+        }
+
+        for (RCEntitlement *entitlement in entitlements.allValues) {
+            for (RCOffering *offering in entitlement.offerings.allValues)
+            {
+                SKProduct *product = offering.activeProduct;
+                self.products[product.productIdentifier] = product;
+            }
+        }
+
+        resolve([NSDictionary dictionaryWithDictionary:result]);
+    }];
+}
+
 RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
                   type:(NSString *)type
                   resolve:(RCTPromiseResolveBlock)resolve
@@ -45,22 +79,11 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
 {
     NSAssert(self.purchases, @"You must call setup first.");
 
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.numberStyle = NSNumberFormatterCurrencyStyle;
-
     [self.purchases productsWithIdentifiers:products completion:^(NSArray<SKProduct *> * _Nonnull products) {
         NSMutableArray *productObjects = [NSMutableArray new];
         for (SKProduct *p in products) {
             self.products[p.productIdentifier] = p;
-            formatter.locale = p.priceLocale;
-            NSDictionary *d = @{
-                                @"identifier": p.productIdentifier ?: @"",
-                                @"description": p.localizedDescription ?: @"",
-                                @"title": p.localizedTitle ?: @"",
-                                @"price": @(p.price.floatValue),
-                                @"price_string": [formatter stringFromNumber:p.price]
-                                };
-            [productObjects addObject:d];
+            [productObjects addObject:p.dictionary];
         }
         resolve(productObjects);
     }];
@@ -82,12 +105,6 @@ RCT_EXPORT_METHOD(makePurchase:(NSString *)productIdentifier
 RCT_EXPORT_METHOD(restoreTransactions) {
     NSAssert(self.purchases, @"You must call setup first.");
     [self.purchases restoreTransactionsForAppStoreAccount];
-}
-
-- (NSArray<NSString *> *)supportedEvents
-{
-    return @[RNPurchasesPurchaseCompletedEvent,
-             RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
 RCT_REMAP_METHOD(getAppUserID,
