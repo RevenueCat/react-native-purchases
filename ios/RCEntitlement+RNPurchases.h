@@ -1,5 +1,5 @@
 //
-//  RCEntitlement+React.h
+//  RCEntitlement+RNPurchases.h
 //  RNPurchases
 //
 //  Created by Jacob Eiting on 6/25/18.
@@ -8,7 +8,7 @@
 
 #import <Purchases/Purchases.h>
 
-@interface RCEntitlement (React)
+@interface RCEntitlement (RNPurchases)
 
 - (NSDictionary *)dictionary;
 

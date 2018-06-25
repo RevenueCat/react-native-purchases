@@ -1,5 +1,5 @@
 //
-//  RCPurchaserInfo+React.h
+//  RCPurchaserInfo+RNPurchases.h
 //  RNPurchases
 //
 //  Created by Jacob Eiting on 2/9/18.
@@ -8,7 +8,7 @@
 
 #import <Purchases/Purchases.h>
 
-@interface RCPurchaserInfo (React)
+@interface RCPurchaserInfo (RNPurchases)
 
 - (NSDictionary *)dictionary;
 

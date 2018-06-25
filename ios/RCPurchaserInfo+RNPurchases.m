@@ -1,14 +1,14 @@
 //
-//  RCPurchaserInfo+React.m
+//  RCPurchaserInfo+RNPurchases.m
 //  RNPurchases
 //
 //  Created by Jacob Eiting on 2/9/18.
 //  Copyright © 2018 Facebook. All rights reserved.
 //
 
-#import "RCPurchaserInfo+React.h"
+#import "RCPurchaserInfo+RNPurchases.h"
 
-@implementation RCPurchaserInfo (React)
+@implementation RCPurchaserInfo (RNPurchases)
 
 - (NSDictionary *)dictionary
 {

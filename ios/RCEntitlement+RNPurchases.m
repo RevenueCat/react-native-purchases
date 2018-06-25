@@ -1,15 +1,15 @@
 //
-//  RCEntitlement+React.m
+//  RCEntitlement+RNPurchases.m
 //  RNPurchases
 //
 //  Created by Jacob Eiting on 6/25/18.
 //  Copyright © 2018 Facebook. All rights reserved.
 //
 
-#import "RCEntitlement+React.h"
+#import "RCEntitlement+RNPurchases.h"
 #import "SKProduct+RNPurchases.h"
 
-@implementation RCEntitlement (React)
+@implementation RCEntitlement (RNPurchases)
 
 - (NSDictionary *)dictionary
 {

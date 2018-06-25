@@ -4,8 +4,8 @@
 @import StoreKit;
 @import Purchases;
 
-#import "RCPurchaserInfo+React.h"
-#import "RCEntitlement+React.h"
+#import "RCPurchaserInfo+RNPurchases.h"
+#import "RCEntitlement+RNPurchases.h"
 #import "SKProduct+RNPurchases.h"
 
 @interface RNPurchases () <RCPurchasesDelegate>
