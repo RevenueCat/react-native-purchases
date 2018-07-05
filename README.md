@@ -49,6 +49,4 @@ Purchases.getEntitlements().then((entitlements) => {
 });
 
 ```
-
-Take a look at the example app in the `example` folder.
   
