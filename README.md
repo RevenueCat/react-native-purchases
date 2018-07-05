@@ -16,6 +16,7 @@
 3. Add a new `Copy Files Phase`, name it `Copy Frameworks`
 4. Set destination to `Frameworks`
 5. Add `node_modules/react-native-purchases/Purchases.framework` to the phase.
+6. Add `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` to Framework Search paths
 
 #### Add Strip Frameworks Phase
 The App Store, in it's infinite wisdom, still rejects fat frameworks, so we need to strip our framework before it is deployed. To do this, add the following script phase to your build.
