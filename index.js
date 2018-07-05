@@ -71,8 +71,8 @@ export default class Purchases {
   /** Make a purchase
       @param {String} productIdentifier The product identifier of the product you want to purchase.
   */
-  static makePurchase(productIdentifier, type="subs") {
-    RNPurchases.makePurchase(productIdentifier, type);
+  static makePurchase(productIdentifier, oldSKUs=[], type="subs") {
+    RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
   }
 
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 

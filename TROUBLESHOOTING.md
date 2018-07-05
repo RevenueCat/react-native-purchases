@@ -1,5 +1,5 @@
 # Troubleshooting?
-The combination of npm, Android Studio, and Xcode seem to be pretty fragile. I've developed some "methods" to fix what seem like mostly IDE bugs.
+The combination of npm, Android Studio, and Xcode seem to be pretty fragile. Here are some "methods" to fix what seem like mostly IDE bugs.
 
 ## Android
 
