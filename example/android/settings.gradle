@@ -1,5 +1,0 @@
-rootProject.name = 'example'
-include ':react-native-purchases'
-project(':react-native-purchases').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-purchases/android')
-
-include ':app'
