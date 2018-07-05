@@ -2,6 +2,7 @@
 package com.reactlibrary;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.android.billingclient.api.SkuDetails;
 import com.facebook.react.bridge.Arguments;
@@ -99,6 +100,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
                 promise.resolve(response);
             }
+
+            @Override
+            public void onReceiveEntitlementsError(int domain, int code, String message) {
+                promise.reject("ERROR_FETCHING_ENTITLEMENTS", message);
+            }
         });
     }
 
@@ -195,8 +201,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
         for (String entitlementId : purchaserInfo.getActiveEntitlements()) {
             Date date = purchaserInfo.getExpirationDateForEntitlement(entitlementId);
-            allEntitlementExpirationDates.putString(entitlementId, Iso8601Utils
-                    .format(date));
+            if (date != null) {
+                allEntitlementExpirationDates.putString(entitlementId, Iso8601Utils
+                        .format(date));
+            } else {
+                allEntitlementExpirationDates.putNull(entitlementId);
+            }
         }
         map.putMap("expirationsForActiveEntitlements", allEntitlementExpirationDates);
 
