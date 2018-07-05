@@ -26,11 +26,13 @@
         expirationsForActiveEntitlements[entId] = date ? [formatter stringFromDate:date] : [NSNull null];;
     }
 
+    id latestExpiration = self.latestExpirationDate ? [formatter stringFromDate:self.latestExpirationDate] : [NSNull null];
+
     return @{
              @"activeEntitlements": self.activeEntitlements.allObjects,
              @"activeSubscriptions": self.activeSubscriptions.allObjects,
              @"allPurchasedProductIdentifiers": self.allPurchasedProductIdentifiers.allObjects,
-             @"latestExpirationDate": self.latestExpirationDate ?: [NSNull null],
+             @"latestExpirationDate": latestExpiration,
              @"allExpirationDates": allExpirations,
              @"expirationsForActiveEntitlements": expirationsForActiveEntitlements
              };
