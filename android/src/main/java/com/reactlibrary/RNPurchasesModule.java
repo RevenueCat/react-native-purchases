@@ -137,9 +137,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @ReactMethod
-    public void makePurchase(String productIdentifier, String type) {
+    public void makePurchase(String productIdentifier, ReadableArray oldSkus, String type) {
         checkPurchases();
-        purchases.makePurchase(getCurrentActivity(), productIdentifier, type);
+
+        ArrayList<String> oldSkusList = new ArrayList<>();
+        for (Object oldSku : oldSkus.toArrayList()) {
+            oldSkusList.add((String)oldSku);
+        }
+
+        purchases.makePurchase(getCurrentActivity(), productIdentifier, type, oldSkusList);
     }
 
     @ReactMethod

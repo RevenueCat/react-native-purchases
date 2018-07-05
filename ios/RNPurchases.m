@@ -89,8 +89,10 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
     }];
 }
 
-RCT_EXPORT_METHOD(makePurchase:(NSString *)productIdentifier
-                  type:(NSString *)type)
+RCT_REMAP_METHOD(makePurchase,
+                 makePurchase:(NSString *)productIdentifier
+                 oldSkus:(NSArray *)oldSkus
+                 type:(NSString *)type)
 {
     NSAssert(self.purchases, @"You must call setup first.");
 
