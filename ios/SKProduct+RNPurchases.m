@@ -20,7 +20,8 @@
                         @"description": self.localizedDescription ?: @"",
                         @"title": self.localizedTitle ?: @"",
                         @"price": @(self.price.floatValue),
-                        @"price_string": [formatter stringFromNumber:self.price]
+                        @"price_string": [formatter stringFromNumber:self.price],
+                        @"currency_code": self.priceLocale ? self.priceLocale.currencyCode : [NSNull null]
                         };
     return d;
 }
