@@ -12,6 +12,9 @@ React Native Purchases is a cross platform solution for in-app subscription. A b
 `$ react-native link react-native-purchases`
 
 #### Additional iOS Setup
+Purchases.framework also needs to be added to your iOS project. The npm install will download the correct framework version. 
+
+Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases).
 
 ##### Create a Framework Reference in your project
 1. Copy `Purchases.framework` from the `RNPurchases` sub-project and create a reference in the outer project
