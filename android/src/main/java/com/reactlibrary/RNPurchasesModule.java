@@ -71,6 +71,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         map.putString("intro_price_period", detail.getIntroductoryPricePeriod());
         map.putString("intro_price_cycles", detail.getIntroductoryPriceCycles());
 
+        map.putString("currency_code", detail.getPriceCurrencyCode());
+        
         return map;
     }
 
