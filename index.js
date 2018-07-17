@@ -11,7 +11,7 @@ var restoreTransactionsListener = undefined;
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({product, purchaserInfo, error}) => {
   if (purchaseListener) {
     // Process the error
-    purchaseListener(product, error);
+    purchaseListener(product, purchaserInfo, error);
   }
 });
 
@@ -29,13 +29,6 @@ eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, erro
 })
 
 export default class Purchases {
-  /** @callback PurchasesListener
-      @param {String} productIdentifier for the purchase, null if just a purchaser info update
-      @param {Object} purchaserInfo will be non-null if the purchases was successful
-      @param {Object} error Will be non-null if purchase failed to complete for some reason
-      @param {Boolean} isRestore Will be true if this call was triggered by a restoreTransactions call
-  */
-
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
       @param {String} apiKey RevenueCat API Key
       @param {String?} appUserID A unique id for identifying the user
@@ -49,6 +42,7 @@ export default class Purchases {
 
   /** @callback PurchaseListener
       @param {Object} product An object containing information about the product
+      @param {Object} purchaserInfo An object containing information about the product
       @param {Object} error Error object
   */
 
