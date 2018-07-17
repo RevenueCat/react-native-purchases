@@ -11,6 +11,14 @@ var restoreTransactionsListener = undefined;
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
   if (purchaseListener) {
     // Process the error
+    if (error) {
+      let {domain, code} = error;
+      if ((domain == "SKErrorDomain" && code == 2) || 
+          (domain == "Play Billing" && code == 1)) {
+        error.userCancelled = true
+      }
+    }
+
     purchaseListener(productIdentifier, purchaserInfo, error);
   }
 });
@@ -43,7 +51,7 @@ export default class Purchases {
   /** @callback PurchaseListener
       @param {String} productIdentifier Product id of the purchased product
       @param {Object} purchaserInfo An object containing information about the product
-      @param {Object} error Error object
+      @param {Object} error Error object, if error.userCancelled is truthy, the user cancelled normally
   */
 
   /** Sets a function to be called on purchase complete or fail
