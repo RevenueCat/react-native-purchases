@@ -83,6 +83,10 @@ export default class Purchases {
     purchaserInfoUpdatedListener = purchaserInfoUpdatedListener_;
   }
 
+  /** Gets the map of entitlements -> offerings -> products
+    @returns {Promise<Map<String, Map<String, Product>>>} Promise of entitlements structure
+  */
+
   static getEntitlements() {
     return RNPurchases.getEntitlements();
   }
