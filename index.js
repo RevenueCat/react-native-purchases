@@ -8,10 +8,10 @@ var purchaseListener = undefined;
 var purchaserInfoUpdateListener = undefined;
 var restoreTransactionsListener = undefined;
 
-eventEmitter.addListener('Purchases-PurchaseCompleted', ({product, purchaserInfo, error}) => {
+eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
   if (purchaseListener) {
     // Process the error
-    purchaseListener(product, purchaserInfo, error);
+    purchaseListener(productIdentifier, purchaserInfo, error);
   }
 });
 
@@ -41,7 +41,7 @@ export default class Purchases {
   }
 
   /** @callback PurchaseListener
-      @param {Object} product An object containing information about the product
+      @param {String} productIdentifier Product id of the purchased product
       @param {Object} purchaserInfo An object containing information about the product
       @param {Object} error Error object
   */
