@@ -64,7 +64,9 @@ RCT_REMAP_METHOD(getEntitlements,
             for (RCOffering *offering in entitlement.offerings.allValues)
             {
                 SKProduct *product = offering.activeProduct;
-                self.products[product.productIdentifier] = product;
+                if (product != nil) {
+                    self.products[product.productIdentifier] = product;
+                }
             }
         }
 

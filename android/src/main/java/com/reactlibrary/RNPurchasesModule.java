@@ -93,9 +93,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
                     for (String offeringId : offerings.keySet()) {
                         Offering offering = offerings.get(offeringId);
-                        SkuDetails skuDetails = offering.getSkuDetails();
-                        WritableMap skuMap = mapForSkuDetails(skuDetails);
-                        offeringsMap.putMap(offeringId, skuMap);
+                        if (skuDetails != null) {
+                            SkuDetails skuDetails = offering.getSkuDetails();
+                            WritableMap skuMap = mapForSkuDetails(skuDetails);
+                            offeringsMap.putMap(offeringId, skuMap);
+                        } else {
+                            offeringsMap.putNull(offeringId);
+                        }
                     }
                     response.putMap(entId, offeringsMap);
                 }
