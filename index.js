@@ -32,7 +32,7 @@ eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, erro
 
 eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
   if (restoreTransactionsListener) {
-    restoreTransactions(purchaserInfo, error);
+    restoreTransactionsListener(purchaserInfo, error);
   }
 })
 

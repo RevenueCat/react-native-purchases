@@ -36,7 +36,7 @@ The App Store, in it's infinite wisdom, still rejects fat frameworks, so we need
 ```javascript
 import Purchases from 'react-native-purchases';
 
-Purchases.addPurchaseListener({productIdentifier, purchaserInfo, error} => {
+Purchases.addPurchaseListener((productIdentifier, purchaserInfo, error) => {
   if (error && !error.userCancelled) {
     this.setState({error: error.message});
     return;
@@ -45,13 +45,13 @@ Purchases.addPurchaseListener({productIdentifier, purchaserInfo, error} => {
   handlePurchaserInfo(purchaserInfo);
 });
 
-Purchases.addPurchaserInfoUpdatedListener{purchaserInfo, error} => {
+Purchases.addPurchaserInfoUpdatedListener((purchaserInfo, error) => {
   if (purchaserInfo) {
    handlePurchaserInfo(purchaserInfo);
   }
 });
 
-Purchases.addRestoreTransactionsListener({purchaserInfo, error} => {
+Purchases.addRestoreTransactionsListener((purchaserInfo, error) => {
   if (purchaserInfo) {
    handlePurchaserInfo(purchaserInfo);
   }
