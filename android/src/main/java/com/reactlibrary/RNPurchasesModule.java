@@ -1,4 +1,3 @@
-
 package com.reactlibrary;
 
 import android.support.annotation.Nullable;
@@ -66,7 +65,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     @ReactMethod
     public void addAttributionData(ReadableMap data, Integer network) {
         checkPurchases();
-        purchases.addAttributionData(convertMapToJson(data), network);
+        try {
+            purchases.addAttributionData(convertMapToJson(data), network);
+        } catch (JSONException e) {
+            Log.e("RNPurchases", "Error parsing attribution date to JSON: " + e.getLocalizedMessage());
+        }
     }
 
     private WritableMap mapForSkuDetails(final SkuDetails detail) {
