@@ -35,7 +35,6 @@ NSString *RNPurchasesRestoredTransactionsEvent = @"Purchases-RestoredTransaction
 
 RCT_EXPORT_MODULE();
 
-
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(NSString *)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
@@ -46,6 +45,14 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
     self.purchases = [[RCPurchases alloc] initWithAPIKey:apiKey appUserID:appUserID];
     self.purchases.delegate = self;
     resolve(nil);
+}
+
+RCT_REMAP_METHOD(addAttributionData, 
+                 addAttributionData:(NSDictionary *)data 
+                 forNetwork:(NSInteger)network)
+{
+    NSAssert(self.purchases, @"You must call setup first.");
+    [self.purchases addAttributionData:data fromNetwork:(RCAttributionNetwork)network];
 }
 
 RCT_REMAP_METHOD(getEntitlements,

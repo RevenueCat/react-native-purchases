@@ -85,10 +85,25 @@ export default class Purchases {
     purchaserInfoUpdatedListener = purchaserInfoUpdatedListener_;
   }
 
+  static ATTRIBUTION_NETWORKS = {
+    APPLE_SEARCH_ADS: 0,
+    ADJUST: 1,
+    APPSFLYER: 2,
+    BRANCH: 3
+  }
+
+  /** 
+    Add a dict of attribution information
+    @param data Attribution data from AppsFlyer, Adjust, or Branch
+    @param network Which network, see Purchases.ATTRIBUTION_NETWORKS
+  */
+  static addAttributionData(data, network) {
+    RNPurchases.addAttributionData(data, network);
+  }
+
   /** Gets the map of entitlements -> offerings -> products
     @returns {Promise<Map<String, Map<String, Product>>>} Promise of entitlements structure
   */
-
   static getEntitlements() {
     return RNPurchases.getEntitlements();
   }
