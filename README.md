@@ -36,20 +36,35 @@ The App Store, in it's infinite wisdom, still rejects fat frameworks, so we need
 ```javascript
 import Purchases from 'react-native-purchases';
 
-Purchases.setup("revenuecat_api_key", "app_user_id", (productIdentifier, purchaserInfo, error) => {
-  if (error) {
+Purchases.addPurchaseListener({productIdentifier, purchaserInfo, error} => {
+  if (error && !error.userCancelled) {
     this.setState({error: error.message});
     return;
   }
 
-  this.setState({purchaserInfo})
+  handlePurchaserInfo(purchaserInfo);
 });
 
-Purchases.getEntitlements().then((entitlements) => {
-  this.setState({entitlements})
-
-  Purchases.makePurchase(entitlements.pro.monthly.identifier);
+Purchases.addPurchaserInfoUpdatedListener{purchaserInfo, error} => {
+  if (purchaserInfo) {
+   handlePurchaserInfo(purchaserInfo);
+  }
 });
+
+Purchases.addRestoreTransactionsListener({purchaserInfo, error} => {
+  if (purchaserInfo) {
+   handlePurchaserInfo(purchaserInfo);
+  }
+});
+
+
+let purchases = await Purchases.setup("revenuecat_api_key", "app_user_id");
+
+let entitlements = await Purchases.getEntitlements();
+this.setState({entitlements});
+
+// later make a purchase
+Purchases.makePurchase(entitlements.pro.monthly.identifier);
 
 ```
   
