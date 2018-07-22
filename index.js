@@ -81,7 +81,7 @@ export default class Purchases {
   /** Sets a function to be called on updated purchaser info
       @param {PurchaserInfoListener} purchaserInfoUpdatedListener_ PurchaserInfo update listener 
   */
-  static addPurchaserInfoUpdated(purchaserInfoUpdatedListener_) {
+  static addPurchaserInfoUpdatedListener(purchaserInfoUpdatedListener_) {
     purchaserInfoUpdatedListener = purchaserInfoUpdatedListener_;
   }
 
