@@ -4,58 +4,106 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-var listener = undefined;
+var purchaseListener = undefined;
+var purchaserInfoUpdateListener = undefined;
+var restoreTransactionsListener = undefined;
 
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
-  if (listener) {
-
+  if (purchaseListener) {
+    // Process the error
     if (error) {
-      console.log(error);
-      error.userCancelled = (error.domain == "SKErrorDomain" && error.code == 2)
+      let {domain, code} = error;
+      if ((domain == "SKErrorDomain" && code == 2) || 
+          (domain == "Play Billing" && code == 1)) {
+        error.userCancelled = true
+      }
     }
 
-    listener(productIdentifier, purchaserInfo, error, false);
-  } else {
-    console.log("Purchase completed but no listener set.");
+    purchaseListener(productIdentifier, purchaserInfo, error);
   }
 });
 
 eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
-  if (listener) {
-    listener(null, purchaserInfo, error, false);
-  } else {
-    console.log("Purchaser info received but no listener set.");
+  if (purchaserInfoUpdateListener) {
+    // Process the error
+    purchaserInfoUpdateListener(purchaserInfo, error);
   }
 });
 
 eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
-  if (listener) {
-    listener(null, purchaserInfo, error, true);
-  } else {
-    console.log("Purchaser info received but no listener set.");
+  if (restoreTransactionsListener) {
+    restoreTransactionsListener(purchaserInfo, error);
   }
 })
 
 export default class Purchases {
-  /** @callback PurchasesListener
-      @param {String} productIdentifier for the purchase, null if just a purchaser info update
-      @param {Object} purchaserInfo will be non-null if the purchases was successful
-      @param {Object} error Will be non-null if purchase failed to complete for some reason
-      @param {Boolean} isRestore Will be true if this call was triggered by a restoreTransactions call
-  */
-
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
       @param {String} apiKey RevenueCat API Key
       @param {String?} appUserID A unique id for identifying the user
       @param {PurchasesListener} listener_ A function that is called on purchase or purchaser info update.
 
-      @returns {Promise<Object>} A promise of a purchaser info object
+      @returns {Promise<void>} Returns when setup complete
   */
-  static setup(apiKey, appUserID, listener_) {
-    listener = listener_;
+  static setup(apiKey, appUserID) {
     return RNPurchases.setupPurchases(apiKey, appUserID);
   }
 
+  /** @callback PurchaseListener
+      @param {String} productIdentifier Product id of the purchased product
+      @param {Object} purchaserInfo An object containing information about the product
+      @param {Object} error Error object, if error.userCancelled is truthy, the user cancelled normally
+  */
+
+  /** Sets a function to be called on purchase complete or fail
+      @param {PurchaseListener} restoreTransactionsListener_ Purchase listener 
+  */
+  static addPurchaseListener(purchaseListener_) {
+    purchaseListener = purchaseListener_;
+  }
+
+  /** @callback RestoreTransactionsListener
+      @param {Object} purchaserInfo Object containing info for the purchaser
+      @param {Object} error Error object
+  */
+  
+  /** Sets a function to be called on purchase complete or fail
+      @param {RestoreTransactionsListener} restoreTransactionsListener_ Restore transactions listener 
+  */
+  static addRestoreTransactionsListener(restoreTransactionsListener_) {
+    restoreTransactionsListener = restoreTransactionsListener_;
+  }
+
+  /** @callback PurchaserInfoListener
+      @param {Object} purchaserInfo Object containing info for the purchaser
+      @param {Object} error Error object
+  */
+  
+  /** Sets a function to be called on updated purchaser info
+      @param {PurchaserInfoListener} purchaserInfoUpdatedListener_ PurchaserInfo update listener 
+  */
+  static addPurchaserInfoUpdatedListener(purchaserInfoUpdatedListener_) {
+    purchaserInfoUpdatedListener = purchaserInfoUpdatedListener_;
+  }
+
+  static ATTRIBUTION_NETWORKS = {
+    APPLE_SEARCH_ADS: 0,
+    ADJUST: 1,
+    APPSFLYER: 2,
+    BRANCH: 3
+  }
+
+  /** 
+    Add a dict of attribution information
+    @param data Attribution data from AppsFlyer, Adjust, or Branch
+    @param network Which network, see Purchases.ATTRIBUTION_NETWORKS
+  */
+  static addAttributionData(data, network) {
+    RNPurchases.addAttributionData(data, network);
+  }
+
+  /** Gets the map of entitlements -> offerings -> products
+    @returns {Promise<Map<String, Map<String, Product>>>} Promise of entitlements structure
+  */
   static getEntitlements() {
     return RNPurchases.getEntitlements();
   }
@@ -82,6 +130,9 @@ export default class Purchases {
     RNPurchases.restoreTransactions();
   }
 
+  /** Get the appUserID
+    @returns {Promise<String>} The app user id in a promise
+  */
   static getAppUserID() {
     return RNPurchases.getAppUserID();
   }
