@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.1.0",
+    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.1.2",
     "preinstall": "npm run fetch:ios:sdk",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
