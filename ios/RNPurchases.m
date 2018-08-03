@@ -47,6 +47,11 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(setIsUsingAnonymousID:(BOOL)isUsingAnonymousID)
+{
+    self.purchases.isUsingAnonymousID = isUsingAnonymousID;
+}
+
 RCT_REMAP_METHOD(addAttributionData, 
                  addAttributionData:(NSDictionary *)data 
                  forNetwork:(NSInteger)network)

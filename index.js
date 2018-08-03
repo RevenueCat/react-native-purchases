@@ -48,6 +48,14 @@ export default class Purchases {
     return RNPurchases.setupPurchases(apiKey, appUserID);
   }
 
+  /** Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
+   If a user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
+   the new ID with the previous id.
+  */
+  static setIsUsingAnonymousID(isUsingAnonymousID) {
+    RNPurchases.setIsUsingAnonymousID(isUsingAnonymousID);
+  }
+
   /** @callback PurchaseListener
       @param {String} productIdentifier Product id of the purchased product
       @param {Object} purchaserInfo An object containing information about the product
