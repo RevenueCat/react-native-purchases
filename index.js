@@ -8,6 +8,22 @@ var purchaseListener = undefined;
 var purchaserInfoUpdateListener = undefined;
 var restoreTransactionsListener = undefined;
 
+export const isUTCDateStringFuture = dateString => {
+  let date = new Date(dateString);
+  let dateUtcMillis = date.valueOf();
+  var now = new Date;
+  let nowUtcMillis = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(), 
+    now.getUTCHours(),
+    now.getUTCMinutes(),
+    now.getUTCSeconds(),
+    now.getUTCMilliseconds()
+  );
+  return nowUtcMillis < dateUtcMillis
+}
+
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
   if (purchaseListener) {
     // Process the error
@@ -87,10 +103,10 @@ export default class Purchases {
   */
   
   /** Sets a function to be called on updated purchaser info
-      @param {PurchaserInfoListener} purchaserInfoUpdatedListener_ PurchaserInfo update listener 
+      @param {PurchaserInfoListener} purchaserInfoUpdateListener_ PurchaserInfo update listener 
   */
-  static addPurchaserInfoUpdatedListener(purchaserInfoUpdatedListener_) {
-    purchaserInfoUpdatedListener = purchaserInfoUpdatedListener_;
+  static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener_) {
+    purchaserInfoUpdateListener = purchaserInfoUpdateListener_;
   }
 
   static ATTRIBUTION_NETWORKS = {
