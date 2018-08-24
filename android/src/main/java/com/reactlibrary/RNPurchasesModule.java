@@ -61,6 +61,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         purchases = new Purchases.Builder(reactContext, apiKey, this).appUserID(appUserID).build();
         promise.resolve(null);
     }
+    
+    @ReactMethod
+    public void setIsUsingAnonymousID(boolean isUsingAnonymousID) {
+        checkPurchases();
+        purchases.setIsUsingAnonymousID(isUsingAnonymousID);
+    }
 
     @ReactMethod
     public void addAttributionData(ReadableMap data, Integer network) {
