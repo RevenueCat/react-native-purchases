@@ -58,6 +58,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
     @ReactMethod
     public void setupPurchases(String apiKey, String appUserID, final Promise promise) {
+        if (purchases != null) {
+            purchases.close();
+        }
         purchases = new Purchases.Builder(reactContext, apiKey, this).appUserID(appUserID).build();
         promise.resolve(null);
     }
@@ -261,8 +264,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         switch (domain) {
             case Purchases.ErrorDomains.REVENUECAT_BACKEND:
                 domainString = "RevenueCat Backend";
+                break;
             case Purchases.ErrorDomains.PLAY_BILLING:
                 domainString = "Play Billing";
+                break;
             default:
                 domainString = "Unknown";
         }
