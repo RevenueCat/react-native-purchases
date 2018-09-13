@@ -15,6 +15,9 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => "https://github.com/RevenueCat/react-native-purchases.git" }
   spec.source_files = "ios/**/*.{h,m}"
 
+  # Ignore the downloaded Purchases.framework
+  spec.exclude_files = "ios/Purchases.framework"
+
   spec.dependency   "React"
   spec.dependency   "Purchases"
 end
