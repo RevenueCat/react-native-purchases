@@ -10,6 +10,14 @@
 
 @implementation SKProduct (RNPurchases)
 
+- (nullable NSString *)rc_currencyCode {
+    if(@available(iOS 10.0, *)) {
+        return self.priceLocale.currencyCode;
+    } else {
+        return [self.priceLocale objectForKey:NSLocaleCurrencyCode];
+    }
+}
+
 - (NSDictionary *)dictionary
 {
     NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
@@ -21,7 +29,7 @@
                         @"title": self.localizedTitle ?: @"",
                         @"price": @(self.price.floatValue),
                         @"price_string": [formatter stringFromNumber:self.price],
-                        @"currency_code": (self.priceLocale && self.priceLocale.currencyCode) ? self.priceLocale.currencyCode : [NSNull null]
+                        @"currency_code": (self.rc_currencyCode) ? self.rc_currencyCode : [NSNull null]
                         };
     return d;
 }
