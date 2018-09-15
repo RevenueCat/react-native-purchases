@@ -2,7 +2,6 @@
 #import "RNPurchases.h"
 
 @import StoreKit;
-@import Purchases;
 
 #import "RCPurchaserInfo+RNPurchases.h"
 #import "RCEntitlement+RNPurchases.h"
