@@ -45,7 +45,7 @@ Purchases.addPurchaseListener((productIdentifier, purchaserInfo, error) => {
   handlePurchaserInfo(purchaserInfo);
 });
 
-Purchases.addPurchaserInfoUpdatedListener((purchaserInfo, error) => {
+Purchases.addPurchaserInfoUpdateListener((purchaserInfo, error) => {
   if (purchaserInfo) {
    handlePurchaserInfo(purchaserInfo);
   }
