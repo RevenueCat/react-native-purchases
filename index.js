@@ -33,7 +33,7 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
       2: 'SKErrorDomain'
     };
 
-    if(userCancelledDomainCodes[code] === domain) {
+    if (userCancelledDomainCodes[code] === domain) {
       error.userCancelled = true;
     }
   }
