@@ -1,7 +1,7 @@
 
 # react-native-purchases
 
-React Native Purchases is a cross platform solution for in-app subscription. A backend is also provided via [RevenueCat](https://www.revenuecat.com)
+React Native Purchases is a cross platform solution for managing in-app subscriptions. A backend is also provided via [RevenueCat](https://www.revenuecat.com)
 
 ## Getting started
 

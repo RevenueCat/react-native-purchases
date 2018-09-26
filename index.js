@@ -4,15 +4,15 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-var purchaseListener = undefined;
-var purchaserInfoUpdateListener = undefined;
-var restoreTransactionsListener = undefined;
+let purchaseListener = [];
+let purchaserInfoUpdateListener = [];
+let restoreTransactionsListener = [];
 
 export const isUTCDateStringFuture = dateString => {
-  let date = new Date(dateString);
-  let dateUtcMillis = date.valueOf();
-  var now = new Date;
-  let nowUtcMillis = Date.UTC(
+  const date = new Date(dateString);
+  const dateUtcMillis = date.valueOf();
+  const now = new Date;
+  const nowUtcMillis = Date.UTC(
     now.getUTCFullYear(),
     now.getUTCMonth(),
     now.getUTCDate(), 
@@ -21,35 +21,32 @@ export const isUTCDateStringFuture = dateString => {
     now.getUTCSeconds(),
     now.getUTCMilliseconds()
   );
-  return nowUtcMillis < dateUtcMillis
+  return nowUtcMillis < dateUtcMillis;
 }
 
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
-  if (purchaseListener) {
-    // Process the error
-    if (error) {
-      let {domain, code} = error;
-      if ((domain == "SKErrorDomain" && code == 2) || 
-          (domain == "Play Billing" && code == 1)) {
-        error.userCancelled = true
-      }
-    }
+  if (error) {
+    const {domain, code} = error;
+    
+    const userCancelledDomainCodes = {
+      1: 'Play Billing',
+      2: 'SKErrorDomain'
+    };
 
-    purchaseListener(productIdentifier, purchaserInfo, error);
+    if (userCancelledDomainCodes[code] === domain) {
+      error.userCancelled = true;
+    }
   }
+
+  purchaseListener.forEach(listener => listener(productIdentifier, purchaserInfo, error));
 });
 
 eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
-  if (purchaserInfoUpdateListener) {
-    // Process the error
-    purchaserInfoUpdateListener(purchaserInfo, error);
-  }
+  purchaserInfoUpdateListener.forEach(listener => listener(purchaserInfo, error));
 });
 
 eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
-  if (restoreTransactionsListener) {
-    restoreTransactionsListener(purchaserInfo, error);
-  }
+  restoreTransactionsListener.forEach(listener => listener(purchaserInfo, error));
 })
 
 export default class Purchases {
@@ -82,7 +79,7 @@ export default class Purchases {
       @param {PurchaseListener} restoreTransactionsListener_ Purchase listener 
   */
   static addPurchaseListener(purchaseListener_) {
-    purchaseListener = purchaseListener_;
+    purchaseListener.push(purchaseListener_);
   }
 
   /** @callback RestoreTransactionsListener
@@ -94,7 +91,7 @@ export default class Purchases {
       @param {RestoreTransactionsListener} restoreTransactionsListener_ Restore transactions listener 
   */
   static addRestoreTransactionsListener(restoreTransactionsListener_) {
-    restoreTransactionsListener = restoreTransactionsListener_;
+    restoreTransactionsListener.push(restoreTransactionsListener_);
   }
 
   /** @callback PurchaserInfoListener
@@ -106,7 +103,7 @@ export default class Purchases {
       @param {PurchaserInfoListener} purchaserInfoUpdateListener_ PurchaserInfo update listener 
   */
   static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener_) {
-    purchaserInfoUpdateListener = purchaserInfoUpdateListener_;
+    purchaserInfoUpdateListener.push(purchaserInfoUpdateListener_);
   }
 
   static ATTRIBUTION_NETWORKS = {
