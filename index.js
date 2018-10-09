@@ -36,6 +36,7 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
     if (userCancelledDomainCodes[code] === domain) {
       error.userCancelled = true;
     }
+
   }
 
   purchaseListener.forEach(listener => listener(productIdentifier, purchaserInfo, error));

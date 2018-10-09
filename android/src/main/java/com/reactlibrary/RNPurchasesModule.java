@@ -55,6 +55,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
             throw new RuntimeException("You must call setupPurchases first");
         }
     }
+    public void onCatalystInstanceDestroy() {
+        if (purchases != null) {
+            purchases.close();
+            purchases = null;
+        }
+    }
 
     @ReactMethod
     public void setupPurchases(String apiKey, String appUserID, final Promise promise) {
