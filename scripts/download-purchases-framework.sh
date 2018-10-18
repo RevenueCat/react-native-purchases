@@ -25,9 +25,7 @@ if [ -d ./Purchases.framework ]; then
 fi
 
 curl -sSL $URL > temp.zip
-unzip -o temp.zip -d temp
-mv temp/Purchases.framework ./Purchases.framework
-rm -r temp
+unzip -o temp.zip
 rm temp.zip
 
 if ! [ -d ./Purchases.framework ]; then
