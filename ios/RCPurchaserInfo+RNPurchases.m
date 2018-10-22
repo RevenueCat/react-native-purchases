@@ -8,25 +8,43 @@
 
 #import "RCPurchaserInfo+RNPurchases.h"
 
+static id formatter;
+static dispatch_once_t onceToken;
+
+static NSString * stringFromDate(NSDate *date)
+{
+    dispatch_once(&onceToken, ^{
+        if (@available(iOS 10.0, *)) {
+            formatter = [NSISO8601DateFormatter new];
+        } else {
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss'Z'";
+            dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter = dateFormatter;
+        }
+    });
+
+    return [formatter stringFromDate:date];
+}
+
 @implementation RCPurchaserInfo (RNPurchases)
 
 - (NSDictionary *)dictionary
 {
-    NSISO8601DateFormatter *formatter = [NSISO8601DateFormatter new];
-
     NSMutableDictionary *allExpirations = [NSMutableDictionary new];
     for (NSString *productIdentifier in self.allPurchasedProductIdentifiers) {
         NSDate *date = [self expirationDateForProductIdentifier:productIdentifier];
-        allExpirations[productIdentifier] =  date ? [formatter stringFromDate:date] : [NSNull null];
+        allExpirations[productIdentifier] = stringFromDate(date) ?: [NSNull null];
     }
 
     NSMutableDictionary *expirationsForActiveEntitlements = [NSMutableDictionary new];
     for (NSString *entId in self.activeEntitlements) {
         NSDate *date = [self expirationDateForEntitlement:entId];
-        expirationsForActiveEntitlements[entId] = date ? [formatter stringFromDate:date] : [NSNull null];;
+        expirationsForActiveEntitlements[entId] = stringFromDate(date) ?: [NSNull null];;
     }
 
-    id latestExpiration = self.latestExpirationDate ? [formatter stringFromDate:self.latestExpirationDate] : [NSNull null];
+    id latestExpiration = stringFromDate(self.latestExpirationDate) ?: [NSNull null];
 
     return @{
              @"activeEntitlements": self.activeEntitlements.allObjects,
