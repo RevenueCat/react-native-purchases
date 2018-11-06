@@ -70,7 +70,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         purchases = new Purchases.Builder(reactContext, apiKey, this).appUserID(appUserID).build();
         promise.resolve(null);
     }
-    
+
     @ReactMethod
     public void setIsUsingAnonymousID(boolean isUsingAnonymousID) {
         checkPurchases();
@@ -95,14 +95,18 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         map.putString("title", detail.getTitle());
         map.putDouble("price", detail.getPriceAmountMicros() / 1000000d);
         map.putString("price_string", detail.getPrice());
-
-        map.putString("intro_price", detail.getIntroductoryPriceAmountMicros() / 1000000d);
+        String introductoryPriceAmountMicros = detail.getIntroductoryPriceAmountMicros();
+        if (introductoryPriceAmountMicros != null && !introductoryPriceAmountMicros.isEmpty()) {
+            map.putString("intro_price", String.valueOf(Long.parseLong(introductoryPriceAmountMicros) / 1000000d));
+        } else {
+            map.putString("intro_price", "");
+        }
         map.putString("intro_price_string", detail.getIntroductoryPrice());
         map.putString("intro_price_period", detail.getIntroductoryPricePeriod());
         map.putString("intro_price_cycles", detail.getIntroductoryPriceCycles());
 
         map.putString("currency_code", detail.getPriceCurrencyCode());
-        
+
         return map;
     }
 
@@ -370,5 +374,5 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         }
         return array;
     }
-    
+
 }
