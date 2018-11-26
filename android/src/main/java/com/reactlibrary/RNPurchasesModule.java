@@ -38,7 +38,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     private static final String TRANSACTIONS_RESTORED = "Purchases-RestoredTransactions";
 
     private final ReactApplicationContext reactContext;
-    private Purchases purchases;
 
     public RNPurchasesModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -51,37 +50,39 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     private void checkPurchases() {
-        if (purchases == null) {
+        if (Purchases.getSharedInstance() == null) {
             throw new RuntimeException("You must call setupPurchases first");
         }
     }
+
     public void onCatalystInstanceDestroy() {
-        if (purchases != null) {
-            purchases.close();
-            purchases = null;
+        if (Purchases.getSharedInstance() != null) {
+            Purchases.getSharedInstance().close();
         }
     }
 
     @ReactMethod
     public void setupPurchases(String apiKey, String appUserID, final Promise promise) {
-        if (purchases != null) {
-            purchases.close();
+        if (Purchases.getSharedInstance() != null) {
+            Purchases.getSharedInstance().close();
         }
-        purchases = new Purchases.Builder(reactContext, apiKey, this).appUserID(appUserID).build();
+        Purchases purchases = new Purchases.Builder(reactContext, apiKey).appUserID(appUserID).build();
+        purchases.setListener(this);
+        Purchases.setSharedInstance(purchases);
         promise.resolve(null);
     }
 
     @ReactMethod
     public void setIsUsingAnonymousID(boolean isUsingAnonymousID) {
         checkPurchases();
-        purchases.setIsUsingAnonymousID(isUsingAnonymousID);
+        Purchases.getSharedInstance().setIsUsingAnonymousID(isUsingAnonymousID);
     }
 
     @ReactMethod
     public void addAttributionData(ReadableMap data, Integer network) {
         checkPurchases();
         try {
-            purchases.addAttributionData(convertMapToJson(data), network);
+            Purchases.getSharedInstance().addAttributionData(convertMapToJson(data), network);
         } catch (JSONException e) {
             Log.e("RNPurchases", "Error parsing attribution date to JSON: " + e.getLocalizedMessage());
         }
@@ -114,7 +115,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     public void getEntitlements(final Promise promise) {
         checkPurchases();
 
-        purchases.getEntitlements(new Purchases.GetEntitlementsHandler() {
+        Purchases.getSharedInstance().getEntitlements(new Purchases.GetEntitlementsHandler() {
             @Override
             public void onReceiveEntitlements(Map<String, Entitlement> entitlementMap) {
                 WritableMap response = Arguments.createMap();
@@ -170,9 +171,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         };
 
         if (type.toLowerCase().equals("subs")) {
-            purchases.getSubscriptionSkus(productIDList, handler);
+            Purchases.getSharedInstance().getSubscriptionSkus(productIDList, handler);
         } else {
-            purchases.getNonSubscriptionSkus(productIDList, handler);
+            Purchases.getSharedInstance().getNonSubscriptionSkus(productIDList, handler);
         }
     }
 
@@ -185,18 +186,36 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
             oldSkusList.add((String)oldSku);
         }
 
-        purchases.makePurchase(getCurrentActivity(), productIdentifier, type, oldSkusList);
+        Purchases.getSharedInstance().makePurchase(getCurrentActivity(), productIdentifier, type, oldSkusList);
     }
 
     @ReactMethod
     public void getAppUserID(final Promise promise) {
-        promise.resolve(purchases.getAppUserID());
+        promise.resolve(Purchases.getSharedInstance().getAppUserID());
     }
 
     @ReactMethod
     public void restoreTransactions() {
         checkPurchases();
-        purchases.restorePurchasesForPlayStoreAccount();
+        Purchases.getSharedInstance().restorePurchasesForPlayStoreAccount();
+    }
+
+    @ReactMethod
+    public void reset() {
+        checkPurchases();
+        Purchases.getSharedInstance().reset();
+    }
+
+    @ReactMethod
+    public void identify(String appUserID) {
+        checkPurchases();
+        Purchases.getSharedInstance().identify(appUserID);
+    }
+
+    @ReactMethod
+    public void createAlias(String newAppUserID) {
+        checkPurchases();
+        Purchases.getSharedInstance().createAlias(newAppUserID);
     }
 
     private void sendEvent(String eventName,

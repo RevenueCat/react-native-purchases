@@ -9,7 +9,6 @@
 
 @interface RNPurchases () <RCPurchasesDelegate>
 
-@property (nonatomic, retain) RCPurchases *purchases;
 @property (nonatomic, retain) NSMutableDictionary *products;
 
 @end
@@ -38,33 +37,33 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(NSString *)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
-{
-    self.purchases.delegate = nil;
+{    
+    Purchases.sharedInstance.delegate = nil;
     self.products = [NSMutableDictionary new];
-    self.purchases = [[RCPurchases alloc] initWithAPIKey:apiKey appUserID:appUserID];
-    self.purchases.delegate = self;
+    Purchases.sharedInstance = [[RCPurchases alloc] initWithAPIKey:apiKey appUserID:appUserID];
+    Purchases.sharedInstance.delegate = self;
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(setIsUsingAnonymousID:(BOOL)isUsingAnonymousID)
 {
-    self.purchases.isUsingAnonymousID = isUsingAnonymousID;
+    Purchases.sharedInstance.isUsingAnonymousID = isUsingAnonymousID;
 }
 
 RCT_REMAP_METHOD(addAttributionData, 
                  addAttributionData:(NSDictionary *)data 
                  forNetwork:(NSInteger)network)
 {
-    NSAssert(self.purchases, @"You must call setup first.");
-    [self.purchases addAttributionData:data fromNetwork:(RCAttributionNetwork)network];
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
+    [Purchases.sharedInstance addAttributionData:data fromNetwork:(RCAttributionNetwork)network];
 }
 
 RCT_REMAP_METHOD(getEntitlements,
                  getEntitlementsWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    NSAssert(self.purchases, @"You must call setup first.");
-    [self.purchases entitlements:^(NSDictionary<NSString *,RCEntitlement *> * _Nonnull entitlements) {
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
+    [Purchases.sharedInstance entitlements:^(NSDictionary<NSString *,RCEntitlement *> * _Nonnull entitlements) {
         NSMutableDictionary *result = [NSMutableDictionary new];
         for (NSString *entId in entitlements) {
             RCEntitlement *entitlement = entitlements[entId];
@@ -90,9 +89,9 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    NSAssert(self.purchases, @"You must call setup first.");
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
 
-    [self.purchases productsWithIdentifiers:products completion:^(NSArray<SKProduct *> * _Nonnull products) {
+    [Purchases.sharedInstance productsWithIdentifiers:products completion:^(NSArray<SKProduct *> * _Nonnull products) {
         NSMutableArray *productObjects = [NSMutableArray new];
         for (SKProduct *p in products) {
             self.products[p.productIdentifier] = p;
@@ -107,26 +106,41 @@ RCT_REMAP_METHOD(makePurchase,
                  oldSkus:(NSArray *)oldSkus
                  type:(NSString *)type)
 {
-    NSAssert(self.purchases, @"You must call setup first.");
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
 
     if (self.products[productIdentifier] == nil) {
         NSLog(@"Purchases cannot find product. Did you call getProductInfo first?");
         return;
     }
 
-    [self.purchases makePurchase:self.products[productIdentifier]];
+    [Purchases.sharedInstance makePurchase:self.products[productIdentifier]];
 }
 
 RCT_EXPORT_METHOD(restoreTransactions) {
-    NSAssert(self.purchases, @"You must call setup first.");
-    [self.purchases restoreTransactionsForAppStoreAccount];
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
+    [Purchases.sharedInstance restoreTransactionsForAppStoreAccount];
 }
 
 RCT_REMAP_METHOD(getAppUserID,
                  getAppUserIDWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    resolve(self.purchases.appUserID);
+    resolve(Purchases.sharedInstance.appUserID);
+}
+
+RCT_EXPORT_METHOD(identify:(NSString * _Nullable)newAppUserID) {
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
+    [Purchases.sharedInstance createAlias:newAppUserID];
+}
+
+RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID) {
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
+    [Purchases.sharedInstance identify:appUserID];
+}
+
+RCT_EXPORT_METHOD(reset) {
+    NSAssert(Purchases.sharedInstance, @"You must call setup first.");
+    [Purchases.sharedInstance reset];
 }
 
 #pragma mark -
