@@ -21,6 +21,7 @@ import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.util.Iso8601Utils;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,16 +74,20 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @ReactMethod
-    public void setIsUsingAnonymousID(boolean isUsingAnonymousID) {
+    public void setAllowSharingStoreAccount(boolean allowSharingStoreAccount) {
         checkPurchases();
-        Purchases.getSharedInstance().setIsUsingAnonymousID(isUsingAnonymousID);
+        Purchases.getSharedInstance().setAllowSharingPlayStoreAccount(allowSharingStoreAccount);
     }
 
     @ReactMethod
     public void addAttributionData(ReadableMap data, Integer network) {
         checkPurchases();
         try {
-            Purchases.getSharedInstance().addAttributionData(convertMapToJson(data), network);
+            for (Purchases.AttributionNetwork attributionNetwork : Purchases.AttributionNetwork.values()) {
+                if (attributionNetwork.getServerValue() == network) {
+                    Purchases.getSharedInstance().addAttributionData(convertMapToJson(data), attributionNetwork);
+                }
+            }
         } catch (JSONException e) {
             Log.e("RNPurchases", "Error parsing attribution date to JSON: " + e.getLocalizedMessage());
         }
@@ -116,6 +121,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         checkPurchases();
 
         Purchases.getSharedInstance().getEntitlements(new Purchases.GetEntitlementsHandler() {
+
             @Override
             public void onReceiveEntitlements(Map<String, Entitlement> entitlementMap) {
                 WritableMap response = Arguments.createMap();
@@ -143,7 +149,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
             }
 
             @Override
-            public void onReceiveEntitlementsError(int domain, int code, String message) {
+            public void onReceiveEntitlementsError(@NotNull Purchases.ErrorDomains domain, int code, @NotNull String message) {
                 promise.reject("ERROR_FETCHING_ENTITLEMENTS", message);
             }
         });
@@ -215,7 +221,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     @ReactMethod
     public void createAlias(String newAppUserID) {
         checkPurchases();
-        Purchases.getSharedInstance().createAlias(newAppUserID);
+        Purchases.getSharedInstance().createAlias(newAppUserID, null);
     }
 
     private void sendEvent(String eventName,
@@ -286,19 +292,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         sendEvent(PURCHASE_COMPLETED_EVENT, map);
     }
 
-    private WritableMap errorMap(int domain, int code, String message) {
+    private WritableMap errorMap(Purchases.ErrorDomains domain, int code, String message) {
         WritableMap errorMap = Arguments.createMap();
         String domainString;
 
-        switch (domain) {
-            case Purchases.ErrorDomains.REVENUECAT_BACKEND:
-                domainString = "RevenueCat Backend";
-                break;
-            case Purchases.ErrorDomains.PLAY_BILLING:
-                domainString = "Play Billing";
-                break;
-            default:
-                domainString = "Unknown";
+        if (domain == Purchases.ErrorDomains.REVENUECAT_BACKEND) {
+            domainString = "RevenueCat Backend";
+        } else if (domain == Purchases.ErrorDomains.PLAY_BILLING) {
+            domainString = "Play Billing";
+        } else {
+            domainString = "Unknown";
         }
 
         errorMap.putString("message", message);
@@ -309,7 +312,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @Override
-    public void onFailedPurchase(int domain, int code, String message) {
+    public void onFailedPurchase(@NotNull Purchases.ErrorDomains domain, int code, @org.jetbrains.annotations.Nullable String message) {
         WritableMap map = Arguments.createMap();
 
         map.putMap("error", errorMap(domain, code, message));
@@ -335,7 +338,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @Override
-    public void onRestoreTransactionsFailed(int domain, int code, String reason) {
+    public void onRestoreTransactionsFailed(@NotNull Purchases.ErrorDomains domain, int code, @org.jetbrains.annotations.Nullable String reason) {
         sendEvent(TRANSACTIONS_RESTORED, errorMap(domain, code, reason));
     }
 
@@ -393,5 +396,4 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         }
         return array;
     }
-
 }
