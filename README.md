@@ -17,7 +17,7 @@ Purchases.framework also needs to be added to your iOS project. The npm install 
 Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases).
 
 ##### Create a Framework Reference in your project
-1. Copy `Purchases.framework` from the `RNPurchases` sub-project and create a reference in the outer project
+1. Drag `Purchases.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference
 
 ##### Add iOS Framework to Embedded Binaries
 1. In Xcode, in project manager, select your app target.
