@@ -158,4 +158,27 @@ export default class Purchases {
   static getAppUserID() {
     return RNPurchases.getAppUserID();
   }
+
+  /** This function will alias two appUserIDs together.
+   * @param alias The new appUserID that should be linked to the currently identified appUserID
+   * */
+  static createAlias(newAppUserID) {
+    return RNPurchases.createAlias(newAppUserID);
+  }
+
+  /**
+   * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
+   * @param appUserID The appUserID that should be linked to the currently user
+   */
+  static identify(newAppUserID) {
+    return RNPurchases.identify(newAppUserID);
+  }
+
+  /**
+   * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
+   */
+  static reset() {
+    return RNPurchases.reset();
+  }
+
 };

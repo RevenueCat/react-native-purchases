@@ -219,9 +219,20 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @ReactMethod
-    public void createAlias(String newAppUserID) {
+    public void createAlias(String newAppUserID, final Promise promise) {
         checkPurchases();
-        Purchases.getSharedInstance().createAlias(newAppUserID, null);
+        Purchases.getSharedInstance().createAlias(newAppUserID, new Purchases.AliasHandler() {
+
+            @Override
+            public void onSuccess() {
+                promise.resolve(null);
+            }
+
+            @Override
+            public void onError(@NotNull Purchases.ErrorDomains errorDomains, int i, @NotNull String s) {
+                promise.reject("ERROR_ALIASING", s);
+            }
+        });
     }
 
     private void sendEvent(String eventName,
