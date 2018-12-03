@@ -1,3 +1,6 @@
+## 1.5.0
+- Adds create alias, identify and reset
+
 ## 1.4.4
 - Fixes download script issue
 

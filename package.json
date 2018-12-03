@@ -1,10 +1,10 @@
 {
   "name": "react-native-purchases",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.1.5",
+    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.2.0",
     "preinstall": "npm run fetch:ios:sdk",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

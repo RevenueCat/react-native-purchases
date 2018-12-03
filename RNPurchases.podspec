@@ -19,5 +19,5 @@ Pod::Spec.new do |spec|
   spec.exclude_files = "ios/Purchases.framework"
 
   spec.dependency   "React"
-  spec.dependency   "Purchases"
+  spec.dependency   "Purchases", "~> 1.2.0"
 end
