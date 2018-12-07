@@ -1,3 +1,6 @@
+## 1.5.1
+- Fixes compilation in iOS
+
 ## 1.5.0
 - Adds create alias, identify and reset
 
