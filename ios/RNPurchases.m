@@ -135,7 +135,7 @@ RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases createAlias:newAppUserID completion:^(NSError * _Nullable error) {
         if (error) {
-            reject("ERROR_ALIASING");
+            reject(@"ERROR_ALIASING", @"There was an error aliasing", error);
         } else {
             resolve(nil);
         }
