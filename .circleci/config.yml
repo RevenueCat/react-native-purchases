@@ -1,48 +1,48 @@
 version: 2
 jobs:
-  node:
-    working_directory: ~/react-native-purchases
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout
+#   node:
+#     working_directory: ~/react-native-purchases
+#     docker:
+#       - image: circleci/node:8
+#     steps:
+#       - checkout
 
-      - restore_cache:
-          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+#       - restore_cache:
+#           key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
 
-      - restore_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+#       - restore_cache:
+#           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
 
-      - run: yarn install
+#       - run: yarn install
 
-      - save_cache:
-          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
-          paths:
-            - ~/.cache/yarn
+#       - save_cache:
+#           key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+#           paths:
+#             - ~/.cache/yarn
 
-      - save_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-          paths:
-            - node_modules
+#       - save_cache:
+#           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+#           paths:
+#             - node_modules
 
-      - run:
-          name: jest tests
-          command: |
-            mkdir -p test-results/jest
-            yarn run test
-          environment:
-            JEST_JUNIT_OUTPUT: test-results/jest/junit.xml
+#       - run:
+#           name: jest tests
+#           command: |
+#             mkdir -p test-results/jest
+#             yarn run test
+#           environment:
+#             JEST_JUNIT_OUTPUT: test-results/jest/junit.xml
 
-      - persist_to_workspace:
-          root: ~/demo-react-native
-          paths:
-            - node_modules
+#       - persist_to_workspace:
+#           root: ~/demo-react-native
+#           paths:
+#             - node_modules
 
-      - store_test_results:
-          path: test-results
+#       - store_test_results:
+#           path: test-results
 
-      - store_artifacts:
-          path: test-results
+#       - store_artifacts:
+#           path: test-results
 
   android:
     working_directory: ~/react-native-purchases/android
@@ -144,12 +144,7 @@ jobs:
 
 workflows:
   version: 2
-  node-android-ios:
+  android-ios:
     jobs:
-      - node
-      - android:
-          requires:
-            - node
-      - ios:
-          requires:
-            - node
+      - android
+      - ios
