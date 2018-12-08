@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
 
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    provided 'com.facebook.react:react-native:+'
-    compile 'com.revenuecat.purchases:purchases:1.4.0'
-    compile 'com.android.billingclient:billing:1.1'
+    compileOnly 'com.facebook.react:react-native:+'
+    implementation 'com.revenuecat.purchases:purchases:1.4.0'
+    implementation 'com.android.billingclient:billing:1.1'
 }
