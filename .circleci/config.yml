@@ -28,15 +28,14 @@ jobs:
     docker:
       - image: circleci/android:api-27-node8-alpha
     steps:
-      - checkout
+      - checkout:
+          path: ~/react-native-purchases/android
       - run:
           name: Accept licenses
           command: yes | sdkmanager --licenses || true
-      - attach_workspace:
-          at: ~/react-native-purchases/android
       - run:
           name: Build
-          command: ./android/gradlew build  
+          command: ./gradlew build  
       - store_test_results:
           path: test-results
       - store_artifacts:
