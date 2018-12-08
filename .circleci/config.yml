@@ -30,6 +30,7 @@ jobs:
     steps:
       - checkout
       - run:
+          name: current directory
           command: pwd
       - run:
           name: Accept licenses
