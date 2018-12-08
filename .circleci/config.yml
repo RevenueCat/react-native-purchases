@@ -52,7 +52,7 @@ jobs:
       - checkout:
           path: ~/react-native-purchases
       - attach_workspace:
-          at: ~/react-native-purchases- restore_cache:
+          at: ~/react-native-purchases
       - restore_cache:
           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
       - restore_cache:
