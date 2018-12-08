@@ -36,8 +36,8 @@ jobs:
           working_directory: ~/react-native-purchases/android
           name: Build
           command: |
-            chmod +x gradlew
-            ./gradlew build  
+            chmod +x ~/react-native-purchases/android/gradlew
+            ~/react-native-purchases/android/gradlew build  
       - store_test_results:
           path: test-results
       - store_artifacts:
