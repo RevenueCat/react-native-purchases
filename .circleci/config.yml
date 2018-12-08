@@ -1,48 +1,27 @@
 version: 2
 jobs:
-#   node:
-#     working_directory: ~/react-native-purchases
-#     docker:
-#       - image: circleci/node:8
-#     steps:
-#       - checkout
-
-#       - restore_cache:
-#           key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
-
-#       - restore_cache:
-#           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-
-#       - run: yarn install
-
-#       - save_cache:
-#           key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
-#           paths:
-#             - ~/.cache/yarn
-
-#       - save_cache:
-#           key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-#           paths:
-#             - node_modules
-
-#       - run:
-#           name: jest tests
-#           command: |
-#             mkdir -p test-results/jest
-#             yarn run test
-#           environment:
-#             JEST_JUNIT_OUTPUT: test-results/jest/junit.xml
-
-#       - persist_to_workspace:
-#           root: ~/demo-react-native
-#           paths:
-#             - node_modules
-
-#       - store_test_results:
-#           path: test-results
-
-#       - store_artifacts:
-#           path: test-results
+  node:
+    working_directory: ~/react-native-purchases
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+      - run:
+          name: Install react
+          command: npm install react
+      - run:
+          name: Install react-native
+          command: npm install react-native
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+      - persist_to_workspace:
+          root: ~/react-native-purchases
+          paths:
+            - node_modules
 
   android:
     working_directory: ~/react-native-purchases/android
@@ -54,15 +33,7 @@ jobs:
       - attach_workspace:
           at: ~/react-native-purchases
       - restore_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-      - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "purchases/build.gradle" }}
-      - run:
-          name: Install react
-          command: npm install react
-      - run:
-          name: Install react-native
-          command: npm install react-native
       - run:
           name: Accept licenses
           command: yes | sdkmanager --licenses || true
@@ -73,14 +44,6 @@ jobs:
           paths:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "purchases/build.gradle" }}     
-      - save_cache:
-          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
-          paths:
-            - node_modules
-      - persist_to_workspace:
-          root: ~/react-native-purchases
-          paths:
-            - node_modules
       - store_test_results:
           path: test-results
       - store_artifacts:
