@@ -30,14 +30,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: current directory
-          command: pwd
-      - run:
           name: Accept licenses
           command: yes | sdkmanager --licenses || true
       - run:
           name: Build
-          command: ./gradlew build  
+          command: |
+            pwd
+            ./gradlew build  
       - store_test_results:
           path: test-results
       - store_artifacts:
