@@ -119,9 +119,9 @@ workflows:
   android-ios:
     jobs:
       - node
-      - android
+      - android:
           requires:
             - node
-      - ios
+      - ios:
           requires:
             - node
