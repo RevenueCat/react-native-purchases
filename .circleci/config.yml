@@ -32,6 +32,8 @@ jobs:
       - run:
           name: Accept licenses
           command: yes | sdkmanager --licenses || true
+      - attach_workspace:
+          at: ~/react-native-purchases/android
       - run:
           name: Build
           command: ./android/gradlew build  
