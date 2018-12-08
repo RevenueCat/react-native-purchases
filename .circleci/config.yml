@@ -33,6 +33,7 @@ jobs:
           name: Accept licenses
           command: yes | sdkmanager --licenses || true
       - run:
+          working_directory: ~/react-native-purchases/android
           name: Build
           command: |
             pwd
