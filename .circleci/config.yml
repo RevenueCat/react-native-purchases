@@ -37,7 +37,7 @@ jobs:
           command: yes | sdkmanager --licenses || true
       - run:
           name: Build
-          command: ./gradlew build  
+          command: .gradlew build  
       - store_test_results:
           path: test-results
       - store_artifacts:
