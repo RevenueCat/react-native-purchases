@@ -12,5 +12,8 @@
     "react-native"
   ],
   "author": "RevenueCat, Inc.",
-  "license": "MIT License"
+  "license": "MIT License",
+  "peerDependencies": {
+    "react-native": ">=0.24.0"
+  }
 }

@@ -51,29 +51,38 @@ jobs:
     steps:
       - checkout:
           path: ~/react-native-purchases
-
       - attach_workspace:
-          at: ~/react-native-purchases
-
+          at: ~/react-native-purchases- restore_cache:
       - restore_cache:
-          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
-
-      - run: bundle install
-
-      - save_cache:
-          key: bundle-v1-{{ checksum "Gemfile.lock" }}-{{ arch }}
-          paths:
-            - vendor/bundle
-
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "purchases/build.gradle" }}
       - run:
-          name: fastlane tests
-          command: |
-            mkdir -p test-results/fastlane
-            bundle exec fastlane test
-            mv fastlane/report.xml test-results/fastlane
+          name: Install react
+          command: npm install react
+      - run:
+          name: Install react-native
+          command: npm install react-native
+      - run:
+          name: Accept licenses
+          command: yes | sdkmanager --licenses || true
+      - run:
+          name: Build
+          command: ./gradlew build
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "purchases/build.gradle" }}     
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+      - persist_to_workspace:
+          root: ~/react-native-purchases
+          paths:
+            - node_modules
       - store_test_results:
           path: test-results
-
       - store_artifacts:
           path: test-results
 
