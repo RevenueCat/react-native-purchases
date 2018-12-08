@@ -28,8 +28,9 @@ jobs:
     docker:
       - image: circleci/android:api-27-node8-alpha
     steps:
-      - checkout:
-          path: ~/react-native-purchases/android
+      - checkout
+      - run:
+          command: pwd
       - run:
           name: Accept licenses
           command: yes | sdkmanager --licenses || true
