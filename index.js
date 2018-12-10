@@ -66,8 +66,8 @@ export default class Purchases {
    If a user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
    the new ID with the previous id.
   */
-  static setIsUsingAnonymousID(isUsingAnonymousID) {
-    RNPurchases.setIsUsingAnonymousID(isUsingAnonymousID);
+  static setAllowSharingStoreAccount(allowSharing) {
+    RNPurchases.setAllowSharingStoreAccount(allowSharing);
   }
 
   /** @callback PurchaseListener
