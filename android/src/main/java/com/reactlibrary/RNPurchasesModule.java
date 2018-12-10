@@ -191,7 +191,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         for (Object oldSku : oldSkus.toArrayList()) {
             oldSkusList.add((String)oldSku);
         }
-        break compilation
         Purchases.getSharedInstance().makePurchase(getCurrentActivity(), productIdentifier, type, oldSkusList);
     }
 
