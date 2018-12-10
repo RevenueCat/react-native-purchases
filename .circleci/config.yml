@@ -53,22 +53,47 @@ jobs:
     shell: /bin/bash --login -o pipefail
 
     steps:
-      - checkout:
-          path: ~/react-native-purchases
-      - attach_workspace:
-          at: ~/react-native-purchases
+      - checkout
+      - run:
+          name: set Ruby version
+          command:  echo "ruby-2.4" > ~/.ruby-version
+
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+      # not using a workspace here as Node and Yarn versions
+      # differ between our macOS executor image and the Docker containers above
+      - run: yarn install
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
       - restore_cache:
           key: bundle-v1-{{ checksum "ios/Gemfile.lock" }}-{{ arch }}
+
       - run:
           command: bundle install
           working_directory: ios
+
       - save_cache:
           key: bundle-v1-{{ checksum "ios/Gemfile.lock" }}-{{ arch }}
           paths:
             - vendor/bundle
+
       - run:
           command: bundle exec fastlane test
           working_directory: ios
+
       - run:
           name: set up test results
           working_directory: ios
@@ -79,6 +104,7 @@ jobs:
             mv fastlane/test_output/report.junit test-results/xcode/junit.xml
       - store_test_results:
           path: ios/test-results
+
       - store_artifacts:
           path: ios/test-results
 
