@@ -1,3 +1,6 @@
+## 1.5.2
+- Changes setIsUsingAnonymousID to allowSharingStoreAccount
+
 ## 1.5.1
 - Fixes compilation in iOS
 
