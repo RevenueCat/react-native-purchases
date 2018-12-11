@@ -10,8 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
-    "preparedemo": "cd example; npm uninstall react-native-purchases --save; npm install .. --save",
-    "setup": "cd example; npm install; cd ..; npm run preparedemo;"
+    "setup": "yarn link;cd example;yarn;yarn link react-native-purchases;"
   },
   "repository": {
     "type": "git",
@@ -24,12 +23,8 @@
   "author": "RevenueCat, Inc.",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "peerDependencies": {
-    "react": "16.2.0",
-    "react-native": "^0.24.0"
-  },
   "devDependencies": {
-    "react": "16.2.0",
+    "react": "16.6.3",
     "react-native": "^0.57.7"
   }
 }
