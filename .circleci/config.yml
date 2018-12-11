@@ -9,14 +9,16 @@ jobs:
         - run: yarn run setup
     
     android:
-      working_directory: ~/react-native-purchases/example/android
+      working_directory: ~/react-native-purchases
       docker:
         - image: circleci/android:api-27-node8-alpha
       steps:
-        - checkout:
-            path: ~/react-native-purchases
-        - attach_workspace:
-            at: ~/react-native-purchases
+        - checkout
+        - run:
+            name: yarn run setup
+            command: |
+              yarn run setup
+              cd example/android
         - run:
             name: Android compiles
             command: ./gradlew build
