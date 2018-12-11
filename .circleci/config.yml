@@ -7,7 +7,34 @@ jobs:
       steps:
         - checkout
         - run: yarn run setup
-      
+    
+    android:
+      working_directory: ~/react-native-purchases/example/android
+      docker:
+        - image: circleci/android:api-27-node8-alpha
+      steps:
+        - checkout:
+            path: ~/react-native-purchases
+        - attach_workspace:
+            at: ~/react-native-purchases
+        - run:
+            name: Android compiles
+            command: ./gradlew build
+
+  # android:
+  #   working_directory: ~/react-native-purchases/example/android
+  #   docker:
+  #     - image: circleci/android:api-27-node8-alpha
+  #   steps:
+  #     - checkout:
+  #         path: ~/react-native-purchases
+
+  #     - attach_workspace:
+  #         at: ~/react-native-purchases
+
+  #     - run:
+  #         name: Android Compiles
+  #         command: ./gradlew build
 
 
   # node:
@@ -45,21 +72,6 @@ jobs:
 
   #     - store_artifacts:
   #         path: test-results
-
-  # android:
-  #   working_directory: ~/react-native-purchases/example/android
-  #   docker:
-  #     - image: circleci/android:api-27-node8-alpha
-  #   steps:
-  #     - checkout:
-  #         path: ~/react-native-purchases
-
-  #     - attach_workspace:
-  #         at: ~/react-native-purchases
-
-  #     - run:
-  #         name: Android Compiles
-  #         command: ./gradlew build
 
   # ios:
   #   macos:
@@ -131,9 +143,9 @@ workflows:
   node-android-ios:
     jobs:
       - setup
-      # - android:
-          # requires:
-            # - node
+      - android:
+          requires:
+            - setup
       # - ios:
           # requires:
             # - node
