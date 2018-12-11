@@ -7,7 +7,11 @@
   "scripts": {
     "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.2.0",
     "preinstall": "npm run fetch:ios:sdk",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo.ios": "cd example; react-native run-ios",
+    "demo.android": "cd example; react-native run-android",
+    "preparedemo": "cd example; npm uninstall react-native-purchases --save; npm install .. --save",
+    "setup": "cd example; npm install; cd ..; npm run preparedemo;"
   },
   "repository": {
     "type": "git",
