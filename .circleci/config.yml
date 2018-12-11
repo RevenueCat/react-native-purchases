@@ -16,12 +16,12 @@ jobs:
         - checkout
         - run:
             name: yarn run setup
-            command: |
-              yarn run setup
-              cd example/android
+            command: yarn run setup
         - run:
             name: Android compiles
-            command: ./gradlew build
+            command: |
+              cd example/android
+              ./gradlew build
 
   # android:
   #   working_directory: ~/react-native-purchases/example/android
