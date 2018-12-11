@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "react": "16.6.3",
-    "react-native": "0.57.7"
+    "react-native": "0.57.7",
+    "react-native-purchases": "../"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",

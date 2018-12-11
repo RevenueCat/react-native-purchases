@@ -4641,6 +4641,9 @@ react-is@^16.6.3:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.6.3.tgz#d2d7462fcfcbe6ec0da56ad69047e47e56e7eac0"
   integrity sha512-u7FDWtthB4rWibG/+mFbVd5FvdI20yde86qKGx4lVUTWmPlSWQ4QxbBIrrs+HnXGbxOUlUzTAP/VDmvCwaP2yA==
 
+react-native-purchases@../:
+  version "1.5.2"
+
 react-native@0.57.7:
   version "0.57.7"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.57.7.tgz#5b3af1c43366c41d8d8d2540fea8ce590060bca1"

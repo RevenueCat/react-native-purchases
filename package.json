@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
-    "setup": "yarn link;cd example;yarn;yarn link react-native-purchases;"
+    "setup": "cd example;yarn;"
   },
   "repository": {
     "type": "git",
