@@ -62,7 +62,6 @@ RCT_REMAP_METHOD(getEntitlements,
                  getEntitlementsWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    stupid beach
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases entitlements:^(NSDictionary<NSString *,RCEntitlement *> * _Nonnull entitlements) {
         NSMutableDictionary *result = [NSMutableDictionary new];
