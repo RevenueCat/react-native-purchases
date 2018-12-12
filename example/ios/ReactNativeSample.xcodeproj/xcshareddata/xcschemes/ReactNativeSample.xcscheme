@@ -42,7 +42,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
+               BlueprintIdentifier = "35A1756A21C1869A00A1FD51"
                BuildableName = "ReactNativeSampleTests.xctest"
                BlueprintName = "ReactNativeSampleTests"
                ReferencedContainer = "container:ReactNativeSample.xcodeproj">
@@ -60,7 +60,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
+               BlueprintIdentifier = "35A1756A21C1869A00A1FD51"
                BuildableName = "ReactNativeSampleTests.xctest"
                BlueprintName = "ReactNativeSampleTests"
                ReferencedContainer = "container:ReactNativeSample.xcodeproj">

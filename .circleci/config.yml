@@ -30,11 +30,36 @@ jobs:
         - checkout
         - run:
             name: set Ruby version
-            command:  echo "ruby-2.4" > ~/.ruby-version
+            command:  echo "ruby-2.4" > ~/.ruby-version    
         - run: yarn run setup
+        - restore_cache:
+            key: bundle-v1-{{ checksum "example/ios/Gemfile.lock" }}-{{ arch }}
         - run:
-            command: xcodebuild archive -scheme ReactNativeSample -project ReactNativeSample.xcodeproj -configuration Debug
+            command: bundle install
             working_directory: example/ios
+
+        - save_cache:
+            key: bundle-v1-{{ checksum "example/ios/Gemfile.lock" }}-{{ arch }}
+            paths:
+              - vendor/bundle
+
+        - run:
+            command: bundle exec fastlane scan
+            working_directory: example/ios
+
+        - run:
+            name: set up test results
+            working_directory: example/ios
+            when: always
+            command: |
+              mkdir -p test-results/fastlane test-results/xcode
+              mv fastlane/report.xml test-results/fastlane
+              mv fastlane/test_output/report.junit test-results/xcode/junit.xml
+        - store_test_results:
+            path: example/ios/test-results
+
+        - store_artifacts:
+            path: example/ios/test-results
 workflows:
   version: 2
   node-android-ios:
