@@ -19,10 +19,29 @@ jobs:
             command: yarn run setup
         - run:
             name: Android compiles
-            command: |
-              cd example/android
-              ./gradlew build
-
+            command: ./gradlew build
+            working_directory: example/android
+        # - run:
+        #     name: Android compiles
+        #     command: |
+        #       cd example/android
+        #       ./gradlew build
+    
+    ios:
+      macos:
+        xcode: "9.0"
+        working_directory: ~/react-native-purchases
+        # use a --login shell so our "set Ruby version" command gets picked up for later steps
+        shell: /bin/bash --login -o pipefail
+        steps:
+          - checkout
+          - run:
+              name: set Ruby version
+              command:  echo "ruby-2.4" > ~/.ruby-version
+          - run: yarn run setup
+          - run:
+              command: xcodebuild archive -scheme ReactNativeSample -project ReactNativeSample.xcodeproj -configuration Debug
+              working_directory: example/ios
   # android:
   #   working_directory: ~/react-native-purchases/example/android
   #   docker:
@@ -144,10 +163,5 @@ workflows:
   version: 2
   node-android-ios:
     jobs:
-      - setup
-      - android:
-          requires:
-            - setup
-      # - ios:
-          # requires:
-            # - node
+      - android
+      - ios
