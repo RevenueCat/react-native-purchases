@@ -44,7 +44,7 @@ jobs:
               - vendor/bundle
 
         - run:
-            command: bundle exec fastlane scan
+            command: bundle exec fastlane scan --scheme ReactNativeSample
             working_directory: example/ios
 
         - run:
