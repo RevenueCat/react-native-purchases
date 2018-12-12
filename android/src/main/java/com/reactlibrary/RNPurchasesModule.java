@@ -148,6 +148,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
                 promise.resolve(response);
             }
 
+            break
+
             @Override
             public void onReceiveEntitlementsError(@NotNull Purchases.ErrorDomains domain, int code, @NotNull String message) {
                 promise.reject("ERROR_FETCHING_ENTITLEMENTS", message);
