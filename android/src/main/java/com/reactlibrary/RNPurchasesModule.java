@@ -63,11 +63,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @ReactMethod
-    public void setupPurchases(String apiKey, String appUserID, final Promise promise) {
+    public void setupPurchases(String apiKey, @Nullable String appUserID, final Promise promise) {
         if (Purchases.getSharedInstance() != null) {
             Purchases.getSharedInstance().close();
         }
-        Purchases purchases = new Purchases.Builder(reactContext, apiKey).appUserID(appUserID).build();
+        Purchases.Builder builder = new Purchases.Builder(reactContext, apiKey);
+        if (appUserID != null) {
+            builder.appUserID(appUserID);
+        }
+        Purchases purchases = builder.build();
         purchases.setListener(this);
         Purchases.setSharedInstance(purchases);
         promise.resolve(null);
