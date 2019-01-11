@@ -4,9 +4,9 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-let purchaseListener = [];
-let purchaserInfoUpdateListener = [];
-let restoreTransactionsListener = [];
+let purchaseListeners = {};
+let purchaserInfoUpdateListeners = {};
+let restoreTransactionsListeners = {};
 
 export const isUTCDateStringFuture = dateString => {
   const date = new Date(dateString);
@@ -39,16 +39,18 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
 
   }
 
-  purchaseListener.forEach(listener => listener(productIdentifier, purchaserInfo, error));
+  Object.keys(purchaseListeners).forEach(id => purchaseListeners[id](productIdentifier, purchaserInfo, error));
 });
 
 eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
-  purchaserInfoUpdateListener.forEach(listener => listener(purchaserInfo, error));
+  Object.keys(purchaserInfoUpdateListeners).forEach(id => purchaserInfoUpdateListeners[id](purchaserInfo, error));
 });
 
 eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
-  restoreTransactionsListener.forEach(listener => listener(purchaserInfo, error));
+  Object.keys(restoreTransactionsListeners).forEach(id => restoreTransactionsListeners[id](purchaserInfo, error));
 })
+
+const ID = () => Math.random().toString(36).substr(2, 9);
 
 export default class Purchases {
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
@@ -77,10 +79,23 @@ export default class Purchases {
   */
 
   /** Sets a function to be called on purchase complete or fail
-      @param {PurchaseListener} restoreTransactionsListener_ Purchase listener 
+      @param {PurchaseListener} purchaseListener_ Purchase listener 
+      @returns {String} id Purchase listener id for future removal
   */
   static addPurchaseListener(purchaseListener_) {
-    purchaseListener.push(purchaseListener_);
+    if (typeof purchaseListener_ !== "function") {
+      throw new Error("addPurchaseListener needs a function")
+    }
+    const id = ID();
+    purchaseListeners[id] = purchaseListener_;
+    return id;
+  }
+
+  /** Removes a given Purchase listener
+      @param {String} id Purchase listener id
+  */
+  static removePurchaseListener(id) {
+    return delete purchaseListeners[id];
   }
 
   /** @callback RestoreTransactionsListener
@@ -92,7 +107,19 @@ export default class Purchases {
       @param {RestoreTransactionsListener} restoreTransactionsListener_ Restore transactions listener 
   */
   static addRestoreTransactionsListener(restoreTransactionsListener_) {
-    restoreTransactionsListener.push(restoreTransactionsListener_);
+    if (typeof restoreTransactionsListener_ !== "function") {
+      throw new Error("addRestoreTransactionsListener needs a function")
+    }
+    const id = ID();
+    restoreTransactionsListeners[id] = restoreTransactionsListener_;
+    return id;
+  }
+
+  /** Removes a given RestoreTransactionsListener
+      @param {String} id RestoreTransactionsListener id
+  */
+  static removeRestoreTransactionsListener(id) {
+    return delete restoreTransactionsListeners[id];
   }
 
   /** @callback PurchaserInfoListener
@@ -104,7 +131,19 @@ export default class Purchases {
       @param {PurchaserInfoListener} purchaserInfoUpdateListener_ PurchaserInfo update listener 
   */
   static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener_) {
-    purchaserInfoUpdateListener.push(purchaserInfoUpdateListener_);
+    if (typeof purchaserInfoUpdateListener_ !== "function") {
+      throw new Error("addPurchaserInfoUpdateListener needs a function")
+    }
+    const id = ID();
+    purchaserInfoUpdateListeners[id] = purchaserInfoUpdateListener_;
+    return id;
+  }
+
+  /** Removes a given PurchaserInfoUpdateListener
+      @param {String} id PurchaserInfoUpdateListener id
+  */
+  static removePurchaserInfoUpdateListener(id) {
+    return delete purchaserInfoUpdateListeners[id];
   }
 
   static ATTRIBUTION_NETWORKS = {
