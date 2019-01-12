@@ -1,6 +1,7 @@
 
 describe("Purchases", () => {
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.resetAllMocks();
     jest.mock('NativeEventEmitter');
   });
 
@@ -15,7 +16,6 @@ describe("Purchases", () => {
   it("addPurchaseListener correctly saves listeners", () => {
     const listener = jest.fn();
     const Purchases = require("../index").default;
-    const { purchaseListeners } = require("../index");
 
     const listenerId = Purchases.addPurchaseListener(listener);
 

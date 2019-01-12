@@ -15,7 +15,7 @@ type UpdateListenerState = {
   [key: string]: UpdateListener;
 }
 
-export let purchaseListeners: PurchaseListenerState = {};
+let purchaseListeners: PurchaseListenerState = {};
 let purchaserInfoUpdateListeners: UpdateListenerState = {};
 let restoreTransactionsListeners: UpdateListenerState = {};
 
