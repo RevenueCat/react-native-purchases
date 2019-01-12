@@ -13,9 +13,13 @@ jobs:
         - image: circleci/android:api-27-node8-alpha
       steps:
         - checkout
+        - run: yarn
         - run:
             name: yarn run setup
             command: yarn run setup
+        - run:
+            name: Tests
+            command: yarn test
         - run:
             name: Android compiles
             command: ./gradlew build
@@ -28,9 +32,13 @@ jobs:
       shell: /bin/bash --login -o pipefail
       steps:
         - checkout
+        - run: yarn
+        - run:
+            name: Tests
+            command: yarn test
         - run:
             name: set Ruby version
-            command:  echo "ruby-2.4" > ~/.ruby-version    
+            command:  echo "ruby-2.4" > ~/.ruby-version
         - run: yarn run setup
         - restore_cache:
             key: bundle-v1-{{ checksum "example/ios/Gemfile.lock" }}-{{ arch }}
