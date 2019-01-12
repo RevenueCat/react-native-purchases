@@ -3,7 +3,7 @@
   "title": "React Native Purchases",
   "version": "1.5.2",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.2.0",
     "preinstall": "yarn run fetch:ios:sdk",
