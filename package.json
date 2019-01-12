@@ -6,11 +6,30 @@
   "main": "index.js",
   "scripts": {
     "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.2.0",
-    "preinstall": "npm run fetch:ios:sdk",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "yarn run fetch:ios:sdk",
+    "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
     "setup": "cd example;yarn;"
+  },
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js",
+      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ],
+    "cacheDirectory": ".jest/cache",
+    "setupFiles": ["./setupJest.ts"]
   },
   "repository": {
     "type": "git",
@@ -24,7 +43,15 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
+    "@types/jest": "^23.3.12",
+    "@types/react": "^16.7.18",
+    "@types/react-native": "^0.57.27",
+    "@types/react-test-renderer": "^16.0.3",
+    "jest": "^23.6.0",
     "react": "16.6.3",
-    "react-native": "^0.57.7"
+    "react-native": "^0.57.7",
+    "react-native-typescript-transformer": "^1.2.11",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.2"
   }
 }

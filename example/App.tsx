@@ -1,21 +1,28 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Button, ScrollView, View, Image, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Button, ScrollView, View, Image, Text, TouchableOpacity} from 'react-native';
 import Purchases from 'react-native-purchases';
 
+type AppState = {
+  currentStatus: string;
+}
 
-export default class App extends Component {
+export default class App extends Component<any, AppState> {
 
-  handlePurchaserInfo(purchaserInfo) {
+  handlePurchaserInfo(purchaserInfo: any) {
     if (purchaserInfo.activeEntitlements.length == 0) {
-      this.state.currentStatus = "Unsubscribed";
+      this.setState({
+        currentStatus: "Unsubscribed"
+      });
     } else {
-      this.state.currentStatus = "You're " + purchaserInfo.activeEntitlements
+      this.setState({
+        currentStatus: "You're " + purchaserInfo.activeEntitlements
+      });
     }
   }
 
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       entitlements: [],
       error: "",
@@ -25,7 +32,7 @@ export default class App extends Component {
       currentID: ""
     };
   }
-  
+
   setListeners = () => {
     return {
       'purchaseListenerID': Purchases.addPurchaseListener((productIdentifier, purchaserInfo, error) => {

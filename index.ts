@@ -4,18 +4,29 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-let purchaseListeners = {};
-let purchaserInfoUpdateListeners = {};
-let restoreTransactionsListeners = {};
+type PurchaseListener = (productIdentifier: any, purchaserInfo: any, error: any) => void;
+type UpdateListener = (purchaserInfo: any, error: any) => void;
 
-export const isUTCDateStringFuture = dateString => {
+type PurchaseListenerState = {
+  [key: string]: PurchaseListener;
+}
+
+type UpdateListenerState = {
+  [key: string]: UpdateListener;
+}
+
+let purchaseListeners: PurchaseListenerState = {};
+let purchaserInfoUpdateListeners: UpdateListenerState = {};
+let restoreTransactionsListeners: UpdateListenerState = {};
+
+export const isUTCDateStringFuture = (dateString: string) => {
   const date = new Date(dateString);
   const dateUtcMillis = date.valueOf();
   const now = new Date;
   const nowUtcMillis = Date.UTC(
     now.getUTCFullYear(),
     now.getUTCMonth(),
-    now.getUTCDate(), 
+    now.getUTCDate(),
     now.getUTCHours(),
     now.getUTCMinutes(),
     now.getUTCSeconds(),
@@ -27,16 +38,15 @@ export const isUTCDateStringFuture = dateString => {
 eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
   if (error) {
     const {domain, code} = error;
-    
+
     const userCancelledDomainCodes = {
       1: 'Play Billing',
       2: 'SKErrorDomain'
     };
 
-    if (userCancelledDomainCodes[code] === domain) {
+    if ((userCancelledDomainCodes as any)[code] === domain) {
       error.userCancelled = true;
     }
-
   }
 
   Object.keys(purchaseListeners).forEach(id => purchaseListeners[id](productIdentifier, purchaserInfo, error));
@@ -60,7 +70,7 @@ export default class Purchases {
 
       @returns {Promise<void>} Returns when setup complete
   */
-  static setup(apiKey, appUserID) {
+  static setup(apiKey: string, appUserID: string) {
     return RNPurchases.setupPurchases(apiKey, appUserID);
   }
 
@@ -68,7 +78,7 @@ export default class Purchases {
    If a user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
    the new ID with the previous id.
   */
-  static setAllowSharingStoreAccount(allowSharing) {
+  static setAllowSharingStoreAccount(allowSharing: boolean) {
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
   }
 
@@ -79,10 +89,10 @@ export default class Purchases {
   */
 
   /** Sets a function to be called on purchase complete or fail
-      @param {PurchaseListener} purchaseListener_ Purchase listener 
+      @param {PurchaseListener} purchaseListener_ Purchase listener
       @returns {String} id Purchase listener id for future removal
   */
-  static addPurchaseListener(purchaseListener_) {
+  static addPurchaseListener(purchaseListener_: PurchaseListener) {
     if (typeof purchaseListener_ !== "function") {
       throw new Error("addPurchaseListener needs a function")
     }
@@ -94,7 +104,7 @@ export default class Purchases {
   /** Removes a given Purchase listener
       @param {String} id Purchase listener id
   */
-  static removePurchaseListener(id) {
+  static removePurchaseListener(id: string) {
     return delete purchaseListeners[id];
   }
 
@@ -102,11 +112,11 @@ export default class Purchases {
       @param {Object} purchaserInfo Object containing info for the purchaser
       @param {Object} error Error object
   */
-  
+
   /** Sets a function to be called on purchase complete or fail
-      @param {RestoreTransactionsListener} restoreTransactionsListener_ Restore transactions listener 
+      @param {RestoreTransactionsListener} restoreTransactionsListener_ Restore transactions listener
   */
-  static addRestoreTransactionsListener(restoreTransactionsListener_) {
+  static addRestoreTransactionsListener(restoreTransactionsListener_: UpdateListener) {
     if (typeof restoreTransactionsListener_ !== "function") {
       throw new Error("addRestoreTransactionsListener needs a function")
     }
@@ -118,7 +128,7 @@ export default class Purchases {
   /** Removes a given RestoreTransactionsListener
       @param {String} id RestoreTransactionsListener id
   */
-  static removeRestoreTransactionsListener(id) {
+  static removeRestoreTransactionsListener(id: string) {
     return delete restoreTransactionsListeners[id];
   }
 
@@ -126,11 +136,11 @@ export default class Purchases {
       @param {Object} purchaserInfo Object containing info for the purchaser
       @param {Object} error Error object
   */
-  
+
   /** Sets a function to be called on updated purchaser info
-      @param {PurchaserInfoListener} purchaserInfoUpdateListener_ PurchaserInfo update listener 
+      @param {PurchaserInfoListener} purchaserInfoUpdateListener_ PurchaserInfo update listener
   */
-  static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener_) {
+  static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener_: UpdateListener) {
     if (typeof purchaserInfoUpdateListener_ !== "function") {
       throw new Error("addPurchaserInfoUpdateListener needs a function")
     }
@@ -142,7 +152,7 @@ export default class Purchases {
   /** Removes a given PurchaserInfoUpdateListener
       @param {String} id PurchaserInfoUpdateListener id
   */
-  static removePurchaserInfoUpdateListener(id) {
+  static removePurchaserInfoUpdateListener(id: string) {
     return delete purchaserInfoUpdateListeners[id];
   }
 
@@ -153,12 +163,12 @@ export default class Purchases {
     BRANCH: 3
   }
 
-  /** 
+  /**
     Add a dict of attribution information
     @param data Attribution data from AppsFlyer, Adjust, or Branch
     @param network Which network, see Purchases.ATTRIBUTION_NETWORKS
   */
-  static addAttributionData(data, network) {
+  static addAttributionData(data: any, network: any) {
     RNPurchases.addAttributionData(data, network);
   }
 
@@ -173,18 +183,18 @@ export default class Purchases {
       @param {[String]} productIdentifiers Array of product identifiers
       @returns {Promise<Array>} A promise of product arrays
   */
-  static getProducts(productIdentifiers, type="subs") {
+  static getProducts(productIdentifiers: string[], type="subs") {
     return RNPurchases.getProductInfo(productIdentifiers, type);
   }
 
   /** Make a purchase
       @param {String} productIdentifier The product identifier of the product you want to purchase.
   */
-  static makePurchase(productIdentifier, oldSKUs=[], type="subs") {
+  static makePurchase(productIdentifier: string, oldSKUs=[], type="subs") {
     RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
   }
 
-  /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 
+  /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
     @returns {Promise<Object>} A promise of a purchaser info object
   */
   static restoreTransactions() {
@@ -199,17 +209,17 @@ export default class Purchases {
   }
 
   /** This function will alias two appUserIDs together.
-   * @param alias The new appUserID that should be linked to the currently identified appUserID
+   * @param {String} alias The new appUserID that should be linked to the currently identified appUserID
    * */
-  static createAlias(newAppUserID) {
+  static createAlias(newAppUserID: string) {
     return RNPurchases.createAlias(newAppUserID);
   }
 
   /**
    * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
-   * @param appUserID The appUserID that should be linked to the currently user
+   * @param {String} appUserID The appUserID that should be linked to the currently user
    */
-  static identify(newAppUserID) {
+  static identify(newAppUserID: string) {
     return RNPurchases.identify(newAppUserID);
   }
 
@@ -219,5 +229,4 @@ export default class Purchases {
   static reset() {
     return RNPurchases.reset();
   }
-
 };
