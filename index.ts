@@ -15,7 +15,7 @@ type UpdateListenerState = {
   [key: string]: UpdateListener;
 }
 
-let purchaseListeners: PurchaseListenerState = {};
+export let purchaseListeners: PurchaseListenerState = {};
 let purchaserInfoUpdateListeners: UpdateListenerState = {};
 let restoreTransactionsListeners: UpdateListenerState = {};
 
@@ -96,6 +96,7 @@ export default class Purchases {
     if (typeof purchaseListener_ !== "function") {
       throw new Error("addPurchaseListener needs a function")
     }
+
     const id = ID();
     purchaseListeners[id] = purchaseListener_;
     return id;

@@ -9,3 +9,5 @@ class NativeEventEmitter extends EventEmitter {
     super(RCTDeviceEventEmitter.sharedSubscriber);
   }
 }
+
+global.NativeEventEmitter = NativeEventEmitter;
