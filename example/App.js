@@ -28,22 +28,19 @@ export default class App extends Component {
   
   setListeners = () => {
     return {
-      'purchaseListenerID': Purchases.addPurchaseListener((productIdentifier, purchaserInfo, error) => {
-        console.log("addPurchaseListener");
+      purchaseListenerID: Purchases.addPurchaseListener((productIdentifier, purchaserInfo, error) => {
         if (error && !error.userCancelled) {
           this.setState({error: error.message});
           return;
         }
         this.handlePurchaserInfo(purchaserInfo);
       }),
-      'purchaserInfoUpdatedListenerID': Purchases.addPurchaserInfoUpdateListener((purchaserInfo, error) => {
-        console.log("addPurchaserInfoUpdateListener");
+      purchaserInfoUpdatedListenerID: Purchases.addPurchaserInfoUpdateListener((purchaserInfo, error) => {
         if (purchaserInfo) {
           this.handlePurchaserInfo(purchaserInfo);
         }
       }),
-      'restoreTransactionsListenerID': Purchases.addRestoreTransactionsListener((purchaserInfo, error) => {
-        console.log("addRestoreTransactionsListener");
+      restoreTransactionsListenerID: Purchases.addRestoreTransactionsListener((purchaserInfo, error) => {
         if (purchaserInfo) {
           this.handlePurchaserInfo(purchaserInfo);
         }
@@ -70,9 +67,9 @@ export default class App extends Component {
     }
   };
 
-  async componentWillUnmount() {
+  componentWillUnmount() {
     Purchases.removePurchaseListener(this.state.listenerIDs.purchaseListenerID);
-    Purchases.removePurchaserInfoUpdatedListener(this.state.listenerIDs.purchaserInfoUpdatedListenerID);
+    Purchases.removePurchaserInfoUpdateListener(this.state.listenerIDs.purchaserInfoUpdatedListenerID);
     Purchases.removeRestoreTransactionsListener(this.state.listenerIDs.restoreTransactionsListenerID);
   }
 

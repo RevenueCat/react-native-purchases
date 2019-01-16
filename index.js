@@ -93,6 +93,7 @@ export default class Purchases {
 
   /** Removes a given Purchase listener
       @param {String} id Purchase listener id
+      @returns true
   */
   static removePurchaseListener(id) {
     return delete purchaseListeners[id];
@@ -117,6 +118,7 @@ export default class Purchases {
 
   /** Removes a given RestoreTransactionsListener
       @param {String} id RestoreTransactionsListener id
+      @returns true
   */
   static removeRestoreTransactionsListener(id) {
     return delete restoreTransactionsListeners[id];
@@ -141,6 +143,7 @@ export default class Purchases {
 
   /** Removes a given PurchaserInfoUpdateListener
       @param {String} id PurchaserInfoUpdateListener id
+      @returns true
   */
   static removePurchaserInfoUpdateListener(id) {
     return delete purchaserInfoUpdateListeners[id];
