@@ -7,16 +7,22 @@ jobs:
     steps:
       - checkout
       - run: yarn run setup
-  android:
+  tests:
     working_directory: ~/react-native-purchases
     docker:
-      - image: circleci/android:api-27-node8-alpha
+      - image: circleci/node:8
     steps:
       - checkout
       - run: yarn
       - run:
           name: Tests
           command: yarn test
+  android:
+    working_directory: ~/react-native-purchases
+    docker:
+      - image: circleci/android:api-27-node8-alpha
+    steps:
+      - checkout
       - run:
           name: yarn run setup
           command: yarn run setup
@@ -74,3 +80,6 @@ workflows:
     jobs:
       - android
       - ios
+  tests:
+    jobs:
+      - tests
