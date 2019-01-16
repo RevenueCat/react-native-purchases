@@ -10,7 +10,7 @@
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
-    "setup": "cd example;yarn;"
+    "setup.example": "cd example;yarn;"
   },
   "repository": {
     "type": "git",

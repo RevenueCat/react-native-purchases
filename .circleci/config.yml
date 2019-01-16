@@ -1,12 +1,5 @@
 version: 2
 jobs:
-  setup:
-    working_directory: ~/react-native-purchases
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout
-      - run: yarn run setup
   tests:
     working_directory: ~/react-native-purchases
     docker:
@@ -24,8 +17,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: yarn run setup
-          command: yarn run setup
+          name: yarn run setup.example
+          command: yarn run setup.example
       - run:
           name: Android compiles
           command: ./gradlew build
@@ -45,7 +38,7 @@ jobs:
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
-      - run: yarn run setup
+      - run: yarn run setup.example
       - restore_cache:
           key: bundle-v1-{{ checksum "example/ios/Gemfile.lock" }}-{{ arch }}
       - run:
