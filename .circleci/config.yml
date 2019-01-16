@@ -15,11 +15,11 @@ jobs:
       - checkout
       - run: yarn
       - run:
-          name: yarn run setup
-          command: yarn run setup
-      - run:
           name: Tests
           command: yarn test
+      - run:
+          name: yarn run setup
+          command: yarn run setup
       - run:
           name: Android compiles
           command: ./gradlew build
