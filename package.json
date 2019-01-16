@@ -6,11 +6,11 @@
   "main": "index.js",
   "scripts": {
     "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 1.2.0",
-    "preinstall": "npm run fetch:ios:sdk",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "yarn run fetch:ios:sdk",
+    "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
-    "setup": "cd example;yarn;"
+    "setup.example": "cd example;yarn;"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,26 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
+    "jest": "^23.6.0",
     "react": "16.6.3",
     "react-native": "^0.57.7"
+  },
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.js$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ],
+    "cacheDirectory": ".jest/cache",
+    "setupFiles": [
+      "./setupJest.js"
+    ]
   }
 }
