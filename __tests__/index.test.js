@@ -54,4 +54,84 @@ describe("Purchases", () => {
 
     expect(listener).toHaveBeenCalledTimes(0);
   });
+
+  it("addRestoreTransactionsListener correctly saves listeners", () => {
+    const listener = jest.fn();
+    const Purchases = require("../index").default;
+
+    Purchases.addRestoreTransactionsListener(listener);
+
+    const nativeEmitter = new NativeEventEmitter();
+
+    const eventInfo = {
+      purchaserInfo: {},
+      error: null,
+    };
+
+    nativeEmitter.emit("Purchases-RestoredTransactions", eventInfo);
+
+    expect(listener).toEqual(expect.any(Function));
+    expect(listener).toHaveBeenCalledWith(
+      eventInfo.purchaserInfo,
+      eventInfo.error
+    );
+  });
+
+  it("removeRestoreTransactionsListener correctly removes a listener", () => {
+    const Purchases = require("../index").default;
+    const listener = jest.fn();
+    Purchases.addRestoreTransactionsListener(listener);
+    Purchases.removeRestoreTransactionsListener(listener);
+
+    const nativeEmitter = new NativeEventEmitter();
+
+    const eventInfo = {
+      purchaserInfo: {},
+      error: null,
+    };
+
+    nativeEmitter.emit("Purchases-RestoredTransactions", eventInfo);
+
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
+
+  it("addPurchaserInfoUpdateListener correctly saves listeners", () => {
+    const listener = jest.fn();
+    const Purchases = require("../index").default;
+
+    Purchases.addPurchaserInfoUpdateListener(listener);
+
+    const nativeEmitter = new NativeEventEmitter();
+
+    const eventInfo = {
+      purchaserInfo: {},
+      error: null,
+    };
+
+    nativeEmitter.emit("Purchases-PurchaserInfoUpdated", eventInfo);
+
+    expect(listener).toEqual(expect.any(Function));
+    expect(listener).toHaveBeenCalledWith(
+      eventInfo.purchaserInfo,
+      eventInfo.error
+    );
+  });
+
+  it("removePurchaserInfoUpdateListener correctly removes a listener", () => {
+    const Purchases = require("../index").default;
+    const listener = jest.fn();
+    Purchases.addPurchaserInfoUpdateListener(listener);
+    Purchases.removePurchaserInfoUpdateListener(listener);
+
+    const nativeEmitter = new NativeEventEmitter();
+
+    const eventInfo = {
+      purchaserInfo: {},
+      error: null,
+    };
+
+    nativeEmitter.emit("Purchases-PurchaserInfoUpdated", eventInfo);
+
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
 });
