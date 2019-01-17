@@ -4,9 +4,9 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-let purchaseListeners = {};
-let purchaserInfoUpdateListeners = {};
-let restoreTransactionsListeners = {};
+let purchaseListeners = [];
+let purchaserInfoUpdateListeners = [];
+let restoreTransactionsListeners = [];
 
 export const isUTCDateStringFuture = dateString => {
   const date = new Date(dateString);
@@ -38,16 +38,16 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
     }
 
   }
-
-  Object.keys(purchaseListeners).forEach(id => purchaseListeners[id](productIdentifier, purchaserInfo, error));
+  
+  purchaseListeners.forEach(listener => listener(productIdentifier, purchaserInfo, error));
 });
 
 eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
-  Object.keys(purchaserInfoUpdateListeners).forEach(id => purchaserInfoUpdateListeners[id](purchaserInfo, error));
+  purchaserInfoUpdateListeners.forEach(listener => listener(purchaserInfo, error));
 });
 
 eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
-  Object.keys(restoreTransactionsListeners).forEach(id => restoreTransactionsListeners[id](purchaserInfo, error));
+  restoreTransactionsListeners.forEach(listener => listener(purchaserInfo, error));
 })
 
 const ID = () => Math.random().toString(36).substr(2, 9);
@@ -79,24 +79,26 @@ export default class Purchases {
   */
 
   /** Sets a function to be called on purchase complete or fail
-      @param {PurchaseListener} purchaseListener_ Purchase listener 
-      @returns {String} id Purchase listener id for future removal
+      @param {PurchaseListener} purchaseListener_ Purchase listener
   */
   static addPurchaseListener(purchaseListener_) {
     if (typeof purchaseListener_ !== "function") {
-      throw new Error("addPurchaseListener needs a function")
+      throw new Error("addPurchaseListener needs a function");
     }
-    const id = ID();
-    purchaseListeners[id] = purchaseListener_;
-    return id;
+    purchaseListeners.push(purchaseListener_);
   }
 
   /** Removes a given Purchase listener
-      @param {String} id Purchase listener id
-      @returns true
+      @param {PurchaseListener} listenerToRemove PurchaseListener reference of the listener to remove
+      @returns {Boolean} True if listener was removed, false otherwise
   */
-  static removePurchaseListener(id) {
-    return delete purchaseListeners[id];
+  static removePurchaseListener(listenerToRemove) {
+    if (purchaseListeners.includes(listenerToRemove)) {
+      purchaseListeners = purchaseListeners.filter(listener => listenerToRemove != listener);
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /** @callback RestoreTransactionsListener
@@ -111,17 +113,20 @@ export default class Purchases {
     if (typeof restoreTransactionsListener_ !== "function") {
       throw new Error("addRestoreTransactionsListener needs a function")
     }
-    const id = ID();
-    restoreTransactionsListeners[id] = restoreTransactionsListener_;
-    return id;
+    restoreTransactionsListeners.push(restoreTransactionsListener_);
   }
 
   /** Removes a given RestoreTransactionsListener
-      @param {String} id RestoreTransactionsListener id
-      @returns true
+      @param {RestoreTransactionsListener} listenerToRemove RestoreTransactionsListener reference of the listener to remove
+      @returns {Boolean} True if listener was removed, false otherwise
   */
-  static removeRestoreTransactionsListener(id) {
-    return delete restoreTransactionsListeners[id];
+  static removeRestoreTransactionsListener(listenerToRemove) {
+    if (restoreTransactionsListeners.includes(listenerToRemove)) {
+      restoreTransactionsListeners = restoreTransactionsListeners.filter(listener => listenerToRemove != listener)
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /** @callback PurchaserInfoListener
@@ -136,17 +141,20 @@ export default class Purchases {
     if (typeof purchaserInfoUpdateListener_ !== "function") {
       throw new Error("addPurchaserInfoUpdateListener needs a function")
     }
-    const id = ID();
-    purchaserInfoUpdateListeners[id] = purchaserInfoUpdateListener_;
-    return id;
+    purchaserInfoUpdateListeners.push(purchaserInfoUpdateListener_);
   }
 
   /** Removes a given PurchaserInfoUpdateListener
-      @param {String} id PurchaserInfoUpdateListener id
-      @returns true
+      @param {PurchaserInfoListener} listenerToRemove PurchaserInfoListener reference of the listener to remove
+      @returns {Boolean} True if listener was removed, false otherwise
   */
-  static removePurchaserInfoUpdateListener(id) {
-    return delete purchaserInfoUpdateListeners[id];
+  static removePurchaserInfoUpdateListener(listenerToRemove) {
+    if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
+      purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(listener => listenerToRemove != listener)
+      return true;
+    } else {
+      return false;
+    }
   }
 
   static ATTRIBUTION_NETWORKS = {

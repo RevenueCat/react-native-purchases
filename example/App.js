@@ -27,40 +27,44 @@ export default class App extends Component {
   }
   
   setListeners = () => {
-    return {
-      purchaseListenerID: Purchases.addPurchaseListener((productIdentifier, purchaserInfo, error) => {
+    const listeners = {
+      purchaseListener: (productIdentifier, purchaserInfo, error) => {
         if (error && !error.userCancelled) {
           this.setState({error: error.message});
           return;
         }
         this.handlePurchaserInfo(purchaserInfo);
-      }),
-      purchaserInfoUpdatedListenerID: Purchases.addPurchaserInfoUpdateListener((purchaserInfo, error) => {
+      },
+      purchaserInfoUpdatedListener: (purchaserInfo, error) => {
         if (purchaserInfo) {
           this.handlePurchaserInfo(purchaserInfo);
         }
-      }),
-      restoreTransactionsListenerID: Purchases.addRestoreTransactionsListener((purchaserInfo, error) => {
+      },
+      restoreTransactionsListener: (purchaserInfo, error) => {
         if (purchaserInfo) {
           this.handlePurchaserInfo(purchaserInfo);
         }
-      })
+      }
     }
-  }
+    Purchases.addPurchaseListener(listeners.purchaseListener);
+    Purchases.addPurchaserInfoUpdateListener(listeners.purchaserInfoUpdatedListener);
+    Purchases.addRestoreTransactionsListener(listeners.restoreTransactionsListener);
 
+    return listeners;
+  }
 
   async componentDidMount() {
     try {
       let purchases = await Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", "purchases_sample_id_4");
       let entitlements = await Purchases.getEntitlements();
       let appUserID = await Purchases.getAppUserID();
-      const listenerIDs = this.setListeners()
+      const listeners = this.setListeners();
       this.setState({
         entitlements,
         proAnnualPrice: "Buy Annual w/ Trial " + entitlements.pro.annual.price_string,
         proMonthlyPrice: "Buy Monthly w/ Trial " + entitlements.pro.monthly.price_string,
         currentID: appUserID,
-        listenerIDs: listenerIDs
+        listeners: listeners
       });
     } catch (e) {
       this.setState({error: "Error " + e})
@@ -68,9 +72,9 @@ export default class App extends Component {
   };
 
   componentWillUnmount() {
-    Purchases.removePurchaseListener(this.state.listenerIDs.purchaseListenerID);
-    Purchases.removePurchaserInfoUpdateListener(this.state.listenerIDs.purchaserInfoUpdatedListenerID);
-    Purchases.removeRestoreTransactionsListener(this.state.listenerIDs.restoreTransactionsListenerID);
+    Purchases.removePurchaseListener(this.state.listeners.purchaseListener);
+    Purchases.removePurchaserInfoUpdateListener(this.state.listeners.purchaserInfoUpdatedListener);
+    Purchases.removeRestoreTransactionsListener(this.state.listeners.restoreTransactionsListener);
   }
 
   updateID = async() => {
