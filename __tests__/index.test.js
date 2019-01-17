@@ -16,7 +16,7 @@ describe("Purchases", () => {
     const listener = jest.fn();
     const Purchases = require("../index").default;
 
-    const listenerId = Purchases.addPurchaseListener(listener);
+    Purchases.addPurchaseListener(listener);
 
     const nativeEmitter = new NativeEventEmitter();
 
@@ -28,7 +28,7 @@ describe("Purchases", () => {
 
     nativeEmitter.emit("Purchases-PurchaseCompleted", eventInfo);
 
-    expect(listenerId).toEqual(expect.any(String));
+    expect(listener).toEqual(expect.any(Function));
     expect(listener).toHaveBeenCalledWith(
       eventInfo.productIdentifier,
       eventInfo.purchaserInfo,
@@ -39,8 +39,8 @@ describe("Purchases", () => {
   it("removePurchaseListener correctly removes a listener", () => {
     const Purchases = require("../index").default;
     const listener = jest.fn();
-    const listenerId = Purchases.addPurchaseListener(listener);
-    Purchases.removePurchaseListener(listenerId);
+    Purchases.addPurchaseListener(listener);
+    Purchases.removePurchaseListener(listener);
 
     const nativeEmitter = new NativeEventEmitter();
 
