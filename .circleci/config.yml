@@ -31,10 +31,6 @@ jobs:
     shell: /bin/bash --login -o pipefail
     steps:
       - checkout
-      - run: yarn
-      - run:
-          name: Tests
-          command: yarn test
       - run:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
