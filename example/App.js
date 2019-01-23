@@ -24,26 +24,33 @@ export default class App extends Component {
       proMonthlyPrice: "Loading",
       currentID: ""
     };
-    Purchases.addPurchaseListener((productIdentifier, purchaserInfo, error) => {
-      if (error && !error.userCancelled) {
-        this.setState({error: error.message});
-        return;
-      }
+  }
   
-      this.handlePurchaserInfo(purchaserInfo);
-    });
-  
-    Purchases.addPurchaserInfoUpdateListener((purchaserInfo, error) => {
-      if (purchaserInfo) {
+  setListeners = () => {
+    const listeners = {
+      purchaseListener: (productIdentifier, purchaserInfo, error) => {
+        if (error && !error.userCancelled) {
+          this.setState({error: error.message});
+          return;
+        }
         this.handlePurchaserInfo(purchaserInfo);
+      },
+      purchaserInfoUpdatedListener: (purchaserInfo, error) => {
+        if (purchaserInfo) {
+          this.handlePurchaserInfo(purchaserInfo);
+        }
+      },
+      restoreTransactionsListener: (purchaserInfo, error) => {
+        if (purchaserInfo) {
+          this.handlePurchaserInfo(purchaserInfo);
+        }
       }
-    });
-  
-    Purchases.addRestoreTransactionsListener((purchaserInfo, error) => {
-      if (purchaserInfo) {
-        this.handlePurchaserInfo(purchaserInfo);
-      }
-    });
+    }
+    Purchases.addPurchaseListener(listeners.purchaseListener);
+    Purchases.addPurchaserInfoUpdateListener(listeners.purchaserInfoUpdatedListener);
+    Purchases.addRestoreTransactionsListener(listeners.restoreTransactionsListener);
+
+    return listeners;
   }
 
   async componentDidMount() {
@@ -51,16 +58,24 @@ export default class App extends Component {
       let purchases = await Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", "purchases_sample_id_4");
       let entitlements = await Purchases.getEntitlements();
       let appUserID = await Purchases.getAppUserID();
+      const listeners = this.setListeners();
       this.setState({
         entitlements,
         proAnnualPrice: "Buy Annual w/ Trial " + entitlements.pro.annual.price_string,
         proMonthlyPrice: "Buy Monthly w/ Trial " + entitlements.pro.monthly.price_string,
-        currentID: appUserID
+        currentID: appUserID,
+        listeners: listeners
       });
     } catch (e) {
       this.setState({error: "Error " + e})
     }
   };
+
+  componentWillUnmount() {
+    Purchases.removePurchaseListener(this.state.listeners.purchaseListener);
+    Purchases.removePurchaserInfoUpdateListener(this.state.listeners.purchaserInfoUpdatedListener);
+    Purchases.removeRestoreTransactionsListener(this.state.listeners.restoreTransactionsListener);
+  }
 
   updateID = async() => {
     const currentID = await Purchases.getAppUserID();
