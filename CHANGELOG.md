@@ -1,3 +1,7 @@
+## 1.5.3
+- Fix android setup on a null appuserid 
+- Adds listener removal methods
+
 ## 1.5.2
 - Changes setIsUsingAnonymousID to allowSharingStoreAccount
 

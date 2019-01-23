@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "",
   "main": "index.js",
   "scripts": {
