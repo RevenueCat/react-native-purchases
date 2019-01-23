@@ -5,3 +5,4 @@
 5. `git tag x.y.z`
 6. `git push origin master && git push --tags`
 7. Create a new release in github and upload
+8. `npm publish`
