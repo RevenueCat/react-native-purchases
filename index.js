@@ -50,8 +50,6 @@ eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, erro
   restoreTransactionsListeners.forEach(listener => listener(purchaserInfo, error));
 })
 
-const ID = () => Math.random().toString(36).substr(2, 9);
-
 export default class Purchases {
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
       @param {String} apiKey RevenueCat API Key
@@ -79,13 +77,13 @@ export default class Purchases {
   */
 
   /** Sets a function to be called on purchase complete or fail
-      @param {PurchaseListener} purchaseListener_ Purchase listener
+      @param {PurchaseListener} purchaseListener Purchase listener
   */
-  static addPurchaseListener(purchaseListener_) {
-    if (typeof purchaseListener_ !== "function") {
+  static addPurchaseListener(purchaseListener) {
+    if (typeof purchaseListener !== "function") {
       throw new Error("addPurchaseListener needs a function");
     }
-    purchaseListeners.push(purchaseListener_);
+    purchaseListeners.push(purchaseListener);
   }
 
   /** Removes a given Purchase listener
@@ -93,8 +91,9 @@ export default class Purchases {
       @returns {Boolean} True if listener was removed, false otherwise
   */
   static removePurchaseListener(listenerToRemove) {
+    debugger;
     if (purchaseListeners.includes(listenerToRemove)) {
-      purchaseListeners = purchaseListeners.filter(listener => listenerToRemove != listener);
+      purchaseListeners = purchaseListeners.filter(listener => listenerToRemove !== listener);
       return true;
     } else {
       return false;
@@ -107,13 +106,13 @@ export default class Purchases {
   */
   
   /** Sets a function to be called on purchase complete or fail
-      @param {RestoreTransactionsListener} restoreTransactionsListener_ Restore transactions listener 
+      @param {RestoreTransactionsListener} restoreTransactionsListener Restore transactions listener 
   */
-  static addRestoreTransactionsListener(restoreTransactionsListener_) {
-    if (typeof restoreTransactionsListener_ !== "function") {
+  static addRestoreTransactionsListener(restoreTransactionsListener) {
+    if (typeof restoreTransactionsListener !== "function") {
       throw new Error("addRestoreTransactionsListener needs a function")
     }
-    restoreTransactionsListeners.push(restoreTransactionsListener_);
+    restoreTransactionsListeners.push(restoreTransactionsListener);
   }
 
   /** Removes a given RestoreTransactionsListener
@@ -122,7 +121,7 @@ export default class Purchases {
   */
   static removeRestoreTransactionsListener(listenerToRemove) {
     if (restoreTransactionsListeners.includes(listenerToRemove)) {
-      restoreTransactionsListeners = restoreTransactionsListeners.filter(listener => listenerToRemove != listener)
+      restoreTransactionsListeners = restoreTransactionsListeners.filter(listener => listenerToRemove !== listener)
       return true;
     } else {
       return false;
@@ -135,13 +134,13 @@ export default class Purchases {
   */
   
   /** Sets a function to be called on updated purchaser info
-      @param {PurchaserInfoListener} purchaserInfoUpdateListener_ PurchaserInfo update listener 
+      @param {PurchaserInfoListener} purchaserInfoUpdateListener PurchaserInfo update listener 
   */
-  static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener_) {
-    if (typeof purchaserInfoUpdateListener_ !== "function") {
+  static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener) {
+    if (typeof purchaserInfoUpdateListener !== "function") {
       throw new Error("addPurchaserInfoUpdateListener needs a function")
     }
-    purchaserInfoUpdateListeners.push(purchaserInfoUpdateListener_);
+    purchaserInfoUpdateListeners.push(purchaserInfoUpdateListener);
   }
 
   /** Removes a given PurchaserInfoUpdateListener
@@ -150,7 +149,7 @@ export default class Purchases {
   */
   static removePurchaserInfoUpdateListener(listenerToRemove) {
     if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
-      purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(listener => listenerToRemove != listener)
+      purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(listener => listenerToRemove !== listener)
       return true;
     } else {
       return false;
