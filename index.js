@@ -15,7 +15,7 @@ export const isUTCDateStringFuture = dateString => {
   const nowUtcMillis = Date.UTC(
     now.getUTCFullYear(),
     now.getUTCMonth(),
-    now.getUTCDate(), 
+    now.getUTCDate(),
     now.getUTCHours(),
     now.getUTCMinutes(),
     now.getUTCSeconds(),
@@ -24,10 +24,10 @@ export const isUTCDateStringFuture = dateString => {
   return nowUtcMillis < dateUtcMillis;
 }
 
-eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, purchaserInfo, error}) => {
+eventEmitter.addListener('Purchases-PurchaseCompleted', ({ productIdentifier, purchaserInfo, error }) => {
   if (error) {
-    const {domain, code} = error;
-    
+    const { domain, code } = error;
+
     const userCancelledDomainCodes = {
       1: 'Play Billing',
       2: 'SKErrorDomain'
@@ -38,15 +38,15 @@ eventEmitter.addListener('Purchases-PurchaseCompleted', ({productIdentifier, pur
     }
 
   }
-  
+
   purchaseListeners.forEach(listener => listener(productIdentifier, purchaserInfo, error));
 });
 
-eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({purchaserInfo, error}) => {
+eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({ purchaserInfo, error }) => {
   purchaserInfoUpdateListeners.forEach(listener => listener(purchaserInfo, error));
 });
 
-eventEmitter.addListener('Purchases-RestoredTransactions', ({purchaserInfo, error}) => {
+eventEmitter.addListener('Purchases-RestoredTransactions', ({ purchaserInfo, error }) => {
   restoreTransactionsListeners.forEach(listener => listener(purchaserInfo, error));
 })
 
@@ -103,7 +103,7 @@ export default class Purchases {
       @param {Object} purchaserInfo Object containing info for the purchaser
       @param {Object} error Error object
   */
-  
+
   /** Sets a function to be called on purchase complete or fail
       @param {RestoreTransactionsListener} restoreTransactionsListener Restore transactions listener 
   */
@@ -131,7 +131,7 @@ export default class Purchases {
       @param {Object} purchaserInfo Object containing info for the purchaser
       @param {Object} error Error object
   */
-  
+
   /** Sets a function to be called on updated purchaser info
       @param {PurchaserInfoListener} purchaserInfoUpdateListener PurchaserInfo update listener 
   */
@@ -182,14 +182,14 @@ export default class Purchases {
       @param {[String]} productIdentifiers Array of product identifiers
       @returns {Promise<Array>} A promise of product arrays
   */
-  static getProducts(productIdentifiers, type="subs") {
+  static getProducts(productIdentifiers, type = "subs") {
     return RNPurchases.getProductInfo(productIdentifiers, type);
   }
 
   /** Make a purchase
       @param {String} productIdentifier The product identifier of the product you want to purchase.
   */
-  static makePurchase(productIdentifier, oldSKUs=[], type="subs") {
+  static makePurchase(productIdentifier, oldSKUs = [], type = "subs") {
     RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
   }
 
