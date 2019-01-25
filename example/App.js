@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  Platform,
   StyleSheet,
   Button,
   ScrollView,
@@ -10,16 +9,36 @@ import {
   TouchableOpacity
 } from "react-native";
 import Purchases from "react-native-purchases";
+import logo from "./img/logo.png";
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "stretch",
+    backgroundColor: "#F5FCFF"
+  },
+  logo: {
+    alignItems: "center",
+    flex: 1
+  },
+  button: {
+    margin: 10
+  },
+  buttons: {
+    flex: 2,
+    justifyContent: "flex-start"
+  },
+  restorePurchases: {
+    color: "#f2545b"
+  },
+  currentStatus: {
+    color: "#30b296",
+    fontSize: 15
+  }
+});
 
 export default class App extends Component {
-  handlePurchaserInfo(purchaserInfo) {
-    if (purchaserInfo.activeEntitlements.length == 0) {
-      this.state.currentStatus = "Unsubscribed";
-    } else {
-      this.state.currentStatus = `You're ${purchaserInfo.activeEntitlements}`;
-    }
-  }
-
   constructor() {
     super();
     this.state = {
@@ -32,43 +51,8 @@ export default class App extends Component {
     };
   }
 
-  setListeners = () => {
-    const listeners = {
-      purchaseListener: (productIdentifier, purchaserInfo, error) => {
-        if (error && !error.userCancelled) {
-          this.setState({ error: error.message });
-          return;
-        }
-        this.handlePurchaserInfo(purchaserInfo);
-      },
-      purchaserInfoUpdatedListener: (purchaserInfo, error) => {
-        if (purchaserInfo) {
-          this.handlePurchaserInfo(purchaserInfo);
-        }
-      },
-      restoreTransactionsListener: (purchaserInfo, error) => {
-        if (purchaserInfo) {
-          this.handlePurchaserInfo(purchaserInfo);
-        }
-      }
-    };
-    Purchases.addPurchaseListener(listeners.purchaseListener);
-    Purchases.addPurchaserInfoUpdateListener(
-      listeners.purchaserInfoUpdatedListener
-    );
-    Purchases.addRestoreTransactionsListener(
-      listeners.restoreTransactionsListener
-    );
-
-    return listeners;
-  };
-
   async componentDidMount() {
     try {
-      const purchases = await Purchases.setup(
-        "LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN",
-        "purchases_sample_id_4"
-      );
       const entitlements = await Purchases.getEntitlements();
       const appUserID = await Purchases.getAppUserID();
       const listeners = this.setListeners();
@@ -89,19 +73,59 @@ export default class App extends Component {
   }
 
   componentWillUnmount() {
-    Purchases.removePurchaseListener(this.state.listeners.purchaseListener);
+    const { listeners } = this.state;
+    Purchases.removePurchaseListener(listeners.purchaseListener);
     Purchases.removePurchaserInfoUpdateListener(
-      this.state.listeners.purchaserInfoUpdatedListener
+      listeners.purchaserInfoUpdatedListener
     );
     Purchases.removeRestoreTransactionsListener(
-      this.state.listeners.restoreTransactionsListener
+      listeners.restoreTransactionsListener
     );
   }
+
+  setListeners = () => {
+    const listeners = {
+      purchaseListener: (productIdentifier, purchaserInfo, error) => {
+        if (error && !error.userCancelled) {
+          this.setState({ error: error.message });
+          return;
+        }
+        this.handlePurchaserInfo(purchaserInfo);
+      },
+      purchaserInfoUpdatedListener: purchaserInfo => {
+        if (purchaserInfo) {
+          this.handlePurchaserInfo(purchaserInfo);
+        }
+      },
+      restoreTransactionsListener: purchaserInfo => {
+        if (purchaserInfo) {
+          this.handlePurchaserInfo(purchaserInfo);
+        }
+      }
+    };
+    Purchases.addPurchaseListener(listeners.purchaseListener);
+    Purchases.addPurchaserInfoUpdateListener(
+      listeners.purchaserInfoUpdatedListener
+    );
+    Purchases.addRestoreTransactionsListener(
+      listeners.restoreTransactionsListener
+    );
+
+    return listeners;
+  };
 
   updateID = async () => {
     const currentID = await Purchases.getAppUserID();
     this.setState({ currentID });
   };
+
+  handlePurchaserInfo(purchaserInfo) {
+    if (purchaserInfo.activeEntitlements.length === 0) {
+      this.state.currentStatus = "Unsubscribed";
+    } else {
+      this.state.currentStatus = `You're ${purchaserInfo.activeEntitlements}`;
+    }
+  }
 
   render() {
     return (
@@ -110,7 +134,7 @@ export default class App extends Component {
           <Image
             style={{ width: 250, height: 250 }}
             resizeMode="contain"
-            source={require("./img/logo.png")}
+            source={logo}
           />
         </View>
         <View style={styles.buttons}>
@@ -201,30 +225,3 @@ export default class App extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "stretch",
-    backgroundColor: "#F5FCFF"
-  },
-  logo: {
-    alignItems: "center",
-    flex: 1
-  },
-  button: {
-    margin: 10
-  },
-  buttons: {
-    flex: 2,
-    justifyContent: "flex-start"
-  },
-  restorePurchases: {
-    color: "#f2545b"
-  },
-  currentStatus: {
-    color: "#30b296",
-    fontSize: 15
-  }
-});

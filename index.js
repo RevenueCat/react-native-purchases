@@ -1,4 +1,4 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules } from "react-native";
 
 const { RNPurchases } = NativeModules;
 
@@ -11,7 +11,7 @@ let restoreTransactionsListeners = [];
 export const isUTCDateStringFuture = dateString => {
   const date = new Date(dateString);
   const dateUtcMillis = date.valueOf();
-  const now = new Date;
+  const now = new Date();
   const nowUtcMillis = Date.UTC(
     now.getUTCFullYear(),
     now.getUTCMonth(),
@@ -22,33 +22,47 @@ export const isUTCDateStringFuture = dateString => {
     now.getUTCMilliseconds()
   );
   return nowUtcMillis < dateUtcMillis;
-}
+};
 
-eventEmitter.addListener('Purchases-PurchaseCompleted', ({ productIdentifier, purchaserInfo, error }) => {
-  if (error) {
-    const { domain, code } = error;
+eventEmitter.addListener(
+  "Purchases-PurchaseCompleted",
+  ({ productIdentifier, purchaserInfo, error }) => {
+    if (error) {
+      const { domain, code } = error;
 
-    const userCancelledDomainCodes = {
-      1: 'Play Billing',
-      2: 'SKErrorDomain'
-    };
+      const userCancelledDomainCodes = {
+        1: "Play Billing",
+        2: "SKErrorDomain"
+      };
 
-    if (userCancelledDomainCodes[code] === domain) {
-      error.userCancelled = true;
+      if (userCancelledDomainCodes[code] === domain) {
+        error.userCancelled = true;
+      }
     }
 
+    purchaseListeners.forEach(listener =>
+      listener(productIdentifier, purchaserInfo, error)
+    );
   }
+);
 
-  purchaseListeners.forEach(listener => listener(productIdentifier, purchaserInfo, error));
-});
+eventEmitter.addListener(
+  "Purchases-PurchaserInfoUpdated",
+  ({ purchaserInfo, error }) => {
+    purchaserInfoUpdateListeners.forEach(listener =>
+      listener(purchaserInfo, error)
+    );
+  }
+);
 
-eventEmitter.addListener('Purchases-PurchaserInfoUpdated', ({ purchaserInfo, error }) => {
-  purchaserInfoUpdateListeners.forEach(listener => listener(purchaserInfo, error));
-});
-
-eventEmitter.addListener('Purchases-RestoredTransactions', ({ purchaserInfo, error }) => {
-  restoreTransactionsListeners.forEach(listener => listener(purchaserInfo, error));
-})
+eventEmitter.addListener(
+  "Purchases-RestoredTransactions",
+  ({ purchaserInfo, error }) => {
+    restoreTransactionsListeners.forEach(listener =>
+      listener(purchaserInfo, error)
+    );
+  }
+);
 
 export default class Purchases {
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
@@ -92,11 +106,12 @@ export default class Purchases {
   */
   static removePurchaseListener(listenerToRemove) {
     if (purchaseListeners.includes(listenerToRemove)) {
-      purchaseListeners = purchaseListeners.filter(listener => listenerToRemove !== listener);
+      purchaseListeners = purchaseListeners.filter(
+        listener => listenerToRemove !== listener
+      );
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /** @callback RestoreTransactionsListener
@@ -109,7 +124,7 @@ export default class Purchases {
   */
   static addRestoreTransactionsListener(restoreTransactionsListener) {
     if (typeof restoreTransactionsListener !== "function") {
-      throw new Error("addRestoreTransactionsListener needs a function")
+      throw new Error("addRestoreTransactionsListener needs a function");
     }
     restoreTransactionsListeners.push(restoreTransactionsListener);
   }
@@ -120,11 +135,12 @@ export default class Purchases {
   */
   static removeRestoreTransactionsListener(listenerToRemove) {
     if (restoreTransactionsListeners.includes(listenerToRemove)) {
-      restoreTransactionsListeners = restoreTransactionsListeners.filter(listener => listenerToRemove !== listener)
+      restoreTransactionsListeners = restoreTransactionsListeners.filter(
+        listener => listenerToRemove !== listener
+      );
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   /** @callback PurchaserInfoListener
@@ -137,7 +153,7 @@ export default class Purchases {
   */
   static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener) {
     if (typeof purchaserInfoUpdateListener !== "function") {
-      throw new Error("addPurchaserInfoUpdateListener needs a function")
+      throw new Error("addPurchaserInfoUpdateListener needs a function");
     }
     purchaserInfoUpdateListeners.push(purchaserInfoUpdateListener);
   }
@@ -148,11 +164,12 @@ export default class Purchases {
   */
   static removePurchaserInfoUpdateListener(listenerToRemove) {
     if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
-      purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(listener => listenerToRemove !== listener)
+      purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(
+        listener => listenerToRemove !== listener
+      );
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   static ATTRIBUTION_NETWORKS = {
@@ -160,7 +177,7 @@ export default class Purchases {
     ADJUST: 1,
     APPSFLYER: 2,
     BRANCH: 3
-  }
+  };
 
   /** 
     Add a dict of attribution information
@@ -228,5 +245,4 @@ export default class Purchases {
   static reset() {
     return RNPurchases.reset();
   }
-
-};
+}

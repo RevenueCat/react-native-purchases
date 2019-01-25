@@ -7,6 +7,7 @@ module.exports = {
     "rules": {
         "react/jsx-filename-extension": ["warn", { "extensions": [".js"] }],
         "prettier/prettier": "error",
+        "react/destructuring-assignment": "off"
     },
     "extends": ["airbnb", "prettier", "prettier/react"],
     "plugins": ["jest", "prettier", "emotion"]
