@@ -91,7 +91,6 @@ export default class Purchases {
       @returns {Boolean} True if listener was removed, false otherwise
   */
   static removePurchaseListener(listenerToRemove) {
-    debugger;
     if (purchaseListeners.includes(listenerToRemove)) {
       purchaseListeners = purchaseListeners.filter(listener => listenerToRemove !== listener);
       return true;
