@@ -46,7 +46,7 @@
     "react-native": "^0.57.7"
   },
   "jest": {
-    "preset": "jest-react-native",
+    "preset": "react-native",
     "moduleFileExtensions": [
       "js"
     ],
