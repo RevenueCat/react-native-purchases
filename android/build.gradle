@@ -31,6 +31,5 @@ repositories {
 
 dependencies {
     provided 'com.facebook.react:react-native:+'
-    compile 'com.revenuecat.purchases:purchases:1.4.0'
-    compile 'com.android.billingclient:billing:1.1'
+    compile 'com.revenuecat.purchases:purchases:2.0.0-RC1'
 }
