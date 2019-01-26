@@ -10,13 +10,6 @@ jobs:
       - run:
           name: Tests
           command: yarn test
-  linter:
-    working_directory: ~/react-native-purchases
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout
-      - run: yarn
       - run:
           name: Linter
           command: yarn run lint

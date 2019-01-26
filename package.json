@@ -41,7 +41,9 @@
     "eslint-plugin-react": "^7.12.4",
     "jest": "^23.6.0",
     "prettier": "^1.16.1",
-    "jest-react-native": "^18.0.0"
+    "jest-react-native": "^18.0.0",
+    "react": "16.6.3",
+    "react-native": "^0.57.7"
   },
   "jest": {
     "preset": "jest-react-native",

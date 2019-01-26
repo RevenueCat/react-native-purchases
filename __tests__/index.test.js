@@ -42,7 +42,7 @@ describe("Purchases", () => {
     const eventInfo = {
       productIdentifier: "test.product.bla",
       purchaserInfo: purchaserInfoStub,
-      error: null
+      error: null,
     };
 
     nativeEmitter.emit("Purchases-PurchaseCompleted", eventInfo);
@@ -51,7 +51,7 @@ describe("Purchases", () => {
     expect(listener).toHaveBeenCalledWith(
       eventInfo.productIdentifier,
       eventInfo.purchaserInfo,
-      eventInfo.error
+      eventInfo.error,
     );
   });
 
@@ -66,7 +66,7 @@ describe("Purchases", () => {
     const eventInfo = {
       productIdentifier: "test.product.bla",
       purchaserInfo: purchaserInfoStub,
-      error: null
+      error: null,
     };
 
     nativeEmitter.emit("Purchases-PurchaseCompleted", eventInfo);
@@ -84,7 +84,7 @@ describe("Purchases", () => {
 
     const eventInfo = {
       purchaserInfo: purchaserInfoStub,
-      error: null
+      error: null,
     };
 
     nativeEmitter.emit("Purchases-RestoredTransactions", eventInfo);
@@ -106,7 +106,7 @@ describe("Purchases", () => {
 
     const eventInfo = {
       purchaserInfo: purchaserInfoStub,
-      error: null
+      error: null,
     };
 
     nativeEmitter.emit("Purchases-RestoredTransactions", eventInfo);
@@ -124,7 +124,7 @@ describe("Purchases", () => {
 
     const eventInfo = {
       purchaserInfo: purchaserInfoStub,
-      error: null
+      error: null,
     };
 
     nativeEmitter.emit("Purchases-PurchaserInfoUpdated", eventInfo);
@@ -146,7 +146,7 @@ describe("Purchases", () => {
 
     const eventInfo = {
       purchaserInfo: purchaserInfoStub,
-      error: null
+      error: null,
     };
 
     nativeEmitter.emit("Purchases-PurchaserInfoUpdated", eventInfo);
