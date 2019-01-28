@@ -53,6 +53,7 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
+      Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", "purchases_sample_id_4");
       const entitlements = await Purchases.getEntitlements();
       const appUserID = await Purchases.getAppUserID();
       const listeners = this.setListeners();
