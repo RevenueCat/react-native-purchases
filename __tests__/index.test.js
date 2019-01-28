@@ -4,7 +4,24 @@ describe("Purchases", () => {
     jest.mock("NativeEventEmitter");
   });
 
-  const purchaserInfoStub = {"allExpirationDates":{"onetime_purchase":null,"consumable":null,"annual_freetrial":"2019-01-23T22:34:21Z","onemonth_freetrial":"2019-01-19T01:41:06Z"},"activeSubscriptions":["annual_freetrial"],"expirationsForActiveEntitlements":{"pro":null},"activeEntitlements":["pro"],"allPurchasedProductIdentifiers":["onetime_purchase","consumable","annual_freetrial","onemonth_freetrial"],"latestExpirationDate":"2019-01-23T22:34:21Z"};
+  const purchaserInfoStub = {
+    allExpirationDates: {
+      onetime_purchase: null,
+      consumable: null,
+      annual_freetrial: "2019-01-23T22:34:21Z",
+      onemonth_freetrial: "2019-01-19T01:41:06Z"
+    },
+    activeSubscriptions: ["annual_freetrial"],
+    expirationsForActiveEntitlements: { pro: null },
+    activeEntitlements: ["pro"],
+    allPurchasedProductIdentifiers: [
+      "onetime_purchase",
+      "consumable",
+      "annual_freetrial",
+      "onemonth_freetrial"
+    ],
+    latestExpirationDate: "2019-01-23T22:34:21Z"
+  };
 
   it("isUTCDateStringFuture returns true when a date is in the future", () => {
     const { isUTCDateStringFuture } = require("../index");
@@ -34,7 +51,7 @@ describe("Purchases", () => {
     expect(listener).toHaveBeenCalledWith(
       eventInfo.productIdentifier,
       eventInfo.purchaserInfo,
-      eventInfo.error
+      eventInfo.error,
     );
   });
 

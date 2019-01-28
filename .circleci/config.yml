@@ -10,6 +10,9 @@ jobs:
       - run:
           name: Tests
           command: yarn test
+      - run:
+          name: Linter
+          command: yarn run lint
   android:
     working_directory: ~/react-native-purchases
     docker:
