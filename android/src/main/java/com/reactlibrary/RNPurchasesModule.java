@@ -1,8 +1,10 @@
 package com.reactlibrary;
 
+import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import com.android.billingclient.api.SkuDetails;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -15,31 +17,27 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.revenuecat.purchases.Entitlement;
-import com.revenuecat.purchases.Offering;
-import com.revenuecat.purchases.PurchaserInfo;
-import com.revenuecat.purchases.Purchases;
+import com.revenuecat.purchases.*;
+import com.revenuecat.purchases.interfaces.*;
 import com.revenuecat.purchases.util.Iso8601Utils;
 
-import org.jetbrains.annotations.NotNull;
+import kotlin.UninitializedPropertyAccessException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
-public class RNPurchasesModule extends ReactContextBaseJavaModule implements Purchases.PurchasesListener {
+public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
 
-    private static final String PURCHASE_COMPLETED_EVENT = "Purchases-PurchaseCompleted";
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
-    private static final String TRANSACTIONS_RESTORED = "Purchases-RestoredTransactions";
 
     private final ReactApplicationContext reactContext;
 
+    @SuppressWarnings("WeakerAccess")
     public RNPurchasesModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -50,42 +48,28 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         return "RNPurchases";
     }
 
-    private void checkPurchases() {
-        if (Purchases.getSharedInstance() == null) {
-            throw new RuntimeException("You must call setupPurchases first");
-        }
-    }
-
     public void onCatalystInstanceDestroy() {
-        if (Purchases.getSharedInstance() != null) {
+        try {
             Purchases.getSharedInstance().close();
+        } catch (UninitializedPropertyAccessException e) {
+            // there's no instance so all good
         }
     }
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID, final Promise promise) {
-        if (Purchases.getSharedInstance() != null) {
-            Purchases.getSharedInstance().close();
-        }
-        Purchases.Builder builder = new Purchases.Builder(reactContext, apiKey);
-        if (appUserID != null) {
-            builder.appUserID(appUserID);
-        }
-        Purchases purchases = builder.build();
-        purchases.setListener(this);
-        Purchases.setSharedInstance(purchases);
+        Purchases.configure(reactContext, apiKey, appUserID);
+        Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
         promise.resolve(null);
     }
 
     @ReactMethod
     public void setAllowSharingStoreAccount(boolean allowSharingStoreAccount) {
-        checkPurchases();
         Purchases.getSharedInstance().setAllowSharingPlayStoreAccount(allowSharingStoreAccount);
     }
 
     @ReactMethod
     public void addAttributionData(ReadableMap data, Integer network) {
-        checkPurchases();
         try {
             for (Purchases.AttributionNetwork attributionNetwork : Purchases.AttributionNetwork.values()) {
                 if (attributionNetwork.getServerValue() == network) {
@@ -122,30 +106,30 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
 
     @ReactMethod
     public void getEntitlements(final Promise promise) {
-        checkPurchases();
-
-        Purchases.getSharedInstance().getEntitlements(new Purchases.GetEntitlementsHandler() {
-
+        Purchases.getSharedInstance().getEntitlements(new ReceiveEntitlementsListener() {
             @Override
-            public void onReceiveEntitlements(Map<String, Entitlement> entitlementMap) {
+            public void onReceived(@NonNull Map<String, Entitlement> entitlementMap) {
                 WritableMap response = Arguments.createMap();
 
                 for (String entId : entitlementMap.keySet()) {
                     Entitlement ent = entitlementMap.get(entId);
-
                     WritableMap offeringsMap = Arguments.createMap();
-                    Map<String, Offering> offerings = ent.getOfferings();
-
-                    for (String offeringId : offerings.keySet()) {
-                        Offering offering = offerings.get(offeringId);
-                        SkuDetails skuDetails = offering.getSkuDetails();
-                        if (skuDetails != null) {
-                            WritableMap skuMap = mapForSkuDetails(skuDetails);
-                            offeringsMap.putMap(offeringId, skuMap);
-                        } else {
-                            offeringsMap.putNull(offeringId);
+                    if (ent != null) {
+                        Map<String, Offering> offerings = ent.getOfferings();
+                        for (String offeringId : offerings.keySet()) {
+                            Offering offering = offerings.get(offeringId);
+                            if (offering != null) {
+                                SkuDetails skuDetails = offering.getSkuDetails();
+                                if (skuDetails != null) {
+                                    WritableMap skuMap = mapForSkuDetails(skuDetails);
+                                    offeringsMap.putMap(offeringId, skuMap);
+                                } else {
+                                    offeringsMap.putNull(offeringId);
+                                }
+                            }
                         }
                     }
+
                     response.putMap(entId, offeringsMap);
                 }
 
@@ -153,24 +137,22 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
             }
 
             @Override
-            public void onReceiveEntitlementsError(@NotNull Purchases.ErrorDomains domain, int code, @NotNull String message) {
-                promise.reject("ERROR_FETCHING_ENTITLEMENTS", message);
+            public void onError(@NonNull PurchasesError error) {
+                promise.reject("ERROR_FETCHING_ENTITLEMENTS", error.getMessage());
             }
         });
     }
 
     @ReactMethod
     public void getProductInfo(ReadableArray productIDs, String type, final Promise promise) {
-        checkPurchases();
         ArrayList<String> productIDList = new ArrayList<>();
 
         for (int i = 0; i < productIDs.size(); i++) {
             productIDList.add(productIDs.getString(i));
         }
-
-        Purchases.GetSkusResponseHandler handler = new Purchases.GetSkusResponseHandler() {
+        GetSkusResponseListener listener = new GetSkusResponseListener() {
             @Override
-            public void onReceiveSkus(List<SkuDetails> skus) {
+            public void onReceiveSkus(@NonNull List<SkuDetails> skus) {
                 WritableArray writableArray = Arguments.createArray();
                 for (SkuDetails detail : skus) {
                     writableArray.pushMap(mapForSkuDetails(detail));
@@ -181,69 +163,131 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
         };
 
         if (type.toLowerCase().equals("subs")) {
-            Purchases.getSharedInstance().getSubscriptionSkus(productIDList, handler);
+            Purchases.getSharedInstance().getSubscriptionSkus(productIDList, listener);
         } else {
-            Purchases.getSharedInstance().getNonSubscriptionSkus(productIDList, handler);
+            Purchases.getSharedInstance().getNonSubscriptionSkus(productIDList, listener);
         }
     }
 
     @ReactMethod
-    public void makePurchase(String productIdentifier, ReadableArray oldSkus, String type) {
-        checkPurchases();
-
+    public void makePurchase(String productIdentifier, ReadableArray oldSkus, String type, final Promise promise) {
         ArrayList<String> oldSkusList = new ArrayList<>();
         for (Object oldSku : oldSkus.toArrayList()) {
             oldSkusList.add((String)oldSku);
         }
 
-        Purchases.getSharedInstance().makePurchase(getCurrentActivity(), productIdentifier, type, oldSkusList);
+        Activity currentActivity = getCurrentActivity();
+        if (currentActivity != null) {
+            Purchases.getSharedInstance().makePurchase(currentActivity, productIdentifier, type, oldSkusList, new PurchaseCompletedListener() {
+                @Override
+                public void onCompleted(@NonNull String sku, @NonNull PurchaserInfo purchaserInfo) {
+                    WritableMap map = Arguments.createMap();
+                    map.putString("productIdentifier", sku);
+                    map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
+                    promise.resolve(map);
+                }
+
+                @Override
+                public void onError(@NonNull PurchasesError error) {
+                    promise.reject("ERROR_MAKING_PURCHASE", error.getMessage());
+                }
+            });
+        } else {
+            throw new RuntimeException("There is no current Activity");
+        }
     }
 
     @ReactMethod
-    public void getAppUserID(final Promise promise) {
-        promise.resolve(Purchases.getSharedInstance().getAppUserID());
+    public void getAppUserID() {
+        Purchases.getSharedInstance().getAppUserID();
     }
 
     @ReactMethod
-    public void restoreTransactions() {
-        checkPurchases();
-        Purchases.getSharedInstance().restorePurchasesForPlayStoreAccount();
-    }
-
-    @ReactMethod
-    public void reset() {
-        checkPurchases();
-        Purchases.getSharedInstance().reset();
-    }
-
-    @ReactMethod
-    public void identify(String appUserID) {
-        checkPurchases();
-        Purchases.getSharedInstance().identify(appUserID);
-    }
-
-    @ReactMethod
-    public void createAlias(String newAppUserID, final Promise promise) {
-        checkPurchases();
-        Purchases.getSharedInstance().createAlias(newAppUserID, new Purchases.AliasHandler() {
-
+    public void restoreTransactions(final Promise promise) {
+        Purchases.getSharedInstance().restorePurchases(new ReceivePurchaserInfoListener() {
             @Override
-            public void onSuccess() {
-                promise.resolve(null);
+            public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
+                WritableMap map = Arguments.createMap();
+                map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
+                promise.resolve(map);
             }
 
             @Override
-            public void onError(@NotNull Purchases.ErrorDomains errorDomains, int i, @NotNull String s) {
-                promise.reject("ERROR_ALIASING", s);
+            public void onError(@NonNull PurchasesError error) {
+                promise.reject("ERROR_RESTORING_TRANSACTIONS", error.getMessage());
             }
         });
     }
 
-    private void sendEvent(String eventName,
-                           @Nullable WritableMap params) {
+    @ReactMethod
+    public void reset(final Promise promise) {
+        Purchases.getSharedInstance().reset(new ReceivePurchaserInfoListener() {
+            @Override
+            public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
+                promise.resolve(purchaserInfo);
+            }
+
+            @Override
+            public void onError(@NonNull PurchasesError error) {
+                promise.reject("ERROR_RESETTING", error.toString());
+            }
+        });
+    }
+
+    @ReactMethod
+    public void identify(String appUserID, final Promise promise) {
+        Purchases.getSharedInstance().identify(appUserID, new ReceivePurchaserInfoListener() {
+            @Override
+            public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
+                promise.resolve(createPurchaserInfoMap(purchaserInfo));
+            }
+
+            @Override
+            public void onError(@NonNull PurchasesError error) {
+                promise.reject("ERROR_IDENTIFYING", error.getMessage());
+            }
+        });
+    }
+
+    @ReactMethod
+    public void createAlias(String newAppUserID, final Promise promise) {
+        Purchases.getSharedInstance().createAlias(newAppUserID, new ReceivePurchaserInfoListener() {
+            @Override
+            public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
+                promise.resolve(createPurchaserInfoMap(purchaserInfo));
+            }
+
+            @Override
+            public void onError(@NonNull PurchasesError error) {
+                promise.reject("ERROR_ALIASING", error.getMessage());
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setDebugLogsEnabled(boolean enabled) {
+        Purchases.setDebugLogsEnabled(enabled);
+    }
+
+    @ReactMethod
+    public void getPurchaserInfo(final Promise promise) {
+        Purchases.getSharedInstance().getPurchaserInfo(new ReceivePurchaserInfoListener() {
+            @Override
+            public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
+                promise.resolve(createPurchaserInfoMap(purchaserInfo));
+            }
+
+            @Override
+            public void onError(@NonNull PurchasesError error) {
+                promise.reject("ERROR_GETTING_PURCHASER_INFO", error.toString());
+            }
+        });
+    }
+
+    private void sendEvent(@Nullable WritableMap params) {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
+                .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED, params);
     }
 
     private WritableMap createPurchaserInfoMap(PurchaserInfo purchaserInfo) {
@@ -300,61 +344,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Pur
     }
 
     @Override
-    public void onCompletedPurchase(String sku, PurchaserInfo purchaserInfo) {
-        WritableMap map = Arguments.createMap();
-        map.putString("productIdentifier", sku);
-        map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
-        sendEvent(PURCHASE_COMPLETED_EVENT, map);
-    }
-
-    private WritableMap errorMap(Purchases.ErrorDomains domain, int code, String message) {
-        WritableMap errorMap = Arguments.createMap();
-        String domainString;
-
-        if (domain == Purchases.ErrorDomains.REVENUECAT_BACKEND) {
-            domainString = "RevenueCat Backend";
-        } else if (domain == Purchases.ErrorDomains.PLAY_BILLING) {
-            domainString = "Play Billing";
-        } else {
-            domainString = "Unknown";
-        }
-
-        errorMap.putString("message", message);
-        errorMap.putInt("code", code);
-        errorMap.putString("domain", domainString);
-
-        return errorMap;
-    }
-
-    @Override
-    public void onFailedPurchase(@NotNull Purchases.ErrorDomains domain, int code, @org.jetbrains.annotations.Nullable String message) {
-        WritableMap map = Arguments.createMap();
-
-        map.putMap("error", errorMap(domain, code, message));
-
-        sendEvent(PURCHASE_COMPLETED_EVENT, map);
-    }
-
-    @Override
-    public void onReceiveUpdatedPurchaserInfo(PurchaserInfo purchaserInfo) {
+    public void onReceived(PurchaserInfo purchaserInfo) {
         WritableMap map = Arguments.createMap();
 
         map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
 
-        sendEvent(PURCHASER_INFO_UPDATED, map);
-    }
-
-    @Override
-    public void onRestoreTransactions(PurchaserInfo purchaserInfo) {
-        WritableMap map = Arguments.createMap();
-        map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
-
-        sendEvent(TRANSACTIONS_RESTORED, map);
-    }
-
-    @Override
-    public void onRestoreTransactionsFailed(@NotNull Purchases.ErrorDomains domain, int code, @org.jetbrains.annotations.Nullable String reason) {
-        sendEvent(TRANSACTIONS_RESTORED, errorMap(domain, code, reason));
+        sendEvent(map);
     }
 
     private static JSONObject convertMapToJson(ReadableMap readableMap) throws JSONException {
