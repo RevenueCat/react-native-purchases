@@ -22,6 +22,7 @@ import com.revenuecat.purchases.interfaces.*;
 import com.revenuecat.purchases.util.Iso8601Utils;
 
 import kotlin.UninitializedPropertyAccessException;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,7 +139,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_FETCHING_ENTITLEMENTS", error.getMessage());
+                promise.reject("ERROR_GETTING_ENTITLEMENTS", error.toString());
             }
         });
     }
@@ -170,36 +171,42 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void makePurchase(String productIdentifier, ReadableArray oldSkus, String type, final Promise promise) {
+    public void makePurchase(final String productIdentifier, ReadableArray oldSkus, String type,
+            final Promise promise) {
         ArrayList<String> oldSkusList = new ArrayList<>();
         for (Object oldSku : oldSkus.toArrayList()) {
-            oldSkusList.add((String)oldSku);
+            oldSkusList.add((String) oldSku);
         }
 
         Activity currentActivity = getCurrentActivity();
         if (currentActivity != null) {
-            Purchases.getSharedInstance().makePurchase(currentActivity, productIdentifier, type, oldSkusList, new PurchaseCompletedListener() {
-                @Override
-                public void onCompleted(@NonNull String sku, @NonNull PurchaserInfo purchaserInfo) {
-                    WritableMap map = Arguments.createMap();
-                    map.putString("productIdentifier", sku);
-                    map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
-                    promise.resolve(map);
-                }
+            Purchases.getSharedInstance().makePurchase(currentActivity, productIdentifier, type, oldSkusList,
+                    new PurchaseCompletedListener() {
+                        @Override
+                        public void onCompleted(@NonNull String sku, @NonNull PurchaserInfo purchaserInfo) {
+                            WritableMap map = Arguments.createMap();
+                            map.putString("productIdentifier", sku);
+                            map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
+                            promise.resolve(map);
+                        }
 
-                @Override
-                public void onError(@NonNull PurchasesError error) {
-                    promise.reject("ERROR_MAKING_PURCHASE", error.getMessage());
-                }
-            });
+                        @Override
+                        public void onError(@NonNull PurchasesError error) {
+                            if (error.getDomain() == Purchases.ErrorDomains.PLAY_BILLING && error.getCode() == 1) {
+                                promise.reject("ERROR_MAKING_PURCHASE", MakePurchaseThrowable.init(error, true));
+                            } else {
+                                promise.reject("ERROR_MAKING_PURCHASE", MakePurchaseThrowable.init(error, false));
+                            }
+                        }
+                    });
         } else {
-            throw new RuntimeException("There is no current Activity");
+            promise.reject("ERROR_MAKING_PURCHASE", "There is no current Activity");
         }
     }
 
     @ReactMethod
-    public void getAppUserID() {
-        Purchases.getSharedInstance().getAppUserID();
+    public String getAppUserID() {
+        return Purchases.getSharedInstance().getAppUserID();
     }
 
     @ReactMethod
@@ -214,7 +221,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_RESTORING_TRANSACTIONS", error.getMessage());
+                promise.reject("ERROR_RESTORING_TRANSACTIONS", error.toString());
             }
         });
     }
@@ -244,7 +251,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_IDENTIFYING", error.getMessage());
+                promise.reject("ERROR_IDENTIFYING", error.toString());
             }
         });
     }
@@ -259,7 +266,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_ALIASING", error.getMessage());
+                promise.reject("ERROR_ALIASING", error.toString());
             }
         });
     }
@@ -285,8 +292,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     private void sendEvent(@Nullable WritableMap params) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED, params);
     }
 
@@ -322,8 +328,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Map<String, Date> dates = purchaserInfo.getAllExpirationDatesByProduct();
         for (String key : dates.keySet()) {
             Date date = dates.get(key);
-            allExpirationDates.putString(key, Iso8601Utils
-                    .format(date));
+            allExpirationDates.putString(key, Iso8601Utils.format(date));
         }
         map.putMap("allExpirationDates", allExpirationDates);
 
@@ -332,8 +337,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         for (String entitlementId : purchaserInfo.getActiveEntitlements()) {
             Date date = purchaserInfo.getExpirationDateForEntitlement(entitlementId);
             if (date != null) {
-                allEntitlementExpirationDates.putString(entitlementId, Iso8601Utils
-                        .format(date));
+                allEntitlementExpirationDates.putString(entitlementId, Iso8601Utils.format(date));
             } else {
                 allEntitlementExpirationDates.putNull(entitlementId);
             }
@@ -358,24 +362,24 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
             switch (readableMap.getType(key)) {
-                case Null:
-                    object.put(key, JSONObject.NULL);
-                    break;
-                case Boolean:
-                    object.put(key, readableMap.getBoolean(key));
-                    break;
-                case Number:
-                    object.put(key, readableMap.getDouble(key));
-                    break;
-                case String:
-                    object.put(key, readableMap.getString(key));
-                    break;
-                case Map:
-                    object.put(key, convertMapToJson(readableMap.getMap(key)));
-                    break;
-                case Array:
-                    object.put(key, convertArrayToJson(readableMap.getArray(key)));
-                    break;
+            case Null:
+                object.put(key, JSONObject.NULL);
+                break;
+            case Boolean:
+                object.put(key, readableMap.getBoolean(key));
+                break;
+            case Number:
+                object.put(key, readableMap.getDouble(key));
+                break;
+            case String:
+                object.put(key, readableMap.getString(key));
+                break;
+            case Map:
+                object.put(key, convertMapToJson(readableMap.getMap(key)));
+                break;
+            case Array:
+                object.put(key, convertArrayToJson(readableMap.getArray(key)));
+                break;
             }
         }
         return object;
@@ -385,23 +389,23 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         JSONArray array = new JSONArray();
         for (int i = 0; i < readableArray.size(); i++) {
             switch (readableArray.getType(i)) {
-                case Null:
-                    break;
-                case Boolean:
-                    array.put(readableArray.getBoolean(i));
-                    break;
-                case Number:
-                    array.put(readableArray.getDouble(i));
-                    break;
-                case String:
-                    array.put(readableArray.getString(i));
-                    break;
-                case Map:
-                    array.put(convertMapToJson(readableArray.getMap(i)));
-                    break;
-                case Array:
-                    array.put(convertArrayToJson(readableArray.getArray(i)));
-                    break;
+            case Null:
+                break;
+            case Boolean:
+                array.put(readableArray.getBoolean(i));
+                break;
+            case Number:
+                array.put(readableArray.getDouble(i));
+                break;
+            case String:
+                array.put(readableArray.getString(i));
+                break;
+            case Map:
+                array.put(convertMapToJson(readableArray.getMap(i)));
+                break;
+            case Array:
+                array.put(convertArrayToJson(readableArray.getArray(i)));
+                break;
             }
         }
         return array;
