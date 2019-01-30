@@ -53,7 +53,8 @@ export default class App extends Component {
 
   async componentDidMount() {
     try {
-      Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", "purchases_sample_id_4");
+      await Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN", "purchases_sample_id_4");
+      debugger;
       const entitlements = await Purchases.getEntitlements();
       const appUserID = await Purchases.getAppUserID();
       const listeners = this.setListeners();
@@ -75,41 +76,22 @@ export default class App extends Component {
 
   componentWillUnmount() {
     const { listeners } = this.state;
-    Purchases.removePurchaseListener(listeners.purchaseListener);
     Purchases.removePurchaserInfoUpdateListener(
       listeners.purchaserInfoUpdatedListener
-    );
-    Purchases.removeRestoreTransactionsListener(
-      listeners.restoreTransactionsListener
     );
   }
 
   setListeners = () => {
     const listeners = {
-      purchaseListener: (productIdentifier, purchaserInfo, error) => {
-        if (error && !error.userCancelled) {
-          this.setState({ error: error.message });
-          return;
-        }
-        this.handlePurchaserInfo(purchaserInfo);
-      },
       purchaserInfoUpdatedListener: purchaserInfo => {
-        if (purchaserInfo) {
-          this.handlePurchaserInfo(purchaserInfo);
-        }
-      },
-      restoreTransactionsListener: purchaserInfo => {
         if (purchaserInfo) {
           this.handlePurchaserInfo(purchaserInfo);
         }
       }
     };
-    Purchases.addPurchaseListener(listeners.purchaseListener);
+
     Purchases.addPurchaserInfoUpdateListener(
       listeners.purchaserInfoUpdatedListener
-    );
-    Purchases.addRestoreTransactionsListener(
-      listeners.restoreTransactionsListener
     );
 
     return listeners;
@@ -143,9 +125,13 @@ export default class App extends Component {
             <Button
               color="#f2545b"
               onPress={() => {
-                Purchases.makePurchase(
-                  this.state.entitlements.pro.annual.identifier
-                );
+                try {
+                  Purchases.makePurchase(
+                    this.state.entitlements.pro.annual.identifier
+                  );
+                } catch (e) {
+                  console.log(e);
+                }
               }}
               title={this.state.proAnnualPrice}
             />
