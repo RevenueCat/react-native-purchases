@@ -1,7 +1,10 @@
+import { NativeModules } from "react-native";
+
 describe("Purchases", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mock("NativeEventEmitter");
+    NativeModules.RNPurchases = { setupPurchases: jest.fn() } 
   });
 
   const purchaserInfoStub = {
@@ -29,89 +32,6 @@ describe("Purchases", () => {
     dateAhead.setDate(dateAhead.getDate() + 2);
 
     expect(isUTCDateStringFuture(dateAhead.toUTCString())).toEqual(true);
-  });
-
-  it("addPurchaseListener correctly saves listeners", () => {
-    const listener = jest.fn();
-    const Purchases = require("../index").default;
-
-    Purchases.addPurchaseListener(listener);
-
-    const nativeEmitter = new NativeEventEmitter();
-
-    const eventInfo = {
-      productIdentifier: "test.product.bla",
-      purchaserInfo: purchaserInfoStub,
-      error: null,
-    };
-
-    nativeEmitter.emit("Purchases-PurchaseCompleted", eventInfo);
-
-    expect(listener).toEqual(expect.any(Function));
-    expect(listener).toHaveBeenCalledWith(
-      eventInfo.productIdentifier,
-      eventInfo.purchaserInfo,
-      eventInfo.error,
-    );
-  });
-
-  it("removePurchaseListener correctly removes a listener", () => {
-    const Purchases = require("../index").default;
-    const listener = jest.fn();
-    Purchases.addPurchaseListener(listener);
-    Purchases.removePurchaseListener(listener);
-
-    const nativeEmitter = new NativeEventEmitter();
-
-    const eventInfo = {
-      productIdentifier: "test.product.bla",
-      purchaserInfo: purchaserInfoStub,
-      error: null,
-    };
-
-    nativeEmitter.emit("Purchases-PurchaseCompleted", eventInfo);
-
-    expect(listener).toHaveBeenCalledTimes(0);
-  });
-
-  it("addRestoreTransactionsListener correctly saves listeners", () => {
-    const listener = jest.fn();
-    const Purchases = require("../index").default;
-
-    Purchases.addRestoreTransactionsListener(listener);
-
-    const nativeEmitter = new NativeEventEmitter();
-
-    const eventInfo = {
-      purchaserInfo: purchaserInfoStub,
-      error: null,
-    };
-
-    nativeEmitter.emit("Purchases-RestoredTransactions", eventInfo);
-
-    expect(listener).toEqual(expect.any(Function));
-    expect(listener).toHaveBeenCalledWith(
-      eventInfo.purchaserInfo,
-      eventInfo.error
-    );
-  });
-
-  it("removeRestoreTransactionsListener correctly removes a listener", () => {
-    const Purchases = require("../index").default;
-    const listener = jest.fn();
-    Purchases.addRestoreTransactionsListener(listener);
-    Purchases.removeRestoreTransactionsListener(listener);
-
-    const nativeEmitter = new NativeEventEmitter();
-
-    const eventInfo = {
-      purchaserInfo: purchaserInfoStub,
-      error: null,
-    };
-
-    nativeEmitter.emit("Purchases-RestoredTransactions", eventInfo);
-
-    expect(listener).toHaveBeenCalledTimes(0);
   });
 
   it("addPurchaserInfoUpdateListener correctly saves listeners", () => {
@@ -153,4 +73,24 @@ describe("Purchases", () => {
 
     expect(listener).toHaveBeenCalledTimes(0);
   });
+
+  it("calling setup with something other than string throws exception", () => {
+      const Purchases = require("../index").default;
+
+      expect(() => {
+        Purchases.setup("api_key", 123)
+      }).toThrowError();
+
+      expect(() => {
+        Purchases.setup("api_key")
+      }).toThrowError();
+
+      expect(() => {
+        Purchases.setup("api_key", null)
+      }).toThrowError();
+
+      expect(() => {
+        Purchases.setup("api_key", "123a")
+      }).not.toThrowError();
+  })
 });
