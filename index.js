@@ -129,7 +129,7 @@ export default class Purchases {
   }
 
   /** Get the appUserID
-    @returns {String} The app user id in a promise
+    @returns {Promise<String>} The app user id in a promise
   */
   static getAppUserID() {
     return RNPurchases.getAppUserID();

@@ -205,8 +205,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public String getAppUserID() {
-        return Purchases.getSharedInstance().getAppUserID();
+    public void getAppUserID(final Promise promise) {
+        promise.resolve(Purchases.getSharedInstance().getAppUserID());
     }
 
     @ReactMethod
