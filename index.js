@@ -4,9 +4,7 @@ const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-let purchaseListeners = [];
 let purchaserInfoUpdateListeners = [];
-let restoreTransactionsListeners = [];
 
 export const isUTCDateStringFuture = dateString => {
   const date = new Date(dateString);
@@ -25,40 +23,9 @@ export const isUTCDateStringFuture = dateString => {
 };
 
 eventEmitter.addListener(
-  "Purchases-PurchaseCompleted",
-  ({ productIdentifier, purchaserInfo, error }) => {
-    if (error) {
-      const { domain, code } = error;
-
-      const userCancelledDomainCodes = {
-        1: "Play Billing",
-        2: "SKErrorDomain"
-      };
-
-      if (userCancelledDomainCodes[code] === domain) {
-        error.userCancelled = true;
-      }
-    }
-
-    purchaseListeners.forEach(listener =>
-      listener(productIdentifier, purchaserInfo, error)
-    );
-  }
-);
-
-eventEmitter.addListener(
   "Purchases-PurchaserInfoUpdated",
   ({ purchaserInfo, error }) => {
     purchaserInfoUpdateListeners.forEach(listener =>
-      listener(purchaserInfo, error)
-    );
-  }
-);
-
-eventEmitter.addListener(
-  "Purchases-RestoredTransactions",
-  ({ purchaserInfo, error }) => {
-    restoreTransactionsListeners.forEach(listener =>
       listener(purchaserInfo, error)
     );
   }
@@ -68,11 +35,13 @@ export default class Purchases {
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
       @param {String} apiKey RevenueCat API Key
       @param {String?} appUserID A unique id for identifying the user
-      @param {PurchasesListener} listener_ A function that is called on purchase or purchaser info update.
 
       @returns {Promise<void>} Returns when setup complete
   */
   static setup(apiKey, appUserID) {
+    if (typeof appUserID === "undefined" || typeof appUserID !== "string") {
+      throw new Error("appUserID needs to be a string");
+    }
     return RNPurchases.setupPurchases(apiKey, appUserID);
   }
 
@@ -82,65 +51,6 @@ export default class Purchases {
   */
   static setAllowSharingStoreAccount(allowSharing) {
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
-  }
-
-  /** @callback PurchaseListener
-      @param {String} productIdentifier Product id of the purchased product
-      @param {Object} purchaserInfo An object containing information about the product
-      @param {Object} error Error object, if error.userCancelled is truthy, the user cancelled normally
-  */
-
-  /** Sets a function to be called on purchase complete or fail
-      @param {PurchaseListener} purchaseListener Purchase listener
-  */
-  static addPurchaseListener(purchaseListener) {
-    if (typeof purchaseListener !== "function") {
-      throw new Error("addPurchaseListener needs a function");
-    }
-    purchaseListeners.push(purchaseListener);
-  }
-
-  /** Removes a given Purchase listener
-      @param {PurchaseListener} listenerToRemove PurchaseListener reference of the listener to remove
-      @returns {Boolean} True if listener was removed, false otherwise
-  */
-  static removePurchaseListener(listenerToRemove) {
-    if (purchaseListeners.includes(listenerToRemove)) {
-      purchaseListeners = purchaseListeners.filter(
-        listener => listenerToRemove !== listener
-      );
-      return true;
-    }
-    return false;
-  }
-
-  /** @callback RestoreTransactionsListener
-      @param {Object} purchaserInfo Object containing info for the purchaser
-      @param {Object} error Error object
-  */
-
-  /** Sets a function to be called on purchase complete or fail
-      @param {RestoreTransactionsListener} restoreTransactionsListener Restore transactions listener 
-  */
-  static addRestoreTransactionsListener(restoreTransactionsListener) {
-    if (typeof restoreTransactionsListener !== "function") {
-      throw new Error("addRestoreTransactionsListener needs a function");
-    }
-    restoreTransactionsListeners.push(restoreTransactionsListener);
-  }
-
-  /** Removes a given RestoreTransactionsListener
-      @param {RestoreTransactionsListener} listenerToRemove RestoreTransactionsListener reference of the listener to remove
-      @returns {Boolean} True if listener was removed, false otherwise
-  */
-  static removeRestoreTransactionsListener(listenerToRemove) {
-    if (restoreTransactionsListeners.includes(listenerToRemove)) {
-      restoreTransactionsListeners = restoreTransactionsListeners.filter(
-        listener => listenerToRemove !== listener
-      );
-      return true;
-    }
-    return false;
   }
 
   /** @callback PurchaserInfoListener
@@ -205,37 +115,45 @@ export default class Purchases {
 
   /** Make a purchase
       @param {String} productIdentifier The product identifier of the product you want to purchase.
+      @returns {Promise<Object>} A promise of purchaser info object and a boolean indicating if user cancelled
   */
   static makePurchase(productIdentifier, oldSKUs = [], type = "subs") {
-    RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
+    return RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
   }
 
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 
-    @returns {Promise<Object>} A promise of a purchaser info object
+      @returns {Promise<Object>} A promise of a purchaser info object
   */
   static restoreTransactions() {
-    RNPurchases.restoreTransactions();
+    return RNPurchases.restoreTransactions();
   }
 
   /** Get the appUserID
-    @returns {Promise<String>} The app user id in a promise
+    @returns {String} The app user id in a promise
   */
   static getAppUserID() {
     return RNPurchases.getAppUserID();
   }
 
   /** This function will alias two appUserIDs together.
-   * @param alias The new appUserID that should be linked to the currently identified appUserID
+      @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID
+      @returns {Promise<Object>} A promise of a purchaser info object
    * */
   static createAlias(newAppUserID) {
+    if (typeof newAppUserID === "undefined" || typeof newAppUserID !== "string") {
+      throw new Error("newAppUserID needs to be a string");
+    }
     return RNPurchases.createAlias(newAppUserID);
   }
 
   /**
    * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
-   * @param appUserID The appUserID that should be linked to the currently user
+   * @param {String} newAppUserID The appUserID that should be linked to the currently user
    */
   static identify(newAppUserID) {
+    if (typeof newAppUserID === "undefined" || typeof newAppUserID !== "string") {
+      throw new Error("newAppUserID needs to be a string");
+    }
     return RNPurchases.identify(newAppUserID);
   }
 
@@ -245,4 +163,23 @@ export default class Purchases {
   static reset() {
     return RNPurchases.reset();
   }
+
+  /**
+   * Enables/Disables debugs logs
+   * @param {Boolean} enabled Enable or not debug logs 
+   */
+  static debugLogsEnabled(enabled) {
+    return RNPurchases.setDebugLogsEnabled(enabled);
+  }
+
+  /**
+   * Gets purchaser info
+   * @param {Promise<Object>} A promise of a purchaser info object
+   */
+  static getPurchaserInfo() {
+    return RNPurchases.getPurchaserInfo();
+  }
+
+
+
 }
