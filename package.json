@@ -1,11 +1,11 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "2.0.0-rc1",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 2.0.0-rc1",
+    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 2.0.0",
     "preinstall": "yarn run fetch:ios:sdk",
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
