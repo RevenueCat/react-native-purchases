@@ -86,7 +86,8 @@ export default class Purchases {
     APPLE_SEARCH_ADS: 0,
     ADJUST: 1,
     APPSFLYER: 2,
-    BRANCH: 3
+    BRANCH: 3,
+    TENJIN: 4
   };
 
   /** 
