@@ -141,7 +141,10 @@ export default class Purchases {
       @returns {Promise<Object>} A promise of a purchaser info object
    * */
   static createAlias(newAppUserID) {
-    if (typeof newAppUserID === "undefined" || typeof newAppUserID !== "string") {
+    if (
+      typeof newAppUserID === "undefined" ||
+      typeof newAppUserID !== "string"
+    ) {
       throw new Error("newAppUserID needs to be a string");
     }
     return RNPurchases.createAlias(newAppUserID);
@@ -152,7 +155,10 @@ export default class Purchases {
    * @param {String} newAppUserID The appUserID that should be linked to the currently user
    */
   static identify(newAppUserID) {
-    if (typeof newAppUserID === "undefined" || typeof newAppUserID !== "string") {
+    if (
+      typeof newAppUserID === "undefined" ||
+      typeof newAppUserID !== "string"
+    ) {
       throw new Error("newAppUserID needs to be a string");
     }
     return RNPurchases.identify(newAppUserID);
@@ -167,7 +173,7 @@ export default class Purchases {
 
   /**
    * Enables/Disables debugs logs
-   * @param {Boolean} enabled Enable or not debug logs 
+   * @param {Boolean} enabled Enable or not debug logs
    */
   static debugLogsEnabled(enabled) {
     return RNPurchases.setDebugLogsEnabled(enabled);
@@ -180,7 +186,4 @@ export default class Purchases {
   static getPurchaserInfo() {
     return RNPurchases.getPurchaserInfo();
   }
-
-
-
 }
