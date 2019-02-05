@@ -34,6 +34,7 @@ import java.util.Map;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
 
+    private static final String PURCHASE_COMPLETED_EVENT = "Purchases-PurchaseCompleted";
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
 
     private final ReactApplicationContext reactContext;
@@ -172,7 +173,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void makePurchase(final String productIdentifier, ReadableArray oldSkus, String type,
-            final Promise promise) {
+                             final Promise promise) {
         ArrayList<String> oldSkusList = new ArrayList<>();
         for (Object oldSku : oldSkus.toArrayList()) {
             oldSkusList.add((String) oldSku);
@@ -187,16 +188,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                             WritableMap map = Arguments.createMap();
                             map.putString("productIdentifier", sku);
                             map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
-                            promise.resolve(map);
+                            sendEvent(PURCHASE_COMPLETED_EVENT, map);
                         }
 
                         @Override
                         public void onError(@NonNull PurchasesError error) {
-                            if (error.getDomain() == Purchases.ErrorDomains.PLAY_BILLING && error.getCode() == 1) {
-                                promise.reject("ERROR_MAKING_PURCHASE", MakePurchaseThrowable.init(error, true));
-                            } else {
-                                promise.reject("ERROR_MAKING_PURCHASE", MakePurchaseThrowable.init(error, false));
-                            }
+                            WritableMap map = Arguments.createMap();
+                            map.putMap("error", errorMap(domain, code, message));
+                            sendEvent(PURCHASE_COMPLETED_EVENT, map);
                         }
                     });
         } else {
@@ -291,9 +290,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         });
     }
 
-    private void sendEvent(@Nullable WritableMap params) {
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED, params);
+    private void sendEvent(String eventName, @Nullable WritableMap params) {
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
     private WritableMap createPurchaserInfoMap(PurchaserInfo purchaserInfo) {
@@ -353,7 +351,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
         map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
 
-        sendEvent(map);
+        sendEvent(PURCHASER_INFO_UPDATED, map);
     }
 
     private static JSONObject convertMapToJson(ReadableMap readableMap) throws JSONException {

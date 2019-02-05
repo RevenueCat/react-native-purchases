@@ -13,6 +13,7 @@
 
 @end
 
+NSString *RNPurchasesPurchaseCompletedEvent = @"Purchases-PurchaseCompleted";
 NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdated";
 
 @implementation RNPurchases
@@ -118,10 +119,12 @@ RCT_REMAP_METHOD(makePurchase,
     [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
                           withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
                               if (error) {
-                                  reject(@"ERROR_MAKING_PURCHASE", [NSString stringWithFormat:@"There was an error making the purchase for product identifier %@", productIdentifier], error);
+                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{ @"productIdentifier":transaction.payment.productIdentifier,@"purchaserInfo": purchaserInfo.dictionary
+                                                                                                    }];
                               } else {
-                                  resolve(@{@"productIdentifier": transaction.payment.productIdentifier,
-                                            @"purchaserInfo": purchaserInfo.dictionary});
+                                  NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:failureReason]];
+                                  payload[@"productIdentifier"] = transaction.payment.productIdentifier;
+                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:payload];
                               }
                           }];
 }

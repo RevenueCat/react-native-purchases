@@ -119,7 +119,33 @@ export default class Purchases {
       @returns {Promise<Object>} A promise of purchaser info object and a boolean indicating if user cancelled
   */
   static makePurchase(productIdentifier, oldSKUs = [], type = "subs") {
-    return RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
+    return Promise((resolve, reject) => {
+      eventEmitter.addListener(
+        "Purchases-PurchaseCompleted",
+        ({ productId, purchaserInfo, error }) => {
+          if (error) {
+            const newError = error;
+            const { domain, code } = error;
+
+            const userCancelledDomainCodes = {
+              1: "Play Billing",
+              2: "SKErrorDomain"
+            };
+
+            if (userCancelledDomainCodes[code] === domain) {
+              newError.userCancelled = true;
+            }
+            reject(newError);
+          } else {
+            resolve({
+              productIdentifier: productId,
+              purchaserInfo
+            });
+          }
+        }
+      );
+      RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
+    });
   }
 
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 
