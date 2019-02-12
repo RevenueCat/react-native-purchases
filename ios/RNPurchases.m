@@ -199,7 +199,8 @@ RCT_REMAP_METHOD(reset,
     }];
 }
 
-RCT_EXPORT_METHOD(debugLogsEnabled:(BOOL)enabled) {
+RCT_EXPORT_METHOD(setDebugLogsEnabled,
+                debugLogsEnabled:(BOOL)enabled) {
     RCPurchases.debugLogsEnabled = enabled;
 }
 

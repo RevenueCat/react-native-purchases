@@ -61,7 +61,7 @@ describe("Purchases", () => {
 
       expect(() => {
         Purchases.setup("api_key")
-      }).toThrowError();
+      }).not.toThrowError();
 
       expect(() => {
         Purchases.setup("api_key", null)

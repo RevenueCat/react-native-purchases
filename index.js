@@ -39,7 +39,7 @@ export default class Purchases {
       @returns {Promise<void>} Returns when setup complete
   */
   static setup(apiKey, appUserID) {
-    if (typeof appUserID === "undefined" || typeof appUserID !== "string") {
+    if (typeof appUserID !== "undefined" && typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
     }
     return RNPurchases.setupPurchases(apiKey, appUserID);
@@ -180,6 +180,7 @@ export default class Purchases {
   /**
    * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
    * @param {String} newAppUserID The appUserID that should be linked to the currently user
+   * @returns {Promise<Object>} A promise of a purchaser info object
    */
   static identify(newAppUserID) {
     if (
@@ -193,6 +194,7 @@ export default class Purchases {
 
   /**
    * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
+   * @returns {Promise<Object>} A promise of a purchaser info object
    */
   static reset() {
     return RNPurchases.reset();
@@ -202,7 +204,7 @@ export default class Purchases {
    * Enables/Disables debugs logs
    * @param {Boolean} enabled Enable or not debug logs
    */
-  static debugLogsEnabled(enabled) {
+  static setDebugLogsEnabled(enabled) {
     return RNPurchases.setDebugLogsEnabled(enabled);
   }
 
