@@ -25,7 +25,8 @@ NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdate
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[RNPurchasesPurchaserInfoUpdatedEvent];
+    return @[RNPurchasesPurchaseCompletedEvent,
+             RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
 RCT_EXPORT_MODULE();
@@ -119,12 +120,12 @@ RCT_REMAP_METHOD(makePurchase,
     [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
                           withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
                               if (error) {
-                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{ @"productIdentifier":transaction.payment.productIdentifier,@"purchaserInfo": purchaserInfo.dictionary
-                                                                                                    }];
-                              } else {
-                                  NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:failureReason]];
+                                  NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:error]];
                                   payload[@"productIdentifier"] = transaction.payment.productIdentifier;
                                   [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:payload];
+                              } else {
+                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{ @"productIdentifier":transaction.payment.productIdentifier,@"purchaserInfo": purchaserInfo.dictionary
+                                                                                                    }];
                               }
                           }];
 }
@@ -224,6 +225,18 @@ RCT_REMAP_METHOD(purchaserInfo,
                                                                         }];
 }
 
+#pragma mark Response Payload Helpers
+
+- (NSDictionary *)payloadForError:(NSError *)error
+{
+    return @{
+             @"error": @{
+                     @"message": error.localizedDescription,
+                     @"code": @(error.code),
+                     @"domain": error.domain
+                     }
+             };
+}
 
 @end
   

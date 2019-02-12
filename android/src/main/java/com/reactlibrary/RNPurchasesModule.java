@@ -154,7 +154,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
         GetSkusResponseListener listener = new GetSkusResponseListener() {
             @Override
-            public void onReceiveSkus(@NonNull List<SkuDetails> skus) {
+            public void onReceived(@NonNull List<SkuDetails> skus) {
                 WritableArray writableArray = Arguments.createArray();
                 for (SkuDetails detail : skus) {
                     writableArray.pushMap(mapForSkuDetails(detail));
@@ -162,6 +162,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
                 promise.resolve(writableArray);
             }
+
+            @Override
+            public void onError(@NonNull PurchasesError error) {
+                promise.reject("ERROR_GETTING_PURCHASER_INFO", error.toString());
+            }
+
         };
 
         if (type.toLowerCase().equals("subs")) {
@@ -173,7 +179,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void makePurchase(final String productIdentifier, ReadableArray oldSkus, String type,
-                             final Promise promise) {
+            final Promise promise) {
         ArrayList<String> oldSkusList = new ArrayList<>();
         for (Object oldSku : oldSkus.toArrayList()) {
             oldSkusList.add((String) oldSku);
@@ -194,7 +200,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                         @Override
                         public void onError(@NonNull PurchasesError error) {
                             WritableMap map = Arguments.createMap();
-                            map.putMap("error", errorMap(domain, code, message));
+                            map.putMap("error", errorMap(error));
                             sendEvent(PURCHASE_COMPLETED_EVENT, map);
                         }
                     });
@@ -343,6 +349,25 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         map.putMap("expirationsForActiveEntitlements", allEntitlementExpirationDates);
 
         return map;
+    }
+
+    private WritableMap errorMap(PurchasesError error) {
+        WritableMap errorMap = Arguments.createMap();
+        String domainString;
+
+        if (error.getDomain() == Purchases.ErrorDomains.REVENUECAT_BACKEND) {
+            domainString = "RevenueCat Backend";
+        } else if (error.getDomain() == Purchases.ErrorDomains.PLAY_BILLING) {
+            domainString = "Play Billing";
+        } else {
+            domainString = "Unknown";
+        }
+
+        errorMap.putString("message", error.getMessage());
+        errorMap.putInt("code", error.getCode());
+        errorMap.putString("domain", domainString);
+
+        return errorMap;
     }
 
     @Override

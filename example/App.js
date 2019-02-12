@@ -124,13 +124,13 @@ export default class App extends Component {
           <View style={styles.button}>
             <Button
               color="#f2545b"
-              onPress={() => {
+              onPress={ async () => {
                 try {
-                  Purchases.makePurchase(
-                    this.state.entitlements.pro.annual.identifier
-                  );
+                  await Purchases.makePurchase(this.state.entitlements.pro.annual.identifier);
                 } catch (e) {
-                  console.log(e);
+                  if (!e.userCancelled) {
+                    this.setState({ error: `Error ${e}` });
+                  }
                 }
               }}
               title={this.state.proAnnualPrice}
@@ -139,10 +139,14 @@ export default class App extends Component {
           <View style={styles.button}>
             <Button
               color="#f2545b"
-              onPress={() => {
-                Purchases.makePurchase(
-                  this.state.entitlements.pro.monthly.identifier
-                );
+              onPress={ async () => {
+                try {
+                  await Purchases.makePurchase(this.state.entitlements.pro.monthly.identifier);
+                } catch (e) {
+                  if (!e.userCancelled) {
+                    this.setState({ error: `Error ${e}` });
+                  }
+                }
               }}
               title={this.state.proMonthlyPrice}
             />
@@ -150,17 +154,25 @@ export default class App extends Component {
           <View style={styles.button}>
             <Button
               color="#f2545b"
-              onPress={() => {
-                Purchases.makePurchase(
-                  this.state.entitlements.pro.consumable.identifier
-                );
+              onPress={ async () => {
+                try {
+                  await Purchases.makePurchase(
+                    this.state.entitlements.pro.consumable.identifier,
+                    [],
+                    "inapp"
+                  );
+                } catch (e) {
+                  if (!e.userCancelled) {
+                    this.setState({ error: `Error ${e}` });
+                  }
+                }
               }}
               title="Buy One Time Purchase"
             />
           </View>
           <View style={{ margin: 10, alignItems: "center" }}>
             <TouchableOpacity
-              onPress={() => {
+              onPress={ async () => {
                 Purchases.restoreTransactions();
               }}
             >

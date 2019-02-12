@@ -116,36 +116,37 @@ export default class Purchases {
 
   /** Make a purchase
       @param {String} productIdentifier The product identifier of the product you want to purchase.
+      @param {Array<String>} oldSKUs Optional array of skus you wish to upgrade from. 
+      @param {String} type Optional type of product, can be inapp or subs. Subs by default
       @returns {Promise<Object>} A promise of purchaser info object and a boolean indicating if user cancelled
   */
   static makePurchase(productIdentifier, oldSKUs = [], type = "subs") {
-    return Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       eventEmitter.addListener(
         "Purchases-PurchaseCompleted",
-        ({ productId, purchaserInfo, error }) => {
+        ({ productIdentifier, purchaserInfo, error }) => {
           if (error) {
-            const newError = error;
-            const { domain, code } = error;
-
+            const { code, domain, message } = error;
             const userCancelledDomainCodes = {
               1: "Play Billing",
               2: "SKErrorDomain"
             };
-
-            if (userCancelledDomainCodes[code] === domain) {
-              newError.userCancelled = true;
-            }
-            reject(newError);
+            reject({
+              code,
+              domain,
+              message,
+              userCancelled: userCancelledDomainCodes[code] === domain
+            });
           } else {
             resolve({
-              productIdentifier: productId,
+              productIdentifier,
               purchaserInfo
             });
           }
         }
       );
       RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
-    });
+    })
   }
 
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 
