@@ -18,18 +18,11 @@ const styles = StyleSheet.create({
         alignItems: "stretch",
         backgroundColor: "#F5FCFF"
     },
-    logo: {
-        alignItems: "center",
-        flex: 1
-    },
-    button: {
-        margin: 10
-    },
     buttons: {
         flex: 2,
         justifyContent: "flex-start"
     },
-    restorePurchases: {
+    textButton: {
         color: "#f2545b"
     },
     currentStatus: {
@@ -42,183 +35,81 @@ export default class CatsScreen extends React.Component {
     constructor() {
         super();
         this.state = {
-            entitlements: [],
+            isPro: false,
             error: "",
-            currentStatus: "Unsubscribed",
-            proAnnualPrice: "Loading",
-            proMonthlyPrice: "Loading",
-            currentID: ""
+            currentStatus: "😿",
+            purchaseDate: "",
+            expirationDate: "",
         };
     }
 
-    async componentDidMount() {
+    async componentWillMount() {
         try {
-            const entitlements = await Purchases.getEntitlements();
-            const appUserID = await Purchases.getAppUserID();
-            const listeners = this.setListeners();
+            const info = await Purchases.getPurchaserInfo();
+            const isPro = info.activeEntitlements !== 'undefined' && info.activeEntitlements.includes("pro");
             this.setState({
-                entitlements,
-                proAnnualPrice: `Buy Annual w/ Trial ${
-                    entitlements.pro.annual.price_string
-                    }`,
-                proMonthlyPrice: `Buy Monthly w/ Trial ${
-                    entitlements.pro.monthly.price_string
-                    }`,
-                currentID: appUserID,
-                listeners
+                isPro,
+                currentStatus: isPro ? "😻" : "😿",
+                purchaseDate: isPro ? "Purchase Date: " + info.purchaseDatesForActiveEntitlements["pro"] : "",
+                expirationDate: isPro ? "Expiration Date: " + info.expirationsForActiveEntitlements["pro"] : ""
             });
         } catch (e) {
             this.setState({ error: `Error ${e}` });
         }
     }
 
-    componentWillUnmount() {
-        const { listeners } = this.state;
-        Purchases.removePurchaserInfoUpdateListener(
-            listeners.purchaserInfoUpdatedListener
+    renderNotPro() {
+        return (
+            <React.Fragment>
+                <View style={{ margin: 10, alignItems: "center" }}>
+                    <TouchableOpacity
+                        onPress={async () => {
+                            Purchases.restoreTransactions();
+                        }}
+                    >
+                        <Text style={styles.restorePurchases}>Restore purchases</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ margin: 10, alignItems: "center" }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.props.navigation.navigate('Upsell');
+                        }}
+                    >
+                        <Text style={styles.restorePurchases}>Go Premium</Text>
+                    </TouchableOpacity>
+                </View>
+            </React.Fragment>
         );
     }
 
-    setListeners = () => {
-        const listeners = {
-            purchaserInfoUpdatedListener: purchaserInfo => {
-                if (purchaserInfo) {
-                    this.handlePurchaserInfo(purchaserInfo);
-                }
-            }
-        };
-
-        Purchases.addPurchaserInfoUpdateListener(
-            listeners.purchaserInfoUpdatedListener
+    renderPro() {
+        return (
+            <React.Fragment>
+                <View style={{  margin: 10, alignItems: "center" }}>
+                    <Text style={styles.textButton}>{this.state.purchaseDate}</Text>
+                </View>
+                <View style={{  margin: 10, alignItems: "center" }}>
+                    <Text style={styles.textButton}>{this.state.expirationDate}</Text>
+                </View>
+            </React.Fragment>
         );
-
-        return listeners;
-    };
-
-    updateID = async () => {
-        const currentID = await Purchases.getAppUserID();
-        this.setState({ currentID });
-    };
-
-    handlePurchaserInfo(purchaserInfo) {
-        if (purchaserInfo.activeEntitlements.length === 0) {
-            this.state.currentStatus = "Unsubscribed";
-        } else {
-            this.state.currentStatus = `You're ${purchaserInfo.activeEntitlements}`;
-        }
     }
 
     render() {
         return (
             <ScrollView>
-                <View style={styles.logo}>
-                    <Image
-                        style={{ width: 250, height: 250 }}
-                        resizeMode="contain"
-                        source={logo}
-                    />
-                </View>
                 <View style={styles.buttons}>
-                    <View style={styles.button}>
-                        <Button
-                            color="#f2545b"
-                            onPress={async () => {
-                                try {
-                                    await Purchases.makePurchase(this.state.entitlements.pro.annual.identifier);
-                                } catch (e) {
-                                    if (!e.userCancelled) {
-                                        this.setState({ error: `Error ${e}` });
-                                    }
-                                }
-                            }}
-                            title={this.state.proAnnualPrice}
-                        />
-                    </View>
-                    <View style={styles.button}>
-                        <Button
-                            color="#f2545b"
-                            onPress={async () => {
-                                try {
-                                    await Purchases.makePurchase(this.state.entitlements.pro.monthly.identifier);
-                                } catch (e) {
-                                    if (!e.userCancelled) {
-                                        this.setState({ error: `Error ${e}` });
-                                    }
-                                }
-                            }}
-                            title={this.state.proMonthlyPrice}
-                        />
-                    </View>
-                    <View style={styles.button}>
-                        <Button
-                            color="#f2545b"
-                            onPress={async () => {
-                                try {
-                                    await Purchases.makePurchase(
-                                        this.state.entitlements.pro.consumable.identifier,
-                                        [],
-                                        "inapp"
-                                    );
-                                } catch (e) {
-                                    if (!e.userCancelled) {
-                                        this.setState({ error: `Error ${e}` });
-                                    }
-                                }
-                            }}
-                            title="Buy One Time Purchase"
-                        />
-                    </View>
-                    <View style={{ margin: 10, alignItems: "center" }}>
-                        <TouchableOpacity
-                            onPress={async () => {
-                                Purchases.restoreTransactions();
-                            }}
-                        >
-                            <Text style={styles.restorePurchases}>Restore purchases</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.button}>
-                        <Button
-                            color="#f2545b"
-                            onPress={async () => {
-                                await Purchases.createAlias("pedro");
-                                this.updateID();
-                            }}
-                            title="Create Alias"
-                        />
-                    </View>
-                    <View style={styles.button}>
-                        <Button
-                            color="#f2545b"
-                            onPress={() => {
-                                Purchases.identify("cesarpedro");
-                                this.updateID();
-                            }}
-                            title="Identify"
-                        />
-                    </View>
-                    <View style={styles.button}>
-                        <Button
-                            color="#f2545b"
-                            onPress={() => {
-                                Purchases.reset();
-                                this.updateID();
-                            }}
-                            title="Reset"
-                        />
-                    </View>
                     <View style={{ margin: 50, alignItems: "center" }}>
-                        <Text style={styles.currentStatus}>{this.state.currentID}</Text>
+                        <Text style={{ fontSize: 70 }}>{this.state.currentStatus}</Text>
                     </View>
-                    <View style={{ margin: 50, alignItems: "center" }}>
-                        <Text style={styles.currentStatus}>{this.state.currentStatus}</Text>
-                    </View>
-                    <View style={{ margin: 50, alignItems: "center" }}>
-                        <Text style={styles.currentStatus}>{this.state.error}</Text>
+                    {!this.state.isPro ? this.renderNotPro() : this.renderPro()}
+                    <View style={{ alignItems: "center" }}>
+                        <Text style={styles.textButton}>{this.state.error}</Text>
                     </View>
                 </View>
             </ScrollView>
         );
     }
+
 }

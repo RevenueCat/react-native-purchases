@@ -1,14 +1,25 @@
 import React from "react";
 import Purchases from "react-native-purchases";
+import { StackActions, NavigationActions } from 'react-navigation'
 
+  
 export default class InitialScreen extends React.Component {
     async componentDidMount() {
-        const info = await Purchases.getPurchaserInfo();
-        debugger;
-        if (info.activeEntitlements !== 'undefined' && info.activeEntitlements.includes("pro")) {
-            this.props.navigation.navigate('Cats');
+        const purchaserInfo = await Purchases.getPurchaserInfo();
+        if (purchaserInfo.activeEntitlements !== 'undefined' && purchaserInfo.activeEntitlements.includes("pro")) {
+            this.props.navigation.dispatch(StackActions.reset({
+                index: 0,
+                actions: [
+                  NavigationActions.navigate({ routeName: 'Cats'})
+                ]
+              }))
         } else {
-            this.props.navigation.navigate('Upsell');
+            this.props.navigation.dispatch(StackActions.reset({
+                index: 0,
+                actions: [
+                  NavigationActions.navigate({ routeName: 'Upsell'})
+                ]
+              }));
         }
     }
 

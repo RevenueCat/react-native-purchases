@@ -121,6 +121,7 @@ RCT_REMAP_METHOD(makePurchase,
                           withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
                               if (error) {
                                   NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:error]];
+                                  // TODO: test this on Android.
                                   payload[@"productIdentifier"] = transaction.payment.productIdentifier;
                                   [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:payload];
                               } else {
@@ -138,9 +139,7 @@ RCT_REMAP_METHOD(restoreTransactions,
         if (error) {
             reject(@"ERROR_RESTORING_TRANSACTIONS", @"There was an error restoring transactions", error);
         } else {
-            resolve(@{
-                      @"purchaserInfo": purchaserInfo.dictionary
-                      });
+            resolve(purchaserInfo.dictionary);
         }
     }];
 }
@@ -162,9 +161,7 @@ RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
         if (error) {
             reject(@"ERROR_ALIASING", @"There was an error aliasing", error);
         } else {
-            resolve(@{
-                      @"purchaserInfo": purchaserInfo.dictionary
-                      });
+            resolve(purchaserInfo.dictionary);
         }
     }];
 }
@@ -177,9 +174,7 @@ RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID
         if (error) {
             reject(@"ERROR_IDENTIFYING", @"There was an error identifying", error);
         } else {
-            resolve(@{
-                      @"purchaserInfo": purchaserInfo.dictionary
-                      });
+            resolve(purchaserInfo.dictionary);
         }
     }];
 }
@@ -192,28 +187,25 @@ RCT_REMAP_METHOD(reset,
         if (error) {
             reject(@"ERROR_RESETTING", @"There was an error resetting", error);
         } else {
-            resolve(@{
-                      @"purchaserInfo": purchaserInfo.dictionary
-                      });
+            resolve(purchaserInfo.dictionary);
         }
     }];
 }
 
-RCT_EXPORT_METHOD(setDebugLogsEnabled,
+RCT_REMAP_METHOD(setDebugLogsEnabled,
                 debugLogsEnabled:(BOOL)enabled) {
     RCPurchases.debugLogsEnabled = enabled;
 }
 
-RCT_REMAP_METHOD(purchaserInfo,
+RCT_REMAP_METHOD(getPurchaserInfo,
                    purchaserInfoWithResolve:(RCTPromiseResolveBlock)resolve
                    reject:(RCTPromiseRejectBlock)reject) {
+    NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases purchaserInfoWithCompletionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (error) {
             reject(@"ERROR_GETTING_PURCHASER_INFO", @"There was an error getting purchaser info", error);
         } else {
-            resolve(@{
-                      @"purchaserInfo": purchaserInfo.dictionary
-                      });
+            resolve(purchaserInfo.dictionary);
         }
     }];
 }
@@ -221,9 +213,7 @@ RCT_REMAP_METHOD(purchaserInfo,
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
-    [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:@{
-                                                                        @"purchaserInfo": purchaserInfo.dictionary,
-                                                                        }];
+    [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:purchaserInfo.dictionary];
 }
 
 #pragma mark Response Payload Helpers

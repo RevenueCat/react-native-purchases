@@ -20,18 +20,10 @@ describe("Purchases", () => {
 
     const nativeEmitter = new NativeEventEmitter();
 
-    const eventInfo = {
-      purchaserInfo: purchaserInfoStub,
-      error: null,
-    };
-
-    nativeEmitter.emit("Purchases-PurchaserInfoUpdated", eventInfo);
+    nativeEmitter.emit("Purchases-PurchaserInfoUpdated", purchaserInfoStub);
 
     expect(listener).toEqual(expect.any(Function));
-    expect(listener).toHaveBeenCalledWith(
-      eventInfo.purchaserInfo,
-      eventInfo.error
-    );
+    expect(listener).toHaveBeenCalledWith(purchaserInfoStub);
   });
 
   it("removePurchaserInfoUpdateListener correctly removes a listener", () => {
@@ -72,7 +64,7 @@ describe("Purchases", () => {
       }).not.toThrowError();
 
 
-      expect(RNPurchasesMock.setupPurchases).toBeCalledTimes(1);
+      expect(RNPurchasesMock.setupPurchases).toBeCalledTimes(2);
   })
 
   it("allowing sharing store account works", () => {
@@ -223,15 +215,15 @@ describe("Purchases", () => {
     expect(RNPurchasesMock.identify).toBeCalledTimes(1);
   })
 
-  it("debugLogsEnabled works", () => {
+  it("setDebugLogsEnabled works", () => {
     const Purchases = require("../index").default;
 
-    Purchases.debugLogsEnabled(true)
+    Purchases.setDebugLogsEnabled(true)
 
     expect(RNPurchasesMock.setDebugLogsEnabled).toBeCalledWith(true);
     expect(RNPurchasesMock.setDebugLogsEnabled).toBeCalledTimes(1);
 
-    Purchases.debugLogsEnabled(false)
+    Purchases.setDebugLogsEnabled(false)
 
     expect(RNPurchasesMock.setDebugLogsEnabled).toBeCalledWith(false);
     expect(RNPurchasesMock.setDebugLogsEnabled).toBeCalledTimes(2);

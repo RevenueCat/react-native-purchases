@@ -24,9 +24,9 @@ export const isUTCDateStringFuture = dateString => {
 
 eventEmitter.addListener(
   "Purchases-PurchaserInfoUpdated",
-  ({ purchaserInfo, error }) => {
+  ( purchaserInfo ) => {
     purchaserInfoUpdateListeners.forEach(listener =>
-      listener(purchaserInfo, error)
+      listener(purchaserInfo)
     );
   }
 );
@@ -55,7 +55,6 @@ export default class Purchases {
 
   /** @callback PurchaserInfoListener
       @param {Object} purchaserInfo Object containing info for the purchaser
-      @param {Object} error Error object
   */
 
   /** Sets a function to be called on updated purchaser info
@@ -131,6 +130,7 @@ export default class Purchases {
               1: "Play Billing",
               2: "SKErrorDomain"
             };
+            // TODO send product identifier?
             reject({
               code,
               domain,
@@ -210,7 +210,7 @@ export default class Purchases {
 
   /**
    * Gets purchaser info
-   * @param {Promise<Object>} A promise of a purchaser info object
+   * @return {Promise<Object>} A promise of a purchaser info object
    */
   static getPurchaserInfo() {
     return RNPurchases.getPurchaserInfo();

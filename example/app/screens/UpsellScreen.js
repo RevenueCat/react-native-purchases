@@ -17,10 +17,6 @@ const styles = StyleSheet.create({
         alignItems: "stretch",
         backgroundColor: "#F5FCFF"
     },
-    logo: {
-        alignItems: "center",
-        flex: 1
-    },
     button: {
         margin: 10
     },
@@ -28,13 +24,9 @@ const styles = StyleSheet.create({
         flex: 2,
         justifyContent: "flex-start"
     },
-    restorePurchases: {
+    textButton: {
         color: "#f2545b"
     },
-    currentStatus: {
-        color: "#30b296",
-        fontSize: 15
-    }
 });
 
 export default class UpsellScreen extends React.Component {
@@ -66,6 +58,24 @@ export default class UpsellScreen extends React.Component {
         }
     }
 
+    async makePurchase(product) {
+        try {
+            const purchaseMade = await Purchases.makePurchase(product);
+            if (purchaseMade.purchaserInfo.activeEntitlements !== 'undefined' && purchaseMade.purchaserInfo.activeEntitlements.includes("pro")) {
+                this.props.navigation.dispatch(StackActions.reset({
+                    index: 0,
+                    actions: [
+                      NavigationActions.navigate({ routeName: 'Cats'})
+                    ]
+                  }))
+            }
+        } catch (e) {
+            if (!e.userCancelled) {
+                this.setState({ error: `Error ${e}` });
+            }
+        }
+    }
+
     render() {
         return (
             <ScrollView>
@@ -73,30 +83,14 @@ export default class UpsellScreen extends React.Component {
                     <View style={styles.button}>
                         <Button
                             color="#f2545b"
-                            onPress={async () => {
-                                try {
-                                    await Purchases.makePurchase(this.state.entitlements.pro.annual.identifier);
-                                } catch (e) {
-                                    if (!e.userCancelled) {
-                                        this.setState({ error: `Error ${e}` });
-                                    }
-                                }
-                            }}
+                            onPress={() => { this.makePurchase(this.state.entitlements.pro.annual.identifier); }}
                             title={this.state.proAnnualPrice}
                         />
                     </View>
                     <View style={styles.button}>
                         <Button
                             color="#f2545b"
-                            onPress={async () => {
-                                try {
-                                    await Purchases.makePurchase(this.state.entitlements.pro.monthly.identifier);
-                                } catch (e) {
-                                    if (!e.userCancelled) {
-                                        this.setState({ error: `Error ${e}` });
-                                    }
-                                }
-                            }}
+                            onPress={() => { this.makePurchase(this.state.entitlements.pro.monthly.identifier); }}
                             title={this.state.proMonthlyPrice}
                         />
                     </View>
@@ -104,7 +98,7 @@ export default class UpsellScreen extends React.Component {
                         <TouchableOpacity
                             onPress={() => this.props.navigation.navigate('Cats')}
                         >
-                            <Text style={styles.restorePurchases}>Not now</Text>
+                            <Text style={styles.textButton}>Not now</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

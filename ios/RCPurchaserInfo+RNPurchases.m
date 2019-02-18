@@ -41,6 +41,12 @@ static NSString * stringFromDate(NSDate *date)
         expirationsForActiveEntitlements[entId] = stringFromDate(date) ?: [NSNull null];;
     }
 
+    NSMutableDictionary *purchaseDatesForActiveEntitlements = [NSMutableDictionary new];
+    for (NSString *entId in self.activeEntitlements) {
+        NSDate *date = [self purchaseDateForEntitlement:entId];
+        purchaseDatesForActiveEntitlements[entId] = stringFromDate(date) ?: [NSNull null];;
+    }
+
     id latestExpiration = stringFromDate(self.latestExpirationDate) ?: [NSNull null];
 
     return @{
@@ -49,7 +55,8 @@ static NSString * stringFromDate(NSDate *date)
              @"allPurchasedProductIdentifiers": self.allPurchasedProductIdentifiers.allObjects,
              @"latestExpirationDate": latestExpiration,
              @"allExpirationDates": allExpirations,
-             @"expirationsForActiveEntitlements": expirationsForActiveEntitlements
+             @"expirationsForActiveEntitlements": expirationsForActiveEntitlements,
+             @"purchaseDatesForActiveEntitlements": purchaseDatesForActiveEntitlements
              };
 }
 

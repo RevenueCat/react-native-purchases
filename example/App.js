@@ -3,12 +3,27 @@ import {createStackNavigator, createAppContainer} from 'react-navigation';
 import Purchases from "react-native-purchases";
 import InitialScreen from "./app/screens/InitialScreen";
 import UpsellScreen from "./app/screens/UpsellScreen";
-// import CatsScreen from "./app/screens/CatsScreen";
+import CatsScreen from "./app/screens/CatsScreen";
 
 const MainNavigator = createStackNavigator({
-  Initial: InitialScreen,
-  Upsell: UpsellScreen,
-  // Cats: CatsScreen,
+  Initial: {
+    screen: InitialScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  Upsell: {
+    screen: UpsellScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  Cats: {
+    screen: CatsScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
 },
 {
   initialRouteName: "Initial"

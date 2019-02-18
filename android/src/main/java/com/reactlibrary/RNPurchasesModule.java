@@ -193,7 +193,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                         public void onCompleted(@NonNull String sku, @NonNull PurchaserInfo purchaserInfo) {
                             WritableMap map = Arguments.createMap();
                             map.putString("productIdentifier", sku);
-                            map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
+                            map.putMap("purchaserInfo", mapPurchaserInfo(purchaserInfo));
                             sendEvent(PURCHASE_COMPLETED_EVENT, map);
                         }
 
@@ -219,9 +219,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Purchases.getSharedInstance().restorePurchases(new ReceivePurchaserInfoListener() {
             @Override
             public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
-                WritableMap map = Arguments.createMap();
-                map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
-                promise.resolve(map);
+                promise.resolve(mapPurchaserInfo(purchaserInfo));
             }
 
             @Override
@@ -236,7 +234,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Purchases.getSharedInstance().reset(new ReceivePurchaserInfoListener() {
             @Override
             public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
-                promise.resolve(purchaserInfo);
+                promise.resolve(mapPurchaserInfo(purchaserInfo));
             }
 
             @Override
@@ -251,7 +249,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Purchases.getSharedInstance().identify(appUserID, new ReceivePurchaserInfoListener() {
             @Override
             public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
-                promise.resolve(createPurchaserInfoMap(purchaserInfo));
+                promise.resolve(mapPurchaserInfo(purchaserInfo));
             }
 
             @Override
@@ -266,7 +264,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Purchases.getSharedInstance().createAlias(newAppUserID, new ReceivePurchaserInfoListener() {
             @Override
             public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
-                promise.resolve(createPurchaserInfoMap(purchaserInfo));
+                promise.resolve(mapPurchaserInfo(purchaserInfo));
             }
 
             @Override
@@ -286,7 +284,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Purchases.getSharedInstance().getPurchaserInfo(new ReceivePurchaserInfoListener() {
             @Override
             public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
-                promise.resolve(createPurchaserInfoMap(purchaserInfo));
+                promise.resolve(mapPurchaserInfo(purchaserInfo));
             }
 
             @Override
@@ -300,7 +298,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
     }
 
-    private WritableMap createPurchaserInfoMap(PurchaserInfo purchaserInfo) {
+    private WritableMap mapPurchaserInfo(PurchaserInfo purchaserInfo) {
         WritableMap map = Arguments.createMap();
 
         WritableArray allActiveEntitlements = Arguments.createArray();
@@ -348,6 +346,18 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
         map.putMap("expirationsForActiveEntitlements", allEntitlementExpirationDates);
 
+        WritableMap purchaseDatesForActiveEntitlements = Arguments.createMap();
+
+        for (String entitlementId : purchaserInfo.getActiveEntitlements()) {
+            Date date = purchaserInfo.getPurchaseDateForEntitlement(entitlementId);
+            if (date != null) {
+                purchaseDatesForActiveEntitlements.putString(entitlementId, Iso8601Utils.format(date));
+            } else {
+                purchaseDatesForActiveEntitlements.putNull(entitlementId);
+            }
+        }
+        map.putMap("purchaseDatesForActiveEntitlements", purchaseDatesForActiveEntitlements);
+
         return map;
     }
 
@@ -372,11 +382,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @Override
     public void onReceived(PurchaserInfo purchaserInfo) {
-        WritableMap map = Arguments.createMap();
-
-        map.putMap("purchaserInfo", createPurchaserInfoMap(purchaserInfo));
-
-        sendEvent(PURCHASER_INFO_UPDATED, map);
+        sendEvent(PURCHASER_INFO_UPDATED, mapPurchaserInfo(purchaserInfo));
     }
 
     private static JSONObject convertMapToJson(ReadableMap readableMap) throws JSONException {
