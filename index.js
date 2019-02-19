@@ -22,14 +22,9 @@ export const isUTCDateStringFuture = dateString => {
   return nowUtcMillis < dateUtcMillis;
 };
 
-eventEmitter.addListener(
-  "Purchases-PurchaserInfoUpdated",
-  ( purchaserInfo ) => {
-    purchaserInfoUpdateListeners.forEach(listener =>
-      listener(purchaserInfo)
-    );
-  }
-);
+eventEmitter.addListener("Purchases-PurchaserInfoUpdated", purchaserInfo => {
+  purchaserInfoUpdateListeners.forEach(listener => listener(purchaserInfo));
+});
 
 export default class Purchases {
   /** Sets up Purchases with your API key and an app user id. If a user logs out and you have a new appUserId, call it again.
@@ -123,29 +118,30 @@ export default class Purchases {
     return new Promise((resolve, reject) => {
       eventEmitter.addListener(
         "Purchases-PurchaseCompleted",
-        ({ productIdentifier, purchaserInfo, error }) => {
+        ({ purchasedProductIdentifier, purchaserInfo, error }) => {
           if (error) {
             const { code, domain, message } = error;
             const userCancelledDomainCodes = {
               1: "Play Billing",
               2: "SKErrorDomain"
             };
-            reject({
+            const errorToReturn = {
               code,
               domain,
               message,
               userCancelled: userCancelledDomainCodes[code] === domain
-            });
+            };
+            reject(errorToReturn);
           } else {
             resolve({
-              productIdentifier,
+              productIdentifier: purchasedProductIdentifier,
               purchaserInfo
             });
           }
         }
       );
       RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
-    })
+    });
   }
 
   /** Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases. 

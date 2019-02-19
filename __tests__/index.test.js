@@ -96,30 +96,19 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.addAttributionData).toBeCalledTimes(1);
   })
 
-  it("get entitlements works", () => {
+  it("get entitlements works", async () => {
     const Purchases = require("../index").default;
+    
+    NativeModules.RNPurchases.getEntitlements.mockResolvedValueOnce(entitlementsStub);
+    
+    const entitlements = await Purchases.getEntitlements();
 
-    expect(Purchases.getPurchaserInfo()).resolves.toBe(entitlementsStub);
+    expect(NativeModules.RNPurchases.getEntitlements).toBeCalledTimes(1);
+    expect(entitlements).toEqual(entitlementsStub);
   })
 
-  it("getProducts works", async () => {
+  it("getProducts works and gets subs by default", async () => {
     const Purchases = require("../index").default;
-    NativeModules.RNPurchases.getProductInfo = jest.fn();
-    
-    let productsStub = [
-      {
-        currency_code: "USD",
-        intro_price_period: "",
-        intro_price_string: "",
-        price_string: "$0.99",
-        intro_price_cycles: "",
-        price: 0.99,
-        intro_price: "",
-        description: "The best service.",
-        title: "One Month Free Trial",
-        identifier: "onemonth_freetrial"
-      }
-    ];
     
     NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce(productsStub);
 
@@ -129,15 +118,13 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.getProductInfo).toBeCalledTimes(1);
     expect(products).toEqual(productsStub);
 
-    productsStub = [];
-    
-    NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce(productsStub);
+    NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce([]);
     
     products = await Purchases.getProducts("onemonth_freetrial", "nosubs")
     
     expect(NativeModules.RNPurchases.getProductInfo).toBeCalledWith("onemonth_freetrial", "nosubs");
     expect(NativeModules.RNPurchases.getProductInfo).toBeCalledTimes(2);
-    expect(products).toEqual(productsStub);
+    expect(products).toEqual([]);
   })
 
   it("makePurchase works", () => {
@@ -154,20 +141,26 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.makePurchase).toBeCalledTimes(2);
   })
 
-  it("restoreTransactions works", () => {
+  it("restoreTransactions works", async () => {
     const Purchases = require("../index").default;
 
-    Purchases.restoreTransactions()
+    NativeModules.RNPurchases.restoreTransactions.mockResolvedValueOnce(purchaserInfoStub);
+
+    const purchaserInfo = await Purchases.restoreTransactions();
     
     expect(NativeModules.RNPurchases.restoreTransactions).toBeCalledTimes(1);
+    expect(purchaserInfo).toEqual(purchaserInfoStub);
   })
 
-  it("getAppUserID works", () => {
+  it("getAppUserID works", async () => {
     const Purchases = require("../index").default;
 
-    Purchases.getAppUserID()
+    NativeModules.RNPurchases.getAppUserID.mockResolvedValueOnce("123");
+
+    const appUserID = await Purchases.getAppUserID()
     
     expect(NativeModules.RNPurchases.getAppUserID).toBeCalledTimes(1);
+    expect(appUserID).toEqual("123");
   })
 
   it("createAlias throws errors if new app user id is not a string", () => {
@@ -185,11 +178,14 @@ describe("Purchases", () => {
       Purchases.createAlias(null)
     }).toThrowError();
 
-    expect(() => {
-      Purchases.createAlias("123a")
+    expect(async () => {
+      NativeModules.RNPurchases.createAlias.mockResolvedValueOnce(purchaserInfoStub);
+      const info = await Purchases.createAlias("123a")
+      expect(info).toBeEqual(purchaserInfoStub);
     }).not.toThrowError();
 
     expect(NativeModules.RNPurchases.createAlias).toBeCalledTimes(1);
+    expect(NativeModules.RNPurchases.createAlias).toBeCalledWith("123a");
   })
 
   it("identify throws errors if new app user id is not a string", () => {
@@ -207,30 +203,10 @@ describe("Purchases", () => {
       Purchases.identify(null)
     }).toThrowError();
 
-    expect(() => {
-      Purchases.identify("123a")
-    }).not.toThrowError();
-
-    expect(NativeModules.RNPurchases.identify).toBeCalledTimes(1);
-  })
-
-  it("identify throws errors if new app user id is not a string", () => {
-    const Purchases = require("../index").default;
-
-    expect(() => {
-      Purchases.identify(123)
-    }).toThrowError();
-
-    expect(() => {
-      Purchases.identify()
-    }).toThrowError();
-
-    expect(() => {
-      Purchases.identify(null)
-    }).toThrowError();
-
-    expect(() => {
-      Purchases.identify("123a")
+    expect(async () => {
+      NativeModules.RNPurchases.identify.mockResolvedValueOnce(purchaserInfoStub);
+      const info = await Purchases.identify("123a")
+      expect(info).toBeEqual(purchaserInfoStub);
     }).not.toThrowError();
 
     expect(NativeModules.RNPurchases.identify).toBeCalledTimes(1);
@@ -250,9 +226,103 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setDebugLogsEnabled).toBeCalledTimes(2);
   })
 
-  it("getPurchaserInfo works", () => {
+  it("getPurchaserInfo works", async () => {
     const Purchases = require("../index").default;
-    expect(Purchases.getPurchaserInfo()).resolves.toBe(purchaserInfoStub);
+
+    NativeModules.RNPurchases.getPurchaserInfo.mockResolvedValueOnce(purchaserInfoStub);
+    
+    const purchaserInfo = await Purchases.getPurchaserInfo();
+    
+    expect(NativeModules.RNPurchases.getPurchaserInfo).toBeCalledTimes(1);
+    expect(purchaserInfo).toEqual(purchaserInfoStub);
   })
 
+  it("setup works", async () => {
+    const Purchases = require("../index").default;
+
+    Purchases.setup("key", "user");
+    
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user");
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(1);
+  })
+
+  it("ios cancelled purchase sets userCancelled in the error", () => {
+    const Purchases = require("../index").default;
+
+    const promise = Purchases.makePurchase("onemonth_freetrial")
+    
+    promise.then(function(result) {
+      expect(result).toEqual(undefined);
+    }, function(err) {
+      expect(err).toEqual({
+        code: 2,
+        domain: "SKErrorDomain",
+        message: "message",
+        userCancelled: true
+      });
+    });
+
+    const nativeEmitter = new NativeEventEmitter();
+    const error = {
+      code: 2,
+      domain: "SKErrorDomain",
+      message: "message"
+    }
+    nativeEmitter.emit("Purchases-PurchaseCompleted", { error });
+  })
+
+  it("android cancelled purchase sets userCancelled in the error", () => {
+    const Purchases = require("../index").default;
+
+    const promise = Purchases.makePurchase("onemonth_freetrial")
+    
+    promise.then(function(result) {
+      expect(result).toBeEqual(undefined);
+    }, function(err) {
+      expect(err).toEqual({
+        code: 1,
+        domain: "Play Billing",
+        message: "message",
+        userCancelled: true
+      });
+    });
+
+    const nativeEmitter = new NativeEventEmitter();
+    const error = {
+      code: 1,
+      domain: "Play Billing",
+      message: "message"
+    }
+    nativeEmitter.emit("Purchases-PurchaseCompleted", { error });
+  })
+
+  it("successful purchase works", () => {
+    const Purchases = require("../index").default;
+
+    const promise = Purchases.makePurchase("onemonth_freetrial")
+    
+    promise.then(function(result) {
+      expect(result).toBeEqual({
+        purchasedProductIdentifier: "123",
+        purchaserInfo: purchaserInfoStub
+      });
+    }, function(err) {
+      expect(err).toBeEqual(undefined);
+    });
+
+    const nativeEmitter = new NativeEventEmitter();
+    nativeEmitter.emit("Purchases-PurchaseCompleted", { 
+      purchasedProductIdentifier: "123",
+      purchaserInfo: purchaserInfoStub
+     });
+  })
+
+  it("reset works", async () => {
+    const Purchases = require("../index").default;
+
+    NativeModules.RNPurchases.reset.mockResolvedValueOnce(purchaserInfoStub);
+    const info = await Purchases.reset();
+    expect(info).toEqual(purchaserInfoStub);
+    expect(NativeModules.RNPurchases.reset).toBeCalledTimes(1);
+  })
 });

@@ -11,7 +11,7 @@ class NativeEventEmitter extends EventEmitter {
   }
 }
 
-const purchaserInfoStub = {
+global.purchaserInfoStub = {
   allExpirationDates: {
     onetime_purchase: null,
     consumable: null,
@@ -30,7 +30,7 @@ const purchaserInfoStub = {
   latestExpirationDate: "2019-01-23T22:34:21Z"
 };
 
-const entitlementsStub = {
+global.entitlementsStub = {
   pro: {
     monthly: {
       currency_code: "USD",
@@ -72,11 +72,27 @@ const entitlementsStub = {
   }
 };
 
+global.productsStub = [
+  {
+    currency_code: "USD",
+    intro_price_period: "",
+    intro_price_string: "",
+    price_string: "$0.99",
+    intro_price_cycles: "",
+    price: 0.99,
+    intro_price: "",
+    description: "The best service.",
+    title: "One Month Free Trial",
+    identifier: "onemonth_freetrial"
+  }
+];
+
+
 NativeModules.RNPurchases = {
   setupPurchases: jest.fn(),
   setAllowSharingStoreAccount: jest.fn(),
   addAttributionData: jest.fn(),
-  getEntitlements: () => Promise.resolve(entitlementsStub),
+  getEntitlements: jest.fn(),
   getProductInfo: jest.fn(),
   makePurchase: jest.fn(),
   restoreTransactions: jest.fn(),
@@ -84,9 +100,8 @@ NativeModules.RNPurchases = {
   createAlias: jest.fn(),
   identify: jest.fn(),
   setDebugLogsEnabled: jest.fn(),
-  getPurchaserInfo: () => Promise.resolve(purchaserInfoStub)
+  getPurchaserInfo: jest.fn(),
+  reset: jest.fn()
 };
 
 global.NativeEventEmitter = NativeEventEmitter;
-global.purchaserInfoStub = purchaserInfoStub;
-global.entitlementsStub = entitlementsStub;
