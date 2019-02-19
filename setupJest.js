@@ -30,11 +30,53 @@ const purchaserInfoStub = {
   latestExpirationDate: "2019-01-23T22:34:21Z"
 };
 
+const entitlementsStub = {
+  pro: {
+    monthly: {
+      currency_code: "USD",
+      intro_price_period: "",
+      intro_price_string: "",
+      price_string: "$0.99",
+      intro_price_cycles: "",
+      price: 0.99,
+      intro_price: "",
+      description: "The best service.",
+      title: "One Month Free Trial",
+      identifier: "onemonth_freetrial"
+    },
+    unlimited: {
+      currency_code: "USD",
+      intro_price_period: "",
+      intro_price_string: "",
+      price_string: "$4.99",
+      intro_price_cycles: "",
+      price: 4.99,
+      intro_price: "",
+      description: "you can eat it many times",
+      title: "Consumable (PurchasesSample)",
+      identifier: "consumable"
+    },
+    broken: null,
+    annual: {
+      currency_code: "USD",
+      intro_price_period: "",
+      intro_price_string: "",
+      price_string: "$19.99",
+      intro_price_cycles: "",
+      price: 19.99,
+      intro_price: "",
+      description: "The best service, annually.",
+      title: "Annual Free Trial (PurchasesSample)",
+      identifier: "annual_freetrial"
+    }
+  }
+};
+
 NativeModules.RNPurchases = {
   setupPurchases: jest.fn(),
   setAllowSharingStoreAccount: jest.fn(),
   addAttributionData: jest.fn(),
-  getEntitlements: jest.fn(),
+  getEntitlements: () => Promise.resolve(entitlementsStub),
   getProductInfo: jest.fn(),
   makePurchase: jest.fn(),
   restoreTransactions: jest.fn(),
@@ -46,5 +88,5 @@ NativeModules.RNPurchases = {
 };
 
 global.NativeEventEmitter = NativeEventEmitter;
-global.RNPurchasesMock = NativeModules.RNPurchases;
 global.purchaserInfoStub = purchaserInfoStub;
+global.entitlementsStub = entitlementsStub;

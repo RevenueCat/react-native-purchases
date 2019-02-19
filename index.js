@@ -130,7 +130,6 @@ export default class Purchases {
               1: "Play Billing",
               2: "SKErrorDomain"
             };
-            // TODO send product identifier?
             reject({
               code,
               domain,
