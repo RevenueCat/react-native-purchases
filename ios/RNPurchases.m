@@ -120,10 +120,7 @@ RCT_REMAP_METHOD(makePurchase,
     [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
                           withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
                               if (error) {
-                                  NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:error]];
-                                  // TODO: test this on Android.
-                                  payload[@"productIdentifier"] = transaction.payment.productIdentifier;
-                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:payload];
+                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:[self payloadForError:error]];
                               } else {
                                   [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{ @"productIdentifier":transaction.payment.productIdentifier,@"purchaserInfo": purchaserInfo.dictionary
                                                                                                     }];
