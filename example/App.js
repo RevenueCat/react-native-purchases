@@ -87,18 +87,29 @@ export default class App extends Component {
   setListeners = () => {
     const listeners = {
       purchaseListener: (productIdentifier, purchaserInfo, error) => {
-        if (error && !error.userCancelled) {
+        if (error && error.userCancelled) {
+          return;
+        }
+        if (error) {
           this.setState({ error: error.message });
           return;
         }
         this.handlePurchaserInfo(purchaserInfo);
       },
-      purchaserInfoUpdatedListener: purchaserInfo => {
+      purchaserInfoUpdatedListener: (purchaserInfo, error) => {
+        if (error) {
+          this.setState({ error: error.message });
+          return;
+        }
         if (purchaserInfo) {
           this.handlePurchaserInfo(purchaserInfo);
         }
       },
-      restoreTransactionsListener: purchaserInfo => {
+      restoreTransactionsListener: (purchaserInfo, error) => {
+        if (error) {
+          this.setState({ error: error.message });
+          return;
+        }
         if (purchaserInfo) {
           this.handlePurchaserInfo(purchaserInfo);
         }
