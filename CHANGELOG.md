@@ -1,3 +1,14 @@
+## 2.0.0
+- Updates native SDKs to versions iOS 2.0.0 and Android 2.0.1
+- Checks that the user ID sent to setup, identify or create alias is actually a string #28
+- BREAKING CHANGE restoreTransactions returns a promise, the RestoreTransactionsListener has  been removed
+- BREAKING CHANGE makePurchase returns a promise, the PurchaseListener has been removed
+- BREAKING CHANGE PurchaserInfoListener has been replaced with PurchaserInfoUpdateListener and it now only sends a purchaser info object. This listener is used to listen to changes in the purchaser info.
+- Added support for Tenjin
+- BREAKING CHANGE When failure making a purchase, the productIdentifier of the failed purchase is not sent to the rejected promise. Before, the PurchaseListener received both productIdentifier and error objects.
+- Added setDebugLogsEnabled to display debug logs.
+- Added getPurchaserInfo function to get the latest purchaser info known by the SDK
+
 ## 1.5.4
 - Removes unnecessary debugger statement https://github.com/RevenueCat/react-native-purchases/issues/47
 - Runs Linter and prettifier
