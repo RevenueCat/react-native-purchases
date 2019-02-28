@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 2.0.0",
-    "preinstall": "yarn run fetch:ios:sdk",
+    "preinstall": "npm run fetch:ios:sdk",
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",

@@ -1,9 +1,44 @@
-version: 2
+version: 2.1
+
+################
+# Executors
+################
+executors:
+  node:
+    parameters:
+      version:
+        type: string
+        default: "8"
+    docker:
+      - image: circleci/node:<<parameters.version>>
+    working_directory: ~/react-native-purchases
+
+  android:
+    parameters:
+      version:
+        type: string
+        default: "28"
+    environment:
+      FL_OUTPUT_DIR: output
+      _JAVA_OPTIONS: "-Xmx1500m"
+    docker:
+      - image: circleci/android:api-<<parameters.version>>-node8-alpha
+    working_directory: ~/react-native-purchases
+
+  ios:
+    parameters:
+      xcode_version:
+        type: string
+        default: "9.4.1"
+    macos:
+      xcode: <<parameters.xcode_version>>
+    working_directory: ~/react-native-purchases
+    # use a --login shell so our "set Ruby version" command gets picked up for later steps
+    shell: /bin/bash --login -o pipefail
+
 jobs:
   tests:
-    working_directory: ~/react-native-purchases
-    docker:
-      - image: circleci/node:8
+    executor: node
     steps:
       - checkout
       - run: yarn
@@ -14,9 +49,7 @@ jobs:
           name: Linter
           command: yarn run lint
   android:
-    working_directory: ~/react-native-purchases
-    docker:
-      - image: circleci/android:api-28-node8-alpha
+    executor: android
     steps:
       - checkout
       - run:
@@ -27,11 +60,7 @@ jobs:
           command: ./gradlew build
           working_directory: example/android
   ios:
-    macos:
-      xcode: "9.0"
-    working_directory: ~/react-native-purchases
-    # use a --login shell so our "set Ruby version" command gets picked up for later steps
-    shell: /bin/bash --login -o pipefail
+    executor: ios
     steps:
       - checkout
       - run:

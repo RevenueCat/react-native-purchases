@@ -1,3 +1,8 @@
+## 1.5.4
+- Removes unnecessary debugger statement https://github.com/RevenueCat/react-native-purchases/issues/47
+- Runs Linter and prettifier
+- Adds missing setup call in the example
+
 ## 1.5.3
 - Fix android setup on a null appuserid 
 - Adds listener removal methods

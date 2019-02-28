@@ -330,7 +330,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Map<String, Date> dates = purchaserInfo.getAllExpirationDatesByProduct();
         for (String key : dates.keySet()) {
             Date date = dates.get(key);
-            allExpirationDates.putString(key, Iso8601Utils.format(date));
+            if (date != null) {
+                allExpirationDates.putString(key, Iso8601Utils.format(date));
+            } else {
+                allExpirationDates.putNull(key);
+            }
         }
         map.putMap("allExpirationDates", allExpirationDates);
 
