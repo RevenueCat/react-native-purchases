@@ -48,3 +48,7 @@ buck-out/
 .jest/
 android/.settings/org.eclipse.buildship.core.prefs
 example/android/.settings/org.eclipse.buildship.core.prefs
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/gradle-wrapper.jar
+android/gradle/wrapper/gradle-wrapper.properties

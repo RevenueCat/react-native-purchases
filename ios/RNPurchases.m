@@ -15,7 +15,6 @@
 
 NSString *RNPurchasesPurchaseCompletedEvent = @"Purchases-PurchaseCompleted";
 NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdated";
-NSString *RNPurchasesRestoredTransactionsEvent = @"Purchases-RestoredTransactions";
 
 @implementation RNPurchases
 
@@ -27,8 +26,7 @@ NSString *RNPurchasesRestoredTransactionsEvent = @"Purchases-RestoredTransaction
 - (NSArray<NSString *> *)supportedEvents
 {
     return @[RNPurchasesPurchaseCompletedEvent,
-             RNPurchasesPurchaserInfoUpdatedEvent,
-             RNPurchasesRestoredTransactionsEvent];
+             RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
 RCT_EXPORT_MODULE();
@@ -63,24 +61,28 @@ RCT_REMAP_METHOD(getEntitlements,
                  reject:(RCTPromiseRejectBlock)reject)
 {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-    [RCPurchases.sharedPurchases entitlements:^(NSDictionary<NSString *,RCEntitlement *> * _Nonnull entitlements) {
-        NSMutableDictionary *result = [NSMutableDictionary new];
-        for (NSString *entId in entitlements) {
-            RCEntitlement *entitlement = entitlements[entId];
-            result[entId] = entitlement.dictionary;
-        }
-
-        for (RCEntitlement *entitlement in entitlements.allValues) {
-            for (RCOffering *offering in entitlement.offerings.allValues)
-            {
-                SKProduct *product = offering.activeProduct;
-                if (product != nil) {
-                    self.products[product.productIdentifier] = product;
+    [RCPurchases.sharedPurchases entitlementsWithCompletionBlock:^(RCEntitlements * _Nullable entitlements, NSError * _Nullable error) {
+        if (error) {
+            reject(@"ERROR_GETTING_ENTITLEMENTS", @"There was an error getting entitlements", error);
+        } else {
+            NSMutableDictionary *result = [NSMutableDictionary new];
+            for (NSString *entId in entitlements) {
+                RCEntitlement *entitlement = entitlements[entId];
+                result[entId] = entitlement.dictionary;
+            }
+            
+            for (RCEntitlement *entitlement in entitlements.allValues) {
+                for (RCOffering *offering in entitlement.offerings.allValues)
+                {
+                    SKProduct *product = offering.activeProduct;
+                    if (product != nil) {
+                        self.products[product.productIdentifier] = product;
+                    }
                 }
             }
+            
+            resolve([NSDictionary dictionaryWithDictionary:result]);
         }
-
-        resolve([NSDictionary dictionaryWithDictionary:result]);
     }];
 }
 
@@ -90,21 +92,24 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
                   reject:(RCTPromiseRejectBlock)reject)
 {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-
-    [RCPurchases.sharedPurchases productsWithIdentifiers:products completion:^(NSArray<SKProduct *> * _Nonnull products) {
-        NSMutableArray *productObjects = [NSMutableArray new];
-        for (SKProduct *p in products) {
-            self.products[p.productIdentifier] = p;
-            [productObjects addObject:p.dictionary];
-        }
-        resolve(productObjects);
-    }];
+    
+    [RCPurchases.sharedPurchases productsWithIdentifiers:products
+                                         completionBlock:^(NSArray<SKProduct *> * _Nonnull products) {
+                                             NSMutableArray *productObjects = [NSMutableArray new];
+                                             for (SKProduct *p in products) {
+                                                 self.products[p.productIdentifier] = p;
+                                                 [productObjects addObject:p.dictionary];
+                                             }
+                                             resolve(productObjects);
+                                         }];
 }
 
 RCT_REMAP_METHOD(makePurchase,
                  makePurchase:(NSString *)productIdentifier
                  oldSkus:(NSArray *)oldSkus
-                 type:(NSString *)type)
+                 type:(NSString *)type
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject)
 {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
 
@@ -112,19 +117,35 @@ RCT_REMAP_METHOD(makePurchase,
         NSLog(@"Purchases cannot find product. Did you call getProductInfo first?");
         return;
     }
-
-    [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]];
+    [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
+                          withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
+                              if (error) {
+                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:[self payloadForError:error]];
+                              } else {
+                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{ @"productIdentifier":transaction.payment.productIdentifier,@"purchaserInfo": purchaserInfo.dictionary
+                                                                                                    }];
+                              }
+                          }];
 }
 
-RCT_EXPORT_METHOD(restoreTransactions) {
+RCT_REMAP_METHOD(restoreTransactions,
+                 restoreTransactionsWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-    [RCPurchases.sharedPurchases restoreTransactionsForAppStoreAccount];
+    [RCPurchases.sharedPurchases restoreTransactionsWithCompletionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
+        if (error) {
+            reject(@"ERROR_RESTORING_TRANSACTIONS", @"There was an error restoring transactions", error);
+        } else {
+            resolve(purchaserInfo.dictionary);
+        }
+    }];
 }
 
 RCT_REMAP_METHOD(getAppUserID,
                  getAppUserIDWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
+    NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     resolve(RCPurchases.sharedPurchases.appUserID);
 }
 
@@ -133,62 +154,63 @@ RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
                   reject:(RCTPromiseRejectBlock)reject)
 {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-    [RCPurchases.sharedPurchases createAlias:newAppUserID completion:^(NSError * _Nullable error) {
+    [RCPurchases.sharedPurchases createAlias:newAppUserID completionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (error) {
             reject(@"ERROR_ALIASING", @"There was an error aliasing", error);
         } else {
-            resolve(nil);
+            resolve(purchaserInfo.dictionary);
         }
     }];
 }
 
-RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID) {
+RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-    [RCPurchases.sharedPurchases identify:appUserID];
+    [RCPurchases.sharedPurchases identify:appUserID completionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
+        if (error) {
+            reject(@"ERROR_IDENTIFYING", @"There was an error identifying", error);
+        } else {
+            resolve(purchaserInfo.dictionary);
+        }
+    }];
 }
 
-RCT_EXPORT_METHOD(reset) {
+RCT_REMAP_METHOD(reset,
+                 resetWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-    [RCPurchases.sharedPurchases reset];
+    [RCPurchases.sharedPurchases resetWithCompletionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
+        if (error) {
+            reject(@"ERROR_RESETTING", @"There was an error resetting", error);
+        } else {
+            resolve(purchaserInfo.dictionary);
+        }
+    }];
+}
+
+RCT_REMAP_METHOD(setDebugLogsEnabled,
+                debugLogsEnabled:(BOOL)enabled) {
+    RCPurchases.debugLogsEnabled = enabled;
+}
+
+RCT_REMAP_METHOD(getPurchaserInfo,
+                   purchaserInfoWithResolve:(RCTPromiseResolveBlock)resolve
+                   reject:(RCTPromiseRejectBlock)reject) {
+    NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
+    [RCPurchases.sharedPurchases purchaserInfoWithCompletionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
+        if (error) {
+            reject(@"ERROR_GETTING_PURCHASER_INFO", @"There was an error getting purchaser info", error);
+        } else {
+            resolve(purchaserInfo.dictionary);
+        }
+    }];
 }
 
 #pragma mark -
 #pragma mark Delegate Methods
-
-- (void)purchases:(nonnull RCPurchases *)purchases
-completedTransaction:(nonnull SKPaymentTransaction *)transaction
-  withUpdatedInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
-    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{
-                                                                     @"productIdentifier": transaction.payment.productIdentifier,
-                                                                     @"purchaserInfo": purchaserInfo.dictionary
-                                                                     }];
-}
-
-- (void)purchases:(nonnull RCPurchases *)purchases failedTransaction:(nonnull SKPaymentTransaction *)transaction withReason:(nonnull NSError *)failureReason {
-    NSMutableDictionary *payload = [NSMutableDictionary dictionaryWithDictionary:[self payloadForError:failureReason]];
-    payload[@"productIdentifier"] = transaction.payment.productIdentifier;
-    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:payload];
-}
-
-- (void)purchases:(nonnull RCPurchases *)purchases receivedUpdatedPurchaserInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
-    [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:@{
-                                                                        @"purchaserInfo": purchaserInfo.dictionary,
-                                                                        }];
-}
-
-- (void)purchases:(nonnull RCPurchases *)purchases failedToUpdatePurchaserInfoWithError:(nonnull NSError *)error {
-    [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:[self payloadForError:error]];
-}
-
-- (void)purchases:(nonnull RCPurchases *)purchases failedToRestoreTransactionsWithError:(nonnull NSError *)error {
-    [self sendEventWithName:RNPurchasesRestoredTransactionsEvent body:[self payloadForError:error]];
-}
-
-
-- (void)purchases:(nonnull RCPurchases *)purchases restoredTransactionsWithPurchaserInfo:(nonnull RCPurchaserInfo *)purchaserInfo {
-    [self sendEventWithName:RNPurchasesRestoredTransactionsEvent body:@{
-                                                                        @"purchaserInfo": purchaserInfo.dictionary
-                                                                        }];
+- (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
+    [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:purchaserInfo.dictionary];
 }
 
 #pragma mark Response Payload Helpers
@@ -203,9 +225,6 @@ completedTransaction:(nonnull SKPaymentTransaction *)transaction
                      }
              };
 }
-
-
-
 
 @end
   

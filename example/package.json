@@ -4,14 +4,27 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint **/*.js"
   },
   "dependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.14.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-emotion": "^10.0.7",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.3.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
     "get-dev-paths": "^0.1.0",
     "metro-config": "^0.51.1",
     "react": "16.6.3",
     "react-native": "0.57.7",
-    "react-native-purchases": "file:.."
+    "react-native-gesture-handler": "^1.0.15",
+    "react-native-purchases": "file:..",
+    "react-navigation": "^3.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
@@ -19,6 +32,9 @@
     "babel-jest": "23.6.0",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.50.0",
+    "prettier": "^1.16.4",
+    "prop-types": "^15.7.1",
+    "react-native-screens": "^1.0.0-alpha.22",
     "react-test-renderer": "16.6.3"
   },
   "jest": {
