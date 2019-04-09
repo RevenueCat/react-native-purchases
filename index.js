@@ -1,4 +1,4 @@
-import { NativeEventEmitter, NativeModules } from "react-native";
+import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 
 const { RNPurchases } = NativeModules;
 
@@ -47,6 +47,15 @@ export default class Purchases {
    */
   static setAllowSharingStoreAccount(allowSharing) {
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
+  }
+
+  /**
+   * Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
+   */  
+  static setFinishTransactions(finishTransactions) {
+    if (Platform.OS === "ios") {
+      RNPurchases.setFinishTransactions(finishTransactions);
+    }
   }
 
   /**
