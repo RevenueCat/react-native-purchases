@@ -48,6 +48,11 @@ RCT_EXPORT_METHOD(setAllowSharingStoreAccount:(BOOL)allowSharingStoreAccount)
     RCPurchases.sharedPurchases.allowSharingAppStoreAccount = allowSharingStoreAccount;
 }
 
+RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions)
+{
+    RCPurchases.sharedPurchases.finishTransactions = finishTransactions;
+}
+
 RCT_REMAP_METHOD(addAttributionData, 
                  addAttributionData:(NSDictionary *)data 
                  forNetwork:(NSInteger)network)
