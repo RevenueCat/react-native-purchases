@@ -51,7 +51,8 @@ export default class Purchases {
 
   /**
    * Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
-   */  
+   */
+
   static setFinishTransactions(finishTransactions) {
     if (Platform.OS === "ios") {
       RNPurchases.setFinishTransactions(finishTransactions);
@@ -136,15 +137,17 @@ export default class Purchases {
    * @param {String} productIdentifier The product identifier of the product you want to purchase.
    * @param {Array<String>} oldSKUs Optional array of skus you wish to upgrade from.
    * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-   * @returns {Promise<Object>} A promise of an object containing a purchaser info object and a product identifier. Rejections return an error code, 
+   * @returns {Promise<Object>} A promise of an object containing a purchaser info object and a product identifier. Rejections return an error code,
    * and a userInfo object with more information and a boolean indicating if the user cancelled the purchase.
    */
   static makePurchase(productIdentifier, oldSKUs = [], type = "subs") {
-    return RNPurchases.makePurchase(productIdentifier, oldSKUs, type)
-                      .catch(function(error) {
-                        error.userCancelled = error.code === "1"; 
-                        throw error;
-                      });
+    return RNPurchases.makePurchase(productIdentifier, oldSKUs, type).catch(
+      error => {
+        const newError = error;
+        newError.userCancelled = error.code === "1";
+        throw newError;
+      }
+    );
   }
 
   /**
