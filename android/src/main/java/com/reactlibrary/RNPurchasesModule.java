@@ -213,8 +213,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void restoreTransactions(final Promise promise) {
-        // TODO: bring back original
-        Purchases.getSharedInstance().identify("", new ReceivePurchaserInfoListener() {
+        Purchases.getSharedInstance().restorePurchases(new ReceivePurchaserInfoListener() {
             @Override
             public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
                 promise.resolve(mapPurchaserInfo(purchaserInfo));
