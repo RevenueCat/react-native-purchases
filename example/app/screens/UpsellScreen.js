@@ -47,7 +47,9 @@ const makePurchase = navigation => async product => {
     }
   } catch (e) {
     if (!e.userCancelled) {
-      console.log("Error handling");
+      console.log("Error handling " + JSON.stringify(e));
+    } else {
+      console.log("User cancelled " + JSON.stringify(e));
     }
   }
 };
@@ -67,6 +69,7 @@ export default class UpsellScreen extends React.Component {
   async componentDidMount() {
     try {
       const entitlements = await Purchases.getEntitlements();
+      console.log(JSON.stringify(entitlements));
       this.setState({
         entitlements,
         proAnnualPrice: `Buy Annual w/ Trial ${
