@@ -5,8 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "fetch:ios:sdk": "./scripts/download-purchases-framework.sh 2.1.0",
-    "preinstall": "npm run fetch:ios:sdk",
+    "preinstall": "node build.js",
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
@@ -25,8 +24,8 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": "16.8.3",
-    "react-native": "^0.59.4"
+    "react": "^16.6.3",
+    "react-native": "^0.58.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
