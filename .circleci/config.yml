@@ -20,7 +20,7 @@ executors:
         default: "28"
     environment:
       FL_OUTPUT_DIR: output
-      _JAVA_OPTIONS: "-Xmx1500m"
+      _JAVA_OPTIONS: "-XX:MaxRAM=3072m -Xmx2048m"
     docker:
       - image: circleci/android:api-<<parameters.version>>-node8-alpha
     working_directory: ~/react-native-purchases
@@ -29,7 +29,7 @@ executors:
     parameters:
       xcode_version:
         type: string
-        default: "9.4.1"
+        default: "10.1.0"
     macos:
       xcode: <<parameters.xcode_version>>
     working_directory: ~/react-native-purchases
@@ -57,7 +57,7 @@ jobs:
           command: yarn run setup.example
       - run:
           name: Android compiles
-          command: ./gradlew build
+          command: ./gradlew build --stacktrace
           working_directory: example/android
   ios:
     executor: ios
