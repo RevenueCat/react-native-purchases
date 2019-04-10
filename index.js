@@ -51,7 +51,8 @@ export default class Purchases {
 
   /**
    * Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
-   */  
+   */
+
   static setFinishTransactions(finishTransactions) {
     if (Platform.OS === "ios") {
       RNPurchases.setFinishTransactions(finishTransactions);
@@ -125,8 +126,7 @@ export default class Purchases {
    * @param {[String]} productIdentifiers Array of product identifiers
    * @param {String} type Optional type of products to fetch, can be inapp or subs. Subs by default
    * @returns {Promise<Array>} A promise containing an array of products. The promise will be rejected if the products are not properly
-   * configured in RevenueCat or if there is another error retrieving them. Rejections return an error code, the origin domain of the error and the message with the 
-   * cause of the error.
+   * configured in RevenueCat or if there is another error retrieving them. Rejections return an error code, and a userInfo object with more information.
    */
   static getProducts(productIdentifiers, type = "subs") {
     return RNPurchases.getProductInfo(productIdentifiers, type);
@@ -137,44 +137,22 @@ export default class Purchases {
    * @param {String} productIdentifier The product identifier of the product you want to purchase.
    * @param {Array<String>} oldSKUs Optional array of skus you wish to upgrade from.
    * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-   * @returns {Promise<Object>} A promise of an object containing a purchaser info object and a product identifier. Rejections
-   * return an error code, the origin domain of the error, the message with the cause of the error and a boolean indicating if 
-   * the user cancelled the purchase.
+   * @returns {Promise<Object>} A promise of an object containing a purchaser info object and a product identifier. Rejections return an error code,
+   * and a userInfo object with more information and a boolean indicating if the user cancelled the purchase.
    */
   static makePurchase(productIdentifier, oldSKUs = [], type = "subs") {
-    return new Promise((resolve, reject) => {
-      eventEmitter.addListener(
-        "Purchases-PurchaseCompleted",
-        ({ purchasedProductIdentifier, purchaserInfo, error }) => {
-          if (error) {
-            const { code, domain, message } = error;
-            const userCancelledDomainCodes = {
-              1: "Play Billing",
-              2: "SKErrorDomain"
-            };
-            const errorToReturn = {
-              code,
-              domain,
-              message,
-              userCancelled: userCancelledDomainCodes[code] === domain
-            };
-            reject(errorToReturn);
-          } else {
-            resolve({
-              productIdentifier: purchasedProductIdentifier,
-              purchaserInfo
-            });
-          }
-        }
-      );
-      RNPurchases.makePurchase(productIdentifier, oldSKUs, type);
-    });
+    return RNPurchases.makePurchase(productIdentifier, oldSKUs, type).catch(
+      error => {
+        const newError = error;
+        newError.userCancelled = error.code === "1";
+        throw newError;
+      }
+    );
   }
 
   /**
    * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
-   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, the origin domain of the error, 
-   * and the message with the cause of the error.
+   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
    */
   static restoreTransactions() {
     return RNPurchases.restoreTransactions();
@@ -191,8 +169,7 @@ export default class Purchases {
   /**
    * This function will alias two appUserIDs together.
    * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. Needs to be a string.
-   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, the origin domain of the error, 
-   * and the message with the cause of the error.
+   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
    */
   static createAlias(newAppUserID) {
     if (
@@ -207,8 +184,7 @@ export default class Purchases {
   /**
    * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
    * @param {String} newAppUserID The appUserID that should be linked to the currently user
-   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, the origin domain of the error, 
-   * and the message with the cause of the error.
+   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
    */
   static identify(newAppUserID) {
     if (
@@ -222,8 +198,7 @@ export default class Purchases {
 
   /**
    * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
-   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, the origin domain of the error, 
-   * and the message with the cause of the error.
+   * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
    */
   static reset() {
     return RNPurchases.reset();
@@ -239,8 +214,7 @@ export default class Purchases {
 
   /**
    * Gets current purchaser info
-   * @return {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, the origin domain of the error, 
-   * and the message with the cause of the error.
+   * @return {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
    */
   static getPurchaserInfo() {
     return RNPurchases.getPurchaserInfo();

@@ -87,7 +87,6 @@ global.productsStub = [
   }
 ];
 
-
 NativeModules.RNPurchases = {
   setupPurchases: jest.fn(),
   setAllowSharingStoreAccount: jest.fn(),

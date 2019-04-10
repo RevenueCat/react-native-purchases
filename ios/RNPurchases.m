@@ -13,7 +13,6 @@
 
 @end
 
-NSString *RNPurchasesPurchaseCompletedEvent = @"Purchases-PurchaseCompleted";
 NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdated";
 
 @implementation RNPurchases
@@ -25,8 +24,7 @@ NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdate
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[RNPurchasesPurchaseCompletedEvent,
-             RNPurchasesPurchaserInfoUpdatedEvent];
+    return @[RNPurchasesPurchaserInfoUpdatedEvent];
 }
 
 RCT_EXPORT_MODULE();
@@ -36,7 +34,6 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {    
-    RCPurchases.sharedPurchases.delegate = nil;
     self.products = [NSMutableDictionary new];
     [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID];
     RCPurchases.sharedPurchases.delegate = self;
@@ -68,7 +65,7 @@ RCT_REMAP_METHOD(getEntitlements,
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases entitlementsWithCompletionBlock:^(RCEntitlements * _Nullable entitlements, NSError * _Nullable error) {
         if (error) {
-            reject(@"ERROR_GETTING_ENTITLEMENTS", @"There was an error getting entitlements", error);
+            [self rejectPromiseWithBlock:reject error:error];
         } else {
             NSMutableDictionary *result = [NSMutableDictionary new];
             for (NSString *entId in entitlements) {
@@ -123,12 +120,14 @@ RCT_REMAP_METHOD(makePurchase,
         return;
     }
     [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
-                          withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
+                          withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error, BOOL userCancelled) {
                               if (error) {
-                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:[self payloadForError:error]];
+                                  [self rejectPromiseWithBlock:reject error:error];
                               } else {
-                                  [self sendEventWithName:RNPurchasesPurchaseCompletedEvent body:@{ @"productIdentifier":transaction.payment.productIdentifier,@"purchaserInfo": purchaserInfo.dictionary
-                                                                                                    }];
+                                  resolve(@{
+                                            @"productIdentifier":transaction.payment.productIdentifier,
+                                            @"purchaserInfo": purchaserInfo.dictionary
+                                            });
                               }
                           }];
 }
@@ -139,7 +138,7 @@ RCT_REMAP_METHOD(restoreTransactions,
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases restoreTransactionsWithCompletionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (error) {
-            reject(@"ERROR_RESTORING_TRANSACTIONS", @"There was an error restoring transactions", error);
+            [self rejectPromiseWithBlock:reject error:error];
         } else {
             resolve(purchaserInfo.dictionary);
         }
@@ -161,7 +160,7 @@ RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases createAlias:newAppUserID completionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (error) {
-            reject(@"ERROR_ALIASING", @"There was an error aliasing", error);
+            [self rejectPromiseWithBlock:reject error:error];
         } else {
             resolve(purchaserInfo.dictionary);
         }
@@ -174,7 +173,7 @@ RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases identify:appUserID completionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (error) {
-            reject(@"ERROR_IDENTIFYING", @"There was an error identifying", error);
+            [self rejectPromiseWithBlock:reject error:error];
         } else {
             resolve(purchaserInfo.dictionary);
         }
@@ -187,7 +186,7 @@ RCT_REMAP_METHOD(reset,
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases resetWithCompletionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (error) {
-            reject(@"ERROR_RESETTING", @"There was an error resetting", error);
+            [self rejectPromiseWithBlock:reject error:error];
         } else {
             resolve(purchaserInfo.dictionary);
         }
@@ -205,7 +204,7 @@ RCT_REMAP_METHOD(getPurchaserInfo,
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     [RCPurchases.sharedPurchases purchaserInfoWithCompletionBlock:^(RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error) {
         if (error) {
-            reject(@"ERROR_GETTING_PURCHASER_INFO", @"There was an error getting purchaser info", error);
+            [self rejectPromiseWithBlock:reject error:error];
         } else {
             resolve(purchaserInfo.dictionary);
         }
@@ -218,17 +217,11 @@ RCT_REMAP_METHOD(getPurchaserInfo,
     [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:purchaserInfo.dictionary];
 }
 
-#pragma mark Response Payload Helpers
+#pragma mark -
+#pragma mark Helper Methods
 
-- (NSDictionary *)payloadForError:(NSError *)error
-{
-    return @{
-             @"error": @{
-                     @"message": error.localizedDescription,
-                     @"code": @(error.code),
-                     @"domain": error.domain
-                     }
-             };
+- (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject error:(NSError *)error {
+    reject([NSString stringWithFormat: @"%ld", (long)error.code], error.localizedDescription, error);
 }
 
 @end

@@ -82,8 +82,12 @@ export default class CatsScreen extends React.Component {
                 <View style={{ margin: 10, alignItems: "center" }}>
                   <TouchableOpacity
                     onPress={async () => {
-                      const info = await Purchases.restoreTransactions();
-                      this.handleInfo(info);
+                      try {
+                        const info = await Purchases.restoreTransactions();
+                        this.handleInfo(info);
+                      } catch (e) {
+                        console.log(JSON.stringify(e));
+                      }
                     }}
                   >
                     <Text style={styles.restorePurchases}>Restore purchases</Text>

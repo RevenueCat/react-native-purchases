@@ -130,6 +130,11 @@ describe("Purchases", () => {
   it("makePurchase works", () => {
     const Purchases = require("../index").default;
 
+    NativeModules.RNPurchases.makePurchase.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      purchaserInfo: purchaserInfoStub
+    });
+
     Purchases.makePurchase("onemonth_freetrial")
     
     expect(NativeModules.RNPurchases.makePurchase).toBeCalledWith("onemonth_freetrial", [], "subs");
@@ -246,83 +251,38 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(1);
   })
 
-  it("ios cancelled purchase sets userCancelled in the error", () => {
+  it("cancelled purchase sets userCancelled in the error", () => {
     const Purchases = require("../index").default;
 
-    const promise = Purchases.makePurchase("onemonth_freetrial")
-    
-    promise.then(function(result) {
-      expect(result).toEqual(undefined);
-    }, function(err) {
-      expect(err).toEqual({
-        code: 2,
-        domain: "SKErrorDomain",
-        message: "message",
-        userCancelled: true
-      });
+    NativeModules.RNPurchases.makePurchase.mockRejectedValueOnce({
+      code: "1"
     });
 
-    const nativeEmitter = new NativeEventEmitter();
-    const error = {
-      code: 2,
-      domain: "SKErrorDomain",
-      message: "message"
-    }
-    nativeEmitter.emit("Purchases-PurchaseCompleted", { error });
-  })
-
-  it("android cancelled purchase sets userCancelled in the error", () => {
-    const Purchases = require("../index").default;
-
-    const promise = Purchases.makePurchase("onemonth_freetrial")
-    
-    promise.then(function(result) {
-      expect(result).toBeEqual(undefined);
-    }, function(err) {
-      expect(err).toEqual({
-        code: 1,
-        domain: "Play Billing",
-        message: "message",
-        userCancelled: true
-      });
+    return expect(Purchases.makePurchase("onemonth_freetrial")).rejects.toEqual({
+      code: "1",
+      userCancelled: true
     });
-
-    const nativeEmitter = new NativeEventEmitter();
-    const error = {
-      code: 1,
-      domain: "Play Billing",
-      message: "message"
-    }
-    nativeEmitter.emit("Purchases-PurchaseCompleted", { error });
   })
 
   it("successful purchase works", () => {
     const Purchases = require("../index").default;
 
-    const promise = Purchases.makePurchase("onemonth_freetrial")
-    
-    promise.then(function(result) {
-      expect(result).toBeEqual({
-        purchasedProductIdentifier: "123",
-        purchaserInfo: purchaserInfoStub
-      });
-    }, function(err) {
-      expect(err).toBeEqual(undefined);
-    });
-
-    const nativeEmitter = new NativeEventEmitter();
-    nativeEmitter.emit("Purchases-PurchaseCompleted", { 
+    NativeModules.RNPurchases.makePurchase.mockResolvedValueOnce({
       purchasedProductIdentifier: "123",
       purchaserInfo: purchaserInfoStub
-     });
+    });
+
+    return expect(Purchases.makePurchase("onemonth_freetrial")).resolves.toEqual({
+      purchasedProductIdentifier: "123",
+      purchaserInfo: purchaserInfoStub
+    });
   })
 
-  it("reset works", async () => {
+  it("reset works", () => {
     const Purchases = require("../index").default;
 
     NativeModules.RNPurchases.reset.mockResolvedValueOnce(purchaserInfoStub);
-    const info = await Purchases.reset();
-    expect(info).toEqual(purchaserInfoStub);
-    expect(NativeModules.RNPurchases.reset).toBeCalledTimes(1);
+    
+    return expect(Purchases.reset()).resolves.toEqual(purchaserInfoStub);
   })
 });

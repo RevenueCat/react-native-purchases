@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -22,7 +23,6 @@ import com.revenuecat.purchases.interfaces.*;
 import com.revenuecat.purchases.util.Iso8601Utils;
 
 import kotlin.UninitializedPropertyAccessException;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +34,6 @@ import java.util.Map;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
 
-    private static final String PURCHASE_COMPLETED_EVENT = "Purchases-PurchaseCompleted";
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
 
     private final ReactApplicationContext reactContext;
@@ -140,7 +139,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_GETTING_ENTITLEMENTS", error.toString());
+                reject(promise, error);
             }
         });
     }
@@ -165,7 +164,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_GETTING_PURCHASER_INFO", error.toString());
+                reject(promise, error);
             }
 
         };
@@ -188,20 +187,18 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Activity currentActivity = getCurrentActivity();
         if (currentActivity != null) {
             Purchases.getSharedInstance().makePurchase(currentActivity, productIdentifier, type, oldSkusList,
-                    new PurchaseCompletedListener() {
+                    new MakePurchaseListener() {
                         @Override
-                        public void onCompleted(@NonNull String sku, @NonNull PurchaserInfo purchaserInfo) {
+                        public void onCompleted(@NonNull Purchase purchase, @NonNull PurchaserInfo purchaserInfo) {
                             WritableMap map = Arguments.createMap();
-                            map.putString("productIdentifier", sku);
+                            map.putString("productIdentifier", purchase.getSku());
                             map.putMap("purchaserInfo", mapPurchaserInfo(purchaserInfo));
-                            sendEvent(PURCHASE_COMPLETED_EVENT, map);
+                            promise.resolve(map);
                         }
 
                         @Override
-                        public void onError(@NonNull PurchasesError error) {
-                            WritableMap map = Arguments.createMap();
-                            map.putMap("error", errorMap(error));
-                            sendEvent(PURCHASE_COMPLETED_EVENT, map);
+                        public void onError(@NonNull PurchasesError error, Boolean userCancelled) {
+                            reject(promise, error);
                         }
                     });
         } else {
@@ -224,7 +221,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_RESTORING_TRANSACTIONS", error.toString());
+                reject(promise, error);
             }
         });
     }
@@ -239,7 +236,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_RESETTING", error.toString());
+                reject(promise, error);
             }
         });
     }
@@ -254,7 +251,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_IDENTIFYING", error.toString());
+                reject(promise, error);
             }
         });
     }
@@ -269,7 +266,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_ALIASING", error.toString());
+                reject(promise, error);
             }
         });
     }
@@ -289,7 +286,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
             @Override
             public void onError(@NonNull PurchasesError error) {
-                promise.reject("ERROR_GETTING_PURCHASER_INFO", error.toString());
+                reject(promise, error);
             }
         });
     }
@@ -365,25 +362,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         return map;
     }
 
-    private WritableMap errorMap(PurchasesError error) {
-        WritableMap errorMap = Arguments.createMap();
-        String domainString;
-
-        if (error.getDomain() == Purchases.ErrorDomains.REVENUECAT_BACKEND) {
-            domainString = "RevenueCat Backend";
-        } else if (error.getDomain() == Purchases.ErrorDomains.PLAY_BILLING) {
-            domainString = "Play Billing";
-        } else {
-            domainString = "Unknown";
-        }
-
-        errorMap.putString("message", error.getMessage());
-        errorMap.putInt("code", error.getCode());
-        errorMap.putString("domain", domainString);
-
-        return errorMap;
-    }
-
     @Override
     public void onReceived(PurchaserInfo purchaserInfo) {
         sendEvent(PURCHASER_INFO_UPDATED, mapPurchaserInfo(purchaserInfo));
@@ -442,5 +420,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             }
         }
         return array;
+    }
+
+    private static void reject(Promise promise, PurchasesError error) {
+        WritableMap userInfoMap = Arguments.createMap();
+        userInfoMap.putString("message", error.getMessage());
+        userInfoMap.putString("readable_error_code", error.getCode().name());
+        if (error.getUnderlyingErrorMessage() != null && !error.getUnderlyingErrorMessage().isEmpty()) {
+            userInfoMap.putString("underlyingErrorMessage", error.getUnderlyingErrorMessage());
+        }
+        promise.reject(error.getCode().ordinal() + "", error.getMessage(), userInfoMap);
     }
 }
