@@ -1,3 +1,6 @@
+## 2.1.1
+- If using an app ejected from Expo, the Android project wouldn't build since it couldn't find the react-native dependency. This release should fix it.
+
 ## 2.1.0
 - Updates SDK versions to 2.1.0 to include new error handling
 - **BREAKING CHANGE** errors now contain a `userInfo` object with the message, an underlying error and a readable error code. The error codes have completely changed too and updated to the SDK 2.1.0.
