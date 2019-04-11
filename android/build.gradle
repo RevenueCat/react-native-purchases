@@ -26,36 +26,6 @@ android {
 repositories {
     google()
     jcenter()
-
-    def found = false
-    def parentDir = rootProject.projectDir
-    def reactNativeAndroidName = 'React Native (Node Modules)'
-
-    1.upto(4, {
-        if (found) return true
-        parentDir = parentDir.parentFile
-        def reactNativeAndroid = new File(
-                parentDir,
-                'node_modules/react-native/android'
-        )
-
-        if (reactNativeAndroid.exists()) {
-            maven {
-                url reactNativeAndroid.toString()
-                name reactNativeAndroidName
-            }
-
-            println "${project.name}: using React Native sources from ${reactNativeAndroid.toString()}"
-            found = true
-        }
-    })
-
-    if (!found) {
-        throw new GradleException(
-                "${project.name}: unable to locate React Native Android sources, " +
-                        "ensure you have you installed React Native as a dependency and try again."
-        )
-    }
 }
 
 dependencies {
