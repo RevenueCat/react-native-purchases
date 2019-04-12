@@ -1,3 +1,7 @@
+## 2.0.1
+- If using an app ejected from Expo to ExpoKit, the Android project wouldn't build since it couldn't find the react-native dependency. This release should fix it for 2.0.0
+- Adds setFinishTransactions for iOS
+
 ## 2.0.0
 - Updates native SDKs to versions iOS 2.0.0 and Android 2.0.1
 - Checks that the user ID sent to setup, identify or create alias is actually a string #28
