@@ -1,3 +1,6 @@
+## 2.1.2
+- Updates iOS SDK to 2.1.1
+
 ## 2.1.1
 - If using an app ejected from Expo, the Android project wouldn't build since it couldn't find the react-native dependency. This release should fix it.
 
