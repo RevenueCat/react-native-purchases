@@ -52,3 +52,12 @@ android/gradlew
 android/gradlew.bat
 android/gradle/wrapper/gradle-wrapper.jar
 android/gradle/wrapper/gradle-wrapper.properties
+.vscode/launch.json
+.vscode/settings.json
+android/.classpath
+android/.project
+example/.vscode/launch.json
+example/.vscode/settings.json
+example/android/app/.classpath
+example/android/app/.project
+example/android/app/.settings/org.eclipse.buildship.core.prefs

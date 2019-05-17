@@ -35,8 +35,6 @@ export default class CatsScreen extends React.Component {
     super();
     this.state = {
       isPro: false,
-      error: "",
-      currentStatus: "😿",
       purchaseDate: "",
       expirationDate: ""
     };
@@ -47,6 +45,7 @@ export default class CatsScreen extends React.Component {
       const info = await Purchases.getPurchaserInfo();
       this.handleInfo(info);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log("Error handling");
     }
   }
@@ -57,7 +56,6 @@ export default class CatsScreen extends React.Component {
       info.activeEntitlements.includes("pro");
     this.setState({
       isPro,
-      currentStatus: isPro ? "😻" : "😿",
       purchaseDate: isPro
         ? `Purchase Date: ${info.purchaseDatesForActiveEntitlements.pro}`
         : "",
@@ -65,12 +63,12 @@ export default class CatsScreen extends React.Component {
         ? `Expiration Date: ${info.expirationsForActiveEntitlements.pro}`
         : ""
     });
-  };
+  }
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <ScrollView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <ScrollView style={{ flex: 1 }}>
           <View style={styles.buttons}>
             <View style={{ margin: 50, alignItems: "center" }}>
               <Text style={{ fontSize: 70 }}>
@@ -86,11 +84,14 @@ export default class CatsScreen extends React.Component {
                         const info = await Purchases.restoreTransactions();
                         this.handleInfo(info);
                       } catch (e) {
+                        // eslint-disable-next-line no-console
                         console.log(JSON.stringify(e));
                       }
                     }}
                   >
-                    <Text style={styles.restorePurchases}>Restore purchases</Text>
+                    <Text style={styles.restorePurchases}>
+                      Restore purchases
+                    </Text>
                   </TouchableOpacity>
                 </View>
                 <View style={{ margin: 10, alignItems: "center" }}>
@@ -106,7 +107,9 @@ export default class CatsScreen extends React.Component {
             ) : (
               <Fragment>
                 <View style={{ margin: 10, alignItems: "center" }}>
-                  <Text style={styles.textButton}>{this.state.purchaseDate}</Text>
+                  <Text style={styles.textButton}>
+                    {this.state.purchaseDate}
+                  </Text>
                 </View>
                 <View style={{ margin: 10, alignItems: "center" }}>
                   <Text style={styles.textButton}>

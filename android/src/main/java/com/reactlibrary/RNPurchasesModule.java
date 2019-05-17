@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.facebook.react.bridge.Arguments;
@@ -23,10 +24,13 @@ import com.revenuecat.purchases.interfaces.*;
 import com.revenuecat.purchases.util.Iso8601Utils;
 
 import kotlin.UninitializedPropertyAccessException;
+
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +38,7 @@ import java.util.Map;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
 
+    private List<SkuDetails> products = new ArrayList<>();
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
 
     private final ReactApplicationContext reactContext;
@@ -44,6 +49,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         this.reactContext = reactContext;
     }
 
+    @NotNull
     @Override
     public String getName() {
         return "RNPurchases";
@@ -58,8 +64,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void setupPurchases(String apiKey, @Nullable String appUserID, final Promise promise) {
-        Purchases.configure(reactContext, apiKey, appUserID);
+    public void setupPurchases(String apiKey, @Nullable String appUserID, boolean observerMode, final Promise promise) {
+        Purchases.configure(reactContext, apiKey, appUserID, observerMode);
         Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
         promise.resolve(null);
     }
@@ -70,11 +76,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void addAttributionData(ReadableMap data, Integer network) {
+    public void addAttributionData(ReadableMap data, Integer network, @Nullable String networkUserId) {
         try {
             for (Purchases.AttributionNetwork attributionNetwork : Purchases.AttributionNetwork.values()) {
                 if (attributionNetwork.getServerValue() == network) {
-                    Purchases.getSharedInstance().addAttributionData(convertMapToJson(data), attributionNetwork);
+                    Purchases.addAttributionData(convertMapToJson(data), attributionNetwork, networkUserId);
                 }
             }
         } catch (JSONException e) {
@@ -110,31 +116,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Purchases.getSharedInstance().getEntitlements(new ReceiveEntitlementsListener() {
             @Override
             public void onReceived(@NonNull Map<String, Entitlement> entitlementMap) {
-                WritableMap response = Arguments.createMap();
-
-                for (String entId : entitlementMap.keySet()) {
-                    Entitlement ent = entitlementMap.get(entId);
-                    WritableMap offeringsMap = Arguments.createMap();
-                    if (ent != null) {
-                        Map<String, Offering> offerings = ent.getOfferings();
-                        for (String offeringId : offerings.keySet()) {
-                            Offering offering = offerings.get(offeringId);
-                            if (offering != null) {
-                                SkuDetails skuDetails = offering.getSkuDetails();
-                                if (skuDetails != null) {
-                                    WritableMap skuMap = mapForSkuDetails(skuDetails);
-                                    offeringsMap.putMap(offeringId, skuMap);
-                                } else {
-                                    offeringsMap.putNull(offeringId);
-                                }
-                            }
-                        }
-                    }
-
-                    response.putMap(entId, offeringsMap);
-                }
-
-                promise.resolve(response);
+                cacheProducts(entitlementMap);
+                promise.resolve(mapEntitlementsAndCacheProducts(entitlementMap));
             }
 
             @Override
@@ -142,6 +125,52 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                 reject(promise, error);
             }
         });
+    }
+
+    private void cacheProducts(@NonNull Map<String, Entitlement> entitlementMap) {
+        products = new ArrayList<>();
+        for (String entId : entitlementMap.keySet()) {
+            Entitlement ent = entitlementMap.get(entId);
+            if (ent != null) {
+                Map<String, Offering> offerings = ent.getOfferings();
+                for (String offeringId : offerings.keySet()) {
+                    Offering offering = offerings.get(offeringId);
+                    if (offering != null) {
+                        SkuDetails skuDetails = offering.getSkuDetails();
+                        if (skuDetails != null) {
+                            products.add(skuDetails);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private WritableMap mapEntitlementsAndCacheProducts(@NonNull Map<String, Entitlement> entitlementMap) {
+        products = new ArrayList<>();
+        WritableMap response = Arguments.createMap();
+        for (String entId : entitlementMap.keySet()) {
+            Entitlement ent = entitlementMap.get(entId);
+            WritableMap offeringsMap = Arguments.createMap();
+            if (ent != null) {
+                Map<String, Offering> offerings = ent.getOfferings();
+                for (String offeringId : offerings.keySet()) {
+                    Offering offering = offerings.get(offeringId);
+                    if (offering != null) {
+                        SkuDetails skuDetails = offering.getSkuDetails();
+                        if (skuDetails != null) {
+                            products.add(skuDetails);
+                            WritableMap skuMap = mapForSkuDetails(skuDetails);
+                            offeringsMap.putMap(offeringId, skuMap);
+                        } else {
+                            offeringsMap.putNull(offeringId);
+                        }
+                    }
+                }
+            }
+            response.putMap(entId, offeringsMap);
+        }
+        return response;
     }
 
     @ReactMethod
@@ -177,32 +206,31 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void makePurchase(final String productIdentifier, ReadableArray oldSkus, String type,
-            final Promise promise) {
-        ArrayList<String> oldSkusList = new ArrayList<>();
-        for (Object oldSku : oldSkus.toArrayList()) {
-            oldSkusList.add((String) oldSku);
-        }
-
-        Activity currentActivity = getCurrentActivity();
+    public void makePurchase(final String productIdentifier, final String oldSku, final String type,
+                             final Promise promise) {
+        final Activity currentActivity = getCurrentActivity();
         if (currentActivity != null) {
-            Purchases.getSharedInstance().makePurchase(currentActivity, productIdentifier, type, oldSkusList,
-                    new MakePurchaseListener() {
-                        @Override
-                        public void onCompleted(@NonNull Purchase purchase, @NonNull PurchaserInfo purchaserInfo) {
-                            WritableMap map = Arguments.createMap();
-                            map.putString("productIdentifier", purchase.getSku());
-                            map.putMap("purchaserInfo", mapPurchaserInfo(purchaserInfo));
-                            promise.resolve(map);
-                        }
+            if (products.isEmpty()) {
+                Purchases.getSharedInstance().getEntitlements(new ReceiveEntitlementsListener() {
+                    @Override
+                    public void onReceived(@NonNull Map<String, Entitlement> entitlementMap) {
+                        mapEntitlementsAndCacheProducts(entitlementMap);
+                        makePurchase(currentActivity, oldSku, type, productIdentifier, promise);
+                    }
 
-                        @Override
-                        public void onError(@NonNull PurchasesError error, Boolean userCancelled) {
-                            reject(promise, error);
-                        }
-                    });
+                    @Override
+                    public void onError(@NonNull PurchasesError error) {
+                        reject(promise, error);
+                    }
+                });
+            } else {
+                makePurchase(currentActivity, oldSku, type, productIdentifier, promise);
+            }
         } else {
-            promise.reject("ERROR_MAKING_PURCHASE", "There is no current Activity");
+            reject(promise,
+                    new PurchasesError(
+                            PurchasesErrorCode.PurchaseInvalidError,
+                            "There is no current Activity"));
         }
     }
 
@@ -291,8 +319,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         });
     }
 
-    private void sendEvent(String eventName, @Nullable WritableMap params) {
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+    @ReactMethod
+    public void finishTransactions(boolean enabled) {
+        Purchases.getSharedInstance().setFinishTransactions(enabled);
+    }
+
+    @ReactMethod
+    public void syncPurchases() {
+        Purchases.getSharedInstance().syncPurchases();
     }
 
     private WritableMap mapPurchaserInfo(PurchaserInfo purchaserInfo) {
@@ -363,8 +397,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @Override
-    public void onReceived(PurchaserInfo purchaserInfo) {
-        sendEvent(PURCHASER_INFO_UPDATED, mapPurchaserInfo(purchaserInfo));
+    public void onReceived(@NotNull PurchaserInfo purchaserInfo) {
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED, mapPurchaserInfo(purchaserInfo));
     }
 
     private static JSONObject convertMapToJson(ReadableMap readableMap) throws JSONException {
@@ -373,50 +408,51 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
             switch (readableMap.getType(key)) {
-            case Null:
-                object.put(key, JSONObject.NULL);
-                break;
-            case Boolean:
-                object.put(key, readableMap.getBoolean(key));
-                break;
-            case Number:
-                object.put(key, readableMap.getDouble(key));
-                break;
-            case String:
-                object.put(key, readableMap.getString(key));
-                break;
-            case Map:
-                object.put(key, convertMapToJson(readableMap.getMap(key)));
-                break;
-            case Array:
-                object.put(key, convertArrayToJson(readableMap.getArray(key)));
-                break;
+                case Null:
+                    object.put(key, JSONObject.NULL);
+                    break;
+                case Boolean:
+                    object.put(key, readableMap.getBoolean(key));
+                    break;
+                case Number:
+                    object.put(key, readableMap.getDouble(key));
+                    break;
+                case String:
+                    object.put(key, readableMap.getString(key));
+                    break;
+                case Map:
+                    object.put(key, convertMapToJson(readableMap.getMap(key)));
+                    break;
+                case Array:
+                    object.put(key, convertArrayToJson(readableMap.getArray(key)));
+                    break;
             }
         }
         return object;
     }
 
-    private static JSONArray convertArrayToJson(ReadableArray readableArray) throws JSONException {
+    private static JSONArray convertArrayToJson(ReadableArray readableArray) throws
+            JSONException {
         JSONArray array = new JSONArray();
         for (int i = 0; i < readableArray.size(); i++) {
             switch (readableArray.getType(i)) {
-            case Null:
-                break;
-            case Boolean:
-                array.put(readableArray.getBoolean(i));
-                break;
-            case Number:
-                array.put(readableArray.getDouble(i));
-                break;
-            case String:
-                array.put(readableArray.getString(i));
-                break;
-            case Map:
-                array.put(convertMapToJson(readableArray.getMap(i)));
-                break;
-            case Array:
-                array.put(convertArrayToJson(readableArray.getArray(i)));
-                break;
+                case Null:
+                    break;
+                case Boolean:
+                    array.put(readableArray.getBoolean(i));
+                    break;
+                case Number:
+                    array.put(readableArray.getDouble(i));
+                    break;
+                case String:
+                    array.put(readableArray.getString(i));
+                    break;
+                case Map:
+                    array.put(convertMapToJson(readableArray.getMap(i)));
+                    break;
+                case Array:
+                    array.put(convertArrayToJson(readableArray.getArray(i)));
+                    break;
             }
         }
         return array;
@@ -430,5 +466,45 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             userInfoMap.putString("underlyingErrorMessage", error.getUnderlyingErrorMessage());
         }
         promise.reject(error.getCode().ordinal() + "", error.getMessage(), userInfoMap);
+    }
+
+    @Nullable
+    private SkuDetails findProduct(String productIdentifier, String type) {
+        for (SkuDetails product : products) {
+            if (product.getSku().equals(productIdentifier) && product.getType().equalsIgnoreCase(type)) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    private void makePurchase(final Activity currentActivity, final String oldSku, final String type,
+                              final String productIdentifier, final Promise promise) {
+        SkuDetails productToBuy = findProduct(productIdentifier, type);
+        if (productToBuy != null) {
+            MakePurchaseListener listener = new MakePurchaseListener() {
+                @Override
+                public void onCompleted(@NonNull Purchase purchase, @NonNull PurchaserInfo purchaserInfo) {
+                    WritableMap map = Arguments.createMap();
+                    map.putString("productIdentifier", purchase.getSku());
+                    map.putMap("purchaserInfo", mapPurchaserInfo(purchaserInfo));
+                    promise.resolve(map);
+                }
+
+                @Override
+                public void onError(@NonNull PurchasesError error, Boolean userCancelled) {
+                    reject(promise, error);
+                }
+            };
+            if (oldSku == null || oldSku.isEmpty()) {
+                Purchases.getSharedInstance().makePurchase(currentActivity, productToBuy, listener);    
+            } else {
+                Purchases.getSharedInstance().makePurchase(currentActivity, productToBuy, oldSku, listener);
+            }
+        } else {
+            reject(promise, new PurchasesError(
+                    PurchasesErrorCode.ProductNotAvailableForPurchaseError,
+                    "Couldn't find product."));
+        }
     }
 }

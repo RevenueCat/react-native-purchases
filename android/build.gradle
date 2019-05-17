@@ -31,5 +31,5 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
-    api 'com.revenuecat.purchases:purchases:2.1.0'
+    api 'com.revenuecat.purchases:purchases:2.2.2'
 }

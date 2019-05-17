@@ -31,11 +31,12 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(NSString *)appUserID
+                  observerMode:(BOOL)observerMode
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {    
     self.products = [NSMutableDictionary new];
-    [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID];
+    [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID observerMode:observerMode];
     RCPurchases.sharedPurchases.delegate = self;
     resolve(nil);
 }
@@ -52,10 +53,11 @@ RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions)
 
 RCT_REMAP_METHOD(addAttributionData, 
                  addAttributionData:(NSDictionary *)data 
-                 forNetwork:(NSInteger)network)
+                 forNetwork:(NSInteger)network
+                 forNetworkUserId:(NSString * _Nullable)networkUserId)
 {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-    [RCPurchases.sharedPurchases addAttributionData:data fromNetwork:(RCAttributionNetwork)network];
+    [RCPurchases addAttributionData:data fromNetwork:(RCAttributionNetwork)network forNetworkUserId:networkUserId];
 }
 
 RCT_REMAP_METHOD(getEntitlements,
@@ -108,7 +110,7 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
 
 RCT_REMAP_METHOD(makePurchase,
                  makePurchase:(NSString *)productIdentifier
-                 oldSkus:(NSArray *)oldSkus
+                 oldSku:(NSString *)oldSku
                  type:(NSString *)type
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)

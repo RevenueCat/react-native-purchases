@@ -7,7 +7,7 @@ var os = require('os');
 if (os.type() === 'Linux') 
    exec("Skipping iOS Dependencies", puts); 
 else if (os.type() === 'Darwin') 
-   exec("./scripts/download-purchases-framework.sh 2.1.1", puts); 
+   exec("./scripts/download-purchases-framework.sh 2.3.0", puts); 
 else if (os.type() === 'Windows_NT') 
    exec("Skipping iOS Dependencies", puts);
 else
