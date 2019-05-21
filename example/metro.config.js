@@ -16,7 +16,7 @@ module.exports = {
     blacklistRE: blacklist([
       new RegExp(`${reactNativeLib}/node_modules/react-native/.*`)
     ])
-  },
+  },  
   transformer: {
     getTransformOptions: async () => ({
       transform: {

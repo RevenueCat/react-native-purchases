@@ -9,7 +9,7 @@
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
-    "setup.example": "cd example;yarn;",
+    "setup.example": "yarn install; yarn link; cd example; yarn link react-native-purchases; yarn; cd ..;",
     "lint": "eslint **/*.js"
   },
   "repository": {
