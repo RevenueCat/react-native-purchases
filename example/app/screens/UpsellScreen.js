@@ -47,9 +47,11 @@ const makePurchase = navigation => async product => {
     }
   } catch (e) {
     if (!e.userCancelled) {
-      console.log("Error handling " + JSON.stringify(e));
+      // eslint-disable-next-line no-console
+      console.log(`Error handling ${JSON.stringify(e)}`);
     } else {
-      console.log("User cancelled " + JSON.stringify(e));
+      // eslint-disable-next-line no-console
+      console.log(`User cancelled ${JSON.stringify(e)}`);
     }
   }
 };
@@ -59,16 +61,15 @@ export default class UpsellScreen extends React.Component {
     super();
     this.state = {
       entitlements: [],
-      error: "",
       proAnnualPrice: "Loading",
-      proMonthlyPrice: "Loading",
-      currentID: ""
+      proMonthlyPrice: "Loading"
     };
   }
 
   async componentDidMount() {
     try {
       const entitlements = await Purchases.getEntitlements();
+      // eslint-disable-next-line no-console
       console.log(JSON.stringify(entitlements));
       this.setState({
         entitlements,
@@ -80,20 +81,23 @@ export default class UpsellScreen extends React.Component {
         }`
       });
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log("Error handling");
     }
   }
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <ScrollView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <ScrollView style={{ flex: 1 }}>
           <View style={styles.buttons}>
             <View style={styles.button}>
               <Button
                 color="#f2545b"
                 onPress={() => {
-                  makePurchase(this.props.navigation)(this.state.entitlements.pro.annual.identifier);
+                  makePurchase(this.props.navigation)(
+                    this.state.entitlements.pro.annual.identifier
+                  );
                 }}
                 title={this.state.proAnnualPrice}
               />

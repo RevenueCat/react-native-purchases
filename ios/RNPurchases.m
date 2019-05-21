@@ -31,31 +31,34 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(NSString *)appUserID
+                  observerMode:(BOOL)observerMode
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
-{    
+{
     self.products = [NSMutableDictionary new];
-    [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID];
+    [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID observerMode:observerMode];
     RCPurchases.sharedPurchases.delegate = self;
     resolve(nil);
 }
 
 RCT_EXPORT_METHOD(setAllowSharingStoreAccount:(BOOL)allowSharingStoreAccount)
 {
+    NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     RCPurchases.sharedPurchases.allowSharingAppStoreAccount = allowSharingStoreAccount;
 }
 
 RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions)
 {
+    NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
     RCPurchases.sharedPurchases.finishTransactions = finishTransactions;
 }
 
 RCT_REMAP_METHOD(addAttributionData, 
                  addAttributionData:(NSDictionary *)data 
-                 forNetwork:(NSInteger)network)
+                 forNetwork:(NSInteger)network
+                 forNetworkUserId:(NSString * _Nullable)networkUserId)
 {
-    NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-    [RCPurchases.sharedPurchases addAttributionData:data fromNetwork:(RCAttributionNetwork)network];
+    [RCPurchases addAttributionData:data fromNetwork:(RCAttributionNetwork)network forNetworkUserId:networkUserId];
 }
 
 RCT_REMAP_METHOD(getEntitlements,
@@ -108,28 +111,39 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
 
 RCT_REMAP_METHOD(makePurchase,
                  makePurchase:(NSString *)productIdentifier
-                 oldSkus:(NSArray *)oldSkus
+                 oldSku:(NSString *)oldSku
                  type:(NSString *)type
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
     NSAssert(RCPurchases.sharedPurchases, @"You must call setup first.");
-
+    
+    void (^completionBlock)(SKPaymentTransaction * _Nullable, RCPurchaserInfo * _Nullable, NSError * _Nullable, BOOL) = ^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error, BOOL userCancelled) {
+        if (error) {
+            [self rejectPromiseWithBlock:reject error:error];
+        } else {
+            resolve(@{
+                      @"productIdentifier":transaction.payment.productIdentifier,
+                      @"purchaserInfo": purchaserInfo.dictionary
+                      });
+        }
+    };
+    
     if (self.products[productIdentifier] == nil) {
-        NSLog(@"Purchases cannot find product. Did you call getProductInfo first?");
-        return;
+        [RCPurchases.sharedPurchases productsWithIdentifiers:[NSArray arrayWithObjects:productIdentifier, nil]
+                                             completionBlock:^(NSArray<SKProduct *> * _Nonnull products) {
+                                                 NSMutableArray *productObjects = [NSMutableArray new];
+                                                 for (SKProduct *p in products) {
+                                                     self.products[p.productIdentifier] = p;
+                                                     [productObjects addObject:p.dictionary];
+                                                 }
+                                                 [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
+                                                                       withCompletionBlock:completionBlock];
+                                             }];
+    } else {
+        [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
+                              withCompletionBlock:completionBlock];
     }
-    [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
-                          withCompletionBlock:^(SKPaymentTransaction * _Nullable transaction, RCPurchaserInfo * _Nullable purchaserInfo, NSError * _Nullable error, BOOL userCancelled) {
-                              if (error) {
-                                  [self rejectPromiseWithBlock:reject error:error];
-                              } else {
-                                  resolve(@{
-                                            @"productIdentifier":transaction.payment.productIdentifier,
-                                            @"purchaserInfo": purchaserInfo.dictionary
-                                            });
-                              }
-                          }];
 }
 
 RCT_REMAP_METHOD(restoreTransactions,

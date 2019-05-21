@@ -90,9 +90,9 @@ describe("Purchases", () => {
   it("adding attribution data works", () => {
     const Purchases = require("../index").default;
 
-    Purchases.addAttributionData({}, Purchases.ATTRIBUTION_NETWORKS.APPSFLYER)
+    Purchases.addAttributionData({}, Purchases.ATTRIBUTION_NETWORKS.APPSFLYER, "cesar")
 
-    expect(NativeModules.RNPurchases.addAttributionData).toBeCalledWith({}, Purchases.ATTRIBUTION_NETWORKS.APPSFLYER);
+    expect(NativeModules.RNPurchases.addAttributionData).toBeCalledWith({}, Purchases.ATTRIBUTION_NETWORKS.APPSFLYER, "cesar");
     expect(NativeModules.RNPurchases.addAttributionData).toBeCalledTimes(1);
   })
 
@@ -137,12 +137,12 @@ describe("Purchases", () => {
 
     Purchases.makePurchase("onemonth_freetrial")
     
-    expect(NativeModules.RNPurchases.makePurchase).toBeCalledWith("onemonth_freetrial", [], "subs");
+    expect(NativeModules.RNPurchases.makePurchase).toBeCalledWith("onemonth_freetrial", undefined, "subs");
     expect(NativeModules.RNPurchases.makePurchase).toBeCalledTimes(1);
 
-    Purchases.makePurchase("onemonth_freetrial", ["viejo"], "nosubs")
+    Purchases.makePurchase("onemonth_freetrial", "viejo", "nosubs")
     
-    expect(NativeModules.RNPurchases.makePurchase).toBeCalledWith("onemonth_freetrial", ["viejo"], "nosubs");
+    expect(NativeModules.RNPurchases.makePurchase).toBeCalledWith("onemonth_freetrial", "viejo", "nosubs");
     expect(NativeModules.RNPurchases.makePurchase).toBeCalledTimes(2);
   })
 
@@ -247,8 +247,13 @@ describe("Purchases", () => {
 
     Purchases.setup("key", "user");
     
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user");
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(1);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false);
+
+    Purchases.setup("key", "user", true);
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true);
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(2);
   })
 
   it("cancelled purchase sets userCancelled in the error", () => {
@@ -285,4 +290,43 @@ describe("Purchases", () => {
     
     return expect(Purchases.reset()).resolves.toEqual(purchaserInfoStub);
   })
+
+  it("syncpurchases works for android", () => {
+    const Purchases = require("../index").default;
+    
+    mockPlatform("android");
+
+    Purchases.syncPurchases();
+
+    expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
+  })
+
+  it("syncpurchases doesnt do anything for ios", () => {
+    const Purchases = require("../index").default;
+    
+    mockPlatform("ios");
+
+    Purchases.syncPurchases();
+
+    expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(0);
+  })
+
+
+  it("finishTransactions works", () => {
+    const Purchases = require("../index").default;
+
+    Purchases.setFinishTransactions(true);
+    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(true);
+
+    Purchases.setFinishTransactions(false);
+    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(false);
+
+    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledTimes(2);
+  })
+
+  const mockPlatform = OS => {    
+    jest.resetModules();  
+    jest.doMock("Platform", () => ({ OS, select: objs => objs[OS] }));
+  };
+
 });

@@ -31,13 +31,14 @@ export default class Purchases {
    * Sets up Purchases with your API key and an app user id.
    * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
+   * @param {Boolean} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
    * @returns {Promise<void>} Returns when setup completes
    */
-  static setup(apiKey, appUserID) {
+  static setup(apiKey, appUserID, observerMode = false) {
     if (typeof appUserID !== "undefined" && typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
     }
-    return RNPurchases.setupPurchases(apiKey, appUserID);
+    return RNPurchases.setupPurchases(apiKey, appUserID, observerMode);
   }
 
   /**
@@ -54,9 +55,7 @@ export default class Purchases {
    */
 
   static setFinishTransactions(finishTransactions) {
-    if (Platform.OS === "ios") {
-      RNPurchases.setFinishTransactions(finishTransactions);
-    }
+    RNPurchases.setFinishTransactions(finishTransactions);
   }
 
   /**
@@ -108,9 +107,10 @@ export default class Purchases {
    * Add a dict of attribution information
    * @param {Dict} data Attribution data from AppsFlyer, Adjust, or Branch
    * @param {ATTRIBUTION_NETWORKS} network Which network, see Purchases.ATTRIBUTION_NETWORKS
+   * @param {String?} networkUserId An optional unique id for identifying the user. Needs to be a string.
    */
-  static addAttributionData(data, network) {
-    RNPurchases.addAttributionData(data, network);
+  static addAttributionData(data, network, networkUserId) {
+    RNPurchases.addAttributionData(data, network, networkUserId);
   }
 
   /**
@@ -134,14 +134,17 @@ export default class Purchases {
 
   /**
    * Make a purchase
-   * @param {String} productIdentifier The product identifier of the product you want to purchase.
-   * @param {Array<String>} oldSKUs Optional array of skus you wish to upgrade from.
+   * @param {String} productIdentifier The product identifier of the product you want to purchase
+   * @param {String?} oldSKU Optional sku you wish to upgrade from.
    * @param {String} type Optional type of product, can be inapp or subs. Subs by default
    * @returns {Promise<Object>} A promise of an object containing a purchaser info object and a product identifier. Rejections return an error code,
    * and a userInfo object with more information and a boolean indicating if the user cancelled the purchase.
    */
-  static makePurchase(productIdentifier, oldSKUs = [], type = "subs") {
-    return RNPurchases.makePurchase(productIdentifier, oldSKUs, type).catch(
+  static makePurchase(productIdentifier, oldSKU, type = "subs") {
+    if (Array.isArray(oldSKU)) {
+      throw new Error("Calling a deprecated method!");
+    }
+    return RNPurchases.makePurchase(productIdentifier, oldSKU, type).catch(
       error => {
         const newError = error;
         newError.userCancelled = error.code === "1";
@@ -218,5 +221,18 @@ export default class Purchases {
    */
   static getPurchaserInfo() {
     return RNPurchases.getPurchaserInfo();
+  }
+
+  /**
+   * This method will send all the purchases to the RevenueCat backend. Call this when using your own implementation
+   * for subscriptions anytime a sync is needed, like after a successful purchase.
+   *
+   * @warning This function should only be called if you're not calling makePurchase.
+   */
+  static syncPurchases() {
+    if (Platform.OS === "android") {
+      console.log(Platform.OS);
+      RNPurchases.syncPurchases();
+    }
   }
 }

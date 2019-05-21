@@ -100,7 +100,9 @@ NativeModules.RNPurchases = {
   identify: jest.fn(),
   setDebugLogsEnabled: jest.fn(),
   getPurchaserInfo: jest.fn(),
-  reset: jest.fn()
+  reset: jest.fn(),
+  syncPurchases: jest.fn(),
+  setFinishTransactions: jest.fn()
 };
 
 global.NativeEventEmitter = NativeEventEmitter;

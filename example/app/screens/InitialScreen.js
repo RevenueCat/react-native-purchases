@@ -25,9 +25,11 @@ export default class InitialScreen extends React.Component {
         );
       }
     } catch (e) {
-      console.log("Error " + JSON.stringify(e));
+      // eslint-disable-next-line no-console
+      console.log(`Error ${JSON.stringify(e)}`);
     }
   }
+
   render() {
     return null;
   }
