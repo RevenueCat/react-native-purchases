@@ -1,1 +1,7 @@
 example
+build/
+.idea
+.gradle
+local.properties
+.jest
+.vscode
