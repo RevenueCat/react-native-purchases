@@ -99,13 +99,12 @@ When it comes time to make a purchase, *Purchases* has a simple method, `makePur
 
 ```javascript
 try {
-	const purchaseMade = await Purchases.makePurchase(entitlements.pro.monthly.identifier);
-  if (purchaseMade.purchaserInfo.activeEntitlements !== "undefined" &&
-      purchaseMade.purchaserInfo.activeEntitlements.includes("my_entitlement_identifier")) {
+  const purchaseMade = await Purchases.makePurchase(entitlements.pro.monthly.identifier);
+  if (purchaseMade.purchaserInfo.activeEntitlements !== "undefined" && purchaseMade.purchaserInfo.activeEntitlements.includes("my_entitlement_identifier")) {
     // Unlock that great "pro" content
   }
 } catch (e) {
-	if (!e.userCancelled) { 
+  if (!e.userCancelled) { 
     showError(e);
   }
 }
@@ -122,7 +121,7 @@ try {
 // Get purchaser info
 try {
   const purchaserInfo = await Purchases.getPurchaserInfo();
-	// Option 1: Check if user has access to entitlement (from RevenueCat dashboard)
+  // Option 1: Check if user has access to entitlement (from RevenueCat dashboard)
   if(purchaserInfo.activeEntitlements !== "undefined" && purchaserInfo.activeEntitlements.includes("my_entitlement_identifier")) {
     // Grant user "pro" access
   }
@@ -144,7 +143,7 @@ Depending on your app, it may be sufficient to ignore the delegate and simply ha
 
 ```javascript
 Purchases.addPurchaserInfoUpdateListener(info => {
-	// handle any changes to purchaserInfo
+  // handle any changes to purchaserInfo
 });
 ```
 
