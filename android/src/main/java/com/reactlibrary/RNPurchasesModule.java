@@ -116,7 +116,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Purchases.getSharedInstance().getEntitlements(new ReceiveEntitlementsListener() {
             @Override
             public void onReceived(@NonNull Map<String, Entitlement> entitlementMap) {
-                cacheProducts(entitlementMap);
                 promise.resolve(mapEntitlementsAndCacheProducts(entitlementMap));
             }
 
@@ -125,25 +124,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                 reject(promise, error);
             }
         });
-    }
-
-    private void cacheProducts(@NonNull Map<String, Entitlement> entitlementMap) {
-        products = new ArrayList<>();
-        for (String entId : entitlementMap.keySet()) {
-            Entitlement ent = entitlementMap.get(entId);
-            if (ent != null) {
-                Map<String, Offering> offerings = ent.getOfferings();
-                for (String offeringId : offerings.keySet()) {
-                    Offering offering = offerings.get(offeringId);
-                    if (offering != null) {
-                        SkuDetails skuDetails = offering.getSkuDetails();
-                        if (skuDetails != null) {
-                            products.add(skuDetails);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private WritableMap mapEntitlementsAndCacheProducts(@NonNull Map<String, Entitlement> entitlementMap) {
@@ -320,7 +300,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void finishTransactions(boolean enabled) {
+    public void setFinishTransactions(boolean enabled) {
         Purchases.getSharedInstance().setFinishTransactions(enabled);
     }
 
