@@ -231,7 +231,6 @@ export default class Purchases {
    */
   static syncPurchases() {
     if (Platform.OS === "android") {
-      console.log(Platform.OS);
       RNPurchases.syncPurchases();
     }
   }
