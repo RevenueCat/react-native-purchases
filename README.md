@@ -59,7 +59,7 @@ The App Store, in it's infinite wisdom, still rejects fat frameworks, so we need
 ##### Link static library
 The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
 
-![](https://media.giphy.com/media/5tdscexkK9HXKoql7d/giphy.gif)
+![](https://media.giphy.com/media/U2MMgrdYlkRhEcy80J/giphy.gif)
 
 ## Getting Started
 For more detailed information, you can view our complete documentation at [docs.revenuecat.com](https://docs.revenuecat.com/docs).
