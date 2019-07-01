@@ -25,7 +25,6 @@ import com.revenuecat.purchases.util.Iso8601Utils;
 
 import kotlin.UninitializedPropertyAccessException;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +47,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         this.reactContext = reactContext;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String getName() {
         return "RNPurchases";
@@ -376,7 +375,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @Override
-    public void onReceived(@NotNull PurchaserInfo purchaserInfo) {
+    public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED, mapPurchaserInfo(purchaserInfo));
     }

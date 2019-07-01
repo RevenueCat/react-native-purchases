@@ -1,6 +1,8 @@
 
 package com.reactlibrary;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -11,12 +13,11 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
-import org.jetbrains.annotations.NotNull;
 
 public class RNPurchasesPackage implements ReactPackage {
-  @NotNull
+  @NonNull
   @Override
-  public List<NativeModule> createNativeModules(@NotNull ReactApplicationContext reactContext) {
+  public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
     return Arrays.<NativeModule>asList(new RNPurchasesModule(reactContext));
   }
 
@@ -25,9 +26,9 @@ public class RNPurchasesPackage implements ReactPackage {
     return Collections.emptyList();
   }
 
-  @NotNull
+  @NonNull
   @Override
-  public List<ViewManager> createViewManagers(@NotNull ReactApplicationContext reactContext) {
+  public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
     return Collections.emptyList();
   }
 }
