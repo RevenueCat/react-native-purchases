@@ -1,3 +1,6 @@
+## 2.2.2
+- Removes wrong import referring to support library instead of androidx.
+
 ## 2.2.1
 - Removes console.log statement
 
