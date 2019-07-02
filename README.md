@@ -18,6 +18,10 @@ React Native Purchases is a client for the [RevenueCat](https://www.revenuecat.c
 📮 | Great support - [Help Center](https://docs.revenuecat.com/discuss)  
 🤩 | Awesome [new features](https://trello.com/b/RZRnWRbI/revenuecat-product-roadmap)  
 
+## Requirements
+
+The minimum React Native version this SDK requires is `0.58`. If you are using *ExpoKit* please use version [2.0.1](https://github.com/RevenueCat/react-native-purchases/releases/tag/expo-patch) since it uses an older version of React Native. Expo apps are not compatible with RevenueCat.
+
 ## Installation
 
 `$ npm install react-native-purchases --save`
