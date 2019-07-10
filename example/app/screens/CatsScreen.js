@@ -53,14 +53,14 @@ export default class CatsScreen extends React.Component {
   handleInfo(info) {
     const isPro =
       info.activeEntitlements !== "undefined" &&
-      info.activeEntitlements.includes("pro");
+      info.activeEntitlements.includes("pro_cat");
     this.setState({
       isPro,
       purchaseDate: isPro
-        ? `Purchase Date: ${info.purchaseDatesForActiveEntitlements.pro}`
+        ? `Purchase Date: ${info.purchaseDatesForActiveEntitlements.pro_cat}`
         : "",
       expirationDate: isPro
-        ? `Expiration Date: ${info.expirationsForActiveEntitlements.pro}`
+        ? `Expiration Date: ${info.expirationsForActiveEntitlements.pro_cat}`
         : ""
     });
   }

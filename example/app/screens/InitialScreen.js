@@ -8,7 +8,7 @@ export default class InitialScreen extends React.Component {
       const purchaserInfo = await Purchases.getPurchaserInfo();
       if (
         purchaserInfo.activeEntitlements !== "undefined" &&
-        purchaserInfo.activeEntitlements.includes("pro")
+        purchaserInfo.activeEntitlements.includes("pro_cat")
       ) {
         this.props.navigation.dispatch(
           StackActions.reset({

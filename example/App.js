@@ -36,7 +36,7 @@ const AppContainer = createAppContainer(MainNavigator);
 export default class App extends React.Component {
   componentWillMount() {
     Purchases.setDebugLogsEnabled(true);
-    Purchases.setup("LQmxAoIaaQaHpPiWJJayypBDhIpAZCZN");
+    Purchases.setup("my_api_key");
   }
 
   render() {

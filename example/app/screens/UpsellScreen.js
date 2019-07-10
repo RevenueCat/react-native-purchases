@@ -36,7 +36,7 @@ const makePurchase = navigation => async product => {
     const purchaseMade = await Purchases.makePurchase(product);
     if (
       purchaseMade.purchaserInfo.activeEntitlements !== "undefined" &&
-      purchaseMade.purchaserInfo.activeEntitlements.includes("pro")
+      purchaseMade.purchaserInfo.activeEntitlements.includes("pro_cat")
     ) {
       navigation.dispatch(
         StackActions.reset({
@@ -74,10 +74,10 @@ export default class UpsellScreen extends React.Component {
       this.setState({
         entitlements,
         proAnnualPrice: `Buy Annual w/ Trial ${
-          entitlements.pro.annual.price_string
+          entitlements.pro_cat.annual_cats.price_string
         }`,
         proMonthlyPrice: `Buy Monthly w/ Trial ${
-          entitlements.pro.monthly.price_string
+          entitlements.pro_cat.monthly_cats.price_string
         }`
       });
     } catch (e) {
@@ -96,7 +96,7 @@ export default class UpsellScreen extends React.Component {
                 color="#f2545b"
                 onPress={() => {
                   makePurchase(this.props.navigation)(
-                    this.state.entitlements.pro.annual.identifier
+                    this.state.entitlements.pro_cat.annual_cats.identifier
                   );
                 }}
                 title={this.state.proAnnualPrice}
@@ -106,7 +106,9 @@ export default class UpsellScreen extends React.Component {
               <Button
                 color="#f2545b"
                 onPress={() => {
-                  makePurchase(this.state.entitlements.pro.monthly.identifier);
+                  makePurchase(
+                    this.state.entitlements.pro_cat.monthly_cats.identifier
+                  );
                 }}
                 title={this.state.proMonthlyPrice}
               />
