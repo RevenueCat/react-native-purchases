@@ -20,7 +20,7 @@ React Native Purchases is a client for the [RevenueCat](https://www.revenuecat.c
 
 ## Requirements
 
-The minimum React Native version this SDK requires is `0.58`. If you are using *ExpoKit* please use version [2.0.1](https://github.com/RevenueCat/react-native-purchases/releases/tag/expo-patch) since it uses an older version of React Native. Expo apps are not compatible with RevenueCat.
+The minimum React Native version this SDK requires is `0.58`.
 
 ## Installation
 
@@ -30,13 +30,26 @@ The minimum React Native version this SDK requires is `0.58`. If you are using *
 
 `$ react-native link react-native-purchases`
 
-#### Additional iOS Setup
+#### Additional iOS Setup 
 Purchases.framework also needs to be added to your iOS project. The npm install will download the correct framework version. 
 
 Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases).
 
-##### Create a Framework Reference in your project
+##### Create a Framework Reference in your project (if you're using traditional React Native)
+
 1. Drag `Purchases.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference. 
+
+![](https://media.giphy.com/media/83fBXlBYPF8oxMQvhN/giphy.gif)
+
+##### Create a Framework Reference in your project (if you're using ExpoKit / Bare Expo Workflow)
+
+ExpoKit projects of version 33 or higher can successfully use react-native-purchases. If you haven't upgraded, you can follow [the instructions here to upgrade](https://docs.expo.io/versions/latest/expokit/expokit/#upgrading-expokit). 
+
+If you're planning on ejecting from Expo, upgrade your expo version _first_, THEN eject. It'll save you a whole lot of hassle.
+
+1. In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
+
+2. Open `./node_modules/react-native-purchases/ios/` in Finder. Drag and drop from the `Purchases.framework` folder to your outer project in XCode and create a reference. 
 
 ![](https://media.giphy.com/media/83fBXlBYPF8oxMQvhN/giphy.gif)
 
