@@ -32,28 +32,32 @@
                         @"currency_code": (self.rc_currencyCode) ? self.rc_currencyCode : [NSNull null]
                         }];
     
+    
     if (@available(iOS 11.2, *)) {
-        d[@"intro_price"] = @(self.introductoryPrice.price.floatValue) ?: @"";
-        if (self.introductoryPrice.price) {
-            d[@"intro_price_string"] = [formatter stringFromNumber:self.introductoryPrice.price];
-        } else {
-            d[@"intro_price_string"] = @"";
+        if (self.introductoryPrice) {
+            d[@"intro_price"] = @(self.introductoryPrice.price.floatValue) ?: @"";
+            if (self.introductoryPrice.price) {
+                d[@"intro_price_string"] = [formatter stringFromNumber:self.introductoryPrice.price];
+            } else {
+                d[@"intro_price_string"] = @"";
+            }
+            d[@"intro_price_period"] = [self normalizeSubscriptionPeriod:self.introductoryPrice.subscriptionPeriod] ?: @"";
+            d[@"intro_price_period_unit"] = [self normalizeSubscriptionPeriodUnit:self.introductoryPrice.subscriptionPeriod.unit] ?: @"";
+            d[@"intro_price_period_number_of_units"] = @(self.introductoryPrice.subscriptionPeriod.numberOfUnits) ?: @"";
+            d[@"intro_price_cycles"] = @(self.introductoryPrice.numberOfPeriods) ?: @"";
+            return d;
         }
-        d[@"intro_price_period"] = [self normalizeSubscriptionPeriod:self.introductoryPrice.subscriptionPeriod] ?: @"";
-        d[@"intro_price_cycles"] = @(self.introductoryPrice.numberOfPeriods) ?: @"";
-    } else {
-        d[@"intro_price"] = @"";
-        d[@"intro_price_string"] = @"";
-        d[@"intro_price_period"] = @"";
-        d[@"intro_price_cycles"] = @"";
     }
+    d[@"intro_price"] = @"";
+    d[@"intro_price_string"] = @"";
+    d[@"intro_price_period"] = @"";
+    d[@"intro_price_cycles"] = @"";
     
     return d;
 }
 
 - (NSString *)normalizeSubscriptionPeriod:(SKProductSubscriptionPeriod *)subscriptionPeriod API_AVAILABLE(ios(11.2)){
-    switch (subscriptionPeriod.unit)
-    {
+    switch (subscriptionPeriod.unit) {
         case SKProductPeriodUnitDay:
             return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), @"D"];;
         case SKProductPeriodUnitWeek:
@@ -62,6 +66,19 @@
             return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), @"M"];;
         case SKProductPeriodUnitYear:
             return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), @"Y"];;
+    }
+}
+
+- (NSString *)normalizeSubscriptionPeriodUnit:(SKProductPeriodUnit)subscriptionPeriodUnit API_AVAILABLE(ios(11.2)){
+    switch (subscriptionPeriodUnit) {
+        case SKProductPeriodUnitDay:
+            return @"DAY";
+        case SKProductPeriodUnitWeek:
+            return @"WEEK";
+        case SKProductPeriodUnitMonth:
+            return @"MONTH";
+        case SKProductPeriodUnitYear:
+            return @"YEAR";
     }
 }
 

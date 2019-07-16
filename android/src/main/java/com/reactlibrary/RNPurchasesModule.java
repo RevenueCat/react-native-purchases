@@ -102,10 +102,24 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
         map.putString("intro_price_string", detail.getIntroductoryPrice());
         map.putString("intro_price_period", detail.getIntroductoryPricePeriod());
+        if (detail.getIntroductoryPricePeriod() != null && !detail.getIntroductoryPricePeriod().isEmpty()) {
+            RNPurchasesPeriod period = RNPurchasesPeriod.parse(detail.getIntroductoryPricePeriod());
+            if (period.years > 0) {
+                map.putString("intro_price_period_unit", "YEAR");
+                map.putInt("intro_price_period_number_of_units", period.years);
+            } else if (period.months > 0) {
+                map.putString("intro_price_period_unit", "MONTH");
+                map.putInt("intro_price_period_number_of_units", period.months);
+            } else if (period.days > 0) {
+                map.putString("intro_price_period_unit", "DAY");
+                map.putInt("intro_price_period_number_of_units", period.days);
+            }
+        } else {
+            map.putString("intro_price_period_unit", "");
+            map.putString("intro_price_period_number_of_units", "");
+        }
         map.putString("intro_price_cycles", detail.getIntroductoryPriceCycles());
-
         map.putString("currency_code", detail.getPriceCurrencyCode());
-
         return map;
     }
 
