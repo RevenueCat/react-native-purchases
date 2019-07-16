@@ -100,7 +100,8 @@ export default class Purchases {
     ADJUST: 1,
     APPSFLYER: 2,
     BRANCH: 3,
-    TENJIN: 4
+    TENJIN: 4,
+    FACEBOOK: 5
   };
 
   /**
