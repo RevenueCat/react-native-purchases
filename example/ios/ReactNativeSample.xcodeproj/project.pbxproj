@@ -25,6 +25,7 @@
 		147FF1230FD34BF6ACDE33D0 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9325B2111D14BFE880AAD10 /* libRNGestureHandler.a */; };
 		355E663122947EEA00E872D5 /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 355E662C22947EBF00E872D5 /* Purchases.framework */; };
 		355E663222947EEA00E872D5 /* Purchases.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 355E662C22947EBF00E872D5 /* Purchases.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		357320F422D80D210082746A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 357320F322D80D210082746A /* StoreKit.framework */; };
 		56E9E04FD0D44A61BDB6B1E8 /* libRNPurchases.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A81357E00644AB98D50687D /* libRNPurchases.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -358,6 +359,7 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		3300BD8E5BF14F1ABD8E1276 /* ReactNativeSample.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; path = ReactNativeSample.xcodeproj; sourceTree = "<group>"; };
 		355E662C22947EBF00E872D5 /* Purchases.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Purchases.framework; path = ../../ios/Purchases.framework; sourceTree = "<group>"; };
+		357320F322D80D210082746A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		3A81357E00644AB98D50687D /* libRNPurchases.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNPurchases.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				355E663122947EEA00E872D5 /* Purchases.framework in Frameworks */,
+				357320F422D80D210082746A /* StoreKit.framework in Frameworks */,
 				147FF1230FD34BF6ACDE33D0 /* libRNGestureHandler.a in Frameworks */,
 				56E9E04FD0D44A61BDB6B1E8 /* libRNPurchases.a in Frameworks */,
 			);
@@ -523,6 +526,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				357320F322D80D210082746A /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
@@ -696,11 +700,16 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = 4V25WUJBS4;
+						DevelopmentTeam = 8SXR2327BM;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 4V25WUJBS4;
+						DevelopmentTeam = 8SXR2327BM;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1149,7 +1158,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 4V25WUJBS4;
+				DEVELOPMENT_TEAM = 8SXR2327BM;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1182,7 +1191,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 4V25WUJBS4;
+				DEVELOPMENT_TEAM = 8SXR2327BM;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
@@ -1212,7 +1221,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 4V25WUJBS4;
+				DEVELOPMENT_TEAM = 8SXR2327BM;
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(PROJECT_DIR)/../../ios";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1227,7 +1236,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobeiting.subtester;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.sampleapp;
 				PRODUCT_NAME = ReactNativeSample;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1238,7 +1247,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4V25WUJBS4;
+				DEVELOPMENT_TEAM = 8SXR2327BM;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-gesture-handler/ios/**",
@@ -1252,7 +1261,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobeiting.subtester;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.sampleapp;
 				PRODUCT_NAME = ReactNativeSample;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

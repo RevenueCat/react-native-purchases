@@ -1,3 +1,9 @@
+## 2.3.0
+- Upgrades SDKs to iOS https://github.com/RevenueCat/purchases-ios/releases/tag/2.4.0 and Android to https://github.com/RevenueCat/purchases-android/releases/tag/2.3.0.
+- Adds Facebook as supported attribution network.
+- Adds automatic Apple Search Ads attribution collection. Disabled by default.
+- Adds introductory pricing to the iOS product.
+
 ## 2.2.2
 - Removes wrong import referring to support library instead of androidx.
 
