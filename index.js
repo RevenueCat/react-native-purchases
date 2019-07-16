@@ -235,4 +235,14 @@ export default class Purchases {
       RNPurchases.syncPurchases();
     }
   }
+
+  /**
+   * Enable automatic collection of Apple Search Ad attribution. Disabled by default
+   * @param {Boolean} enabled Enable or not automatic apple search ads attribution collection
+   */
+  static setAutomaticAppleSearchAdsAttributionCollection(enabled) {
+    if (Platform.OS === "ios") {
+      RNPurchases.setAutomaticAppleSearchAdsAttributionCollection(enabled);
+    }
+  }
 }

@@ -225,6 +225,11 @@ RCT_REMAP_METHOD(getPurchaserInfo,
     }];
 }
 
+RCT_EXPORT_METHOD(setAutomaticAppleSearchAdsAttributionCollection:(BOOL)automaticAppleSearchAdsAttributionCollection)
+{
+    RCPurchases.automaticAppleSearchAdsAttributionCollection = automaticAppleSearchAdsAttributionCollection;
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
