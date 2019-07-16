@@ -100,7 +100,8 @@ export default class Purchases {
     ADJUST: 1,
     APPSFLYER: 2,
     BRANCH: 3,
-    TENJIN: 4
+    TENJIN: 4,
+    FACEBOOK: 5
   };
 
   /**
@@ -232,6 +233,16 @@ export default class Purchases {
   static syncPurchases() {
     if (Platform.OS === "android") {
       RNPurchases.syncPurchases();
+    }
+  }
+
+  /**
+   * Enable automatic collection of Apple Search Ad attribution. Disabled by default
+   * @param {Boolean} enabled Enable or not automatic apple search ads attribution collection
+   */
+  static setAutomaticAppleSearchAdsAttributionCollection(enabled) {
+    if (Platform.OS === "ios") {
+      RNPurchases.setAutomaticAppleSearchAdsAttributionCollection(enabled);
     }
   }
 }
