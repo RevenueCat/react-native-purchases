@@ -57,16 +57,18 @@
 }
 
 - (NSString *)normalizeSubscriptionPeriod:(SKProductSubscriptionPeriod *)subscriptionPeriod API_AVAILABLE(ios(11.2)){
+    NSString *unit;
     switch (subscriptionPeriod.unit) {
         case SKProductPeriodUnitDay:
-            return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), @"D"];;
+            unit = @"D";
         case SKProductPeriodUnitWeek:
-            return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), @"W"];;
+            unit = @"W";
         case SKProductPeriodUnitMonth:
-            return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), @"M"];;
+            unit = @"M";
         case SKProductPeriodUnitYear:
-            return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), @"Y"];;
+            unit = @"Y";
     }
+    return [NSString stringWithFormat:@"%@%@%@", @"P", @(subscriptionPeriod.numberOfUnits), unit];
 }
 
 - (NSString *)normalizeSubscriptionPeriodUnit:(SKProductPeriodUnit)subscriptionPeriodUnit API_AVAILABLE(ios(11.2)){
