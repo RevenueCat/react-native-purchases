@@ -1,11 +1,16 @@
 
+//
+//  Created by RevenueCat.
+//  Copyright © 2019 RevenueCat. All rights reserved.
+//
+
 #import "RNPurchases.h"
 
 @import StoreKit;
 
-#import "RCPurchaserInfo+RNPurchases.h"
-#import "RCEntitlement+RNPurchases.h"
-#import "SKProduct+RNPurchases.h"
+#import "RCPurchaserInfo+HybridAdditions.h"
+#import "RCEntitlement+HybridAdditions.h"
+#import "SKProduct+HybridAdditions.h"
 
 @interface RNPurchases () <RCPurchasesDelegate>
 

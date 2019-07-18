@@ -1,3 +1,7 @@
+//
+//  Created by RevenueCat.
+//  Copyright © 2019 RevenueCat. All rights reserved.
+//
 
 #if __has_include("RCTEventEmitter.h")
 #import "RCTEventEmitter.h"
