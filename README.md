@@ -24,32 +24,29 @@ The minimum React Native version this SDK requires is `0.58`.
 
 ## Installation
 
-`$ npm install react-native-purchases --save`
-
-### Mostly automatic installation
-
-`$ react-native link react-native-purchases`
-
-#### Additional iOS Setup 
-Purchases.framework also needs to be added to your iOS project. The npm install will download the correct framework version. 
-
-Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases).
-
-##### Create a Framework Reference in your project (if you're using traditional React Native)
-
-1. Drag `Purchases.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference. 
-
-![](https://media.giphy.com/media/83fBXlBYPF8oxMQvhN/giphy.gif)
-
-##### Create a Framework Reference in your project (if you're using ExpoKit / Bare Expo Workflow)
-
 ExpoKit projects of version 33 or higher can successfully use react-native-purchases. If you haven't upgraded, you can follow [the instructions here to upgrade](https://docs.expo.io/versions/latest/expokit/expokit/#upgrading-expokit). 
 
 If you're planning on ejecting from Expo, upgrade your expo version _first_, THEN eject. It'll save you a whole lot of hassle.
 
-1. In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
 
-2. Open `./node_modules/react-native-purchases/ios/` in Finder. Drag and drop from the `Purchases.framework` folder to your outer project in XCode and create a reference. 
+### Add the library to the project
+
+`$ npm install react-native-purchases --save`
+or
+`$ yarn add react-native-purchases`
+
+### Link library to the project
+
+`$ react-native link react-native-purchases`
+
+#### Additional iOS Setup (for manual installation)
+Purchases.framework also needs to be added to your iOS project. The npm install will download the correct framework version. 
+
+Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases). For instructions go [here](#cocoapods).
+
+##### Create a Framework Reference in your project
+
+1. Drag `Purchases.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference. 
 
 ![](https://media.giphy.com/media/83fBXlBYPF8oxMQvhN/giphy.gif)
 
@@ -77,6 +74,16 @@ The App Store, in it's infinite wisdom, still rejects fat frameworks, so we need
 The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
 
 ![](https://media.giphy.com/media/U2MMgrdYlkRhEcy80J/giphy.gif)
+
+### Installing with Cocoapods / ExpoKit
+If your project already uses Cocoapods to install iOS dependencies, common in ExpoKit projects, linking the library should have added it to the podfile. If it hasn't, add the following to your project's podfile to reference the library from your `node_modules` folder:
+
+```
+  pod 'RNPurchases', :path => '../node_modules/react-native-purchases'
+      :inhibit_warnings => true
+```
+
+In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
 
 ## Getting Started
 For more detailed information, you can view our complete documentation at [docs.revenuecat.com](https://docs.revenuecat.com/docs).
