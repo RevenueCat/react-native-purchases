@@ -28,7 +28,6 @@ ExpoKit projects of version 33 or higher can successfully use react-native-purch
 
 If you're planning on ejecting from Expo, upgrade your expo version _first_, THEN eject. It'll save you a whole lot of hassle.
 
-
 ### Add the library to the project
 
 `$ npm install react-native-purchases --save`
@@ -42,7 +41,7 @@ or
 #### Additional iOS Setup (for manual installation)
 Purchases.framework also needs to be added to your iOS project. The npm install will download the correct framework version. 
 
-Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases). For instructions go [here](#cocoapods).
+Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases). For instructions go [here](#installing-with-cocoapods--expokit).
 
 ##### Create a Framework Reference in your project
 
