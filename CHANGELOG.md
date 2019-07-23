@@ -1,3 +1,8 @@
+## 2.3.2
+
+- Fixes a bug when normalizing intro_price_period.
+- **BREAKING_CHANGE** All `intro_price` related fields in the product are strings, or empty strings if inexistent, in both iOS and Android. There were some discrepancies between platforms released in https://github.com/RevenueCat/react-native-purchases/releases/tag/2.3.0.
+
 ## 2.3.1
 
 - Upgrades iOS SDK to https://github.com/RevenueCat/purchases-ios/releases/tag/2.5.0
