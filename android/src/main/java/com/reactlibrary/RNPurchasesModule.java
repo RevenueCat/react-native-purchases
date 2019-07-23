@@ -106,13 +106,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             RNPurchasesPeriod period = RNPurchasesPeriod.parse(detail.getIntroductoryPricePeriod());
             if (period.years > 0) {
                 map.putString("intro_price_period_unit", "YEAR");
-                map.putInt("intro_price_period_number_of_units", period.years);
+                map.putString("intro_price_period_number_of_units", "" + period.years);
             } else if (period.months > 0) {
                 map.putString("intro_price_period_unit", "MONTH");
-                map.putInt("intro_price_period_number_of_units", period.months);
+                map.putString("intro_price_period_number_of_units", "" + period.months);
             } else if (period.days > 0) {
                 map.putString("intro_price_period_unit", "DAY");
-                map.putInt("intro_price_period_number_of_units", period.days);
+                map.putString("intro_price_period_number_of_units", "" + period.days);
             }
         } else {
             map.putString("intro_price_period_unit", "");
