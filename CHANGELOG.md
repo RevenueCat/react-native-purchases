@@ -1,3 +1,7 @@
+## 2.3.3
+
+- Upgrades Android SDK to https://github.com/RevenueCat/purchases-android/releases/tag/2.3.1
+
 ## 2.3.2
 
 - Fixes a bug when normalizing intro_price_period.
