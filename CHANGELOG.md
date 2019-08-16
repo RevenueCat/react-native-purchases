@@ -1,3 +1,7 @@
+## 2.3.4
+
+- Fixes permissions of install scripts
+
 ## 2.3.3
 
 - Upgrades Android SDK to https://github.com/RevenueCat/purchases-android/releases/tag/2.3.1
