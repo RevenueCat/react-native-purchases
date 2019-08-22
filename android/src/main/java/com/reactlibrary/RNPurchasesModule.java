@@ -29,9 +29,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
@@ -94,16 +97,47 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         map.putString("title", detail.getTitle());
         map.putDouble("price", detail.getPriceAmountMicros() / 1000000d);
         map.putString("price_string", detail.getPrice());
-        String introductoryPriceAmountMicros = detail.getIntroductoryPriceAmountMicros();
-        if (introductoryPriceAmountMicros != null && !introductoryPriceAmountMicros.isEmpty()) {
-            map.putString("intro_price", String.valueOf(Long.parseLong(introductoryPriceAmountMicros) / 1000000d));
+        putIntroPrice(detail, map);
+        map.putString("currency_code", detail.getPriceCurrencyCode());
+        return map;
+    }
+
+    private void putIntroPrice(SkuDetails detail, WritableMap map) {
+        if (detail.getFreeTrialPeriod().isEmpty()) {
+            String introductoryPriceAmountMicros = detail.getIntroductoryPriceAmountMicros();
+            if (introductoryPriceAmountMicros != null && !introductoryPriceAmountMicros.isEmpty()) {
+                map.putString("intro_price", String.valueOf(Long.parseLong(introductoryPriceAmountMicros) / 1000000d));
+            } else {
+                map.putString("intro_price", "");
+            }
+            map.putString("intro_price_string", detail.getIntroductoryPrice());
+            map.putString("intro_price_period", detail.getIntroductoryPricePeriod());
+            if (detail.getIntroductoryPricePeriod() != null && !detail.getIntroductoryPricePeriod().isEmpty()) {
+                RNPurchasesPeriod period = RNPurchasesPeriod.parse(detail.getIntroductoryPricePeriod());
+                if (period.years > 0) {
+                    map.putString("intro_price_period_unit", "YEAR");
+                    map.putString("intro_price_period_number_of_units", "" + period.years);
+                } else if (period.months > 0) {
+                    map.putString("intro_price_period_unit", "MONTH");
+                    map.putString("intro_price_period_number_of_units", "" + period.months);
+                } else if (period.days > 0) {
+                    map.putString("intro_price_period_unit", "DAY");
+                    map.putString("intro_price_period_number_of_units", "" + period.days);
+                }
+            } else {
+                map.putString("intro_price_period_unit", "");
+                map.putString("intro_price_period_number_of_units", "");
+            }
+            map.putString("intro_price_cycles", detail.getIntroductoryPriceCycles());
         } else {
-            map.putString("intro_price", "");
-        }
-        map.putString("intro_price_string", detail.getIntroductoryPrice());
-        map.putString("intro_price_period", detail.getIntroductoryPricePeriod());
-        if (detail.getIntroductoryPricePeriod() != null && !detail.getIntroductoryPricePeriod().isEmpty()) {
-            RNPurchasesPeriod period = RNPurchasesPeriod.parse(detail.getIntroductoryPricePeriod());
+            map.putString("intro_price", "0");
+            // Format using device locale. iOS will format using App Store locale, but there's no way
+            // to figure out how the price in the SKUDetails is being formatted.
+            NumberFormat format = NumberFormat.getCurrencyInstance();
+            format.setCurrency(Currency.getInstance(detail.getPriceCurrencyCode()));
+            map.putString("intro_price_string", format.format(0));
+            map.putString("intro_price_period", detail.getFreeTrialPeriod());
+            RNPurchasesPeriod period = RNPurchasesPeriod.parse(detail.getFreeTrialPeriod());
             if (period.years > 0) {
                 map.putString("intro_price_period_unit", "YEAR");
                 map.putString("intro_price_period_number_of_units", "" + period.years);
@@ -114,13 +148,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                 map.putString("intro_price_period_unit", "DAY");
                 map.putString("intro_price_period_number_of_units", "" + period.days);
             }
-        } else {
-            map.putString("intro_price_period_unit", "");
-            map.putString("intro_price_period_number_of_units", "");
+            map.putString("intro_price_cycles", "1");
         }
-        map.putString("intro_price_cycles", detail.getIntroductoryPriceCycles());
-        map.putString("currency_code", detail.getPriceCurrencyCode());
-        return map;
     }
 
     @ReactMethod
