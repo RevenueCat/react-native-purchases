@@ -5,7 +5,7 @@ if (os.type() === "Linux") {
   console.log("Skipping iOS Dependencies");
 } else if (os.type() === "Darwin") {
   const downloadProcess = exec(
-    "./scripts/download-purchases-framework.sh 2.5.0"
+    "./scripts/download-purchases-framework.sh 2.6.0"
   );
   downloadProcess.stdout.pipe(process.stdout);
   const downloadProcessCommon = exec(
