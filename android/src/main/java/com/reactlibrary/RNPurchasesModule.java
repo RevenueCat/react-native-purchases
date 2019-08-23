@@ -368,7 +368,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
         for (String entitlementId : purchaserInfo.getActiveEntitlements()) {
             Date date = purchaserInfo.getPurchaseDateForEntitlement(entitlementId);
-            Mappers.putNullableDate(allEntitlementExpirationDates, entitlementId, date);
+            Mappers.putNullableDate(purchaseDatesForActiveEntitlements, entitlementId, date);
         }
         map.putMap("purchaseDatesForActiveEntitlements", purchaseDatesForActiveEntitlements);
 

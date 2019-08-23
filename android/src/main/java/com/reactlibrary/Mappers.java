@@ -1,7 +1,6 @@
 package com.reactlibrary;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.revenuecat.purchases.EntitlementInfo;
 import com.revenuecat.purchases.EntitlementInfos;
@@ -12,26 +11,22 @@ import java.util.Map;
 
 class Mappers {
     static WritableMap map(EntitlementInfos data) {
-        WritableMap entitlementsInfo = Arguments.createMap();
-        WritableArray all = Arguments.createArray();
+        WritableMap entitlementInfos = Arguments.createMap();
+        WritableMap all = Arguments.createMap();
         for (Map.Entry<String, EntitlementInfo> entry : data.getAll().entrySet()) {
-            WritableMap entitlementInfo = Arguments.createMap();
-            entitlementInfo.putMap(entry.getKey(), Mappers.map(entry.getValue()));
-            all.pushMap(entitlementInfo);
+            all.putMap(entry.getKey(), Mappers.map(entry.getValue()));
         }
-        entitlementsInfo.putArray("all", all);
-        WritableArray active = Arguments.createArray();
+        entitlementInfos.putMap("all", all);
+        WritableMap active = Arguments.createMap();
         for (Map.Entry<String, EntitlementInfo> entry : data.getActive().entrySet()) {
-            WritableMap entitlementInfo = Arguments.createMap();
-            entitlementInfo.putMap(entry.getKey(), Mappers.map(entry.getValue()));
-            active.pushMap(entitlementInfo);
+            active.putMap(entry.getKey(), Mappers.map(entry.getValue()));
         }
-        entitlementsInfo.putArray("active", active);
+        entitlementInfos.putMap("active", active);
 
-        return entitlementsInfo;
+        return entitlementInfos;
     }
 
-    static WritableMap map(EntitlementInfo data) {
+    private static WritableMap map(EntitlementInfo data) {
         WritableMap entitlementInfo = Arguments.createMap();
         entitlementInfo.putString("identifier", data.getIdentifier());
         entitlementInfo.putBoolean("isActive", data.isActive());
