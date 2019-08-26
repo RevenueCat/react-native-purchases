@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		35A025E5230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A025E4230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m */; };
 		35AB2E5C22E012CA008499FF /* SKProduct+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AB2E5B22E012CA008499FF /* SKProduct+HybridAdditions.m */; };
 		35AB2E5D22E012CA008499FF /* RCEntitlement+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AB2E5822E012CA008499FF /* RCEntitlement+HybridAdditions.m */; };
 		35AB2E5E22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AB2E5A22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m */; };
@@ -28,6 +29,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPurchases.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPurchases.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		35A025E3230F9F35005341F2 /* RCEntitlementInfo+HybridAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCEntitlementInfo+HybridAdditions.h"; sourceTree = "<group>"; };
+		35A025E4230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCEntitlementInfo+HybridAdditions.m"; sourceTree = "<group>"; };
 		35AB2E5622E012C9008499FF /* SKProduct+HybridAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SKProduct+HybridAdditions.h"; sourceTree = "<group>"; };
 		35AB2E5722E012C9008499FF /* RCEntitlement+HybridAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCEntitlement+HybridAdditions.h"; sourceTree = "<group>"; };
 		35AB2E5822E012CA008499FF /* RCEntitlement+HybridAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCEntitlement+HybridAdditions.m"; sourceTree = "<group>"; };
@@ -75,6 +78,8 @@
 				35AB2E5A22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m */,
 				35AB2E5622E012C9008499FF /* SKProduct+HybridAdditions.h */,
 				35AB2E5B22E012CA008499FF /* SKProduct+HybridAdditions.m */,
+				35A025E3230F9F35005341F2 /* RCEntitlementInfo+HybridAdditions.h */,
+				35A025E4230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -132,6 +137,7 @@
 			knownRegions = (
 				English,
 				en,
+				Base,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
 			productRefGroup = 58B511D21A9E6C8500147676;
@@ -150,6 +156,7 @@
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */,
 				35AB2E5D22E012CA008499FF /* RCEntitlement+HybridAdditions.m in Sources */,
+				35A025E5230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m in Sources */,
 				35AB2E5E22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m in Sources */,
 				35AB2E5C22E012CA008499FF /* SKProduct+HybridAdditions.m in Sources */,
 			);

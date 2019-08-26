@@ -371,12 +371,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
         map.putArray("allPurchasedProductIdentifiers", allPurchasedProductIds);
 
-        Date latest = purchaserInfo.getLatestExpirationDate();
-        if (latest != null) {
-            map.putString("latestExpirationDate", Iso8601Utils.format(latest));
-        } else {
-            map.putNull("latestExpirationDate");
-        }
+        Mappers.putNullableDate(map, "latestExpirationDate", purchaserInfo.getLatestExpirationDate());
 
         WritableMap allExpirationDates = Arguments.createMap();
         Map<String, Date> dates = purchaserInfo.getAllExpirationDatesByProduct();
@@ -394,11 +389,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
         for (String entitlementId : purchaserInfo.getActiveEntitlements()) {
             Date date = purchaserInfo.getExpirationDateForEntitlement(entitlementId);
-            if (date != null) {
-                allEntitlementExpirationDates.putString(entitlementId, Iso8601Utils.format(date));
-            } else {
-                allEntitlementExpirationDates.putNull(entitlementId);
-            }
+            Mappers.putNullableDate(allEntitlementExpirationDates, entitlementId, date);
         }
         map.putMap("expirationsForActiveEntitlements", allEntitlementExpirationDates);
 
@@ -406,13 +397,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
         for (String entitlementId : purchaserInfo.getActiveEntitlements()) {
             Date date = purchaserInfo.getPurchaseDateForEntitlement(entitlementId);
-            if (date != null) {
-                purchaseDatesForActiveEntitlements.putString(entitlementId, Iso8601Utils.format(date));
-            } else {
-                purchaseDatesForActiveEntitlements.putNull(entitlementId);
-            }
+            Mappers.putNullableDate(purchaseDatesForActiveEntitlements, entitlementId, date);
         }
         map.putMap("purchaseDatesForActiveEntitlements", purchaseDatesForActiveEntitlements);
+
+        map.putMap("entitlements", Mappers.map(purchaserInfo.getEntitlements()));
+        map.putString("firstSeen", Iso8601Utils.format(purchaserInfo.getFirstSeen()));
+        map.putString("originalAppUserId",purchaserInfo.getOriginalAppUserId());
 
         return map;
     }
