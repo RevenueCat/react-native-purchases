@@ -142,8 +142,16 @@ RCT_REMAP_METHOD(makePurchase,
                                                      self.products[p.productIdentifier] = p;
                                                      [productObjects addObject:p.dictionary];
                                                  }
-                                                 [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
-                                                                       withCompletionBlock:completionBlock];
+                                                 if (self.products[productIdentifier]) {
+                                                     [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
+                                                                           withCompletionBlock:completionBlock];
+                                                 } else {
+                                                     [self rejectPromiseWithBlock:reject error:[NSError errorWithDomain:RCPurchasesErrorDomain
+                                                                                                                   code:RCProductNotAvailableForPurchaseError
+                                                                                                               userInfo:@{
+                                                                                                                          NSLocalizedDescriptionKey: @"Couldn't find product."
+                                                                                                                          }]];
+                                                 }
                                              }];
     } else {
         [RCPurchases.sharedPurchases makePurchase:self.products[productIdentifier]
