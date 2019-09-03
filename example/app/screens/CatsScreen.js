@@ -40,7 +40,7 @@ export default class CatsScreen extends React.Component {
     };
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     try {
       const info = await Purchases.getPurchaserInfo();
       this.handleInfo(info);
@@ -51,9 +51,7 @@ export default class CatsScreen extends React.Component {
   }
 
   handleInfo(info) {
-    const isPro =
-      info.activeEntitlements !== "undefined" &&
-      info.activeEntitlements.includes("pro_cat");
+    const isPro = typeof info.entitlements.active.pro_cat !== "undefined";
     this.setState({
       isPro,
       purchaseDate: isPro

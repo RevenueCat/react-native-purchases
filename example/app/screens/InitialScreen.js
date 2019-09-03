@@ -1,36 +1,16 @@
 import React from "react";
-import Purchases from "react-native-purchases";
-import { StackActions, NavigationActions } from "react-navigation";
+import { SafeAreaView, ScrollView, View, Text } from "react-native";
 
 export default class InitialScreen extends React.Component {
-  async componentDidMount() {
-    try {
-      const purchaserInfo = await Purchases.getPurchaserInfo();
-      if (
-        purchaserInfo.activeEntitlements !== "undefined" &&
-        purchaserInfo.activeEntitlements.includes("pro_cat")
-      ) {
-        this.props.navigation.dispatch(
-          StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: "Cats" })]
-          })
-        );
-      } else {
-        this.props.navigation.dispatch(
-          StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: "Upsell" })]
-          })
-        );
-      }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(`Error ${JSON.stringify(e)}`);
-    }
-  }
-
   render() {
-    return null;
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <ScrollView style={{ flex: 1 }}>
+          <View style={{ margin: 50, alignItems: "center" }}>
+            <Text style={{ fontSize: 20 }}>Loading</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
   }
 }

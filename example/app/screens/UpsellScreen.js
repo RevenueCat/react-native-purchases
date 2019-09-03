@@ -34,17 +34,7 @@ const styles = StyleSheet.create({
 const makePurchase = navigation => async product => {
   try {
     const purchaseMade = await Purchases.makePurchase(product);
-    if (
-      purchaseMade.purchaserInfo.activeEntitlements !== "undefined" &&
-      purchaseMade.purchaserInfo.activeEntitlements.includes("pro_cat")
-    ) {
-      navigation.dispatch(
-        StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: "Cats" })]
-        })
-      );
-    }
+    checkIfPro(purchaseMade.purchaserInfo, navigation);
   } catch (e) {
     if (!e.userCancelled) {
       // eslint-disable-next-line no-console
@@ -57,6 +47,7 @@ const makePurchase = navigation => async product => {
 };
 
 export default class UpsellScreen extends React.Component {
+  
   constructor() {
     super();
     this.state = {
@@ -68,6 +59,10 @@ export default class UpsellScreen extends React.Component {
 
   async componentDidMount() {
     try {
+      this.purchaserInfoUpdateListener = (info) => {
+        checkIfPro(info, this.props.navigation);
+      };
+      Purchases.addPurchaserInfoUpdateListener(this.purchaserInfoUpdateListener);
       const entitlements = await Purchases.getEntitlements();
       // eslint-disable-next-line no-console
       console.log(JSON.stringify(entitlements));
@@ -84,6 +79,10 @@ export default class UpsellScreen extends React.Component {
       // eslint-disable-next-line no-console
       console.log("Error handling");
     }
+  }
+
+  async componentWillUnmount() {
+    Purchases.removePurchaserInfoUpdateListener(this.purchaserInfoUpdateListener);
   }
 
   render() {
@@ -126,3 +125,13 @@ export default class UpsellScreen extends React.Component {
     );
   }
 }
+
+function checkIfPro(purchaserInfo, navigation) {
+  if (typeof purchaserInfo.entitlements.active.pro_cat !== "undefined") {
+    navigation.dispatch(StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: "Cats" })]
+    }));
+  }
+}
+

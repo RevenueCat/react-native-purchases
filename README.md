@@ -123,7 +123,7 @@ When it comes time to make a purchase, *Purchases* has a simple method, `makePur
 ```javascript
 try {
   const purchaseMade = await Purchases.makePurchase(entitlements.pro.monthly.identifier);
-  if (purchaseMade.purchaserInfo.activeEntitlements !== "undefined" && purchaseMade.purchaserInfo.activeEntitlements.includes("my_entitlement_identifier")) {
+  if (typeof purchaseMade.purchaserInfo.entitlements.active.my_entitlement_identifier !== "undefined") {
     // Unlock that great "pro" content
   }
 } catch (e) {
@@ -144,12 +144,7 @@ try {
 // Get purchaser info
 try {
   const purchaserInfo = await Purchases.getPurchaserInfo();
-  // Option 1: Check if user has access to entitlement (from RevenueCat dashboard)
-  if(purchaserInfo.activeEntitlements !== "undefined" && purchaserInfo.activeEntitlements.includes("my_entitlement_identifier")) {
-    // Grant user "pro" access
-  }
-  // Option 2: Check if user has active subscription (from App Store Connect or Play Store)
-  if (purchaserInfo.activeSubscriptions !== "undefined" && purchaserInfo.activeSubscriptions.includes("my_product_identifier")) {
+  if(typeof purchaserInfo.entitlements.active.my_entitlement_identifier !== "undefined") {
     // Grant user "pro" access
   }
 } catch (e) {
