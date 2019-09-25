@@ -49,6 +49,8 @@ Alternatively you can install the framework via [CocoaPods](https://cocoapods.or
 
 ![](https://media.giphy.com/media/83fBXlBYPF8oxMQvhN/giphy.gif)
 
+If you're using Expo, you'll need to drag a reference from your `node_modules/react-native-purchases/ios/Purchases.framework` instead.
+
 ##### Add iOS Framework to Embedded Binaries
 1. In Xcode, in project manager, select your app target.
 1. Select the general tab
