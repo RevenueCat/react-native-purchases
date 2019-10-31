@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es6", "dom", "es2016", "esnext.asynciterable"],
+    "declaration": true,
+    "outDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "files": ["src/index.ts"],
+  "exclude": ["node_modules", "dist", "./installPeerdeps.ts"]
+}

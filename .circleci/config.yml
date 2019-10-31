@@ -103,7 +103,7 @@ jobs:
           command: yarn test
       - run:
           name: Linter
-          command: yarn run lint
+          command: yarn run tslint
       # - save_cache:
       #     name: Save Yarn Package Cache
       #     key: yarn-packages-{{ checksum "yarn.lock" }}

@@ -5,3 +5,6 @@ build/
 local.properties
 .jest
 .vscode
+src/
+tsconfig.json
+
