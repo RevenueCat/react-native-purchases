@@ -43,7 +43,7 @@ export default class App extends React.Component {
 
   async componentDidMount() {
     Purchases.setDebugLogsEnabled(true);
-    Purchases.setup("VtDdmbdWBySmqJeeQUTyrNxETUVkhuaJ", "cesarsandbox1");
+    Purchases.setup("api_key");
     try {
       const purchaserInfo = await Purchases.getPurchaserInfo();
       if (typeof purchaserInfo.entitlements.active.pro_cat !== "undefined") {
