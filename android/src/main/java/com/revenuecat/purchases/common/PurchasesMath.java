@@ -1,7 +1,7 @@
-package com.reactlibrary;
+package com.revenuecat.purchases.common;
 
 // The functionality of this class has been extracted from Java 8 Math class
-class RNPurchasesMath {
+class PurchasesMath {
     /**
      * Returns the sum of its arguments,
      * throwing an exception if the result overflows an {@code int}.

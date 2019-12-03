@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.revenuecat.purchases.common;
 
 import androidx.annotation.NonNull;
 
@@ -6,27 +6,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 // The functionality of this class has been extracted from Java 8 time package
-class RNPurchasesPeriod {
+class PurchasesPeriod {
     final int years;
     final int months;
     final int days;
 
-    private RNPurchasesPeriod(int years, int months, int days) {
+    private PurchasesPeriod(int years, int months, int days) {
         this.years = years;
         this.months = months;
         this.days = days;
     }
 
-    private static final RNPurchasesPeriod ZERO = new RNPurchasesPeriod(0, 0, 0);
+    private static final PurchasesPeriod ZERO = new PurchasesPeriod(0, 0, 0);
 
     private static final Pattern PATTERN =
             Pattern.compile("([-+]?)P(?:([-+]?[0-9]+)Y)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)W)?(?:([-+]?[0-9]+)D)?", Pattern.CASE_INSENSITIVE);
 
-    private static RNPurchasesPeriod create(int years, int months, int days) {
+    private static PurchasesPeriod create(int years, int months, int days) {
         if ((years | months | days) == 0) {
             return ZERO;
         }
-        return new RNPurchasesPeriod(years, months, days);
+        return new PurchasesPeriod(years, months, days);
     }
 
     /**
@@ -68,7 +68,7 @@ class RNPurchasesPeriod {
      * @return the parsed period, not null
      * @throws RuntimeException if the text cannot be parsed to a period
      */
-    static RNPurchasesPeriod parse(@NonNull CharSequence text) {
+    static PurchasesPeriod parse(@NonNull CharSequence text) {
         Matcher matcher = PATTERN.matcher(text);
         if (matcher.matches()) {
             int negate = ("-".equals(matcher.group(1)) ? -1 : 1);
@@ -82,7 +82,7 @@ class RNPurchasesPeriod {
                     int months = parseNumber(text, monthMatch, negate);
                     int weeks = parseNumber(text, weekMatch, negate);
                     int days = parseNumber(text, dayMatch, negate);
-                    days = RNPurchasesMath.addExact(days, RNPurchasesMath.multiplyExact(weeks, 7));
+                    days = PurchasesMath.addExact(days, PurchasesMath.multiplyExact(weeks, 7));
                     return create(years, months, days);
                 } catch (NumberFormatException ex) {
                     throw new RuntimeException("Text cannot be parsed to a Period: " + text, ex);
@@ -98,7 +98,7 @@ class RNPurchasesPeriod {
         }
         int val = Integer.parseInt(str);
         try {
-            return RNPurchasesMath.multiplyExact(val, negate);
+            return PurchasesMath.multiplyExact(val, negate);
         } catch (ArithmeticException ex) {
             throw new RuntimeException("Text cannot be parsed to a Period: " + text, ex);
         }

@@ -1,16 +1,17 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "2.4.1",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "preinstall": "node build.js",
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
     "setup.example": "yarn install; yarn link; cd example; yarn link react-native-purchases; yarn; cd ..;",
-    "lint": "eslint **/*.js"
+    "tslint": "tslint -c tslint.json 'src/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -28,21 +29,15 @@
     "react-native": ">= 0.58.2"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-emotion": "^10.0.6",
-    "eslint-plugin-import": "^2.15.0",
-    "eslint-plugin-jest": "^22.4.1",
-    "eslint-plugin-jsx-a11y": "^6.2.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
     "jest": "^24.0.0",
     "jest-react-native": "^18.0.0",
     "prettier": "^1.16.1",
     "react": "^16.8.3",
-    "react-native": "^0.59.4"
+    "react-native": "^0.59.4",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.6.4"
   },
   "jest": {
     "preset": "react-native",

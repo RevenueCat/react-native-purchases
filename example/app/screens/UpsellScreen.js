@@ -31,27 +31,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const makePurchase = navigation => async product => {
-  try {
-    const purchaseMade = await Purchases.makePurchase(product);
-    checkIfPro(purchaseMade.purchaserInfo, navigation);
-  } catch (e) {
-    if (!e.userCancelled) {
-      // eslint-disable-next-line no-console
-      console.log(`Error handling ${JSON.stringify(e)}`);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(`User cancelled ${JSON.stringify(e)}`);
-    }
-  }
-};
-
 export default class UpsellScreen extends React.Component {
   
   constructor() {
     super();
     this.state = {
-      entitlements: [],
+      offerings: {},
       proAnnualPrice: "Loading",
       proMonthlyPrice: "Loading"
     };
@@ -63,16 +48,16 @@ export default class UpsellScreen extends React.Component {
         checkIfPro(info, this.props.navigation);
       };
       Purchases.addPurchaserInfoUpdateListener(this.purchaserInfoUpdateListener);
-      const entitlements = await Purchases.getEntitlements();
+      const offerings = await Purchases.getOfferings();
       // eslint-disable-next-line no-console
-      console.log(JSON.stringify(entitlements));
+      console.log(JSON.stringify(offerings));
       this.setState({
-        entitlements,
+        offerings,
         proAnnualPrice: `Buy Annual w/ Trial ${
-          entitlements.pro_cat.annual_cats.price_string
+          offerings.current.annual.product.price_string
         }`,
         proMonthlyPrice: `Buy Monthly w/ Trial ${
-          entitlements.pro_cat.monthly_cats.price_string
+          offerings.current.lifetime.product.price_string
         }`
       });
     } catch (e) {
@@ -93,10 +78,20 @@ export default class UpsellScreen extends React.Component {
             <View style={styles.button}>
               <Button
                 color="#f2545b"
-                onPress={() => {
-                  makePurchase(this.props.navigation)(
-                    this.state.entitlements.pro_cat.annual_cats.identifier
-                  );
+                onPress={async () => {
+                  const product = this.state.offerings.current.annual.product.identifier;
+                  try {
+                    const purchaseMade = await Purchases.purchaseProduct(product);
+                    checkIfPro(purchaseMade.purchaserInfo, this.props.navigation);
+                  } catch (e) {
+                    if (!e.userCancelled) {
+                      // eslint-disable-next-line no-console
+                      console.log(`Error handling ${JSON.stringify(e)}`);
+                    } else {
+                      // eslint-disable-next-line no-console
+                      console.log(`User cancelled ${JSON.stringify(e)}`);
+                    }
+                  }
                 }}
                 title={this.state.proAnnualPrice}
               />
@@ -104,10 +99,20 @@ export default class UpsellScreen extends React.Component {
             <View style={styles.button}>
               <Button
                 color="#f2545b"
-                onPress={() => {
-                  makePurchase(
-                    this.state.entitlements.pro_cat.monthly_cats.identifier
-                  );
+                onPress={async () => {
+                  const aPackage = this.state.offerings.current.lifetime;
+                  try {
+                    const purchaseMade = await Purchases.purchasePackage(aPackage, {oldSKU: "old", prorationMode: Purchases.PRORATION_MODE.DEFERRED}, Purchases.PURCHASE_TYPE.SUBS);
+                    checkIfPro(purchaseMade.purchaserInfo, this.props.navigation);
+                  } catch (e) {
+                    if (!e.userCancelled) {
+                      // eslint-disable-next-line no-console
+                      console.log(`Error handling ${JSON.stringify(e)}`);
+                    } else {
+                      // eslint-disable-next-line no-console
+                      console.log(`User cancelled ${JSON.stringify(e)}`);
+                    }
+                  }
                 }}
                 title={this.state.proMonthlyPrice}
               />
