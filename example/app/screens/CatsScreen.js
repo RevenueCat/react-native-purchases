@@ -55,10 +55,10 @@ export default class CatsScreen extends React.Component {
     this.setState({
       isPro,
       purchaseDate: isPro
-        ? `Purchase Date: ${info.purchaseDatesForActiveEntitlements.pro_cat}`
+        ? `Purchase Date: ${info.entitlements.active.pro_cat.latestPurchaseDate}`
         : "",
       expirationDate: isPro
-        ? `Expiration Date: ${info.expirationsForActiveEntitlements.pro_cat}`
+        ? `Expiration Date: ${info.entitlements.active.pro_cat.expirationDate}`
         : ""
     });
   }

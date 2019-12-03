@@ -7,10 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		35A025E5230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35A025E4230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m */; };
-		35AB2E5C22E012CA008499FF /* SKProduct+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AB2E5B22E012CA008499FF /* SKProduct+HybridAdditions.m */; };
-		35AB2E5D22E012CA008499FF /* RCEntitlement+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AB2E5822E012CA008499FF /* RCEntitlement+HybridAdditions.m */; };
-		35AB2E5E22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 35AB2E5A22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m */; };
+		3578A05C2391AAC600E8549A /* RCErrorContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A04B2391AAC600E8549A /* RCErrorContainer.m */; };
+		3578A05D2391AAC600E8549A /* RCOfferings+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A04D2391AAC600E8549A /* RCOfferings+HybridAdditions.m */; };
+		3578A05E2391AAC600E8549A /* RCPackage+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A04F2391AAC600E8549A /* RCPackage+HybridAdditions.m */; };
+		3578A05F2391AAC600E8549A /* SKProduct+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0512391AAC600E8549A /* SKProduct+HybridAdditions.m */; };
+		3578A0602391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0522391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.m */; };
+		3578A0612391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0532391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.m */; };
+		3578A0622391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0542391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.m */; };
+		3578A0632391AAC600E8549A /* RCCommonFunctionality.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0552391AAC600E8549A /* RCCommonFunctionality.m */; };
+		3578A0642391AAC600E8549A /* RCOffering+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3578A05A2391AAC600E8549A /* RCOffering+HybridAdditions.m */; };
+		3578A0652391AAD900E8549A /* RCCommonFunctionality.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A04A2391AAC600E8549A /* RCCommonFunctionality.h */; };
+		3578A0662391AAD900E8549A /* RCEntitlementInfo+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0592391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.h */; };
+		3578A0672391AAD900E8549A /* RCEntitlementInfos+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0562391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.h */; };
+		3578A0682391AAD900E8549A /* RCErrorContainer.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A05B2391AAC600E8549A /* RCErrorContainer.h */; };
+		3578A0692391AAD900E8549A /* RCOffering+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0572391AAC600E8549A /* RCOffering+HybridAdditions.h */; };
+		3578A06A2391AAD900E8549A /* RCOfferings+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0582391AAC600E8549A /* RCOfferings+HybridAdditions.h */; };
+		3578A06B2391AAD900E8549A /* RCPackage+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A04E2391AAC600E8549A /* RCPackage+HybridAdditions.h */; };
+		3578A06C2391AAD900E8549A /* RCPurchaserInfo+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A0502391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.h */; };
+		3578A06D2391AAD900E8549A /* SKProduct+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A04C2391AAC600E8549A /* SKProduct+HybridAdditions.h */; };
 		35D0736B20AD0F740012EB8C /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D0736A20AD0F740012EB8C /* Purchases.framework */; };
 		B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPurchases.m */; };
 /* End PBXBuildFile section */
@@ -29,14 +43,24 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPurchases.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPurchases.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		35A025E3230F9F35005341F2 /* RCEntitlementInfo+HybridAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCEntitlementInfo+HybridAdditions.h"; sourceTree = "<group>"; };
-		35A025E4230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCEntitlementInfo+HybridAdditions.m"; sourceTree = "<group>"; };
-		35AB2E5622E012C9008499FF /* SKProduct+HybridAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SKProduct+HybridAdditions.h"; sourceTree = "<group>"; };
-		35AB2E5722E012C9008499FF /* RCEntitlement+HybridAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCEntitlement+HybridAdditions.h"; sourceTree = "<group>"; };
-		35AB2E5822E012CA008499FF /* RCEntitlement+HybridAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCEntitlement+HybridAdditions.m"; sourceTree = "<group>"; };
-		35AB2E5922E012CA008499FF /* RCPurchaserInfo+HybridAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCPurchaserInfo+HybridAdditions.h"; sourceTree = "<group>"; };
-		35AB2E5A22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCPurchaserInfo+HybridAdditions.m"; sourceTree = "<group>"; };
-		35AB2E5B22E012CA008499FF /* SKProduct+HybridAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "SKProduct+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A04A2391AAC600E8549A /* RCCommonFunctionality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCCommonFunctionality.h; sourceTree = "<group>"; };
+		3578A04B2391AAC600E8549A /* RCErrorContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCErrorContainer.m; sourceTree = "<group>"; };
+		3578A04C2391AAC600E8549A /* SKProduct+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKProduct+HybridAdditions.h"; sourceTree = "<group>"; };
+		3578A04D2391AAC600E8549A /* RCOfferings+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCOfferings+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A04E2391AAC600E8549A /* RCPackage+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCPackage+HybridAdditions.h"; sourceTree = "<group>"; };
+		3578A04F2391AAC600E8549A /* RCPackage+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCPackage+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A0502391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCPurchaserInfo+HybridAdditions.h"; sourceTree = "<group>"; };
+		3578A0512391AAC600E8549A /* SKProduct+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKProduct+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A0522391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCPurchaserInfo+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A0532391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCEntitlementInfos+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A0542391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCEntitlementInfo+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A0552391AAC600E8549A /* RCCommonFunctionality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCCommonFunctionality.m; sourceTree = "<group>"; };
+		3578A0562391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCEntitlementInfos+HybridAdditions.h"; sourceTree = "<group>"; };
+		3578A0572391AAC600E8549A /* RCOffering+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCOffering+HybridAdditions.h"; sourceTree = "<group>"; };
+		3578A0582391AAC600E8549A /* RCOfferings+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCOfferings+HybridAdditions.h"; sourceTree = "<group>"; };
+		3578A0592391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RCEntitlementInfo+HybridAdditions.h"; sourceTree = "<group>"; };
+		3578A05A2391AAC600E8549A /* RCOffering+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RCOffering+HybridAdditions.m"; sourceTree = "<group>"; };
+		3578A05B2391AAC600E8549A /* RCErrorContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCErrorContainer.h; sourceTree = "<group>"; };
 		35D0736A20AD0F740012EB8C /* Purchases.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Purchases.framework; sourceTree = SOURCE_ROOT; };
 		B3E7B5881CC2AC0600A0062D /* RNPurchases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPurchases.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNPurchases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPurchases.m; sourceTree = "<group>"; };
@@ -72,14 +96,24 @@
 		35AB2E5F22E0134E008499FF /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				35AB2E5722E012C9008499FF /* RCEntitlement+HybridAdditions.h */,
-				35AB2E5822E012CA008499FF /* RCEntitlement+HybridAdditions.m */,
-				35AB2E5922E012CA008499FF /* RCPurchaserInfo+HybridAdditions.h */,
-				35AB2E5A22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m */,
-				35AB2E5622E012C9008499FF /* SKProduct+HybridAdditions.h */,
-				35AB2E5B22E012CA008499FF /* SKProduct+HybridAdditions.m */,
-				35A025E3230F9F35005341F2 /* RCEntitlementInfo+HybridAdditions.h */,
-				35A025E4230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m */,
+				3578A04A2391AAC600E8549A /* RCCommonFunctionality.h */,
+				3578A0552391AAC600E8549A /* RCCommonFunctionality.m */,
+				3578A0592391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.h */,
+				3578A0542391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.m */,
+				3578A0562391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.h */,
+				3578A0532391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.m */,
+				3578A05B2391AAC600E8549A /* RCErrorContainer.h */,
+				3578A04B2391AAC600E8549A /* RCErrorContainer.m */,
+				3578A0572391AAC600E8549A /* RCOffering+HybridAdditions.h */,
+				3578A05A2391AAC600E8549A /* RCOffering+HybridAdditions.m */,
+				3578A0582391AAC600E8549A /* RCOfferings+HybridAdditions.h */,
+				3578A04D2391AAC600E8549A /* RCOfferings+HybridAdditions.m */,
+				3578A04E2391AAC600E8549A /* RCPackage+HybridAdditions.h */,
+				3578A04F2391AAC600E8549A /* RCPackage+HybridAdditions.m */,
+				3578A0502391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.h */,
+				3578A0522391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.m */,
+				3578A04C2391AAC600E8549A /* SKProduct+HybridAdditions.h */,
+				3578A0512391AAC600E8549A /* SKProduct+HybridAdditions.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -154,11 +188,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3578A0652391AAD900E8549A /* RCCommonFunctionality.h in Sources */,
+				3578A0662391AAD900E8549A /* RCEntitlementInfo+HybridAdditions.h in Sources */,
+				3578A0672391AAD900E8549A /* RCEntitlementInfos+HybridAdditions.h in Sources */,
+				3578A0682391AAD900E8549A /* RCErrorContainer.h in Sources */,
+				3578A0692391AAD900E8549A /* RCOffering+HybridAdditions.h in Sources */,
+				3578A06A2391AAD900E8549A /* RCOfferings+HybridAdditions.h in Sources */,
+				3578A06B2391AAD900E8549A /* RCPackage+HybridAdditions.h in Sources */,
+				3578A06C2391AAD900E8549A /* RCPurchaserInfo+HybridAdditions.h in Sources */,
+				3578A06D2391AAD900E8549A /* SKProduct+HybridAdditions.h in Sources */,
+				3578A0602391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.m in Sources */,
+				3578A05F2391AAC600E8549A /* SKProduct+HybridAdditions.m in Sources */,
+				3578A0642391AAC600E8549A /* RCOffering+HybridAdditions.m in Sources */,
+				3578A0612391AAC600E8549A /* RCEntitlementInfos+HybridAdditions.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */,
-				35AB2E5D22E012CA008499FF /* RCEntitlement+HybridAdditions.m in Sources */,
-				35A025E5230F9F4C005341F2 /* RCEntitlementInfo+HybridAdditions.m in Sources */,
-				35AB2E5E22E012CA008499FF /* RCPurchaserInfo+HybridAdditions.m in Sources */,
-				35AB2E5C22E012CA008499FF /* SKProduct+HybridAdditions.m in Sources */,
+				3578A0622391AAC600E8549A /* RCEntitlementInfo+HybridAdditions.m in Sources */,
+				3578A0632391AAC600E8549A /* RCCommonFunctionality.m in Sources */,
+				3578A05D2391AAC600E8549A /* RCOfferings+HybridAdditions.m in Sources */,
+				3578A05C2391AAC600E8549A /* RCErrorContainer.m in Sources */,
+				3578A05E2391AAC600E8549A /* RCPackage+HybridAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
