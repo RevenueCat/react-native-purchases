@@ -38,6 +38,6 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
-    implementation 'com.revenuecat.purchases:purchases:3.0.2'
+    implementation 'com.revenuecat.purchases:purchases:3.0.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

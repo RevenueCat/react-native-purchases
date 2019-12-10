@@ -1,3 +1,7 @@
+## 3.0.1
+
+- Updates Android SDK to 3.0.3 which should fix issues with restores and syncs.
+
 ## 3.0.0
 
 - Support for new Offerings system.
