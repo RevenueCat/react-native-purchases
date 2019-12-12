@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
-    "setup.example": "yarn install; yarn link; cd example; yarn link react-native-purchases; yarn; cd ..;",
+    "setup.example": "rm -rf node_modules;rm -rf example/node_modules;yarn install; yarn link; cd example; yarn link react-native-purchases; yarn; cd ..;",
     "tslint": "tslint -c tslint.json 'src/*.ts'"
   },
   "repository": {

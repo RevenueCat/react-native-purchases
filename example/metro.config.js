@@ -24,5 +24,6 @@ module.exports = {
         inlineRequires: false
       }
     })
-  }
+  },
+  maxWorkers: 2,
 };

@@ -360,6 +360,11 @@ interface UpgradeInfo {
  * @param {Object} purchaserInfo Object containing info for the purchaser
  */
 declare type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
+declare type ShouldPurchasePromoProductListener = (deferredPurchase: () => MakePurchasePromise) => void;
+declare type MakePurchasePromise = Promise<{
+    productIdentifier: string;
+    purchaserInfo: PurchaserInfo;
+}>;
 export declare const isUTCDateStringFuture: (dateString: string) => boolean;
 export default class Purchases {
     /**
@@ -419,10 +424,26 @@ export default class Purchases {
     static addPurchaserInfoUpdateListener(purchaserInfoUpdateListener: PurchaserInfoUpdateListener): void;
     /**
      * Removes a given PurchaserInfoUpdateListener
-     * @param {PurchaserInfoUpdateListener} listenerToRemove =PurchaserInfoUpdateListener reference of the listener to remove
-     * @returns {Boolean} True if listener was removed, false otherwise
+     * @param {PurchaserInfoUpdateListener} listenerToRemove PurchaserInfoUpdateListener reference of the listener to remove
+     * @returns {boolean} True if listener was removed, false otherwise
      */
     static removePurchaserInfoUpdateListener(listenerToRemove: PurchaserInfoUpdateListener): boolean;
+    /**
+     * Sets a function to be called on purchases initiated on the App Store
+     * @param {ShouldPurchasePromoProductListener} shouldPurchasePromoProductListener Called when a user initiates a
+     * promotional in-app purchase from the App Store. If your app is able to handle a purchase at the current time, run
+     * the deferredPurchase function. If the app is not in a state to make a purchase: cache the defermentPurchase, then
+     * call the defermentPurchase when the app is ready to make the promotional purchase.
+     * If the purchase should never be made, you don't need to ever call the defermentPurchase and the app will not
+     * proceed with promotional purchases.
+     */
+    static addShouldPurchasePromoProductListener(shouldPurchasePromoProductListener: ShouldPurchasePromoProductListener): void;
+    /**
+     * Removes a given ShouldPurchasePromoProductListener
+     * @param {ShouldPurchasePromoProductListener} listenerToRemove ShouldPurchasePromoProductListener reference of the listener to remove
+     * @returns {boolean} True if listener was removed, false otherwise
+     */
+    static removeShouldPurchasePromoProductListener(listenerToRemove: ShouldPurchasePromoProductListener): boolean;
     /**
      * Add a dict of attribution information
      * @param {Dict} data Attribution data from AppsFlyer, Adjust, or Branch
@@ -457,10 +478,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static makePurchase(productIdentifier: string, oldSKU?: string | null, type?: PURCHASE_TYPE): Promise<{
-        productIdentifier: string;
-        purchaserInfo: PurchaserInfo;
-    }>;
+    static makePurchase(productIdentifier: string, oldSKU?: string | null, type?: PURCHASE_TYPE): MakePurchasePromise;
     /**
      * Make a purchase
      *
@@ -472,10 +490,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchaseProduct(productIdentifier: string, upgradeInfo?: UpgradeInfo | null, type?: PURCHASE_TYPE): Promise<{
-        productIdentifier: string;
-        purchaserInfo: PurchaserInfo;
-    }>;
+    static purchaseProduct(productIdentifier: string, upgradeInfo?: UpgradeInfo | null, type?: PURCHASE_TYPE): MakePurchasePromise;
     /**
      * Make a purchase
      *
@@ -486,10 +501,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null): Promise<{
-        productIdentifier: string;
-        purchaserInfo: PurchaserInfo;
-    }>;
+    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null): MakePurchasePromise;
     /**
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.

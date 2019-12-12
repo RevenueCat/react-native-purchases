@@ -390,8 +390,11 @@ interface UpgradeInfo {
  * @param {Object} purchaserInfo Object containing info for the purchaser
  */
 type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
+type ShouldPurchasePromoProductListener = (deferredPurchase: () => MakePurchasePromise) => void;
+type MakePurchasePromise = Promise<{ productIdentifier: string; purchaserInfo: PurchaserInfo; }>;
 
 let purchaserInfoUpdateListeners: PurchaserInfoUpdateListener[] = [];
+let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
 
 export const isUTCDateStringFuture = (dateString: string) => {
   const date = new Date(dateString);
@@ -413,6 +416,15 @@ eventEmitter.addListener(
   "Purchases-PurchaserInfoUpdated",
   (purchaserInfo: PurchaserInfo) => {
     purchaserInfoUpdateListeners.forEach(listener => listener(purchaserInfo));
+  }
+);
+
+eventEmitter.addListener(
+  "Purchases-ShouldPurchasePromoProduct",
+  ({ callbackID }:{ callbackID: number }) => {
+    shouldPurchasePromoProductListeners.forEach(listener =>
+      listener(() => RNPurchases.makeDeferredPurchase(callbackID))
+    );
   }
 );
 
@@ -503,14 +515,49 @@ export default class Purchases {
 
   /**
    * Removes a given PurchaserInfoUpdateListener
-   * @param {PurchaserInfoUpdateListener} listenerToRemove =PurchaserInfoUpdateListener reference of the listener to remove
-   * @returns {Boolean} True if listener was removed, false otherwise
+   * @param {PurchaserInfoUpdateListener} listenerToRemove PurchaserInfoUpdateListener reference of the listener to remove
+   * @returns {boolean} True if listener was removed, false otherwise
    */
   public static removePurchaserInfoUpdateListener(
     listenerToRemove: PurchaserInfoUpdateListener
   ) {
     if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
       purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(
+        listener => listenerToRemove !== listener
+      );
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets a function to be called on purchases initiated on the Apple App Store. This is only used in iOS.
+   * @param {ShouldPurchasePromoProductListener} shouldPurchasePromoProductListener Called when a user initiates a
+   * promotional in-app purchase from the App Store. If your app is able to handle a purchase at the current time, run
+   * the deferredPurchase function. If the app is not in a state to make a purchase: cache the deferredPurchase, then
+   * call the deferredPurchase when the app is ready to make the promotional purchase.
+   * If the purchase should never be made, you don't need to ever call the deferredPurchase and the app will not
+   * proceed with promotional purchases.
+   */
+  public static addShouldPurchasePromoProductListener(
+    shouldPurchasePromoProductListener: ShouldPurchasePromoProductListener
+  ) {
+    if (typeof shouldPurchasePromoProductListener !== "function") {
+      throw new Error("addPurchaserInfoUpdateListener needs a function");
+    }
+    shouldPurchasePromoProductListeners.push(shouldPurchasePromoProductListener);
+  }
+
+  /**
+   * Removes a given ShouldPurchasePromoProductListener
+   * @param {ShouldPurchasePromoProductListener} listenerToRemove ShouldPurchasePromoProductListener reference of the listener to remove
+   * @returns {boolean} True if listener was removed, false otherwise
+   */
+  public static removeShouldPurchasePromoProductListener(
+    listenerToRemove: ShouldPurchasePromoProductListener
+  ) {
+    if (shouldPurchasePromoProductListeners.includes(listenerToRemove)) {
+      shouldPurchasePromoProductListeners = shouldPurchasePromoProductListeners.filter(
         listener => listenerToRemove !== listener
       );
       return true;
@@ -570,7 +617,7 @@ export default class Purchases {
     productIdentifier: string,
     oldSKU?: string | null,
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
-  ): Promise<{ productIdentifier: string; purchaserInfo: PurchaserInfo; }> {
+  ): MakePurchasePromise {
     if (Array.isArray(oldSKU)) {
       throw new Error("Calling a deprecated method!");
     }
@@ -606,7 +653,7 @@ export default class Purchases {
     productIdentifier: string,
     upgradeInfo?: UpgradeInfo | null,
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
-  ): Promise<{ productIdentifier: string; purchaserInfo: PurchaserInfo; }> {
+  ): MakePurchasePromise {
     return RNPurchases.purchaseProduct(
       productIdentifier,
       upgradeInfo,
@@ -630,7 +677,7 @@ export default class Purchases {
   public static purchasePackage(
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null
-  ): Promise<{ productIdentifier: string; purchaserInfo: PurchaserInfo; }> {
+  ): MakePurchasePromise {
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.offeringIdentifier,

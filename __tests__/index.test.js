@@ -1,4 +1,6 @@
-const {NativeModules} = require("react-native");
+const {NativeModules, NativeEventEmitter} = require("react-native");
+
+const nativeEmitter = new NativeEventEmitter();
 
 describe("Purchases", () => {
   beforeEach(() => {
@@ -20,11 +22,8 @@ describe("Purchases", () => {
 
     Purchases.addPurchaserInfoUpdateListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
-
     nativeEmitter.emit("Purchases-PurchaserInfoUpdated", purchaserInfoStub);
 
-    expect(listener).toEqual(expect.any(Function));
     expect(listener).toHaveBeenCalledWith(purchaserInfoStub);
   });
 
@@ -34,14 +33,71 @@ describe("Purchases", () => {
     Purchases.addPurchaserInfoUpdateListener(listener);
     Purchases.removePurchaserInfoUpdateListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
-
     const eventInfo = {
       purchaserInfo: purchaserInfoStub,
       error: null,
     };
 
     nativeEmitter.emit("Purchases-PurchaserInfoUpdated", eventInfo);
+
+    expect(listener).toHaveBeenCalledTimes(0);
+  });
+
+  it("addShouldPurchasePromoProductListener correctly saves listeners", () => {
+    const listener = jest.fn();
+    const Purchases = require("../index").default;
+
+    Purchases.addShouldPurchasePromoProductListener(listener);
+
+    const nativeEmitter = new NativeEventEmitter();
+    const eventInfo = {
+      callbackID: 1,
+    };
+    nativeEmitter.emit("Purchases-ShouldPurchasePromoProduct", eventInfo);
+
+    expect(listener).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  it("shouldPurchasePromoProductListener calls deferred purchase", async () => {
+    const listener = deferredPurchase => {
+      this.deferredPurchase = deferredPurchase;
+    };
+
+    const Purchases = require("../index").default;
+
+    Purchases.addShouldPurchasePromoProductListener(listener);
+
+    const nativeEmitter = new NativeEventEmitter();
+    const eventInfo = {
+      callbackID: 1,
+    };
+    nativeEmitter.emit("Purchases-ShouldPurchasePromoProduct", eventInfo);
+
+    NativeModules.RNPurchases.makeDeferredPurchase.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      purchaserInfo: purchaserInfoStub
+    });
+
+    let {purchaserInfo, purchasedProductIdentifier} = await this.deferredPurchase();
+
+    expect(NativeModules.RNPurchases.makeDeferredPurchase).toBeCalledWith(1);
+    expect(purchaserInfo).toEqual(purchaserInfoStub);
+    expect(purchasedProductIdentifier).toEqual("123");
+  });
+
+  it("removeShouldPurchasePromoProductListener correctly removes a listener", () => {
+    const Purchases = require("../index").default;
+    const listener = jest.fn();
+    Purchases.addShouldPurchasePromoProductListener(listener);
+    Purchases.removeShouldPurchasePromoProductListener(listener);
+
+    const nativeEmitter = new NativeEventEmitter();
+
+    const eventInfo = {
+      callbackID: 1,
+    };
+
+    nativeEmitter.emit("Purchases-ShouldPurchasePromoProduct", eventInfo);
 
     expect(listener).toHaveBeenCalledTimes(0);
   });

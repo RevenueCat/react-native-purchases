@@ -14,9 +14,12 @@
 
 @interface RNPurchases () <RCPurchasesDelegate>
 
+@property(nonatomic, retain) NSMutableArray<RCDeferredPromotionalPurchaseBlock> *defermentBlocks;
+
 @end
 
 NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdated";
+NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchasePromoProduct";
 
 @implementation RNPurchases
 
@@ -27,7 +30,7 @@ NSString *RNPurchasesPurchaserInfoUpdatedEvent = @"Purchases-PurchaserInfoUpdate
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[RNPurchasesPurchaserInfoUpdatedEvent];
+    return @[RNPurchasesPurchaserInfoUpdatedEvent, RNPurchasesShouldPurchasePromoProductEvent];
 }
 
 RCT_EXPORT_MODULE();
@@ -153,11 +156,29 @@ RCT_REMAP_METHOD(isAnonymous,
 {
     resolve(@([RCCommonFunctionality isAnonymous]));
 }
+
+RCT_EXPORT_METHOD(makeDeferredPurchase:(nonnull NSNumber *)callbackID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    RCDeferredPromotionalPurchaseBlock defermentBlock = [self.defermentBlocks objectAtIndex:[callbackID integerValue]];
+    [RCCommonFunctionality makeDeferredPurchase:defermentBlock completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
     
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
     [self sendEventWithName:RNPurchasesPurchaserInfoUpdatedEvent body:purchaserInfo.dictionary];
+}
+
+- (void)purchases:(RCPurchases *)purchases shouldPurchasePromoProduct:(SKProduct *)product defermentBlock:(RCDeferredPromotionalPurchaseBlock)makeDeferredPurchase {
+    if (!self.defermentBlocks) {
+        self.defermentBlocks = [NSMutableArray array];
+    }
+    [self.defermentBlocks addObject:makeDeferredPurchase];
+    NSInteger position = [self.defermentBlocks count]-1;
+    [self sendEventWithName:RNPurchasesShouldPurchasePromoProductEvent body:@{@"callbackID": @(position)}];
 }
 
 #pragma mark -

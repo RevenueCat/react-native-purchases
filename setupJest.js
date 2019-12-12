@@ -669,6 +669,7 @@ NativeModules.RNPurchases = {
   purchaseProduct: jest.fn(),
   purchasePackage: jest.fn(),
   isAnonymous: jest.fn(),
+  makeDeferredPurchase: jest.fn(),
 };
 
-global.NativeEventEmitter = NativeEventEmitter;
+jest.mock('NativeEventEmitter');
