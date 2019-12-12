@@ -89,6 +89,7 @@ var PACKAGE_TYPE;
     PACKAGE_TYPE["WEEKLY"] = "WEEKLY";
 })(PACKAGE_TYPE || (PACKAGE_TYPE = {}));
 var purchaserInfoUpdateListeners = [];
+var shouldPurchasePromoProductListeners = [];
 exports.isUTCDateStringFuture = function (dateString) {
     var date = new Date(dateString);
     var dateUtcMillis = date.valueOf();
@@ -98,6 +99,12 @@ exports.isUTCDateStringFuture = function (dateString) {
 };
 eventEmitter.addListener("Purchases-PurchaserInfoUpdated", function (purchaserInfo) {
     purchaserInfoUpdateListeners.forEach(function (listener) { return listener(purchaserInfo); });
+});
+eventEmitter.addListener("Purchases-ShouldPurchasePromoProduct", function (_a) {
+    var callbackID = _a.callbackID;
+    shouldPurchasePromoProductListeners.forEach(function (listener) {
+        return listener(function () { return RNPurchases.makeDeferredPurchase(callbackID); });
+    });
 });
 var Purchases = /** @class */ (function () {
     function Purchases() {
@@ -142,12 +149,39 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Removes a given PurchaserInfoUpdateListener
-     * @param {PurchaserInfoUpdateListener} listenerToRemove =PurchaserInfoUpdateListener reference of the listener to remove
-     * @returns {Boolean} True if listener was removed, false otherwise
+     * @param {PurchaserInfoUpdateListener} listenerToRemove PurchaserInfoUpdateListener reference of the listener to remove
+     * @returns {boolean} True if listener was removed, false otherwise
      */
     Purchases.removePurchaserInfoUpdateListener = function (listenerToRemove) {
         if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
             purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(function (listener) { return listenerToRemove !== listener; });
+            return true;
+        }
+        return false;
+    };
+    /**
+     * Sets a function to be called on purchases initiated on the App Store
+     * @param {ShouldPurchasePromoProductListener} shouldPurchasePromoProductListener Called when a user initiates a
+     * promotional in-app purchase from the App Store. If your app is able to handle a purchase at the current time, run
+     * the deferredPurchase function. If the app is not in a state to make a purchase: cache the defermentPurchase, then
+     * call the defermentPurchase when the app is ready to make the promotional purchase.
+     * If the purchase should never be made, you don't need to ever call the defermentPurchase and the app will not
+     * proceed with promotional purchases.
+     */
+    Purchases.addShouldPurchasePromoProductListener = function (shouldPurchasePromoProductListener) {
+        if (typeof shouldPurchasePromoProductListener !== "function") {
+            throw new Error("addPurchaserInfoUpdateListener needs a function");
+        }
+        shouldPurchasePromoProductListeners.push(shouldPurchasePromoProductListener);
+    };
+    /**
+     * Removes a given ShouldPurchasePromoProductListener
+     * @param {ShouldPurchasePromoProductListener} listenerToRemove ShouldPurchasePromoProductListener reference of the listener to remove
+     * @returns {boolean} True if listener was removed, false otherwise
+     */
+    Purchases.removeShouldPurchasePromoProductListener = function (listenerToRemove) {
+        if (shouldPurchasePromoProductListeners.includes(listenerToRemove)) {
+            shouldPurchasePromoProductListeners = shouldPurchasePromoProductListeners.filter(function (listener) { return listenerToRemove !== listener; });
             return true;
         }
         return false;

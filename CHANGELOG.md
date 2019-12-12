@@ -1,3 +1,7 @@
+## 3.0.2
+
+- Adds `Purchases.addShouldPurchasePromoProduct` to be able to handle purchases started from the Apple App Store.
+
 ## 3.0.1
 
 - Updates Android SDK to 3.0.3 which should fix issues with restores and syncs.

@@ -47,7 +47,11 @@ export default class UpsellScreen extends React.Component {
       this.purchaserInfoUpdateListener = (info) => {
         checkIfPro(info, this.props.navigation);
       };
+      this.shouldPurchasePromoProduct = async deferredPurchase => {
+        this.deferredPurchase = deferredPurchase;
+      };
       Purchases.addPurchaserInfoUpdateListener(this.purchaserInfoUpdateListener);
+      Purchases.addShouldPurchasePromoProductListener(this.shouldPurchasePromoProduct);
       const offerings = await Purchases.getOfferings();
       // eslint-disable-next-line no-console
       console.log(JSON.stringify(offerings));
@@ -68,6 +72,7 @@ export default class UpsellScreen extends React.Component {
 
   async componentWillUnmount() {
     Purchases.removePurchaserInfoUpdateListener(this.purchaserInfoUpdateListener);
+    Purchases.removeShouldPurchasePromoProductListener(this.shouldPurchasePromoProduct);
   }
 
   render() {
