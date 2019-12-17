@@ -1,3 +1,8 @@
+## 3.0.3
+
+- Adds `Purchases.checkTrialOrIntroductoryPriceEligibility`. Note that Android always returns INTRO_ELIGIBILITY_STATUS_UNKNOWN.
+- Updates iOS to 3.0.1 and Android to 3.0.4
+
 ## 3.0.2
 
 - Adds `Purchases.addShouldPurchasePromoProduct` to be able to handle purchases started from the Apple App Store.
