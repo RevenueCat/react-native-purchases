@@ -256,6 +256,16 @@ fun setFinishTransactions(
     Purchases.sharedInstance.finishTransactions = enabled
 }
 
+// Returns Unknown for all since it's not available in Android
+fun checkTrialOrIntroductoryPriceEligibility(
+    productIdentifiers: List<String>
+): Map<String, Map<String, Any>> {
+    // INTRO_ELIGIBILITY_STATUS_UNKNOWN = 0
+    return productIdentifiers.map {
+        it to mapOf("status" to 0, "description" to "Status indeterminate.")
+    }.toMap()
+}
+
 private fun getMakePurchaseErrorFunction(onResult: OnResult): (PurchasesError, Boolean) -> Unit {
     return { error, userCancelled -> onResult.onError(error.map(mapOf("userCancelled" to userCancelled))) }
 }

@@ -5,7 +5,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.billingclient.api.SkuDetails;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -186,6 +185,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void isAnonymous(final Promise promise) {
         promise.resolve(CommonKt.isAnonymous());
+    }
+
+    @ReactMethod
+    public void checkTrialOrIntroductoryPriceEligibility(ReadableArray productIDs, final Promise promise) {
+        ArrayList<String> productIDList = new ArrayList<>();
+        for (int i = 0; i < productIDs.size(); i++) {
+            productIDList.add(productIDs.getString(i));
+        }
+        promise.resolve(convertMapToWriteableMap(CommonKt.checkTrialOrIntroductoryPriceEligibility(productIDList)));
     }
 
     @Override

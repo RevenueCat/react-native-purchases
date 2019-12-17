@@ -165,6 +165,15 @@ RCT_EXPORT_METHOD(makeDeferredPurchase:(nonnull NSNumber *)callbackID
     [RCCommonFunctionality makeDeferredPurchase:defermentBlock completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
+RCT_EXPORT_METHOD(checkTrialOrIntroductoryPriceEligibility:(NSArray *)products
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    [RCCommonFunctionality checkTrialOrIntroductoryPriceEligibility:products completionBlock:^(NSDictionary<NSString *,RCIntroEligibility *> * _Nonnull responseDictionary) {
+        resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
+    }];
+}
+
     
 #pragma mark -
 #pragma mark Delegate Methods

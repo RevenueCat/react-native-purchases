@@ -518,6 +518,14 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledTimes(2);
   })
 
+  it("checkTrialOrIntroductoryPriceEligibility works", () => {
+    const Purchases = require("../index").default;
+
+    Purchases.checkTrialOrIntroductoryPriceEligibility(["monthly"])
+
+    expect(NativeModules.RNPurchases.checkTrialOrIntroductoryPriceEligibility).toBeCalledWith(["monthly"]);
+  })
+
   const mockPlatform = OS => {
     jest.resetModules();
     jest.doMock("Platform", () => ({OS, select: objs => objs[OS]}));

@@ -78,6 +78,20 @@ declare enum PACKAGE_TYPE {
      */
     WEEKLY = "WEEKLY"
 }
+declare enum INTRO_ELIGIBILITY_STATUS {
+    /**
+     * RevenueCat doesn't have enough information to determine eligibility.
+     */
+    INTRO_ELIGIBILITY_STATUS_UNKNOWN = 0,
+    /**
+     * The user is not eligible for a free trial or intro pricing for this product.
+     */
+    INTRO_ELIGIBILITY_STATUS_INELIGIBLE = 1,
+    /**
+     * The user is eligible for a free trial or intro pricing for this product.
+     */
+    INTRO_ELIGIBILITY_STATUS_ELIGIBLE = 2
+}
 /**
  * The EntitlementInfo object gives you access to all of the information about the status of a user entitlement.
  */
@@ -355,6 +369,19 @@ interface UpgradeInfo {
     readonly prorationMode?: PRORATION_MODE;
 }
 /**
+ * Holds the introductory price status
+ */
+interface IntroEligibility {
+    /**
+     * The introductory price eligibility status
+     */
+    readonly introEligibilityStatus: INTRO_ELIGIBILITY_STATUS;
+    /**
+     * Description of the status
+     */
+    readonly description: string;
+}
+/**
  * Listener used on updated purchaser info
  * @callback PurchaserInfoUpdateListener
  * @param {Object} purchaserInfo Object containing info for the purchaser
@@ -400,6 +427,12 @@ export default class Purchases {
      */
     static PACKAGE_TYPE: typeof PACKAGE_TYPE;
     /**
+     * Enum of different possible states for intro price eligibility status.
+     * @readonly
+     * @enum {number}
+     */
+    static INTRO_ELIGIBILITY_STATUS: typeof INTRO_ELIGIBILITY_STATUS;
+    /**
      * Sets up Purchases with your API key and an app user id.
      * @param {string} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
@@ -429,12 +462,12 @@ export default class Purchases {
      */
     static removePurchaserInfoUpdateListener(listenerToRemove: PurchaserInfoUpdateListener): boolean;
     /**
-     * Sets a function to be called on purchases initiated on the App Store
+     * Sets a function to be called on purchases initiated on the Apple App Store. This is only used in iOS.
      * @param {ShouldPurchasePromoProductListener} shouldPurchasePromoProductListener Called when a user initiates a
      * promotional in-app purchase from the App Store. If your app is able to handle a purchase at the current time, run
-     * the deferredPurchase function. If the app is not in a state to make a purchase: cache the defermentPurchase, then
-     * call the defermentPurchase when the app is ready to make the promotional purchase.
-     * If the purchase should never be made, you don't need to ever call the defermentPurchase and the app will not
+     * the deferredPurchase function. If the app is not in a state to make a purchase: cache the deferredPurchase, then
+     * call the deferredPurchase when the app is ready to make the promotional purchase.
+     * If the purchase should never be made, you don't need to ever call the deferredPurchase and the app will not
      * proceed with promotional purchases.
      */
     static addShouldPurchasePromoProductListener(shouldPurchasePromoProductListener: ShouldPurchasePromoProductListener): void;
@@ -521,12 +554,12 @@ export default class Purchases {
     /**
      * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
      * @param {String} newAppUserID The appUserID that should be linked to the currently user
-     * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     static identify(newAppUserID: string): Promise<PurchaserInfo>;
     /**
      * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
-     * @returns {Promise<Object>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     static reset(): Promise<PurchaserInfo>;
     /**
@@ -536,7 +569,7 @@ export default class Purchases {
     static setDebugLogsEnabled(enabled: boolean): Promise<void>;
     /**
      * Gets current purchaser info
-     * @return {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     static getPurchaserInfo(): Promise<PurchaserInfo>;
     /**
@@ -552,8 +585,25 @@ export default class Purchases {
      */
     static setAutomaticAppleSearchAdsAttributionCollection(enabled: boolean): void;
     /**
-     * @return {Promise<boolean>} If the `appUserID` has been generated by RevenueCat or not.
+     * @returns {Promise<boolean>} If the `appUserID` has been generated by RevenueCat or not.
      */
     static isAnonymous(): Promise<boolean>;
+    /**
+     *  iOS only. Computes whether or not a user is eligible for the introductory pricing period of a given product.
+     *  You should use this method to determine whether or not you show the user the normal product price or the
+     *  introductory price. This also applies to trials (trials are considered a type of introductory pricing).
+     *
+     *  @note Subscription groups are automatically collected for determining eligibility. If RevenueCat can't
+     *  definitively compute the eligibility, most likely because of missing group information, it will return
+     *  `INTRO_ELIGIBILITY_STATUS_UNKNOWN`. The best course of action on unknown status is to display the non-intro
+     *  pricing, to not create a misleading situation. To avoid this, make sure you are testing with the latest version of
+     *  iOS so that the subscription group can be collected by the SDK. Android always returns INTRO_ELIGIBILITY_STATUS_UNKNOWN.
+     *
+     *  @param productIdentifiers Array of product identifiers for which you want to compute eligibility
+     *  @returns { [productId: string]: IntroEligibility } A map of IntroEligility per productId
+     */
+    static checkTrialOrIntroductoryPriceEligibility(productIdentifiers: string[]): Promise<{
+        [productId: string]: IntroEligibility;
+    }>;
 }
 export {};
