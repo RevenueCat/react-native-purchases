@@ -105,15 +105,15 @@ enum PACKAGE_TYPE {
 
 enum INTRO_ELIGIBILITY_STATUS {
   /**
-   RevenueCat doesn't have enough information to determine eligibility.
+   * RevenueCat doesn't have enough information to determine eligibility.
    */
   INTRO_ELIGIBILITY_STATUS_UNKNOWN = 0,
   /**
-   The user is not eligible for a free trial or intro pricing for this product.
+   * The user is not eligible for a free trial or intro pricing for this product.
    */
   INTRO_ELIGIBILITY_STATUS_INELIGIBLE,
   /**
-   The user is eligible for a free trial or intro pricing for this product.
+   * The user is eligible for a free trial or intro pricing for this product.
    */
   INTRO_ELIGIBILITY_STATUS_ELIGIBLE
 }
