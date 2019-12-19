@@ -1,3 +1,7 @@
+## 3.0.4
+
+- Renames introEligibilityStatus to status in IntroEligibility
+
 ## 3.0.3
 
 - Adds `Purchases.checkTrialOrIntroductoryPriceEligibility`. Note that Android always returns INTRO_ELIGIBILITY_STATUS_UNKNOWN.

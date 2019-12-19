@@ -406,7 +406,7 @@ interface IntroEligibility {
   /**
    * The introductory price eligibility status
    */
-  readonly introEligibilityStatus: INTRO_ELIGIBILITY_STATUS;
+  readonly status: INTRO_ELIGIBILITY_STATUS;
   /**
    * Description of the status
    */
