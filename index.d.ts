@@ -1,4 +1,4 @@
-declare enum ATTRIBUTION_NETWORK {
+export declare enum ATTRIBUTION_NETWORK {
     APPLE_SEARCH_ADS = 0,
     ADJUST = 1,
     APPSFLYER = 2,
@@ -6,7 +6,7 @@ declare enum ATTRIBUTION_NETWORK {
     TENJIN = 4,
     FACEBOOK = 5
 }
-declare enum PURCHASE_TYPE {
+export declare enum PURCHASE_TYPE {
     /**
      * A type of SKU for in-app products.
      */
@@ -16,7 +16,7 @@ declare enum PURCHASE_TYPE {
      */
     SUBS = "subs"
 }
-declare enum PRORATION_MODE {
+export declare enum PRORATION_MODE {
     UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY = 0,
     /**
      * Replacement takes effect immediately, and the remaining time will be
@@ -40,7 +40,7 @@ declare enum PRORATION_MODE {
      */
     DEFERRED = 4
 }
-declare enum PACKAGE_TYPE {
+export declare enum PACKAGE_TYPE {
     /**
      * A package that was defined with a custom identifier.
      */
@@ -78,7 +78,7 @@ declare enum PACKAGE_TYPE {
      */
     WEEKLY = "WEEKLY"
 }
-declare enum INTRO_ELIGIBILITY_STATUS {
+export declare enum INTRO_ELIGIBILITY_STATUS {
     /**
      * RevenueCat doesn't have enough information to determine eligibility.
      */

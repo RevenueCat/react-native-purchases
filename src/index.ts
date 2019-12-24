@@ -5,7 +5,7 @@ const {RNPurchases} = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
-enum ATTRIBUTION_NETWORK {
+export enum ATTRIBUTION_NETWORK {
   APPLE_SEARCH_ADS = 0,
   ADJUST = 1,
   APPSFLYER = 2,
@@ -14,7 +14,7 @@ enum ATTRIBUTION_NETWORK {
   FACEBOOK = 5,
 }
 
-enum PURCHASE_TYPE {
+export enum PURCHASE_TYPE {
   /**
    * A type of SKU for in-app products.
    */
@@ -26,7 +26,7 @@ enum PURCHASE_TYPE {
   SUBS = "subs",
 }
 
-enum PRORATION_MODE {
+export enum PRORATION_MODE {
   UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY = 0,
 
   /**
@@ -55,7 +55,7 @@ enum PRORATION_MODE {
   DEFERRED = 4,
 }
 
-enum PACKAGE_TYPE {
+export enum PACKAGE_TYPE {
 
   /**
    * A package that was defined with a custom identifier.
@@ -103,7 +103,7 @@ enum PACKAGE_TYPE {
   WEEKLY = "WEEKLY",
 }
 
-enum INTRO_ELIGIBILITY_STATUS {
+export enum INTRO_ELIGIBILITY_STATUS {
   /**
    * RevenueCat doesn't have enough information to determine eligibility.
    */
