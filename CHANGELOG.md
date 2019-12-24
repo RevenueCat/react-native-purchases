@@ -1,3 +1,7 @@
+## 3.0.6
+
+- Exports enums
+
 ## 3.0.5
 
 - Exports interfaces and types
