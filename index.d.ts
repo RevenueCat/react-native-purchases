@@ -95,7 +95,7 @@ declare enum INTRO_ELIGIBILITY_STATUS {
 /**
  * The EntitlementInfo object gives you access to all of the information about the status of a user entitlement.
  */
-interface PurchasesEntitlementInfo {
+export interface PurchasesEntitlementInfo {
     /**
      * The entitlement identifier configured in the RevenueCat dashboard
      */
@@ -155,7 +155,7 @@ interface PurchasesEntitlementInfo {
 /**
  * Contains all the entitlements associated to the user.
  */
-interface PurchasesEntitlementInfos {
+export interface PurchasesEntitlementInfos {
     /**
      * Map of all EntitlementInfo (`PurchasesEntitlementInfo`) objects (active and inactive) keyed by entitlement identifier.
      */
@@ -169,7 +169,7 @@ interface PurchasesEntitlementInfos {
         [key: string]: PurchasesEntitlementInfo;
     };
 }
-interface PurchaserInfo {
+export interface PurchaserInfo {
     /**
      * Entitlements attached to this purchaser info
      */
@@ -221,7 +221,7 @@ interface PurchaserInfo {
      */
     readonly originalApplicationVersion: string | null;
 }
-interface PurchasesProduct {
+export interface PurchasesProduct {
     /**
      * Product Id.
      */
@@ -275,7 +275,7 @@ interface PurchasesProduct {
  * Contains information about the product available for the user to purchase.
  * For more info see https://docs.revenuecat.com/docs/entitlements
  */
-interface PurchasesPackage {
+export interface PurchasesPackage {
     /**
      * Unique identifier for this package. Can be one a predefined package type or a custom one.
      */
@@ -297,7 +297,7 @@ interface PurchasesPackage {
  * An offering is a collection of Packages (`PurchasesPackage`) available for the user to purchase.
  * For more info see https://docs.revenuecat.com/docs/entitlements
  */
-interface PurchasesOffering {
+export interface PurchasesOffering {
     /**
      * Unique identifier defined in RevenueCat dashboard.
      */
@@ -343,7 +343,7 @@ interface PurchasesOffering {
  * Contains all the offerings configured in RevenueCat dashboard.
  * For more info see https://docs.revenuecat.com/docs/entitlements
  */
-interface PurchasesOfferings {
+export interface PurchasesOfferings {
     /**
      * Map of all Offerings [PurchasesOffering] objects keyed by their identifier.
      */
@@ -355,10 +355,16 @@ interface PurchasesOfferings {
      */
     readonly current: PurchasesOffering | null;
 }
+export interface PurchasesError {
+    code: number;
+    message: string;
+    readableErrorCode: string;
+    underlyingErrorMessage: string;
+}
 /**
  * Holds the information used when upgrading from another sku. For Android use only.
  */
-interface UpgradeInfo {
+export interface UpgradeInfo {
     /**
      * The oldSKU to upgrade from.
      */
@@ -371,7 +377,7 @@ interface UpgradeInfo {
 /**
  * Holds the introductory price status
  */
-interface IntroEligibility {
+export interface IntroEligibility {
     /**
      * The introductory price eligibility status
      */
@@ -386,8 +392,8 @@ interface IntroEligibility {
  * @callback PurchaserInfoUpdateListener
  * @param {Object} purchaserInfo Object containing info for the purchaser
  */
-declare type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
-declare type ShouldPurchasePromoProductListener = (deferredPurchase: () => MakePurchasePromise) => void;
+export declare type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
+export declare type ShouldPurchasePromoProductListener = (deferredPurchase: () => MakePurchasePromise) => void;
 declare type MakePurchasePromise = Promise<{
     productIdentifier: string;
     purchaserInfo: PurchaserInfo;

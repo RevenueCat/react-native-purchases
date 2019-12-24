@@ -4,6 +4,7 @@
   "version": "3.0.4",
   "description": "",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "build": "tsc",
     "preinstall": "node build.js",
@@ -11,7 +12,8 @@
     "demo.ios": "cd example; react-native run-ios",
     "demo.android": "cd example; react-native run-android",
     "setup.example": "rm -rf node_modules;rm -rf example/node_modules;yarn install; yarn link; cd example; yarn link react-native-purchases; yarn; cd ..;",
-    "tslint": "tslint -c tslint.json 'src/*.ts'"
+    "tslint": "tslint -c tslint.json 'src/*.ts'",
+    "prepublish": "tsc"
   },
   "repository": {
     "type": "git",
