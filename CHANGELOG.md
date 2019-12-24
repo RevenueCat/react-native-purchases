@@ -1,3 +1,7 @@
+## 3.0.5
+
+- Exports interfaces and types
+
 ## 3.0.4
 
 - Renames introEligibilityStatus to status in IntroEligibility
