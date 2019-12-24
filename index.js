@@ -12,7 +12,7 @@ var ATTRIBUTION_NETWORK;
     ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["BRANCH"] = 3] = "BRANCH";
     ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["TENJIN"] = 4] = "TENJIN";
     ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["FACEBOOK"] = 5] = "FACEBOOK";
-})(ATTRIBUTION_NETWORK || (ATTRIBUTION_NETWORK = {}));
+})(ATTRIBUTION_NETWORK = exports.ATTRIBUTION_NETWORK || (exports.ATTRIBUTION_NETWORK = {}));
 var PURCHASE_TYPE;
 (function (PURCHASE_TYPE) {
     /**
@@ -23,7 +23,7 @@ var PURCHASE_TYPE;
      * A type of SKU for subscriptions.
      */
     PURCHASE_TYPE["SUBS"] = "subs";
-})(PURCHASE_TYPE || (PURCHASE_TYPE = {}));
+})(PURCHASE_TYPE = exports.PURCHASE_TYPE || (exports.PURCHASE_TYPE = {}));
 var PRORATION_MODE;
 (function (PRORATION_MODE) {
     PRORATION_MODE[PRORATION_MODE["UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY"] = 0] = "UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY";
@@ -48,7 +48,7 @@ var PRORATION_MODE;
      * be charged at the same time.
      */
     PRORATION_MODE[PRORATION_MODE["DEFERRED"] = 4] = "DEFERRED";
-})(PRORATION_MODE || (PRORATION_MODE = {}));
+})(PRORATION_MODE = exports.PRORATION_MODE || (exports.PRORATION_MODE = {}));
 var PACKAGE_TYPE;
 (function (PACKAGE_TYPE) {
     /**
@@ -87,7 +87,7 @@ var PACKAGE_TYPE;
      * A package configured with the predefined weekly identifier.
      */
     PACKAGE_TYPE["WEEKLY"] = "WEEKLY";
-})(PACKAGE_TYPE || (PACKAGE_TYPE = {}));
+})(PACKAGE_TYPE = exports.PACKAGE_TYPE || (exports.PACKAGE_TYPE = {}));
 var INTRO_ELIGIBILITY_STATUS;
 (function (INTRO_ELIGIBILITY_STATUS) {
     /**
@@ -102,7 +102,7 @@ var INTRO_ELIGIBILITY_STATUS;
      * The user is eligible for a free trial or intro pricing for this product.
      */
     INTRO_ELIGIBILITY_STATUS[INTRO_ELIGIBILITY_STATUS["INTRO_ELIGIBILITY_STATUS_ELIGIBLE"] = 2] = "INTRO_ELIGIBILITY_STATUS_ELIGIBLE";
-})(INTRO_ELIGIBILITY_STATUS || (INTRO_ELIGIBILITY_STATUS = {}));
+})(INTRO_ELIGIBILITY_STATUS = exports.INTRO_ELIGIBILITY_STATUS || (exports.INTRO_ELIGIBILITY_STATUS = {}));
 var purchaserInfoUpdateListeners = [];
 var shouldPurchasePromoProductListeners = [];
 exports.isUTCDateStringFuture = function (dateString) {
