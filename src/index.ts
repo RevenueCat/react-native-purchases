@@ -579,7 +579,7 @@ export default class Purchases {
     shouldPurchasePromoProductListener: ShouldPurchasePromoProductListener
   ) {
     if (typeof shouldPurchasePromoProductListener !== "function") {
-      throw new Error("addPurchaserInfoUpdateListener needs a function");
+      throw new Error("addShouldPurchasePromoProductListener needs a function");
     }
     shouldPurchasePromoProductListeners.push(shouldPurchasePromoProductListener);
   }
