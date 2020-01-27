@@ -7,6 +7,7 @@
   "types": "index.d.ts",
   "scripts": {
     "build": "tsc",
+    "build-watch": "tsc --watch",
     "preinstall": "node build.js",
     "test": "jest",
     "demo.ios": "cd example; react-native run-ios",
