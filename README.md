@@ -1,5 +1,7 @@
 
-[![RevenueCat](https://s3.amazonaws.com/www.revenuecat.com/assets/images/logo_red200.png)](https://www.revenuecat.com)
+<p align="center">
+  <img src="https://d2jzmbury1aqmc.cloudfront.net/assets/images/build.svg" alt="RevenueCat"/>
+</p>
 
 # react-native-purchases
 
