@@ -1,5 +1,5 @@
 
-package com.reactlibrary.RNPurchases;
+package com.reactlibrary.rnpurchases;
 
 import androidx.annotation.NonNull;
 
