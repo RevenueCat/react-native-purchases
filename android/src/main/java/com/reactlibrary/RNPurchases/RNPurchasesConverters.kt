@@ -1,4 +1,4 @@
-package com.reactlibrary
+package com.reactlibrary.RNPurchases
 
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap

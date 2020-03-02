@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.reactlibrary.RNPurchases;
 
 import android.util.Log;
 
@@ -32,7 +32,7 @@ import java.util.Map;
 
 import kotlin.UninitializedPropertyAccessException;
 
-import static com.reactlibrary.RNPurchasesConverters.convertMapToWriteableMap;
+import static com.reactlibrary.RNPurchases.RNPurchasesConverters.convertMapToWriteableMap;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
 
