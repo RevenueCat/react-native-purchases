@@ -1,4 +1,4 @@
-package com.reactlibrary.rnpurchases
+package com.revenuecat.purchases.react
 
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
