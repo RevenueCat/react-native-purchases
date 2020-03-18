@@ -1,7 +1,7 @@
 // @ts-ignore
-import {NativeEventEmitter, NativeModules, Platform} from "react-native";
+import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 
-const {RNPurchases} = NativeModules;
+const { RNPurchases } = NativeModules;
 
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
@@ -201,11 +201,11 @@ export interface PurchaserInfo {
   /**
    * Set of active subscription skus
    */
-  readonly activeSubscriptions: [string];
+  readonly activeSubscriptions: string[];
   /**
    * Set of purchased skus, active and inactive
    */
-  readonly allPurchasedProductIdentifiers: [string];
+  readonly allPurchasedProductIdentifiers: string[];
   /**
    * The latest expiration date of all purchased skus
    */
@@ -332,7 +332,7 @@ export interface PurchasesOffering {
   /**
    * Array of `Package` objects available for purchase.
    */
-  readonly availablePackages: [PurchasesPackage];
+  readonly availablePackages: PurchasesPackage[];
   /**
    * Lifetime package type configured in the RevenueCat dashboard, if available.
    */
@@ -454,7 +454,7 @@ eventEmitter.addListener(
 
 eventEmitter.addListener(
   "Purchases-ShouldPurchasePromoProduct",
-  ({ callbackID }:{ callbackID: number }) => {
+  ({ callbackID }: { callbackID: number }) => {
     shouldPurchasePromoProductListeners.forEach(listener =>
       listener(() => RNPurchases.makeDeferredPurchase(callbackID))
     );
@@ -662,7 +662,7 @@ export default class Purchases {
       throw new Error("Calling a deprecated method!");
     }
     if (oldSKU !== undefined && oldSKU !== null) {
-      return Purchases.purchaseProduct(productIdentifier, {oldSKU}, type).catch(
+      return Purchases.purchaseProduct(productIdentifier, { oldSKU }, type).catch(
         (error: any) => {
           error.userCancelled = error.code === "1";
           throw error;
