@@ -387,6 +387,9 @@ export interface IntroEligibility {
      */
     readonly description: string;
 }
+export interface PurchasesPaymentDiscount {
+    readonly identifier: string;
+}
 /**
  * Listener used on updated purchaser info
  * @callback PurchaserInfoUpdateListener
@@ -540,7 +543,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null): MakePurchasePromise;
+    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null, discount?: PurchasesPaymentDiscount | null): MakePurchasePromise;
     /**
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
@@ -611,5 +614,6 @@ export default class Purchases {
     static checkTrialOrIntroductoryPriceEligibility(productIdentifiers: string[]): Promise<{
         [productId: string]: IntroEligibility;
     }>;
+    static getPaymentDiscount(aPackage: PurchasesPackage): Promise<PurchasesPaymentDiscount>;
 }
 export {};

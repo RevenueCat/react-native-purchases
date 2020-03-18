@@ -286,8 +286,9 @@ var Purchases = /** @class */ (function () {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    Purchases.purchasePackage = function (aPackage, upgradeInfo) {
-        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo).catch(function (error) {
+    Purchases.purchasePackage = function (aPackage, upgradeInfo, discount) {
+        if (discount === void 0) { discount = null; }
+        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo, discount && discount.identifier).catch(function (error) {
             error.userCancelled = error.code === "1";
             throw error;
         });
@@ -393,6 +394,9 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.checkTrialOrIntroductoryPriceEligibility = function (productIdentifiers) {
         return RNPurchases.checkTrialOrIntroductoryPriceEligibility(productIdentifiers);
+    };
+    Purchases.getPaymentDiscount = function (aPackage) {
+        return RNPurchases.getPaymentDiscount(aPackage.identifier, aPackage.offeringIdentifier);
     };
     /**
      * Enum for attribution networks

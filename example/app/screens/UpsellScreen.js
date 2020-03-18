@@ -105,9 +105,10 @@ export default class UpsellScreen extends React.Component {
               <Button
                 color="#f2545b"
                 onPress={async () => {
-                  const aPackage = this.state.offerings.current.lifetime;
+                  const aPackage = this.state.offerings.current.monthly;
                   try {
-                    const purchaseMade = await Purchases.purchasePackage(aPackage, {oldSKU: "old", prorationMode: Purchases.PRORATION_MODE.DEFERRED}, Purchases.PURCHASE_TYPE.SUBS);
+                    const paymentDiscount = await Purchases.getPaymentDiscount(aPackage)
+                    const purchaseMade = await Purchases.purchasePackage(aPackage, {oldSKU: "old", prorationMode: Purchases.PRORATION_MODE.DEFERRED}, paymentDiscount);
                     checkIfPro(purchaseMade.purchaserInfo, this.props.navigation);
                   } catch (e) {
                     if (!e.userCancelled) {

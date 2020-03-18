@@ -27,6 +27,7 @@
 		3578A06D2391AAD900E8549A /* SKProduct+HybridAdditions.h in Sources */ = {isa = PBXBuildFile; fileRef = 3578A04C2391AAC600E8549A /* SKProduct+HybridAdditions.h */; };
 		35D0736B20AD0F740012EB8C /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D0736A20AD0F740012EB8C /* Purchases.framework */; };
 		B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPurchases.m */; };
+		EF6FBA2CE49878ACE1EB00F6 /* SKPaymentDiscount+HybridAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = EF6FB5F0A13F13E09487DACA /* SKPaymentDiscount+HybridAdditions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -64,6 +65,8 @@
 		35D0736A20AD0F740012EB8C /* Purchases.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Purchases.framework; sourceTree = SOURCE_ROOT; };
 		B3E7B5881CC2AC0600A0062D /* RNPurchases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPurchases.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNPurchases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPurchases.m; sourceTree = "<group>"; };
+		EF6FB2BD13084B9243E198F5 /* SKPaymentDiscount+HybridAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKPaymentDiscount+HybridAdditions.h"; sourceTree = "<group>"; };
+		EF6FB5F0A13F13E09487DACA /* SKPaymentDiscount+HybridAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SKPaymentDiscount+HybridAdditions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +117,8 @@
 				3578A0522391AAC600E8549A /* RCPurchaserInfo+HybridAdditions.m */,
 				3578A04C2391AAC600E8549A /* SKProduct+HybridAdditions.h */,
 				3578A0512391AAC600E8549A /* SKProduct+HybridAdditions.m */,
+				EF6FB5F0A13F13E09487DACA /* SKPaymentDiscount+HybridAdditions.m */,
+				EF6FB2BD13084B9243E198F5 /* SKPaymentDiscount+HybridAdditions.h */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -207,6 +212,7 @@
 				3578A05D2391AAC600E8549A /* RCOfferings+HybridAdditions.m in Sources */,
 				3578A05C2391AAC600E8549A /* RCErrorContainer.m in Sources */,
 				3578A05E2391AAC600E8549A /* RCPackage+HybridAdditions.m in Sources */,
+				EF6FBA2CE49878ACE1EB00F6 /* SKPaymentDiscount+HybridAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

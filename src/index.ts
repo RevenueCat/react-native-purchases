@@ -413,6 +413,10 @@ export interface IntroEligibility {
   readonly description: string;
 }
 
+export interface PurchasesPaymentDiscount {
+  readonly identifier: string;
+}
+
 /**
  * Listener used on updated purchaser info
  * @callback PurchaserInfoUpdateListener
@@ -712,12 +716,14 @@ export default class Purchases {
    */
   public static purchasePackage(
     aPackage: PurchasesPackage,
-    upgradeInfo?: UpgradeInfo | null
+    upgradeInfo?: UpgradeInfo | null,
+    discount: PurchasesPaymentDiscount | null = null
   ): MakePurchasePromise {
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.offeringIdentifier,
-      upgradeInfo
+      upgradeInfo,
+      discount && discount.identifier
     ).catch((error: any) => {
       error.userCancelled = error.code === "1";
       throw error;
@@ -840,4 +846,11 @@ export default class Purchases {
   ): Promise<{ [productId: string]: IntroEligibility }> {
     return RNPurchases.checkTrialOrIntroductoryPriceEligibility(productIdentifiers);
   }
+
+  public static getPaymentDiscount(
+    aPackage: PurchasesPackage
+  ): Promise<PurchasesPaymentDiscount> {
+    return RNPurchases.getPaymentDiscount(aPackage.identifier, aPackage.offeringIdentifier);
+  }
+
 }

@@ -96,10 +96,11 @@ RCT_REMAP_METHOD(purchasePackage,
                  purchasePackage:(NSString *)packageIdentifier
                  offeringIdentifier:(NSString *)offeringIdentifier
                  upgradeInfo:(NSDictionary *)upgradeInfo
+                 discountIdentifier:(NSString *)discountIdentifier
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality purchasePackage:packageIdentifier offering:offeringIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality purchasePackage:packageIdentifier offering:offeringIdentifier discount:discountIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_REMAP_METHOD(restoreTransactions,
@@ -174,7 +175,15 @@ RCT_EXPORT_METHOD(checkTrialOrIntroductoryPriceEligibility:(NSArray *)products
     }];
 }
 
-    
+RCT_REMAP_METHOD(getPaymentDiscount,
+            getPaymentDiscountForPackageIdentifier:(NSString *)packageIdentifier
+            offeringIdentifier:(NSString *)offeringIdentifier
+            resolve:(RCTPromiseResolveBlock)resolve
+            reject:(RCTPromiseRejectBlock)reject)
+{
+    [RCCommonFunctionality paymentDiscountForPackageIdentifier:packageIdentifier offering:offeringIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
