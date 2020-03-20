@@ -10,6 +10,7 @@ import com.revenuecat.purchases.PurchaserInfo
 import com.revenuecat.purchases.util.Iso8601Utils
 import java.text.NumberFormat
 import java.util.Currency
+import org.json.JSONObject
 
 fun EntitlementInfo.map(): Map<String, Any?> =
     mapOf(
