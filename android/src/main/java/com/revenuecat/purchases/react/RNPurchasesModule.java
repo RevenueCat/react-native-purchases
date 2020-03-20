@@ -204,6 +204,45 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                 .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED, convertMapToWriteableMap(MappersKt.map((purchaserInfo))));
     }
 
+    @ReactMethod
+    public void invalidatePurchaserInfoCache() {
+        CommonKt.invalidatePurchaserInfoCache();
+    }
+
+
+    //================================================================================
+    // Subscriber Attributes
+    //================================================================================
+
+    @ReactMethod
+    public void setAttributes(ReadableMap attributes) {
+        CommonKt.setAttributes(attributes.toHashMap());
+    }
+
+    @ReactMethod
+    public void setEmail(String email) {
+        CommonKt.setEmail(email);
+    }
+
+    @ReactMethod
+    public void setPhoneNumber(String phoneNumber) {
+        CommonKt.setPhoneNumber(phoneNumber);
+    }
+
+    @ReactMethod
+    public void setDisplayName(String displayName) {
+        CommonKt.setDisplayName(displayName);
+    }
+
+    @ReactMethod
+    public void setPushToken(String pushToken) {
+        CommonKt.setPushToken(pushToken);
+    }
+
+    //================================================================================
+    // Private methods
+    //================================================================================
+
     @NotNull
     private OnResult getOnResult(final Promise promise) {
         return new OnResult() {
