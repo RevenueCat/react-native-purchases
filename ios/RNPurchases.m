@@ -196,6 +196,39 @@ RCT_REMAP_METHOD(getPaymentDiscount,
                                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
+RCT_EXPORT_METHOD(invalidatePurchaserInfoCache)
+{
+    [RCCommonFunctionality invalidatePurchaserInfoCache];
+}
+
+#pragma mark Subscriber Attributes
+
+RCT_EXPORT_METHOD(setAttributes:(NSDictionary *)attributes)
+{
+    [RCCommonFunctionality setAttributes:attributes];
+}
+
+RCT_EXPORT_METHOD(setEmail:(NSString *)email)
+{
+    [RCCommonFunctionality setEmail:email];
+}
+
+RCT_EXPORT_METHOD(setPhoneNumber:(NSString *)phoneNumber)
+{
+    [RCCommonFunctionality setPhoneNumber:phoneNumber];
+}
+
+RCT_EXPORT_METHOD(setDisplayName:(NSString *)displayName)
+{
+    [RCCommonFunctionality setDisplayName:displayName];
+}
+
+RCT_EXPORT_METHOD(setPushToken:(NSString *)pushToken)
+{
+    [RCCommonFunctionality setPushToken:pushToken];
+}
+
+    
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
