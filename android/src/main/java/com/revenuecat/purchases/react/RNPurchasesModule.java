@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -216,7 +217,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setAttributes(ReadableMap attributes) {
-        CommonKt.setAttributes(attributes.toHashMap());
+        HashMap attributesHashMap = attributes.toHashMap();
+        CommonKt.setAttributes(attributesHashMap);
     }
 
     @ReactMethod
