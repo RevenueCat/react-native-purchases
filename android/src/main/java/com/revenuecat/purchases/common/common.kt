@@ -87,7 +87,7 @@ fun purchaseProduct(
                 it.sku == productIdentifier && it.type.equals(type, ignoreCase = true)
             }
             if (productToBuy != null) {
-                if (oldSku.isNullOrBlank()) {
+                if (oldSku == null || oldSku.isBlank()) {
                     Purchases.sharedInstance.purchaseProductWith(
                         activity,
                         productToBuy,
@@ -154,7 +154,7 @@ fun purchasePackage(
                         it.identifier.equals(packageIdentifier, ignoreCase = true)
                     }
                 if (packageToBuy != null) {
-                    if (oldSku.isNullOrBlank()) {
+                    if (oldSku == null || oldSku.isBlank()) {
                         Purchases.sharedInstance.purchasePackageWith(
                             activity,
                             packageToBuy,
