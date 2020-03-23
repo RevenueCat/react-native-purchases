@@ -43,6 +43,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
 {
     [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID observerMode:observerMode];
     RCPurchases.sharedPurchases.delegate = self;
+    [RCCommonFunctionality initialize];
     resolve(nil);
 }
 
@@ -56,8 +57,8 @@ RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions)
     [RCCommonFunctionality setFinishTransactions:finishTransactions];
 }
 
-RCT_REMAP_METHOD(addAttributionData, 
-                 addAttributionData:(NSDictionary *)data 
+RCT_REMAP_METHOD(addAttributionData,
+                 addAttributionData:(NSDictionary *)data
                  forNetwork:(NSInteger)network
                  forNetworkUserId:(NSString * _Nullable)networkUserId)
 {
@@ -85,10 +86,11 @@ RCT_REMAP_METHOD(purchaseProduct,
                  purchaseProduct:(NSString *)productIdentifier
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  type:(NSString *)type
+                 signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality purchaseProduct:productIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality purchaseProduct:productIdentifier signedDiscountTimestamp:signedDiscountTimestamp completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 
@@ -96,11 +98,11 @@ RCT_REMAP_METHOD(purchasePackage,
                  purchasePackage:(NSString *)packageIdentifier
                  offeringIdentifier:(NSString *)offeringIdentifier
                  upgradeInfo:(NSDictionary *)upgradeInfo
-                 discountIdentifier:(NSString *)discountIdentifier
+                 signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality purchasePackage:packageIdentifier offering:offeringIdentifier discount:discountIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality purchasePackage:packageIdentifier offering:offeringIdentifier signedDiscountTimestamp:signedDiscountTimestamp completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_REMAP_METHOD(restoreTransactions,
@@ -176,12 +178,12 @@ RCT_EXPORT_METHOD(checkTrialOrIntroductoryPriceEligibility:(NSArray *)products
 }
 
 RCT_REMAP_METHOD(getPaymentDiscount,
-            getPaymentDiscountForPackageIdentifier:(NSString *)packageIdentifier
-            offeringIdentifier:(NSString *)offeringIdentifier
-            resolve:(RCTPromiseResolveBlock)resolve
-            reject:(RCTPromiseRejectBlock)reject)
+                 getPaymentDiscountForProductIdentifier:(NSString *)productIdentifier
+                 discountIdentifier:(nullable NSString *)discountIdentifier
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality paymentDiscountForPackageIdentifier:packageIdentifier offering:offeringIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality paymentDiscountForProductIdentifier:productIdentifier discount:discountIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 #pragma mark -
@@ -211,11 +213,13 @@ RCT_REMAP_METHOD(getPaymentDiscount,
     return ^(NSDictionary *_Nullable responseDictionary, RCErrorContainer *_Nullable error) {
         if (error) {
             reject([NSString stringWithFormat: @"%ld", (long)error.code], error.message, error.error);
-        } else {
+        } else if (responseDictionary) {
             resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
+        } else {
+            resolve(nil);
         }
     };
 }
 
 @end
-  
+
