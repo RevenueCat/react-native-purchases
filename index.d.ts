@@ -177,11 +177,11 @@ export interface PurchaserInfo {
     /**
      * Set of active subscription skus
      */
-    readonly activeSubscriptions: [string];
+    readonly activeSubscriptions: string[];
     /**
      * Set of purchased skus, active and inactive
      */
-    readonly allPurchasedProductIdentifiers: [string];
+    readonly allPurchasedProductIdentifiers: string[];
     /**
      * The latest expiration date of all purchased skus
      */
@@ -270,6 +270,40 @@ export interface PurchasesProduct {
      * Number of units for the billing period of the introductory price.
      */
     readonly intro_price_period_number_of_units: number | null;
+    /**
+     * Collection of discount offers for a product. Null for Android.
+     */
+    readonly discounts: PurchasesDiscount[] | null;
+}
+export interface PurchasesDiscount {
+    /**
+     * Identifier of the discount.
+     */
+    readonly identifier: string;
+    /**
+     * Price in the local currency.
+     */
+    readonly price: number;
+    /**
+     * Formatted price, including its currency sign, such as €3.99.
+     */
+    readonly priceString: string;
+    /**
+     * Number of subscription billing periods for which the user will be given the discount, such as 3.
+     */
+    readonly cycles: number;
+    /**
+     * Billing period of the discount, specified in ISO 8601 format.
+     */
+    readonly period: string;
+    /**
+     * Unit for the billing period of the discount, can be DAY, WEEK, MONTH or YEAR.
+     */
+    readonly periodUnit: string;
+    /**
+     * Number of units for the billing period of the discount.
+     */
+    readonly periodNumberOfUnits: number;
 }
 /**
  * Contains information about the product available for the user to purchase.
@@ -309,7 +343,7 @@ export interface PurchasesOffering {
     /**
      * Array of `Package` objects available for purchase.
      */
-    readonly availablePackages: [PurchasesPackage];
+    readonly availablePackages: PurchasesPackage[];
     /**
      * Lifetime package type configured in the RevenueCat dashboard, if available.
      */
@@ -389,6 +423,10 @@ export interface IntroEligibility {
 }
 export interface PurchasesPaymentDiscount {
     readonly identifier: string;
+    readonly keyIdentifier: string;
+    readonly nonce: string;
+    readonly signature: string;
+    readonly timestamp: number;
 }
 /**
  * Listener used on updated purchaser info
@@ -534,6 +572,16 @@ export default class Purchases {
      */
     static purchaseProduct(productIdentifier: string, upgradeInfo?: UpgradeInfo | null, type?: PURCHASE_TYPE): MakePurchasePromise;
     /**
+     * iOS only. Purchase a product applying a given discount.
+     *
+     * @param {PurchasesProduct} product The product you want to purchase
+     * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
+     * @returns {Promise<{ productIdentifier: string, purchaserInfo:PurchaserInfo }>} A promise of an object containing
+     * a purchaser info object and a product identifier. Rejections return an error code,
+     * a boolean indicating if the user cancelled the purchase, and an object with more information.
+     */
+    static purchaseDiscountedProduct(product: PurchasesProduct, discount: PurchasesPaymentDiscount): MakePurchasePromise;
+    /**
      * Make a purchase
      *
      * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
@@ -543,7 +591,17 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null, discount?: PurchasesPaymentDiscount | null): MakePurchasePromise;
+    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null): MakePurchasePromise;
+    /**
+     * iOS only. Purchase a package applying a given discount.
+     *
+     * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
+     * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
+     * @returns {Promise<{ productIdentifier: string, purchaserInfo: PurchaserInfo }>} A promise of an object containing
+     * a purchaser info object and a product identifier. Rejections return an error code,
+     * a boolean indicating if the user cancelled the purchase, and an object with more information.
+     */
+    static purchaseDiscountedPackage(aPackage: PurchasesPackage, discount: PurchasesPaymentDiscount): MakePurchasePromise;
     /**
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
@@ -594,7 +652,7 @@ export default class Purchases {
      */
     static setAutomaticAppleSearchAdsAttributionCollection(enabled: boolean): void;
     /**
-     * @returns {Promise<boolean>} If the `appUserID` has been generated by RevenueCat or not.
+     * @returns { Promise<boolean> } If the `appUserID` has been generated by RevenueCat or not.
      */
     static isAnonymous(): Promise<boolean>;
     /**
@@ -609,11 +667,18 @@ export default class Purchases {
      *  iOS so that the subscription group can be collected by the SDK. Android always returns INTRO_ELIGIBILITY_STATUS_UNKNOWN.
      *
      *  @param productIdentifiers Array of product identifiers for which you want to compute eligibility
-     *  @returns { [productId: string]: IntroEligibility } A map of IntroEligility per productId
+     *  @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId
      */
     static checkTrialOrIntroductoryPriceEligibility(productIdentifiers: string[]): Promise<{
         [productId: string]: IntroEligibility;
     }>;
-    static getPaymentDiscount(aPackage: PurchasesPackage): Promise<PurchasesPaymentDiscount>;
+    /**
+     *  iOS only. Use this function to retrieve the `PurchasesPaymentDiscount` for a given `PurchasesPackage`.
+     *
+     *  @param product The `PurchasesProduct` the user intends to purchase.
+     *  @param discount The `PurchasesDiscount` to apply to the product.
+     *  @returns { Promise<PurchasesPaymentDiscount> } Returns when the `PurchasesPaymentDiscount` is returned. Null is returned for Android and incompatible iOS versions.
+     */
+    static getPaymentDiscount(product: PurchasesProduct, discount: PurchasesDiscount): Promise<PurchasesPaymentDiscount | undefined>;
 }
 export {};
