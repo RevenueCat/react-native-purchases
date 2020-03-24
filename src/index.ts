@@ -269,37 +269,37 @@ export interface PurchasesProduct {
   readonly currency_code: string;
   /**
    * @deprecated, use introPrice instead.
-   * 
+   *
    * Introductory price of a subscription in the local currency.
    */
   readonly intro_price: number | null;
   /**
    * @deprecated, use introPrice instead.
-   * 
+   *
    * Formatted introductory price of a subscription, including its currency sign, such as €3.99.
    */
   readonly intro_price_string: string | null;
   /**
    * @deprecated, use introPrice instead.
-   * 
+   *
    * Billing period of the introductory price, specified in ISO 8601 format.
    */
   readonly intro_price_period: string | null;
   /**
    * @deprecated, use introPrice instead.
-   * 
+   *
    * Number of subscription billing periods for which the user will be given the introductory price, such as 3.
    */
   readonly intro_price_cycles: number | null;
   /**
    * @deprecated, use introPrice instead.
-   * 
+   *
    * Unit for the billing period of the introductory price, can be DAY, WEEK, MONTH or YEAR.
    */
   readonly intro_price_period_unit: string | null;
   /**
    * @deprecated, use introPrice instead.
-   * 
+   *
    * Number of units for the billing period of the introductory price.
    */
   readonly intro_price_period_number_of_units: number | null;
