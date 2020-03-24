@@ -2,7 +2,7 @@
   "name": "react-native-purchases",
   "title": "React Native Purchases",
   "version": "3.0.6",
-  "description": "",
+  "description": "React Native in-app purchases and subscriptions made easy.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -22,7 +22,13 @@
     "baseUrl": "https://github.com/revenuecat/react-native-purchases"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "in-app purchase",
+    "subscriptions",
+    "iap",
+    "iOS",
+    "Apple",
+    "Android"
   ],
   "author": "RevenueCat, Inc.",
   "license": "MIT",
