@@ -76,7 +76,7 @@ executors:
 
   ios:
     macos:
-      xcode: 10.2.1
+      xcode: 10.4.0
     # use a --login shell so our "set Ruby version" command gets picked up for later steps
     shell: /bin/bash --login -o pipefail
 
