@@ -43,7 +43,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
 {
     [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID observerMode:observerMode];
     RCPurchases.sharedPurchases.delegate = self;
-    [RCCommonFunctionality initialize];
+    [RCCommonFunctionality configure];
     resolve(nil);
 }
 
