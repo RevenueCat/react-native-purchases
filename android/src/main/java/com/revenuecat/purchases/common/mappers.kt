@@ -8,6 +8,8 @@ import com.revenuecat.purchases.Offerings
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.PurchaserInfo
 import com.revenuecat.purchases.util.Iso8601Utils
+import java.text.NumberFormat
+import java.util.Currency
 
 fun EntitlementInfo.map(): Map<String, Any?> =
     mapOf(
@@ -92,13 +94,9 @@ private fun Package.map(offeringIdentifier: String): Map<String, Any?> =
     )
 
 private fun SkuDetails.mapIntroPriceDeprecated(): Map<String, Any?> {
-    return if (freeTrialPeriod != null && freeTrialPeriod.isNotBlank()) {
-        // Check freeTrialPeriod first to give priority to trials
-        // Format using device locale. iOS will format using App Store locale, but there's no way
-        // to figure out how the price in the SKUDetails is being formatted.
-        val format = java.text.NumberFormat.getCurrencyInstance().apply {
-            currency = java.util.Currency.getInstance(priceCurrencyCode)
-        }
+    val isFreeTrialAvailable = freeTrialPeriod != null && freeTrialPeriod.isNotBlank()
+    return if (isFreeTrialAvailable) {
+        val format = formatUsingDeviceLocale()
         mapOf(
             "intro_price" to 0,
             "intro_price_string" to format.format(0),
@@ -122,6 +120,12 @@ private fun SkuDetails.mapIntroPriceDeprecated(): Map<String, Any?> {
             "intro_price_period_unit" to null,
             "intro_price_period_number_of_units" to null
         )
+    }
+}
+
+private fun SkuDetails.formatUsingDeviceLocale(): NumberFormat {
+    return NumberFormat.getCurrencyInstance().apply {
+        currency = Currency.getInstance(priceCurrencyCode)
     }
 }
 
