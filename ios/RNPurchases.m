@@ -90,7 +90,9 @@ RCT_REMAP_METHOD(purchaseProduct,
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality purchaseProduct:productIdentifier signedDiscountTimestamp:signedDiscountTimestamp completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality purchaseProduct:productIdentifier
+                   signedDiscountTimestamp:signedDiscountTimestamp
+                           completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 
@@ -102,7 +104,10 @@ RCT_REMAP_METHOD(purchasePackage,
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality purchasePackage:packageIdentifier offering:offeringIdentifier signedDiscountTimestamp:signedDiscountTimestamp completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality purchasePackage:packageIdentifier
+                                  offering:offeringIdentifier
+                   signedDiscountTimestamp:signedDiscountTimestamp
+                           completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_REMAP_METHOD(restoreTransactions,
@@ -122,13 +127,15 @@ RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality createAlias:newAppUserID completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality createAlias:newAppUserID
+                       completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality identify:appUserID completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality identify:appUserID
+                    completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_REMAP_METHOD(reset,
@@ -165,14 +172,16 @@ RCT_EXPORT_METHOD(makeDeferredPurchase:(nonnull NSNumber *)callbackID
                   reject:(RCTPromiseRejectBlock)reject)
 {
     RCDeferredPromotionalPurchaseBlock defermentBlock = [self.defermentBlocks objectAtIndex:[callbackID integerValue]];
-    [RCCommonFunctionality makeDeferredPurchase:defermentBlock completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality makeDeferredPurchase:defermentBlock
+                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_EXPORT_METHOD(checkTrialOrIntroductoryPriceEligibility:(NSArray *)products
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality checkTrialOrIntroductoryPriceEligibility:products completionBlock:^(NSDictionary<NSString *,RCIntroEligibility *> * _Nonnull responseDictionary) {
+    [RCCommonFunctionality checkTrialOrIntroductoryPriceEligibility:products
+                                                    completionBlock:^(NSDictionary<NSString *,RCIntroEligibility *> * _Nonnull responseDictionary) {
         resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
     }];
 }
@@ -183,7 +192,9 @@ RCT_REMAP_METHOD(getPaymentDiscount,
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality paymentDiscountForProductIdentifier:productIdentifier discount:discountIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality paymentDiscountForProductIdentifier:productIdentifier
+                                                      discount:discountIdentifier
+                                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 #pragma mark -
