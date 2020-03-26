@@ -779,7 +779,8 @@ export default class Purchases {
     return RNPurchases.purchaseProduct(
       productIdentifier,
       upgradeInfo,
-      type
+      type,
+      null
     ).catch((error: any) => {
       error.userCancelled = error.code === "1";
       throw error;

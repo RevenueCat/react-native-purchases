@@ -271,7 +271,7 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.purchaseProduct = function (productIdentifier, upgradeInfo, type) {
         if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
-        return RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type).catch(function (error) {
+        return RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type, null).catch(function (error) {
             error.userCancelled = error.code === "1";
             throw error;
         });
