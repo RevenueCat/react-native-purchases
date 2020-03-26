@@ -193,12 +193,12 @@ describe("Purchases", () => {
 
     Purchases.makePurchase("onemonth_freetrial");
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", null, "subs");
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", null, "subs", null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
 
     Purchases.makePurchase("onemonth_freetrial", "viejo", Purchases.PURCHASE_TYPE.INAPP);
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial",{ oldSKU: "viejo" }, Purchases.PURCHASE_TYPE.INAPP);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial",{ oldSKU: "viejo" }, Purchases.PURCHASE_TYPE.INAPP, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(2);
   });
 
