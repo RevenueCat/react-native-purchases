@@ -1,3 +1,11 @@
+## 3.1.0
+
+- Properly scope Android package [#114](https://github.com/RevenueCat/react-native-purchases/pull/114)
+  - ⚠️**IMPORTANT**⚠️: You might need to relink the plugin since the Android package name has changed. All references to `com.reactlibrary.RNPurchasesPackage` in the code should be replace with `com.revenuecat.purchases.react.RNPurchasesPackage`.
+- Apply correct array notation: [type] to type[] [#117](https://github.com/RevenueCat/react-native-purchases/pull/117)
+- Adds subscription offers support for iOS https://docs.revenuecat.com/docs/ios-subscription-offers
+- Introductory Price is now an object inside the PurchasesProduct object
+
 ## 3.0.6
 
 - Exports enums
