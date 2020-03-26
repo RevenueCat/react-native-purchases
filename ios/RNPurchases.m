@@ -43,6 +43,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
 {
     [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID observerMode:observerMode];
     RCPurchases.sharedPurchases.delegate = self;
+    [RCCommonFunctionality configure];
     resolve(nil);
 }
 
@@ -56,10 +57,9 @@ RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions)
     [RCCommonFunctionality setFinishTransactions:finishTransactions];
 }
 
-RCT_REMAP_METHOD(addAttributionData, 
-                 addAttributionData:(NSDictionary *)data 
-                 forNetwork:(NSInteger)network
-                 forNetworkUserId:(NSString * _Nullable)networkUserId)
+RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data
+                  forNetwork:(NSInteger)network
+                  forNetworkUserId:(NSString * _Nullable)networkUserId)
 {
     [RCCommonFunctionality addAttributionData:data network:network networkUserId:networkUserId];
 }
@@ -85,10 +85,13 @@ RCT_REMAP_METHOD(purchaseProduct,
                  purchaseProduct:(NSString *)productIdentifier
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  type:(NSString *)type
+                 signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality purchaseProduct:productIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality purchaseProduct:productIdentifier
+                   signedDiscountTimestamp:signedDiscountTimestamp
+                           completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 
@@ -96,10 +99,14 @@ RCT_REMAP_METHOD(purchasePackage,
                  purchasePackage:(NSString *)packageIdentifier
                  offeringIdentifier:(NSString *)offeringIdentifier
                  upgradeInfo:(NSDictionary *)upgradeInfo
+                 signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality purchasePackage:packageIdentifier offering:offeringIdentifier completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality purchasePackage:packageIdentifier
+                                  offering:offeringIdentifier
+                   signedDiscountTimestamp:signedDiscountTimestamp
+                           completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_REMAP_METHOD(restoreTransactions,
@@ -119,13 +126,15 @@ RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality createAlias:newAppUserID completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality createAlias:newAppUserID
+                       completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality identify:appUserID completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality identify:appUserID
+                    completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_REMAP_METHOD(reset,
@@ -162,19 +171,31 @@ RCT_EXPORT_METHOD(makeDeferredPurchase:(nonnull NSNumber *)callbackID
                   reject:(RCTPromiseRejectBlock)reject)
 {
     RCDeferredPromotionalPurchaseBlock defermentBlock = [self.defermentBlocks objectAtIndex:[callbackID integerValue]];
-    [RCCommonFunctionality makeDeferredPurchase:defermentBlock completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    [RCCommonFunctionality makeDeferredPurchase:defermentBlock
+                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_EXPORT_METHOD(checkTrialOrIntroductoryPriceEligibility:(NSArray *)products
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCCommonFunctionality checkTrialOrIntroductoryPriceEligibility:products completionBlock:^(NSDictionary<NSString *,RCIntroEligibility *> * _Nonnull responseDictionary) {
+    [RCCommonFunctionality checkTrialOrIntroductoryPriceEligibility:products
+                                                    completionBlock:^(NSDictionary<NSString *,RCIntroEligibility *> * _Nonnull responseDictionary) {
         resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
     }];
 }
 
-    
+RCT_REMAP_METHOD(getPaymentDiscount,
+                 getPaymentDiscountForProductIdentifier:(NSString *)productIdentifier
+                 discountIdentifier:(nullable NSString *)discountIdentifier
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject)
+{
+    [RCCommonFunctionality paymentDiscountForProductIdentifier:productIdentifier
+                                                      discount:discountIdentifier
+                                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
@@ -202,11 +223,13 @@ RCT_EXPORT_METHOD(checkTrialOrIntroductoryPriceEligibility:(NSArray *)products
     return ^(NSDictionary *_Nullable responseDictionary, RCErrorContainer *_Nullable error) {
         if (error) {
             reject([NSString stringWithFormat: @"%ld", (long)error.code], error.message, error.error);
-        } else {
+        } else if (responseDictionary) {
             resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
+        } else {
+            resolve(nil);
         }
     };
 }
 
 @end
-  
+

@@ -28,7 +28,7 @@ curl -sSL $URL > temp.zip
 # In some cases the temp folder can not be created by unzip, https://github.com/RevenueCat/react-native-purchases/issues/26
 mkdir -p temp
 unzip -o temp.zip -d temp
-mv temp/Purchases.framework ./Purchases.framework
+mv temp/Carthage/Build/iOS/Purchases.framework ./Purchases.framework
 rm -r temp
 rm temp.zip
 

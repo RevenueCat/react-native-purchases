@@ -260,7 +260,7 @@ describe("Purchases", () => {
         offeringIdentifier: "offering",
       });
 
-    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", undefined);
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", undefined, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 
     Purchases.purchasePackage(
@@ -292,7 +292,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.DEFERRED
-    });
+    }, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(2);
   });
 
@@ -525,6 +525,125 @@ describe("Purchases", () => {
 
     expect(NativeModules.RNPurchases.checkTrialOrIntroductoryPriceEligibility).toBeCalledWith(["monthly"]);
   })
+
+  it("getPaymentDiscount works", () => {
+    const Purchases = require("../index").default;
+
+    NativeModules.RNPurchases.getPaymentDiscount.mockResolvedValue(paymentDiscountStub);
+
+    const aProduct = {
+      ...productStub,
+      discounts: [discountStub]
+    }
+
+    Purchases.getPaymentDiscount(aProduct, discountStub)
+
+    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledWith(aProduct.identifier, discountStub.identifier);
+    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(1);
+  });
+
+  it("getPaymentDiscount returns undefined for Android", async () => {
+    const Purchases = require("../index").default;
+
+    mockPlatform("android");
+
+    let paymentDiscount = await Purchases.getPaymentDiscount(productStub, discountStub);
+
+    expect(paymentDiscount).toEqual(undefined)
+    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(0);
+  });
+
+  it("getPaymentDiscount throws error when null discount", () => {
+    const Purchases = require("../index").default;
+    mockPlatform("ios");
+
+    expect(() => {
+      Purchases.getPaymentDiscount(productStub, null)
+    }).toThrowError();
+
+    expect(() => {
+      Purchases.getPaymentDiscount(productStub)
+    }).toThrowError();
+
+    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(0);
+  });
+
+  it("purchaseDiscountedProduct works", () => {
+    const Purchases = require("../index").default;
+
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      purchaserInfo: purchaserInfoStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      discounts: [discountStub]
+    }
+
+    Purchases.purchaseDiscountedProduct(aProduct, paymentDiscountStub)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, paymentDiscountStub.timestamp);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
+  });
+
+  it("purchaseDiscountedProduct throws if null or undefined discount", () => {
+    const Purchases = require("../index").default;
+
+    expect(() => {
+      Purchases.purchaseDiscountedProduct(productStub, null)
+    }).toThrow();
+
+    expect(() => {
+      Purchases.purchaseDiscountedProduct(productStub)
+    }).toThrow();
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
+  });
+
+  it("purchaseDiscountedPackage works", () => {
+    const Purchases = require("../index").default;
+
+    NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      purchaserInfo: purchaserInfoStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      discounts: [discountStub]
+    }
+
+    const aPackage = {
+      ...packagestub,
+      product: aProduct
+    }
+
+    Purchases.purchaseDiscountedPackage(aPackage, paymentDiscountStub)
+
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
+      aPackage.identifier,
+      aPackage.offeringIdentifier,
+      null,
+      paymentDiscountStub.timestamp
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
+
+  });
+
+  it("purchaseDiscountedPackage throws if null or undefined discount", () => {
+    const Purchases = require("../index").default;
+
+    expect(() => {
+      Purchases.purchaseDiscountedPackage(packagestub, null)
+    }).toThrow();
+
+    expect(() => {
+      Purchases.purchaseDiscountedPackage(packagestub)
+    }).toThrow();
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
+  });
 
   const mockPlatform = OS => {
     jest.resetModules();

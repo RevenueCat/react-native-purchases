@@ -8,6 +8,8 @@ import com.revenuecat.purchases.Offerings
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.PurchaserInfo
 import com.revenuecat.purchases.util.Iso8601Utils
+import java.text.NumberFormat
+import java.util.Currency
 
 fun EntitlementInfo.map(): Map<String, Any?> =
     mapOf(
@@ -31,7 +33,6 @@ fun EntitlementInfos.map(): Map<String, Any> =
         "active" to this.active.asIterable().associate { it.key to it.value.map() }
     )
 
-
 fun SkuDetails.map(): Map<String, Any?> =
     mapOf(
         "identifier" to sku,
@@ -39,8 +40,10 @@ fun SkuDetails.map(): Map<String, Any?> =
         "title" to title,
         "price" to priceAmountMicros / 1000000.0,
         "price_string" to price,
-        "currency_code" to priceCurrencyCode
-    ) + mapIntroPrice()
+        "currency_code" to priceCurrencyCode,
+        "introPrice" to mapIntroPrice(),
+        "discounts" to null
+    ) + mapIntroPriceDeprecated()
 
 fun PurchaserInfo.map(): Map<String, Any?> =
     mapOf(
@@ -90,28 +93,24 @@ private fun Package.map(offeringIdentifier: String): Map<String, Any?> =
         "offeringIdentifier" to offeringIdentifier
     )
 
-private fun SkuDetails.mapIntroPrice(): Map<String, Any?> {
-    return if (!freeTrialPeriod.isNullOrBlank()) {
-        // Check freeTrialPeriod first to give priority to trials
-        // Format using device locale. iOS will format using App Store locale, but there's no way
-        // to figure out how the price in the SKUDetails is being formatted.
-        val format = java.text.NumberFormat.getCurrencyInstance().apply {
-            currency = java.util.Currency.getInstance(priceCurrencyCode)
-        }
+private fun SkuDetails.mapIntroPriceDeprecated(): Map<String, Any?> {
+    val isFreeTrialAvailable = freeTrialPeriod != null && freeTrialPeriod.isNotBlank()
+    return if (isFreeTrialAvailable) {
+        val format = formatUsingDeviceLocale()
         mapOf(
             "intro_price" to 0,
             "intro_price_string" to format.format(0),
             "intro_price_period" to freeTrialPeriod,
             "intro_price_cycles" to 1
-        ) + freeTrialPeriod.mapPeriod()
-    } else if (!introductoryPrice.isNullOrBlank()) {
+        ) + freeTrialPeriod.mapPeriodDeprecated()
+    } else if (introductoryPrice != null || introductoryPrice.isNotBlank()) {
         mapOf(
             "intro_price" to introductoryPriceAmountMicros / 1000000.0,
             "intro_price_string" to introductoryPrice,
             "intro_price_period" to introductoryPricePeriod,
             "intro_price_cycles" to (introductoryPriceCycles?.takeUnless { it.isBlank() }?.toInt()
                 ?: 0)
-        ) + introductoryPricePeriod.mapPeriod()
+        ) + introductoryPricePeriod.mapPeriodDeprecated()
     } else {
         mapOf(
             "intro_price" to null,
@@ -124,8 +123,48 @@ private fun SkuDetails.mapIntroPrice(): Map<String, Any?> {
     }
 }
 
-private fun String?.mapPeriod(): Map<String, Any?> {
-    return if (this.isNullOrBlank()) {
+private fun SkuDetails.formatUsingDeviceLocale(): NumberFormat {
+    return NumberFormat.getCurrencyInstance().apply {
+        currency = Currency.getInstance(priceCurrencyCode)
+    }
+}
+
+private fun SkuDetails.mapIntroPrice(): Map<String, Any?> {
+    return if (freeTrialPeriod != null && freeTrialPeriod.isNotBlank()) {
+        // Check freeTrialPeriod first to give priority to trials
+        // Format using device locale. iOS will format using App Store locale, but there's no way
+        // to figure out how the price in the SKUDetails is being formatted.
+        val format = java.text.NumberFormat.getCurrencyInstance().apply {
+            currency = java.util.Currency.getInstance(priceCurrencyCode)
+        }
+        mapOf(
+            "price" to 0,
+            "priceString" to format.format(0),
+            "period" to freeTrialPeriod,
+            "cycles" to 1
+        ) + freeTrialPeriod.mapPeriod()
+    } else if (introductoryPrice != null && introductoryPrice.isNotBlank()) {
+        mapOf(
+            "price" to introductoryPriceAmountMicros / 1000000.0,
+            "priceString" to introductoryPrice,
+            "period" to introductoryPricePeriod,
+            "cycles" to (introductoryPriceCycles?.takeUnless { it.isBlank() }?.toInt()
+                ?: 0)
+        ) + introductoryPricePeriod.mapPeriod()
+    } else {
+        mapOf(
+            "price" to null,
+            "priceString" to null,
+            "period" to null,
+            "cycles" to null,
+            "periodUnit" to null,
+            "periodNumberOfUnits" to null
+        )
+    }
+}
+
+private fun String?.mapPeriodDeprecated(): Map<String, Any?> {
+    return if (this == null || this.isBlank()) {
         mapOf(
             "intro_price_period_unit" to null,
             "intro_price_period_number_of_units" to null
@@ -148,6 +187,36 @@ private fun String?.mapPeriod(): Map<String, Any?> {
                 else -> mapOf(
                     "intro_price_period_unit" to "DAY",
                     "intro_price_period_number_of_units" to 0
+                )
+            }
+        }
+    }
+}
+
+private fun String?.mapPeriod(): Map<String, Any?> {
+    return if (this == null || this.isBlank()) {
+        mapOf(
+            "periodUnit" to null,
+            "periodNumberOfUnits" to null
+        )
+    } else {
+        PurchasesPeriod.parse(this).let { period ->
+            when {
+                period.years > 0 -> mapOf(
+                    "periodUnit" to "YEAR",
+                    "periodNumberOfUnits" to period.years
+                )
+                period.months > 0 -> mapOf(
+                    "periodUnit" to "MONTH",
+                    "periodNumberOfUnits" to period.months
+                )
+                period.days > 0 -> mapOf(
+                    "periodUnit" to "DAY",
+                    "periodNumberOfUnits" to period.days
+                )
+                else -> mapOf(
+                    "periodUnit" to "DAY",
+                    "periodNumberOfUnits" to 0
                 )
             }
         }

@@ -635,20 +635,51 @@ global.offeringsStub = {
   }
 };
 
+global.productStub = {
+  currency_code: "USD",
+  intro_price: null,
+  intro_price_string: null,
+  intro_price_period: null,
+  intro_price_cycles: null,
+  intro_price_period_unit: null,
+  intro_price_period_number_of_units: null,
+  discounts: null,
+  introPrice: null,
+  price_string: "$0.99",
+  price: 0.99,
+  description: "The best service.",
+  title: "One Month Free Trial",
+  identifier: "onemonth_freetrial"
+};
+
 global.productsStub = [
-  {
-    currency_code: "USD",
-    intro_price_period: "",
-    intro_price_string: "",
-    price_string: "$0.99",
-    intro_price_cycles: "",
-    price: 0.99,
-    intro_price: "",
-    description: "The best service.",
-    title: "One Month Free Trial",
-    identifier: "onemonth_freetrial"
-  }
+  productStub
 ];
+
+global.packagestub = {
+  offeringIdentifier: "default",
+  product: productStub,
+  packageType: "MONTHLY",
+  identifier: "$rc_monthly"
+};
+
+global.discountStub = {
+  identifier: "promo_cat",
+  price: 0.49000000953674316,
+  priceString: "$0.49",
+  cycles: 1,
+  period: "P1M",
+  periodUnit: "MONTH",
+  periodNumberOfUnits: 1,
+};
+
+global.paymentDiscountStub = {
+  identifier: "promo_cat",
+  keyIdentifier: "keyID",
+  nonce: "nonce",
+  signature: "signature",
+  timestamp: 123,
+}
 
 NativeModules.RNPurchases = {
   setupPurchases: jest.fn(),
@@ -671,6 +702,9 @@ NativeModules.RNPurchases = {
   isAnonymous: jest.fn(),
   makeDeferredPurchase: jest.fn(),
   checkTrialOrIntroductoryPriceEligibility: jest.fn(),
+  purchaseDiscountedPackage: jest.fn(),
+  purchaseDiscountedProduct: jest.fn(),
+  getPaymentDiscount: jest.fn(),
 };
 
 jest.mock('NativeEventEmitter');

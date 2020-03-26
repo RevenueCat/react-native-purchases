@@ -268,29 +268,107 @@ export interface PurchasesProduct {
    */
   readonly currency_code: string;
   /**
+   * @deprecated, use introPrice instead.
+   *
    * Introductory price of a subscription in the local currency.
    */
   readonly intro_price: number | null;
   /**
+   * @deprecated, use introPrice instead.
+   *
    * Formatted introductory price of a subscription, including its currency sign, such as €3.99.
    */
   readonly intro_price_string: string | null;
   /**
+   * @deprecated, use introPrice instead.
+   *
    * Billing period of the introductory price, specified in ISO 8601 format.
    */
   readonly intro_price_period: string | null;
   /**
+   * @deprecated, use introPrice instead.
+   *
    * Number of subscription billing periods for which the user will be given the introductory price, such as 3.
    */
   readonly intro_price_cycles: number | null;
   /**
+   * @deprecated, use introPrice instead.
+   *
    * Unit for the billing period of the introductory price, can be DAY, WEEK, MONTH or YEAR.
    */
   readonly intro_price_period_unit: string | null;
   /**
+   * @deprecated, use introPrice instead.
+   *
    * Number of units for the billing period of the introductory price.
    */
   readonly intro_price_period_number_of_units: number | null;
+  /**
+   * Introductory price.
+   */
+  readonly introPrice: PurchasesIntroPrice | null;
+  /**
+   * Collection of discount offers for a product. Null for Android.
+   */
+  readonly discounts: PurchasesDiscount[] | null;
+}
+
+export interface PurchasesDiscount {
+  /**
+   * Identifier of the discount.
+   */
+  readonly identifier: string;
+  /**
+   * Price in the local currency.
+   */
+  readonly price: number;
+  /**
+   * Formatted price, including its currency sign, such as €3.99.
+   */
+  readonly priceString: string;
+  /**
+   * Number of subscription billing periods for which the user will be given the discount, such as 3.
+   */
+  readonly cycles: number;
+  /**
+   * Billing period of the discount, specified in ISO 8601 format.
+   */
+  readonly period: string;
+  /**
+   * Unit for the billing period of the discount, can be DAY, WEEK, MONTH or YEAR.
+   */
+  readonly periodUnit: string;
+  /**
+   * Number of units for the billing period of the discount.
+   */
+  readonly periodNumberOfUnits: number;
+}
+
+export interface PurchasesIntroPrice {
+  /**
+   * Price in the local currency.
+   */
+  readonly price: number;
+  /**
+   * Formatted price, including its currency sign, such as €3.99.
+   */
+  readonly priceString: string;
+  /**
+   * Number of subscription billing periods for which the user will be given the discount, such as 3.
+   */
+  readonly cycles: number;
+  /**
+   * Billing period of the discount, specified in ISO 8601 format.
+   */
+  readonly period: string;
+  /**
+   * Unit for the billing period of the discount, can be DAY, WEEK, MONTH or YEAR.
+   */
+  readonly periodUnit: string;
+  /**
+   * Number of units for the billing period of the discount.
+   */
+  readonly periodNumberOfUnits: number;
 }
 
 /**
@@ -411,6 +489,14 @@ export interface IntroEligibility {
    * Description of the status
    */
   readonly description: string;
+}
+
+export interface PurchasesPaymentDiscount {
+  readonly identifier: string;
+  readonly keyIdentifier: string;
+  readonly nonce: string;
+  readonly signature: string;
+  readonly timestamp: number;
 }
 
 /**
@@ -701,6 +787,33 @@ export default class Purchases {
   }
 
   /**
+   * iOS only. Purchase a product applying a given discount.
+   *
+   * @param {PurchasesProduct} product The product you want to purchase
+   * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
+   * @returns {Promise<{ productIdentifier: string, purchaserInfo:PurchaserInfo }>} A promise of an object containing
+   * a purchaser info object and a product identifier. Rejections return an error code,
+   * a boolean indicating if the user cancelled the purchase, and an object with more information.
+   */
+  public static purchaseDiscountedProduct(
+    product: PurchasesProduct,
+    discount: PurchasesPaymentDiscount
+  ): MakePurchasePromise {
+    if (typeof discount === "undefined" || discount == null) {
+      throw new Error("A discount is required");
+    }
+    return RNPurchases.purchaseProduct(
+      product.identifier,
+      null,
+      null,
+      discount.timestamp
+    ).catch((error: any) => {
+      error.userCancelled = error.code === "1";
+      throw error;
+    });
+  }
+
+  /**
    * Make a purchase
    *
    * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
@@ -717,7 +830,35 @@ export default class Purchases {
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.offeringIdentifier,
-      upgradeInfo
+      upgradeInfo,
+      null
+    ).catch((error: any) => {
+      error.userCancelled = error.code === "1";
+      throw error;
+    });
+  }
+
+  /**
+   * iOS only. Purchase a package applying a given discount.
+   *
+   * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
+   * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
+   * @returns {Promise<{ productIdentifier: string, purchaserInfo: PurchaserInfo }>} A promise of an object containing
+   * a purchaser info object and a product identifier. Rejections return an error code,
+   * a boolean indicating if the user cancelled the purchase, and an object with more information.
+   */
+  public static purchaseDiscountedPackage(
+    aPackage: PurchasesPackage,
+    discount: PurchasesPaymentDiscount
+  ): MakePurchasePromise {
+    if (typeof discount === "undefined" || discount == null) {
+      throw new Error("A discount is required");
+    }
+    return RNPurchases.purchasePackage(
+      aPackage.identifier,
+      aPackage.offeringIdentifier,
+      null,
+      discount.timestamp
     ).catch((error: any) => {
       error.userCancelled = error.code === "1";
       throw error;
@@ -815,7 +956,7 @@ export default class Purchases {
   }
 
   /**
-   * @returns {Promise<boolean>} If the `appUserID` has been generated by RevenueCat or not.
+   * @returns { Promise<boolean> } If the `appUserID` has been generated by RevenueCat or not.
    */
   public static isAnonymous(): Promise<boolean> {
     return RNPurchases.isAnonymous();
@@ -833,11 +974,36 @@ export default class Purchases {
    *  iOS so that the subscription group can be collected by the SDK. Android always returns INTRO_ELIGIBILITY_STATUS_UNKNOWN.
    *
    *  @param productIdentifiers Array of product identifiers for which you want to compute eligibility
-   *  @returns { [productId: string]: IntroEligibility } A map of IntroEligility per productId
+   *  @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId
    */
   public static checkTrialOrIntroductoryPriceEligibility(
     productIdentifiers: string[]
   ): Promise<{ [productId: string]: IntroEligibility }> {
-    return RNPurchases.checkTrialOrIntroductoryPriceEligibility(productIdentifiers);
+    return RNPurchases.checkTrialOrIntroductoryPriceEligibility(
+      productIdentifiers
+    );
+  }
+
+  /**
+   *  iOS only. Use this function to retrieve the `PurchasesPaymentDiscount` for a given `PurchasesPackage`.
+   *
+   *  @param product The `PurchasesProduct` the user intends to purchase.
+   *  @param discount The `PurchasesDiscount` to apply to the product.
+   *  @returns { Promise<PurchasesPaymentDiscount> } Returns when the `PurchasesPaymentDiscount` is returned. Null is returned for Android and incompatible iOS versions.
+   */
+  public static getPaymentDiscount(
+    product: PurchasesProduct,
+    discount: PurchasesDiscount
+  ): Promise<PurchasesPaymentDiscount | undefined> {
+    if (Platform.OS === "android") {
+      return Promise.resolve(undefined);
+    }
+    if (typeof discount === "undefined" || discount == null) {
+      throw new Error("A discount is required");
+    }
+    return RNPurchases.getPaymentDiscount(
+      product.identifier,
+      discount.identifier
+    );
   }
 }

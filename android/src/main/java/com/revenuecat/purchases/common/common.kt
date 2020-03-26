@@ -87,7 +87,7 @@ fun purchaseProduct(
                 it.sku == productIdentifier && it.type.equals(type, ignoreCase = true)
             }
             if (productToBuy != null) {
-                if (oldSku.isNullOrBlank()) {
+                if (oldSku == null || oldSku.isBlank()) {
                     Purchases.sharedInstance.purchaseProductWith(
                         activity,
                         productToBuy,
@@ -154,7 +154,7 @@ fun purchasePackage(
                         it.identifier.equals(packageIdentifier, ignoreCase = true)
                     }
                 if (packageToBuy != null) {
-                    if (oldSku.isNullOrBlank()) {
+                    if (oldSku == null || oldSku.isBlank()) {
                         Purchases.sharedInstance.purchasePackageWith(
                             activity,
                             packageToBuy,
@@ -265,6 +265,34 @@ fun checkTrialOrIntroductoryPriceEligibility(
         it to mapOf("status" to 0, "description" to "Status indeterminate.")
     }.toMap()
 }
+
+fun invalidatePurchaserInfoCache() { 
+    Purchases.sharedInstance.invalidatePurchaserInfoCache()
+}
+
+// region Subscriber Attributes
+
+fun setAttributes(attributes: Map<String, String?>) {
+    Purchases.sharedInstance.setAttributes(attributes)
+}
+
+fun setEmail(email: String?) {
+    Purchases.sharedInstance.setEmail(email)
+}
+
+fun setPhoneNumber(phoneNumber: String?) {
+    Purchases.sharedInstance.setPhoneNumber(phoneNumber)
+}
+
+fun setDisplayName(displayName: String?) {
+    Purchases.sharedInstance.setDisplayName(displayName)
+}
+
+fun setPushToken(fcmToken: String?) {
+    Purchases.sharedInstance.setPushToken(fcmToken)
+}
+
+// region private functions
 
 private fun getMakePurchaseErrorFunction(onResult: OnResult): (PurchasesError, Boolean) -> Unit {
     return { error, userCancelled -> onResult.onError(error.map(mapOf("userCancelled" to userCancelled))) }
