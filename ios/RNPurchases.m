@@ -57,10 +57,9 @@ RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions)
     [RCCommonFunctionality setFinishTransactions:finishTransactions];
 }
 
-RCT_REMAP_METHOD(addAttributionData,
-                 addAttributionData:(NSDictionary *)data
-                 forNetwork:(NSInteger)network
-                 forNetworkUserId:(NSString * _Nullable)networkUserId)
+RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data
+                  forNetwork:(NSInteger)network
+                  forNetworkUserId:(NSString * _Nullable)networkUserId)
 {
     [RCCommonFunctionality addAttributionData:data network:network networkUserId:networkUserId];
 }
