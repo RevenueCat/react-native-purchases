@@ -113,6 +113,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     public void purchaseProduct(final String productIdentifier,
                                 @Nullable final ReadableMap upgradeInfo,
                                 final String type,
+                                @Nullable final String discountTimestamp,
                                 final Promise promise) {
         CommonKt.purchaseProduct(
                 getCurrentActivity(),
