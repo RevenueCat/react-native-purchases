@@ -1028,7 +1028,7 @@ export default class Purchases {
    *
    * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
    */
-  public static setAttributes(attributes: { [key: string]: string }) {
+  public static setAttributes(attributes: { [key: string]: string | null }) {
     RNPurchases.setAttributes(attributes);
   }
 
@@ -1037,7 +1037,7 @@ export default class Purchases {
    *
    * @param email Empty String or null will delete the subscriber attribute.
    */
-  public static setEmail(email: string) {
+  public static setEmail(email: string | null) {
     RNPurchases.setEmail(email);
   }
 
@@ -1046,7 +1046,7 @@ export default class Purchases {
    *
    * @param phoneNumber Empty String or null will delete the subscriber attribute.
    */
-  public static setPhoneNumber(phoneNumber: string) {
+  public static setPhoneNumber(phoneNumber: string | null) {
     RNPurchases.setPhoneNumber(phoneNumber);
   }
 
@@ -1055,7 +1055,7 @@ export default class Purchases {
    *
    * @param displayName Empty String or null will delete the subscriber attribute.
    */
-  public static setDisplayName(displayName: string) {
+  public static setDisplayName(displayName: string | null) {
     RNPurchases.setDisplayName(displayName);
   }
 
@@ -1064,7 +1064,7 @@ export default class Purchases {
    *
    * @param pushToken null will delete the subscriber attribute.
    */
-  public static setPushToken(pushToken: string) {
+  public static setPushToken(pushToken: string | null) {
     RNPurchases.setPushToken(pushToken);
   }
 

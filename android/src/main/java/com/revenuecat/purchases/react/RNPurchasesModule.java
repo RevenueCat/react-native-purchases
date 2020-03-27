@@ -210,7 +210,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         CommonKt.invalidatePurchaserInfoCache();
     }
 
-
     //================================================================================
     // Subscriber Attributes
     //================================================================================

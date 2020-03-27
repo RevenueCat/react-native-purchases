@@ -739,31 +739,31 @@ export default class Purchases {
      * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
      */
     static setAttributes(attributes: {
-        [key: string]: string;
+        [key: string]: string | null;
     }): void;
     /**
      * Subscriber attribute associated with the email address for the user
      *
      * @param email Empty String or null will delete the subscriber attribute.
      */
-    static setEmail(email: string): void;
+    static setEmail(email: string | null): void;
     /**
      * Subscriber attribute associated with the phone number for the user
      *
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
      */
-    static setPhoneNumber(phoneNumber: string): void;
+    static setPhoneNumber(phoneNumber: string | null): void;
     /**
      * Subscriber attribute associated with the display name for the user
      *
      * @param displayName Empty String or null will delete the subscriber attribute.
      */
-    static setDisplayName(displayName: string): void;
+    static setDisplayName(displayName: string | null): void;
     /**
      * Subscriber attribute associated with the push token for the user
      *
      * @param pushToken null will delete the subscriber attribute.
      */
-    static setPushToken(pushToken: string): void;
+    static setPushToken(pushToken: string | null): void;
 }
 export {};
