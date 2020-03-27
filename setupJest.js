@@ -705,6 +705,12 @@ NativeModules.RNPurchases = {
   purchaseDiscountedPackage: jest.fn(),
   purchaseDiscountedProduct: jest.fn(),
   getPaymentDiscount: jest.fn(),
+  invalidatePurchaserInfoCache: jest.fn(),
+  setAttributes: jest.fn(),
+  setEmail: jest.fn(),
+  setPhoneNumber: jest.fn(),
+  setDisplayName: jest.fn(),
+  setPushToken: jest.fn(),
 };
 
 jest.mock('NativeEventEmitter');

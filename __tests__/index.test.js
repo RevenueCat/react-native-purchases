@@ -645,6 +645,18 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
 
+
+  describe("invalidate purchaser info cache", () => {
+    describe("when invalidatePurchaserInfoCache is called", () => {
+      it("makes the right call to Purchases", () => {
+        const Purchases = require("../index").default;
+        Purchases.invalidatePurchaserInfoCache();
+
+        expect(NativeModules.RNPurchases.invalidatePurchaserInfoCache).toBeCalledTimes(1);
+      });
+    });
+  });
+
   const mockPlatform = OS => {
     jest.resetModules();
     jest.doMock("Platform", () => ({OS, select: objs => objs[OS]}));
