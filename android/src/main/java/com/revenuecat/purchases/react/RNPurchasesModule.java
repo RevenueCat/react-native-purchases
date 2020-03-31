@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -203,6 +204,45 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED, convertMapToWriteableMap(MappersKt.map((purchaserInfo))));
     }
+
+    @ReactMethod
+    public void invalidatePurchaserInfoCache() {
+        CommonKt.invalidatePurchaserInfoCache();
+    }
+
+    //================================================================================
+    // Subscriber Attributes
+    //================================================================================
+
+    @ReactMethod
+    public void setAttributes(ReadableMap attributes) {
+        HashMap attributesHashMap = attributes.toHashMap();
+        CommonKt.setAttributes(attributesHashMap);
+    }
+
+    @ReactMethod
+    public void setEmail(String email) {
+        CommonKt.setEmail(email);
+    }
+
+    @ReactMethod
+    public void setPhoneNumber(String phoneNumber) {
+        CommonKt.setPhoneNumber(phoneNumber);
+    }
+
+    @ReactMethod
+    public void setDisplayName(String displayName) {
+        CommonKt.setDisplayName(displayName);
+    }
+
+    @ReactMethod
+    public void setPushToken(String pushToken) {
+        CommonKt.setPushToken(pushToken);
+    }
+
+    //================================================================================
+    // Private methods
+    //================================================================================
 
     @NotNull
     private OnResult getOnResult(final Promise promise) {

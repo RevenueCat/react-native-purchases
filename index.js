@@ -447,6 +447,59 @@ var Purchases = /** @class */ (function () {
         return RNPurchases.getPaymentDiscount(product.identifier, discount.identifier);
     };
     /**
+     * Invalidates the cache for purchaser information.
+     * This is useful for cases where purchaser information might have been updated outside of the app, like if a
+     * promotional subscription is granted through the RevenueCat dashboard.
+     */
+    Purchases.invalidatePurchaserInfoCache = function () {
+        RNPurchases.invalidatePurchaserInfoCache();
+    };
+    /**
+     * Subscriber attributes are useful for storing additional, structured information on a user.
+     * Since attributes are writable using a public key they should not be used for
+     * managing secure or sensitive information such as subscription status, coins, etc.
+     *
+     * Key names starting with "$" are reserved names used by RevenueCat. For a full list of key
+     * restrictions refer to our guide: https://docs.revenuecat.com/docs/subscriber-attributes
+     *
+     * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
+     */
+    Purchases.setAttributes = function (attributes) {
+        RNPurchases.setAttributes(attributes);
+    };
+    /**
+     * Subscriber attribute associated with the email address for the user
+     *
+     * @param email Empty String or null will delete the subscriber attribute.
+     */
+    Purchases.setEmail = function (email) {
+        RNPurchases.setEmail(email);
+    };
+    /**
+     * Subscriber attribute associated with the phone number for the user
+     *
+     * @param phoneNumber Empty String or null will delete the subscriber attribute.
+     */
+    Purchases.setPhoneNumber = function (phoneNumber) {
+        RNPurchases.setPhoneNumber(phoneNumber);
+    };
+    /**
+     * Subscriber attribute associated with the display name for the user
+     *
+     * @param displayName Empty String or null will delete the subscriber attribute.
+     */
+    Purchases.setDisplayName = function (displayName) {
+        RNPurchases.setDisplayName(displayName);
+    };
+    /**
+     * Subscriber attribute associated with the push token for the user
+     *
+     * @param pushToken null will delete the subscriber attribute.
+     */
+    Purchases.setPushToken = function (pushToken) {
+        RNPurchases.setPushToken(pushToken);
+    };
+    /**
      * Enum for attribution networks
      * @readonly
      * @enum {number}

@@ -50,7 +50,7 @@ commands:
           name: Restoring iOS Build caches
       - run:
           command: >-
-            set -o pipefail && export RCT_NO_LAUNCH_PACKAGER=true && env NSUnbufferedIO=YES xcodebuild -scheme ReactNativeSample -project ./ReactNativeSample.xcodeproj -destination 'platform=iOS Simulator,name=iPhone X' -parallelizeTargets -UseModernBuildSystem=YES -derivedDataPath '~/DerivedData' |  xcpretty -k
+            set -o pipefail && export RCT_NO_LAUNCH_PACKAGER=true && env NSUnbufferedIO=YES xcodebuild -scheme ReactNativeSample -project ./ReactNativeSample.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 11 Pro' -parallelizeTargets -UseModernBuildSystem=YES -derivedDataPath '~/DerivedData' |  xcpretty -k
           name: Build iOS App
           working_directory: example/ios
       - save_cache:
@@ -76,7 +76,7 @@ executors:
 
   ios:
     macos:
-      xcode: 10.2.1
+      xcode: 11.4.0
     # use a --login shell so our "set Ruby version" command gets picked up for later steps
     shell: /bin/bash --login -o pipefail
 

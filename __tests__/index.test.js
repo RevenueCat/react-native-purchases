@@ -645,6 +645,87 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
 
+
+  describe("invalidate purchaser info cache", () => {
+    describe("when invalidatePurchaserInfoCache is called", () => {
+      it("makes the right call to Purchases", () => {
+        const Purchases = require("../index").default;
+        Purchases.invalidatePurchaserInfoCache();
+
+        expect(NativeModules.RNPurchases.invalidatePurchaserInfoCache).toBeCalledTimes(1);
+      });
+    });
+  });
+
+  describe("setAttributes", () => {
+    describe("when setAttributes is called", () => {
+      it("makes the right call to Purchases", () => {
+        const Purchases = require("../index").default;
+        const attributes = { band: "AirBourne", song: "Back in the game" }
+        Purchases.setAttributes(attributes);
+
+        expect(NativeModules.RNPurchases.setAttributes).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setAttributes).toBeCalledWith(attributes);
+      });
+    });
+  });
+
+  describe("setEmail", () => {
+    describe("when setEmail is called", () => {
+      it("makes the right call to Purchases", () => {
+        const Purchases = require("../index").default;
+        const email = "garfield@revenuecat.com";
+
+        Purchases.setEmail(email);
+
+        expect(NativeModules.RNPurchases.setEmail).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setEmail).toBeCalledWith(email);
+      });
+    });
+  });
+
+  describe("setPhoneNumber", () => {
+    describe("when setPhoneNumber is called", () => {
+      it("makes the right call to Purchases", () => {
+        const Purchases = require("../index").default;
+        const phoneNumber = "+123456789";
+
+        Purchases.setPhoneNumber(phoneNumber);
+
+        expect(NativeModules.RNPurchases.setPhoneNumber).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setPhoneNumber).toBeCalledWith(phoneNumber);
+      });
+    });
+  });
+
+  describe("setDisplayName", () => {
+    describe("when setDisplayName is called", () => {
+      it("makes the right call to Purchases", () => {
+        const Purchases = require("../index").default;
+        const displayName = "Garfield";
+        
+        Purchases.setDisplayName(displayName);
+
+        expect(NativeModules.RNPurchases.setDisplayName).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setDisplayName).toBeCalledWith(displayName);
+      });
+    });
+  });
+
+  describe("setPushToken", () => {
+    describe("when setPushToken is called", () => {
+      it("makes the right call to Purchases", () => {
+        const Purchases = require("../index").default;
+        const pushToken = "65a1ds56adsgh6954asd";
+        
+        Purchases.setPushToken(pushToken);
+
+        expect(NativeModules.RNPurchases.setPushToken).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setPushToken).toBeCalledWith(pushToken);
+      });
+    });
+  });
+
   const mockPlatform = OS => {
     jest.resetModules();
     jest.doMock("Platform", () => ({OS, select: objs => objs[OS]}));

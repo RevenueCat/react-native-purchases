@@ -57,6 +57,10 @@ export default class App extends React.Component {
           loading: false
         });
       }
+      Purchases.setPhoneNumber("123456789");
+      Purchases.setDisplayName("Garfield");
+      Purchases.setAttributes({ "favorite_cat": "garfield" });
+      Purchases.setEmail("garfield@revenuecat.com");
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(`Error ${JSON.stringify(e)}`);
