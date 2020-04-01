@@ -1,3 +1,8 @@
+## 3.2.0
+
+- Adds Subscriber Attributes, which allow developers to store additional, structured information
+for a user in RevenueCat. More info: https://docs.revenuecat.com/docs/user-attributes.
+
 ## 3.1.0
 
 - Properly scope Android package [#114](https://github.com/RevenueCat/react-native-purchases/pull/114)
