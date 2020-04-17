@@ -724,8 +724,13 @@ export default class Purchases {
     static getPaymentDiscount(product: PurchasesProduct, discount: PurchasesDiscount): Promise<PurchasesPaymentDiscount | undefined>;
     /**
      * Invalidates the cache for purchaser information.
-     * This is useful for cases where purchaser information might have been updated outside of the app, like if a
-     * promotional subscription is granted through the RevenueCat dashboard.
+     * 
+     * Most apps will not need to use this method; invalidating the cache can leave your app in an invalid state.
+     * Refer to https://docs.revenuecat.com/docs/purchaserinfo#section-get-user-information for more information on
+     * using the cache properly.
+     * 
+     * This is useful for cases where purchaser information might have been updated outside of the
+     * app, like if a promotional subscription is granted through the RevenueCat dashboard.
      */
     static invalidatePurchaserInfoCache(): void;
     /**
