@@ -20,7 +20,6 @@ React Native Purchases is a client for the [RevenueCat](https://www.revenuecat.c
 🔀 | [Integrations](https://www.revenuecat.com/integrations) - over a dozen integrations to easily send purchase data where you need it  
 💯 | Well maintained - [frequent releases](https://github.com/RevenueCat/purchases-ios/releases)  
 📮 | Great support - [Help Center](https://revenuecat.zendesk.com) 
-🤩 | Awesome [new features](https://trello.com/b/RZRnWRbI/revenuecat-product-roadmap)  
 
 ## Requirements
 
