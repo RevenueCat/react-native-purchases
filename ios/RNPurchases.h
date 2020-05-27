@@ -10,6 +10,7 @@
 #endif
 
 #import <Purchases/RCPurchases.h>
+#import <PurchasesHybridCommon/PurchasesHybridCommon.h>
 
 @interface RNPurchases : RCTEventEmitter <RCTBridgeModule>
 

@@ -8,9 +8,6 @@
 
 @import StoreKit;
 
-#import "RCPurchaserInfo+HybridAdditions.h"
-#import "RCCommonFunctionality.h"
-#import "RCErrorContainer.h"
 
 @interface RNPurchases () <RCPurchasesDelegate>
 
@@ -41,7 +38,12 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    [RCPurchases configureWithAPIKey:apiKey appUserID:appUserID observerMode:observerMode];
+    [RCPurchases configureWithAPIKey:apiKey
+                appUserID:appUserID
+             observerMode:observerMode
+             userDefaults:nil
+           platformFlavor:self.platformFlavor
+    platformFlavorVersion:self.platformFlavorVersion];
     RCPurchases.sharedPurchases.delegate = self;
     [RCCommonFunctionality configure];
     resolve(nil);
@@ -262,6 +264,14 @@ RCT_EXPORT_METHOD(setPushToken:(NSString *)pushToken)
             resolve(nil);
         }
     };
+}
+
+- (NSString *)platformFlavor {
+    return @"react-native";
+}
+
+- (NSString *)platformFlavorVersion {
+    return @"3.3.0";
 }
 
 @end
