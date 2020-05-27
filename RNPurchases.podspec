@@ -20,4 +20,5 @@ Pod::Spec.new do |spec|
 
   spec.dependency   "React"
   spec.dependency   "Purchases", "~> 3.2.1"
+  spec.dependency   "PurchasesHybridCommon", "1.1.0"
 end
