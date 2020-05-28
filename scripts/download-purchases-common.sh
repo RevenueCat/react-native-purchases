@@ -28,7 +28,7 @@ curl -sSL $URL > tempCommon.zip
 # In some cases the temp folder can not be created by unzip, https://github.com/RevenueCat/react-native-purchases/issues/26
 mkdir -p tempCommon
 unzip -o tempCommon.zip -d tempCommon
-mv temp/Carthage/Build/iOS/PurchasesHybridCommon.framework ./PurchasesHybridCommon.framework
+mv tempCommon/Carthage/Build/iOS/PurchasesHybridCommon.framework ./PurchasesHybridCommon.framework
 rm -r tempCommon
 rm tempCommon.zip
 
