@@ -14,6 +14,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.revenuecat.purchases.PlatformInfo;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.common.CommonKt;
@@ -38,6 +39,7 @@ import static com.revenuecat.purchases.react.RNPurchasesConverters.convertMapToW
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
 
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
+    public static final String PLATFORM_NAME = "react-native";
 
     private final ReactApplicationContext reactContext;
 
@@ -63,7 +65,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID, boolean observerMode, final Promise promise) {
-        Purchases.configure(reactContext, apiKey, appUserID, observerMode);
+        PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, BuildConfig.VERSION_NAME);
+        CommonKt.configure(reactContext, apiKey, appUserID, observerMode, platformInfo);
         Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
         promise.resolve(null);
     }
