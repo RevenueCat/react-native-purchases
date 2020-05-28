@@ -39,11 +39,11 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   reject:(RCTPromiseRejectBlock)reject)
 {
     [RCPurchases configureWithAPIKey:apiKey
-                appUserID:appUserID
-             observerMode:observerMode
-             userDefaults:nil
-           platformFlavor:self.platformFlavor
-    platformFlavorVersion:self.platformFlavorVersion];
+                           appUserID:appUserID
+                        observerMode:observerMode
+                        userDefaults:nil
+                      platformFlavor:self.platformFlavor
+               platformFlavorVersion:self.platformFlavorVersion];
     RCPurchases.sharedPurchases.delegate = self;
     [RCCommonFunctionality configure];
     resolve(nil);
@@ -275,4 +275,3 @@ RCT_EXPORT_METHOD(setPushToken:(NSString *)pushToken)
 }
 
 @end
-
