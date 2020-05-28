@@ -1,6 +1,0 @@
-framework module PurchasesHybridCommon {
-  umbrella header "PurchasesHybridCommon.h"
-
-  export *
-  module * { export * }
-}
