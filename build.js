@@ -5,11 +5,11 @@ if (os.type() === "Linux") {
   console.log("Skipping iOS Dependencies");
 } else if (os.type() === "Darwin") {
   const downloadProcess = exec(
-    "./scripts/download-purchases-framework.sh 3.2.1"
+    "./scripts/download-purchases-framework.sh 3.3.1"
   );
   downloadProcess.stdout.pipe(process.stdout);
   const downloadProcessCommon = exec(
-    "./scripts/download-purchases-common.sh 1.0.10"
+    "./scripts/download-purchases-common.sh 1.1.2"
   );
   downloadProcessCommon.stdout.pipe(process.stdout);
 } else if (os.type() === "Windows_NT") {
