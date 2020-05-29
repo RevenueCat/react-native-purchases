@@ -1,4 +1,3 @@
-1. Run `./scripts/download-purchases-common-android.sh 1.0.10` (change version to latest)
 1. Update to the latest SDK versions in `build.js`, `RNPurchases.podspec` and `android/build.gradle`.
 1. Update versions in VERSIONS.md.
 1. Update version in package.json.
