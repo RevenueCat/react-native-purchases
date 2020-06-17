@@ -249,7 +249,7 @@ export interface PurchaserInfo {
    * URL to manage the active subscription of the user. If this user has an active iOS
    * subscription, this will point to the App Store, if the user has an active Play Store subscription
    * it will point there. If there are no active subscriptions it will be null.
-   * If there are multiple for different platforms, it will point to the Play Store
+   * If there are multiple for different platforms, it will point to the device store.
    */
   readonly managementURL: string | null;
 }
