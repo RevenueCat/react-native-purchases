@@ -220,6 +220,18 @@ export interface PurchaserInfo {
      * in Android
      */
     readonly originalApplicationVersion: string | null;
+    /**
+     * Returns the purchase date for the version of the application when the user bought the app.
+     * Use this for grandfathering users when migrating to subscriptions.
+     */
+    readonly originalPurchaseDate: string | null;
+    /**
+     * URL to manage the active subscription of the user. If this user has an active iOS
+     * subscription, this will point to the App Store, if the user has an active Play Store subscription
+     * it will point there. If there are no active subscriptions it will be null.
+     * If there are multiple for different platforms, it will point to the device store.
+     */
+    readonly managementURL: string | null;
 }
 export interface PurchasesProduct {
     /**
@@ -724,13 +736,13 @@ export default class Purchases {
     static getPaymentDiscount(product: PurchasesProduct, discount: PurchasesDiscount): Promise<PurchasesPaymentDiscount | undefined>;
     /**
      * Invalidates the cache for purchaser information.
-     * 
+     *
      * Most apps will not need to use this method; invalidating the cache can leave your app in an invalid state.
      * Refer to https://docs.revenuecat.com/docs/purchaserinfo#section-get-user-information for more information on
      * using the cache properly.
-     * 
-     * This is useful for cases where purchaser information might have been updated outside of the
-     * app, like if a promotional subscription is granted through the RevenueCat dashboard.
+     *
+     * This is useful for cases where purchaser information might have been updated outside of the app, like if a
+     * promotional subscription is granted through the RevenueCat dashboard.
      */
     static invalidatePurchaserInfoCache(): void;
     /**
@@ -770,5 +782,6 @@ export default class Purchases {
      * @param pushToken null will delete the subscriber attribute.
      */
     static setPushToken(pushToken: string | null): void;
+    static setProxyURLString(url: string): void;
 }
 export {};

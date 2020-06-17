@@ -448,13 +448,13 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Invalidates the cache for purchaser information.
-     * 
+     *
      * Most apps will not need to use this method; invalidating the cache can leave your app in an invalid state.
      * Refer to https://docs.revenuecat.com/docs/purchaserinfo#section-get-user-information for more information on
      * using the cache properly.
-     * 
-     * This is useful for cases where purchaser information might have been updated outside of the
-     * app, like if a promotional subscription is granted through the RevenueCat dashboard.
+     *
+     * This is useful for cases where purchaser information might have been updated outside of the app, like if a
+     * promotional subscription is granted through the RevenueCat dashboard.
      */
     Purchases.invalidatePurchaserInfoCache = function () {
         RNPurchases.invalidatePurchaserInfoCache();
@@ -503,6 +503,9 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.setPushToken = function (pushToken) {
         RNPurchases.setPushToken(pushToken);
+    };
+    Purchases.setProxyURLString = function (url) {
+        RNPurchases.setProxyURLString(url);
     };
     /**
      * Enum for attribution networks
