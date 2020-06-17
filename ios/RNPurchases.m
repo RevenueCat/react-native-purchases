@@ -230,6 +230,11 @@ RCT_EXPORT_METHOD(setPushToken:(NSString *)pushToken)
     [RCCommonFunctionality setPushToken:pushToken];
 }
 
+RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString)
+{
+    [RCCommonFunctionality setProxyURLString:proxyURLString];
+}
+
     
 #pragma mark -
 #pragma mark Delegate Methods

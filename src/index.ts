@@ -1085,4 +1085,8 @@ export default class Purchases {
     RNPurchases.setPushToken(pushToken);
   }
 
+  public static setProxyURLString(url: string) {
+    RNPurchases.setProxyURLString(url);
+  }
+
 }

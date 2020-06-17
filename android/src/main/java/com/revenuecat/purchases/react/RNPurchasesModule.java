@@ -213,6 +213,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         CommonKt.invalidatePurchaserInfoCache();
     }
 
+    @ReactMethod
+    public void setProxyURLString(String proxyURLString) {
+        CommonKt.setProxyURLString();
+    }
+
     //================================================================================
     // Subscriber Attributes
     //================================================================================
