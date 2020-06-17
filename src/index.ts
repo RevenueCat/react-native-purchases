@@ -240,6 +240,18 @@ export interface PurchaserInfo {
    * in Android
    */
   readonly originalApplicationVersion: string | null;
+  /**
+   * Returns the purchase date for the version of the application when the user bought the app.
+   * Use this for grandfathering users when migrating to subscriptions.
+   */
+  readonly originalPurchaseDate: string | null;
+  /**
+   * URL to manage the active subscription of the user. If this user has an active iOS
+   * subscription, this will point to the App Store, if the user has an active Play Store subscription
+   * it will point there. If there are no active subscriptions it will be null.
+   * If there are multiple for different platforms, it will point to the Play Store
+   */
+  readonly managementURL: string | null;
 }
 
 export interface PurchasesProduct {
