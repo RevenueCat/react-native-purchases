@@ -126,17 +126,19 @@ var Purchases = /** @class */ (function () {
     }
     /**
      * Sets up Purchases with your API key and an app user id.
-     * @param {string} apiKey RevenueCat API Key. Needs to be a String
+     * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
      * @param {Boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+     * @param {String?} userDefaultsSuiteName An optional string. iOS only. Set this to use a specific NSUserDefaults suite for RevenueCat.
+     * This might be handy if you are deleting all NSUserDefaults in your app and leaving RevenueCat in a bad state.
      * @returns {Promise<void>} Returns when setup completes
      */
-    Purchases.setup = function (apiKey, appUserID, observerMode) {
+    Purchases.setup = function (apiKey, appUserID, observerMode, userDefaultsSuiteName) {
         if (observerMode === void 0) { observerMode = false; }
-        if (typeof appUserID !== "undefined" && typeof appUserID !== "string") {
+        if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
             throw new Error("appUserID needs to be a string");
         }
-        return RNPurchases.setupPurchases(apiKey, appUserID, observerMode);
+        return RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
     };
     /**
      * @param {Boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
@@ -448,13 +450,13 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Invalidates the cache for purchaser information.
-     * 
+     *
      * Most apps will not need to use this method; invalidating the cache can leave your app in an invalid state.
      * Refer to https://docs.revenuecat.com/docs/purchaserinfo#section-get-user-information for more information on
      * using the cache properly.
-     * 
-     * This is useful for cases where purchaser information might have been updated outside of the
-     * app, like if a promotional subscription is granted through the RevenueCat dashboard.
+     *
+     * This is useful for cases where purchaser information might have been updated outside of the app, like if a
+     * promotional subscription is granted through the RevenueCat dashboard.
      */
     Purchases.invalidatePurchaserInfoCache = function () {
         RNPurchases.invalidatePurchaserInfoCache();
@@ -503,6 +505,9 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.setPushToken = function (pushToken) {
         RNPurchases.setPushToken(pushToken);
+    };
+    Purchases.setProxyURLString = function (url) {
+        RNPurchases.setProxyURLString(url);
     };
     /**
      * Enum for attribution networks

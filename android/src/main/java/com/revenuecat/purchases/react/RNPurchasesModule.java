@@ -64,7 +64,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void setupPurchases(String apiKey, @Nullable String appUserID, boolean observerMode, final Promise promise) {
+    public void setupPurchases(String apiKey, @Nullable String appUserID,
+                               boolean observerMode, @Nullable String userDefaultsSuiteName,
+                               final Promise promise) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, BuildConfig.VERSION_NAME);
         CommonKt.configure(reactContext, apiKey, appUserID, observerMode, platformInfo);
         Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
@@ -211,6 +213,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void invalidatePurchaserInfoCache() {
         CommonKt.invalidatePurchaserInfoCache();
+    }
+
+    @ReactMethod
+    public void setProxyURLString(String proxyURLString) {
+        CommonKt.setProxyURLString(proxyURLString);
     }
 
     //================================================================================

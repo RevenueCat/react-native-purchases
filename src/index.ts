@@ -240,6 +240,18 @@ export interface PurchaserInfo {
    * in Android
    */
   readonly originalApplicationVersion: string | null;
+  /**
+   * Returns the purchase date for the version of the application when the user bought the app.
+   * Use this for grandfathering users when migrating to subscriptions.
+   */
+  readonly originalPurchaseDate: string | null;
+  /**
+   * URL to manage the active subscription of the user. If this user has an active iOS
+   * subscription, this will point to the App Store, if the user has an active Play Store subscription
+   * it will point there. If there are no active subscriptions it will be null.
+   * If there are multiple for different platforms, it will point to the device store.
+   */
+  readonly managementURL: string | null;
 }
 
 export interface PurchasesProduct {
@@ -590,20 +602,28 @@ export default class Purchases {
 
   /**
    * Sets up Purchases with your API key and an app user id.
-   * @param {string} apiKey RevenueCat API Key. Needs to be a String
+   * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
    * @param {Boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+   * @param {String?} userDefaultsSuiteName An optional string. iOS only. Set this to use a specific NSUserDefaults suite for RevenueCat.
+   * This might be handy if you are deleting all NSUserDefaults in your app and leaving RevenueCat in a bad state.
    * @returns {Promise<void>} Returns when setup completes
    */
   public static setup(
     apiKey: string,
     appUserID?: string | null,
-    observerMode: boolean = false
+    observerMode: boolean = false,
+    userDefaultsSuiteName?: string
   ) {
-    if (typeof appUserID !== "undefined" && typeof appUserID !== "string") {
+    if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
     }
-    return RNPurchases.setupPurchases(apiKey, appUserID, observerMode);
+    return RNPurchases.setupPurchases(
+      apiKey,
+      appUserID,
+      observerMode,
+      userDefaultsSuiteName
+    );
   }
 
   /**
@@ -1071,6 +1091,10 @@ export default class Purchases {
    */
   public static setPushToken(pushToken: string | null) {
     RNPurchases.setPushToken(pushToken);
+  }
+
+  public static setProxyURLString(url: string) {
+    RNPurchases.setProxyURLString(url);
   }
 
 }

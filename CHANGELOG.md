@@ -1,3 +1,15 @@
+## 3.3.0
+
+- Bumped iOS to 3.4.0 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases)
+- Bumped Android to 3.2.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases)
+- Added managementURL to PurchaserInfo
+- Added setProxyURLString
+- Added originalPurchaseDate to PurchaserInfo
+- Update invalidatePurchaserInfoCache docs [#137](https://github.com/RevenueCat/react-native-purchases/pull/137)
+- Changes the way the common dependency is managed [#144](https://github.com/RevenueCat/react-native-purchases/pull/144) [#145](https://github.com/RevenueCat/react-native-purchases/pull/145)
+- Adds new headers for platformFlavor and platformFlavorVersion
+- Adds userDefaultsSuiteName as an option when setting up the SDK
+
 ## 3.2.0
 
 - Adds Subscriber Attributes, which allow developers to store additional, structured information

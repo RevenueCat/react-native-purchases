@@ -84,9 +84,9 @@ export default class UpsellScreen extends React.Component {
               <Button
                 color="#f2545b"
                 onPress={async () => {
-                  const aPackage = this.state.offerings.current.monthly;
+                  const aPackage = this.state.offerings.current.annual;
                   try {
-                    const purchaseMade = await Purchases.purchasePackage(aPackage, {oldSKU: "old", prorationMode: Purchases.PRORATION_MODE.DEFERRED}, Purchases.PURCHASE_TYPE.SUBS);
+                    const purchaseMade = await Purchases.purchasePackage(aPackage);
                     checkIfPro(purchaseMade.purchaserInfo, this.props.navigation);
                   } catch (e) {
                     if (!e.userCancelled) {
@@ -107,8 +107,7 @@ export default class UpsellScreen extends React.Component {
                 onPress={async () => {
                   const aPackage = this.state.offerings.current.monthly;
                   try {
-                    const paymentDiscount = await Purchases.getPaymentDiscount(aPackage)
-                    const purchaseMade = await Purchases.purchasePackage(aPackage, {oldSKU: "old", prorationMode: Purchases.PRORATION_MODE.DEFERRED}, paymentDiscount);
+                    const purchaseMade = await Purchases.purchasePackage(aPackage);
                     checkIfPro(purchaseMade.purchaserInfo, this.props.navigation);
                   } catch (e) {
                     if (!e.userCancelled) {
