@@ -100,6 +100,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    ndkVersion '20.1.5948944'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
