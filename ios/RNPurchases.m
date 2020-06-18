@@ -35,13 +35,14 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(NSString *)appUserID
                   observerMode:(BOOL)observerMode
+                  userDefaultsSuiteName:(NSString *)userDefaultsSuiteName
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
     [RCPurchases configureWithAPIKey:apiKey
                            appUserID:appUserID
                         observerMode:observerMode
-                        userDefaults:nil
+               userDefaultsSuiteName:userDefaultsSuiteName
                       platformFlavor:self.platformFlavor
                platformFlavorVersion:self.platformFlavorVersion];
     RCPurchases.sharedPurchases.delegate = self;

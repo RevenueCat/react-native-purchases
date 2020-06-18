@@ -535,12 +535,14 @@ export default class Purchases {
     static INTRO_ELIGIBILITY_STATUS: typeof INTRO_ELIGIBILITY_STATUS;
     /**
      * Sets up Purchases with your API key and an app user id.
-     * @param {string} apiKey RevenueCat API Key. Needs to be a String
+     * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
      * @param {Boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+     * @param {String?} userDefaultsSuiteName An optional string. iOS only. Set this to use a specific NSUserDefaults suite for RevenueCat.
+     * This might be handy if you are deleting all NSUserDefaults in your app and leaving RevenueCat in a bad state.
      * @returns {Promise<void>} Returns when setup completes
      */
-    static setup(apiKey: string, appUserID?: string | null, observerMode?: boolean): any;
+    static setup(apiKey: string, appUserID?: string | null, observerMode?: boolean, userDefaultsSuiteName?: string): any;
     /**
      * @param {Boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
