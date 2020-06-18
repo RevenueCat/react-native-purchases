@@ -114,10 +114,6 @@ describe("Purchases", () => {
     }).not.toThrowError();
 
     expect(() => {
-      Purchases.setup("api_key", null)
-    }).toThrowError();
-
-    expect(() => {
       Purchases.setup("api_key", "123a")
     }).not.toThrowError();
 
@@ -397,11 +393,11 @@ describe("Purchases", () => {
 
     Purchases.setup("key", "user");
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined);
 
     Purchases.setup("key", "user", true);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(2);
   })
@@ -644,7 +640,14 @@ describe("Purchases", () => {
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
+  
+  it("calling setup with a userDefaultsSuiteName", () => {
+    const Purchases = require("../index").default;
 
+    Purchases.setup("key", "user", false, "suitename");
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suitename");
+  })
 
   describe("invalidate purchaser info cache", () => {
     describe("when invalidatePurchaserInfoCache is called", () => {

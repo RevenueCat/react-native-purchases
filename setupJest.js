@@ -69,7 +69,8 @@ global.purchaserInfoStub = {
   latestExpirationDate: "2019-01-23T22:34:21Z",
   originalAppUserId: "9AE22FE1-D0A3-4341-85B6-D1D6C24C404A",
   originalApplicationVersion: null,
-  requestDate: "2019-12-03T00:47:58.000Z"
+  requestDate: "2019-12-03T00:47:58.000Z",
+  managementURL: "https://url.com"
 };
 
 global.offeringsStub = {
