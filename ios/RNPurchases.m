@@ -33,9 +33,9 @@ NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchas
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
-                  appUserID:(NSString *)appUserID
+                  appUserID:(nullable NSString *)appUserID
                   observerMode:(BOOL)observerMode
-                  userDefaultsSuiteName:(NSString *)userDefaultsSuiteName
+                  userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
@@ -62,7 +62,7 @@ RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions)
 
 RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data
                   forNetwork:(NSInteger)network
-                  forNetworkUserId:(NSString * _Nullable)networkUserId)
+                  forNetworkUserId:(nullable NSString *)networkUserId)
 {
     [RCCommonFunctionality addAttributionData:data network:network networkUserId:networkUserId];
 }
@@ -125,7 +125,7 @@ RCT_REMAP_METHOD(getAppUserID,
     resolve([RCCommonFunctionality appUserID]);
 }
 
-RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
+RCT_EXPORT_METHOD(createAlias:(nullable NSString *)newAppUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
@@ -133,7 +133,7 @@ RCT_EXPORT_METHOD(createAlias:(NSString * _Nullable)newAppUserID
                        completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
-RCT_EXPORT_METHOD(identify:(NSString * _Nullable)appUserID
+RCT_EXPORT_METHOD(identify:(nullable NSString *)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality identify:appUserID
