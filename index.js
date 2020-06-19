@@ -129,8 +129,9 @@ var Purchases = /** @class */ (function () {
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
      * @param {Boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
-     * @param {String?} userDefaultsSuiteName An optional string. iOS only. Set this to use a specific NSUserDefaults suite for RevenueCat.
-     * This might be handy if you are deleting all NSUserDefaults in your app and leaving RevenueCat in a bad state.
+     * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
+     * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
+     * Default is null, which will make the SDK use standardUserDefaults.
      * @returns {Promise<void>} Returns when setup completes
      */
     Purchases.setup = function (apiKey, appUserID, observerMode, userDefaultsSuiteName) {
@@ -506,7 +507,10 @@ var Purchases = /** @class */ (function () {
     Purchases.setPushToken = function (pushToken) {
         RNPurchases.setPushToken(pushToken);
     };
-    Purchases.setProxyURLString = function (url) {
+    /**
+     * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
+     */
+    Purchases.setProxyURL = function (url) {
         RNPurchases.setProxyURLString(url);
     };
     /**
