@@ -59,14 +59,14 @@ In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you mi
 
 1. Drag `Purchases.framework` and `PurchasesHybridCommon.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference. 
 
-![](https://media.giphy.com/media/83fBXlBYPF8oxMQvhN/giphy.gif)
+![](https://media.giphy.com/media/W6LvZkQnvc3QnnPza7/giphy.gif)
 
-##### Add iOS Framework to Embedded Binaries
+##### Add iOS Frameworks to Embedded Binaries
 1. In Xcode, in project manager, select your app target.
 1. Select the general tab
 1. Drag `Purchases.framework` and `PurchasesHybridCommon.framework` from your project to the Embedded Binaries section
 
-![](https://media.giphy.com/media/dCCyG7rmjIyByLS9ju/giphy.gif)
+![](https://media.giphy.com/media/iIdIuEkAzlntxANSiV/giphy.gif)
 
 Add `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` to Framework Search paths in build settings
 
