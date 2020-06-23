@@ -41,23 +41,32 @@ or
 
 `$ react-native link react-native-purchases`
 
-#### Additional iOS Setup (for manual installation)
-Purchases.framework also needs to be added to your iOS project. The npm install will download the correct framework version. 
+### Additional iOS Setup
 
-Alternatively you can install the framework via [CocoaPods](https://cocoapods.org/pods/Purchases). For instructions go [here](#installing-with-cocoapods--expokit).
+#### If your project uses Cocoapods
+If your project already uses Cocoapods to install iOS dependencies, common in ExpoKit projects, linking the library should have added it to the podfile. If it hasn't, add the following to your project's podfile to reference the library from your node_modules folder:
 
-##### Create a Framework Reference in your project
+```ruby
+pod 'RNPurchases', :path => '../node_modules/react-native-purchases'
+    :inhibit_warnings => true
+```
 
-1. Drag `Purchases.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference. 
+In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
 
-![](https://media.giphy.com/media/83fBXlBYPF8oxMQvhN/giphy.gif)
+#### Manual installation (if your project doesn't use CocoapodsCreate)
 
-##### Add iOS Framework to Embedded Binaries
+##### Make a Framework Reference in your project
+
+1. Drag `Purchases.framework` and `PurchasesHybridCommon.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference. 
+
+![](https://media.giphy.com/media/W6LvZkQnvc3QnnPza7/giphy.gif)
+
+##### Add iOS Frameworks to Embedded Binaries
 1. In Xcode, in project manager, select your app target.
 1. Select the general tab
-1. Drag `Purchases.framework` from your project to the Embedded Binaries section
+1. Drag `Purchases.framework` and `PurchasesHybridCommon.framework` from your project to the Embedded Binaries section
 
-![](https://media.giphy.com/media/dCCyG7rmjIyByLS9ju/giphy.gif)
+![](https://media.giphy.com/media/iIdIuEkAzlntxANSiV/giphy.gif)
 
 Add `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` to Framework Search paths in build settings
 
@@ -77,18 +86,6 @@ The `react-native link` command should have added the `libRNPurchases.a` library
 
 ![](https://media.giphy.com/media/U2MMgrdYlkRhEcy80J/giphy.gif)
 
-### Installing with Cocoapods / ExpoKit
-If your project already uses Cocoapods to install iOS dependencies, common in ExpoKit projects, linking the library should have added it to the podfile. If it hasn't, add the following to your project's podfile to reference the library from your `node_modules` folder:
-
-```
-  pod 'RNPurchases', :path => '../node_modules/react-native-purchases'
-      :inhibit_warnings => true
-```
-
-In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
-
 ## Getting Started
 
 Please follow the [Quickstart Guide](https://docs.revenuecat.com/docs/) for more information on how to use the SDK
-
-  

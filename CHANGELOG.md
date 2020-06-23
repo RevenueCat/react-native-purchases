@@ -1,3 +1,7 @@
+## 3.3.1
+
+- Renames setProxyURLString with setProxyURL
+
 ## 3.3.0
 
 - Bumped iOS to 3.4.0 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases)
