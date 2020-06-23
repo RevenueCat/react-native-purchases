@@ -1,6 +1,7 @@
 ## 3.3.1
 
-- Renames setProxyURLString with setProxyURL
+- Renames setProxyURLString with setProxyURL [#148](https://github.com/RevenueCat/react-native-purchases/pull/148)
+- Adds instructions to include the PurchasesHybridCommon framework [#150](https://github.com/RevenueCat/react-native-purchases/pull/150)
 
 ## 3.3.0
 
