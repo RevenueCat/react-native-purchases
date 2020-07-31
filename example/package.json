@@ -24,7 +24,7 @@
     "react-art": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-native": "0.60.5",
-    "react-native-gesture-handler": "^1.4.0",
+    "react-native-gesture-handler": "1.4.0",
     "react-native-web": "^0.11.7",
     "react-navigation": "^3.12.0"
   },
