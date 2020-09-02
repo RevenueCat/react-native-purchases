@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isUTCDateStringFuture = exports.INTRO_ELIGIBILITY_STATUS = exports.PACKAGE_TYPE = exports.PRORATION_MODE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
 // @ts-ignore
 var react_native_1 = require("react-native");
 var RNPurchases = react_native_1.NativeModules.RNPurchases;
@@ -292,7 +293,7 @@ var Purchases = /** @class */ (function () {
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        return RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp).catch(function (error) {
+        return RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp.toString()).catch(function (error) {
             error.userCancelled = error.code === "1";
             throw error;
         });
@@ -326,7 +327,7 @@ var Purchases = /** @class */ (function () {
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp).catch(function (error) {
+        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp.toString()).catch(function (error) {
             error.userCancelled = error.code === "1";
             throw error;
         });
