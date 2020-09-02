@@ -579,7 +579,7 @@ describe("Purchases", () => {
 
     Purchases.purchaseDiscountedProduct(aProduct, paymentDiscountStub)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, paymentDiscountStub.timestamp);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, paymentDiscountStub.timestamp.toString());
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
@@ -621,7 +621,7 @@ describe("Purchases", () => {
       aPackage.identifier,
       aPackage.offeringIdentifier,
       null,
-      paymentDiscountStub.timestamp
+      paymentDiscountStub.timestamp.toString()
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 
