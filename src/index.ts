@@ -828,7 +828,7 @@ export default class Purchases {
       product.identifier,
       null,
       null,
-      discount.timestamp
+      discount.timestamp.toString()
     ).catch((error: any) => {
       error.userCancelled = error.code === "1";
       throw error;
@@ -880,7 +880,7 @@ export default class Purchases {
       aPackage.identifier,
       aPackage.offeringIdentifier,
       null,
-      discount.timestamp
+      discount.timestamp.toString()
     ).catch((error: any) => {
       error.userCancelled = error.code === "1";
       throw error;
