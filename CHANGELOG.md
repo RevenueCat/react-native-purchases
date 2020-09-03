@@ -1,3 +1,7 @@
+## 3.3.2
+
+- Fixes purchaseDiscountedPackage and purchaseDiscountedProduct [#167](https://github.com/RevenueCat/react-native-purchases/pull/167)
+
 ## 3.3.1
 
 - Renames setProxyURLString with setProxyURL [#148](https://github.com/RevenueCat/react-native-purchases/pull/148)
