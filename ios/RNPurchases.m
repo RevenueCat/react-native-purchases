@@ -277,7 +277,7 @@ RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString)
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"3.3.2";
+    return @"3.4.0-SNAPSHOT";
 }
 
 @end
