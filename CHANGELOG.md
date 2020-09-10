@@ -1,3 +1,7 @@
+## 3.3.3
+
+- Removes usage of BuildConfig [#171](https://github.com/RevenueCat/react-native-purchases/pull/171)
+
 ## 3.3.2
 
 - Fixes purchaseDiscountedPackage and purchaseDiscountedProduct [#167](https://github.com/RevenueCat/react-native-purchases/pull/167)
