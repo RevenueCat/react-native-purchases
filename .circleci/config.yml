@@ -113,8 +113,8 @@ jobs:
       - yarn_bootstrap
       - rn/ios_build:
           build_configuration: Release
-          device: iPhone 11 Pro
-          project_path: example/ios/ReactNativeSample.xcodeproj
+          device: iPhone X
+          project_path: example/ios/ReactNativeSample.xcworkspace
           scheme: ReactNativeSample          
 
 workflows:
