@@ -22,7 +22,7 @@ commands:
               .Environment.CACHE_VERSION }}
       - run:
           command: >-
-            yarn example && yarn install --frozen-lockfile --non-interactive --cache-folder /tmp/yarn
+            yarn example && yarn install --frozen-lockfile --non-interactive --cache-folder ./tmp/yarn
           name: Yarn Install
       - save_cache:
           key: >
@@ -30,7 +30,7 @@ commands:
             }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
             .Environment.CACHE_VERSION }}
           paths:
-            - /tmp/yarn
+            - ./tmp/yarn
   
   install_pods:
     steps:
