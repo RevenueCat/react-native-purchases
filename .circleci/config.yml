@@ -2,17 +2,35 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@4.4.2
 commands:
-  # start_simulator:
-  #   steps:
-  #     - run:
-  #         background: true
-  #         command: xcrun simctl boot "iPhone X" || true
-  #         name: Start iOS simulator (background)
-  yarn_bootstrap:
+  yarn_install_example:
     steps:
       - run:
-          name: Setup Example
-          command: yarn bootstrap
+          command: >
+            mkdir -p ~/.tmp/checksumfiles
+
+            find . -type f -name 'package.json' -not -path "*node_modules*" -exec
+            cat {} + >> ~/.tmp/checksumfiles/package.json
+
+            find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat
+            {} + >> ~/.tmp/checksumfiles/yarn.lock
+          name: Create cache checksum file
+      - restore_cache:
+          keys:
+            - >-
+              yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+              }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+              .Environment.CACHE_VERSION }}
+      - run:
+          command: >-
+            yarn example && yarn install --frozen-lockfile --non-interactive --cache-folder /tmp/yarn
+          name: Yarn Install
+      - save_cache:
+          key: >
+            yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+            }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+            .Environment.CACHE_VERSION }}
+          paths:
+            - /tmp/yarn
   android_build:
     steps:
       - restore_cache:
@@ -81,28 +99,19 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      # - restore_cache:
-      #     name: Restore Yarn Package Cache
-      #     keys:
-      #       - yarn-packages-{{ checksum "yarn.lock" }}
-      - yarn_bootstrap
+      - yarn_install_example
       - run:
           name: Tests
           command: yarn test
       - run:
           name: Linter
           command: yarn run tslint
-      # - save_cache:
-      #     name: Save Yarn Package Cache
-      #     key: yarn-packages-{{ checksum "yarn.lock" }}
-      #     paths:
-      #       - ~/.cache/yarn
   android:
     executor: android
     steps:
       - attach_workspace:
           at: .
-      - yarn_bootstrap
+      - yarn_install_example
       - android_build
   ios:
     executor: ios
@@ -110,13 +119,16 @@ jobs:
       - attach_workspace:
           at: .
       - rn/ios_simulator_start
-      - yarn_bootstrap
+      - yarn_install_example
+      - run:
+          command: yarn pods
+          name: Pod install
       - rn/ios_build:
           build_configuration: Release
           device: iPhone X
           derived_data_path: ~/DerivedData
           project_type: workspace
-          project_path: ReactNativeSample.xcworkspace
+          project_path: example/ios/ReactNativeSample.xcworkspace
           scheme: ReactNativeSample          
 
 workflows:
