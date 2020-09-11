@@ -14,12 +14,12 @@ commands:
             find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat
             {} + >> ~/.tmp/checksumfiles/yarn.lock
           name: Create cache checksum file
-      - restore_cache:
-          keys:
-            - >-
-              yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
-              }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
-              .Environment.CACHE_VERSION }}
+      # - restore_cache:
+      #     keys:
+      #       - >-
+      #         yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+      #         }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+      #         .Environment.CACHE_VERSION }}
       - run:
           command: >-
             yarn example && yarn install --frozen-lockfile --non-interactive --cache-folder /tmp/yarn
@@ -48,23 +48,6 @@ commands:
           command: chmod +x gradlew && ./gradlew --build-cache --max-workers 2 --continue assembleRelease -DtestBuildType=release --stacktrace
           name: Build Android APK
           working_directory: example/android
-  ios_build:
-    steps:
-      - restore_cache:
-          keys:
-            - ios-build-cache-{{ arch }}-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-          name: Restoring iOS Build caches
-      - run:
-          command: >-
-            set -o pipefail && export RCT_NO_LAUNCH_PACKAGER=true && env NSUnbufferedIO=YES xcodebuild -scheme ReactNativeSample -project ./ReactNativeSample.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 11 Pro' -parallelizeTargets -UseModernBuildSystem=YES -derivedDataPath '~/DerivedData' |  xcpretty -k
-          name: Build iOS App
-          working_directory: example/ios
-      - save_cache:
-          key: ios-build-cache-{{ arch }}-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-          name: Saving iOS Build Cache
-          paths:
-            - example/ios/build/Build
-          when: always
 
 executors:
   node:
