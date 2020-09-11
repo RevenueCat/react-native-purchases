@@ -1,5 +1,6 @@
 version: 2.1
-
+orbs:
+  rn: react-native-community/react-native@4.4.2
 commands:
   start_simulator:
     steps:
@@ -110,7 +111,11 @@ jobs:
           at: .
       - start_simulator
       - yarn_bootstrap
-      - ios_build
+      - rn/ios_build:
+          build_configuration: Release
+          device: iPhone 11 Pro
+          project_path: example/ios/ReactNativeSample.xcodeproj
+          scheme: ReactNativeSample          
 
 workflows:
   test:
