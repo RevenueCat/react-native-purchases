@@ -14,12 +14,12 @@ commands:
             find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat
             {} + >> ~/.tmp/checksumfiles/yarn.lock
           name: Create cache checksum file
-      # - restore_cache:
-      #     keys:
-      #       - >-
-      #         yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
-      #         }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
-      #         .Environment.CACHE_VERSION }}
+      - restore_cache:
+          keys:
+            - >-
+              yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+              }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+              .Environment.CACHE_VERSION }}
       - run:
           command: >-
             yarn example && yarn install --frozen-lockfile --non-interactive --cache-folder /tmp/yarn
@@ -31,54 +31,19 @@ commands:
             .Environment.CACHE_VERSION }}
           paths:
             - /tmp/yarn
-  android_build:
-    steps:
-      - restore_cache:
-          key: jars-{{ checksum "example/android/build.gradle" }}-{{ checksum  "example/android/app/build.gradle" }}
-          name: Restoring Gradle Build caches
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-          working_directory: example/android
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "example/android/build.gradle" }}-{{ checksum  "example/android/app/build.gradle" }}
-      - run:
-          command: chmod +x gradlew && ./gradlew --build-cache --max-workers 2 --continue assembleRelease -DtestBuildType=release --stacktrace
-          name: Build Android APK
-          working_directory: example/android
-
-executors:
-  node:
-    docker:
-      - image: circleci/node:10
-
-  android:
-    environment:
-      - _JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-      - GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions -XX:+HeapDumpOnOutOfMemoryError"
-      - BUILD_THREADS: 2
-      - JVM_OPTS: -Xmx3200m
-    docker:
-      - image: reactnativecommunity/react-native-android
-
-  ios:
-    macos:
-      xcode: 11.4.0
-    # use a --login shell so our "set Ruby version" command gets picked up for later steps
-    shell: /bin/bash --login -o pipefail
 
 jobs:
   checkout_code:
-    executor: node
+    executor:
+      name: rn/linux_js
+      node_version: '10'
     steps:
       - checkout
       - persist_to_workspace:
-          root: .
           paths: .
+          root: .
   analyse_js:
-    executor: node
+    executor: rn/linux_js
     steps:
       - attach_workspace:
           at: .
@@ -90,25 +55,29 @@ jobs:
           name: Linter
           command: yarn run tslint
   android:
-    executor: android
+    executor: rn/linux_android
     steps:
       - attach_workspace:
           at: .
       - yarn_install_example
-      - android_build
+      - rn/android_build:
+          project_path: example/android
   ios:
-    executor: ios
+    executor: 
+      name: rn/macos
+      xcode_version: 11.4.0
     steps:
       - attach_workspace:
           at: .
-      - rn/ios_simulator_start
+      - rn/ios_simulator_start:
+          device: iPhone 11 Pro
       - yarn_install_example
       - run:
           command: yarn pods
           name: Pod install
       - rn/ios_build:
           build_configuration: Release
-          device: iPhone X
+          device: iPhone 11 Pro
           derived_data_path: ~/DerivedData
           project_type: workspace
           project_path: example/ios/ReactNativeSample.xcworkspace
