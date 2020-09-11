@@ -40,6 +40,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
     public static final String PLATFORM_NAME = "react-native";
+    public static final String PLUGIN_VERSION = "3.3.2";
 
     private final ReactApplicationContext reactContext;
 
@@ -67,7 +68,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     public void setupPurchases(String apiKey, @Nullable String appUserID,
                                boolean observerMode, @Nullable String userDefaultsSuiteName,
                                final Promise promise) {
-        PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, BuildConfig.VERSION_NAME);
+        PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         CommonKt.configure(reactContext, apiKey, appUserID, observerMode, platformInfo);
         Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
         promise.resolve(null);
