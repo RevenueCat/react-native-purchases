@@ -204,7 +204,12 @@ RCT_EXPORT_METHOD(invalidatePurchaserInfoCache)
     [RCCommonFunctionality invalidatePurchaserInfoCache];
 }
 
-#pragma mark Subscriber Attributes
+RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString)
+{
+    [RCCommonFunctionality setProxyURLString:proxyURLString];
+}
+
+#pragma mark - Subscriber Attributes
 
 RCT_EXPORT_METHOD(setAttributes:(NSDictionary *)attributes)
 {
@@ -231,9 +236,68 @@ RCT_EXPORT_METHOD(setPushToken:(NSString *)pushToken)
     [RCCommonFunctionality setPushToken:pushToken];
 }
 
-RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString)
+# pragma mark Attribution IDs
+
+RCT_EXPORT_METHOD(collectDeviceIdentifiers)
 {
-    [RCCommonFunctionality setProxyURLString:proxyURLString];
+    [RCCommonFunctionality collectDeviceIdentifiers];
+}
+
+RCT_EXPORT_METHOD(setAdjustID:(NSString *)adjustID)
+{
+    [RCCommonFunctionality setAdjustID:adjustID];
+}
+
+RCT_EXPORT_METHOD(setAppsflyerID:(NSString *)appsflyerID)
+{
+    [RCCommonFunctionality setAppsflyerID:appsflyerID];
+}
+
+RCT_EXPORT_METHOD(setFBAnonymousID:(NSString *)fbAnonymousID)
+{
+    [RCCommonFunctionality setFBAnonymousID:fbAnonymousID];
+}
+
+RCT_EXPORT_METHOD(setMparticleID:(NSString *)mparticleID)
+{
+    [RCCommonFunctionality setMparticleID:mparticleID];
+}
+
+RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID)
+{
+    [RCCommonFunctionality setOnesignalID:onesignalID];
+}
+
+# pragma mark Campaign parameters
+
+RCT_EXPORT_METHOD(setMediaSource:(NSString *)mediaSource)
+{
+    [RCCommonFunctionality setMediaSource:mediaSource];
+}
+
+RCT_EXPORT_METHOD(setCampaign:(NSString *)campaign)
+{
+    [RCCommonFunctionality setCampaign:campaign];
+}
+
+RCT_EXPORT_METHOD(setAdGroup:(NSString *)adGroup)
+{
+    [RCCommonFunctionality setAdGroup:adGroup];
+}
+
+RCT_EXPORT_METHOD(setAd:(NSString *)ad)
+{
+    [RCCommonFunctionality setAd:ad];
+}
+
+RCT_EXPORT_METHOD(setKeyword:(NSString *)keyword)
+{
+    [RCCommonFunctionality setKeyword:keyword];
+}
+
+RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
+{
+    [RCCommonFunctionality setCreative:creative];
 }
 
     
