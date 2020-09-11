@@ -6,7 +6,6 @@
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "moduleResolution": "node",
