@@ -31,6 +31,20 @@ commands:
             .Environment.CACHE_VERSION }}
           paths:
             - /tmp/yarn
+  
+  install_pods:
+    steps:
+      - restore_cache:
+          keys:
+            - cache-pods-{{ checksum "example/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
+            - cache-pods-
+      - run:
+          command: yarn pods
+          name: Pod install
+      - save_cache:
+          paths:
+            - example/ios/Pods
+          key: cache-pods-{{ checksum "example/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
 
 jobs:
   checkout_code:
@@ -72,9 +86,7 @@ jobs:
       - rn/ios_simulator_start:
           device: iPhone 11 Pro
       - yarn_install_example
-      - run:
-          command: yarn pods
-          name: Pod install
+      - install_pods
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 11 Pro
