@@ -34,8 +34,5 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://www.jitpack.io' }
-        maven {
-            url "http://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
 }
