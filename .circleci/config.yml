@@ -2,12 +2,12 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@4.4.2
 commands:
-  start_simulator:
-    steps:
-      - run:
-          background: true
-          command: xcrun simctl boot "iPhone X" || true
-          name: Start iOS simulator (background)
+  # start_simulator:
+  #   steps:
+  #     - run:
+  #         background: true
+  #         command: xcrun simctl boot "iPhone X" || true
+  #         name: Start iOS simulator (background)
   yarn_bootstrap:
     steps:
       - run:
@@ -109,12 +109,14 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - start_simulator
+      - rn/ios_simulator_start
       - yarn_bootstrap
       - rn/ios_build:
           build_configuration: Release
           device: iPhone X
-          project_path: example/ios/ReactNativeSample.xcworkspace
+          derived_data_path: ~/DerivedData
+          project_type: workspace
+          project_path: ReactNativeSample.xcworkspace
           scheme: ReactNativeSample          
 
 workflows:
