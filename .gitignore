@@ -62,3 +62,8 @@ example/android/app/.classpath
 example/android/app/.project
 example/android/app/.settings/org.eclipse.buildship.core.prefs
 example/.vscode/
+
+# Cocoapods
+#
+example/ios/Pods
+example/ios/test_output

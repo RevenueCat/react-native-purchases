@@ -1,11 +1,10 @@
-const {NativeModules, NativeEventEmitter} = require("react-native");
+const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 
 const nativeEmitter = new NativeEventEmitter();
 
 describe("Purchases", () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mock("NativeEventEmitter");
   });
 
   it("isUTCDateStringFuture returns true when a date is in the future", () => {
@@ -484,7 +483,7 @@ describe("Purchases", () => {
   it("syncpurchases works for android", () => {
     const Purchases = require("../index").default;
 
-    mockPlatform("android");
+    Platform.OS = "android";
 
     Purchases.syncPurchases();
 
@@ -494,7 +493,7 @@ describe("Purchases", () => {
   it("syncpurchases doesnt do anything for ios", () => {
     const Purchases = require("../index").default;
 
-    mockPlatform("ios");
+    Platform.OS = "ios";
 
     Purchases.syncPurchases();
 
@@ -541,7 +540,7 @@ describe("Purchases", () => {
   it("getPaymentDiscount returns undefined for Android", async () => {
     const Purchases = require("../index").default;
 
-    mockPlatform("android");
+    Platform.OS = "android";
 
     let paymentDiscount = await Purchases.getPaymentDiscount(productStub, discountStub);
 
@@ -551,7 +550,7 @@ describe("Purchases", () => {
 
   it("getPaymentDiscount throws error when null discount", () => {
     const Purchases = require("../index").default;
-    mockPlatform("ios");
+    Platform.OS = "ios";
 
     expect(() => {
       Purchases.getPaymentDiscount(productStub, null)
@@ -728,10 +727,5 @@ describe("Purchases", () => {
       });
     });
   });
-
-  const mockPlatform = OS => {
-    jest.resetModules();
-    jest.doMock("Platform", () => ({OS, select: objs => objs[OS]}));
-  };
 
 });

@@ -5,16 +5,17 @@
   "description": "React Native in-app purchases and subscriptions made easy.",
   "main": "index.js",
   "types": "index.d.ts",
+  "source": "src/index",
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc --watch",
     "preinstall": "node build.js",
     "test": "jest",
-    "demo.ios": "cd example; react-native run-ios",
-    "demo.android": "cd example; react-native run-android",
-    "setup.example": "rm -rf node_modules;rm -rf example/node_modules;yarn install; yarn link; cd example; yarn link react-native-purchases; yarn; cd ..;",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
-    "prepublish": "tsc"
+    "prepublish": "tsc",
+    "example": "yarn --cwd example",
+    "pods": "cd example && pod-install --quiet",
+    "bootstrap": "yarn example && yarn && yarn pods"
   },
   "repository": {
     "type": "git",
@@ -38,18 +39,26 @@
     "react-native": ">= 0.58.2"
   },
   "devDependencies": {
-    "jest": "^24.0.0",
+    "@types/jest": "^26.0.0",
+    "@types/react": "^16.9.19",
+    "@types/react-native": "0.62.13",
+    "jest": "^26.0.1",
     "jest-react-native": "^18.0.0",
-    "prettier": "^1.16.1",
-    "react": "^16.8.3",
-    "react-native": "^0.59.4",
+    "pod-install": "^0.1.0",
+    "prettier": "^2.0.5",
+    "react": "16.11.0",
+    "react-native": "0.62.2",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.8.3"
   },
   "jest": {
     "preset": "react-native",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/example/node_modules",
+      "<rootDir>/lib/"
+    ],
     "moduleFileExtensions": [
       "js"
     ],

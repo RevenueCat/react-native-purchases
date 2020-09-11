@@ -7,24 +7,11 @@ commands:
           background: true
           command: xcrun simctl boot "iPhone X" || true
           name: Start iOS simulator (background)
-  link_library:
+  yarn_bootstrap:
     steps:
       - run:
-          name: Link Library
-          command: yarn link
-      # - restore_cache:
-      #     name: Restore Yarn Package Cache
-      #     keys:
-      #       - yarn-packages-example-{{ checksum "yarn.lock" }}
-      - run:
-          name: Link Library
-          command: yarn link react-native-purchases && yarn install
-          working_directory: example
-      # - save_cache:
-      #     name: Save Yarn Package Cache
-      #     key: yarn-packages-example-{{ checksum "yarn.lock" }}
-      #     paths:
-      #       - ~/.cache/yarn
+          name: Setup Example
+          command: yarn bootstrap
   android_build:
     steps:
       - restore_cache:
@@ -63,7 +50,7 @@ commands:
 executors:
   node:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:10
 
   android:
     environment:
@@ -97,7 +84,7 @@ jobs:
       #     name: Restore Yarn Package Cache
       #     keys:
       #       - yarn-packages-{{ checksum "yarn.lock" }}
-      - run: yarn install
+      - yarn_bootstrap
       - run:
           name: Tests
           command: yarn test
@@ -114,8 +101,7 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: yarn install
-      - link_library
+      - yarn_bootstrap
       - android_build
   ios:
     executor: ios
@@ -123,8 +109,7 @@ jobs:
       - attach_workspace:
           at: .
       - start_simulator
-      - run: yarn install
-      - link_library
+      - yarn_bootstrap
       - ios_build
 
 workflows:

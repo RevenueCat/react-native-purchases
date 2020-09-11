@@ -1,7 +1,15 @@
 rootProject.name = 'ReactNativeSample'
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':app'
+
 include ':react-native-gesture-handler'
 project(':react-native-gesture-handler').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-gesture-handler/android')
+
 include ':react-native-purchases'
 project(':react-native-purchases').projectDir = new File(rootProject.projectDir, '../../android')
 
-include ':app'
+// Run enableLocalBuild task to enable building purchases-hybrid-common from your local copy
+if (file(".composite-enable").exists()) {
+    String path = new File(".composite-enable").text
+    includeBuild (path)
+}

@@ -1,15 +1,4 @@
 const {NativeModules} = require("react-native");
-const EventEmitter = require("EventEmitter");
-const RCTDeviceEventEmitter = require("RCTDeviceEventEmitter");
-
-/**
- * Mock the NativeEventEmitter as a normal JS EventEmitter.
- */
-class NativeEventEmitter extends EventEmitter {
-  constructor() {
-    super(RCTDeviceEventEmitter.sharedSubscriber);
-  }
-}
 
 global.purchaserInfoStub = {
   activeSubscriptions: ["annual_freetrial"],
@@ -714,4 +703,7 @@ NativeModules.RNPurchases = {
   setPushToken: jest.fn(),
 };
 
-jest.mock('NativeEventEmitter');
+jest.mock(
+  'react-native/Libraries/EventEmitter/NativeEventEmitter',
+ );
+ 
