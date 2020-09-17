@@ -1,9 +1,21 @@
+## 3.4.0
+
+- Removes usage of BuildConfig [#171](https://github.com/RevenueCat/react-native-purchases/pull/171)
+- Bumped common files to 1.4.0 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.4.0)
+- Bumped iOS to 3.7.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.7.1) 
+- Bumped Android to 3.5.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/tag/3.5.0)
+- Added a new property `nonSubscriptionTransactions` in `PurchaserInfo` to better manage non-subscriptions
+- Attribution V2:
+ - Deprecated addAttribution in favor of setAdjustId, setAppsflyerId, setFbAnonymousId, setMparticleId.
+ - Added support for OneSignal via setOnesignalId
+ - Added setMediaSource, setCampaign, setAdGroup, setAd, setKeyword, setCreative, and collectDeviceIdentifiers
+
 ## 3.3.3
 
 - Removes usage of BuildConfig [#171](https://github.com/RevenueCat/react-native-purchases/pull/171)
 - Bumped common files to 1.3.1 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.3.1)
-- Bumped iOS to 3.5.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.5.1)- 
-- Bumped Android to 3.3.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/tag/3.3.0)- 
+- Bumped iOS to 3.5.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.5.1)
+- Bumped Android to 3.3.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/tag/3.3.0)
 
 ## 3.3.2
 
