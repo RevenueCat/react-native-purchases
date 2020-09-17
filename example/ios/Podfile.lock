@@ -70,9 +70,9 @@ PODS:
   - OpenSSL-Universal (1.0.2.19):
     - OpenSSL-Universal/Static (= 1.0.2.19)
   - OpenSSL-Universal/Static (1.0.2.19)
-  - Purchases (3.4.0)
-  - PurchasesHybridCommon (1.2.0):
-    - Purchases (= 3.4.0)
+  - Purchases (3.5.1)
+  - PurchasesHybridCommon (1.3.1):
+    - Purchases (= 3.5.1)
   - RCTRequired (0.62.2)
   - RCTTypeSafety (0.62.2):
     - FBLazyVector (= 0.62.2)
@@ -297,8 +297,8 @@ PODS:
     - ReactCommon/callinvoker (= 0.62.2)
   - RNGestureHandler (1.4.0):
     - React
-  - RNPurchases (3.3.2):
-    - PurchasesHybridCommon (= 1.2.0)
+  - RNPurchases (3.3.3):
+    - PurchasesHybridCommon (= 1.3.1)
     - React
   - RNScreens (1.0.0-alpha.23):
     - React
@@ -436,8 +436,8 @@ SPEC CHECKSUMS:
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
-  Purchases: b8cac232e403ca51541a425a65992b902cecc044
-  PurchasesHybridCommon: deba31751165f0a0f84eba3df68a54641f8a69b1
+  Purchases: 179946fa6d4484d11eacd3f9b39564a61886adc3
+  PurchasesHybridCommon: ea0ef35d54f4113fd982cd81b2c9551357e62247
   RCTRequired: cec6a34b3ac8a9915c37e7e4ad3aa74726ce4035
   RCTTypeSafety: 93006131180074cffa227a1075802c89a49dd4ce
   React: 29a8b1a02bd764fb7644ef04019270849b9a7ac3
@@ -458,7 +458,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
   RNGestureHandler: 71871d4792db2a73f70204483d30350ec9384cbd
-  RNPurchases: e450336698f8a803fe66fe8ec13b3746acfadcd3
+  RNPurchases: f0ce418eedb6ed16c5ccf871ec65253b40d93b4a
   RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
