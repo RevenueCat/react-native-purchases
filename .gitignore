@@ -67,4 +67,3 @@ example/.vscode/
 #
 example/ios/Pods
 example/ios/test_output
-example/ios/Podfile.lock
