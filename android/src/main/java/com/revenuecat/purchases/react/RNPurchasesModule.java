@@ -292,32 +292,32 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setMediaSource(String mediaSource) {
-      SubscriberAttributesKt.setMediaSource(mediaSource);
+        SubscriberAttributesKt.setMediaSource(mediaSource);
     }
 
     @ReactMethod
     public void setCampaign(String campaign) {
-      SubscriberAttributesKt.setCampaign(campaign);
+        SubscriberAttributesKt.setCampaign(campaign);
     }
 
     @ReactMethod
     public void setAdGroup(String adGroup) {
-      SubscriberAttributesKt.setAdGroup(adGroup);
+        SubscriberAttributesKt.setAdGroup(adGroup);
     }
 
     @ReactMethod
     public void setAd(String ad) {
-      SubscriberAttributesKt.setAd(ad);
+        SubscriberAttributesKt.setAd(ad);
     }
 
     @ReactMethod
     public void setKeyword(String keyword) {
-      SubscriberAttributesKt.setKeyword(keyword);
+        SubscriberAttributesKt.setKeyword(keyword);
     }
 
     @ReactMethod
     public void setCreative(String creative) {
-      SubscriberAttributesKt.setCreative(creative);
+        SubscriberAttributesKt.setCreative(creative);
     }
 
     // endregion
