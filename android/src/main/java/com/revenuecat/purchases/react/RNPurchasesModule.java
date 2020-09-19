@@ -270,10 +270,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     public void setAppsflyerID(String appsflyerID) {
       SubscriberAttributesKt.setAppsflyerID(appsflyerID);
     }
-  
+
     @ReactMethod
     public void setFBAnonymousID(String fbAnonymousID) {
-      SubscriberAttributesKt.setAppsflyerID(fbAnonymousID);
+      SubscriberAttributesKt.setFBAnonymousID(fbAnonymousID);
     }
 
     @ReactMethod
