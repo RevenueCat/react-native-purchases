@@ -73,7 +73,7 @@ PODS:
   - Purchases (3.7.1):
     - PurchasesCoreSwift (= 3.7.1)
   - PurchasesCoreSwift (3.7.1)
-  - PurchasesHybridCommon (1.4.0):
+  - PurchasesHybridCommon (1.4.1):
     - Purchases (= 3.7.1)
   - RCTRequired (0.62.2)
   - RCTTypeSafety (0.62.2):
@@ -300,7 +300,7 @@ PODS:
   - RNGestureHandler (1.4.0):
     - React
   - RNPurchases (3.4.0):
-    - PurchasesHybridCommon (= 1.4.0)
+    - PurchasesHybridCommon (= 1.4.1)
     - React
   - RNScreens (1.0.0-alpha.23):
     - React
