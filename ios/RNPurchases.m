@@ -204,12 +204,12 @@ RCT_EXPORT_METHOD(invalidatePurchaserInfoCache)
     [RCCommonFunctionality invalidatePurchaserInfoCache];
 }
 
+#pragma mark - Subscriber Attributes
+
 RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString)
 {
     [RCCommonFunctionality setProxyURLString:proxyURLString];
 }
-
-#pragma mark - Subscriber Attributes
 
 RCT_EXPORT_METHOD(setAttributes:(NSDictionary *)attributes)
 {
