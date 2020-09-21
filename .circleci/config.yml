@@ -14,23 +14,23 @@ commands:
             find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat
             {} + >> ~/.tmp/checksumfiles/yarn.lock
           name: Create cache checksum file
-      - restore_cache:
-          keys:
-            - >-
-              yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
-              }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
-              .Environment.CACHE_VERSION }}
+      # - restore_cache:
+      #     keys:
+      #       - >-
+      #         yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+      #         }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+      #         .Environment.CACHE_VERSION }}
       - run:
           command: >-
             yarn example && yarn install --frozen-lockfile --non-interactive --cache-folder /tmp/yarn
           name: Yarn Install
-      - save_cache:
-          key: >
-            yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
-            }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
-            .Environment.CACHE_VERSION }}
-          paths:
-            - /tmp/yarn
+      # - save_cache:
+      #     key: >
+      #       yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+      #       }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+      #       .Environment.CACHE_VERSION }}
+      #     paths:
+      #       - /tmp/yarn
   
   install_pods:
     steps:
