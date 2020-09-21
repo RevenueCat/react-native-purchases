@@ -1,131 +1,99 @@
 version: 2.1
-
+orbs:
+  rn: react-native-community/react-native@4.4.2
 commands:
-  start_simulator:
+  yarn_install_example:
     steps:
       - run:
-          background: true
-          command: xcrun simctl boot "iPhone X" || true
-          name: Start iOS simulator (background)
-  link_library:
-    steps:
-      - run:
-          name: Link Library
-          command: yarn link
-      # - restore_cache:
-      #     name: Restore Yarn Package Cache
-      #     keys:
-      #       - yarn-packages-example-{{ checksum "yarn.lock" }}
-      - run:
-          name: Link Library
-          command: yarn link react-native-purchases && yarn install
-          working_directory: example
-      # - save_cache:
-      #     name: Save Yarn Package Cache
-      #     key: yarn-packages-example-{{ checksum "yarn.lock" }}
-      #     paths:
-      #       - ~/.cache/yarn
-  android_build:
-    steps:
+          command: >
+            mkdir -p ~/.tmp/checksumfiles
+
+            find . -type f -name 'package.json' -not -path "*node_modules*" -exec
+            cat {} + >> ~/.tmp/checksumfiles/package.json
+
+            find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat
+            {} + >> ~/.tmp/checksumfiles/yarn.lock
+          name: Create cache checksum file
       - restore_cache:
-          key: jars-{{ checksum "example/android/build.gradle" }}-{{ checksum  "example/android/app/build.gradle" }}
-          name: Restoring Gradle Build caches
+          keys:
+            - >-
+              yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+              }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+              .Environment.CACHE_VERSION }}
       - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-          working_directory: example/android
+          command: >-
+            yarn example && yarn install --frozen-lockfile --non-interactive --cache-folder ./tmp/yarn
+          name: Yarn Install
       - save_cache:
+          key: >
+            yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
+            }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
+            .Environment.CACHE_VERSION }}
           paths:
-            - ~/.gradle
-          key: jars-{{ checksum "example/android/build.gradle" }}-{{ checksum  "example/android/app/build.gradle" }}
-      - run:
-          command: chmod +x gradlew && ./gradlew --build-cache --max-workers 2 --continue assembleRelease -DtestBuildType=release --stacktrace
-          name: Build Android APK
-          working_directory: example/android
-  ios_build:
+            - ./tmp/yarn
+  
+  install_pods:
     steps:
       - restore_cache:
           keys:
-            - ios-build-cache-{{ arch }}-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-          name: Restoring iOS Build caches
+            - cache-pods-{{ checksum "example/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
+            - cache-pods-
       - run:
-          command: >-
-            set -o pipefail && export RCT_NO_LAUNCH_PACKAGER=true && env NSUnbufferedIO=YES xcodebuild -scheme ReactNativeSample -project ./ReactNativeSample.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 11 Pro' -parallelizeTargets -UseModernBuildSystem=YES -derivedDataPath '~/DerivedData' |  xcpretty -k
-          name: Build iOS App
-          working_directory: example/ios
+          command: yarn pods
+          name: Pod install
       - save_cache:
-          key: ios-build-cache-{{ arch }}-{{ checksum "package.json" }}-{{ .Environment.CACHE_VERSION }}
-          name: Saving iOS Build Cache
           paths:
-            - example/ios/build/Build
-          when: always
-
-executors:
-  node:
-    docker:
-      - image: circleci/node:8
-
-  android:
-    environment:
-      - _JAVA_OPTIONS: "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-      - GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions -XX:+HeapDumpOnOutOfMemoryError"
-      - BUILD_THREADS: 2
-      - JVM_OPTS: -Xmx3200m
-    docker:
-      - image: reactnativecommunity/react-native-android
-
-  ios:
-    macos:
-      xcode: 11.4.0
-    # use a --login shell so our "set Ruby version" command gets picked up for later steps
-    shell: /bin/bash --login -o pipefail
+            - example/ios/Pods
+          key: cache-pods-{{ checksum "example/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
 
 jobs:
   checkout_code:
-    executor: node
+    executor:
+      name: rn/linux_js
+      node_version: '10'
     steps:
       - checkout
       - persist_to_workspace:
-          root: .
           paths: .
+          root: .
   analyse_js:
-    executor: node
+    executor: rn/linux_js
     steps:
       - attach_workspace:
           at: .
-      # - restore_cache:
-      #     name: Restore Yarn Package Cache
-      #     keys:
-      #       - yarn-packages-{{ checksum "yarn.lock" }}
-      - run: yarn install
+      - yarn_install_example
       - run:
           name: Tests
           command: yarn test
       - run:
           name: Linter
           command: yarn run tslint
-      # - save_cache:
-      #     name: Save Yarn Package Cache
-      #     key: yarn-packages-{{ checksum "yarn.lock" }}
-      #     paths:
-      #       - ~/.cache/yarn
   android:
-    executor: android
+    executor: rn/linux_android
     steps:
       - attach_workspace:
           at: .
-      - run: yarn install
-      - link_library
-      - android_build
+      - yarn_install_example
+      - rn/android_build:
+          project_path: example/android
   ios:
-    executor: ios
+    executor: 
+      name: rn/macos
+      xcode_version: 11.4.0
     steps:
       - attach_workspace:
           at: .
-      - start_simulator
-      - run: yarn install
-      - link_library
-      - ios_build
+      - rn/ios_simulator_start:
+          device: iPhone 11 Pro
+      - yarn_install_example
+      - install_pods
+      - rn/ios_build:
+          build_configuration: Release
+          device: iPhone 11 Pro
+          derived_data_path: ~/DerivedData
+          project_type: workspace
+          project_path: example/ios/ReactNativeSample.xcworkspace
+          scheme: ReactNativeSample          
 
 workflows:
   test:
