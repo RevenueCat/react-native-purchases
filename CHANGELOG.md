@@ -1,7 +1,7 @@
 ## 3.4.0
 
 - Removes usage of BuildConfig [#171](https://github.com/RevenueCat/react-native-purchases/pull/171)
-- Bumped common files to 1.4.1 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.4.1)
+- Bumped common files to 1.4.2 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.4.2)
 - Bumped iOS to 3.7.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.7.1) 
 - Bumped Android to 3.5.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/tag/3.5.0)
 - Added a new property `nonSubscriptionTransactions` in `PurchaserInfo` to better manage non-subscriptions

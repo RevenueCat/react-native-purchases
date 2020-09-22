@@ -242,7 +242,7 @@ export interface PurchasesTransaction {
     /**
      * RevenueCat Id associated to the transaction.
      */
-    revenuecatId: string;
+    revenueCatId: string;
     /**
      * Product Id associated with the transaction.
      */

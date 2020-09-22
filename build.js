@@ -9,7 +9,7 @@ if (os.type() === "Linux") {
   );
   downloadProcess.stdout.pipe(process.stdout);
   const downloadProcessCommon = exec(
-    "./scripts/download-purchases-common.sh 1.4.1"
+    "./scripts/download-purchases-common.sh 1.4.2"
   );
   downloadProcessCommon.stdout.pipe(process.stdout);
 } else if (os.type() === "Windows_NT") {
