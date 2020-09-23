@@ -252,6 +252,27 @@ export interface PurchaserInfo {
    * If there are multiple for different platforms, it will point to the device store.
    */
   readonly managementURL: string | null;
+  
+  /**
+   * List of all non subscription transactions. Use this to fetch the history of
+   * non-subscription purchases
+   */
+  readonly nonSubscriptionTransactions: [PurchasesTransaction];
+}
+
+export interface PurchasesTransaction {
+  /**
+   * RevenueCat Id associated to the transaction.
+   */
+  revenueCatId: string;
+  /**
+   * Product Id associated with the transaction.
+   */
+  productId: string;
+  /**
+   * Purchase date of the transaction in ISO 8601 format.
+   */
+  purchaseDate: string;
 }
 
 export interface PurchasesProduct {
@@ -709,6 +730,8 @@ export default class Purchases {
   }
 
   /**
+   * @deprecated, use set<NetworkId> methods instead.
+   * 
    * Add a dict of attribution information
    * @param {Dict} data Attribution data from AppsFlyer, Adjust, or Branch
    * @param {ATTRIBUTION_NETWORKS} network Which network, see Purchases.ATTRIBUTION_NETWORKS
@@ -1099,6 +1122,118 @@ export default class Purchases {
    */
   public static setProxyURL(url: string) {
     RNPurchases.setProxyURLString(url);
+  }
+
+  /**
+   * Automatically collect subscriber attributes associated with the device identifiers. 
+   * $idfa, $idfv, $ip on iOS
+   * $gpsAdId, $androidId, $ip on Android
+   */
+  public static collectDeviceIdentifiers() {
+    RNPurchases.collectDeviceIdentifiers();
+  }
+
+  /**
+   * Subscriber attribute associated with the Adjust Id for the user
+   * Required for the RevenueCat Adjust integration
+   *
+   * @param adjustID Empty String or null will delete the subscriber attribute.
+   */
+  public static setAdjustID(adjustID: string | null) {
+    RNPurchases.setAdjustID(adjustID);
+  }
+
+  /**
+   * Subscriber attribute associated with the AppsFlyer Id for the user
+   * Required for the RevenueCat AppsFlyer integration
+   * @param appsflyerID Empty String or null will delete the subscriber attribute.
+   */
+  public static setAppsflyerID(appsflyerID: string | null) {
+    RNPurchases.setAppsflyerID(appsflyerID);
+  }
+
+  /**
+   * Subscriber attribute associated with the Facebook SDK Anonymous Id for the user
+   * Recommended for the RevenueCat Facebook integration
+   *
+   * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
+   */
+  public static setFBAnonymousID(fbAnonymousID: string | null) {
+    RNPurchases.setFBAnonymousID(fbAnonymousID);
+  }
+
+  /**
+   * Subscriber attribute associated with the mParticle Id for the user
+   * Recommended for the RevenueCat mParticle integration
+   *
+   * @param mparticleID Empty String or null will delete the subscriber attribute.
+   */
+  public static setMparticleID(mparticleID: string | null) {
+    RNPurchases.setMparticleID(mparticleID);
+  }
+
+  /**
+   * Subscriber attribute associated with the OneSignal Player Id for the user
+   * Required for the RevenueCat OneSignal integration
+   *
+   * @param onesignalID Empty String or null will delete the subscriber attribute.
+   */
+  public static setOnesignalID(onesignalID: string | null) {
+    RNPurchases.setOnesignalID(onesignalID);
+  }
+
+  /**
+   * Subscriber attribute associated with the install media source for the user
+   *
+   * @param mediaSource Empty String or null will delete the subscriber attribute.
+   */
+  public static setMediaSource(mediaSource: string | null) {
+    RNPurchases.setMediaSource(mediaSource);
+  }
+
+  /**
+   * Subscriber attribute associated with the install campaign for the user
+   *
+   * @param campaign Empty String or null will delete the subscriber attribute.
+   */
+  public static setCampaign(campaign: string | null) {
+    RNPurchases.setCampaign(campaign);
+  }
+
+  /**
+   * Subscriber attribute associated with the install ad group for the user
+   *
+   * @param adGroup Empty String or null will delete the subscriber attribute.
+   */
+  public static setAdGroup(adGroup: string | null) {
+    RNPurchases.setAdGroup(adGroup);
+  }
+
+  /**
+   * Subscriber attribute associated with the install ad for the user
+   *
+   * @param ad Empty String or null will delete the subscriber attribute.
+   */
+  public static setAd(ad: string | null) {
+    RNPurchases.setAd(ad);
+  }
+
+  /**
+   * Subscriber attribute associated with the install keyword for the user
+   *
+   * @param keyword Empty String or null will delete the subscriber attribute.
+   */
+  public static setKeyword(keyword: string | null) {
+    RNPurchases.setKeyword(keyword);
+  }
+
+  /**
+   * Subscriber attribute associated with the install ad creative for the user
+   *
+   * @param creative Empty String or null will delete the subscriber attribute.
+   */
+  public static setCreative(creative: string | null) {
+    RNPurchases.setCreative(creative);
   }
 
 }

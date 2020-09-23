@@ -14,14 +14,15 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.revenuecat.purchases.PlatformInfo;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.common.CommonKt;
 import com.revenuecat.purchases.common.ErrorContainer;
-import com.revenuecat.purchases.common.MappersKt;
 import com.revenuecat.purchases.common.OnResult;
 import com.revenuecat.purchases.common.OnResultList;
+import com.revenuecat.purchases.common.PlatformInfo;
+import com.revenuecat.purchases.common.SubscriberAttributesKt;
+import com.revenuecat.purchases.common.mappers.PurchaserInfoMapperKt;
 import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "3.3.3";
+    public static final String PLUGIN_VERSION = "3.4.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -82,7 +83,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void addAttributionData(ReadableMap data, Integer network, @Nullable String networkUserId) {
         try {
-            CommonKt.addAttributionData(RNPurchasesConverters.convertReadableMapToJson(data), network, networkUserId);
+            SubscriberAttributesKt.addAttributionData(RNPurchasesConverters.convertReadableMapToJson(data), network, networkUserId);
         } catch (JSONException e) {
             Log.e("RNPurchases", "Error parsing attribution date to JSON: " + e.getLocalizedMessage());
         }
@@ -210,7 +211,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED,
-                        convertMapToWriteableMap(MappersKt.map((purchaserInfo))));
+                        convertMapToWriteableMap(PurchaserInfoMapperKt.map(purchaserInfo)));
     }
 
     @ReactMethod
@@ -230,28 +231,96 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setAttributes(ReadableMap attributes) {
         HashMap attributesHashMap = attributes.toHashMap();
-        CommonKt.setAttributes(attributesHashMap);
+        SubscriberAttributesKt.setAttributes(attributesHashMap);
     }
 
     @ReactMethod
     public void setEmail(String email) {
-        CommonKt.setEmail(email);
+      SubscriberAttributesKt.setEmail(email);
     }
 
     @ReactMethod
     public void setPhoneNumber(String phoneNumber) {
-        CommonKt.setPhoneNumber(phoneNumber);
+      SubscriberAttributesKt.setPhoneNumber(phoneNumber);
     }
 
     @ReactMethod
     public void setDisplayName(String displayName) {
-        CommonKt.setDisplayName(displayName);
+      SubscriberAttributesKt.setDisplayName(displayName);
     }
 
     @ReactMethod
     public void setPushToken(String pushToken) {
-        CommonKt.setPushToken(pushToken);
+      SubscriberAttributesKt.setPushToken(pushToken);
     }
+
+    // region Attribution IDs
+
+    @ReactMethod
+    public void collectDeviceIdentifiers() {
+      SubscriberAttributesKt.collectDeviceIdentifiers();
+    }
+
+    @ReactMethod
+    public void setAdjustID(String adjustID) {
+      SubscriberAttributesKt.setAdjustID(adjustID);
+    }
+
+    @ReactMethod
+    public void setAppsflyerID(String appsflyerID) {
+      SubscriberAttributesKt.setAppsflyerID(appsflyerID);
+    }
+
+    @ReactMethod
+    public void setFBAnonymousID(String fbAnonymousID) {
+      SubscriberAttributesKt.setFBAnonymousID(fbAnonymousID);
+    }
+
+    @ReactMethod
+    public void setMparticleID(String mparticleID) {
+      SubscriberAttributesKt.setMparticleID(mparticleID);
+    }
+
+    @ReactMethod
+    public void setOnesignalID(String onesignalID) {
+      SubscriberAttributesKt.setOnesignalID(onesignalID);
+    }
+
+    // endregion
+
+    // region Campaign parameters
+
+    @ReactMethod
+    public void setMediaSource(String mediaSource) {
+        SubscriberAttributesKt.setMediaSource(mediaSource);
+    }
+
+    @ReactMethod
+    public void setCampaign(String campaign) {
+        SubscriberAttributesKt.setCampaign(campaign);
+    }
+
+    @ReactMethod
+    public void setAdGroup(String adGroup) {
+        SubscriberAttributesKt.setAdGroup(adGroup);
+    }
+
+    @ReactMethod
+    public void setAd(String ad) {
+        SubscriberAttributesKt.setAd(ad);
+    }
+
+    @ReactMethod
+    public void setKeyword(String keyword) {
+        SubscriberAttributesKt.setKeyword(keyword);
+    }
+
+    @ReactMethod
+    public void setCreative(String creative) {
+        SubscriberAttributesKt.setCreative(creative);
+    }
+
+    // endregion
 
     //================================================================================
     // Private methods
