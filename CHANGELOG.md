@@ -1,3 +1,8 @@
+## 3.4.1
+
+- Bumped common files to 1.4.3 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.4.3)
+- Bumped iOS to 3.7.2 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.7.2)
+
 ## 3.4.0
 
 - Removes usage of BuildConfig [#171](https://github.com/RevenueCat/react-native-purchases/pull/171)
