@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "React Native in-app purchases and subscriptions made easy.",
   "main": "index.js",
   "types": "index.d.ts",
