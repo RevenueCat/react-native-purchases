@@ -21,5 +21,5 @@ Pod::Spec.new do |spec|
   spec.dependency   "React"
   spec.dependency   "PurchasesHybridCommon", "1.4.3"
   spec.static_framework = true
-  s.swift_version       = '5.0'
+  spec.swift_version    = '5.0'
 end
