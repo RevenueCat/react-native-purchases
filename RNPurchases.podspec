@@ -17,6 +17,7 @@ Pod::Spec.new do |spec|
 
   # Ignore the downloaded Purchases.framework
   spec.exclude_files = "ios/Purchases.framework"
+  spec.exclude_files = "ios/PurchasesHybridCommon.framework"
 
   spec.dependency   "React"
   spec.dependency   "PurchasesHybridCommon", "1.4.3"
