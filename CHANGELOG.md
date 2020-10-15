@@ -1,3 +1,10 @@
+## 3.4.2
+
+- Bumped common files to 1.4.4 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.4.4)
+  - Should include the following Android changes:
+  https://github.com/RevenueCat/purchases-android/releases/tag/3.5.2
+  https://github.com/RevenueCat/purchases-android/releases/tag/3.5.1
+
 ## 3.4.1
 
 - Bumped common files to 1.4.3 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.4.3)
