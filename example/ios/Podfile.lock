@@ -299,7 +299,7 @@ PODS:
     - ReactCommon/callinvoker (= 0.62.2)
   - RNGestureHandler (1.4.0):
     - React
-  - RNPurchases (3.4.2):
+  - RNPurchases (3.4.3):
     - PurchasesHybridCommon (= 1.4.5)
     - React
   - RNScreens (1.0.0-alpha.23):
@@ -462,11 +462,11 @@ SPEC CHECKSUMS:
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
   RNGestureHandler: 71871d4792db2a73f70204483d30350ec9384cbd
-  RNPurchases: d16d34a9d36da5ce0af898cae95d77b0affd4f47
+  RNPurchases: 2d9a3f50c5b4924fc2b79e3c548d7ccb4217f355
   RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: 168d9768ab4ac5ea08878bbe678ab8e49d381544
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
