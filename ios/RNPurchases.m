@@ -341,7 +341,7 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"3.4.3";
+    return @"4.0.0";
 }
 
 @end
