@@ -64,7 +64,10 @@ RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data
                   forNetwork:(NSInteger)network
                   forNetworkUserId:(nullable NSString *)networkUserId)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     [RCCommonFunctionality addAttributionData:data network:network networkUserId:networkUserId];
+#pragma GCC diagnostic pop
 }
 
 RCT_REMAP_METHOD(getOfferings,

@@ -237,36 +237,6 @@ var Purchases = /** @class */ (function () {
     /**
      * Make a purchase
      *
-     * @deprecated Use purchaseProduct instead.
-     *
-     * @param {String} productIdentifier The product identifier of the product you want to purchase
-     * @param {String?} oldSKU Optional sku you wish to upgrade from.
-     * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-     * @returns {Promise<{ productIdentifier: String, purchaserInfo: PurchaserInfo }>} A promise of an object containing
-     * a purchaser info object and a product identifier. Rejections return an error code,
-     * a boolean indicating if the user cancelled the purchase, and an object with more information.
-     */
-    Purchases.makePurchase = function (productIdentifier, oldSKU, type) {
-        if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
-        if (Array.isArray(oldSKU)) {
-            throw new Error("Calling a deprecated method!");
-        }
-        if (oldSKU !== undefined && oldSKU !== null) {
-            return Purchases.purchaseProduct(productIdentifier, { oldSKU: oldSKU }, type).catch(function (error) {
-                error.userCancelled = error.code === "1";
-                throw error;
-            });
-        }
-        else {
-            return Purchases.purchaseProduct(productIdentifier, null, type).catch(function (error) {
-                error.userCancelled = error.code === "1";
-                throw error;
-            });
-        }
-    };
-    /**
-     * Make a purchase
-     *
      * @param {String} productIdentifier The product identifier of the product you want to purchase
      * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
      * and the optional prorationMode.

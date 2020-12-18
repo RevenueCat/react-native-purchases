@@ -70,11 +70,11 @@ PODS:
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)
-  - Purchases (3.7.5):
-    - PurchasesCoreSwift (= 3.7.5)
-  - PurchasesCoreSwift (3.7.5)
-  - PurchasesHybridCommon (1.4.5):
-    - Purchases (= 3.7.5)
+  - Purchases (3.9.2):
+    - PurchasesCoreSwift (= 3.9.2)
+  - PurchasesCoreSwift (3.9.2)
+  - PurchasesHybridCommon (1.5.0):
+    - Purchases (= 3.9.2)
   - RCTRequired (0.62.2)
   - RCTTypeSafety (0.62.2):
     - FBLazyVector (= 0.62.2)
@@ -299,8 +299,8 @@ PODS:
     - ReactCommon/callinvoker (= 0.62.2)
   - RNGestureHandler (1.4.0):
     - React
-  - RNPurchases (3.4.3):
-    - PurchasesHybridCommon (= 1.4.5)
+  - RNPurchases (4.0.0):
+    - PurchasesHybridCommon (= 1.5.0)
     - React
   - RNScreens (1.0.0-alpha.23):
     - React
@@ -319,6 +319,7 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.33.1)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - PurchasesHybridCommon (from `/Users/andresboedo/revenuecat/purchases-hybrid-common/`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native/`)
@@ -361,7 +362,6 @@ SPEC REPOS:
     - OpenSSL-Universal
     - Purchases
     - PurchasesCoreSwift
-    - PurchasesHybridCommon
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -375,6 +375,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  PurchasesHybridCommon:
+    :path: "/Users/andresboedo/revenuecat/purchases-hybrid-common/"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -439,9 +441,9 @@ SPEC CHECKSUMS:
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
-  Purchases: 7ebce9418bc16732c3c3bb4b6ff7e7e397de024e
-  PurchasesCoreSwift: 50636e307c1ab76c7a7894a87d042665f2fe0be9
-  PurchasesHybridCommon: b1dd1c5125ccf99b9e62b5974d0e5145895e8b87
+  Purchases: d8a798c9c7552fe66b550bf314a143e94ffa70c8
+  PurchasesCoreSwift: ea4eabae180416e580ac60366f41aa1fefec0693
+  PurchasesHybridCommon: d9bfb34309db4c9ba82a6f7f3a6275c13befdca7
   RCTRequired: cec6a34b3ac8a9915c37e7e4ad3aa74726ce4035
   RCTTypeSafety: 93006131180074cffa227a1075802c89a49dd4ce
   React: 29a8b1a02bd764fb7644ef04019270849b9a7ac3
@@ -462,11 +464,11 @@ SPEC CHECKSUMS:
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
   RNGestureHandler: 71871d4792db2a73f70204483d30350ec9384cbd
-  RNPurchases: 2d9a3f50c5b4924fc2b79e3c548d7ccb4217f355
+  RNPurchases: 0b0973fc48ded82f10fd5e06f2c6f9b8167bfdfd
   RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 168d9768ab4ac5ea08878bbe678ab8e49d381544
+PODFILE CHECKSUM: 9b9d9a5b2e8ed36a7806fa1ee43c6f0a65f8d733
 
 COCOAPODS: 1.10.0
