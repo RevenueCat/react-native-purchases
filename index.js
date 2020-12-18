@@ -370,9 +370,7 @@ var Purchases = /** @class */ (function () {
      * @warning This function should only be called if you're not calling makePurchase.
      */
     Purchases.syncPurchases = function () {
-        if (react_native_1.Platform.OS === "android") {
-            RNPurchases.syncPurchases();
-        }
+        RNPurchases.syncPurchases();
     };
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
@@ -434,6 +432,15 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.invalidatePurchaserInfoCache = function () {
         RNPurchases.invalidatePurchaserInfoCache();
+    };
+    /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
+     * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
+     * to configure and use offer codes
+     * */
+    Purchases.presentCodeRedemptionSheet = function () {
+        if (react_native_1.Platform.OS === "ios") {
+            RNPurchases.presentCodeRedemptionSheet();
+        }
     };
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.

@@ -756,6 +756,11 @@ export default class Purchases {
      * promotional subscription is granted through the RevenueCat dashboard.
      */
     static invalidatePurchaserInfoCache(): void;
+    /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
+     * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
+     * to configure and use offer codes
+     * */
+    static presentCodeRedemptionSheet(): void;
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.
      * Since attributes are writable using a public key they should not be used for

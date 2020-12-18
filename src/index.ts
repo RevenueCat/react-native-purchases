@@ -946,9 +946,7 @@ export default class Purchases {
    * @warning This function should only be called if you're not calling makePurchase.
    */
   public static syncPurchases() {
-    if (Platform.OS === "android") {
-      RNPurchases.syncPurchases();
-    }
+    RNPurchases.syncPurchases();
   }
 
   /**
@@ -1028,6 +1026,16 @@ export default class Purchases {
    */
   public static invalidatePurchaserInfoCache() {
     RNPurchases.invalidatePurchaserInfoCache();
+  }
+
+   /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
+    * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
+    * to configure and use offer codes 
+    * */ 
+  public static presentCodeRedemptionSheet() {
+    if (Platform.OS === "ios") {
+      RNPurchases.presentCodeRedemptionSheet();
+    }
   }
 
   /**
