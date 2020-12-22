@@ -56,7 +56,6 @@ target 'ReactNativeSample' do
   pod 'RNPurchases', :path => '../..'
 
   use_native_modules!
-  use_frameworks!
   use_modular_headers!
 
   # Enables Flipper.
