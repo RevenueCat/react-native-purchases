@@ -490,14 +490,14 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
   })
 
-  it("syncpurchases doesnt do anything for ios", () => {
+  it("syncpurchases works for ios", () => {
     const Purchases = require("../index").default;
 
     Platform.OS = "ios";
 
     Purchases.syncPurchases();
 
-    expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(0);
+    expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
   })
 
 
