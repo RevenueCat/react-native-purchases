@@ -1028,10 +1028,10 @@ export default class Purchases {
     RNPurchases.invalidatePurchaserInfoCache();
   }
 
-   /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
-    * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
-    * to configure and use offer codes 
-    * */ 
+  /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
+   * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
+   * to configure and use offer codes 
+   */ 
   public static presentCodeRedemptionSheet() {
     if (Platform.OS === "ios") {
       RNPurchases.presentCodeRedemptionSheet();
