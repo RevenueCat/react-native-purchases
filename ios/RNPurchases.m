@@ -64,7 +64,10 @@ RCT_EXPORT_METHOD(addAttributionData:(NSDictionary *)data
                   forNetwork:(NSInteger)network
                   forNetworkUserId:(nullable NSString *)networkUserId)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     [RCCommonFunctionality addAttributionData:data network:network networkUserId:networkUserId];
+#pragma GCC diagnostic pop
 }
 
 RCT_REMAP_METHOD(getOfferings,
@@ -118,6 +121,12 @@ RCT_REMAP_METHOD(restoreTransactions,
     [RCCommonFunctionality restoreTransactionsWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
+RCT_REMAP_METHOD(syncPurchases,
+                 syncPurchasesWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality syncPurchasesWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
 RCT_REMAP_METHOD(getAppUserID,
                  getAppUserIDWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject)
@@ -152,8 +161,8 @@ RCT_REMAP_METHOD(setDebugLogsEnabled,
 }
 
 RCT_REMAP_METHOD(getPurchaserInfo,
-                   purchaserInfoWithResolve:(RCTPromiseResolveBlock)resolve
-                   reject:(RCTPromiseRejectBlock)reject) {
+                 purchaserInfoWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality getPurchaserInfoWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
@@ -202,6 +211,15 @@ RCT_REMAP_METHOD(getPaymentDiscount,
 RCT_EXPORT_METHOD(invalidatePurchaserInfoCache)
 {
     [RCCommonFunctionality invalidatePurchaserInfoCache];
+}
+
+RCT_EXPORT_METHOD(presentCodeRedemptionSheet)
+{
+    if (@available(iOS 14.0, *)) {
+        [RCCommonFunctionality presentCodeRedemptionSheet];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to present codeRedemptionSheet, but it's only available on iOS 14.0 or greater.");
+    }
 }
 
 #pragma mark - Subscriber Attributes
@@ -341,7 +359,7 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"3.4.3";
+    return @"4.0.0";
 }
 
 @end

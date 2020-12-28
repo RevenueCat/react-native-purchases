@@ -627,19 +627,6 @@ export default class Purchases {
     /**
      * Make a purchase
      *
-     * @deprecated Use purchaseProduct instead.
-     *
-     * @param {String} productIdentifier The product identifier of the product you want to purchase
-     * @param {String?} oldSKU Optional sku you wish to upgrade from.
-     * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-     * @returns {Promise<{ productIdentifier: String, purchaserInfo: PurchaserInfo }>} A promise of an object containing
-     * a purchaser info object and a product identifier. Rejections return an error code,
-     * a boolean indicating if the user cancelled the purchase, and an object with more information.
-     */
-    static makePurchase(productIdentifier: string, oldSKU?: string | null, type?: PURCHASE_TYPE): MakePurchasePromise;
-    /**
-     * Make a purchase
-     *
      * @param {String} productIdentifier The product identifier of the product you want to purchase
      * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
      * and the optional prorationMode.
@@ -769,6 +756,11 @@ export default class Purchases {
      * promotional subscription is granted through the RevenueCat dashboard.
      */
     static invalidatePurchaserInfoCache(): void;
+    /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
+     * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
+     * to configure and use offer codes
+     */
+    static presentCodeRedemptionSheet(): void;
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.
      * Since attributes are writable using a public key they should not be used for

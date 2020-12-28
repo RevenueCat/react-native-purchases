@@ -178,24 +178,6 @@ describe("Purchases", () => {
     expect(products).toEqual([]);
   });
 
-  it("makePurchase calls purchaseProduct", () => {
-    const Purchases = require("../index").default;
-
-    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
-      purchasedProductIdentifier: "123",
-      purchaserInfo: purchaserInfoStub
-    });
-
-    Purchases.makePurchase("onemonth_freetrial");
-
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", null, "subs", null);
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
-
-    Purchases.makePurchase("onemonth_freetrial", "viejo", Purchases.PURCHASE_TYPE.INAPP);
-
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial",{ oldSKU: "viejo" }, Purchases.PURCHASE_TYPE.INAPP, null);
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(2);
-  });
 
   it("purchaseProduct works", () => {
     const Purchases = require("../index").default;
@@ -401,25 +383,6 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(2);
   })
 
-  it("cancelled makePurchase sets userCancelled in the error", () => {
-    const Purchases = require("../index").default;
-
-    NativeModules.RNPurchases.purchaseProduct.mockRejectedValueOnce({
-      code: "1",
-      message: "User cancelled",
-      readableErrorCode: "USER_CANCELLED",
-      underlyingErrorMessage: "The user cancelled",
-    });
-
-    return expect(Purchases.makePurchase("onemonth_freetrial")).rejects.toEqual({
-      code: "1",
-      message: "User cancelled",
-      readableErrorCode: "USER_CANCELLED",
-      underlyingErrorMessage: "The user cancelled",
-      userCancelled: true
-    });
-  });
-
   it("cancelled purchaseProduct sets userCancelled in the error", () => {
     const Purchases = require("../index").default;
 
@@ -466,7 +429,7 @@ describe("Purchases", () => {
       purchaserInfo: purchaserInfoStub
     });
 
-    return expect(Purchases.makePurchase("onemonth_freetrial")).resolves.toEqual({
+    return expect(Purchases.purchaseProduct("onemonth_freetrial")).resolves.toEqual({
       purchasedProductIdentifier: "123",
       purchaserInfo: purchaserInfoStub
     });
@@ -490,14 +453,14 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
   })
 
-  it("syncpurchases doesnt do anything for ios", () => {
+  it("syncpurchases works for ios", () => {
     const Purchases = require("../index").default;
 
     Platform.OS = "ios";
 
     Purchases.syncPurchases();
 
-    expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(0);
+    expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
   })
 
 

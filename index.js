@@ -237,36 +237,6 @@ var Purchases = /** @class */ (function () {
     /**
      * Make a purchase
      *
-     * @deprecated Use purchaseProduct instead.
-     *
-     * @param {String} productIdentifier The product identifier of the product you want to purchase
-     * @param {String?} oldSKU Optional sku you wish to upgrade from.
-     * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-     * @returns {Promise<{ productIdentifier: String, purchaserInfo: PurchaserInfo }>} A promise of an object containing
-     * a purchaser info object and a product identifier. Rejections return an error code,
-     * a boolean indicating if the user cancelled the purchase, and an object with more information.
-     */
-    Purchases.makePurchase = function (productIdentifier, oldSKU, type) {
-        if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
-        if (Array.isArray(oldSKU)) {
-            throw new Error("Calling a deprecated method!");
-        }
-        if (oldSKU !== undefined && oldSKU !== null) {
-            return Purchases.purchaseProduct(productIdentifier, { oldSKU: oldSKU }, type).catch(function (error) {
-                error.userCancelled = error.code === "1";
-                throw error;
-            });
-        }
-        else {
-            return Purchases.purchaseProduct(productIdentifier, null, type).catch(function (error) {
-                error.userCancelled = error.code === "1";
-                throw error;
-            });
-        }
-    };
-    /**
-     * Make a purchase
-     *
      * @param {String} productIdentifier The product identifier of the product you want to purchase
      * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
      * and the optional prorationMode.
@@ -400,9 +370,7 @@ var Purchases = /** @class */ (function () {
      * @warning This function should only be called if you're not calling makePurchase.
      */
     Purchases.syncPurchases = function () {
-        if (react_native_1.Platform.OS === "android") {
-            RNPurchases.syncPurchases();
-        }
+        RNPurchases.syncPurchases();
     };
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
@@ -464,6 +432,15 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.invalidatePurchaserInfoCache = function () {
         RNPurchases.invalidatePurchaserInfoCache();
+    };
+    /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
+     * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
+     * to configure and use offer codes
+     */
+    Purchases.presentCodeRedemptionSheet = function () {
+        if (react_native_1.Platform.OS === "ios") {
+            RNPurchases.presentCodeRedemptionSheet();
+        }
     };
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.

@@ -14,6 +14,7 @@ Pod::Spec.new do |spec|
 
   spec.source       = { :git => "https://github.com/RevenueCat/react-native-purchases.git" }
   spec.source_files = "ios/**/*.{h,m,swift}"
+  spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
   # Ignore the downloaded Purchases.framework
   spec.exclude_files = [
@@ -21,7 +22,7 @@ Pod::Spec.new do |spec|
     "ios/PurchasesHybridCommon.framework"
   ]
 
-  spec.dependency   "React"
-  spec.dependency   "PurchasesHybridCommon", '1.4.5'
+  spec.dependency   "React-Core"
+  spec.dependency   "PurchasesHybridCommon", '1.5.0'
   spec.swift_version    = '5.0'
 end

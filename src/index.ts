@@ -770,43 +770,6 @@ export default class Purchases {
   /**
    * Make a purchase
    *
-   * @deprecated Use purchaseProduct instead.
-   *
-   * @param {String} productIdentifier The product identifier of the product you want to purchase
-   * @param {String?} oldSKU Optional sku you wish to upgrade from.
-   * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-   * @returns {Promise<{ productIdentifier: String, purchaserInfo: PurchaserInfo }>} A promise of an object containing
-   * a purchaser info object and a product identifier. Rejections return an error code,
-   * a boolean indicating if the user cancelled the purchase, and an object with more information.
-   */
-  public static makePurchase(
-    productIdentifier: string,
-    oldSKU?: string | null,
-    type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
-  ): MakePurchasePromise {
-    if (Array.isArray(oldSKU)) {
-      throw new Error("Calling a deprecated method!");
-    }
-    if (oldSKU !== undefined && oldSKU !== null) {
-      return Purchases.purchaseProduct(productIdentifier, { oldSKU }, type).catch(
-        (error: any) => {
-          error.userCancelled = error.code === "1";
-          throw error;
-        }
-      );
-    } else {
-      return Purchases.purchaseProduct(productIdentifier, null, type).catch(
-        (error: any) => {
-          error.userCancelled = error.code === "1";
-          throw error;
-        }
-      );
-    }
-  }
-
-  /**
-   * Make a purchase
-   *
    * @param {String} productIdentifier The product identifier of the product you want to purchase
    * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
    * and the optional prorationMode.
@@ -983,9 +946,7 @@ export default class Purchases {
    * @warning This function should only be called if you're not calling makePurchase.
    */
   public static syncPurchases() {
-    if (Platform.OS === "android") {
-      RNPurchases.syncPurchases();
-    }
+    RNPurchases.syncPurchases();
   }
 
   /**
@@ -1065,6 +1026,16 @@ export default class Purchases {
    */
   public static invalidatePurchaserInfoCache() {
     RNPurchases.invalidatePurchaserInfoCache();
+  }
+
+  /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
+   * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
+   * to configure and use offer codes 
+   */ 
+  public static presentCodeRedemptionSheet() {
+    if (Platform.OS === "ios") {
+      RNPurchases.presentCodeRedemptionSheet();
+    }
   }
 
   /**
