@@ -436,7 +436,7 @@ var Purchases = /** @class */ (function () {
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
      * to configure and use offer codes
-     * */
+     */
     Purchases.presentCodeRedemptionSheet = function () {
         if (react_native_1.Platform.OS === "ios") {
             RNPurchases.presentCodeRedemptionSheet();

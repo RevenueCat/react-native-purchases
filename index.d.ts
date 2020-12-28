@@ -759,7 +759,7 @@ export default class Purchases {
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
      * to configure and use offer codes
-     * */
+     */
     static presentCodeRedemptionSheet(): void;
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.
