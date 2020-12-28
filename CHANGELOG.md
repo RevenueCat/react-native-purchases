@@ -4,6 +4,7 @@
 - iOS: 
     - added new method, `syncPurchases`, that enables syncing the purchases in the local receipt with the backend without risking a password prompt. The method was already available on Android.
     - added a new method, `presentCodeRedemptionSheet`, for offer codes redemption.
+    - Updated `React` dependency to `React-Core` and set `DEFINES_MODULE` to fix issues when building in Xcode 12 
 - Bumped `purchases-hybrid-common` to 1.5.0 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.5.0)
 - Bumped `purchases-ios` to 3.9.2 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.9.2)
 - Bumped `purchases-android` to 4.0.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/4.0.1)
