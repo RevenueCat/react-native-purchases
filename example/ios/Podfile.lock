@@ -299,7 +299,7 @@ PODS:
     - ReactCommon/callinvoker (= 0.62.2)
   - RNGestureHandler (1.4.0):
     - React
-  - RNPurchases (4.0.0):
+  - RNPurchases (4.0.1):
     - PurchasesHybridCommon (= 1.5.0)
     - React-Core
   - RNScreens (1.0.0-alpha.23):
