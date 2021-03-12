@@ -1,7 +1,11 @@
-## 4.0.1
+## 4.1.0
 
-- Update npm description for better discoverability
-    https://github.com/RevenueCat/react-native-purchases/pull/207
+- iOS: 
+    - Added a new property `simulateAsksToBuyInSandbox`, that allows developers to test deferred purchases easily.
+- Bumped purchases-hybrid-common to 1.6.0 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.0)
+- Bumped purchases-ios to 3.10.6 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.10.6)
+- Bumped purchases-android to 4.0.4 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/4.0.4)
+    https://github.com/RevenueCat/purchases-flutter/pull/171
 
 ## 4.0.0
 
