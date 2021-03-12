@@ -665,6 +665,17 @@ export default class Purchases {
   }
 
   /**
+   * iOS only.
+   * @param {Boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow. 
+   * More information: http://errors.rev.cat/ask-to-buy
+   */
+  public static setSimulatesAskToBuyInSandbox(finishTransactions: boolean) {
+    if (Platform.OS === "ios") {
+      RNPurchases.setSimulatesAskToBuyInSandbox(finishTransactions);
+    }
+  }
+  
+  /**
    * Sets a function to be called on updated purchaser info
    * @param {PurchaserInfoUpdateListener} purchaserInfoUpdateListener PurchaserInfo update listener
    */
