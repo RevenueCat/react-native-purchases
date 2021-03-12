@@ -1,11 +1,15 @@
 ## 4.1.0
 
+- Added a new sample project available at `/Examples/WeatherApp`
+    https://github.com/RevenueCat/react-native-purchases/pull/212
 - iOS: 
     - Added a new method `setSimulatesAskToBuyInSandbox`, that allows developers to test deferred purchases easily.
 - Bumped purchases-hybrid-common to 1.6.1 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.1)
 - Bumped purchases-ios to 3.10.6 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.10.6)
 - Bumped purchases-android to 4.0.4 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/4.0.4)
     https://github.com/RevenueCat/purchases-flutter/pull/171
+- Fixed issues with CI builds in Android
+    https://github.com/RevenueCat/react-native-purchases/pull/214
 
 ## 4.0.0
 
