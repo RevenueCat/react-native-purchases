@@ -11,6 +11,11 @@
 - Fixed issues with CI builds in Android
     https://github.com/RevenueCat/react-native-purchases/pull/214
 
+## 4.0.1
+
+- Update npm description for better discoverability
+    https://github.com/RevenueCat/react-native-purchases/pull/207
+
 ## 4.0.0
 
 - removes deprecated `makePurchase`, replaced by `purchaseProduct`
