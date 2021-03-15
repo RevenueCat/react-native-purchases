@@ -161,9 +161,9 @@ var Purchases = /** @class */ (function () {
      * @param {Boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
      * More information: http://errors.rev.cat/ask-to-buy
      */
-    Purchases.setSimulatesAskToBuyInSandbox = function (finishTransactions) {
+    Purchases.setSimulatesAskToBuyInSandbox = function (simulatesAskToBuyInSandbox) {
         if (react_native_1.Platform.OS === "ios") {
-            RNPurchases.setSimulatesAskToBuyInSandbox(finishTransactions);
+            RNPurchases.setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox);
         }
     };
     /**

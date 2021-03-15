@@ -578,7 +578,7 @@ export default class Purchases {
      * @param {Boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
      * More information: http://errors.rev.cat/ask-to-buy
      */
-    static setSimulatesAskToBuyInSandbox(finishTransactions: boolean): void;
+    static setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): void;
     /**
      * Sets a function to be called on updated purchaser info
      * @param {PurchaserInfoUpdateListener} purchaserInfoUpdateListener PurchaserInfo update listener
