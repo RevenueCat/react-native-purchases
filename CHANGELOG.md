@@ -10,6 +10,7 @@
     https://github.com/RevenueCat/react-native-purchases/pull/216
 - Fixed issues with CI builds in Android
     https://github.com/RevenueCat/react-native-purchases/pull/214
+    https://github.com/RevenueCat/react-native-purchases/pull/217
 
 ## 4.0.1
 
