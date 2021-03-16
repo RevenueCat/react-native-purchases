@@ -160,6 +160,11 @@ RCT_REMAP_METHOD(setDebugLogsEnabled,
     [RCCommonFunctionality setDebugLogsEnabled:enabled];
 }
 
+RCT_EXPORT_METHOD(setSimulatesAskToBuyInSandbox:(BOOL)simulatesAskToBuyInSandbox)
+{
+    [RCCommonFunctionality setSimulatesAskToBuyInSandbox:simulatesAskToBuyInSandbox];
+}
+
 RCT_REMAP_METHOD(getPurchaserInfo,
                  purchaserInfoWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
@@ -359,7 +364,7 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"4.0.1";
+    return @"4.1.0";
 }
 
 @end
