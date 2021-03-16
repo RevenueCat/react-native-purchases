@@ -29,12 +29,6 @@ def set_deployment_target_for_all_pods(installer)
   end
 end
 
-def set_excluded_archs_for_all_pods(installer)
-  installer.pods_project.build_configurations.each do |config|
-    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
-  end
-end
-
 target 'ReactNativeSample' do
   # Pods for ReactNativeSample
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
@@ -77,11 +71,10 @@ target 'ReactNativeSample' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable these next few lines.
-  add_flipper_pods!
+  # add_flipper_pods!
   post_install do |installer|
-    flipper_post_install(installer)
+    # flipper_post_install(installer)
     set_deployment_target_for_all_pods(installer)
-    set_excluded_archs_for_all_pods(installer)
   end
     
 end
