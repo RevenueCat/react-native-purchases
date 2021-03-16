@@ -22,5 +22,7 @@ keywords:
   - SDK version
   - OS version
   - XCode/Android Studio version
+  - React Native version
+  - SDK installation
   - Debug logs
   - Steps to reproduce, with a description of expected vs. actual behavior
