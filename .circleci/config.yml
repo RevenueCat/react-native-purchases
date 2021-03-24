@@ -52,8 +52,9 @@ commands:
 
 jobs:
   analyse_js:
-    executor: rn/linux_js
-    node_version: '12'
+    executor:
+      name: rn/linux_js
+      node_version: '12'
     steps:
       - checkout
       - yarn_install_example
