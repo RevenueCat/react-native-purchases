@@ -32,5 +32,6 @@ target 'ReactNativeSample' do
 
   post_install do |installer|
     react_native_post_install(installer)
+    set_deployment_target_for_all_pods(installer)
   end
 end
