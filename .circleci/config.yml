@@ -14,8 +14,8 @@ commands:
             find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat
             {} + >> ~/.tmp/checksumfiles/yarn.lock
           name: Create cache checksum file
-      
-      # Commented out because something is up with the permissions of the cache folder in the machines. 
+
+      # Commented out because something is up with the permissions of the cache folder in the machines.
       # There's an open issue here:  react-native-community/react-native-circleci-orb#66
 
       # - restore_cache:
@@ -35,7 +35,7 @@ commands:
       #       .Environment.CACHE_VERSION }}
       #     paths:
       #       - /tmp/yarn
-  
+
   install_pods:
     steps:
       - restore_cache:
@@ -51,20 +51,12 @@ commands:
           key: cache-pods-{{ checksum "example/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
 
 jobs:
-  checkout_code:
+  analyse_js:
     executor:
       name: rn/linux_js
-      node_version: '10'
+      node_version: '12'
     steps:
       - checkout
-      - persist_to_workspace:
-          paths: .
-          root: .
-  analyse_js:
-    executor: rn/linux_js
-    steps:
-      - attach_workspace:
-          at: .
       - yarn_install_example
       - run:
           name: Tests
@@ -75,18 +67,16 @@ jobs:
   android:
     executor: rn/linux_android
     steps:
-      - attach_workspace:
-          at: .
+      - checkout
       - yarn_install_example
       - rn/android_build:
           project_path: example/android
   ios:
-    executor: 
+    executor:
       name: rn/macos
       xcode_version: 12.4.0
     steps:
-      - attach_workspace:
-          at: .
+      - checkout
       - rn/ios_simulator_start:
           device: iPhone 11 Pro
       - yarn_install_example
@@ -97,18 +87,11 @@ jobs:
           derived_data_path: ~/DerivedData
           project_type: workspace
           project_path: example/ios/ReactNativeSample.xcworkspace
-          scheme: ReactNativeSample          
+          scheme: ReactNativeSample
 
 workflows:
   test:
     jobs:
-      - checkout_code
-      - analyse_js:
-          requires:
-            - checkout_code
-      - android:
-          requires:
-            - checkout_code
-      - ios:
-          requires:
-            - checkout_code
+      - analyse_js
+      - android
+      - ios
