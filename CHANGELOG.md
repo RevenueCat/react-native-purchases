@@ -2,11 +2,13 @@
 
 - Updated example app to the latest React-Native version
     https://github.com/RevenueCat/react-native-purchases/pull/222
+- Updated `y18n` version
+    https://github.com/RevenueCat/react-native-purchases/pull/227
+    https://github.com/RevenueCat/react-native-purchases/pull/226
 - Bumped purchases-hybrid-common to 1.6.2 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.2)
 - Bumped purchases-ios to 3.10.7 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.10.7)
 - Bumped purchases-android to 4.0.5 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/4.0.5)
     https://github.com/RevenueCat/purchases-flutter/pull/171
-
 
 ## 4.1.0
 
