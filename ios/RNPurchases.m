@@ -137,17 +137,36 @@ RCT_EXPORT_METHOD(createAlias:(nullable NSString *)newAppUserID
                        completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
+RCT_EXPORT_METHOD(logIn:(nonnull NSString *)appUserID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality logInWithAppUserID:appUserID
+                              completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
+RCT_EXPORT_METHOD(logOut:(nonnull NSString *)appUserID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality logOutWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
 RCT_EXPORT_METHOD(identify:(nullable NSString *)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     [RCCommonFunctionality identify:appUserID
                     completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+#pragma GCC diagnostic pop
 }
 
 RCT_REMAP_METHOD(reset,
                  resetWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     [RCCommonFunctionality resetWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+#pragma GCC diagnostic pop
 }
 
 RCT_REMAP_METHOD(setDebugLogsEnabled,
