@@ -356,6 +356,9 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.75.1)
   - FlipperKit/SKIOSNetworkPlugin (= 0.75.1)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Purchases (from `https://github.com/RevenueCat/purchases-ios.git`, branch `feature/identityV3_public_facing_changes`)
+  - PurchasesCoreSwift (from `https://github.com/RevenueCat/purchases-ios.git`, branch `feature/identityV3_public_facing_changes`)
+  - PurchasesHybridCommon (from `https://github.com/RevenueCat/purchases-hybrid-common.git`, branch `develop`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -399,9 +402,6 @@ SPEC REPOS:
     - FlipperKit
     - libevent
     - OpenSSL-Universal
-    - Purchases
-    - PurchasesCoreSwift
-    - PurchasesHybridCommon
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -413,6 +413,15 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  Purchases:
+    :branch: feature/identityV3_public_facing_changes
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesCoreSwift:
+    :branch: feature/identityV3_public_facing_changes
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesHybridCommon:
+    :branch: develop
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -467,6 +476,17 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
+
+CHECKOUT OPTIONS:
+  Purchases:
+    :commit: 15d2ff61b4c9e101a22b642662a09f7ee2b90fd7
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesCoreSwift:
+    :commit: 15d2ff61b4c9e101a22b642662a09f7ee2b90fd7
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesHybridCommon:
+    :commit: 0e615d277fa3a976e15c1cac89e3c5a4ab5679ce
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
