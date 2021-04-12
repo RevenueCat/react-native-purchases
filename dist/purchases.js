@@ -86,6 +86,7 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
     };
     /**
+     * @deprecated, configure behavior through the RevenueCat dashboard instead.
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
      * the new ID with the previous id.
@@ -284,6 +285,26 @@ var Purchases = /** @class */ (function () {
         return RNPurchases.createAlias(newAppUserID);
     };
     /**
+     * This function will logIn the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
+     * @param {String} newAppUserID The appUserID that should be linked to the currently user
+     * @returns {Promise<LogInResult>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     */
+    Purchases.logIn = function (appUserID) {
+        // noinspection SuspiciousTypeOfGuard
+        if (typeof appUserID !== "string") {
+            throw new Error("newAppUserID needs to be a string");
+        }
+        return RNPurchases.logIn(appUserID);
+    };
+    /**
+     * Logs out the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
+     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     */
+    Purchases.logOut = function () {
+        return RNPurchases.logOut();
+    };
+    /**
+     * @deprecated, use logIn instead.
      * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
      * @param {String} newAppUserID The appUserID that should be linked to the currently user
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
@@ -296,6 +317,7 @@ var Purchases = /** @class */ (function () {
         return RNPurchases.identify(newAppUserID);
     };
     /**
+     * @deprecated, use logOut instead.
      * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */

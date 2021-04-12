@@ -159,6 +159,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void logOut(final Promise promise) {
+        CommonKt.logOut(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void logIn(String appUserID, final Promise promise) {
+        CommonKt.logIn(appUserID, getOnResult(promise));
+    }
+
+    @ReactMethod
     public void reset(final Promise promise) {
         CommonKt.reset(getOnResult(promise));
     }
