@@ -139,9 +139,9 @@ RCT_EXPORT_METHOD(logIn:(nonnull NSString *)appUserID
                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
-RCT_EXPORT_METHOD(logOut:(nonnull NSString *)appUserID
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(logOut,
+                 logOutWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality logOutWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
