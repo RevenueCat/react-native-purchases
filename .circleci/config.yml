@@ -26,7 +26,7 @@ commands:
       #         .Environment.CACHE_VERSION }}
       - run:
           command: >-
-            yarn examples/purchaseTester && yarn install --non-interactive --cache-folder /tmp/yarn
+            yarn --cwd examples/purchaseTester && yarn install --non-interactive --cache-folder /tmp/yarn
           name: Yarn Install
       # - save_cache:
       #     key: >
