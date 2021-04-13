@@ -48,6 +48,7 @@ buck-out/
 .jest/
 android/.settings/org.eclipse.buildship.core.prefs
 examples/purchaseTester/android/.settings/org.eclipse.buildship.core.prefs
+examples/MagicWeather/android/.settings/org.eclipse.buildship.core.prefs
 android/gradlew
 android/gradlew.bat
 android/gradle/wrapper/gradle-wrapper.jar
@@ -55,7 +56,7 @@ android/gradle/wrapper/gradle-wrapper.properties
 .vscode/launch.json
 .vscode/settings.json
 android/.classpath
-android/.project
+*.project
 examples/purchaseTester/.vscode/launch.json
 examples/purchaseTester/.vscode/settings.json
 examples/purchaseTester/android/app/.classpath
