@@ -561,7 +561,7 @@ export default class Purchases {
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
      */
-    static setup(apiKey: string, appUserID?: string | null, observerMode?: boolean, userDefaultsSuiteName?: string): any;
+    static setup(apiKey: string, appUserID?: string | null, observerMode?: boolean, userDefaultsSuiteName?: string): void;
     /**
      * @param {Boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
@@ -703,7 +703,7 @@ export default class Purchases {
      * Enables/Disables debugs logs
      * @param {Boolean} enabled Enable or not debug logs
      */
-    static setDebugLogsEnabled(enabled: boolean): any;
+    static setDebugLogsEnabled(enabled: boolean): void;
     /**
      * Gets current purchaser info
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.

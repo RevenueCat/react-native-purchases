@@ -635,7 +635,7 @@ export default class Purchases {
     appUserID?: string | null,
     observerMode: boolean = false,
     userDefaultsSuiteName?: string
-  ) {
+  ): void {
     if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
     }
@@ -652,14 +652,14 @@ export default class Purchases {
    * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
    * the new ID with the previous id.
    */
-  public static setAllowSharingStoreAccount(allowSharing: boolean) {
+  public static setAllowSharingStoreAccount(allowSharing: boolean): void {
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
   }
 
   /**
    * @param {Boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
    */
-  public static setFinishTransactions(finishTransactions: boolean) {
+  public static setFinishTransactions(finishTransactions: boolean): void {
     RNPurchases.setFinishTransactions(finishTransactions);
   }
 
@@ -668,7 +668,7 @@ export default class Purchases {
    * @param {Boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow. 
    * More information: http://errors.rev.cat/ask-to-buy
    */
-  public static setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean) {
+  public static setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): void {
     if (Platform.OS === "ios") {
       RNPurchases.setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox);
     }
@@ -680,7 +680,7 @@ export default class Purchases {
    */
   public static addPurchaserInfoUpdateListener(
     purchaserInfoUpdateListener: PurchaserInfoUpdateListener
-  ) {
+  ): void {
     if (typeof purchaserInfoUpdateListener !== "function") {
       throw new Error("addPurchaserInfoUpdateListener needs a function");
     }
@@ -694,7 +694,7 @@ export default class Purchases {
    */
   public static removePurchaserInfoUpdateListener(
     listenerToRemove: PurchaserInfoUpdateListener
-  ) {
+  ): boolean {
     if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
       purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(
         listener => listenerToRemove !== listener
@@ -715,7 +715,7 @@ export default class Purchases {
    */
   public static addShouldPurchasePromoProductListener(
     shouldPurchasePromoProductListener: ShouldPurchasePromoProductListener
-  ) {
+  ): void {
     if (typeof shouldPurchasePromoProductListener !== "function") {
       throw new Error("addShouldPurchasePromoProductListener needs a function");
     }
@@ -729,7 +729,7 @@ export default class Purchases {
    */
   public static removeShouldPurchasePromoProductListener(
     listenerToRemove: ShouldPurchasePromoProductListener
-  ) {
+  ): boolean {
     if (shouldPurchasePromoProductListeners.includes(listenerToRemove)) {
       shouldPurchasePromoProductListeners = shouldPurchasePromoProductListeners.filter(
         listener => listenerToRemove !== listener
@@ -751,7 +751,7 @@ export default class Purchases {
     data: { [key: string]: any },
     network: ATTRIBUTION_NETWORK,
     networkUserId?: string
-  ) {
+  ): void {
     RNPurchases.addAttributionData(data, network, networkUserId);
   }
 
@@ -937,7 +937,7 @@ export default class Purchases {
    * Enables/Disables debugs logs
    * @param {Boolean} enabled Enable or not debug logs
    */
-  public static setDebugLogsEnabled(enabled: boolean) {
+  public static setDebugLogsEnabled(enabled: boolean): void {
     return RNPurchases.setDebugLogsEnabled(enabled);
   }
 
@@ -955,7 +955,7 @@ export default class Purchases {
    *
    * @warning This function should only be called if you're not calling makePurchase.
    */
-  public static syncPurchases() {
+  public static syncPurchases(): void {
     RNPurchases.syncPurchases();
   }
 
@@ -965,7 +965,7 @@ export default class Purchases {
    */
   public static setAutomaticAppleSearchAdsAttributionCollection(
     enabled: boolean
-  ) {
+  ): void {
     if (Platform.OS === "ios") {
       RNPurchases.setAutomaticAppleSearchAdsAttributionCollection(enabled);
     }
@@ -1034,7 +1034,7 @@ export default class Purchases {
    * This is useful for cases where purchaser information might have been updated outside of the app, like if a
    * promotional subscription is granted through the RevenueCat dashboard.
    */
-  public static invalidatePurchaserInfoCache() {
+  public static invalidatePurchaserInfoCache(): void {
     RNPurchases.invalidatePurchaserInfoCache();
   }
 
@@ -1042,7 +1042,7 @@ export default class Purchases {
    * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
    * to configure and use offer codes 
    */ 
-  public static presentCodeRedemptionSheet() {
+  public static presentCodeRedemptionSheet(): void {
     if (Platform.OS === "ios") {
       RNPurchases.presentCodeRedemptionSheet();
     }
@@ -1058,7 +1058,7 @@ export default class Purchases {
    *
    * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
    */
-  public static setAttributes(attributes: { [key: string]: string | null }) {
+  public static setAttributes(attributes: { [key: string]: string | null }): void {
     RNPurchases.setAttributes(attributes);
   }
 
@@ -1067,7 +1067,7 @@ export default class Purchases {
    *
    * @param email Empty String or null will delete the subscriber attribute.
    */
-  public static setEmail(email: string | null) {
+  public static setEmail(email: string | null): void {
     RNPurchases.setEmail(email);
   }
 
@@ -1076,7 +1076,7 @@ export default class Purchases {
    *
    * @param phoneNumber Empty String or null will delete the subscriber attribute.
    */
-  public static setPhoneNumber(phoneNumber: string | null) {
+  public static setPhoneNumber(phoneNumber: string | null): void {
     RNPurchases.setPhoneNumber(phoneNumber);
   }
 
@@ -1085,7 +1085,7 @@ export default class Purchases {
    *
    * @param displayName Empty String or null will delete the subscriber attribute.
    */
-  public static setDisplayName(displayName: string | null) {
+  public static setDisplayName(displayName: string | null): void {
     RNPurchases.setDisplayName(displayName);
   }
 
@@ -1094,14 +1094,14 @@ export default class Purchases {
    *
    * @param pushToken null will delete the subscriber attribute.
    */
-  public static setPushToken(pushToken: string | null) {
+  public static setPushToken(pushToken: string | null): void {
     RNPurchases.setPushToken(pushToken);
   }
 
   /**
    * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
    */
-  public static setProxyURL(url: string) {
+  public static setProxyURL(url: string): void {
     RNPurchases.setProxyURLString(url);
   }
 
@@ -1110,7 +1110,7 @@ export default class Purchases {
    * $idfa, $idfv, $ip on iOS
    * $gpsAdId, $androidId, $ip on Android
    */
-  public static collectDeviceIdentifiers() {
+  public static collectDeviceIdentifiers(): void {
     RNPurchases.collectDeviceIdentifiers();
   }
 
@@ -1120,7 +1120,7 @@ export default class Purchases {
    *
    * @param adjustID Empty String or null will delete the subscriber attribute.
    */
-  public static setAdjustID(adjustID: string | null) {
+  public static setAdjustID(adjustID: string | null): void {
     RNPurchases.setAdjustID(adjustID);
   }
 
@@ -1129,7 +1129,7 @@ export default class Purchases {
    * Required for the RevenueCat AppsFlyer integration
    * @param appsflyerID Empty String or null will delete the subscriber attribute.
    */
-  public static setAppsflyerID(appsflyerID: string | null) {
+  public static setAppsflyerID(appsflyerID: string | null): void {
     RNPurchases.setAppsflyerID(appsflyerID);
   }
 
@@ -1139,7 +1139,7 @@ export default class Purchases {
    *
    * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
    */
-  public static setFBAnonymousID(fbAnonymousID: string | null) {
+  public static setFBAnonymousID(fbAnonymousID: string | null): void {
     RNPurchases.setFBAnonymousID(fbAnonymousID);
   }
 
@@ -1149,7 +1149,7 @@ export default class Purchases {
    *
    * @param mparticleID Empty String or null will delete the subscriber attribute.
    */
-  public static setMparticleID(mparticleID: string | null) {
+  public static setMparticleID(mparticleID: string | null): void {
     RNPurchases.setMparticleID(mparticleID);
   }
 
@@ -1159,7 +1159,7 @@ export default class Purchases {
    *
    * @param onesignalID Empty String or null will delete the subscriber attribute.
    */
-  public static setOnesignalID(onesignalID: string | null) {
+  public static setOnesignalID(onesignalID: string | null): void {
     RNPurchases.setOnesignalID(onesignalID);
   }
 
@@ -1168,7 +1168,7 @@ export default class Purchases {
    *
    * @param mediaSource Empty String or null will delete the subscriber attribute.
    */
-  public static setMediaSource(mediaSource: string | null) {
+  public static setMediaSource(mediaSource: string | null): void {
     RNPurchases.setMediaSource(mediaSource);
   }
 
@@ -1177,7 +1177,7 @@ export default class Purchases {
    *
    * @param campaign Empty String or null will delete the subscriber attribute.
    */
-  public static setCampaign(campaign: string | null) {
+  public static setCampaign(campaign: string | null): void {
     RNPurchases.setCampaign(campaign);
   }
 
@@ -1186,7 +1186,7 @@ export default class Purchases {
    *
    * @param adGroup Empty String or null will delete the subscriber attribute.
    */
-  public static setAdGroup(adGroup: string | null) {
+  public static setAdGroup(adGroup: string | null): void {
     RNPurchases.setAdGroup(adGroup);
   }
 
@@ -1195,7 +1195,7 @@ export default class Purchases {
    *
    * @param ad Empty String or null will delete the subscriber attribute.
    */
-  public static setAd(ad: string | null) {
+  public static setAd(ad: string | null): void {
     RNPurchases.setAd(ad);
   }
 
@@ -1204,7 +1204,7 @@ export default class Purchases {
    *
    * @param keyword Empty String or null will delete the subscriber attribute.
    */
-  public static setKeyword(keyword: string | null) {
+  public static setKeyword(keyword: string | null): void {
     RNPurchases.setKeyword(keyword);
   }
 
@@ -1213,7 +1213,7 @@ export default class Purchases {
    *
    * @param creative Empty String or null will delete the subscriber attribute.
    */
-  public static setCreative(creative: string | null) {
+  public static setCreative(creative: string | null): void {
     RNPurchases.setCreative(creative);
   }
 
