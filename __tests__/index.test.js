@@ -336,6 +336,51 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.identify).toBeCalledTimes(1);
   })
 
+  describe("when calling logIn", () => { 
+    const Purchases = require("../index").default;
+
+    it("throws an error if the appUserID is not a string", () => { 
+      expect(() => {
+        Purchases.logIn(123)
+      }).toThrowError();
+
+      expect(() => {
+        Purchases.logIn()
+      }).toThrowError();
+
+      expect(() => {
+        Purchases.logIn(null)
+      }).toThrowError();
+    });
+
+    it ("returns the correct LogInResult if successful", async () => { 
+      const mockCreated = (Math.random() < 0.5);
+
+      NativeModules.RNPurchases.logIn.mockResolvedValueOnce({
+        created: mockCreated,
+        purchaserInfo: purchaserInfoStub
+      });
+      
+      const logInResult = await Purchases.logIn("myUser");
+
+      expect(logInResult.created).toBe(mockCreated);
+      expect(logInResult.purchaserInfo).toBe(purchaserInfoStub);
+      expect(NativeModules.RNPurchases.logIn).toBeCalledTimes(1);
+    });
+  });
+
+  describe("when calling logOut", () => { 
+    const Purchases = require("../index").default;
+    it("correctly passes the call to the native module and returns the value", async () => {
+      NativeModules.RNPurchases.logOut.mockResolvedValueOnce(purchaserInfoStub);
+
+      const purchaserInfo = await Purchases.logOut();
+
+      expect(purchaserInfo).toBe(purchaserInfoStub);
+      expect(NativeModules.RNPurchases.logOut).toBeCalledTimes(1);
+    });
+  });
+
   it("setDebugLogsEnabled works", () => {
     const Purchases = require("../dist/index").default;
 
