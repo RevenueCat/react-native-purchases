@@ -47,7 +47,7 @@ buck-out/
 # Jest
 .jest/
 android/.settings/org.eclipse.buildship.core.prefs
-example/android/.settings/org.eclipse.buildship.core.prefs
+examples/purchaseTester/android/.settings/org.eclipse.buildship.core.prefs
 android/gradlew
 android/gradlew.bat
 android/gradle/wrapper/gradle-wrapper.jar
@@ -56,14 +56,14 @@ android/gradle/wrapper/gradle-wrapper.properties
 .vscode/settings.json
 android/.classpath
 android/.project
-example/.vscode/launch.json
-example/.vscode/settings.json
-example/android/app/.classpath
-example/android/app/.project
-example/android/app/.settings/org.eclipse.buildship.core.prefs
-example/.vscode/
+examples/purchaseTester/.vscode/launch.json
+examples/purchaseTester/.vscode/settings.json
+examples/purchaseTester/android/app/.classpath
+examples/purchaseTester/android/app/.project
+examples/purchaseTester/android/app/.settings/org.eclipse.buildship.core.prefs
+examples/purchaseTester/.vscode/
 
 # Cocoapods
 #
-example/ios/Pods
-example/ios/test_output
+examples/purchaseTester/ios/Pods
+examples/purchaseTester/ios/test_output
