@@ -248,8 +248,9 @@ export default class Purchases {
      */
     static createAlias(newAppUserID: string): Promise<PurchaserInfo>;
     /**
-     * This function will logIn the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
-     * @param {String} newAppUserID The appUserID that should be linked to the currently user
+     * This function will logIn the current user with an appUserID. Typically this would be used after a log in
+     * to identify a user without calling configure.
+     * @param {String} appUserID The appUserID that should be linked to the currently user
      * @returns {Promise<LogInResult>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     static logIn(appUserID: string): Promise<LogInResult>;
