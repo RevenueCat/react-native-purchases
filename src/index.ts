@@ -639,7 +639,7 @@ export default class Purchases {
     if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
     }
-    return RNPurchases.setupPurchases(
+    RNPurchases.setupPurchases(
       apiKey,
       appUserID,
       observerMode,

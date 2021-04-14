@@ -67,12 +67,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
-                               boolean observerMode, @Nullable String userDefaultsSuiteName,
-                               final Promise promise) {
+                               boolean observerMode, @Nullable String userDefaultsSuiteName) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         CommonKt.configure(reactContext, apiKey, appUserID, observerMode, platformInfo);
         Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
-        promise.resolve(null);
     }
 
     @ReactMethod
