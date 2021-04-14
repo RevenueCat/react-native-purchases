@@ -257,7 +257,7 @@ export interface PurchaserInfo {
    * List of all non subscription transactions. Use this to fetch the history of
    * non-subscription purchases
    */
-  readonly nonSubscriptionTransactions: [PurchasesTransaction];
+  readonly nonSubscriptionTransactions: PurchasesTransaction[];
 }
 
 export interface PurchasesTransaction {

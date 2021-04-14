@@ -139,7 +139,7 @@ var Purchases = /** @class */ (function () {
         if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
             throw new Error("appUserID needs to be a string");
         }
-        return RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
+        RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
     };
     /**
      * @param {Boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
