@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isUTCDateStringFuture = exports.INTRO_ELIGIBILITY_STATUS = exports.PACKAGE_TYPE = exports.PRORATION_MODE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
+exports.isUTCDateStringFuture = exports.PurchasesErrorCode = exports.INTRO_ELIGIBILITY_STATUS = exports.PACKAGE_TYPE = exports.PRORATION_MODE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
 // @ts-ignore
 var react_native_1 = require("react-native");
 var RNPurchases = react_native_1.NativeModules.RNPurchases;
@@ -104,6 +104,33 @@ var INTRO_ELIGIBILITY_STATUS;
      */
     INTRO_ELIGIBILITY_STATUS[INTRO_ELIGIBILITY_STATUS["INTRO_ELIGIBILITY_STATUS_ELIGIBLE"] = 2] = "INTRO_ELIGIBILITY_STATUS_ELIGIBLE";
 })(INTRO_ELIGIBILITY_STATUS = exports.INTRO_ELIGIBILITY_STATUS || (exports.INTRO_ELIGIBILITY_STATUS = {}));
+// Error codes indicating the reson for an error.
+var PurchasesErrorCode;
+(function (PurchasesErrorCode) {
+    PurchasesErrorCode[PurchasesErrorCode["UnknownError"] = 0] = "UnknownError";
+    PurchasesErrorCode[PurchasesErrorCode["PurchaseCancelledError"] = 1] = "PurchaseCancelledError";
+    PurchasesErrorCode[PurchasesErrorCode["StoreProblemError"] = 2] = "StoreProblemError";
+    PurchasesErrorCode[PurchasesErrorCode["PurchaseNotAllowedError"] = 3] = "PurchaseNotAllowedError";
+    PurchasesErrorCode[PurchasesErrorCode["PurchaseInvalidError"] = 4] = "PurchaseInvalidError";
+    PurchasesErrorCode[PurchasesErrorCode["ProductNotAvailableForPurchaseError"] = 5] = "ProductNotAvailableForPurchaseError";
+    PurchasesErrorCode[PurchasesErrorCode["ProductAlreadyPurchasedError"] = 6] = "ProductAlreadyPurchasedError";
+    PurchasesErrorCode[PurchasesErrorCode["ReceiptAlreadyInUseError"] = 7] = "ReceiptAlreadyInUseError";
+    PurchasesErrorCode[PurchasesErrorCode["InvalidReceiptError"] = 8] = "InvalidReceiptError";
+    PurchasesErrorCode[PurchasesErrorCode["MissingReceiptFileError"] = 9] = "MissingReceiptFileError";
+    PurchasesErrorCode[PurchasesErrorCode["NetworkError"] = 10] = "NetworkError";
+    PurchasesErrorCode[PurchasesErrorCode["InvalidCredentialsError"] = 11] = "InvalidCredentialsError";
+    PurchasesErrorCode[PurchasesErrorCode["UnexpectedBackendResponseError"] = 12] = "UnexpectedBackendResponseError";
+    PurchasesErrorCode[PurchasesErrorCode["ReceiptInUseByOtherSubscriberError"] = 13] = "ReceiptInUseByOtherSubscriberError";
+    PurchasesErrorCode[PurchasesErrorCode["InvalidAppUserIdError"] = 14] = "InvalidAppUserIdError";
+    PurchasesErrorCode[PurchasesErrorCode["OperationAlreadyInProgressError"] = 15] = "OperationAlreadyInProgressError";
+    PurchasesErrorCode[PurchasesErrorCode["UnknownBackendError"] = 16] = "UnknownBackendError";
+    PurchasesErrorCode[PurchasesErrorCode["InvalidAppleSubscriptionKeyError"] = 17] = "InvalidAppleSubscriptionKeyError";
+    PurchasesErrorCode[PurchasesErrorCode["IneligibleError"] = 18] = "IneligibleError";
+    PurchasesErrorCode[PurchasesErrorCode["InsufficientPermissionsError"] = 19] = "InsufficientPermissionsError";
+    PurchasesErrorCode[PurchasesErrorCode["PaymentPendingError"] = 20] = "PaymentPendingError";
+    PurchasesErrorCode[PurchasesErrorCode["InvalidSubscriberAttributesError"] = 21] = "InvalidSubscriberAttributesError";
+    PurchasesErrorCode[PurchasesErrorCode["LogOutAnonymousUserError"] = 22] = "LogOutAnonymousUserError";
+})(PurchasesErrorCode = exports.PurchasesErrorCode || (exports.PurchasesErrorCode = {}));
 var purchaserInfoUpdateListeners = [];
 var shouldPurchasePromoProductListeners = [];
 exports.isUTCDateStringFuture = function (dateString) {
@@ -257,7 +284,7 @@ var Purchases = /** @class */ (function () {
     Purchases.purchaseProduct = function (productIdentifier, upgradeInfo, type) {
         if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
         return RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type, null).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };
@@ -275,7 +302,7 @@ var Purchases = /** @class */ (function () {
             throw new Error("A discount is required");
         }
         return RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };
@@ -291,7 +318,7 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.purchasePackage = function (aPackage, upgradeInfo) {
         return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo, null).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };
@@ -309,7 +336,7 @@ var Purchases = /** @class */ (function () {
             throw new Error("A discount is required");
         }
         return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };

@@ -489,11 +489,39 @@ export interface PurchasesOfferings {
   readonly current: PurchasesOffering | null;
 }
 
+// Error codes indicating the reson for an error.
+export enum PurchasesErrorCode { 
+  UnknownError = 0,
+  PurchaseCancelledError = 1,
+  StoreProblemError = 2,
+  PurchaseNotAllowedError = 3,
+  PurchaseInvalidError = 4,
+  ProductNotAvailableForPurchaseError = 5,
+  ProductAlreadyPurchasedError = 6,
+  ReceiptAlreadyInUseError = 7,
+  InvalidReceiptError = 8,
+  MissingReceiptFileError = 9,
+  NetworkError = 10,
+  InvalidCredentialsError = 11,
+  UnexpectedBackendResponseError = 12,
+  ReceiptInUseByOtherSubscriberError= 13,
+  InvalidAppUserIdError = 14,
+  OperationAlreadyInProgressError = 15,
+  UnknownBackendError = 16,
+  InvalidAppleSubscriptionKeyError = 17,
+  IneligibleError = 18,
+  InsufficientPermissionsError = 19,
+  PaymentPendingError = 20,
+  InvalidSubscriberAttributesError = 21,
+  LogOutAnonymousUserError = 22,
+}
+
 export interface PurchasesError {
-  code: number;
+  code: PurchasesErrorCode;
   message: string;
   readableErrorCode: string;
   underlyingErrorMessage: string;
+  userCancelled: boolean;
 }
 
 /**
@@ -799,7 +827,7 @@ export default class Purchases {
       type,
       null
     ).catch((error: any) => {
-      error.userCancelled = error.code === "1";
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -826,7 +854,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      error.userCancelled = error.code === "1";
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -851,7 +879,7 @@ export default class Purchases {
       upgradeInfo,
       null
     ).catch((error: any) => {
-      error.userCancelled = error.code === "1";
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -878,7 +906,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      error.userCancelled = error.code === "1";
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
