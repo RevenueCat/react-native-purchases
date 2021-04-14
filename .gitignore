@@ -56,7 +56,7 @@ android/gradle/wrapper/gradle-wrapper.properties
 .vscode/launch.json
 .vscode/settings.json
 android/.classpath
-*.project
+**/*.project
 examples/purchaseTester/.vscode/launch.json
 examples/purchaseTester/.vscode/settings.json
 examples/purchaseTester/android/app/.classpath
