@@ -14,7 +14,7 @@ end
 
 target 'ReactNativeSample' do
   # Pods for ReactNativeSample
-  pod 'RNPurchases', :path => '../..'
+  pod 'RNPurchases', :path => '../../../'
 
   config = use_native_modules!
 
