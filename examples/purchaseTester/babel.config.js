@@ -8,7 +8,7 @@ module.exports = {
       'module-resolver',
       {
         alias: {
-          [pak.name]: path.join(__dirname, '..', pak.source),
+          [pak.name]: path.join(__dirname, '../..', pak.source),
         },
       },
     ],

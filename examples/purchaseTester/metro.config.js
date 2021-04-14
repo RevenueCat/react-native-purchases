@@ -3,7 +3,7 @@ const blacklist = require('metro-config/src/defaults/blacklist');
 const escape = require('escape-string-regexp');
 const pak = require('../../package.json');
 
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../..');
 
 const modules = Object.keys({
   ...pak.peerDependencies,
