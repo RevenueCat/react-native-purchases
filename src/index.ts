@@ -524,7 +524,29 @@ export interface PurchasesError {
   userCancelled: boolean | null;
 }
 
-export class PurchasesErrorHelper { 
+export class PurchasesErrorHelper {
+
+  /// Use this to convert an Error to a PurchasesErrorCode.
+  /// It will return `PurchasesErrorCode.UnknownError` if the error code is not
+  /// in the range of PurchasesErrorCodes.
+  ///
+  /// For example: 
+  /// try {
+  ///    PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
+  /// } catch (error) {
+  ///     const errorCode = PurchasesErrorHelper.getErrorCode(error);
+  ///     switch(errorCode) {
+  ///     case PurchasesErrorCode.PurchaseCancelledError:
+  ///       print("User cancelled");
+  ///       break;
+  ///     case PurchasesErrorCode.PurchaseNotAllowedError:
+  ///       print("User not allowed to purchase");
+  ///       break;
+  ///     default:
+  ///       // Do other stuff
+  ///       break;
+  ///   }
+  /// }
   public static getErrorCode(error: PurchasesError): PurchasesErrorCode {
     const errorCode = parseInt(error.code);
     
