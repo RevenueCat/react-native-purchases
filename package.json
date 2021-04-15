@@ -8,10 +8,7 @@
   "source": "src/index",
   "files": [
     "build.js",
-    "index.js",
-    "index.d.ts",
-    "errors.js",
-    "errors.d.ts",
+    "dist",
     "android",
     "!android/gradlew*",
     "!android/.gradle",
