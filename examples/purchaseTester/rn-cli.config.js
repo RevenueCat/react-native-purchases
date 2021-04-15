@@ -1,7 +1,6 @@
-const blacklist = require("metro-config/src/defaults/blacklist");
-
+const exclusionList = require('metro-config/src/defaults/exclusionList');
 module.exports = {
   resolver: {
-    blacklistRE: blacklist([/node_modules\/.*\/node_modules\/react-native\/.*/])
+    blacklistRE: exclusionList([/node_modules\/.*\/node_modules\/react-native\/.*/])
   }
 };
