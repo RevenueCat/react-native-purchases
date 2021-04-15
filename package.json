@@ -10,6 +10,8 @@
     "build.js",
     "index.js",
     "index.d.ts",
+    "errors.js",
+    "errors.d.ts",
     "android",
     "!android/gradlew*",
     "!android/.gradle",
