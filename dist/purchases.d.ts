@@ -1,5 +1,5 @@
-import { PRORATION_MODE, PACKAGE_TYPE, INTRO_ELIGIBILITY_STATUS, PurchasesOfferings, PurchasesProduct, UpgradeInfo, PurchasesPaymentDiscount, PurchasesPackage, IntroEligibility, PurchasesDiscount } from "./offerings";
 import { PurchaserInfo } from "./purchaserInfo";
+import { PRORATION_MODE, PACKAGE_TYPE, INTRO_ELIGIBILITY_STATUS, PurchasesOfferings, PurchasesProduct, UpgradeInfo, PurchasesPaymentDiscount, PurchasesPackage, IntroEligibility, PurchasesDiscount } from "./offerings";
 /**
  * Listener used on updated purchaser info
  * @callback PurchaserInfoUpdateListener
