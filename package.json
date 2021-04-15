@@ -37,7 +37,7 @@
     "prepublish": "tsc",
     "example": "yarn --cwd examples/purchaseTester",
     "pods": "cd examples/purchaseTester && pod-install --quiet",
-    "bootstrap": "yarn examples/purchaseTester && yarn && yarn pods"
+    "bootstrap": "yarn example && yarn && yarn pods"
   },
   "repository": {
     "type": "git",
