@@ -1,3 +1,4 @@
+export * from './errors';
 export declare enum ATTRIBUTION_NETWORK {
     APPLE_SEARCH_ADS = 0,
     ADJUST = 1,
@@ -462,41 +463,6 @@ export interface PurchasesOfferings {
      */
     readonly current: PurchasesOffering | null;
 }
-export declare enum PurchasesErrorCode {
-    UnknownError = 0,
-    PurchaseCancelledError = 1,
-    StoreProblemError = 2,
-    PurchaseNotAllowedError = 3,
-    PurchaseInvalidError = 4,
-    ProductNotAvailableForPurchaseError = 5,
-    ProductAlreadyPurchasedError = 6,
-    ReceiptAlreadyInUseError = 7,
-    InvalidReceiptError = 8,
-    MissingReceiptFileError = 9,
-    NetworkError = 10,
-    InvalidCredentialsError = 11,
-    UnexpectedBackendResponseError = 12,
-    ReceiptInUseByOtherSubscriberError = 13,
-    InvalidAppUserIdError = 14,
-    OperationAlreadyInProgressError = 15,
-    UnknownBackendError = 16,
-    InvalidAppleSubscriptionKeyError = 17,
-    IneligibleError = 18,
-    InsufficientPermissionsError = 19,
-    PaymentPendingError = 20,
-    InvalidSubscriberAttributesError = 21,
-    LogOutAnonymousUserError = 22
-}
-export interface PurchasesError {
-    code: string;
-    message: string;
-    readableErrorCode: string;
-    underlyingErrorMessage: string;
-    userCancelled: boolean | null;
-}
-export declare class PurchasesErrorHelper {
-    static getErrorCode(error: PurchasesError): PurchasesErrorCode;
-}
 /**
  * Holds the information used when upgrading from another sku. For Android use only.
  */
@@ -913,4 +879,3 @@ export default class Purchases {
      */
     static setCreative(creative: string | null): void;
 }
-export {};
