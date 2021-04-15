@@ -488,11 +488,14 @@ export declare enum PurchasesErrorCode {
     LogOutAnonymousUserError = 22
 }
 export interface PurchasesError {
-    code: PurchasesErrorCode;
+    code: string;
     message: string;
     readableErrorCode: string;
     underlyingErrorMessage: string;
-    userCancelled: boolean;
+    userCancelled: boolean | null;
+}
+export declare class PurchasesErrorHelper {
+    static getErrorCode(error: PurchasesError): PurchasesErrorCode;
 }
 /**
  * Holds the information used when upgrading from another sku. For Android use only.

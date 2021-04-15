@@ -517,11 +517,23 @@ export enum PurchasesErrorCode {
 }
 
 export interface PurchasesError {
-  code: PurchasesErrorCode;
+  code: string;
   message: string;
   readableErrorCode: string;
   underlyingErrorMessage: string;
-  userCancelled: boolean;
+  userCancelled: boolean | null;
+}
+
+export class PurchasesErrorHelper { 
+  public static getErrorCode(error: PurchasesError): PurchasesErrorCode {
+    const errorCode = parseInt(error.code);
+    
+    if (errorCode in PurchasesErrorCode) {
+      return errorCode as PurchasesErrorCode;
+    } else { 
+      return PurchasesErrorCode.UnknownError;
+    }
+  }
 }
 
 /**
@@ -827,7 +839,8 @@ export default class Purchases {
       type,
       null
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
+      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -854,7 +867,8 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
+      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -879,7 +893,8 @@ export default class Purchases {
       upgradeInfo,
       null
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
+      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -906,7 +921,8 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
+      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
