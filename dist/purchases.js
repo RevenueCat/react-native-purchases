@@ -45,7 +45,7 @@ var Purchases = /** @class */ (function () {
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
-     * @param {Boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+     * @param {boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
      * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
@@ -58,7 +58,7 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
     };
     /**
-     * @param {Boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
+     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
      * the new ID with the previous id.
      */
@@ -66,14 +66,14 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setAllowSharingStoreAccount(allowSharing);
     };
     /**
-     * @param {Boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
+     * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
     Purchases.setFinishTransactions = function (finishTransactions) {
         RNPurchases.setFinishTransactions(finishTransactions);
     };
     /**
      * iOS only.
-     * @param {Boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
+     * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
      * More information: http://errors.rev.cat/ask-to-buy
      */
     Purchases.setSimulatesAskToBuyInSandbox = function (simulatesAskToBuyInSandbox) {
@@ -280,7 +280,7 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Enables/Disables debugs logs
-     * @param {Boolean} enabled Enable or not debug logs
+     * @param {boolean} enabled Enable or not debug logs
      */
     Purchases.setDebugLogsEnabled = function (enabled) {
         return RNPurchases.setDebugLogsEnabled(enabled);
@@ -303,7 +303,7 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
-     * @param {Boolean} enabled Enable or not automatic apple search ads attribution collection
+     * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
      */
     Purchases.setAutomaticAppleSearchAdsAttributionCollection = function (enabled) {
         if (react_native_2.Platform.OS === "ios") {
