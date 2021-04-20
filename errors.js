@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PurchasesErrorHelper = exports.PurchasesErrorCode = void 0;
-// Error codes indicating the reson for an error.
+// Error codes indicating the reason for an error.
 var PurchasesErrorCode;
 (function (PurchasesErrorCode) {
     PurchasesErrorCode[PurchasesErrorCode["UnknownError"] = 0] = "UnknownError";

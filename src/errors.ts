@@ -1,5 +1,5 @@
 
-// Error codes indicating the reson for an error.
+// Error codes indicating the reason for an error.
 export enum PurchasesErrorCode {
     UnknownError = 0,
     PurchaseCancelledError = 1,
