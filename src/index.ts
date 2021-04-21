@@ -1,5 +1,5 @@
 // @ts-ignore
-import {PurchasesError, PurchasesErrorCode, PurchasesErrorHelper} from './errors';
+import { PurchasesError, PurchasesErrorCode, PurchasesErrorHelper } from './errors';
 import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 
 export * from './errors';
@@ -618,6 +618,13 @@ export default class Purchases {
   public static INTRO_ELIGIBILITY_STATUS = INTRO_ELIGIBILITY_STATUS;
 
   /**
+   * Enum of all error codes the SDK produces. 
+   * @readonly
+   * @enum {string}
+   */
+  public static PurchasesErrorCode = PurchasesErrorCode;
+
+  /**
    * Sets up Purchases with your API key and an app user id.
    * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
@@ -795,8 +802,7 @@ export default class Purchases {
       type,
       null
     ).catch((error: any) => {
-      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -823,8 +829,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -849,8 +854,7 @@ export default class Purchases {
       upgradeInfo,
       null
     ).catch((error: any) => {
-      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }
@@ -877,8 +881,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-      error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
       throw error;
     });
   }

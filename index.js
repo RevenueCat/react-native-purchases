@@ -269,8 +269,7 @@ var Purchases = /** @class */ (function () {
     Purchases.purchaseProduct = function (productIdentifier, upgradeInfo, type) {
         if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
         return RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type, null).catch(function (error) {
-            var purchasesErrorCode = errors_1.PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === errors_1.PurchasesErrorCode.PurchaseCancelledError;
+            error.userCancelled = error.code === errors_1.PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };
@@ -288,8 +287,7 @@ var Purchases = /** @class */ (function () {
             throw new Error("A discount is required");
         }
         return RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp.toString()).catch(function (error) {
-            var purchasesErrorCode = errors_1.PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === errors_1.PurchasesErrorCode.PurchaseCancelledError;
+            error.userCancelled = error.code === errors_1.PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };
@@ -305,8 +303,7 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.purchasePackage = function (aPackage, upgradeInfo) {
         return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo, null).catch(function (error) {
-            var purchasesErrorCode = errors_1.PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === errors_1.PurchasesErrorCode.PurchaseCancelledError;
+            error.userCancelled = error.code === errors_1.PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };
@@ -324,8 +321,7 @@ var Purchases = /** @class */ (function () {
             throw new Error("A discount is required");
         }
         return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp.toString()).catch(function (error) {
-            var purchasesErrorCode = errors_1.PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === errors_1.PurchasesErrorCode.PurchaseCancelledError;
+            error.userCancelled = error.code === errors_1.PurchasesErrorCode.PurchaseCancelledError;
             throw error;
         });
     };
@@ -656,6 +652,12 @@ var Purchases = /** @class */ (function () {
      * @enum {number}
      */
     Purchases.INTRO_ELIGIBILITY_STATUS = INTRO_ELIGIBILITY_STATUS;
+    /**
+     * Enum of all error codes the SDK produces.
+     * @readonly
+     * @enum {string}
+     */
+    Purchases.PurchasesErrorCode = errors_1.PurchasesErrorCode;
     return Purchases;
 }());
 exports.default = Purchases;
