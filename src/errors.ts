@@ -31,5 +31,8 @@ export interface PurchasesError {
     message: string;
     readableErrorCode: string;
     underlyingErrorMessage: string;
-    userCancelled: boolean | null;
+    
+   // @deprecated
+   // use code === Purchases.PurchasesErrorCode.PurchaseCancelledError instead
+   userCancelled: boolean | null;
 }
