@@ -27,7 +27,7 @@ export enum PurchasesErrorCode {
 }
 
 export interface PurchasesError {
-    code: keyof typeof PurchasesErrorCode;
+    code: PurchasesErrorCode;
     message: string;
     readableErrorCode: string;
     underlyingErrorMessage: string;

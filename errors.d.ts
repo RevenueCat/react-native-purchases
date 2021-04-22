@@ -24,7 +24,7 @@ export declare enum PurchasesErrorCode {
     LogOutAnonymousUserError = "22"
 }
 export interface PurchasesError {
-    code: keyof typeof PurchasesErrorCode;
+    code: PurchasesErrorCode;
     message: string;
     readableErrorCode: string;
     underlyingErrorMessage: string;
