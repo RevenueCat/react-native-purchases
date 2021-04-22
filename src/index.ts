@@ -941,7 +941,7 @@ export default class Purchases {
    * @param {boolean} enabled Enable or not debug logs
    */
   public static setDebugLogsEnabled(enabled: boolean): void {
-    return RNPurchases.setDebugLogsEnabled(enabled);
+    RNPurchases.setDebugLogsEnabled(enabled);
   }
 
   /**
