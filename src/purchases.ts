@@ -477,7 +477,6 @@ export default class Purchases {
       return RNPurchases.logOut();
     }
 
-
     /**
      * @deprecated, use logIn instead.
      * This function will alias two appUserIDs together.
