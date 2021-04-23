@@ -322,7 +322,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void canMakePayments(String feature, Callback<Boolean> callback) {
-      CommonKt.canMakePayments(reactContext, feature, callback);
+        CommonKt.canMakePayments(reactContext, feature, callback);
     }
 
     // endregion
