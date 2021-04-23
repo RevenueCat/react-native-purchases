@@ -337,7 +337,7 @@ describe("Purchases", () => {
   })
 
   describe("when calling logIn", () => { 
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     it("throws an error if the appUserID is not a string", () => { 
       expect(() => {
@@ -370,7 +370,7 @@ describe("Purchases", () => {
   });
 
   describe("when calling logOut", () => { 
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
     it("correctly passes the call to the native module and returns the value", async () => {
       NativeModules.RNPurchases.logOut.mockResolvedValueOnce(purchaserInfoStub);
 
