@@ -1,5 +1,6 @@
 package com.revenuecat.purchases.react;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ import com.revenuecat.purchases.common.OnResultList;
 import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.common.SubscriberAttributesKt;
 import com.revenuecat.purchases.common.mappers.PurchaserInfoMapperKt;
+import com.revenuecat.purchases.hybridcommon.CommonKt;
+import com.revenuecat.purchases.interfaces.Callback;
 import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -316,6 +319,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setCreative(String creative) {
         SubscriberAttributesKt.setCreative(creative);
+    }
+
+    @ReactMethod
+    public void canMakePayments(String feature, Callback<Boolean> callback) {
+      CommonKt.canMakePayments(reactContext, feature, callback);
     }
 
     // endregion
