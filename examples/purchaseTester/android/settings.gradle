@@ -13,3 +13,5 @@ if (file(".composite-enable").exists()) {
     String path = new File(".composite-enable").text
     includeBuild (path)
 }
+includeBuild('/Users/andresboedo/repos/purchases-hybrid-common/android/')
+includeBuild('/Users/andresboedo/repos/purchases-android/')

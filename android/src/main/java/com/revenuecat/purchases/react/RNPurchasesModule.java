@@ -17,14 +17,14 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
-import com.revenuecat.purchases.common.CommonKt;
-import com.revenuecat.purchases.common.ErrorContainer;
-import com.revenuecat.purchases.common.OnResult;
-import com.revenuecat.purchases.common.OnResultList;
-import com.revenuecat.purchases.common.PlatformInfo;
-import com.revenuecat.purchases.common.SubscriberAttributesKt;
-import com.revenuecat.purchases.common.mappers.PurchaserInfoMapperKt;
+import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
+import com.revenuecat.purchases.hybridcommon.ErrorContainer;
+import com.revenuecat.purchases.hybridcommon.OnResult;
+import com.revenuecat.purchases.hybridcommon.OnResultList;
+import com.revenuecat.purchases.common.PlatformInfo;
+import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
+import com.revenuecat.purchases.hybridcommon.mappers.PurchaserInfoMapperKt;
 import com.revenuecat.purchases.interfaces.Callback;
 import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
 
@@ -323,7 +323,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void canMakePayments(String feature, Callback<Boolean> callback) {
-      CommonKt.canMakePayments(reactContext, feature, callback);
+        CommonKt.canMakePayments(reactContext, feature, callback);
     }
 
     // endregion
