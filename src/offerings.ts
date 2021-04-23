@@ -312,6 +312,7 @@ export interface PurchasesPaymentDiscount {
     readonly signature: string;
     readonly timestamp: number;
 }
+
 export enum PRORATION_MODE {
     UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY = 0,
 

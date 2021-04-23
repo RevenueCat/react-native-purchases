@@ -279,7 +279,7 @@ var Purchases = /** @class */ (function () {
      * @param {boolean} enabled Enable or not debug logs
      */
     Purchases.setDebugLogsEnabled = function (enabled) {
-        return RNPurchases.setDebugLogsEnabled(enabled);
+        RNPurchases.setDebugLogsEnabled(enabled);
     };
     /**
      * Gets current purchaser info
