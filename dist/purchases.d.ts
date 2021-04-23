@@ -57,6 +57,19 @@ export declare enum BILLING_FEATURE {
      */
     PRICE_CHANGE_CONFIRMATION = 4
 }
+/**
+ * Holds the logIn result
+ */
+export interface LogInResult {
+    /**
+     * The Purchaser Info for the user.
+     */
+    readonly purchaserInfo: PurchaserInfo;
+    /**
+     * True if the call resulted in a new user getting created in the RevenueCat backend.
+     */
+    readonly created: boolean;
+}
 export default class Purchases {
     /**
      * Enum for attribution networks
@@ -122,9 +135,9 @@ export default class Purchases {
     static setup(apiKey: string, appUserID?: string | null, observerMode?: boolean, userDefaultsSuiteName?: string): void;
     /**
      * @deprecated, configure behavior through the RevenueCat dashboard instead.
-     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
      * the new ID with the previous id.
+     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      */
     static setAllowSharingStoreAccount(allowSharing: boolean): void;
     /**
@@ -242,16 +255,11 @@ export default class Purchases {
      */
     static getAppUserID(): string;
     /**
-     * This function will alias two appUserIDs together.
-     * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. Needs to be a string.
-     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
-     */
-    static createAlias(newAppUserID: string): Promise<PurchaserInfo>;
-    /**
      * This function will logIn the current user with an appUserID. Typically this would be used after a log in
      * to identify a user without calling configure.
      * @param {String} appUserID The appUserID that should be linked to the currently user
-     * @returns {Promise<LogInResult>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     * @returns {Promise<LogInResult>} A promise of an object that contains the purchaserInfo after logging in, as well as a boolean indicating
+     * whether the user has just been created for the first time in the RevenueCat backend.
      */
     static logIn(appUserID: string): Promise<LogInResult>;
     /**
@@ -261,14 +269,21 @@ export default class Purchases {
     static logOut(): Promise<PurchaserInfo>;
     /**
      * @deprecated, use logIn instead.
+     * This function will alias two appUserIDs together.
+     * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. Needs to be a string.
+     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     */
+    static createAlias(newAppUserID: string): Promise<PurchaserInfo>;
+    /**
+     * @deprecated, use logIn instead.
      * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
      * @param {String} newAppUserID The appUserID that should be linked to the currently user
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     static identify(newAppUserID: string): Promise<PurchaserInfo>;
     /**
-     * @deprecated, use logOut instead.
-     * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
+    * @deprecated, use logOut instead.
+    * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     static reset(): Promise<PurchaserInfo>;

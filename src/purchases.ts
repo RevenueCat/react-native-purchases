@@ -100,6 +100,20 @@ export enum BILLING_FEATURE {
     PRICE_CHANGE_CONFIRMATION,
 }
 
+/**
+ * Holds the logIn result
+ */
+export interface LogInResult {
+  /**
+   * The Purchaser Info for the user.
+   */
+  readonly purchaserInfo: PurchaserInfo;
+  /**
+   * True if the call resulted in a new user getting created in the RevenueCat backend.
+   */
+  readonly created: boolean;
+}
+
 export default class Purchases {
     /**
      * Enum for attribution networks
@@ -188,9 +202,10 @@ export default class Purchases {
     }
 
     /**
-     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
+     * @deprecated, configure behavior through the RevenueCat dashboard instead.
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
      * the new ID with the previous id.
+     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      */
     public static setAllowSharingStoreAccount(allowSharing: boolean): void {
         RNPurchases.setAllowSharingStoreAccount(allowSharing);
@@ -440,6 +455,31 @@ export default class Purchases {
     }
 
     /**
+     * This function will logIn the current user with an appUserID. Typically this would be used after a log in 
+     * to identify a user without calling configure.
+     * @param {String} appUserID The appUserID that should be linked to the currently user
+     * @returns {Promise<LogInResult>} A promise of an object that contains the purchaserInfo after logging in, as well as a boolean indicating 
+     * whether the user has just been created for the first time in the RevenueCat backend. 
+     */
+    public static logIn(appUserID: string): Promise<LogInResult> {
+      // noinspection SuspiciousTypeOfGuard
+      if (typeof appUserID !== "string") {
+        throw new Error("appUserID needs to be a string");
+      }
+      return RNPurchases.logIn(appUserID);
+    }
+
+    /**
+     * Logs out the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
+     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
+     */
+    public static logOut(): Promise<PurchaserInfo> {
+      return RNPurchases.logOut();
+    }
+
+
+    /**
+     * @deprecated, use logIn instead.
      * This function will alias two appUserIDs together.
      * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. Needs to be a string.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
@@ -453,6 +493,7 @@ export default class Purchases {
     }
 
     /**
+     * @deprecated, use logIn instead.
      * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
      * @param {String} newAppUserID The appUserID that should be linked to the currently user
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
@@ -466,7 +507,8 @@ export default class Purchases {
     }
 
     /**
-     * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
+    * @deprecated, use logOut instead.
+    * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     public static reset(): Promise<PurchaserInfo> {
