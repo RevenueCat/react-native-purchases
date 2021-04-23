@@ -506,8 +506,8 @@ export default class Purchases {
     }
 
     /**
-    * @deprecated, use logOut instead.
-    * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
+     * @deprecated, use logOut instead.
+     * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     public static reset(): Promise<PurchaserInfo> {
