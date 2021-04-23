@@ -35,9 +35,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
                   observerMode:(BOOL)observerMode
-                  userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+                  userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName)
 {
     [RCPurchases configureWithAPIKey:apiKey
                            appUserID:appUserID
@@ -47,7 +45,6 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                platformFlavorVersion:self.platformFlavorVersion];
     RCPurchases.sharedPurchases.delegate = self;
     [RCCommonFunctionality configure];
-    resolve(nil);
 }
 
 RCT_EXPORT_METHOD(setAllowSharingStoreAccount:(BOOL)allowSharingStoreAccount)
@@ -121,10 +118,8 @@ RCT_REMAP_METHOD(restoreTransactions,
     [RCCommonFunctionality restoreTransactionsWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
-RCT_REMAP_METHOD(syncPurchases,
-                 syncPurchasesWithResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality syncPurchasesWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+RCT_EXPORT_METHOD(syncPurchases) {
+    [RCCommonFunctionality syncPurchasesWithCompletionBlock:nil];
 }
 
 RCT_REMAP_METHOD(getAppUserID,

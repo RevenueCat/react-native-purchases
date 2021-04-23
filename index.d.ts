@@ -1,3 +1,5 @@
+import { PURCHASES_ERROR_CODE } from './errors';
+export * from './errors';
 export declare enum ATTRIBUTION_NETWORK {
     APPLE_SEARCH_ADS = 0,
     ADJUST = 1,
@@ -236,7 +238,7 @@ export interface PurchaserInfo {
      * List of all non subscription transactions. Use this to fetch the history of
      * non-subscription purchases
      */
-    readonly nonSubscriptionTransactions: [PurchasesTransaction];
+    readonly nonSubscriptionTransactions: PurchasesTransaction[];
 }
 export interface PurchasesTransaction {
     /**
@@ -462,12 +464,6 @@ export interface PurchasesOfferings {
      */
     readonly current: PurchasesOffering | null;
 }
-export interface PurchasesError {
-    code: number;
-    message: string;
-    readableErrorCode: string;
-    underlyingErrorMessage: string;
-}
 /**
  * Holds the information used when upgrading from another sku. For Android use only.
  */
@@ -553,29 +549,34 @@ export default class Purchases {
      */
     static INTRO_ELIGIBILITY_STATUS: typeof INTRO_ELIGIBILITY_STATUS;
     /**
+     * Enum of all error codes the SDK produces.
+     * @readonly
+     * @enum {string}
+     */
+    static PURCHASES_ERROR_CODE: typeof PURCHASES_ERROR_CODE;
+    /**
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
-     * @param {Boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+     * @param {boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
      * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
-     * @returns {Promise<void>} Returns when setup completes
      */
-    static setup(apiKey: string, appUserID?: string | null, observerMode?: boolean, userDefaultsSuiteName?: string): any;
+    static setup(apiKey: string, appUserID?: string | null, observerMode?: boolean, userDefaultsSuiteName?: string): void;
     /**
-     * @param {Boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
+     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
      * the new ID with the previous id.
      */
     static setAllowSharingStoreAccount(allowSharing: boolean): void;
     /**
-     * @param {Boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
+     * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
     static setFinishTransactions(finishTransactions: boolean): void;
     /**
      * iOS only.
-     * @param {Boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
+     * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
      * More information: http://errors.rev.cat/ask-to-buy
      */
     static setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): void;
@@ -680,9 +681,9 @@ export default class Purchases {
     static restoreTransactions(): Promise<PurchaserInfo>;
     /**
      * Get the appUserID
-     * @returns {Promise<string>} The app user id in a promise
+     * @returns {string} The app user id in a promise
      */
-    static getAppUserID(): Promise<string>;
+    static getAppUserID(): string;
     /**
      * This function will alias two appUserIDs together.
      * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. Needs to be a string.
@@ -702,9 +703,9 @@ export default class Purchases {
     static reset(): Promise<PurchaserInfo>;
     /**
      * Enables/Disables debugs logs
-     * @param {Boolean} enabled Enable or not debug logs
+     * @param {boolean} enabled Enable or not debug logs
      */
-    static setDebugLogsEnabled(enabled: boolean): Promise<void>;
+    static setDebugLogsEnabled(enabled: boolean): void;
     /**
      * Gets current purchaser info
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
@@ -719,13 +720,13 @@ export default class Purchases {
     static syncPurchases(): void;
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
-     * @param {Boolean} enabled Enable or not automatic apple search ads attribution collection
+     * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
      */
     static setAutomaticAppleSearchAdsAttributionCollection(enabled: boolean): void;
     /**
-     * @returns { Promise<boolean> } If the `appUserID` has been generated by RevenueCat or not.
+     * @returns { boolean } If the `appUserID` has been generated by RevenueCat or not.
      */
-    static isAnonymous(): Promise<boolean>;
+    static isAnonymous(): boolean;
     /**
      *  iOS only. Computes whether or not a user is eligible for the introductory pricing period of a given product.
      *  You should use this method to determine whether or not you show the user the normal product price or the
@@ -885,4 +886,3 @@ export default class Purchases {
      */
     static setCreative(creative: string | null): void;
 }
-export {};

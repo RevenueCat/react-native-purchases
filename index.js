@@ -1,8 +1,20 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isUTCDateStringFuture = exports.INTRO_ELIGIBILITY_STATUS = exports.PACKAGE_TYPE = exports.PRORATION_MODE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
 // @ts-ignore
+var errors_1 = require("./errors");
 var react_native_1 = require("react-native");
+__exportStar(require("./errors"), exports);
 var RNPurchases = react_native_1.NativeModules.RNPurchases;
 var eventEmitter = new react_native_1.NativeEventEmitter(RNPurchases);
 var ATTRIBUTION_NETWORK;
@@ -129,21 +141,20 @@ var Purchases = /** @class */ (function () {
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
-     * @param {Boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+     * @param {boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
      * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
-     * @returns {Promise<void>} Returns when setup completes
      */
     Purchases.setup = function (apiKey, appUserID, observerMode, userDefaultsSuiteName) {
         if (observerMode === void 0) { observerMode = false; }
         if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
             throw new Error("appUserID needs to be a string");
         }
-        return RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
+        RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
     };
     /**
-     * @param {Boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
+     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
      * the new ID with the previous id.
      */
@@ -151,14 +162,14 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setAllowSharingStoreAccount(allowSharing);
     };
     /**
-     * @param {Boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
+     * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
     Purchases.setFinishTransactions = function (finishTransactions) {
         RNPurchases.setFinishTransactions(finishTransactions);
     };
     /**
      * iOS only.
-     * @param {Boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
+     * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
      * More information: http://errors.rev.cat/ask-to-buy
      */
     Purchases.setSimulatesAskToBuyInSandbox = function (simulatesAskToBuyInSandbox) {
@@ -258,7 +269,7 @@ var Purchases = /** @class */ (function () {
     Purchases.purchaseProduct = function (productIdentifier, upgradeInfo, type) {
         if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
         return RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type, null).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     };
@@ -276,7 +287,7 @@ var Purchases = /** @class */ (function () {
             throw new Error("A discount is required");
         }
         return RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     };
@@ -292,7 +303,7 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.purchasePackage = function (aPackage, upgradeInfo) {
         return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo, null).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     };
@@ -310,7 +321,7 @@ var Purchases = /** @class */ (function () {
             throw new Error("A discount is required");
         }
         return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === "1";
+            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     };
@@ -323,7 +334,7 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Get the appUserID
-     * @returns {Promise<string>} The app user id in a promise
+     * @returns {string} The app user id in a promise
      */
     Purchases.getAppUserID = function () {
         return RNPurchases.getAppUserID();
@@ -361,10 +372,10 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Enables/Disables debugs logs
-     * @param {Boolean} enabled Enable or not debug logs
+     * @param {boolean} enabled Enable or not debug logs
      */
     Purchases.setDebugLogsEnabled = function (enabled) {
-        return RNPurchases.setDebugLogsEnabled(enabled);
+        RNPurchases.setDebugLogsEnabled(enabled);
     };
     /**
      * Gets current purchaser info
@@ -384,7 +395,7 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
-     * @param {Boolean} enabled Enable or not automatic apple search ads attribution collection
+     * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
      */
     Purchases.setAutomaticAppleSearchAdsAttributionCollection = function (enabled) {
         if (react_native_1.Platform.OS === "ios") {
@@ -392,7 +403,7 @@ var Purchases = /** @class */ (function () {
         }
     };
     /**
-     * @returns { Promise<boolean> } If the `appUserID` has been generated by RevenueCat or not.
+     * @returns { boolean } If the `appUserID` has been generated by RevenueCat or not.
      */
     Purchases.isAnonymous = function () {
         return RNPurchases.isAnonymous();
@@ -641,6 +652,12 @@ var Purchases = /** @class */ (function () {
      * @enum {number}
      */
     Purchases.INTRO_ELIGIBILITY_STATUS = INTRO_ELIGIBILITY_STATUS;
+    /**
+     * Enum of all error codes the SDK produces.
+     * @readonly
+     * @enum {string}
+     */
+    Purchases.PURCHASES_ERROR_CODE = errors_1.PURCHASES_ERROR_CODE;
     return Purchases;
 }());
 exports.default = Purchases;
