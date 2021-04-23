@@ -1,5 +1,5 @@
 // @ts-ignore
-import { PurchasesError, PurchasesErrorCode, PurchasesErrorHelper } from './errors';
+import { PurchasesError, PURCHASES_ERROR_CODE } from './errors';
 import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 
 export * from './errors';
@@ -622,7 +622,7 @@ export default class Purchases {
    * @readonly
    * @enum {string}
    */
-  public static PurchasesErrorCode = PurchasesErrorCode;
+  public static PURCHASES_ERROR_CODE = PURCHASES_ERROR_CODE;
 
   /**
    * Sets up Purchases with your API key and an app user id.
@@ -802,7 +802,7 @@ export default class Purchases {
       type,
       null
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -829,7 +829,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -854,7 +854,7 @@ export default class Purchases {
       upgradeInfo,
       null
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -881,7 +881,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString()
     ).catch((error: any) => {
-      error.userCancelled = error.code === PurchasesErrorCode.PurchaseCancelledError;
+      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }

@@ -1,4 +1,4 @@
-import { PurchasesErrorCode } from './errors';
+import { PURCHASES_ERROR_CODE } from './errors';
 export * from './errors';
 export declare enum ATTRIBUTION_NETWORK {
     APPLE_SEARCH_ADS = 0,
@@ -553,7 +553,7 @@ export default class Purchases {
      * @readonly
      * @enum {string}
      */
-    static PurchasesErrorCode: typeof PurchasesErrorCode;
+    static PURCHASES_ERROR_CODE: typeof PURCHASES_ERROR_CODE;
     /**
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String

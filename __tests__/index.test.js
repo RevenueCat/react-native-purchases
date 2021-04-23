@@ -394,7 +394,7 @@ describe("Purchases", () => {
     });
 
     return expect(Purchases.purchaseProduct("onemonth_freetrial")).rejects.toEqual({
-      code: Purchases.PurchasesErrorCode.PurchaseCancelledError,
+      code: Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
       message: "User cancelled",
       readableErrorCode: "USER_CANCELLED",
       underlyingErrorMessage: "The user cancelled",
@@ -413,7 +413,7 @@ describe("Purchases", () => {
     });
 
     return expect(Purchases.purchasePackage("onemonth_freetrial")).rejects.toEqual({
-      code: Purchases.PurchasesErrorCode.PurchaseCancelledError,
+      code: Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
       message: "User cancelled",
       readableErrorCode: "USER_CANCELLED",
       underlyingErrorMessage: "The user cancelled",
