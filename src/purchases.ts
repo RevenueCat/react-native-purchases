@@ -1,5 +1,5 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
-import { PurchasesErrorCode, PurchasesErrorHelper } from "./errors";
+import { PurchasesError, PURCHASES_ERROR_CODE } from "./errors";
 import { PurchaserInfo } from "./purchaserInfo";
 import {
     PRORATION_MODE,
@@ -290,9 +290,8 @@ export default class Purchases {
             upgradeInfo,
             type,
             null
-        ).catch((error: any) => {
-            const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     }
@@ -318,9 +317,8 @@ export default class Purchases {
             null,
             null,
             discount.timestamp.toString()
-        ).catch((error: any) => {
-            const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     }
@@ -344,9 +342,8 @@ export default class Purchases {
             aPackage.offeringIdentifier,
             upgradeInfo,
             null
-        ).catch((error: any) => {
-            const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     }
@@ -372,9 +369,8 @@ export default class Purchases {
             aPackage.offeringIdentifier,
             null,
             discount.timestamp.toString()
-        ).catch((error: any) => {
-            const purchasesErrorCode = PurchasesErrorHelper.getErrorCode(error);
-            error.userCancelled = purchasesErrorCode === PurchasesErrorCode.PurchaseCancelledError;
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
     }
