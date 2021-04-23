@@ -1,204 +1,208 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isUTCDateStringFuture = exports.INTRO_ELIGIBILITY_STATUS = exports.PACKAGE_TYPE = exports.PRORATION_MODE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
-// @ts-ignore
-var errors_1 = require("./errors");
-var react_native_1 = require("react-native");
-__exportStar(require("./errors"), exports);
-var RNPurchases = react_native_1.NativeModules.RNPurchases;
-var eventEmitter = new react_native_1.NativeEventEmitter(RNPurchases);
-var ATTRIBUTION_NETWORK;
-(function (ATTRIBUTION_NETWORK) {
-    ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["APPLE_SEARCH_ADS"] = 0] = "APPLE_SEARCH_ADS";
-    ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["ADJUST"] = 1] = "ADJUST";
-    ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["APPSFLYER"] = 2] = "APPSFLYER";
-    ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["BRANCH"] = 3] = "BRANCH";
-    ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["TENJIN"] = 4] = "TENJIN";
-    ATTRIBUTION_NETWORK[ATTRIBUTION_NETWORK["FACEBOOK"] = 5] = "FACEBOOK";
-})(ATTRIBUTION_NETWORK = exports.ATTRIBUTION_NETWORK || (exports.ATTRIBUTION_NETWORK = {}));
-var PURCHASE_TYPE;
-(function (PURCHASE_TYPE) {
+import { NativeEventEmitter, NativeModules } from "react-native";
+import { PurchasesError, PURCHASES_ERROR_CODE } from "./errors";
+import { PurchaserInfo } from "./purchaserInfo";
+import {
+    PRORATION_MODE,
+    PACKAGE_TYPE,
+    INTRO_ELIGIBILITY_STATUS,
+    PurchasesOfferings,
+    PurchasesProduct,
+    UpgradeInfo,
+    PurchasesPaymentDiscount,
+    PurchasesPackage,
+    IntroEligibility,
+    PurchasesDiscount
+} from "./offerings";
+
+import { Platform } from "react-native";
+
+const { RNPurchases } = NativeModules;
+const eventEmitter = new NativeEventEmitter(RNPurchases);
+
+/**
+ * Listener used on updated purchaser info
+ * @callback PurchaserInfoUpdateListener
+ * @param {Object} purchaserInfo Object containing info for the purchaser
+ */
+export type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
+export type ShouldPurchasePromoProductListener = (deferredPurchase: () => MakePurchasePromise) => void;
+type MakePurchasePromise = Promise<{ productIdentifier: string; purchaserInfo: PurchaserInfo; }>;
+
+let purchaserInfoUpdateListeners: PurchaserInfoUpdateListener[] = [];
+let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
+
+eventEmitter.addListener(
+    "Purchases-PurchaserInfoUpdated",
+    (purchaserInfo: PurchaserInfo) => {
+        purchaserInfoUpdateListeners.forEach(listener => listener(purchaserInfo));
+    }
+);
+
+eventEmitter.addListener(
+    "Purchases-ShouldPurchasePromoProduct",
+    ({ callbackID }: { callbackID: number }) => {
+        shouldPurchasePromoProductListeners.forEach(listener =>
+            listener(() => RNPurchases.makeDeferredPurchase(callbackID))
+        );
+    }
+);
+
+export enum ATTRIBUTION_NETWORK {
+    APPLE_SEARCH_ADS = 0,
+    ADJUST = 1,
+    APPSFLYER = 2,
+    BRANCH = 3,
+    TENJIN = 4,
+    FACEBOOK = 5,
+}
+
+export enum PURCHASE_TYPE {
     /**
      * A type of SKU for in-app products.
      */
-    PURCHASE_TYPE["INAPP"] = "inapp";
+    INAPP = "inapp",
+
     /**
      * A type of SKU for subscriptions.
      */
-    PURCHASE_TYPE["SUBS"] = "subs";
-})(PURCHASE_TYPE = exports.PURCHASE_TYPE || (exports.PURCHASE_TYPE = {}));
-var PRORATION_MODE;
-(function (PRORATION_MODE) {
-    PRORATION_MODE[PRORATION_MODE["UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY"] = 0] = "UNKNOWN_SUBSCRIPTION_UPGRADE_DOWNGRADE_POLICY";
+    SUBS = "subs",
+}
+
+export default class Purchases {
     /**
-     * Replacement takes effect immediately, and the remaining time will be
-     * prorated and credited to the user. This is the current default behavior.
+     * Enum for attribution networks
+     * @readonly
+     * @enum {number}
      */
-    PRORATION_MODE[PRORATION_MODE["IMMEDIATE_WITH_TIME_PRORATION"] = 1] = "IMMEDIATE_WITH_TIME_PRORATION";
+    public static ATTRIBUTION_NETWORK = ATTRIBUTION_NETWORK;
+
     /**
-     * Replacement takes effect immediately, and the billing cycle remains the
-     * same. The price for the remaining period will be charged. This option is
-     * only available for subscription upgrade.
+     * @deprecated use ATTRIBUTION_NETWORK instead
+     *
+     * Enum for attribution networks
+     * @readonly
+     * @enum {number}
      */
-    PRORATION_MODE[PRORATION_MODE["IMMEDIATE_AND_CHARGE_PRORATED_PRICE"] = 2] = "IMMEDIATE_AND_CHARGE_PRORATED_PRICE";
+    public static ATTRIBUTION_NETWORKS = ATTRIBUTION_NETWORK;
+
     /**
-     * Replacement takes effect immediately, and the new price will be charged on
-     * next recurrence time. The billing cycle stays the same.
+     * Supported SKU types.
+     * @readonly
+     * @enum {string}
      */
-    PRORATION_MODE[PRORATION_MODE["IMMEDIATE_WITHOUT_PRORATION"] = 3] = "IMMEDIATE_WITHOUT_PRORATION";
+    public static PURCHASE_TYPE = PURCHASE_TYPE;
+
     /**
-     * Replacement takes effect when the old plan expires, and the new price will
-     * be charged at the same time.
+     * Replace SKU's ProrationMode.
+     * @readonly
+     * @enum {number}
      */
-    PRORATION_MODE[PRORATION_MODE["DEFERRED"] = 4] = "DEFERRED";
-})(PRORATION_MODE = exports.PRORATION_MODE || (exports.PRORATION_MODE = {}));
-var PACKAGE_TYPE;
-(function (PACKAGE_TYPE) {
+    public static PRORATION_MODE = PRORATION_MODE;
+
     /**
-     * A package that was defined with a custom identifier.
+     * Enumeration of all possible Package types.
+     * @readonly
+     * @enum {string}
      */
-    PACKAGE_TYPE["UNKNOWN"] = "UNKNOWN";
+    public static PACKAGE_TYPE = PACKAGE_TYPE;
+
     /**
-     * A package that was defined with a custom identifier.
+     * Enum of different possible states for intro price eligibility status.
+     * @readonly
+     * @enum {number}
      */
-    PACKAGE_TYPE["CUSTOM"] = "CUSTOM";
+    public static INTRO_ELIGIBILITY_STATUS = INTRO_ELIGIBILITY_STATUS;
+
     /**
-     * A package configured with the predefined lifetime identifier.
+     * Enum of all error codes the SDK produces. 
+     * @readonly
+     * @enum {string}
      */
-    PACKAGE_TYPE["LIFETIME"] = "LIFETIME";
-    /**
-     * A package configured with the predefined annual identifier.
-     */
-    PACKAGE_TYPE["ANNUAL"] = "ANNUAL";
-    /**
-     * A package configured with the predefined six month identifier.
-     */
-    PACKAGE_TYPE["SIX_MONTH"] = "SIX_MONTH";
-    /**
-     * A package configured with the predefined three month identifier.
-     */
-    PACKAGE_TYPE["THREE_MONTH"] = "THREE_MONTH";
-    /**
-     * A package configured with the predefined two month identifier.
-     */
-    PACKAGE_TYPE["TWO_MONTH"] = "TWO_MONTH";
-    /**
-     * A package configured with the predefined monthly identifier.
-     */
-    PACKAGE_TYPE["MONTHLY"] = "MONTHLY";
-    /**
-     * A package configured with the predefined weekly identifier.
-     */
-    PACKAGE_TYPE["WEEKLY"] = "WEEKLY";
-})(PACKAGE_TYPE = exports.PACKAGE_TYPE || (exports.PACKAGE_TYPE = {}));
-var INTRO_ELIGIBILITY_STATUS;
-(function (INTRO_ELIGIBILITY_STATUS) {
-    /**
-     * RevenueCat doesn't have enough information to determine eligibility.
-     */
-    INTRO_ELIGIBILITY_STATUS[INTRO_ELIGIBILITY_STATUS["INTRO_ELIGIBILITY_STATUS_UNKNOWN"] = 0] = "INTRO_ELIGIBILITY_STATUS_UNKNOWN";
-    /**
-     * The user is not eligible for a free trial or intro pricing for this product.
-     */
-    INTRO_ELIGIBILITY_STATUS[INTRO_ELIGIBILITY_STATUS["INTRO_ELIGIBILITY_STATUS_INELIGIBLE"] = 1] = "INTRO_ELIGIBILITY_STATUS_INELIGIBLE";
-    /**
-     * The user is eligible for a free trial or intro pricing for this product.
-     */
-    INTRO_ELIGIBILITY_STATUS[INTRO_ELIGIBILITY_STATUS["INTRO_ELIGIBILITY_STATUS_ELIGIBLE"] = 2] = "INTRO_ELIGIBILITY_STATUS_ELIGIBLE";
-})(INTRO_ELIGIBILITY_STATUS = exports.INTRO_ELIGIBILITY_STATUS || (exports.INTRO_ELIGIBILITY_STATUS = {}));
-var purchaserInfoUpdateListeners = [];
-var shouldPurchasePromoProductListeners = [];
-exports.isUTCDateStringFuture = function (dateString) {
-    var date = new Date(dateString);
-    var dateUtcMillis = date.valueOf();
-    var now = new Date();
-    var nowUtcMillis = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-    return nowUtcMillis < dateUtcMillis;
-};
-eventEmitter.addListener("Purchases-PurchaserInfoUpdated", function (purchaserInfo) {
-    purchaserInfoUpdateListeners.forEach(function (listener) { return listener(purchaserInfo); });
-});
-eventEmitter.addListener("Purchases-ShouldPurchasePromoProduct", function (_a) {
-    var callbackID = _a.callbackID;
-    shouldPurchasePromoProductListeners.forEach(function (listener) {
-        return listener(function () { return RNPurchases.makeDeferredPurchase(callbackID); });
-    });
-});
-var Purchases = /** @class */ (function () {
-    function Purchases() {
-    }
+    public static PURCHASES_ERROR_CODE = PURCHASES_ERROR_CODE;
+
     /**
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
      * @param {boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
-     * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
+     * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android. 
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
      */
-    Purchases.setup = function (apiKey, appUserID, observerMode, userDefaultsSuiteName) {
-        if (observerMode === void 0) { observerMode = false; }
+    public static setup(
+        apiKey: string,
+        appUserID?: string | null,
+        observerMode: boolean = false,
+        userDefaultsSuiteName?: string
+    ): void {
         if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
             throw new Error("appUserID needs to be a string");
         }
-        RNPurchases.setupPurchases(apiKey, appUserID, observerMode, userDefaultsSuiteName);
-    };
+        RNPurchases.setupPurchases(
+            apiKey,
+            appUserID,
+            observerMode,
+            userDefaultsSuiteName
+        );
+    }
+
     /**
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      * If an user tries to purchase a product that is active on the current app store account, we will treat it as a restore and alias
      * the new ID with the previous id.
      */
-    Purchases.setAllowSharingStoreAccount = function (allowSharing) {
+    public static setAllowSharingStoreAccount(allowSharing: boolean): void {
         RNPurchases.setAllowSharingStoreAccount(allowSharing);
-    };
+    }
+
     /**
      * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
-    Purchases.setFinishTransactions = function (finishTransactions) {
+    public static setFinishTransactions(finishTransactions: boolean): void {
         RNPurchases.setFinishTransactions(finishTransactions);
-    };
+    }
+
     /**
      * iOS only.
-     * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
+     * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow. 
      * More information: http://errors.rev.cat/ask-to-buy
      */
-    Purchases.setSimulatesAskToBuyInSandbox = function (simulatesAskToBuyInSandbox) {
-        if (react_native_1.Platform.OS === "ios") {
+    public static setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): void {
+        if (Platform.OS === "ios") {
             RNPurchases.setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox);
         }
-    };
+    }
+
     /**
      * Sets a function to be called on updated purchaser info
      * @param {PurchaserInfoUpdateListener} purchaserInfoUpdateListener PurchaserInfo update listener
      */
-    Purchases.addPurchaserInfoUpdateListener = function (purchaserInfoUpdateListener) {
+    public static addPurchaserInfoUpdateListener(
+        purchaserInfoUpdateListener: PurchaserInfoUpdateListener
+    ): void {
         if (typeof purchaserInfoUpdateListener !== "function") {
             throw new Error("addPurchaserInfoUpdateListener needs a function");
         }
         purchaserInfoUpdateListeners.push(purchaserInfoUpdateListener);
-    };
+    }
+
     /**
      * Removes a given PurchaserInfoUpdateListener
      * @param {PurchaserInfoUpdateListener} listenerToRemove PurchaserInfoUpdateListener reference of the listener to remove
      * @returns {boolean} True if listener was removed, false otherwise
      */
-    Purchases.removePurchaserInfoUpdateListener = function (listenerToRemove) {
+    public static removePurchaserInfoUpdateListener(
+        listenerToRemove: PurchaserInfoUpdateListener
+    ): boolean {
         if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
-            purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(function (listener) { return listenerToRemove !== listener; });
+            purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(
+                listener => listenerToRemove !== listener
+            );
             return true;
         }
         return false;
-    };
+    }
+
     /**
      * Sets a function to be called on purchases initiated on the Apple App Store. This is only used in iOS.
      * @param {ShouldPurchasePromoProductListener} shouldPurchasePromoProductListener Called when a user initiates a
@@ -208,42 +212,56 @@ var Purchases = /** @class */ (function () {
      * If the purchase should never be made, you don't need to ever call the deferredPurchase and the app will not
      * proceed with promotional purchases.
      */
-    Purchases.addShouldPurchasePromoProductListener = function (shouldPurchasePromoProductListener) {
+    public static addShouldPurchasePromoProductListener(
+        shouldPurchasePromoProductListener: ShouldPurchasePromoProductListener
+    ): void {
         if (typeof shouldPurchasePromoProductListener !== "function") {
             throw new Error("addShouldPurchasePromoProductListener needs a function");
         }
         shouldPurchasePromoProductListeners.push(shouldPurchasePromoProductListener);
-    };
+    }
+
     /**
      * Removes a given ShouldPurchasePromoProductListener
      * @param {ShouldPurchasePromoProductListener} listenerToRemove ShouldPurchasePromoProductListener reference of the listener to remove
      * @returns {boolean} True if listener was removed, false otherwise
      */
-    Purchases.removeShouldPurchasePromoProductListener = function (listenerToRemove) {
+    public static removeShouldPurchasePromoProductListener(
+        listenerToRemove: ShouldPurchasePromoProductListener
+    ): boolean {
         if (shouldPurchasePromoProductListeners.includes(listenerToRemove)) {
-            shouldPurchasePromoProductListeners = shouldPurchasePromoProductListeners.filter(function (listener) { return listenerToRemove !== listener; });
+            shouldPurchasePromoProductListeners = shouldPurchasePromoProductListeners.filter(
+                listener => listenerToRemove !== listener
+            );
             return true;
         }
         return false;
-    };
+    }
+
     /**
      * @deprecated, use set<NetworkId> methods instead.
-     *
+     * 
      * Add a dict of attribution information
      * @param {Dict} data Attribution data from AppsFlyer, Adjust, or Branch
      * @param {ATTRIBUTION_NETWORKS} network Which network, see Purchases.ATTRIBUTION_NETWORKS
      * @param {String?} networkUserId An optional unique id for identifying the user. Needs to be a string.
      */
-    Purchases.addAttributionData = function (data, network, networkUserId) {
+    public static addAttributionData(
+        data: { [key: string]: any },
+        network: ATTRIBUTION_NETWORK,
+        networkUserId?: string
+    ): void {
         RNPurchases.addAttributionData(data, network, networkUserId);
-    };
+    }
+
     /**
      * Gets the map of entitlements -> offerings -> products
      * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure
      */
-    Purchases.getOfferings = function () {
+    public static getOfferings(): Promise<PurchasesOfferings> {
         return RNPurchases.getOfferings();
-    };
+    }
+
     /**
      * Fetch the product info
      * @param {String[]} productIdentifiers Array of product identifiers
@@ -251,10 +269,13 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<PurchasesProduct[]>} A promise containing an array of products. The promise will be rejected if the products are not properly
      * configured in RevenueCat or if there is another error retrieving them. Rejections return an error code, and a userInfo object with more information.
      */
-    Purchases.getProducts = function (productIdentifiers, type) {
-        if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
+    public static getProducts(
+        productIdentifiers: string[],
+        type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
+    ): Promise<PurchasesProduct[]> {
         return RNPurchases.getProductInfo(productIdentifiers, type);
-    };
+    }
+
     /**
      * Make a purchase
      *
@@ -266,13 +287,22 @@ var Purchases = /** @class */ (function () {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    Purchases.purchaseProduct = function (productIdentifier, upgradeInfo, type) {
-        if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
-        return RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type, null).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+    public static purchaseProduct(
+        productIdentifier: string,
+        upgradeInfo?: UpgradeInfo | null,
+        type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
+    ): MakePurchasePromise {
+        return RNPurchases.purchaseProduct(
+            productIdentifier,
+            upgradeInfo,
+            type,
+            null
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
-    };
+    }
+
     /**
      * iOS only. Purchase a product applying a given discount.
      *
@@ -282,15 +312,24 @@ var Purchases = /** @class */ (function () {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    Purchases.purchaseDiscountedProduct = function (product, discount) {
+    public static purchaseDiscountedProduct(
+        product: PurchasesProduct,
+        discount: PurchasesPaymentDiscount
+    ): MakePurchasePromise {
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        return RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        return RNPurchases.purchaseProduct(
+            product.identifier,
+            null,
+            null,
+            discount.timestamp.toString()
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
-    };
+    }
+
     /**
      * Make a purchase
      *
@@ -301,12 +340,21 @@ var Purchases = /** @class */ (function () {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    Purchases.purchasePackage = function (aPackage, upgradeInfo) {
-        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo, null).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+    public static purchasePackage(
+        aPackage: PurchasesPackage,
+        upgradeInfo?: UpgradeInfo | null
+    ): MakePurchasePromise {
+        return RNPurchases.purchasePackage(
+            aPackage.identifier,
+            aPackage.offeringIdentifier,
+            upgradeInfo,
+            null
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
-    };
+    }
+
     /**
      * iOS only. Purchase a package applying a given discount.
      *
@@ -316,98 +364,119 @@ var Purchases = /** @class */ (function () {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    Purchases.purchaseDiscountedPackage = function (aPackage, discount) {
+    public static purchaseDiscountedPackage(
+        aPackage: PurchasesPackage,
+        discount: PurchasesPaymentDiscount
+    ): MakePurchasePromise {
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        return RNPurchases.purchasePackage(
+            aPackage.identifier,
+            aPackage.offeringIdentifier,
+            null,
+            discount.timestamp.toString()
+        ).catch((error: PurchasesError) => {
+            error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
             throw error;
         });
-    };
+    }
+
     /**
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    Purchases.restoreTransactions = function () {
+    public static restoreTransactions(): Promise<PurchaserInfo> {
         return RNPurchases.restoreTransactions();
-    };
+    }
+
     /**
      * Get the appUserID
      * @returns {string} The app user id in a promise
      */
-    Purchases.getAppUserID = function () {
+    public static getAppUserID(): string {
         return RNPurchases.getAppUserID();
-    };
+    }
+
     /**
      * This function will alias two appUserIDs together.
      * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. Needs to be a string.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    Purchases.createAlias = function (newAppUserID) {
+    public static createAlias(newAppUserID: string): Promise<PurchaserInfo> {
         // noinspection SuspiciousTypeOfGuard
         if (typeof newAppUserID !== "string") {
             throw new Error("newAppUserID needs to be a string");
         }
         return RNPurchases.createAlias(newAppUserID);
-    };
+    }
+
     /**
      * This function will identify the current user with an appUserID. Typically this would be used after a logout to identify a new user without calling configure
      * @param {String} newAppUserID The appUserID that should be linked to the currently user
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    Purchases.identify = function (newAppUserID) {
+    public static identify(newAppUserID: string): Promise<PurchaserInfo> {
         // noinspection SuspiciousTypeOfGuard
         if (typeof newAppUserID !== "string") {
             throw new Error("newAppUserID needs to be a string");
         }
         return RNPurchases.identify(newAppUserID);
-    };
+    }
+
     /**
      * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    Purchases.reset = function () {
+    public static reset(): Promise<PurchaserInfo> {
         return RNPurchases.reset();
-    };
+    }
+
     /**
      * Enables/Disables debugs logs
      * @param {boolean} enabled Enable or not debug logs
      */
-    Purchases.setDebugLogsEnabled = function (enabled) {
+    public static setDebugLogsEnabled(enabled: boolean): void {
         RNPurchases.setDebugLogsEnabled(enabled);
-    };
+    }
+
     /**
      * Gets current purchaser info
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    Purchases.getPurchaserInfo = function () {
+    public static getPurchaserInfo(): Promise<PurchaserInfo> {
         return RNPurchases.getPurchaserInfo();
-    };
+    }
+
     /**
      * This method will send all the purchases to the RevenueCat backend. Call this when using your own implementation
      * for subscriptions anytime a sync is needed, like after a successful purchase.
      *
      * @warning This function should only be called if you're not calling makePurchase.
      */
-    Purchases.syncPurchases = function () {
+    public static syncPurchases(): void {
         RNPurchases.syncPurchases();
-    };
+    }
+
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
      * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
      */
-    Purchases.setAutomaticAppleSearchAdsAttributionCollection = function (enabled) {
-        if (react_native_1.Platform.OS === "ios") {
+    public static setAutomaticAppleSearchAdsAttributionCollection(
+        enabled: boolean
+    ): void {
+        if (Platform.OS === "ios") {
             RNPurchases.setAutomaticAppleSearchAdsAttributionCollection(enabled);
         }
-    };
+    }
+
     /**
      * @returns { boolean } If the `appUserID` has been generated by RevenueCat or not.
      */
-    Purchases.isAnonymous = function () {
+    public static isAnonymous(): boolean {
         return RNPurchases.isAnonymous();
-    };
+    }
+
     /**
      *  iOS only. Computes whether or not a user is eligible for the introductory pricing period of a given product.
      *  You should use this method to determine whether or not you show the user the normal product price or the
@@ -422,9 +491,14 @@ var Purchases = /** @class */ (function () {
      *  @param productIdentifiers Array of product identifiers for which you want to compute eligibility
      *  @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId
      */
-    Purchases.checkTrialOrIntroductoryPriceEligibility = function (productIdentifiers) {
-        return RNPurchases.checkTrialOrIntroductoryPriceEligibility(productIdentifiers);
-    };
+    public static checkTrialOrIntroductoryPriceEligibility(
+        productIdentifiers: string[]
+    ): Promise<{ [productId: string]: IntroEligibility }> {
+        return RNPurchases.checkTrialOrIntroductoryPriceEligibility(
+            productIdentifiers
+        );
+    }
+
     /**
      *  iOS only. Use this function to retrieve the `PurchasesPaymentDiscount` for a given `PurchasesPackage`.
      *
@@ -432,15 +506,23 @@ var Purchases = /** @class */ (function () {
      *  @param discount The `PurchasesDiscount` to apply to the product.
      *  @returns { Promise<PurchasesPaymentDiscount> } Returns when the `PurchasesPaymentDiscount` is returned. Null is returned for Android and incompatible iOS versions.
      */
-    Purchases.getPaymentDiscount = function (product, discount) {
-        if (react_native_1.Platform.OS === "android") {
+    public static getPaymentDiscount(
+        product: PurchasesProduct,
+        discount: PurchasesDiscount
+    ): Promise<PurchasesPaymentDiscount | undefined> {
+        if (Platform.OS === "android") {
             return Promise.resolve(undefined);
         }
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        return RNPurchases.getPaymentDiscount(product.identifier, discount.identifier);
-    };
+        return RNPurchases.getPaymentDiscount(
+            product.identifier,
+            discount.identifier
+        );
+    }
+
+
     /**
      * Invalidates the cache for purchaser information.
      *
@@ -451,18 +533,20 @@ var Purchases = /** @class */ (function () {
      * This is useful for cases where purchaser information might have been updated outside of the app, like if a
      * promotional subscription is granted through the RevenueCat dashboard.
      */
-    Purchases.invalidatePurchaserInfoCache = function () {
+    public static invalidatePurchaserInfoCache(): void {
         RNPurchases.invalidatePurchaserInfoCache();
-    };
+    }
+
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
-     * to configure and use offer codes
+     * to configure and use offer codes 
      */
-    Purchases.presentCodeRedemptionSheet = function () {
-        if (react_native_1.Platform.OS === "ios") {
+    public static presentCodeRedemptionSheet(): void {
+        if (Platform.OS === "ios") {
             RNPurchases.presentCodeRedemptionSheet();
         }
-    };
+    }
+
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.
      * Since attributes are writable using a public key they should not be used for
@@ -473,191 +557,163 @@ var Purchases = /** @class */ (function () {
      *
      * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
      */
-    Purchases.setAttributes = function (attributes) {
+    public static setAttributes(attributes: { [key: string]: string | null }): void {
         RNPurchases.setAttributes(attributes);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the email address for the user
      *
      * @param email Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setEmail = function (email) {
+    public static setEmail(email: string | null): void {
         RNPurchases.setEmail(email);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the phone number for the user
      *
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setPhoneNumber = function (phoneNumber) {
+    public static setPhoneNumber(phoneNumber: string | null): void {
         RNPurchases.setPhoneNumber(phoneNumber);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the display name for the user
      *
      * @param displayName Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setDisplayName = function (displayName) {
+    public static setDisplayName(displayName: string | null): void {
         RNPurchases.setDisplayName(displayName);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the push token for the user
      *
      * @param pushToken null will delete the subscriber attribute.
      */
-    Purchases.setPushToken = function (pushToken) {
+    public static setPushToken(pushToken: string | null): void {
         RNPurchases.setPushToken(pushToken);
-    };
+    }
+
     /**
      * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
      */
-    Purchases.setProxyURL = function (url) {
+    public static setProxyURL(url: string): void {
         RNPurchases.setProxyURLString(url);
-    };
+    }
+
     /**
-     * Automatically collect subscriber attributes associated with the device identifiers.
+     * Automatically collect subscriber attributes associated with the device identifiers. 
      * $idfa, $idfv, $ip on iOS
      * $gpsAdId, $androidId, $ip on Android
      */
-    Purchases.collectDeviceIdentifiers = function () {
+    public static collectDeviceIdentifiers(): void {
         RNPurchases.collectDeviceIdentifiers();
-    };
+    }
+
     /**
      * Subscriber attribute associated with the Adjust Id for the user
      * Required for the RevenueCat Adjust integration
      *
      * @param adjustID Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setAdjustID = function (adjustID) {
+    public static setAdjustID(adjustID: string | null): void {
         RNPurchases.setAdjustID(adjustID);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the AppsFlyer Id for the user
      * Required for the RevenueCat AppsFlyer integration
      * @param appsflyerID Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setAppsflyerID = function (appsflyerID) {
+    public static setAppsflyerID(appsflyerID: string | null): void {
         RNPurchases.setAppsflyerID(appsflyerID);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the Facebook SDK Anonymous Id for the user
      * Recommended for the RevenueCat Facebook integration
      *
      * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setFBAnonymousID = function (fbAnonymousID) {
+    public static setFBAnonymousID(fbAnonymousID: string | null): void {
         RNPurchases.setFBAnonymousID(fbAnonymousID);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the mParticle Id for the user
      * Recommended for the RevenueCat mParticle integration
      *
      * @param mparticleID Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setMparticleID = function (mparticleID) {
+    public static setMparticleID(mparticleID: string | null): void {
         RNPurchases.setMparticleID(mparticleID);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the OneSignal Player Id for the user
      * Required for the RevenueCat OneSignal integration
      *
      * @param onesignalID Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setOnesignalID = function (onesignalID) {
+    public static setOnesignalID(onesignalID: string | null): void {
         RNPurchases.setOnesignalID(onesignalID);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the install media source for the user
      *
      * @param mediaSource Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setMediaSource = function (mediaSource) {
+    public static setMediaSource(mediaSource: string | null): void {
         RNPurchases.setMediaSource(mediaSource);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the install campaign for the user
      *
      * @param campaign Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setCampaign = function (campaign) {
+    public static setCampaign(campaign: string | null): void {
         RNPurchases.setCampaign(campaign);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the install ad group for the user
      *
      * @param adGroup Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setAdGroup = function (adGroup) {
+    public static setAdGroup(adGroup: string | null): void {
         RNPurchases.setAdGroup(adGroup);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the install ad for the user
      *
      * @param ad Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setAd = function (ad) {
+    public static setAd(ad: string | null): void {
         RNPurchases.setAd(ad);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the install keyword for the user
      *
      * @param keyword Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setKeyword = function (keyword) {
+    public static setKeyword(keyword: string | null): void {
         RNPurchases.setKeyword(keyword);
-    };
+    }
+
     /**
      * Subscriber attribute associated with the install ad creative for the user
      *
      * @param creative Empty String or null will delete the subscriber attribute.
      */
-    Purchases.setCreative = function (creative) {
+    public static setCreative(creative: string | null): void {
         RNPurchases.setCreative(creative);
-    };
-    /**
-     * Enum for attribution networks
-     * @readonly
-     * @enum {number}
-     */
-    Purchases.ATTRIBUTION_NETWORK = ATTRIBUTION_NETWORK;
-    /**
-     * @deprecated use ATTRIBUTION_NETWORK instead
-     *
-     * Enum for attribution networks
-     * @readonly
-     * @enum {number}
-     */
-    Purchases.ATTRIBUTION_NETWORKS = ATTRIBUTION_NETWORK;
-    /**
-     * Supported SKU types.
-     * @readonly
-     * @enum {string}
-     */
-    Purchases.PURCHASE_TYPE = PURCHASE_TYPE;
-    /**
-     * Replace SKU's ProrationMode.
-     * @readonly
-     * @enum {number}
-     */
-    Purchases.PRORATION_MODE = PRORATION_MODE;
-    /**
-     * Enumeration of all possible Package types.
-     * @readonly
-     * @enum {string}
-     */
-    Purchases.PACKAGE_TYPE = PACKAGE_TYPE;
-    /**
-     * Enum of different possible states for intro price eligibility status.
-     * @readonly
-     * @enum {number}
-     */
-    Purchases.INTRO_ELIGIBILITY_STATUS = INTRO_ELIGIBILITY_STATUS;
-    /**
-     * Enum of all error codes the SDK produces.
-     * @readonly
-     * @enum {string}
-     */
-    Purchases.PURCHASES_ERROR_CODE = errors_1.PURCHASES_ERROR_CODE;
-    return Purchases;
-}());
-exports.default = Purchases;
+    }
+
+}

@@ -7,17 +7,9 @@ describe("Purchases", () => {
     jest.resetAllMocks();
   });
 
-  it("isUTCDateStringFuture returns true when a date is in the future", () => {
-    const {isUTCDateStringFuture} = require("../index");
-    const dateAhead = new Date();
-    dateAhead.setDate(dateAhead.getDate() + 2);
-
-    expect(isUTCDateStringFuture(dateAhead.toUTCString())).toEqual(true);
-  });
-
   it("addPurchaserInfoUpdateListener correctly saves listeners", () => {
     const listener = jest.fn();
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.addPurchaserInfoUpdateListener(listener);
 
@@ -27,7 +19,7 @@ describe("Purchases", () => {
   });
 
   it("removePurchaserInfoUpdateListener correctly removes a listener", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
     const listener = jest.fn();
     Purchases.addPurchaserInfoUpdateListener(listener);
     Purchases.removePurchaserInfoUpdateListener(listener);
@@ -44,7 +36,7 @@ describe("Purchases", () => {
 
   it("addShouldPurchasePromoProductListener correctly saves listeners", () => {
     const listener = jest.fn();
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
@@ -62,7 +54,7 @@ describe("Purchases", () => {
       this.deferredPurchase = deferredPurchase;
     };
 
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
@@ -85,7 +77,7 @@ describe("Purchases", () => {
   });
 
   it("removeShouldPurchasePromoProductListener correctly removes a listener", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
     const listener = jest.fn();
     Purchases.addShouldPurchasePromoProductListener(listener);
     Purchases.removeShouldPurchasePromoProductListener(listener);
@@ -102,7 +94,7 @@ describe("Purchases", () => {
   });
 
   it("calling setup with something other than string throws exception", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     expect(() => {
       Purchases.setup("api_key", 123)
@@ -121,7 +113,7 @@ describe("Purchases", () => {
   })
 
   it("allowing sharing store account works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.setAllowSharingStoreAccount(true)
 
@@ -130,7 +122,7 @@ describe("Purchases", () => {
   })
 
   it("disallowing sharing store account works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.setAllowSharingStoreAccount(false)
 
@@ -139,7 +131,7 @@ describe("Purchases", () => {
   })
 
   it("adding attribution data works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.addAttributionData({}, Purchases.ATTRIBUTION_NETWORK.APPSFLYER, "cesar")
 
@@ -148,7 +140,7 @@ describe("Purchases", () => {
   })
 
   it("get offerings works", async () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.getOfferings.mockResolvedValueOnce(offeringsStub);
 
@@ -159,7 +151,7 @@ describe("Purchases", () => {
   })
 
   it("getProducts works and gets subs by default", async () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce(productsStub);
 
@@ -180,7 +172,7 @@ describe("Purchases", () => {
 
 
   it("purchaseProduct works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
       purchasedProductIdentifier: "123",
@@ -209,7 +201,7 @@ describe("Purchases", () => {
   });
 
   it("purchasePackage works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
@@ -274,7 +266,7 @@ describe("Purchases", () => {
   });
 
   it("restoreTransactions works", async () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.restoreTransactions.mockResolvedValueOnce(purchaserInfoStub);
 
@@ -285,7 +277,7 @@ describe("Purchases", () => {
   })
 
   it("getAppUserID works", async () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.getAppUserID.mockResolvedValueOnce("123");
 
@@ -296,7 +288,7 @@ describe("Purchases", () => {
   })
 
   it("createAlias throws errors if new app user id is not a string", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     expect(() => {
       Purchases.createAlias(123)
@@ -321,7 +313,7 @@ describe("Purchases", () => {
   })
 
   it("identify throws errors if new app user id is not a string", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     expect(() => {
       Purchases.identify(123)
@@ -345,7 +337,7 @@ describe("Purchases", () => {
   })
 
   it("setDebugLogsEnabled works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.setDebugLogsEnabled(true)
 
@@ -359,7 +351,7 @@ describe("Purchases", () => {
   })
 
   it("getPurchaserInfo works", async () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.getPurchaserInfo.mockResolvedValueOnce(purchaserInfoStub);
 
@@ -370,7 +362,7 @@ describe("Purchases", () => {
   })
 
   it("setup works", async () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.setup("key", "user");
 
@@ -384,7 +376,7 @@ describe("Purchases", () => {
   })
 
   it("cancelled purchaseProduct sets userCancelled in the error", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchaseProduct.mockRejectedValueOnce({
       code: "1",
@@ -403,7 +395,7 @@ describe("Purchases", () => {
   });
 
   it("cancelled purchasePackage sets userCancelled in the error", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchasePackage.mockRejectedValueOnce({
       code: "1",
@@ -422,7 +414,7 @@ describe("Purchases", () => {
   });
 
   it("successful purchase works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValueOnce({
       purchasedProductIdentifier: "123",
@@ -436,7 +428,7 @@ describe("Purchases", () => {
   })
 
   it("reset works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.reset.mockResolvedValueOnce(purchaserInfoStub);
 
@@ -444,7 +436,7 @@ describe("Purchases", () => {
   })
 
   it("syncpurchases works for android", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Platform.OS = "android";
 
@@ -454,7 +446,7 @@ describe("Purchases", () => {
   })
 
   it("syncpurchases works for ios", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Platform.OS = "ios";
 
@@ -465,7 +457,7 @@ describe("Purchases", () => {
 
 
   it("finishTransactions works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.setFinishTransactions(true);
     expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(true);
@@ -477,7 +469,7 @@ describe("Purchases", () => {
   })
 
   it("checkTrialOrIntroductoryPriceEligibility works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.checkTrialOrIntroductoryPriceEligibility(["monthly"])
 
@@ -485,7 +477,7 @@ describe("Purchases", () => {
   })
 
   it("getPaymentDiscount works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.getPaymentDiscount.mockResolvedValue(paymentDiscountStub);
 
@@ -501,7 +493,7 @@ describe("Purchases", () => {
   });
 
   it("getPaymentDiscount returns undefined for Android", async () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Platform.OS = "android";
 
@@ -512,7 +504,7 @@ describe("Purchases", () => {
   });
 
   it("getPaymentDiscount throws error when null discount", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
     Platform.OS = "ios";
 
     expect(() => {
@@ -527,7 +519,7 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedProduct works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
       purchasedProductIdentifier: "123",
@@ -546,7 +538,7 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedProduct throws if null or undefined discount", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     expect(() => {
       Purchases.purchaseDiscountedProduct(productStub, null)
@@ -560,7 +552,7 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedPackage works", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
@@ -590,7 +582,7 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedPackage throws if null or undefined discount", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     expect(() => {
       Purchases.purchaseDiscountedPackage(packagestub, null)
@@ -604,7 +596,7 @@ describe("Purchases", () => {
   });
   
   it("calling setup with a userDefaultsSuiteName", () => {
-    const Purchases = require("../index").default;
+    const Purchases = require("../dist/index").default;
 
     Purchases.setup("key", "user", false, "suitename");
 
@@ -614,7 +606,7 @@ describe("Purchases", () => {
   describe("invalidate purchaser info cache", () => {
     describe("when invalidatePurchaserInfoCache is called", () => {
       it("makes the right call to Purchases", () => {
-        const Purchases = require("../index").default;
+        const Purchases = require("../dist/index").default;
         Purchases.invalidatePurchaserInfoCache();
 
         expect(NativeModules.RNPurchases.invalidatePurchaserInfoCache).toBeCalledTimes(1);
@@ -625,7 +617,7 @@ describe("Purchases", () => {
   describe("setAttributes", () => {
     describe("when setAttributes is called", () => {
       it("makes the right call to Purchases", () => {
-        const Purchases = require("../index").default;
+        const Purchases = require("../dist/index").default;
         const attributes = { band: "AirBourne", song: "Back in the game" }
         Purchases.setAttributes(attributes);
 
@@ -638,7 +630,7 @@ describe("Purchases", () => {
   describe("setEmail", () => {
     describe("when setEmail is called", () => {
       it("makes the right call to Purchases", () => {
-        const Purchases = require("../index").default;
+        const Purchases = require("../dist/index").default;
         const email = "garfield@revenuecat.com";
 
         Purchases.setEmail(email);
@@ -652,7 +644,7 @@ describe("Purchases", () => {
   describe("setPhoneNumber", () => {
     describe("when setPhoneNumber is called", () => {
       it("makes the right call to Purchases", () => {
-        const Purchases = require("../index").default;
+        const Purchases = require("../dist/index").default;
         const phoneNumber = "+123456789";
 
         Purchases.setPhoneNumber(phoneNumber);
@@ -666,7 +658,7 @@ describe("Purchases", () => {
   describe("setDisplayName", () => {
     describe("when setDisplayName is called", () => {
       it("makes the right call to Purchases", () => {
-        const Purchases = require("../index").default;
+        const Purchases = require("../dist/index").default;
         const displayName = "Garfield";
         
         Purchases.setDisplayName(displayName);
@@ -680,7 +672,7 @@ describe("Purchases", () => {
   describe("setPushToken", () => {
     describe("when setPushToken is called", () => {
       it("makes the right call to Purchases", () => {
-        const Purchases = require("../index").default;
+        const Purchases = require("../dist/index").default;
         const pushToken = "65a1ds56adsgh6954asd";
         
         Purchases.setPushToken(pushToken);

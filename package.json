@@ -7,11 +7,8 @@
   "types": "index.d.ts",
   "source": "src/index",
   "files": [
-    "build.js",
-    "index.js",
-    "index.d.ts",
-    "errors.js",
-    "errors.d.ts",
+    "scripts/build.js",
+    "dist",
     "android",
     "!android/gradlew*",
     "!android/.gradle",
@@ -33,7 +30,7 @@
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc --watch",
-    "preinstall": "node build.js",
+    "preinstall": "node scripts/build.js",
     "test": "jest",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepublish": "tsc",
@@ -96,7 +93,7 @@
     ],
     "cacheDirectory": ".jest/cache",
     "setupFiles": [
-      "./setupJest.js"
+      "./scripts/setupJest.js"
     ]
   }
 }
