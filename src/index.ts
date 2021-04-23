@@ -801,7 +801,7 @@ export default class Purchases {
       upgradeInfo,
       type,
       null
-    ).catch((error: any) => {
+    ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
@@ -828,7 +828,7 @@ export default class Purchases {
       null,
       null,
       discount.timestamp.toString()
-    ).catch((error: any) => {
+    ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
@@ -853,7 +853,7 @@ export default class Purchases {
       aPackage.offeringIdentifier,
       upgradeInfo,
       null
-    ).catch((error: any) => {
+    ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
@@ -880,7 +880,7 @@ export default class Purchases {
       aPackage.offeringIdentifier,
       null,
       discount.timestamp.toString()
-    ).catch((error: any) => {
+    ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });

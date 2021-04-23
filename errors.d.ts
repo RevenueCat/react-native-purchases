@@ -23,7 +23,7 @@ export declare enum PURCHASES_ERROR_CODE {
     INVALID_SUBSCRIBER_ATTRIBUTES_ERROR = "21",
     LOG_OUT_ANONYMOUS_USER_ERROR = "22"
 }
-export interface PURCHASES_ERROR {
+export interface PurchasesError {
     code: PURCHASES_ERROR_CODE;
     message: string;
     readableErrorCode: string;

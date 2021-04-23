@@ -26,7 +26,7 @@ export enum PURCHASES_ERROR_CODE {
     LOG_OUT_ANONYMOUS_USER_ERROR = "22",
 }
 
-export interface PURCHASES_ERROR {
+export interface PurchasesError {
     code: PURCHASES_ERROR_CODE;
     message: string;
     readableErrorCode: string;
