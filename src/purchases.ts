@@ -114,6 +114,13 @@ export default class Purchases {
     public static INTRO_ELIGIBILITY_STATUS = INTRO_ELIGIBILITY_STATUS;
 
     /**
+     * Enum of all error codes the SDK produces. 
+     * @readonly
+     * @enum {string}
+     */
+    public static PURCHASES_ERROR_CODE = PURCHASES_ERROR_CODE;
+
+    /**
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.

@@ -1,3 +1,4 @@
+import { PURCHASES_ERROR_CODE } from "./errors";
 import { PurchaserInfo } from "./purchaserInfo";
 import { PRORATION_MODE, PACKAGE_TYPE, INTRO_ELIGIBILITY_STATUS, PurchasesOfferings, PurchasesProduct, UpgradeInfo, PurchasesPaymentDiscount, PurchasesPackage, IntroEligibility, PurchasesDiscount } from "./offerings";
 /**
@@ -68,6 +69,12 @@ export default class Purchases {
      * @enum {number}
      */
     static INTRO_ELIGIBILITY_STATUS: typeof INTRO_ELIGIBILITY_STATUS;
+    /**
+     * Enum of all error codes the SDK produces.
+     * @readonly
+     * @enum {string}
+     */
+    static PURCHASES_ERROR_CODE: typeof PURCHASES_ERROR_CODE;
     /**
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String

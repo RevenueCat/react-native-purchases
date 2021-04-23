@@ -556,6 +556,12 @@ var Purchases = /** @class */ (function () {
      * @enum {number}
      */
     Purchases.INTRO_ELIGIBILITY_STATUS = offerings_1.INTRO_ELIGIBILITY_STATUS;
+    /**
+     * Enum of all error codes the SDK produces.
+     * @readonly
+     * @enum {string}
+     */
+    Purchases.PURCHASES_ERROR_CODE = errors_1.PURCHASES_ERROR_CODE;
     return Purchases;
 }());
 exports.default = Purchases;
