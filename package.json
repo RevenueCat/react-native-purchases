@@ -3,8 +3,8 @@
   "title": "React Native Purchases",
   "version": "4.1.1",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android. ",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "source": "src/index",
   "files": [
     "scripts/build.js",
