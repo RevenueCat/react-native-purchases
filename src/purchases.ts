@@ -716,4 +716,13 @@ export default class Purchases {
         RNPurchases.setCreative(creative);
     }
 
+    /**
+     * Subscriber attribute associated with the install ad creative for the user
+     *
+     * @param feature Empty String or null will delete the subscriber attribute.
+     */
+    public static canMakePayments(feature: string | null): Promise<Boolean> {
+        return RNPurchases.canMakePayments(feature);
+    }
+
 }
