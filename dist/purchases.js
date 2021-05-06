@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
+exports.BILLING_FEATURE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
 var react_native_1 = require("react-native");
 var errors_1 = require("./errors");
 var offerings_1 = require("./offerings");
@@ -38,6 +38,14 @@ var PURCHASE_TYPE;
      */
     PURCHASE_TYPE["SUBS"] = "subs";
 })(PURCHASE_TYPE = exports.PURCHASE_TYPE || (exports.PURCHASE_TYPE = {}));
+var BILLING_FEATURE;
+(function (BILLING_FEATURE) {
+    BILLING_FEATURE["SUBSCRIPTIONS"] = "SUBSCRIPTIONS";
+    BILLING_FEATURE["SUBSCRIPTIONS_UPDATE"] = "SUBSCRIPTIONS_UPDATE";
+    BILLING_FEATURE["IN_APP_ITEMS_ON_VR"] = "IN_APP_ITEMS_ON_VR";
+    BILLING_FEATURE["SUBSCRIPTIONS_ON_VR"] = "SUBSCRIPTIONS_ON_VR";
+    BILLING_FEATURE["PRICE_CHANGE_CONFIRMATION"] = "PRICE_CHANGE_CONFIRMATION";
+})(BILLING_FEATURE = exports.BILLING_FEATURE || (exports.BILLING_FEATURE = {}));
 var Purchases = /** @class */ (function () {
     function Purchases() {
     }
@@ -519,6 +527,18 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setCreative(creative);
     };
     /**
+     * Check if billing is supported for the current Play user (meaning IN-APP purchases are supported)
+     * and optionally, whether a list of specified feature types are supported. This method is asynchronous
+     * since it requires a connected BillingClient.
+     * @param feature An array of feature types to check for support. Feature types must be one of
+     *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
+     * @returns {Promise<Boolean>} promise with boolean response
+    */
+    Purchases.canMakePayments = function (features) {
+        debugger;
+        return RNPurchases.canMakePayments(features);
+    };
+    /**
      * Enum for attribution networks
      * @readonly
      * @enum {number}
@@ -538,6 +558,12 @@ var Purchases = /** @class */ (function () {
      * @enum {string}
      */
     Purchases.PURCHASE_TYPE = PURCHASE_TYPE;
+    /**
+     * Enum for billing features..
+     * @readonly
+     * @enum  {string}
+     */
+    Purchases.BILLING_FEATURE = BILLING_FEATURE;
     /**
      * Replace SKU's ProrationMode.
      * @readonly

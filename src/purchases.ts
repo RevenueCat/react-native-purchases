@@ -68,6 +68,14 @@ export enum PURCHASE_TYPE {
     SUBS = "subs",
 }
 
+export enum BILLING_FEATURE {
+    SUBSCRIPTIONS = "SUBSCRIPTIONS",
+    SUBSCRIPTIONS_UPDATE = "SUBSCRIPTIONS_UPDATE",
+    IN_APP_ITEMS_ON_VR = "IN_APP_ITEMS_ON_VR",
+    SUBSCRIPTIONS_ON_VR = "SUBSCRIPTIONS_ON_VR",
+    PRICE_CHANGE_CONFIRMATION = "PRICE_CHANGE_CONFIRMATION",
+}
+
 export default class Purchases {
     /**
      * Enum for attribution networks
@@ -91,6 +99,13 @@ export default class Purchases {
      * @enum {string}
      */
     public static PURCHASE_TYPE = PURCHASE_TYPE;
+
+    /**
+     * Enum for billing features..
+     * @readonly
+     * @enum  {string}
+     */
+     public static BILLING_FEATURE = BILLING_FEATURE;
 
     /**
      * Replace SKU's ProrationMode.
@@ -717,12 +732,17 @@ export default class Purchases {
     }
 
     /**
-     * Subscriber attribute associated with the install ad creative for the user
-     *
-     * @param feature Empty String or null will delete the subscriber attribute.
-     */
-    public static canMakePayments(feature: string | null): Promise<Boolean> {
-        return RNPurchases.canMakePayments(feature);
+     * Check if billing is supported for the current Play user (meaning IN-APP purchases are supported)
+     * and optionally, whether a list of specified feature types are supported. This method is asynchronous
+     * since it requires a connected BillingClient.
+     * @param feature An array of feature types to check for support. Feature types must be one of 
+     *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
+     * @returns {Promise<Boolean>} promise with boolean response
+    */
+
+    public static canMakePayments(features: BILLING_FEATURE[] = []): Promise<Boolean> {
+        debugger;
+        return RNPurchases.canMakePayments(features);
     }
 
 }

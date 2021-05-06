@@ -30,6 +30,13 @@ export declare enum PURCHASE_TYPE {
      */
     SUBS = "subs"
 }
+export declare enum BILLING_FEATURE {
+    SUBSCRIPTIONS = "SUBSCRIPTIONS",
+    SUBSCRIPTIONS_UPDATE = "SUBSCRIPTIONS_UPDATE",
+    IN_APP_ITEMS_ON_VR = "IN_APP_ITEMS_ON_VR",
+    SUBSCRIPTIONS_ON_VR = "SUBSCRIPTIONS_ON_VR",
+    PRICE_CHANGE_CONFIRMATION = "PRICE_CHANGE_CONFIRMATION"
+}
 export default class Purchases {
     /**
      * Enum for attribution networks
@@ -51,6 +58,12 @@ export default class Purchases {
      * @enum {string}
      */
     static PURCHASE_TYPE: typeof PURCHASE_TYPE;
+    /**
+     * Enum for billing features..
+     * @readonly
+     * @enum  {string}
+     */
+    static BILLING_FEATURE: typeof BILLING_FEATURE;
     /**
      * Replace SKU's ProrationMode.
      * @readonly
@@ -406,5 +419,14 @@ export default class Purchases {
      * @param creative Empty String or null will delete the subscriber attribute.
      */
     static setCreative(creative: string | null): void;
+    /**
+     * Check if billing is supported for the current Play user (meaning IN-APP purchases are supported)
+     * and optionally, whether a list of specified feature types are supported. This method is asynchronous
+     * since it requires a connected BillingClient.
+     * @param feature An array of feature types to check for support. Feature types must be one of
+     *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
+     * @returns {Promise<Boolean>} promise with boolean response
+    */
+    static canMakePayments(features: BILLING_FEATURE[]): Promise<Boolean>;
 }
 export {};
