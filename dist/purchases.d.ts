@@ -427,6 +427,6 @@ export default class Purchases {
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response
     */
-    static canMakePayments(features: BILLING_FEATURE[]): Promise<Boolean>;
+    static canMakePayments(features?: BILLING_FEATURE[]): Promise<Boolean>;
 }
 export {};

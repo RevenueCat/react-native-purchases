@@ -318,8 +318,7 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
     [RCCommonFunctionality setCreative:creative];
 }
 
-RCT_EXPORT_METHOD(canMakePayments:(NSString*)feature,
-                  )
+//RCT_EXPORT_METHOD(canMakePayments:(NSString*)feature)
 
     
 #pragma mark -

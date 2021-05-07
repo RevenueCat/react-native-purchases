@@ -535,6 +535,7 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<Boolean>} promise with boolean response
     */
     Purchases.canMakePayments = function (features) {
+        if (features === void 0) { features = []; }
         debugger;
         return RNPurchases.canMakePayments(features);
     };
