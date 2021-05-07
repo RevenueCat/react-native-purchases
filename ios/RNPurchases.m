@@ -318,7 +318,14 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
     [RCCommonFunctionality setCreative:creative];
 }
 
-//RCT_EXPORT_METHOD(canMakePayments:(NSString*)feature)
+
+RCT_REMAP_METHOD(canMakePayments,
+                 canMakePaymentsWithFeatures:(NSArray*)features
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+      resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features]));
+}
+
 
     
 #pragma mark -
