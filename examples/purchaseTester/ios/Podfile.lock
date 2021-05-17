@@ -59,11 +59,11 @@ PODS:
   - glog (0.3.5)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.180)
-  - Purchases (3.10.7):
-    - PurchasesCoreSwift (= 3.10.7)
-  - PurchasesCoreSwift (3.10.7)
+  - Purchases (3.11.0-SNAPSHOT):
+    - PurchasesCoreSwift
+  - PurchasesCoreSwift (3.11.0-SNAPSHOT)
   - PurchasesHybridCommon (1.6.2):
-    - Purchases (= 3.10.7)
+    - Purchases
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
     - DoubleConversion
@@ -356,6 +356,9 @@ DEPENDENCIES:
   - FlipperKit/FlipperKitUserDefaultsPlugin (~> 0.75.1)
   - FlipperKit/SKIOSNetworkPlugin (~> 0.75.1)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - Purchases (from `https://github.com/RevenueCat/purchases-ios.git`, branch `feature/identityV3_public_facing_changes`)
+  - PurchasesCoreSwift (from `https://github.com/RevenueCat/purchases-ios.git`, branch `feature/identityV3_public_facing_changes`)
+  - PurchasesHybridCommon (from `https://github.com/RevenueCat/purchases-hybrid-common.git`, branch `develop`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -399,9 +402,6 @@ SPEC REPOS:
     - FlipperKit
     - libevent
     - OpenSSL-Universal
-    - Purchases
-    - PurchasesCoreSwift
-    - PurchasesHybridCommon
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -413,6 +413,15 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  Purchases:
+    :branch: feature/identityV3_public_facing_changes
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesCoreSwift:
+    :branch: feature/identityV3_public_facing_changes
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesHybridCommon:
+    :branch: develop
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -468,6 +477,17 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
+CHECKOUT OPTIONS:
+  Purchases:
+    :commit: 15d2ff61b4c9e101a22b642662a09f7ee2b90fd7
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesCoreSwift:
+    :commit: 15d2ff61b4c9e101a22b642662a09f7ee2b90fd7
+    :git: https://github.com/RevenueCat/purchases-ios.git
+  PurchasesHybridCommon:
+    :commit: 0e615d277fa3a976e15c1cac89e3c5a4ab5679ce
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
+
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
@@ -484,9 +504,9 @@ SPEC CHECKSUMS:
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
-  Purchases: b8b8fb6e856ac8166e217f6e014df894d821dda1
-  PurchasesCoreSwift: 8ae0f08e020f0bc97c1befa4e38a0dbc8e9732e0
-  PurchasesHybridCommon: 5f5c1c245b12fc5e8760af7d11cb10f888109a9b
+  Purchases: 1a9088def9e5c06ea0e0984b62bc6bb2cdb28cd7
+  PurchasesCoreSwift: a13fb0bb162ec84b8eac9098f2d0c5fb6fce8be7
+  PurchasesHybridCommon: 9adeb67a2151010043d4877491f47cc93ac4d75a
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 2f8cb5b7533219bf4218a045f92768129cf7050a
   RCTTypeSafety: 512728b73549e72ad7330b92f3d42936f2a4de5b
@@ -516,6 +536,6 @@ SPEC CHECKSUMS:
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 396dd72eef33ef206d0ab07fdbb4e1f4d9c5f757
+PODFILE CHECKSUM: e8f22d9bc9be84d86bf060df0a636f3c31a73a9f
 
 COCOAPODS: 1.10.1

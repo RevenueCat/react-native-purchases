@@ -123,6 +123,24 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 dependencies {
     //noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
-    implementation 'com.revenuecat.purchases:purchases-hybrid-common:1.6.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+
+    // TODO: replace git dependencies with Maven when a release is available
+    // implementation "com.revenuecat.purchases:purchases-hybrid-common:1.6.2"
+    implementation('com.revenuecat.purchases:purchases-hybrid-common') {
+        version {
+            branch = 'develop'
+        }
+    }
+    implementation('com.revenuecat.purchases:purchases') {
+        version {
+          branch = 'feature/identityv3_public_facing_changes'
+        }
+    }
+    implementation('com.revenuecat.purchases:common') {
+        version {
+          branch = 'feature/identityv3_public_facing_changes'
+        }
+    }
 }

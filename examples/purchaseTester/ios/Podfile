@@ -17,6 +17,10 @@ target 'ReactNativeSample' do
   pod 'RNPurchases', :path => '../../../'
 
   config = use_native_modules!
+  
+  pod 'Purchases', :git => 'https://github.com/RevenueCat/purchases-ios.git', :branch => 'feature/identityV3_public_facing_changes'
+  pod 'PurchasesCoreSwift', :git => 'https://github.com/RevenueCat/purchases-ios.git', :branch => 'feature/identityV3_public_facing_changes'
+  pod 'PurchasesHybridCommon', :git => 'https://github.com/RevenueCat/purchases-hybrid-common.git', :branch => 'develop'
 
   use_react_native!(
     :path => config[:reactNativePath],

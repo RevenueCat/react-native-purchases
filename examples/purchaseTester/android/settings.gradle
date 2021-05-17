@@ -13,3 +13,18 @@ if (file(".composite-enable").exists()) {
     String path = new File(".composite-enable").text
     includeBuild (path)
 }
+
+
+// TODO: remove sourceControl once a Maven version included the needed changes is released.
+sourceControl {
+  gitRepository("https://github.com/revenuecat/purchases-hybrid-common.git") {
+    setRootDir("android/")
+    producesModule("com.revenuecat.purchases:purchases-hybrid-common")
+  }
+}
+sourceControl {
+  gitRepository("https://github.com/revenuecat/purchases-android.git") {
+    producesModule("com.revenuecat.purchases:purchases")
+    producesModule("com.revenuecat.purchases:common")
+  }
+}
