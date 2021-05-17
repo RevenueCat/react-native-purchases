@@ -15,7 +15,7 @@
     https://github.com/RevenueCat/react-native-purchases/pull/234
 - Bumped purchases-hybrid-common to 1.6.3 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.3)
 - Bumped purchases-ios to 3.11.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.11.1)
-    https://github.com/RevenueCat/react-native-purchases/pull/241
+    https://github.com/RevenueCat/react-native-purchases/pull/243
 
 ## 4.1.1
 
