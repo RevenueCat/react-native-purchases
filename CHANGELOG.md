@@ -1,3 +1,22 @@
+## 4.1.2
+
+- Fix wrong types specified in TypeScript
+    https://github.com/RevenueCat/react-native-purchases/pull/231
+- Cleaned up directory structure
+    https://github.com/RevenueCat/react-native-purchases/pull/235
+    https://github.com/RevenueCat/react-native-purchases/pull/237
+    https://github.com/RevenueCat/react-native-purchases/pull/232
+- Updated example apps dependencies
+    https://github.com/RevenueCat/react-native-purchases/pull/240
+    https://github.com/RevenueCat/react-native-purchases/pull/239
+    https://github.com/RevenueCat/react-native-purchases/pull/233
+    https://github.com/RevenueCat/react-native-purchases/pull/227
+    https://github.com/RevenueCat/react-native-purchases/pull/226
+    https://github.com/RevenueCat/react-native-purchases/pull/234
+- Bumped purchases-hybrid-common to 1.6.3 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.3)
+- Bumped purchases-ios to 3.11.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.11.1)
+    https://github.com/RevenueCat/react-native-purchases/pull/241
+
 ## 4.1.1
 
 - Updated example app to the latest React-Native version
@@ -8,7 +27,7 @@
 - Bumped purchases-hybrid-common to 1.6.2 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.2)
 - Bumped purchases-ios to 3.10.7 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.10.7)
 - Bumped purchases-android to 4.0.5 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/4.0.5)
-    https://github.com/RevenueCat/purchases-flutter/pull/171
+    https://github.com/RevenueCat/react-native-purchases/pull/225
 
 ## 4.1.0
 
