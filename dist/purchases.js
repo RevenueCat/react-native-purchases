@@ -536,7 +536,6 @@ var Purchases = /** @class */ (function () {
     */
     Purchases.canMakePayments = function (features) {
         if (features === void 0) { features = []; }
-        debugger;
         return RNPurchases.canMakePayments(features);
     };
     /**

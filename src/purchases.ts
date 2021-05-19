@@ -738,10 +738,9 @@ export default class Purchases {
      * @param feature An array of feature types to check for support. Feature types must be one of 
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response
-    */
+     */
 
-    public static canMakePayments(features: BILLING_FEATURE[] = []): Promise<Boolean> {
-        debugger;
+    public static canMakePayments(features: BILLING_FEATURE[] = []): Promise<boolean> {
         return RNPurchases.canMakePayments(features);
     }
 

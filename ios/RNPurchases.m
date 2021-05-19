@@ -32,7 +32,7 @@ NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchas
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD( setupPurchases:(NSString *)apiKey
+RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
                   observerMode:(BOOL)observerMode
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName)
@@ -320,7 +320,7 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
 
 
 RCT_REMAP_METHOD(canMakePayments,
-                 canMakePaymentsWithFeatures:(NSArray*)features
+                 canMakePaymentsWithFeatures:(NSArray <NSString *>*)features
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
       resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features]));

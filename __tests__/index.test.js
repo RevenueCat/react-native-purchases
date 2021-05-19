@@ -683,4 +683,26 @@ describe("Purchases", () => {
     });
   });
 
+  describe("canMakePayments", () => {
+    describe("when no parameters are passed", () => {
+      it("calls Purchases with empty list", () => {
+        const Purchases = require("../dist/index").default;
+
+        Purchases.canMakePayments();
+
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([]);
+      });
+    });
+    describe("when list of parameters are passed", () => {
+      it("calls Purchases with list of features", () => {
+        const Purchases = require("../dist/index").default;
+
+        Purchases.canMakePayments([Purchases.BILLING_FEATURE.SUBSCRIPTIONS]);
+
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith(["SUBSCRIPTIONS"]);
+      });
+    });
+  });
 });
