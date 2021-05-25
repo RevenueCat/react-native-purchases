@@ -31,11 +31,11 @@ export declare enum PURCHASE_TYPE {
     SUBS = "subs"
 }
 export declare enum BILLING_FEATURE {
-    SUBSCRIPTIONS = "SUBSCRIPTIONS",
-    SUBSCRIPTIONS_UPDATE = "SUBSCRIPTIONS_UPDATE",
-    IN_APP_ITEMS_ON_VR = "IN_APP_ITEMS_ON_VR",
-    SUBSCRIPTIONS_ON_VR = "SUBSCRIPTIONS_ON_VR",
-    PRICE_CHANGE_CONFIRMATION = "PRICE_CHANGE_CONFIRMATION"
+    SUBSCRIPTIONS = 0,
+    SUBSCRIPTIONS_UPDATE = 1,
+    IN_APP_ITEMS_ON_VR = 2,
+    SUBSCRIPTIONS_ON_VR = 3,
+    PRICE_CHANGE_CONFIRMATION = 4
 }
 export default class Purchases {
     /**
@@ -426,7 +426,7 @@ export default class Purchases {
      * @param feature An array of feature types to check for support. Feature types must be one of
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response
-    */
-    static canMakePayments(features?: BILLING_FEATURE[]): Promise<Boolean>;
+     */
+    static canMakePayments(features?: BILLING_FEATURE[]): Promise<boolean>;
 }
 export {};

@@ -323,10 +323,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void canMakePayments(ReadableArray features, final Promise promise) {
-      ArrayList<String> featureList = new ArrayList<>();
+      ArrayList<Integer> featureList = new ArrayList<>();
       if (features != null) {
         for (int i = 0; i < features.size(); i++) {
-          featureList.add(features.getString(i));
+          featureList.add(features.getInt(i));
         }
       }
 

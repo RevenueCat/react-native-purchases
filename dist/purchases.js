@@ -40,11 +40,11 @@ var PURCHASE_TYPE;
 })(PURCHASE_TYPE = exports.PURCHASE_TYPE || (exports.PURCHASE_TYPE = {}));
 var BILLING_FEATURE;
 (function (BILLING_FEATURE) {
-    BILLING_FEATURE["SUBSCRIPTIONS"] = "SUBSCRIPTIONS";
-    BILLING_FEATURE["SUBSCRIPTIONS_UPDATE"] = "SUBSCRIPTIONS_UPDATE";
-    BILLING_FEATURE["IN_APP_ITEMS_ON_VR"] = "IN_APP_ITEMS_ON_VR";
-    BILLING_FEATURE["SUBSCRIPTIONS_ON_VR"] = "SUBSCRIPTIONS_ON_VR";
-    BILLING_FEATURE["PRICE_CHANGE_CONFIRMATION"] = "PRICE_CHANGE_CONFIRMATION";
+    BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS"] = 0] = "SUBSCRIPTIONS";
+    BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_UPDATE"] = 1] = "SUBSCRIPTIONS_UPDATE";
+    BILLING_FEATURE[BILLING_FEATURE["IN_APP_ITEMS_ON_VR"] = 2] = "IN_APP_ITEMS_ON_VR";
+    BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_ON_VR"] = 3] = "SUBSCRIPTIONS_ON_VR";
+    BILLING_FEATURE[BILLING_FEATURE["PRICE_CHANGE_CONFIRMATION"] = 4] = "PRICE_CHANGE_CONFIRMATION";
 })(BILLING_FEATURE = exports.BILLING_FEATURE || (exports.BILLING_FEATURE = {}));
 var Purchases = /** @class */ (function () {
     function Purchases() {
@@ -533,7 +533,7 @@ var Purchases = /** @class */ (function () {
      * @param feature An array of feature types to check for support. Feature types must be one of
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response
-    */
+     */
     Purchases.canMakePayments = function (features) {
         if (features === void 0) { features = []; }
         return RNPurchases.canMakePayments(features);
