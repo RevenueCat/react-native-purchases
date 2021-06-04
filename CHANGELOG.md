@@ -1,6 +1,7 @@
 ## 4.1.3
 
-- Previous version was missing the update to purchases-hybrid-common 1.6.3 pod. This release updates the pod to 1.6.3.
+- Bumped purchases-hybrid-common to 1.7.0 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.7.0)
+- Bumped purchases-android to 4.2.1 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/4.2.1)
 
 ## 4.1.2
 
