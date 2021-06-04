@@ -1,3 +1,7 @@
+## 4.1.3
+
+- Previous version was missing the update to purchases-hybrid-common 1.6.3 pod. This release updates the pod to 1.6.3.
+
 ## 4.1.2
 
 - Fix wrong types specified in TypeScript
