@@ -13,6 +13,3 @@ if (file(".composite-enable").exists()) {
     String path = new File(".composite-enable").text
     includeBuild (path)
 }
-
-// TODO remove before merging
-includeBuild('/Users/madelinebeyl/git/revcat/purchases-hybrid-common/android/')

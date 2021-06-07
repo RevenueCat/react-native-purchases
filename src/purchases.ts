@@ -68,11 +68,35 @@ export enum PURCHASE_TYPE {
     SUBS = "subs",
 }
 
+/**
+ * Enum for billing features.
+ * Currently, these are only relevant for Google Play BillingClient:
+ * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
+ */
 export enum BILLING_FEATURE {
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS
+     */
     SUBSCRIPTIONS,
+
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_UPDATE
+     */
     SUBSCRIPTIONS_UPDATE,
+
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#IN_APP_ITEMS_ON_VR
+     */
     IN_APP_ITEMS_ON_VR,
+
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_ON_VR
+     */
     SUBSCRIPTIONS_ON_VR,
+
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#PRICE_CHANGE_CONFIRMATION
+     */
     PRICE_CHANGE_CONFIRMATION,
 }
 
@@ -101,7 +125,9 @@ export default class Purchases {
     public static PURCHASE_TYPE = PURCHASE_TYPE;
 
     /**
-     * Enum for billing features..
+     * Enum for billing features.
+     *  Currently, these are only relevant for Google Play BillingClient:
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
      * @readonly
      * @enum  {string}
      */
@@ -732,9 +758,11 @@ export default class Purchases {
     }
 
     /**
-     * Check if billing is supported for the current Play user (meaning IN-APP purchases are supported)
-     * and optionally, whether a list of specified feature types are supported. This method is asynchronous
-     * since it requires a connected BillingClient.
+     * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
+     * and optionally, whether a list of specified feature types are supported. 
+     * 
+     * Note: BillingFeatures are only relevant to Google Play Android users.
+     * For other stores and platforms, BillingFeatures won't be checked.
      * @param feature An array of feature types to check for support. Feature types must be one of 
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response

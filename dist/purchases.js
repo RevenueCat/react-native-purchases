@@ -38,12 +38,32 @@ var PURCHASE_TYPE;
      */
     PURCHASE_TYPE["SUBS"] = "subs";
 })(PURCHASE_TYPE = exports.PURCHASE_TYPE || (exports.PURCHASE_TYPE = {}));
+/**
+ * Enum for billing features.
+ * Currently, these are only relevant for Google Play BillingClient:
+ * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
+ */
 var BILLING_FEATURE;
 (function (BILLING_FEATURE) {
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS
+     */
     BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS"] = 0] = "SUBSCRIPTIONS";
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_UPDATE
+     */
     BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_UPDATE"] = 1] = "SUBSCRIPTIONS_UPDATE";
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#IN_APP_ITEMS_ON_VR
+     */
     BILLING_FEATURE[BILLING_FEATURE["IN_APP_ITEMS_ON_VR"] = 2] = "IN_APP_ITEMS_ON_VR";
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_ON_VR
+     */
     BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_ON_VR"] = 3] = "SUBSCRIPTIONS_ON_VR";
+    /**
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#PRICE_CHANGE_CONFIRMATION
+     */
     BILLING_FEATURE[BILLING_FEATURE["PRICE_CHANGE_CONFIRMATION"] = 4] = "PRICE_CHANGE_CONFIRMATION";
 })(BILLING_FEATURE = exports.BILLING_FEATURE || (exports.BILLING_FEATURE = {}));
 var Purchases = /** @class */ (function () {
@@ -527,9 +547,11 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setCreative(creative);
     };
     /**
-     * Check if billing is supported for the current Play user (meaning IN-APP purchases are supported)
-     * and optionally, whether a list of specified feature types are supported. This method is asynchronous
-     * since it requires a connected BillingClient.
+     * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
+     * and optionally, whether a list of specified feature types are supported.
+     *
+     * Note: BillingFeatures are only relevant to Google Play Android users.
+     * For other stores and platforms, BillingFeatures won't be checked.
      * @param feature An array of feature types to check for support. Feature types must be one of
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response
@@ -559,7 +581,9 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.PURCHASE_TYPE = PURCHASE_TYPE;
     /**
-     * Enum for billing features..
+     * Enum for billing features.
+     *  Currently, these are only relevant for Google Play BillingClient:
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
      * @readonly
      * @enum  {string}
      */
