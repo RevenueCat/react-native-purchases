@@ -1,6 +1,5 @@
 package com.revenuecat.purchases.react;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -17,12 +16,12 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
+import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
 import com.revenuecat.purchases.hybridcommon.ErrorContainer;
 import com.revenuecat.purchases.hybridcommon.OnResult;
 import com.revenuecat.purchases.hybridcommon.OnResultAny;
 import com.revenuecat.purchases.hybridcommon.OnResultList;
-import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
 import com.revenuecat.purchases.hybridcommon.mappers.PurchaserInfoMapperKt;
 import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
