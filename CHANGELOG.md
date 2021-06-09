@@ -1,3 +1,7 @@
+## 4.1.4
+
+- Bumped purchases-hybrid-common to 1.7.1 in Android [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.7.1)
+
 ## 4.1.3
 
 - Bumped purchases-hybrid-common to 1.7.1 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.7.1)

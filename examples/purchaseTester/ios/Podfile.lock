@@ -323,7 +323,7 @@ PODS:
     - React-perflogger (= 0.64.2)
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNPurchases (4.1.3):
+  - RNPurchases (4.1.4):
     - PurchasesHybridCommon (= 1.7.1)
     - React-Core
   - RNScreens (2.18.1):
@@ -511,7 +511,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNPurchases: 872ab12151c30dbf8e9f691cca883e9166f716d0
+  RNPurchases: 5501ff63ca93a3ec6869a1b7fbde8ca40c29011e
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
