@@ -46,23 +46,23 @@ var PURCHASE_TYPE;
 var BILLING_FEATURE;
 (function (BILLING_FEATURE) {
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS
+     * Purchase/query for subscriptions.
      */
     BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS"] = 0] = "SUBSCRIPTIONS";
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_UPDATE
+     * Subscriptions update/replace.
      */
     BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_UPDATE"] = 1] = "SUBSCRIPTIONS_UPDATE";
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#IN_APP_ITEMS_ON_VR
+     * Purchase/query for in-app items on VR.
      */
     BILLING_FEATURE[BILLING_FEATURE["IN_APP_ITEMS_ON_VR"] = 2] = "IN_APP_ITEMS_ON_VR";
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_ON_VR
+     * Purchase/query for subscriptions on VR.
      */
     BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_ON_VR"] = 3] = "SUBSCRIPTIONS_ON_VR";
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#PRICE_CHANGE_CONFIRMATION
+     * Launch a price change confirmation flow.
      */
     BILLING_FEATURE[BILLING_FEATURE["PRICE_CHANGE_CONFIRMATION"] = 4] = "PRICE_CHANGE_CONFIRMATION";
 })(BILLING_FEATURE = exports.BILLING_FEATURE || (exports.BILLING_FEATURE = {}));

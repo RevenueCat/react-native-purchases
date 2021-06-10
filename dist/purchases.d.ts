@@ -37,23 +37,23 @@ export declare enum PURCHASE_TYPE {
  */
 export declare enum BILLING_FEATURE {
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS
+     * Purchase/query for subscriptions.
      */
     SUBSCRIPTIONS = 0,
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_UPDATE
+     * Subscriptions update/replace.
      */
     SUBSCRIPTIONS_UPDATE = 1,
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#IN_APP_ITEMS_ON_VR
+     * Purchase/query for in-app items on VR.
      */
     IN_APP_ITEMS_ON_VR = 2,
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#SUBSCRIPTIONS_ON_VR
+     * Purchase/query for subscriptions on VR.
      */
     SUBSCRIPTIONS_ON_VR = 3,
     /**
-     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType#PRICE_CHANGE_CONFIRMATION
+     * Launch a price change confirmation flow.
      */
     PRICE_CHANGE_CONFIRMATION = 4
 }

@@ -323,12 +323,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void canMakePayments(ReadableArray features, final Promise promise) {
       ArrayList<Integer> featureList = new ArrayList<>();
+
       if (features != null) {
         for (int i = 0; i < features.size(); i++) {
           featureList.add(features.getInt(i));
         }
       }
-
       CommonKt.canMakePayments(reactContext, featureList, new OnResultAny<Boolean>() {
         @Override
         public void onError(@Nullable ErrorContainer errorContainer) {
