@@ -40,7 +40,7 @@ var PURCHASE_TYPE;
 })(PURCHASE_TYPE = exports.PURCHASE_TYPE || (exports.PURCHASE_TYPE = {}));
 /**
  * Enum for billing features.
- * Currently, these are only relevant for Google Play BillingClient:
+ * Currently, these are only relevant for Google Play Android users:
  * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
  */
 var BILLING_FEATURE;
@@ -550,8 +550,8 @@ var Purchases = /** @class */ (function () {
      * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
      * and optionally, whether a list of specified feature types are supported.
      *
-     * Note: BillingFeatures are only relevant to Google Play Android users.
-     * For other stores and platforms, BillingFeatures won't be checked.
+     * Note: Billing features are only relevant to Google Play Android users.
+     * For other stores and platforms, billing features won't be checked.
      * @param feature An array of feature types to check for support. Feature types must be one of
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response
@@ -582,7 +582,7 @@ var Purchases = /** @class */ (function () {
     Purchases.PURCHASE_TYPE = PURCHASE_TYPE;
     /**
      * Enum for billing features.
-     *  Currently, these are only relevant for Google Play BillingClient:
+     * Currently, these are only relevant for Google Play Android users:
      * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
      * @readonly
      * @enum  {string}

@@ -325,8 +325,6 @@ RCT_REMAP_METHOD(canMakePayments,
       resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features]));
 }
 
-
-    
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {
