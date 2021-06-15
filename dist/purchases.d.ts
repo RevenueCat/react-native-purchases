@@ -30,6 +30,33 @@ export declare enum PURCHASE_TYPE {
      */
     SUBS = "subs"
 }
+/**
+ * Enum for billing features.
+ * Currently, these are only relevant for Google Play Android users:
+ * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
+ */
+export declare enum BILLING_FEATURE {
+    /**
+     * Purchase/query for subscriptions.
+     */
+    SUBSCRIPTIONS = 0,
+    /**
+     * Subscriptions update/replace.
+     */
+    SUBSCRIPTIONS_UPDATE = 1,
+    /**
+     * Purchase/query for in-app items on VR.
+     */
+    IN_APP_ITEMS_ON_VR = 2,
+    /**
+     * Purchase/query for subscriptions on VR.
+     */
+    SUBSCRIPTIONS_ON_VR = 3,
+    /**
+     * Launch a price change confirmation flow.
+     */
+    PRICE_CHANGE_CONFIRMATION = 4
+}
 export default class Purchases {
     /**
      * Enum for attribution networks
@@ -51,6 +78,14 @@ export default class Purchases {
      * @enum {string}
      */
     static PURCHASE_TYPE: typeof PURCHASE_TYPE;
+    /**
+     * Enum for billing features.
+     * Currently, these are only relevant for Google Play Android users:
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
+     * @readonly
+     * @enum  {string}
+     */
+    static BILLING_FEATURE: typeof BILLING_FEATURE;
     /**
      * Replace SKU's ProrationMode.
      * @readonly
@@ -406,5 +441,16 @@ export default class Purchases {
      * @param creative Empty String or null will delete the subscriber attribute.
      */
     static setCreative(creative: string | null): void;
+    /**
+     * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
+     * and optionally, whether a list of specified feature types are supported.
+     *
+     * Note: Billing features are only relevant to Google Play Android users.
+     * For other stores and platforms, billing features won't be checked.
+     * @param feature An array of feature types to check for support. Feature types must be one of
+     *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
+     * @returns {Promise<Boolean>} promise with boolean response
+     */
+    static canMakePayments(features?: BILLING_FEATURE[]): Promise<boolean>;
 }
 export {};

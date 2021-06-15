@@ -318,7 +318,13 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative)
     [RCCommonFunctionality setCreative:creative];
 }
 
-    
+RCT_REMAP_METHOD(canMakePayments,
+                 canMakePaymentsWithFeatures:(NSArray<NSNumber *> *)features
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+      resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features]));
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {

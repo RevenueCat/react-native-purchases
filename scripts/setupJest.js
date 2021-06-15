@@ -701,6 +701,7 @@ NativeModules.RNPurchases = {
   setPhoneNumber: jest.fn(),
   setDisplayName: jest.fn(),
   setPushToken: jest.fn(),
+  canMakePayments: jest.fn()
 };
 
 jest.mock(

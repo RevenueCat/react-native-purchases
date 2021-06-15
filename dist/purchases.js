@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
+exports.BILLING_FEATURE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
 var react_native_1 = require("react-native");
 var errors_1 = require("./errors");
 var offerings_1 = require("./offerings");
@@ -38,6 +38,34 @@ var PURCHASE_TYPE;
      */
     PURCHASE_TYPE["SUBS"] = "subs";
 })(PURCHASE_TYPE = exports.PURCHASE_TYPE || (exports.PURCHASE_TYPE = {}));
+/**
+ * Enum for billing features.
+ * Currently, these are only relevant for Google Play Android users:
+ * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
+ */
+var BILLING_FEATURE;
+(function (BILLING_FEATURE) {
+    /**
+     * Purchase/query for subscriptions.
+     */
+    BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS"] = 0] = "SUBSCRIPTIONS";
+    /**
+     * Subscriptions update/replace.
+     */
+    BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_UPDATE"] = 1] = "SUBSCRIPTIONS_UPDATE";
+    /**
+     * Purchase/query for in-app items on VR.
+     */
+    BILLING_FEATURE[BILLING_FEATURE["IN_APP_ITEMS_ON_VR"] = 2] = "IN_APP_ITEMS_ON_VR";
+    /**
+     * Purchase/query for subscriptions on VR.
+     */
+    BILLING_FEATURE[BILLING_FEATURE["SUBSCRIPTIONS_ON_VR"] = 3] = "SUBSCRIPTIONS_ON_VR";
+    /**
+     * Launch a price change confirmation flow.
+     */
+    BILLING_FEATURE[BILLING_FEATURE["PRICE_CHANGE_CONFIRMATION"] = 4] = "PRICE_CHANGE_CONFIRMATION";
+})(BILLING_FEATURE = exports.BILLING_FEATURE || (exports.BILLING_FEATURE = {}));
 var Purchases = /** @class */ (function () {
     function Purchases() {
     }
@@ -519,6 +547,20 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setCreative(creative);
     };
     /**
+     * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
+     * and optionally, whether a list of specified feature types are supported.
+     *
+     * Note: Billing features are only relevant to Google Play Android users.
+     * For other stores and platforms, billing features won't be checked.
+     * @param feature An array of feature types to check for support. Feature types must be one of
+     *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
+     * @returns {Promise<Boolean>} promise with boolean response
+     */
+    Purchases.canMakePayments = function (features) {
+        if (features === void 0) { features = []; }
+        return RNPurchases.canMakePayments(features);
+    };
+    /**
      * Enum for attribution networks
      * @readonly
      * @enum {number}
@@ -538,6 +580,14 @@ var Purchases = /** @class */ (function () {
      * @enum {string}
      */
     Purchases.PURCHASE_TYPE = PURCHASE_TYPE;
+    /**
+     * Enum for billing features.
+     * Currently, these are only relevant for Google Play Android users:
+     * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
+     * @readonly
+     * @enum  {string}
+     */
+    Purchases.BILLING_FEATURE = BILLING_FEATURE;
     /**
      * Replace SKU's ProrationMode.
      * @readonly

@@ -594,7 +594,7 @@ describe("Purchases", () => {
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
-  
+
   it("calling setup with a userDefaultsSuiteName", () => {
     const Purchases = require("../dist/index").default;
 
@@ -660,7 +660,7 @@ describe("Purchases", () => {
       it("makes the right call to Purchases", () => {
         const Purchases = require("../dist/index").default;
         const displayName = "Garfield";
-        
+
         Purchases.setDisplayName(displayName);
 
         expect(NativeModules.RNPurchases.setDisplayName).toBeCalledTimes(1);
@@ -674,7 +674,7 @@ describe("Purchases", () => {
       it("makes the right call to Purchases", () => {
         const Purchases = require("../dist/index").default;
         const pushToken = "65a1ds56adsgh6954asd";
-        
+
         Purchases.setPushToken(pushToken);
 
         expect(NativeModules.RNPurchases.setPushToken).toBeCalledTimes(1);
@@ -683,4 +683,51 @@ describe("Purchases", () => {
     });
   });
 
+  describe("canMakePayments", () => {
+    describe("when no parameters are passed", () => {
+      it("calls Purchases with empty list", () => {
+        const Purchases = require("../dist/index").default;
+
+        Purchases.canMakePayments();
+
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([]);
+      });
+    });
+    describe("when empty list is passed", () => {
+      it("calls Purchases with empty list", () => {
+        const Purchases = require("../dist/index").default;
+
+        Purchases.canMakePayments([]);
+
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([]);
+      });
+    });
+    describe("when list of parameters are passed", () => {
+      it("calls Purchases with list of features", () => {
+        const Purchases = require("../dist/index").default;
+
+        Purchases.canMakePayments([Purchases.BILLING_FEATURE.SUBSCRIPTIONS]);
+
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([0]);
+      });
+    });
+    describe("when list of parameters are passed", () => {
+        it("parameters are mapped successfully", () => {
+          const Purchases = require("../dist/index").default;
+
+          Purchases.canMakePayments([Purchases.BILLING_FEATURE.SUBSCRIPTIONS,
+            Purchases.BILLING_FEATURE.PRICE_CHANGE_CONFIRMATION,
+            Purchases.BILLING_FEATURE.SUBSCRIPTIONS_ON_VR,
+            Purchases.BILLING_FEATURE.SUBSCRIPTIONS_UPDATE,
+            Purchases.BILLING_FEATURE.IN_APP_ITEMS_ON_VR,
+            ]);
+
+          expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
+          expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([0, 4, 3, 1, 2]);
+        });
+      });
+  });
 });

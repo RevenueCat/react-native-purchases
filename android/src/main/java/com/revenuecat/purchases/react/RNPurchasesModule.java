@@ -16,14 +16,16 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
+import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
 import com.revenuecat.purchases.hybridcommon.ErrorContainer;
 import com.revenuecat.purchases.hybridcommon.OnResult;
+import com.revenuecat.purchases.hybridcommon.OnResultAny;
 import com.revenuecat.purchases.hybridcommon.OnResultList;
-import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
 import com.revenuecat.purchases.hybridcommon.mappers.PurchaserInfoMapperKt;
 import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
+import com.revenuecat.purchases.interfaces.Callback;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -316,6 +318,29 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setCreative(String creative) {
         SubscriberAttributesKt.setCreative(creative);
+    }
+
+    @ReactMethod
+    public void canMakePayments(ReadableArray features, final Promise promise) {
+      ArrayList<Integer> featureList = new ArrayList<>();
+
+      if (features != null) {
+        for (int i = 0; i < features.size(); i++) {
+          featureList.add(features.getInt(i));
+        }
+      }
+      CommonKt.canMakePayments(reactContext, featureList, new OnResultAny<Boolean>() {
+        @Override
+        public void onError(@Nullable ErrorContainer errorContainer) {
+          promise.reject(errorContainer.getCode() + "", errorContainer.getMessage(),
+            convertMapToWriteableMap(errorContainer.getInfo()));
+        }
+
+        @Override
+        public void onReceived(Boolean result) {
+          promise.resolve(result);
+        }
+      });
     }
 
     // endregion
