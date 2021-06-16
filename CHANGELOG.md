@@ -1,3 +1,8 @@
+## 4.2.0
+
+- Add canMakePayments method (https://github.com/RevenueCat/react-native-purchases/pull/244)
+- Add PR template (https://github.com/RevenueCat/react-native-purchases/pull/263)
+
 ## 4.1.4
 
 - Bumped purchases-hybrid-common to 1.7.1 in Android [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.7.1)
