@@ -68,3 +68,5 @@ examples/purchaseTester/.vscode/
 #
 examples/purchaseTester/ios/Pods
 examples/purchaseTester/ios/test_output
+
+**/*.bck
