@@ -29,10 +29,14 @@ export enum PURCHASES_ERROR_CODE {
 export interface PurchasesError {
     code: PURCHASES_ERROR_CODE;
     message: string;
-    readableErrorCode: string;
+    userInfo: ErrorInfo;
     underlyingErrorMessage: string;
     
    // @deprecated
    // use code === Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR instead
    userCancelled: boolean | null;
+}
+
+export interface ErrorInfo {
+    readableErrorCode: string;
 }
