@@ -180,6 +180,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				9620D8ED7D2822A7CD11167B /* [CP] Copy Pods Resources */,
+				51738EC774E2AAC08C8DB526 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -202,6 +203,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				41D2E339337C90E8A5FDC4DC /* [CP] Copy Pods Resources */,
+				570E8575A0D39049B9F4543F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -352,6 +354,42 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		51738EC774E2AAC08C8DB526 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		570E8575A0D39049B9F4543F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9620D8ED7D2822A7CD11167B /* [CP] Copy Pods Resources */ = {
