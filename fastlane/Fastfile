@@ -1,0 +1,86 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+before_all do
+  setup_circle_ci
+end
+
+desc "Increment build numbers"
+lane :bump_version do |options|
+  if options[:dry_run]
+    dry_run = true
+  end
+  if options[:version]
+    new_version_number = options[:version]
+  else
+    UI.user_error!("Missing `version` argument")
+  end
+
+  # If we chain lanes together, we'll need to make sure we don't chdir out of the correct directory
+  if !File.file?("package.json")
+    Dir.chdir("..")
+  end  
+  previous_version_number = (sh "awk -F\\\" \'/\"version\":\/ {print $4}\' package.json").strip
+  UI.message("ℹ️  Current version: #{previous_version_number}")
+  UI.message("ℹ️  Setting version: #{new_version_number}")
+  files_to_update = [
+    'package.json',
+    'ios/RNPurchases.m',
+    'android/build.gradle',
+  ]
+
+  if dry_run
+    UI.message("ℹ️  Nothing more to do, dry_run: true")
+  else
+    for file_to_update in files_to_update
+      increment_build_number(previous_version_number, new_version_number, file_to_update)
+    end 
+  end
+end
+
+desc "Build example"
+lane :build_example do |options|
+  # If we chain lanes together, we'll need to make sure we don't chdir out of the correct directory
+  if !File.file?("package.json")
+    Dir.chdir("..")
+  end  
+
+  sh("yarn example")
+  Dir.chdir("examples/purchaseTester")
+  sh("npx pod-install")
+end
+
+desc "Prepare for release by bumping verion and building the example."
+lane :prepare_for_release do |options|
+  bump_version(options)
+  build_example(options)
+end
+
+###############################################################################
+# Helper functions 🤜🤛                                                      #
+###############################################################################
+
+def increment_build_number(previous_version_number, new_version_number, file_path)
+  replace_in(previous_version_number, new_version_number, file_path)
+end
+
+def replace_in(previous_text, new_text, path)
+  if new_text.to_s.strip.empty?
+    fail "Missing `new_text` in call to `replace_in`, looking for replacement for #{previous_text} 😵."
+  end
+  sed_regex = 's|' + previous_text + '|' + new_text + '|'
+  backup_extension = '.bck'
+  sh("sed", '-i', backup_extension, sed_regex, path)
+end
