@@ -1,17 +1,3 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
 
 before_all do
   setup_circle_ci
@@ -68,12 +54,119 @@ lane :prepare_for_release do |options|
   build_example(options)
 end
 
+desc "Update hybrid common pod and gradle"
+lane :update_hybrid_common do |options|
+  if options[:dry_run]
+    dry_run = true
+  end
+  if options[:version]
+    new_version_number = options[:version]
+  else
+    UI.user_error!("Missing `version` argument")
+  end
+
+  # If we chain lanes together, we'll need to make sure we don't chdir out of the correct directory
+  if !File.file?("RNPurchases.podspec")
+    Dir.chdir("..")
+  end  
+  previous_version_number=parse_previous_hybrid_version
+  # Add to options so if we're chaining lanes together, the other lanes get it
+  options[:previous_hybrid_version] = previous_version_number
+
+  UI.message("ℹ️  Current Purchases version: #{previous_version_number}")
+  UI.message("ℹ️  Setting Purchases version: #{new_version_number}")
+  files_to_update = [
+    'RNPurchases.podspec',
+    'android/build.gradle',
+  ]
+
+  if dry_run
+    UI.message("ℹ️  Nothing more to do, dry_run: true")
+  else
+    for file_to_update in files_to_update
+      increment_build_number(previous_version_number, new_version_number, file_to_update)
+    end 
+  end
+end
+
+desc "Build hybrid example"
+lane :build_hybrid_example do |options|
+  # If we chain lanes together, we'll need to make sure we don't chdir out of the correct directory
+  if !File.file?("package.json")
+    Dir.chdir("..")
+  end  
+
+  sh("yarn example")
+  Dir.chdir("examples/purchaseTester/ios") do
+    sh("pod update PurchasesHybridCommon")
+  end
+  options[:previous_pod_version] = parse_pod_version
+end
+
+desc "Update iOS pod version during hybrid update"
+lane :update_ios_pod do |options|
+  if !File.file?("RNPurchases.podspec")
+    Dir.chdir("..")
+  end 
+  if options[:dry_run]
+    dry_run = true
+  end
+  if options[:version]
+    new_version_number = options[:version]
+  else
+    UI.user_error!("Missing `version` argument")
+  end
+
+  if options[:previous_pod_version]
+    previous_pod_version = options[:previous_pod_version]
+  else
+    UI.user_error!("Missing `previous_pod_version` argument")
+  end
+
+  if options[:previous_hybrid_version]
+    previous_hybrid_version = options[:previous_hybrid_version]
+  else
+    UI.user_error!("Missing `previous_hybrid_version` argument")
+  end
+
+  new_pod_version=parse_pod_version
+  
+  UI.message("ℹ️  Current Purchases version: #{previous_hybrid_version}")
+  UI.message("ℹ️  New Purchases version    : #{new_version_number}")
+  UI.message("ℹ️  Current Pod version      : #{previous_pod_version}")
+  UI.message("ℹ️  New Pod version          : #{new_pod_version}")
+  if dry_run
+    UI.message("ℹ️  Nothing more to do, dry_run: true")
+  else
+    UI.message("ℹ️  Current dir:#{sh("pwd")}")
+    Dir.chdir("scripts") do
+      sh("sed -i.bck \"s/download-purchases-framework.sh #{previous_pod_version}/download-purchases-framework.sh #{new_pod_version}/\" build.js")
+      sh("sed -i.bck \"s/download-purchases-common.sh #{previous_hybrid_version}/download-purchases-common.sh #{new_version_number}/\" build.js")
+    end
+  end
+end
+
+desc "Update Hybrid Common, Build PurchaseTester, and updates download scrips. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod"
+lane :update_hybrid_build_sample_update_scripts do |options|
+  update_hybrid_common(options)
+  build_hybrid_example(options)
+  update_ios_pod(options)
+end
+
 ###############################################################################
 # Helper functions 🤜🤛                                                      #
 ###############################################################################
 
+def parse_previous_hybrid_version
+  return (sh "cat RNPurchases.podspec | grep \'\"PurchasesHybridCommon\", \' | awk \'{print($3)}\' | sed \"s/\'//g\"").strip
+end
+
 def increment_build_number(previous_version_number, new_version_number, file_path)
   replace_in(previous_version_number, new_version_number, file_path)
+end
+
+def parse_pod_version
+  return sh("cat examples/purchaseTester/ios/Podfile.lock | grep \' Purchases (=\' | awk \'{print($4)}\' | sed \"s/)//g\"").strip
 end
 
 def replace_in(previous_text, new_text, path)
