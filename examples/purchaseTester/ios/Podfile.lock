@@ -323,7 +323,7 @@ PODS:
     - React-perflogger (= 0.64.2)
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNPurchases (4.1.4):
+  - RNPurchases (4.2.0):
     - PurchasesHybridCommon (= 1.7.1)
     - React-Core
   - RNScreens (2.18.1):
@@ -473,7 +473,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
-  FBReactNativeSpec: 088cd565b22b8f5ee4039ea11d21ef80d77bf1a1
+  FBReactNativeSpec: e13ff3c104c78e885051a37c467ad9dabe543fb9
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: 755929a4f851b2fb2c347d533a23f191b008554c
@@ -511,7 +511,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNPurchases: 5501ff63ca93a3ec6869a1b7fbde8ca40c29011e
+  RNPurchases: de0ff23450a6a264e4309ffce1530efb6510201d
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
