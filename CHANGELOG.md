@@ -24,7 +24,6 @@ Detailed docs about the new system are available [here](https://docs.revenuecat.
     https://github.com/RevenueCat/react-native-purchases/pull/271
     https://github.com/RevenueCat/react-native-purchases/pull/273
 
-
 ## 4.2.0
 
 - Add canMakePayments method (https://github.com/RevenueCat/react-native-purchases/pull/244)
