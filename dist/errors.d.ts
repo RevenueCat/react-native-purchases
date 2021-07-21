@@ -27,6 +27,10 @@ export interface PurchasesError {
     code: PURCHASES_ERROR_CODE;
     message: string;
     readableErrorCode: string;
+    userInfo: ErrorInfo;
     underlyingErrorMessage: string;
     userCancelled: boolean | null;
+}
+export interface ErrorInfo {
+    readableErrorCode: string;
 }
