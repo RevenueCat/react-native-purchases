@@ -43,7 +43,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "4.0.0";
+    public static final String PLUGIN_VERSION = "4.3.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -156,6 +156,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void restoreTransactions(final Promise promise) {
         CommonKt.restoreTransactions(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void logOut(final Promise promise) {
+        CommonKt.logOut(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void logIn(String appUserID, final Promise promise) {
+        CommonKt.logIn(appUserID, getOnResult(promise));
     }
 
     @ReactMethod
