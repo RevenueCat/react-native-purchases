@@ -18,6 +18,8 @@ Detailed docs about the new system are available [here](https://docs.revenuecat.
     https://github.com/RevenueCat/react-native-purchases/pull/229/
 
 #### Other
+- Updated BillingClient to version [4.0.0](https://developer.android.com/google/play/billing/release-notes#4-0).
+     https://github.com/RevenueCat/purchases-android/commit/f6554bbf7376c3fd492f0bc67183a9f35889ae78
 - Fixed build issues MagicWeather example for Xcode 12.5
     https://github.com/RevenueCat/react-native-purchases/pull/267
 - Dependency security updates
