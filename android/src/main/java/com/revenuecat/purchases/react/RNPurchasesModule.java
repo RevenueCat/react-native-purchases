@@ -16,14 +16,16 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
-import com.revenuecat.purchases.common.CommonKt;
-import com.revenuecat.purchases.common.ErrorContainer;
-import com.revenuecat.purchases.common.OnResult;
-import com.revenuecat.purchases.common.OnResultList;
 import com.revenuecat.purchases.common.PlatformInfo;
-import com.revenuecat.purchases.common.SubscriberAttributesKt;
-import com.revenuecat.purchases.common.mappers.PurchaserInfoMapperKt;
+import com.revenuecat.purchases.hybridcommon.CommonKt;
+import com.revenuecat.purchases.hybridcommon.ErrorContainer;
+import com.revenuecat.purchases.hybridcommon.OnResult;
+import com.revenuecat.purchases.hybridcommon.OnResultAny;
+import com.revenuecat.purchases.hybridcommon.OnResultList;
+import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
+import com.revenuecat.purchases.hybridcommon.mappers.PurchaserInfoMapperKt;
 import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
+import com.revenuecat.purchases.interfaces.Callback;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -41,7 +43,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "4.0.0";
+    public static final String PLUGIN_VERSION = "4.3.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -67,12 +69,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
-                               boolean observerMode, @Nullable String userDefaultsSuiteName,
-                               final Promise promise) {
+                               boolean observerMode, @Nullable String userDefaultsSuiteName) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         CommonKt.configure(reactContext, apiKey, appUserID, observerMode, platformInfo);
         Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
-        promise.resolve(null);
     }
 
     @ReactMethod
@@ -156,6 +156,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void restoreTransactions(final Promise promise) {
         CommonKt.restoreTransactions(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void logOut(final Promise promise) {
+        CommonKt.logOut(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void logIn(String appUserID, final Promise promise) {
+        CommonKt.logIn(appUserID, getOnResult(promise));
     }
 
     @ReactMethod
@@ -318,6 +328,29 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setCreative(String creative) {
         SubscriberAttributesKt.setCreative(creative);
+    }
+
+    @ReactMethod
+    public void canMakePayments(ReadableArray features, final Promise promise) {
+      ArrayList<Integer> featureList = new ArrayList<>();
+
+      if (features != null) {
+        for (int i = 0; i < features.size(); i++) {
+          featureList.add(features.getInt(i));
+        }
+      }
+      CommonKt.canMakePayments(reactContext, featureList, new OnResultAny<Boolean>() {
+        @Override
+        public void onError(@Nullable ErrorContainer errorContainer) {
+          promise.reject(errorContainer.getCode() + "", errorContainer.getMessage(),
+            convertMapToWriteableMap(errorContainer.getInfo()));
+        }
+
+        @Override
+        public void onReceived(Boolean result) {
+          promise.resolve(result);
+        }
+      });
     }
 
     // endregion

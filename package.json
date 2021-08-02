@@ -1,15 +1,14 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "4.1.1",
+  "version": "4.3.0",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android. ",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "source": "src/index",
   "files": [
-    "build.js",
-    "index.js",
-    "index.d.ts",
+    "scripts/build.js",
+    "dist",
     "android",
     "!android/gradlew*",
     "!android/.gradle",
@@ -31,12 +30,12 @@
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc --watch",
-    "preinstall": "node build.js",
+    "preinstall": "node scripts/build.js",
     "test": "jest",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepublish": "tsc",
-    "example": "yarn --cwd example",
-    "pods": "cd example && pod-install --quiet",
+    "example": "yarn --cwd examples/purchaseTester",
+    "pods": "cd examples/purchaseTester && pod-install --quiet",
     "bootstrap": "yarn example && yarn && yarn pods"
   },
   "repository": {
@@ -78,7 +77,7 @@
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
+      "<rootDir>/examples/purchaseTester/node_modules",
       "<rootDir>/lib/"
     ],
     "moduleFileExtensions": [
@@ -94,7 +93,7 @@
     ],
     "cacheDirectory": ".jest/cache",
     "setupFiles": [
-      "./setupJest.js"
+      "./scripts/setupJest.js"
     ]
   }
 }

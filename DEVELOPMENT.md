@@ -22,11 +22,11 @@ To edit the iOS code, open the example project with XCode, there should be a sub
 If touching common files, you can point to your local project in the podspec. 
 You can run the project from XCode without having to run `react-native run-ios`, but make sure that if you are touching `.ts` files, you run `npm run build` to compile the plugin.
 
-In Android, if you are touching common files, you can run in `example/android` the following command `gradle enableLocalBuild -PcommonPath="$HOME/Development/repos/purchases-hybrid-common/android"`. Make sure you set the right path in your local machine. This will add the `purchases-hybrid-common` as a project that you can edit on the fly when opening the example project.
+In Android, if you are touching common files, you can run in `examples/purchaseTester/android` the following command `gradle enableLocalBuild -PcommonPath="$HOME/Development/repos/purchases-hybrid-common/android"`. Make sure you set the right path in your local machine. This will add the `purchases-hybrid-common` as a project that you can edit on the fly when opening the example project.
 
 ## Common issues
 
-> ReferenceError: Module not registered in graph: /Users/cesardelavega/Development/repos/react-native/react-native-purchases/example/node_modules/@babel/runtime/helpers/get.js
+> ReferenceError: Module not registered in graph: /Users/cesardelavega/Development/repos/react-native/react-native-purchases/examples/purchaseTester/node_modules/@babel/runtime/helpers/get.js
 
 Clean all the node_modules folders and restart the server
 

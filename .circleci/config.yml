@@ -26,7 +26,7 @@ commands:
       #         .Environment.CACHE_VERSION }}
       - run:
           command: >-
-            yarn example && yarn install --non-interactive --cache-folder /tmp/yarn
+            yarn --cwd examples/purchaseTester && yarn install --non-interactive --cache-folder /tmp/yarn
           name: Yarn Install
       # - save_cache:
       #     key: >
@@ -40,15 +40,15 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - cache-pods-{{ checksum "example/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
+            - cache-pods-{{ checksum "examples/purchaseTester/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
             - cache-pods-
       - run:
           command: yarn pods
           name: Pod install
       - save_cache:
           paths:
-            - example/ios/Pods
-          key: cache-pods-{{ checksum "example/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
+            - examples/purchaseTester/ios/Pods
+          key: cache-pods-{{ checksum "examples/purchaseTester/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
 
 jobs:
   analyse_js:
@@ -70,11 +70,11 @@ jobs:
       - checkout
       - yarn_install_example
       - rn/android_build:
-          project_path: example/android
+          project_path: examples/purchaseTester/android
   ios:
     executor:
       name: rn/macos
-      xcode_version: 12.4.0
+      xcode_version: 12.5.0
     steps:
       - checkout
       - rn/ios_simulator_start:
@@ -86,7 +86,7 @@ jobs:
           device: iPhone 11 Pro
           derived_data_path: ~/DerivedData
           project_type: workspace
-          project_path: example/ios/ReactNativeSample.xcworkspace
+          project_path: examples/purchaseTester/ios/ReactNativeSample.xcworkspace
           scheme: ReactNativeSample
 
 workflows:

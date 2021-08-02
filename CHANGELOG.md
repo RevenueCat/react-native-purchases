@@ -1,3 +1,66 @@
+## 4.3.0
+
+### Identity V3:
+
+In this version, we’ve redesigned the way that user identification works. 
+Detailed docs about the new system are available [here](https://docs.revenuecat.com/v3.2/docs/user-ids).
+
+#### New methods
+- Introduces `logIn`, a new way of identifying users, which also returns whether a new user has been registered in the system. 
+`logIn` uses a new backend endpoint. 
+- Introduces `logOut`, a replacement for `reset`. 
+
+#### Deprecations
+- deprecates `createAlias` in favor of `logIn`.
+- deprecates `identify` in favor of `logIn`.
+- deprecates `reset` in favor of `logOut`.
+- deprecates `setAllowSharingStoreAccount` in favor of dashboard-side configuration.
+    https://github.com/RevenueCat/react-native-purchases/pull/229/
+
+#### Other
+- Updated BillingClient to version [4.0.0](https://developer.android.com/google/play/billing/release-notes#4-0).
+     https://github.com/RevenueCat/purchases-android/commit/f6554bbf7376c3fd492f0bc67183a9f35889ae78
+- Fixed build issues MagicWeather example for Xcode 12.5
+    https://github.com/RevenueCat/react-native-purchases/pull/267
+- Dependency security updates
+    https://github.com/RevenueCat/react-native-purchases/pull/271
+    https://github.com/RevenueCat/react-native-purchases/pull/273
+- Bumped purchases-ios to 3.12.2 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.12.2)
+- Bumped purchases-android to 4.3.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/4.3.0)
+
+## 4.2.0
+
+- Add canMakePayments method (https://github.com/RevenueCat/react-native-purchases/pull/244)
+- Add PR template (https://github.com/RevenueCat/react-native-purchases/pull/263)
+
+## 4.1.4
+
+- Bumped purchases-hybrid-common to 1.7.1 in Android [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.7.1)
+
+## 4.1.3
+
+- Bumped purchases-hybrid-common to 1.7.1 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.7.1)
+- Bumped purchases-android to 4.2.1 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/4.2.1)
+
+## 4.1.2
+
+- Fix wrong types specified in TypeScript
+    https://github.com/RevenueCat/react-native-purchases/pull/231
+- Cleaned up directory structure
+    https://github.com/RevenueCat/react-native-purchases/pull/235
+    https://github.com/RevenueCat/react-native-purchases/pull/237
+    https://github.com/RevenueCat/react-native-purchases/pull/232
+- Updated example apps dependencies
+    https://github.com/RevenueCat/react-native-purchases/pull/240
+    https://github.com/RevenueCat/react-native-purchases/pull/239
+    https://github.com/RevenueCat/react-native-purchases/pull/233
+    https://github.com/RevenueCat/react-native-purchases/pull/227
+    https://github.com/RevenueCat/react-native-purchases/pull/226
+    https://github.com/RevenueCat/react-native-purchases/pull/234
+- Bumped purchases-hybrid-common to 1.6.3 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.3)
+- Bumped purchases-ios to 3.11.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.11.1)
+    https://github.com/RevenueCat/react-native-purchases/pull/243
+
 ## 4.1.1
 
 - Updated example app to the latest React-Native version
@@ -8,7 +71,7 @@
 - Bumped purchases-hybrid-common to 1.6.2 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.2)
 - Bumped purchases-ios to 3.10.7 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.10.7)
 - Bumped purchases-android to 4.0.5 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/4.0.5)
-    https://github.com/RevenueCat/purchases-flutter/pull/171
+    https://github.com/RevenueCat/react-native-purchases/pull/225
 
 ## 4.1.0
 
