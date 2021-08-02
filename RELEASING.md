@@ -7,6 +7,6 @@
 1. Run `npm run build`
 1. `git commit -am "Preparing for version x.y.z"`
 1. `git tag x.y.z`
-1. `git push origin master && git push --tags`
+1. `git push origin main && git push --tags`
 1. Create a new release in github and upload
 1. `npm publish`
