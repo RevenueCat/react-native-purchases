@@ -35,7 +35,8 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
                   observerMode:(BOOL)observerMode
-                  userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName) {
+                  userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
+                  useAmazon:(BOOL)useAmazon) {
     [RCPurchases configureWithAPIKey:apiKey
                            appUserID:appUserID
                         observerMode:observerMode

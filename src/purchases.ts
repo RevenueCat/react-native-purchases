@@ -188,7 +188,8 @@ export default class Purchases {
         apiKey: string,
         appUserID?: string | null,
         observerMode: boolean = false,
-        userDefaultsSuiteName?: string
+        userDefaultsSuiteName?: string,
+        useAmazon: boolean = false
     ): void {
         if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
             throw new Error("appUserID needs to be a string");
@@ -197,7 +198,8 @@ export default class Purchases {
             apiKey,
             appUserID,
             observerMode,
-            userDefaultsSuiteName
+            userDefaultsSuiteName,
+            useAmazon
         );
     }
 
