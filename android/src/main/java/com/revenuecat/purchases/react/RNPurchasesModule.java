@@ -43,7 +43,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "4.3.0";
+    public static final String PLUGIN_VERSION = "5.0.0-amazon.alpha.1";
 
     private final ReactApplicationContext reactContext;
 
