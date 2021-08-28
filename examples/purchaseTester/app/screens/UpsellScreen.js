@@ -57,16 +57,16 @@ export default class UpsellScreen extends React.Component {
       console.log(JSON.stringify(offerings));
       this.setState({
         offerings,
-        proAnnualPrice: `Buy Annual w/ Trial ${
-          offerings.current.annual.product.price_string
+        proAnnualPrice: `Buy weekly w/ Trial ${
+          offerings.current.weekly.product.price_string
         }`,
         proMonthlyPrice: `Buy Monthly w/ Trial ${
-          offerings.current.lifetime.product.price_string
+          offerings.current.monthly.product.price_string
         }`
       });
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.log("Error handling");
+      console.log("Error handling " + JSON.stringify(e));
     }
   }
 
@@ -84,7 +84,7 @@ export default class UpsellScreen extends React.Component {
               <Button
                 color="#f2545b"
                 onPress={async () => {
-                  const aPackage = this.state.offerings.current.annual;
+                  const aPackage = this.state.offerings.current.weekly;
                   try {
                     const purchaseMade = await Purchases.purchasePackage(aPackage);
                     checkIfPro(purchaseMade.purchaserInfo, this.props.navigation);
