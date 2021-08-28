@@ -68,3 +68,4 @@ examples/purchaseTester/.vscode/
 #
 examples/purchaseTester/ios/Pods
 examples/purchaseTester/ios/test_output
+examples/purchaseTester/android/app/libs/in-app-purchasing-2.0.76.jar
