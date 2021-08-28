@@ -238,3 +238,38 @@ task downloadDependencies() {
     }
   }
 }
+
+// Gradle task to download Amazon library
+ext {
+    iapVersion = "2.0.76"
+}
+
+task getAmazonLibrary {
+    ext {
+        downloadURL = "https://amzndevresources.com/iap/sdk/AmazonInAppPurchasing_Android.zip"
+        fileToExtract = "in-app-purchasing-${iapVersion}.jar"
+        destFile = new File( projectDir, "libs/$fileToExtract" )
+    }
+
+    inputs.property( 'downloadURL', downloadURL )
+    inputs.property( 'fileToExtract', fileToExtract )
+    outputs.file( destFile )
+
+    doLast {
+        File destDir = destFile.parentFile
+        destDir.mkdirs()
+
+        File downloadFile = new File( temporaryDir, 'download.zip' )
+        new URL( downloadURL ).withInputStream { is ->
+            downloadFile.withOutputStream { it << is }
+        }
+
+        project.copy {
+            from {
+                zipTree(downloadFile).matching { include "**/$fileToExtract" }.singleFile
+            }
+
+            into( destDir )
+        }
+    }
+}
