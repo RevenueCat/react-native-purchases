@@ -16,6 +16,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.PurchaserInfo;
 import com.revenuecat.purchases.Purchases;
+import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
 import com.revenuecat.purchases.hybridcommon.ErrorContainer;
@@ -25,7 +26,6 @@ import com.revenuecat.purchases.hybridcommon.OnResultList;
 import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
 import com.revenuecat.purchases.hybridcommon.mappers.PurchaserInfoMapperKt;
 import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
-import com.revenuecat.purchases.interfaces.Callback;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -69,7 +69,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
-                               boolean observerMode, boolean useAmazon, @Nullable String userDefaultsSuiteName) {
+                               boolean observerMode, @Nullable String userDefaultsSuiteName,
+                               boolean useAmazon) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
