@@ -43,7 +43,7 @@ export default class App extends React.Component {
 
   async componentDidMount() {
     Purchases.setDebugLogsEnabled(true);
-    Purchases.setup("api_key");
+    Purchases.setup({apiKey: "api_key", useAmazon: true});
     try {
       const purchaserInfo = await Purchases.getPurchaserInfo();
       if (typeof purchaserInfo.entitlements.active.pro_cat !== "undefined") {
