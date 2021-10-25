@@ -1,3 +1,10 @@
+## 4.3.2
+
+- Fixed return type of `isAnonymous`
+    https://github.com/RevenueCat/react-native-purchases/pull/302
+- Fix `EntitlementInfo.store` type
+    https://github.com/RevenueCat/react-native-purchases/pull/296
+    
 ## 4.3.1
 
 - Bumped purchases-android to 4.3.1 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/4.3.1), 

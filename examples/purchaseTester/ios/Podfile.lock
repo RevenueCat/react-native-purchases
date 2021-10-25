@@ -323,7 +323,7 @@ PODS:
     - React-perflogger (= 0.64.2)
   - RNGestureHandler (1.10.3):
     - React-Core
-  - RNPurchases (4.3.1):
+  - RNPurchases (4.3.2):
     - PurchasesHybridCommon (= 1.9.1)
     - React-Core
   - RNScreens (2.18.1):
