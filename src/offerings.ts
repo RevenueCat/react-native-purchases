@@ -282,9 +282,9 @@ export interface PurchasesOfferings {
  */
 export interface UpgradeInfo {
     /**
-     * The oldSKU to upgrade from.
+     * The oldSku to upgrade from.
      */
-    readonly oldSKU: string;
+    readonly oldSku: string;
     /**
      * The [PRORATION_MODE] to use when upgrading the given oldSKU.
      */
