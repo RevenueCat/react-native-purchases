@@ -117,10 +117,10 @@ export interface LogInResult {
 export interface PurchasesConfiguration {
     apiKey: string;
     appUserID?: string | null;
-    observerMode: boolean;
-    userDefaultsSuiteName?: string | null;
-    useAmazon: boolean;
-}
+    observerMode?: boolean;
+    userDefaultsSuiteName?: string;
+    useAmazon?: boolean;
+  }
 
 export default class Purchases {
     /**
@@ -196,7 +196,7 @@ export default class Purchases {
         apiKey,
         appUserID = null,
         observerMode = false,
-        userDefaultsSuiteName = null,
+        userDefaultsSuiteName,
         useAmazon = false
     }: PurchasesConfiguration): void {
         if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
