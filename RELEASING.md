@@ -1,8 +1,6 @@
-1. Update to the latest SDK versions in `scripts/build.js`, `RNPurchases.podspec` and `android/build.gradle`.
+1. `bundle exec fastlane update_hybrid_common version:x.x.x` to set the purchases-hybrid-common version number.
+1. `bundle exec fastlane bump_version version:x.x.x` to set the version number.
 1. Update versions in VERSIONS.md.
-1. Update version in `package.json`.
-1. Update `platformFlavorVersion` in `RNPurchases.m`.
-1. Update versionName in `android/build.gradle`.
 1. Add an entry to CHANGELOG.md
 1. Run `npm run build`
 1. `git commit -am "Preparing for version x.y.z"`
