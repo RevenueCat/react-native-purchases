@@ -15,9 +15,9 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
-### bump_version
+### bump_and_update_changelog
 ```
-fastlane bump_version
+fastlane bump_and_update_changelog
 ```
 Increment build numbers
 ### build_example

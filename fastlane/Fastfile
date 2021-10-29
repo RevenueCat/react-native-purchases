@@ -4,7 +4,7 @@ before_all do
 end
 
 desc "Increment build numbers"
-lane :bump_version do |options|
+lane :bump_and_update_changelog do |options|
   if options[:dry_run]
     dry_run = true
   end
@@ -38,8 +38,9 @@ lane :bump_version do |options|
     Dir.chdir(get_root_folder) do
       for file_to_update in files_to_update
         increment_build_number(previous_version_number, new_version_number, file_to_update)
-      end 
-    end 
+      end
+    end
+    attach_changelog_to_main(options)
   end
 end
 
@@ -185,4 +186,25 @@ end
 
 def get_root_folder
   return File.expand_path('../../', __FILE__)
+end
+
+def attach_changelog_to_main(options)
+  Dir.chdir(get_root_folder) do
+    version_number = options[:version]
+    current_changelog = File.open("CHANGELOG.latest.md", 'r')
+    main_changelog = File.open("CHANGELOG.md", 'r')
+
+    current_changelog_data = current_changelog.read
+    main_changelog_data = main_changelog.read
+
+    current_changelog.close
+    main_changelog.close
+
+    File.open("CHANGELOG.md", 'w') { |main_changelog_write_mode|
+      version_header = "## #{version_number}"
+      whole_file_data = "#{version_header}\n\n#{current_changelog_data}\n#{main_changelog_data}"
+      puts "going to save. Contents - #{whole_file_data}"
+      main_changelog_write_mode.write(whole_file_data)
+    }
+  end
 end
