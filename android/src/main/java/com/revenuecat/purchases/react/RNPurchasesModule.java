@@ -296,6 +296,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
       SubscriberAttributesKt.setOnesignalID(onesignalID);
     }
 
+    @ReactMethod
+    public void setAirshipChannelID(String airshipChannelID) {
+      SubscriberAttributesKt.setAirshipChannelID(airshipChannelID);
+    }
+
     // endregion
 
     // region Campaign parameters
