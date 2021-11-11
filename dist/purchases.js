@@ -524,6 +524,15 @@ var Purchases = /** @class */ (function () {
         RNPurchases.setOnesignalID(onesignalID);
     };
     /**
+     * Subscriber attribute associated with the Airship Channel Id for the user
+     * Required for the RevenueCat Airship integration
+     *
+     * @param airshipChannelID Empty String or null will delete the subscriber attribute.
+     */
+    Purchases.setAirshipChannelID = function (airshipChannelID) {
+        RNPurchases.setAirshipChannelID(airshipChannelID);
+    };
+    /**
      * Subscriber attribute associated with the install media source for the user
      *
      * @param mediaSource Empty String or null will delete the subscriber attribute.

@@ -283,6 +283,10 @@ RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID) {
     [RCCommonFunctionality setOnesignalID:onesignalID];
 }
 
+RCT_EXPORT_METHOD(setAirshipChannelID:(NSString *)airshipChannelID) {
+    [RCCommonFunctionality setAirshipChannelID:airshipChannelID];
+}
+
 # pragma mark Campaign parameters
 
 RCT_EXPORT_METHOD(setMediaSource:(NSString *)mediaSource) {
@@ -358,7 +362,7 @@ shouldPurchasePromoProduct:(SKProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"4.3.3";
+    return @"4.4.0";
 }
 
 @end
