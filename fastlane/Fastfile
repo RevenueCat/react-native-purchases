@@ -1,0 +1,210 @@
+
+before_all do
+  setup_circle_ci
+end
+
+desc "Increment build numbers"
+lane :bump_and_update_changelog do |options|
+  if options[:dry_run]
+    dry_run = true
+  end
+  if options[:version]
+    new_version_number = options[:version]
+  else
+    UI.user_error!("Missing `version` argument")
+  end
+
+  previous_version_number = nil
+  Dir.chdir(get_root_folder) do
+    previous_version_number = (sh "awk -F\\\" \'/\"version\":\/ {print $4}\' package.json").strip
+  end
+
+  if previous_version_number == nil
+    UI.user_error!("Couldn't get previous version number from package.json")
+    return
+  end
+
+  UI.message("ℹ️  Current version: #{previous_version_number}")
+  UI.message("ℹ️  Setting version: #{new_version_number}")
+  files_to_update = [
+    'package.json',
+    'ios/RNPurchases.m',
+    'android/build.gradle',
+  ]
+
+  if dry_run
+    UI.message("ℹ️  Nothing more to do, dry_run: true")
+  else
+    Dir.chdir(get_root_folder) do
+      for file_to_update in files_to_update
+        increment_build_number(previous_version_number, new_version_number, file_to_update)
+      end
+    end
+    attach_changelog_to_main(options)
+  end
+end
+
+desc "Build example"
+lane :build_example do |options|
+  Dir.chdir(get_root_folder) do
+    sh("yarn example")
+  end
+  Dir.chdir(File.expand_path('examples/purchaseTester', get_root_folder)) do
+    sh("npx pod-install")
+  end
+end
+
+desc "Prepare for release by bumping verion and building the example."
+lane :prepare_for_release do |options|
+  bump_version(options)
+  build_example(options)
+end
+
+desc "Update hybrid common pod and gradle"
+lane :update_hybrid_common_versions do |options|
+  if options[:dry_run]
+    dry_run = true
+  end
+  if options[:version]
+    new_version_number = options[:version]
+  else
+    UI.user_error!("Missing `version` argument")
+  end
+  
+  previous_version_number = parse_previous_hybrid_version
+  
+  # Add to options so if we're chaining lanes together, the other lanes get it
+  options[:previous_hybrid_version] = previous_version_number
+
+  UI.message("ℹ️  Current Purchases Hybrid Common version: #{previous_version_number}")
+  UI.message("ℹ️  Setting Purchases Hybrid Common version: #{new_version_number}")
+  files_to_update = [
+    'RNPurchases.podspec',
+    'android/build.gradle',
+  ]
+
+  if dry_run
+    UI.message("ℹ️  Nothing more to do, dry_run: true")
+  else
+    Dir.chdir(get_root_folder) do
+      for file_to_update in files_to_update
+        increment_build_number(previous_version_number, new_version_number, file_to_update)
+      end
+    end
+  end
+end
+
+desc "Build hybrid example"
+lane :build_hybrid_example do |options|
+  options[:previous_pod_version] = parse_pod_version
+  # If we chain lanes together, we'll need to make sure we don't chdir out of the correct directory
+  Dir.chdir(get_root_folder) do
+    sh("yarn example")
+  end
+  Dir.chdir(File.expand_path("examples/purchaseTester/ios", get_root_folder)) do
+    sh("pod update PurchasesHybridCommon")
+  end
+end
+
+desc "Update iOS pod version during hybrid update"
+lane :update_ios_pod do |options|
+  if options[:dry_run]
+    dry_run = true
+  end
+  if options[:version]
+    new_version_number = options[:version]
+  else
+    UI.user_error!("Missing `version` argument")
+  end
+
+  if options[:previous_pod_version]
+    previous_pod_version = options[:previous_pod_version]
+  else
+    UI.user_error!("Missing `previous_pod_version` argument")
+  end
+
+  if options[:previous_hybrid_version]
+    previous_hybrid_version = options[:previous_hybrid_version]
+  else
+    UI.user_error!("Missing `previous_hybrid_version` argument")
+  end
+
+  new_pod_version = parse_pod_version
+  
+  UI.message("ℹ️  Current Purchases version: #{previous_hybrid_version}")
+  UI.message("ℹ️  New Purchases version    : #{new_version_number}")
+  UI.message("ℹ️  Current Pod version      : #{previous_pod_version}")
+  UI.message("ℹ️  New Pod version          : #{new_pod_version}")
+  if dry_run
+    UI.message("ℹ️  Nothing more to do, dry_run: true")
+  else
+    UI.message("ℹ️  Current dir:#{sh("pwd")}")
+    Dir.chdir(File.expand_path("scripts", get_root_folder)) do
+      replace_in("download-purchases-framework.sh #{previous_pod_version}", 
+        "download-purchases-framework.sh #{new_pod_version}", "build.js")
+      replace_in("download-purchases-common.sh #{previous_hybrid_version}", 
+        "download-purchases-common.sh #{new_version_number}", "build.js")
+    end
+  end
+end
+
+desc "Update Hybrid Common, Build PurchaseTester, and updates download scrips. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod"
+lane :update_hybrid_common do |options|
+  update_hybrid_common_versions(options)
+  build_hybrid_example(options)
+  update_ios_pod(options)
+end
+
+###############################################################################
+# Helper functions 🤜🤛                                                      #
+###############################################################################
+
+def parse_previous_hybrid_version
+  Dir.chdir(get_root_folder) do
+    return (sh "cat RNPurchases.podspec | grep \'\"PurchasesHybridCommon\", \' | awk \'{print($3)}\' | sed \"s/\'//g\"").strip
+  end
+end
+
+def increment_build_number(previous_version_number, new_version_number, file_path)
+  replace_in(previous_version_number, new_version_number, file_path)
+end
+
+def parse_pod_version
+  Dir.chdir(get_root_folder) do
+    return sh("cat examples/purchaseTester/ios/Podfile.lock | grep \' Purchases (=\' | awk \'{print($4)}\' | sed \"s/)//g\"").strip
+  end
+end
+
+def replace_in(previous_text, new_text, path)
+  if new_text.to_s.strip.empty?
+    fail "Missing `new_text` in call to `replace_in`, looking for replacement for #{previous_text} 😵."
+  end
+  sed_regex = 's|' + previous_text + '|' + new_text + '|'
+  backup_extension = '.bck'
+  sh("sed", '-i', backup_extension, sed_regex, path)
+end
+
+def get_root_folder
+  return File.expand_path('../../', __FILE__)
+end
+
+def attach_changelog_to_main(options)
+  Dir.chdir(get_root_folder) do
+    version_number = options[:version]
+    current_changelog = File.open("CHANGELOG.latest.md", 'r')
+    main_changelog = File.open("CHANGELOG.md", 'r')
+
+    current_changelog_data = current_changelog.read
+    main_changelog_data = main_changelog.read
+
+    current_changelog.close
+    main_changelog.close
+
+    File.open("CHANGELOG.md", 'w') { |main_changelog_write_mode|
+      version_header = "## #{version_number}"
+      whole_file_data = "#{version_header}\n\n#{current_changelog_data}\n#{main_changelog_data}"
+      puts "going to save. Contents - #{whole_file_data}"
+      main_changelog_write_mode.write(whole_file_data)
+    }
+  end
+end

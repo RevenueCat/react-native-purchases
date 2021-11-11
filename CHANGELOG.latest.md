@@ -1,0 +1,2 @@
+- Add canMakePayments method (https://github.com/RevenueCat/react-native-purchases/pull/244)
+- Add PR template (https://github.com/RevenueCat/react-native-purchases/pull/263)
