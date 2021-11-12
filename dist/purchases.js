@@ -267,7 +267,7 @@ var Purchases = /** @class */ (function () {
     };
     /**
      * Get the appUserID
-     * @returns {string} The app user id in a promise
+     * @returns {Promise<string>} The app user id in a promise
      */
     Purchases.getAppUserID = function () {
         return RNPurchases.getAppUserID();

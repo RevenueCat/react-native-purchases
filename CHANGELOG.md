@@ -1,3 +1,8 @@
+## 4.4.1
+
+- Fixed declared type in `getAppUserId`
+     https://github.com/RevenueCat/react-native-purchases/pull/306
+
 ## 4.4.0
 
 - Bump`purchases-hybrid-common` to `1.10.0` [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.10.0)

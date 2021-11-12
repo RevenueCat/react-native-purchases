@@ -251,9 +251,9 @@ export default class Purchases {
     static restoreTransactions(): Promise<PurchaserInfo>;
     /**
      * Get the appUserID
-     * @returns {string} The app user id in a promise
+     * @returns {Promise<string>} The app user id in a promise
      */
-    static getAppUserID(): string;
+    static getAppUserID(): Promise<string>;
     /**
      * This function will logIn the current user with an appUserID. Typically this would be used after a log in
      * to identify a user without calling configure.

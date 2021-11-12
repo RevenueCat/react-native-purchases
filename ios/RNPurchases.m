@@ -362,7 +362,7 @@ shouldPurchasePromoProduct:(SKProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"4.4.0";
+    return @"4.4.1";
 }
 
 @end
