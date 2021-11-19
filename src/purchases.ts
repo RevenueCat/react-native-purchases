@@ -25,8 +25,8 @@ const eventEmitter = new NativeEventEmitter(RNPurchases);
  * @param {Object} purchaserInfo Object containing info for the purchaser
  */
 export type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
-export type ShouldPurchasePromoProductListener = (deferredPurchase: () => MakePurchasePromise) => void;
-type MakePurchasePromise = Promise<{ productIdentifier: string; purchaserInfo: PurchaserInfo; }>;
+export type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
+type MakePurchaseResult = { productIdentifier: string; purchaserInfo: PurchaserInfo; };
 
 let purchaserInfoUpdateListeners: PurchaserInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
@@ -208,14 +208,18 @@ export default class Purchases {
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      */
     public static setAllowSharingStoreAccount(allowSharing: boolean): void {
-        RNPurchases.setAllowSharingStoreAccount(allowSharing);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setAllowSharingStoreAccount(allowSharing);
+        });
     }
 
     /**
      * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
     public static setFinishTransactions(finishTransactions: boolean): void {
-        RNPurchases.setFinishTransactions(finishTransactions);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setFinishTransactions(finishTransactions);
+        });
     }
 
     /**
@@ -314,7 +318,8 @@ export default class Purchases {
      * Gets the map of entitlements -> offerings -> products
      * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure
      */
-    public static getOfferings(): Promise<PurchasesOfferings> {
+    public static async getOfferings(): Promise<PurchasesOfferings> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.getOfferings();
     }
 
@@ -325,10 +330,11 @@ export default class Purchases {
      * @returns {Promise<PurchasesProduct[]>} A promise containing an array of products. The promise will be rejected if the products are not properly
      * configured in RevenueCat or if there is another error retrieving them. Rejections return an error code, and a userInfo object with more information.
      */
-    public static getProducts(
+    public static async getProducts(
         productIdentifiers: string[],
         type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
     ): Promise<PurchasesProduct[]> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.getProductInfo(productIdentifiers, type);
     }
 
@@ -343,11 +349,12 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    public static purchaseProduct(
+    public static async purchaseProduct(
         productIdentifier: string,
         upgradeInfo?: UpgradeInfo | null,
         type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
-    ): MakePurchasePromise {
+    ): Promise<MakePurchaseResult> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.purchaseProduct(
             productIdentifier,
             upgradeInfo,
@@ -368,10 +375,11 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    public static purchaseDiscountedProduct(
+    public static async purchaseDiscountedProduct(
         product: PurchasesProduct,
         discount: PurchasesPaymentDiscount
-    ): MakePurchasePromise {
+    ): Promise<MakePurchaseResult> {
+        await Purchases.throwIfNotConfigured();
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
@@ -396,10 +404,11 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    public static purchasePackage(
+    public static async purchasePackage(
         aPackage: PurchasesPackage,
         upgradeInfo?: UpgradeInfo | null
-    ): MakePurchasePromise {
+    ): Promise<MakePurchaseResult> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.purchasePackage(
             aPackage.identifier,
             aPackage.offeringIdentifier,
@@ -420,10 +429,11 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    public static purchaseDiscountedPackage(
+    public static async purchaseDiscountedPackage(
         aPackage: PurchasesPackage,
         discount: PurchasesPaymentDiscount
-    ): MakePurchasePromise {
+    ): Promise<MakePurchaseResult> {
+        await Purchases.throwIfNotConfigured();
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
@@ -442,7 +452,8 @@ export default class Purchases {
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    public static restoreTransactions(): Promise<PurchaserInfo> {
+    public static async restoreTransactions(): Promise<PurchaserInfo> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.restoreTransactions();
     }
 
@@ -450,7 +461,8 @@ export default class Purchases {
      * Get the appUserID
      * @returns {Promise<string>} The app user id in a promise
      */
-    public static getAppUserID(): Promise<string> {
+    public static async getAppUserID(): Promise<string> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.getAppUserID();
     }
 
@@ -461,20 +473,22 @@ export default class Purchases {
      * @returns {Promise<LogInResult>} A promise of an object that contains the purchaserInfo after logging in, as well as a boolean indicating 
      * whether the user has just been created for the first time in the RevenueCat backend. 
      */
-    public static logIn(appUserID: string): Promise<LogInResult> {
-      // noinspection SuspiciousTypeOfGuard
-      if (typeof appUserID !== "string") {
-        throw new Error("appUserID needs to be a string");
-      }
-      return RNPurchases.logIn(appUserID);
+    public static async logIn(appUserID: string): Promise<LogInResult> {
+        await Purchases.throwIfNotConfigured();
+        // noinspection SuspiciousTypeOfGuard
+        if (typeof appUserID !== "string") {
+            throw new Error("appUserID needs to be a string");
+        }
+        return RNPurchases.logIn(appUserID);
     }
 
     /**
      * Logs out the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    public static logOut(): Promise<PurchaserInfo> {
-      return RNPurchases.logOut();
+    public static async logOut(): Promise<PurchaserInfo> {
+        await Purchases.throwIfNotConfigured();
+        return RNPurchases.logOut();
     }
 
     /**
@@ -483,7 +497,8 @@ export default class Purchases {
      * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. Needs to be a string.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    public static createAlias(newAppUserID: string): Promise<PurchaserInfo> {
+    public static async createAlias(newAppUserID: string): Promise<PurchaserInfo> {
+        await Purchases.throwIfNotConfigured();
         // noinspection SuspiciousTypeOfGuard
         if (typeof newAppUserID !== "string") {
             throw new Error("newAppUserID needs to be a string");
@@ -497,7 +512,8 @@ export default class Purchases {
      * @param {String} newAppUserID The appUserID that should be linked to the currently user
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    public static identify(newAppUserID: string): Promise<PurchaserInfo> {
+    public static async identify(newAppUserID: string): Promise<PurchaserInfo> {
+        await Purchases.throwIfNotConfigured();
         // noinspection SuspiciousTypeOfGuard
         if (typeof newAppUserID !== "string") {
             throw new Error("newAppUserID needs to be a string");
@@ -510,7 +526,8 @@ export default class Purchases {
      * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    public static reset(): Promise<PurchaserInfo> {
+    public static async reset(): Promise<PurchaserInfo> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.reset();
     }
 
@@ -526,7 +543,8 @@ export default class Purchases {
      * Gets current purchaser info
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
-    public static getPurchaserInfo(): Promise<PurchaserInfo> {
+    public static async getPurchaserInfo(): Promise<PurchaserInfo> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.getPurchaserInfo();
     }
 
@@ -537,7 +555,10 @@ export default class Purchases {
      * @warning This function should only be called if you're not calling makePurchase.
      */
     public static syncPurchases(): void {
-        RNPurchases.syncPurchases();
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.syncPurchases();
+        });
+        
     }
 
     /**
@@ -555,7 +576,8 @@ export default class Purchases {
     /**
      * @returns { Promise<boolean> } If the `appUserID` has been generated by RevenueCat or not.
      */
-    public static isAnonymous(): Promise<boolean> {
+    public static async isAnonymous(): Promise<boolean> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.isAnonymous();
     }
 
@@ -573,9 +595,10 @@ export default class Purchases {
      *  @param productIdentifiers Array of product identifiers for which you want to compute eligibility
      *  @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId
      */
-    public static checkTrialOrIntroductoryPriceEligibility(
+    public static async checkTrialOrIntroductoryPriceEligibility(
         productIdentifiers: string[]
     ): Promise<{ [productId: string]: IntroEligibility }> {
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.checkTrialOrIntroductoryPriceEligibility(
             productIdentifiers
         );
@@ -588,7 +611,7 @@ export default class Purchases {
      *  @param discount The `PurchasesDiscount` to apply to the product.
      *  @returns { Promise<PurchasesPaymentDiscount> } Returns when the `PurchasesPaymentDiscount` is returned. Null is returned for Android and incompatible iOS versions.
      */
-    public static getPaymentDiscount(
+    public static async getPaymentDiscount(
         product: PurchasesProduct,
         discount: PurchasesDiscount
     ): Promise<PurchasesPaymentDiscount | undefined> {
@@ -598,6 +621,7 @@ export default class Purchases {
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
+        await Purchases.throwIfNotConfigured();
         return RNPurchases.getPaymentDiscount(
             product.identifier,
             discount.identifier
@@ -616,15 +640,18 @@ export default class Purchases {
      * promotional subscription is granted through the RevenueCat dashboard.
      */
     public static invalidatePurchaserInfoCache(): void {
-        RNPurchases.invalidatePurchaserInfoCache();
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.invalidatePurchaserInfoCache();
+        });
     }
 
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
      * to configure and use offer codes 
      */
-    public static presentCodeRedemptionSheet(): void {
+    public static async presentCodeRedemptionSheet(): Promise<void> {
         if (Platform.OS === "ios") {
+            await Purchases.throwIfNotConfigured();
             RNPurchases.presentCodeRedemptionSheet();
         }
     }
@@ -640,7 +667,9 @@ export default class Purchases {
      * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
      */
     public static setAttributes(attributes: { [key: string]: string | null }): void {
-        RNPurchases.setAttributes(attributes);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setAttributes(attributes);
+        });
     }
 
     /**
@@ -649,7 +678,9 @@ export default class Purchases {
      * @param email Empty String or null will delete the subscriber attribute.
      */
     public static setEmail(email: string | null): void {
-        RNPurchases.setEmail(email);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setEmail(email);
+        });
     }
 
     /**
@@ -658,7 +689,9 @@ export default class Purchases {
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
      */
     public static setPhoneNumber(phoneNumber: string | null): void {
-        RNPurchases.setPhoneNumber(phoneNumber);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setPhoneNumber(phoneNumber);
+        });
     }
 
     /**
@@ -667,7 +700,9 @@ export default class Purchases {
      * @param displayName Empty String or null will delete the subscriber attribute.
      */
     public static setDisplayName(displayName: string | null): void {
-        RNPurchases.setDisplayName(displayName);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setDisplayName(displayName);
+        });
     }
 
     /**
@@ -676,14 +711,18 @@ export default class Purchases {
      * @param pushToken null will delete the subscriber attribute.
      */
     public static setPushToken(pushToken: string | null): void {
-        RNPurchases.setPushToken(pushToken);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setPushToken(pushToken);
+        });
     }
 
     /**
      * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
      */
     public static setProxyURL(url: string): void {
-        RNPurchases.setProxyURLString(url);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setProxyURLString(url);
+        });
     }
 
     /**
@@ -692,7 +731,9 @@ export default class Purchases {
      * $gpsAdId, $androidId, $ip on Android
      */
     public static collectDeviceIdentifiers(): void {
-        RNPurchases.collectDeviceIdentifiers();
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.collectDeviceIdentifiers();
+        });
     }
 
     /**
@@ -702,7 +743,9 @@ export default class Purchases {
      * @param adjustID Empty String or null will delete the subscriber attribute.
      */
     public static setAdjustID(adjustID: string | null): void {
-        RNPurchases.setAdjustID(adjustID);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setAdjustID(adjustID);
+        });
     }
 
     /**
@@ -711,7 +754,9 @@ export default class Purchases {
      * @param appsflyerID Empty String or null will delete the subscriber attribute.
      */
     public static setAppsflyerID(appsflyerID: string | null): void {
-        RNPurchases.setAppsflyerID(appsflyerID);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setAppsflyerID(appsflyerID);
+        });
     }
 
     /**
@@ -721,7 +766,9 @@ export default class Purchases {
      * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
      */
     public static setFBAnonymousID(fbAnonymousID: string | null): void {
-        RNPurchases.setFBAnonymousID(fbAnonymousID);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setFBAnonymousID(fbAnonymousID);
+        });
     }
 
     /**
@@ -731,7 +778,9 @@ export default class Purchases {
      * @param mparticleID Empty String or null will delete the subscriber attribute.
      */
     public static setMparticleID(mparticleID: string | null): void {
-        RNPurchases.setMparticleID(mparticleID);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setMparticleID(mparticleID);
+        });
     }
 
     /**
@@ -741,7 +790,9 @@ export default class Purchases {
      * @param onesignalID Empty String or null will delete the subscriber attribute.
      */
     public static setOnesignalID(onesignalID: string | null): void {
-        RNPurchases.setOnesignalID(onesignalID);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setOnesignalID(onesignalID);
+        });
     }
 
     /**
@@ -751,7 +802,9 @@ export default class Purchases {
      * @param airshipChannelID Empty String or null will delete the subscriber attribute.
      */
     public static setAirshipChannelID(airshipChannelID: string | null): void {
-        RNPurchases.setAirshipChannelID(airshipChannelID);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setAirshipChannelID(airshipChannelID);
+        });
     }
 
     /**
@@ -760,7 +813,9 @@ export default class Purchases {
      * @param mediaSource Empty String or null will delete the subscriber attribute.
      */
     public static setMediaSource(mediaSource: string | null): void {
-        RNPurchases.setMediaSource(mediaSource);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setMediaSource(mediaSource);
+        });
     }
 
     /**
@@ -769,7 +824,9 @@ export default class Purchases {
      * @param campaign Empty String or null will delete the subscriber attribute.
      */
     public static setCampaign(campaign: string | null): void {
-        RNPurchases.setCampaign(campaign);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setCampaign(campaign);
+        });
     }
 
     /**
@@ -778,7 +835,9 @@ export default class Purchases {
      * @param adGroup Empty String or null will delete the subscriber attribute.
      */
     public static setAdGroup(adGroup: string | null): void {
-        RNPurchases.setAdGroup(adGroup);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setAdGroup(adGroup);
+        });
     }
 
     /**
@@ -787,7 +846,9 @@ export default class Purchases {
      * @param ad Empty String or null will delete the subscriber attribute.
      */
     public static setAd(ad: string | null): void {
-        RNPurchases.setAd(ad);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setAd(ad);
+        });
     }
 
     /**
@@ -796,7 +857,9 @@ export default class Purchases {
      * @param keyword Empty String or null will delete the subscriber attribute.
      */
     public static setKeyword(keyword: string | null): void {
-        RNPurchases.setKeyword(keyword);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setKeyword(keyword);
+        });
     }
 
     /**
@@ -805,7 +868,9 @@ export default class Purchases {
      * @param creative Empty String or null will delete the subscriber attribute.
      */
     public static setCreative(creative: string | null): void {
-        RNPurchases.setCreative(creative);
+        Purchases.throwIfNotConfigured().then(() => {
+            RNPurchases.setCreative(creative);
+        });
     }
 
     /**
@@ -818,9 +883,26 @@ export default class Purchases {
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<Boolean>} promise with boolean response
      */
-
     public static canMakePayments(features: BILLING_FEATURE[] = []): Promise<boolean> {
         return RNPurchases.canMakePayments(features);
+    }
+
+    /**
+     * Check if setup has finished and Purchases has been configured.
+     * 
+     * @returns {Promise<Boolean>} promise with boolean response
+     */
+    public static isConfigured(): Promise<boolean> {
+        return RNPurchases.isConfigured();
+    }
+
+    private static async throwIfNotConfigured() {
+        const isConfigured = await Purchases.isConfigured();
+        if (!isConfigured) {
+            throw new Error("There is no singleton instance. " +
+            "Make sure you configure Purchases before trying to get the default instance. " +
+            "More info here: https://errors.rev.cat/configuring-sdk");
+        }
     }
 
 }

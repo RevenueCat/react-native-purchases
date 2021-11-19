@@ -7,11 +7,11 @@ import { PRORATION_MODE, PACKAGE_TYPE, INTRO_ELIGIBILITY_STATUS, PurchasesOfferi
  * @param {Object} purchaserInfo Object containing info for the purchaser
  */
 export declare type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
-export declare type ShouldPurchasePromoProductListener = (deferredPurchase: () => MakePurchasePromise) => void;
-declare type MakePurchasePromise = Promise<{
+export declare type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
+declare type MakePurchaseResult = {
     productIdentifier: string;
     purchaserInfo: PurchaserInfo;
-}>;
+};
 export declare enum ATTRIBUTION_NETWORK {
     APPLE_SEARCH_ADS = 0,
     ADJUST = 1,
@@ -212,7 +212,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchaseProduct(productIdentifier: string, upgradeInfo?: UpgradeInfo | null, type?: PURCHASE_TYPE): MakePurchasePromise;
+    static purchaseProduct(productIdentifier: string, upgradeInfo?: UpgradeInfo | null, type?: PURCHASE_TYPE): Promise<MakePurchaseResult>;
     /**
      * iOS only. Purchase a product applying a given discount.
      *
@@ -222,7 +222,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchaseDiscountedProduct(product: PurchasesProduct, discount: PurchasesPaymentDiscount): MakePurchasePromise;
+    static purchaseDiscountedProduct(product: PurchasesProduct, discount: PurchasesPaymentDiscount): Promise<MakePurchaseResult>;
     /**
      * Make a purchase
      *
@@ -233,7 +233,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null): MakePurchasePromise;
+    static purchasePackage(aPackage: PurchasesPackage, upgradeInfo?: UpgradeInfo | null): Promise<MakePurchaseResult>;
     /**
      * iOS only. Purchase a package applying a given discount.
      *
@@ -243,7 +243,7 @@ export default class Purchases {
      * a purchaser info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
-    static purchaseDiscountedPackage(aPackage: PurchasesPackage, discount: PurchasesPaymentDiscount): MakePurchasePromise;
+    static purchaseDiscountedPackage(aPackage: PurchasesPackage, discount: PurchasesPaymentDiscount): Promise<MakePurchaseResult>;
     /**
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
@@ -353,7 +353,7 @@ export default class Purchases {
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
      * to configure and use offer codes
      */
-    static presentCodeRedemptionSheet(): void;
+    static presentCodeRedemptionSheet(): Promise<void>;
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.
      * Since attributes are writable using a public key they should not be used for
@@ -489,5 +489,12 @@ export default class Purchases {
      * @returns {Promise<Boolean>} promise with boolean response
      */
     static canMakePayments(features?: BILLING_FEATURE[]): Promise<boolean>;
+    /**
+     * Check if setup has finished and Purchases has been configured.
+     *
+     * @returns {Promise<Boolean>} promise with boolean response
+     */
+    static isConfigured(): Promise<boolean>;
+    private static throwIfNotConfigured;
 }
 export {};

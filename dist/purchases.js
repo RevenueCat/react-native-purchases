@@ -1,4 +1,40 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BILLING_FEATURE = exports.PURCHASE_TYPE = exports.ATTRIBUTION_NETWORK = void 0;
 var react_native_1 = require("react-native");
@@ -92,13 +128,17 @@ var Purchases = /** @class */ (function () {
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      */
     Purchases.setAllowSharingStoreAccount = function (allowSharing) {
-        RNPurchases.setAllowSharingStoreAccount(allowSharing);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setAllowSharingStoreAccount(allowSharing);
+        });
     };
     /**
      * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
     Purchases.setFinishTransactions = function (finishTransactions) {
-        RNPurchases.setFinishTransactions(finishTransactions);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setFinishTransactions(finishTransactions);
+        });
     };
     /**
      * iOS only.
@@ -175,7 +215,16 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure
      */
     Purchases.getOfferings = function () {
-        return RNPurchases.getOfferings();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.getOfferings()];
+                }
+            });
+        });
     };
     /**
      * Fetch the product info
@@ -186,7 +235,16 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.getProducts = function (productIdentifiers, type) {
         if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
-        return RNPurchases.getProductInfo(productIdentifiers, type);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.getProductInfo(productIdentifiers, type)];
+                }
+            });
+        });
     };
     /**
      * Make a purchase
@@ -201,9 +259,18 @@ var Purchases = /** @class */ (function () {
      */
     Purchases.purchaseProduct = function (productIdentifier, upgradeInfo, type) {
         if (type === void 0) { type = PURCHASE_TYPE.SUBS; }
-        return RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type, null).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-            throw error;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.purchaseProduct(productIdentifier, upgradeInfo, type, null).catch(function (error) {
+                                error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+                                throw error;
+                            })];
+                }
+            });
         });
     };
     /**
@@ -216,12 +283,21 @@ var Purchases = /** @class */ (function () {
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
     Purchases.purchaseDiscountedProduct = function (product, discount) {
-        if (typeof discount === "undefined" || discount == null) {
-            throw new Error("A discount is required");
-        }
-        return RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-            throw error;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        if (typeof discount === "undefined" || discount == null) {
+                            throw new Error("A discount is required");
+                        }
+                        return [2 /*return*/, RNPurchases.purchaseProduct(product.identifier, null, null, discount.timestamp.toString()).catch(function (error) {
+                                error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+                                throw error;
+                            })];
+                }
+            });
         });
     };
     /**
@@ -235,9 +311,18 @@ var Purchases = /** @class */ (function () {
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
     Purchases.purchasePackage = function (aPackage, upgradeInfo) {
-        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo, null).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-            throw error;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, upgradeInfo, null).catch(function (error) {
+                                error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+                                throw error;
+                            })];
+                }
+            });
         });
     };
     /**
@@ -250,12 +335,21 @@ var Purchases = /** @class */ (function () {
      * a boolean indicating if the user cancelled the purchase, and an object with more information.
      */
     Purchases.purchaseDiscountedPackage = function (aPackage, discount) {
-        if (typeof discount === "undefined" || discount == null) {
-            throw new Error("A discount is required");
-        }
-        return RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp.toString()).catch(function (error) {
-            error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-            throw error;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        if (typeof discount === "undefined" || discount == null) {
+                            throw new Error("A discount is required");
+                        }
+                        return [2 /*return*/, RNPurchases.purchasePackage(aPackage.identifier, aPackage.offeringIdentifier, null, discount.timestamp.toString()).catch(function (error) {
+                                error.userCancelled = error.code === errors_1.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+                                throw error;
+                            })];
+                }
+            });
         });
     };
     /**
@@ -263,14 +357,32 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     Purchases.restoreTransactions = function () {
-        return RNPurchases.restoreTransactions();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.restoreTransactions()];
+                }
+            });
+        });
     };
     /**
      * Get the appUserID
      * @returns {Promise<string>} The app user id in a promise
      */
     Purchases.getAppUserID = function () {
-        return RNPurchases.getAppUserID();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.getAppUserID()];
+                }
+            });
+        });
     };
     /**
      * This function will logIn the current user with an appUserID. Typically this would be used after a log in
@@ -280,18 +392,36 @@ var Purchases = /** @class */ (function () {
      * whether the user has just been created for the first time in the RevenueCat backend.
      */
     Purchases.logIn = function (appUserID) {
-        // noinspection SuspiciousTypeOfGuard
-        if (typeof appUserID !== "string") {
-            throw new Error("appUserID needs to be a string");
-        }
-        return RNPurchases.logIn(appUserID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        // noinspection SuspiciousTypeOfGuard
+                        if (typeof appUserID !== "string") {
+                            throw new Error("appUserID needs to be a string");
+                        }
+                        return [2 /*return*/, RNPurchases.logIn(appUserID)];
+                }
+            });
+        });
     };
     /**
      * Logs out the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     Purchases.logOut = function () {
-        return RNPurchases.logOut();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.logOut()];
+                }
+            });
+        });
     };
     /**
      * @deprecated, use logIn instead.
@@ -300,11 +430,20 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     Purchases.createAlias = function (newAppUserID) {
-        // noinspection SuspiciousTypeOfGuard
-        if (typeof newAppUserID !== "string") {
-            throw new Error("newAppUserID needs to be a string");
-        }
-        return RNPurchases.createAlias(newAppUserID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        // noinspection SuspiciousTypeOfGuard
+                        if (typeof newAppUserID !== "string") {
+                            throw new Error("newAppUserID needs to be a string");
+                        }
+                        return [2 /*return*/, RNPurchases.createAlias(newAppUserID)];
+                }
+            });
+        });
     };
     /**
      * @deprecated, use logIn instead.
@@ -313,11 +452,20 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     Purchases.identify = function (newAppUserID) {
-        // noinspection SuspiciousTypeOfGuard
-        if (typeof newAppUserID !== "string") {
-            throw new Error("newAppUserID needs to be a string");
-        }
-        return RNPurchases.identify(newAppUserID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        // noinspection SuspiciousTypeOfGuard
+                        if (typeof newAppUserID !== "string") {
+                            throw new Error("newAppUserID needs to be a string");
+                        }
+                        return [2 /*return*/, RNPurchases.identify(newAppUserID)];
+                }
+            });
+        });
     };
     /**
      * @deprecated, use logOut instead.
@@ -325,7 +473,16 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     Purchases.reset = function () {
-        return RNPurchases.reset();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.reset()];
+                }
+            });
+        });
     };
     /**
      * Enables/Disables debugs logs
@@ -339,7 +496,16 @@ var Purchases = /** @class */ (function () {
      * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a userInfo object with more information.
      */
     Purchases.getPurchaserInfo = function () {
-        return RNPurchases.getPurchaserInfo();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.getPurchaserInfo()];
+                }
+            });
+        });
     };
     /**
      * This method will send all the purchases to the RevenueCat backend. Call this when using your own implementation
@@ -348,7 +514,9 @@ var Purchases = /** @class */ (function () {
      * @warning This function should only be called if you're not calling makePurchase.
      */
     Purchases.syncPurchases = function () {
-        RNPurchases.syncPurchases();
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.syncPurchases();
+        });
     };
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
@@ -363,7 +531,16 @@ var Purchases = /** @class */ (function () {
      * @returns { Promise<boolean> } If the `appUserID` has been generated by RevenueCat or not.
      */
     Purchases.isAnonymous = function () {
-        return RNPurchases.isAnonymous();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.isAnonymous()];
+                }
+            });
+        });
     };
     /**
      *  iOS only. Computes whether or not a user is eligible for the introductory pricing period of a given product.
@@ -380,7 +557,16 @@ var Purchases = /** @class */ (function () {
      *  @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId
      */
     Purchases.checkTrialOrIntroductoryPriceEligibility = function (productIdentifiers) {
-        return RNPurchases.checkTrialOrIntroductoryPriceEligibility(productIdentifiers);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.checkTrialOrIntroductoryPriceEligibility(productIdentifiers)];
+                }
+            });
+        });
     };
     /**
      *  iOS only. Use this function to retrieve the `PurchasesPaymentDiscount` for a given `PurchasesPackage`.
@@ -390,13 +576,23 @@ var Purchases = /** @class */ (function () {
      *  @returns { Promise<PurchasesPaymentDiscount> } Returns when the `PurchasesPaymentDiscount` is returned. Null is returned for Android and incompatible iOS versions.
      */
     Purchases.getPaymentDiscount = function (product, discount) {
-        if (react_native_2.Platform.OS === "android") {
-            return Promise.resolve(undefined);
-        }
-        if (typeof discount === "undefined" || discount == null) {
-            throw new Error("A discount is required");
-        }
-        return RNPurchases.getPaymentDiscount(product.identifier, discount.identifier);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (react_native_2.Platform.OS === "android") {
+                            return [2 /*return*/, Promise.resolve(undefined)];
+                        }
+                        if (typeof discount === "undefined" || discount == null) {
+                            throw new Error("A discount is required");
+                        }
+                        return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, RNPurchases.getPaymentDiscount(product.identifier, discount.identifier)];
+                }
+            });
+        });
     };
     /**
      * Invalidates the cache for purchaser information.
@@ -409,16 +605,29 @@ var Purchases = /** @class */ (function () {
      * promotional subscription is granted through the RevenueCat dashboard.
      */
     Purchases.invalidatePurchaserInfoCache = function () {
-        RNPurchases.invalidatePurchaserInfoCache();
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.invalidatePurchaserInfoCache();
+        });
     };
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
      * to configure and use offer codes
      */
     Purchases.presentCodeRedemptionSheet = function () {
-        if (react_native_2.Platform.OS === "ios") {
-            RNPurchases.presentCodeRedemptionSheet();
-        }
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(react_native_2.Platform.OS === "ios")) return [3 /*break*/, 2];
+                        return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.presentCodeRedemptionSheet();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
     };
     /**
      * Subscriber attributes are useful for storing additional, structured information on a user.
@@ -431,7 +640,9 @@ var Purchases = /** @class */ (function () {
      * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
      */
     Purchases.setAttributes = function (attributes) {
-        RNPurchases.setAttributes(attributes);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setAttributes(attributes);
+        });
     };
     /**
      * Subscriber attribute associated with the email address for the user
@@ -439,7 +650,9 @@ var Purchases = /** @class */ (function () {
      * @param email Empty String or null will delete the subscriber attribute.
      */
     Purchases.setEmail = function (email) {
-        RNPurchases.setEmail(email);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setEmail(email);
+        });
     };
     /**
      * Subscriber attribute associated with the phone number for the user
@@ -447,7 +660,9 @@ var Purchases = /** @class */ (function () {
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
      */
     Purchases.setPhoneNumber = function (phoneNumber) {
-        RNPurchases.setPhoneNumber(phoneNumber);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setPhoneNumber(phoneNumber);
+        });
     };
     /**
      * Subscriber attribute associated with the display name for the user
@@ -455,7 +670,9 @@ var Purchases = /** @class */ (function () {
      * @param displayName Empty String or null will delete the subscriber attribute.
      */
     Purchases.setDisplayName = function (displayName) {
-        RNPurchases.setDisplayName(displayName);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setDisplayName(displayName);
+        });
     };
     /**
      * Subscriber attribute associated with the push token for the user
@@ -463,13 +680,17 @@ var Purchases = /** @class */ (function () {
      * @param pushToken null will delete the subscriber attribute.
      */
     Purchases.setPushToken = function (pushToken) {
-        RNPurchases.setPushToken(pushToken);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setPushToken(pushToken);
+        });
     };
     /**
      * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
      */
     Purchases.setProxyURL = function (url) {
-        RNPurchases.setProxyURLString(url);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setProxyURLString(url);
+        });
     };
     /**
      * Automatically collect subscriber attributes associated with the device identifiers.
@@ -477,7 +698,9 @@ var Purchases = /** @class */ (function () {
      * $gpsAdId, $androidId, $ip on Android
      */
     Purchases.collectDeviceIdentifiers = function () {
-        RNPurchases.collectDeviceIdentifiers();
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.collectDeviceIdentifiers();
+        });
     };
     /**
      * Subscriber attribute associated with the Adjust Id for the user
@@ -486,7 +709,9 @@ var Purchases = /** @class */ (function () {
      * @param adjustID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAdjustID = function (adjustID) {
-        RNPurchases.setAdjustID(adjustID);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setAdjustID(adjustID);
+        });
     };
     /**
      * Subscriber attribute associated with the AppsFlyer Id for the user
@@ -494,7 +719,9 @@ var Purchases = /** @class */ (function () {
      * @param appsflyerID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAppsflyerID = function (appsflyerID) {
-        RNPurchases.setAppsflyerID(appsflyerID);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setAppsflyerID(appsflyerID);
+        });
     };
     /**
      * Subscriber attribute associated with the Facebook SDK Anonymous Id for the user
@@ -503,7 +730,9 @@ var Purchases = /** @class */ (function () {
      * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setFBAnonymousID = function (fbAnonymousID) {
-        RNPurchases.setFBAnonymousID(fbAnonymousID);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setFBAnonymousID(fbAnonymousID);
+        });
     };
     /**
      * Subscriber attribute associated with the mParticle Id for the user
@@ -512,7 +741,9 @@ var Purchases = /** @class */ (function () {
      * @param mparticleID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setMparticleID = function (mparticleID) {
-        RNPurchases.setMparticleID(mparticleID);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setMparticleID(mparticleID);
+        });
     };
     /**
      * Subscriber attribute associated with the OneSignal Player Id for the user
@@ -521,7 +752,9 @@ var Purchases = /** @class */ (function () {
      * @param onesignalID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setOnesignalID = function (onesignalID) {
-        RNPurchases.setOnesignalID(onesignalID);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setOnesignalID(onesignalID);
+        });
     };
     /**
      * Subscriber attribute associated with the Airship Channel Id for the user
@@ -530,7 +763,9 @@ var Purchases = /** @class */ (function () {
      * @param airshipChannelID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAirshipChannelID = function (airshipChannelID) {
-        RNPurchases.setAirshipChannelID(airshipChannelID);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setAirshipChannelID(airshipChannelID);
+        });
     };
     /**
      * Subscriber attribute associated with the install media source for the user
@@ -538,7 +773,9 @@ var Purchases = /** @class */ (function () {
      * @param mediaSource Empty String or null will delete the subscriber attribute.
      */
     Purchases.setMediaSource = function (mediaSource) {
-        RNPurchases.setMediaSource(mediaSource);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setMediaSource(mediaSource);
+        });
     };
     /**
      * Subscriber attribute associated with the install campaign for the user
@@ -546,7 +783,9 @@ var Purchases = /** @class */ (function () {
      * @param campaign Empty String or null will delete the subscriber attribute.
      */
     Purchases.setCampaign = function (campaign) {
-        RNPurchases.setCampaign(campaign);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setCampaign(campaign);
+        });
     };
     /**
      * Subscriber attribute associated with the install ad group for the user
@@ -554,7 +793,9 @@ var Purchases = /** @class */ (function () {
      * @param adGroup Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAdGroup = function (adGroup) {
-        RNPurchases.setAdGroup(adGroup);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setAdGroup(adGroup);
+        });
     };
     /**
      * Subscriber attribute associated with the install ad for the user
@@ -562,7 +803,9 @@ var Purchases = /** @class */ (function () {
      * @param ad Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAd = function (ad) {
-        RNPurchases.setAd(ad);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setAd(ad);
+        });
     };
     /**
      * Subscriber attribute associated with the install keyword for the user
@@ -570,7 +813,9 @@ var Purchases = /** @class */ (function () {
      * @param keyword Empty String or null will delete the subscriber attribute.
      */
     Purchases.setKeyword = function (keyword) {
-        RNPurchases.setKeyword(keyword);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setKeyword(keyword);
+        });
     };
     /**
      * Subscriber attribute associated with the install ad creative for the user
@@ -578,7 +823,9 @@ var Purchases = /** @class */ (function () {
      * @param creative Empty String or null will delete the subscriber attribute.
      */
     Purchases.setCreative = function (creative) {
-        RNPurchases.setCreative(creative);
+        Purchases.throwIfNotConfigured().then(function () {
+            RNPurchases.setCreative(creative);
+        });
     };
     /**
      * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
@@ -593,6 +840,32 @@ var Purchases = /** @class */ (function () {
     Purchases.canMakePayments = function (features) {
         if (features === void 0) { features = []; }
         return RNPurchases.canMakePayments(features);
+    };
+    /**
+     * Check if setup has finished and Purchases has been configured.
+     *
+     * @returns {Promise<Boolean>} promise with boolean response
+     */
+    Purchases.isConfigured = function () {
+        return RNPurchases.isConfigured();
+    };
+    Purchases.throwIfNotConfigured = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var isConfigured;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.isConfigured()];
+                    case 1:
+                        isConfigured = _a.sent();
+                        if (!isConfigured) {
+                            throw new Error("There is no singleton instance. " +
+                                "Make sure you configure Purchases before trying to get the default instance. " +
+                                "More info here: https://errors.rev.cat/configuring-sdk");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     /**
      * Enum for attribution networks

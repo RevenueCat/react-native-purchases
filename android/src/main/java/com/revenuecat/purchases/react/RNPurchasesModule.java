@@ -241,6 +241,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         CommonKt.setProxyURLString(proxyURLString);
     }
 
+    @ReactMethod
+    public void isConfigured(Promise promise) {
+      promise.resolve(Purchases.isConfigured());
+    }
+
     //================================================================================
     // Subscriber Attributes
     //================================================================================
