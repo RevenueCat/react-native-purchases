@@ -62,7 +62,7 @@ PODS:
   - Purchases (3.13.0):
     - PurchasesCoreSwift (= 3.13.0)
   - PurchasesCoreSwift (3.13.0)
-  - PurchasesHybridCommon (1.10.0):
+  - PurchasesHybridCommon (1.10.1):
     - Purchases (= 3.13.0)
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
@@ -324,7 +324,7 @@ PODS:
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNPurchases (4.4.1):
-    - PurchasesHybridCommon (= 1.10.0)
+    - PurchasesHybridCommon (= 1.10.1)
     - React-Core
   - RNScreens (2.18.1):
     - React-Core
@@ -486,7 +486,7 @@ SPEC CHECKSUMS:
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   Purchases: a545d402454bc9395495cceaf0e893360670e0ad
   PurchasesCoreSwift: e7f7267a6dc526da226baad19c61e8977fa664b4
-  PurchasesHybridCommon: a3282e900a2a05eb6c52acc4c72fb4f931160f5a
+  PurchasesHybridCommon: a39591394aad8600ee7ce860befc00597405bb76
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
   RCTTypeSafety: c1f31d19349c6b53085766359caac425926fafaa
@@ -511,7 +511,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
-  RNPurchases: 33d9631b1e3f9e15fa1b09697af00ff60f5c77bd
+  RNPurchases: d5f289d6b43456b5c7bf8d83116e8dcd1016ca1a
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
