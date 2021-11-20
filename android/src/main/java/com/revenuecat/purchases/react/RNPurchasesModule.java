@@ -67,13 +67,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
     }
 
-    public void executeRejectingWhenUninitializedInstance(Promise promise, Runnable runnable) {
-        try {
-            runnable.run();
-        } catch (UninitializedPropertyAccessException uninitializedPropertyAccessException) {
-            promise.reject("UNINITIALIZED", uninitializedPropertyAccessException.getMessage(), uninitializedPropertyAccessException);
-        }
-    }
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
                                boolean observerMode, @Nullable String userDefaultsSuiteName) {
