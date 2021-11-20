@@ -207,19 +207,17 @@ export default class Purchases {
      * the new ID with the previous id.
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      */
-    public static setAllowSharingStoreAccount(allowSharing: boolean): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setAllowSharingStoreAccount(allowSharing);
-        });
+    public static async setAllowSharingStoreAccount(allowSharing: boolean): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setAllowSharingStoreAccount(allowSharing);
     }
 
     /**
      * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
-    public static setFinishTransactions(finishTransactions: boolean): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setFinishTransactions(finishTransactions);
-        });
+    public static async setFinishTransactions(finishTransactions: boolean): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setFinishTransactions(finishTransactions);
     }
 
     /**
@@ -554,11 +552,9 @@ export default class Purchases {
      *
      * @warning This function should only be called if you're not calling makePurchase.
      */
-    public static syncPurchases(): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.syncPurchases();
-        });
-        
+    public static async syncPurchases(): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.syncPurchases();
     }
 
     /**
@@ -639,10 +635,9 @@ export default class Purchases {
      * This is useful for cases where purchaser information might have been updated outside of the app, like if a
      * promotional subscription is granted through the RevenueCat dashboard.
      */
-    public static invalidatePurchaserInfoCache(): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.invalidatePurchaserInfoCache();
-        });
+    public static async invalidatePurchaserInfoCache(): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.invalidatePurchaserInfoCache();
     }
 
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
@@ -666,10 +661,9 @@ export default class Purchases {
      *
      * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
      */
-    public static setAttributes(attributes: { [key: string]: string | null }): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setAttributes(attributes);
-        });
+    public static async setAttributes(attributes: { [key: string]: string | null }): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setAttributes(attributes);
     }
 
     /**
@@ -677,10 +671,9 @@ export default class Purchases {
      *
      * @param email Empty String or null will delete the subscriber attribute.
      */
-    public static setEmail(email: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setEmail(email);
-        });
+    public static async setEmail(email: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setEmail(email);
     }
 
     /**
@@ -688,10 +681,9 @@ export default class Purchases {
      *
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
      */
-    public static setPhoneNumber(phoneNumber: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setPhoneNumber(phoneNumber);
-        });
+    public static async setPhoneNumber(phoneNumber: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setPhoneNumber(phoneNumber);
     }
 
     /**
@@ -699,10 +691,9 @@ export default class Purchases {
      *
      * @param displayName Empty String or null will delete the subscriber attribute.
      */
-    public static setDisplayName(displayName: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setDisplayName(displayName);
-        });
+    public static async setDisplayName(displayName: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setDisplayName(displayName);
     }
 
     /**
@@ -710,19 +701,17 @@ export default class Purchases {
      *
      * @param pushToken null will delete the subscriber attribute.
      */
-    public static setPushToken(pushToken: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setPushToken(pushToken);
-        });
+    public static async setPushToken(pushToken: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured()
+        RNPurchases.setPushToken(pushToken);
     }
 
     /**
      * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
      */
-    public static setProxyURL(url: string): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setProxyURLString(url);
-        });
+    public static async setProxyURL(url: string): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setProxyURLString(url);
     }
 
     /**
@@ -730,10 +719,9 @@ export default class Purchases {
      * $idfa, $idfv, $ip on iOS
      * $gpsAdId, $androidId, $ip on Android
      */
-    public static collectDeviceIdentifiers(): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.collectDeviceIdentifiers();
-        });
+    public static async collectDeviceIdentifiers(): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.collectDeviceIdentifiers();
     }
 
     /**
@@ -742,10 +730,9 @@ export default class Purchases {
      *
      * @param adjustID Empty String or null will delete the subscriber attribute.
      */
-    public static setAdjustID(adjustID: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setAdjustID(adjustID);
-        });
+    public static async setAdjustID(adjustID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setAdjustID(adjustID);
     }
 
     /**
@@ -753,10 +740,9 @@ export default class Purchases {
      * Required for the RevenueCat AppsFlyer integration
      * @param appsflyerID Empty String or null will delete the subscriber attribute.
      */
-    public static setAppsflyerID(appsflyerID: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setAppsflyerID(appsflyerID);
-        });
+    public static async setAppsflyerID(appsflyerID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setAppsflyerID(appsflyerID);
     }
 
     /**
@@ -765,10 +751,9 @@ export default class Purchases {
      *
      * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
      */
-    public static setFBAnonymousID(fbAnonymousID: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setFBAnonymousID(fbAnonymousID);
-        });
+    public static async setFBAnonymousID(fbAnonymousID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setFBAnonymousID(fbAnonymousID);
     }
 
     /**
@@ -777,10 +762,9 @@ export default class Purchases {
      *
      * @param mparticleID Empty String or null will delete the subscriber attribute.
      */
-    public static setMparticleID(mparticleID: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setMparticleID(mparticleID);
-        });
+    public static async setMparticleID(mparticleID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setMparticleID(mparticleID);
     }
 
     /**
@@ -789,10 +773,9 @@ export default class Purchases {
      *
      * @param onesignalID Empty String or null will delete the subscriber attribute.
      */
-    public static setOnesignalID(onesignalID: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setOnesignalID(onesignalID);
-        });
+    public static async setOnesignalID(onesignalID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setOnesignalID(onesignalID);
     }
 
     /**
@@ -801,10 +784,9 @@ export default class Purchases {
      *
      * @param airshipChannelID Empty String or null will delete the subscriber attribute.
      */
-    public static setAirshipChannelID(airshipChannelID: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setAirshipChannelID(airshipChannelID);
-        });
+    public static async setAirshipChannelID(airshipChannelID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setAirshipChannelID(airshipChannelID);
     }
 
     /**
@@ -812,10 +794,9 @@ export default class Purchases {
      *
      * @param mediaSource Empty String or null will delete the subscriber attribute.
      */
-    public static setMediaSource(mediaSource: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setMediaSource(mediaSource);
-        });
+    public static async setMediaSource(mediaSource: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setMediaSource(mediaSource);
     }
 
     /**
@@ -823,10 +804,9 @@ export default class Purchases {
      *
      * @param campaign Empty String or null will delete the subscriber attribute.
      */
-    public static setCampaign(campaign: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setCampaign(campaign);
-        });
+    public static async setCampaign(campaign: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setCampaign(campaign);
     }
 
     /**
@@ -834,10 +814,9 @@ export default class Purchases {
      *
      * @param adGroup Empty String or null will delete the subscriber attribute.
      */
-    public static setAdGroup(adGroup: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setAdGroup(adGroup);
-        });
+    public static async setAdGroup(adGroup: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setAdGroup(adGroup);
     }
 
     /**
@@ -845,10 +824,9 @@ export default class Purchases {
      *
      * @param ad Empty String or null will delete the subscriber attribute.
      */
-    public static setAd(ad: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setAd(ad);
-        });
+    public static async setAd(ad: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setAd(ad);
     }
 
     /**
@@ -856,10 +834,9 @@ export default class Purchases {
      *
      * @param keyword Empty String or null will delete the subscriber attribute.
      */
-    public static setKeyword(keyword: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setKeyword(keyword);
-        });
+    public static async setKeyword(keyword: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setKeyword(keyword);
     }
 
     /**
@@ -867,10 +844,9 @@ export default class Purchases {
      *
      * @param creative Empty String or null will delete the subscriber attribute.
      */
-    public static setCreative(creative: string | null): void {
-        Purchases.throwIfNotConfigured().then(() => {
-            RNPurchases.setCreative(creative);
-        });
+    public static async setCreative(creative: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setCreative(creative);
     }
 
     /**

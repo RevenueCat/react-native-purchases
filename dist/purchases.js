@@ -128,16 +128,32 @@ var Purchases = /** @class */ (function () {
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      */
     Purchases.setAllowSharingStoreAccount = function (allowSharing) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setAllowSharingStoreAccount(allowSharing);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setAllowSharingStoreAccount(allowSharing);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
      * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
     Purchases.setFinishTransactions = function (finishTransactions) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setFinishTransactions(finishTransactions);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setFinishTransactions(finishTransactions);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -514,8 +530,16 @@ var Purchases = /** @class */ (function () {
      * @warning This function should only be called if you're not calling makePurchase.
      */
     Purchases.syncPurchases = function () {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.syncPurchases();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.syncPurchases();
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -605,8 +629,16 @@ var Purchases = /** @class */ (function () {
      * promotional subscription is granted through the RevenueCat dashboard.
      */
     Purchases.invalidatePurchaserInfoCache = function () {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.invalidatePurchaserInfoCache();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.invalidatePurchaserInfoCache();
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
@@ -640,8 +672,16 @@ var Purchases = /** @class */ (function () {
      * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
      */
     Purchases.setAttributes = function (attributes) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setAttributes(attributes);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setAttributes(attributes);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -650,8 +690,16 @@ var Purchases = /** @class */ (function () {
      * @param email Empty String or null will delete the subscriber attribute.
      */
     Purchases.setEmail = function (email) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setEmail(email);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setEmail(email);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -660,8 +708,16 @@ var Purchases = /** @class */ (function () {
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
      */
     Purchases.setPhoneNumber = function (phoneNumber) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setPhoneNumber(phoneNumber);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setPhoneNumber(phoneNumber);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -670,8 +726,16 @@ var Purchases = /** @class */ (function () {
      * @param displayName Empty String or null will delete the subscriber attribute.
      */
     Purchases.setDisplayName = function (displayName) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setDisplayName(displayName);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setDisplayName(displayName);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -680,16 +744,32 @@ var Purchases = /** @class */ (function () {
      * @param pushToken null will delete the subscriber attribute.
      */
     Purchases.setPushToken = function (pushToken) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setPushToken(pushToken);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setPushToken(pushToken);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
      * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
      */
     Purchases.setProxyURL = function (url) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setProxyURLString(url);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setProxyURLString(url);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -698,8 +778,16 @@ var Purchases = /** @class */ (function () {
      * $gpsAdId, $androidId, $ip on Android
      */
     Purchases.collectDeviceIdentifiers = function () {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.collectDeviceIdentifiers();
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.collectDeviceIdentifiers();
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -709,8 +797,16 @@ var Purchases = /** @class */ (function () {
      * @param adjustID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAdjustID = function (adjustID) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setAdjustID(adjustID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setAdjustID(adjustID);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -719,8 +815,16 @@ var Purchases = /** @class */ (function () {
      * @param appsflyerID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAppsflyerID = function (appsflyerID) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setAppsflyerID(appsflyerID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setAppsflyerID(appsflyerID);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -730,8 +834,16 @@ var Purchases = /** @class */ (function () {
      * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setFBAnonymousID = function (fbAnonymousID) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setFBAnonymousID(fbAnonymousID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setFBAnonymousID(fbAnonymousID);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -741,8 +853,16 @@ var Purchases = /** @class */ (function () {
      * @param mparticleID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setMparticleID = function (mparticleID) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setMparticleID(mparticleID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setMparticleID(mparticleID);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -752,8 +872,16 @@ var Purchases = /** @class */ (function () {
      * @param onesignalID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setOnesignalID = function (onesignalID) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setOnesignalID(onesignalID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setOnesignalID(onesignalID);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -763,8 +891,16 @@ var Purchases = /** @class */ (function () {
      * @param airshipChannelID Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAirshipChannelID = function (airshipChannelID) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setAirshipChannelID(airshipChannelID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setAirshipChannelID(airshipChannelID);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -773,8 +909,16 @@ var Purchases = /** @class */ (function () {
      * @param mediaSource Empty String or null will delete the subscriber attribute.
      */
     Purchases.setMediaSource = function (mediaSource) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setMediaSource(mediaSource);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setMediaSource(mediaSource);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -783,8 +927,16 @@ var Purchases = /** @class */ (function () {
      * @param campaign Empty String or null will delete the subscriber attribute.
      */
     Purchases.setCampaign = function (campaign) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setCampaign(campaign);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setCampaign(campaign);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -793,8 +945,16 @@ var Purchases = /** @class */ (function () {
      * @param adGroup Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAdGroup = function (adGroup) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setAdGroup(adGroup);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setAdGroup(adGroup);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -803,8 +963,16 @@ var Purchases = /** @class */ (function () {
      * @param ad Empty String or null will delete the subscriber attribute.
      */
     Purchases.setAd = function (ad) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setAd(ad);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setAd(ad);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -813,8 +981,16 @@ var Purchases = /** @class */ (function () {
      * @param keyword Empty String or null will delete the subscriber attribute.
      */
     Purchases.setKeyword = function (keyword) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setKeyword(keyword);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setKeyword(keyword);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -823,8 +999,16 @@ var Purchases = /** @class */ (function () {
      * @param creative Empty String or null will delete the subscriber attribute.
      */
     Purchases.setCreative = function (creative) {
-        Purchases.throwIfNotConfigured().then(function () {
-            RNPurchases.setCreative(creative);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
+                        RNPurchases.setCreative(creative);
+                        return [2 /*return*/];
+                }
+            });
         });
     };
     /**

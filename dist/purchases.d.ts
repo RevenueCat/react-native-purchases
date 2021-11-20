@@ -139,11 +139,11 @@ export default class Purchases {
      * the new ID with the previous id.
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, this is true by default if you didn't pass an appUserID
      */
-    static setAllowSharingStoreAccount(allowSharing: boolean): void;
+    static setAllowSharingStoreAccount(allowSharing: boolean): Promise<void>;
     /**
      * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to make the purchase
      */
-    static setFinishTransactions(finishTransactions: boolean): void;
+    static setFinishTransactions(finishTransactions: boolean): Promise<void>;
     /**
      * iOS only.
      * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA purchases flow.
@@ -303,7 +303,7 @@ export default class Purchases {
      *
      * @warning This function should only be called if you're not calling makePurchase.
      */
-    static syncPurchases(): void;
+    static syncPurchases(): Promise<void>;
     /**
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
      * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
@@ -348,7 +348,7 @@ export default class Purchases {
      * This is useful for cases where purchaser information might have been updated outside of the app, like if a
      * promotional subscription is granted through the RevenueCat dashboard.
      */
-    static invalidatePurchaserInfoCache(): void;
+    static invalidatePurchaserInfoCache(): Promise<void>;
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
      * to configure and use offer codes
@@ -366,118 +366,118 @@ export default class Purchases {
      */
     static setAttributes(attributes: {
         [key: string]: string | null;
-    }): void;
+    }): Promise<void>;
     /**
      * Subscriber attribute associated with the email address for the user
      *
      * @param email Empty String or null will delete the subscriber attribute.
      */
-    static setEmail(email: string | null): void;
+    static setEmail(email: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the phone number for the user
      *
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
      */
-    static setPhoneNumber(phoneNumber: string | null): void;
+    static setPhoneNumber(phoneNumber: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the display name for the user
      *
      * @param displayName Empty String or null will delete the subscriber attribute.
      */
-    static setDisplayName(displayName: string | null): void;
+    static setDisplayName(displayName: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the push token for the user
      *
      * @param pushToken null will delete the subscriber attribute.
      */
-    static setPushToken(pushToken: string | null): void;
+    static setPushToken(pushToken: string | null): Promise<void>;
     /**
      * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value from your RevenueCat contact.
      */
-    static setProxyURL(url: string): void;
+    static setProxyURL(url: string): Promise<void>;
     /**
      * Automatically collect subscriber attributes associated with the device identifiers.
      * $idfa, $idfv, $ip on iOS
      * $gpsAdId, $androidId, $ip on Android
      */
-    static collectDeviceIdentifiers(): void;
+    static collectDeviceIdentifiers(): Promise<void>;
     /**
      * Subscriber attribute associated with the Adjust Id for the user
      * Required for the RevenueCat Adjust integration
      *
      * @param adjustID Empty String or null will delete the subscriber attribute.
      */
-    static setAdjustID(adjustID: string | null): void;
+    static setAdjustID(adjustID: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the AppsFlyer Id for the user
      * Required for the RevenueCat AppsFlyer integration
      * @param appsflyerID Empty String or null will delete the subscriber attribute.
      */
-    static setAppsflyerID(appsflyerID: string | null): void;
+    static setAppsflyerID(appsflyerID: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the Facebook SDK Anonymous Id for the user
      * Recommended for the RevenueCat Facebook integration
      *
      * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
      */
-    static setFBAnonymousID(fbAnonymousID: string | null): void;
+    static setFBAnonymousID(fbAnonymousID: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the mParticle Id for the user
      * Recommended for the RevenueCat mParticle integration
      *
      * @param mparticleID Empty String or null will delete the subscriber attribute.
      */
-    static setMparticleID(mparticleID: string | null): void;
+    static setMparticleID(mparticleID: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the OneSignal Player Id for the user
      * Required for the RevenueCat OneSignal integration
      *
      * @param onesignalID Empty String or null will delete the subscriber attribute.
      */
-    static setOnesignalID(onesignalID: string | null): void;
+    static setOnesignalID(onesignalID: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the Airship Channel Id for the user
      * Required for the RevenueCat Airship integration
      *
      * @param airshipChannelID Empty String or null will delete the subscriber attribute.
      */
-    static setAirshipChannelID(airshipChannelID: string | null): void;
+    static setAirshipChannelID(airshipChannelID: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the install media source for the user
      *
      * @param mediaSource Empty String or null will delete the subscriber attribute.
      */
-    static setMediaSource(mediaSource: string | null): void;
+    static setMediaSource(mediaSource: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the install campaign for the user
      *
      * @param campaign Empty String or null will delete the subscriber attribute.
      */
-    static setCampaign(campaign: string | null): void;
+    static setCampaign(campaign: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the install ad group for the user
      *
      * @param adGroup Empty String or null will delete the subscriber attribute.
      */
-    static setAdGroup(adGroup: string | null): void;
+    static setAdGroup(adGroup: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the install ad for the user
      *
      * @param ad Empty String or null will delete the subscriber attribute.
      */
-    static setAd(ad: string | null): void;
+    static setAd(ad: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the install keyword for the user
      *
      * @param keyword Empty String or null will delete the subscriber attribute.
      */
-    static setKeyword(keyword: string | null): void;
+    static setKeyword(keyword: string | null): Promise<void>;
     /**
      * Subscriber attribute associated with the install ad creative for the user
      *
      * @param creative Empty String or null will delete the subscriber attribute.
      */
-    static setCreative(creative: string | null): void;
+    static setCreative(creative: string | null): Promise<void>;
     /**
      * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
      * and optionally, whether a list of specified feature types are supported.
