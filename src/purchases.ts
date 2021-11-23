@@ -613,13 +613,13 @@ export default class Purchases {
         product: PurchasesProduct,
         discount: PurchasesDiscount
     ): Promise<PurchasesPaymentDiscount | undefined> {
+        await Purchases.throwIfNotConfigured();
         if (Platform.OS === "android") {
             return Promise.resolve(undefined);
         }
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        await Purchases.throwIfNotConfigured();
         return RNPurchases.getPaymentDiscount(
             product.identifier,
             discount.identifier

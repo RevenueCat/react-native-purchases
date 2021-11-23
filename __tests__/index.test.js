@@ -778,8 +778,8 @@ describe("Purchases", () => {
   });
 
   describe("isConfigured", () => {
-    describe("when Purchases is not configured", () => {
-      it("isConfigured returns false", async () => {
+    describe("when Purchases is configured", () => {
+      it("isConfigured returns true", async () => {
         const Purchases = require("../dist/index").default;
 
         const isConfigured = await Purchases.isConfigured();
@@ -788,8 +788,8 @@ describe("Purchases", () => {
         expect(isConfigured).toBeTruthy();
       });
     });
-    describe("when Purchases is configured", () => {
-      it("isConfigured returns true", async () => {
+    describe("when Purchases is not configured", () => {
+      it("isConfigured returns false", async () => {
         const Purchases = require("../dist/index").default;
         NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
 
@@ -798,6 +798,52 @@ describe("Purchases", () => {
         expect(NativeModules.RNPurchases.isConfigured).toBeCalledTimes(1);
         expect(isConfigured).toBeFalsy();
       });
+    });
+  });
+
+  describe("UninitializedError is thrown", () => {
+    function isFunction(functionToCheck) {
+      return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+    }
+
+    it("for functions that require the SDK to be configured if called before configuring", async () => {
+      const Purchases = require("../dist/index").default;
+      NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+
+      const allPropertyNames = Object.getOwnPropertyNames( Purchases );
+
+      // This functions should skip the test since they not required an instance of Purchases
+      const excludedFunctionNames = [
+        "setup",
+        "setSimulatesAskToBuyInSandbox", 
+        "addPurchaserInfoUpdateListener",
+        "removePurchaserInfoUpdateListener",
+        "addShouldPurchasePromoProductListener",
+        "removeShouldPurchasePromoProductListener",
+        "setAutomaticAppleSearchAdsAttributionCollection",
+        "addAttributionData",
+        "setDebugLogsEnabled",
+        "canMakePayments",
+        "UninitializedPurchasesError",
+        "throwIfNotConfigured",
+        "isConfigured"
+      ];
+      const expected = new Purchases.UninitializedPurchasesError();
+      for (let i = 0; i < allPropertyNames.length; i++) {
+        const property = Purchases[allPropertyNames[i]];
+        if (isFunction(property) && excludedFunctionNames.indexOf(allPropertyNames[i]) === -1) {
+          // Uncomment if test is failing to see which function is giving issues.
+          // If function doesn't require an instance of Purchases, add it to excludedFunctionNames.
+          // console.log(`Testing ${allPropertyNames[i]}`);
+          await property().then(() => {
+            fail(`${ allPropertyNames[i] } should have failed`);
+          }).catch(error => {
+            expect(error.name).toEqual(expected.name);
+            expect(error.message).toEqual(expected.message);
+          });
+          
+        }
+      }
     });
   });
 });
