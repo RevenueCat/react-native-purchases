@@ -43,3 +43,14 @@ export interface PurchasesError {
 export interface ErrorInfo {
     readableErrorCode: string;
 }
+
+export class UninitializedPurchasesError extends Error {
+    constructor() {
+        super("There is no singleton instance. " +
+        "Make sure you configure Purchases before trying to get the default instance. " +
+        "More info here: https://errors.rev.cat/configuring-sdk");
+
+        // Set the prototype explicitly.
+        Object.setPrototypeOf(this, UninitializedPurchasesError.prototype);
+    }
+}

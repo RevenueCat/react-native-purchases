@@ -1,4 +1,4 @@
-import { PURCHASES_ERROR_CODE } from "./errors";
+import { PURCHASES_ERROR_CODE, UninitializedPurchasesError } from "./errors";
 import { PurchaserInfo } from "./purchaserInfo";
 import { PRORATION_MODE, PACKAGE_TYPE, INTRO_ELIGIBILITY_STATUS, PurchasesOfferings, PurchasesProduct, UpgradeInfo, PurchasesPaymentDiscount, PurchasesPackage, IntroEligibility, PurchasesDiscount } from "./offerings";
 /**
@@ -123,6 +123,7 @@ export default class Purchases {
      * @enum {string}
      */
     static PURCHASES_ERROR_CODE: typeof PURCHASES_ERROR_CODE;
+    static UninitializedPurchasesError: typeof UninitializedPurchasesError;
     /**
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String

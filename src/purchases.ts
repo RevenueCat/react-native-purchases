@@ -1,5 +1,5 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
-import { PurchasesError, PURCHASES_ERROR_CODE } from "./errors";
+import { PurchasesError, PURCHASES_ERROR_CODE, UninitializedPurchasesError } from "./errors";
 import { PurchaserInfo } from "./purchaserInfo";
 import {
     PRORATION_MODE,
@@ -174,6 +174,8 @@ export default class Purchases {
      * @enum {string}
      */
     public static PURCHASES_ERROR_CODE = PURCHASES_ERROR_CODE;
+
+    public static UninitializedPurchasesError = UninitializedPurchasesError;
 
     /**
      * Sets up Purchases with your API key and an app user id.
@@ -875,9 +877,7 @@ export default class Purchases {
     private static async throwIfNotConfigured() {
         const isConfigured = await Purchases.isConfigured();
         if (!isConfigured) {
-            throw new Error("There is no singleton instance. " +
-            "Make sure you configure Purchases before trying to get the default instance. " +
-            "More info here: https://errors.rev.cat/configuring-sdk");
+            throw new UninitializedPurchasesError();
         }
     }
 

@@ -603,16 +603,15 @@ var Purchases = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, Purchases.throwIfNotConfigured()];
+                    case 1:
+                        _a.sent();
                         if (react_native_2.Platform.OS === "android") {
                             return [2 /*return*/, Promise.resolve(undefined)];
                         }
                         if (typeof discount === "undefined" || discount == null) {
                             throw new Error("A discount is required");
                         }
-                        return [4 /*yield*/, Purchases.throwIfNotConfigured()];
-                    case 1:
-                        _a.sent();
                         return [2 /*return*/, RNPurchases.getPaymentDiscount(product.identifier, discount.identifier)];
                 }
             });
@@ -1042,9 +1041,7 @@ var Purchases = /** @class */ (function () {
                     case 1:
                         isConfigured = _a.sent();
                         if (!isConfigured) {
-                            throw new Error("There is no singleton instance. " +
-                                "Make sure you configure Purchases before trying to get the default instance. " +
-                                "More info here: https://errors.rev.cat/configuring-sdk");
+                            throw new errors_1.UninitializedPurchasesError();
                         }
                         return [2 /*return*/];
                 }
@@ -1103,6 +1100,7 @@ var Purchases = /** @class */ (function () {
      * @enum {string}
      */
     Purchases.PURCHASES_ERROR_CODE = errors_1.PURCHASES_ERROR_CODE;
+    Purchases.UninitializedPurchasesError = errors_1.UninitializedPurchasesError;
     return Purchases;
 }());
 exports.default = Purchases;
