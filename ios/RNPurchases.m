@@ -323,7 +323,7 @@ RCT_REMAP_METHOD(canMakePayments,
 RCT_REMAP_METHOD(isConfigured,
                  isConfiguredWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
-    resolve(@([RCPurchases isConfigured]));
+    resolve(@(RCPurchases.isConfigured));
 }
 
 #pragma mark -
