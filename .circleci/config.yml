@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  rn: react-native-community/react-native@4.4.2
+  rn: react-native-community/react-native@6.0.1
 commands:
   yarn_install_example:
     steps:
