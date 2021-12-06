@@ -1,6 +1,19 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PURCHASES_ERROR_CODE = void 0;
+exports.UninitializedPurchasesError = exports.PURCHASES_ERROR_CODE = void 0;
 // Error codes indicating the reason for an error.
 var PURCHASES_ERROR_CODE;
 (function (PURCHASES_ERROR_CODE) {
@@ -28,3 +41,16 @@ var PURCHASES_ERROR_CODE;
     PURCHASES_ERROR_CODE["INVALID_SUBSCRIBER_ATTRIBUTES_ERROR"] = "21";
     PURCHASES_ERROR_CODE["LOG_OUT_ANONYMOUS_USER_ERROR"] = "22";
 })(PURCHASES_ERROR_CODE = exports.PURCHASES_ERROR_CODE || (exports.PURCHASES_ERROR_CODE = {}));
+var UninitializedPurchasesError = /** @class */ (function (_super) {
+    __extends(UninitializedPurchasesError, _super);
+    function UninitializedPurchasesError() {
+        var _this = _super.call(this, "There is no singleton instance. " +
+            "Make sure you configure Purchases before trying to get the default instance. " +
+            "More info here: https://errors.rev.cat/configuring-sdk") || this;
+        // Set the prototype explicitly.
+        Object.setPrototypeOf(_this, UninitializedPurchasesError.prototype);
+        return _this;
+    }
+    return UninitializedPurchasesError;
+}(Error));
+exports.UninitializedPurchasesError = UninitializedPurchasesError;

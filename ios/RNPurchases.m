@@ -320,6 +320,12 @@ RCT_REMAP_METHOD(canMakePayments,
       resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features]));
 }
 
+RCT_REMAP_METHOD(isConfigured,
+                 isConfiguredWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    resolve(@(RCPurchases.isConfigured));
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases didReceiveUpdatedPurchaserInfo:(RCPurchaserInfo *)purchaserInfo {

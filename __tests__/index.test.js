@@ -5,6 +5,7 @@ const nativeEmitter = new NativeEventEmitter();
 describe("Purchases", () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(true);
   });
 
   it("addPurchaserInfoUpdateListener correctly saves listeners", () => {
@@ -112,19 +113,19 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(2);
   })
 
-  it("allowing sharing store account works", () => {
+  it("allowing sharing store account works", async () => {
     const Purchases = require("../dist/index").default;
 
-    Purchases.setAllowSharingStoreAccount(true)
+    await Purchases.setAllowSharingStoreAccount(true)
 
     expect(NativeModules.RNPurchases.setAllowSharingStoreAccount).toBeCalledWith(true);
     expect(NativeModules.RNPurchases.setAllowSharingStoreAccount).toBeCalledTimes(1);
   })
 
-  it("disallowing sharing store account works", () => {
+  it("disallowing sharing store account works", async () => {
     const Purchases = require("../dist/index").default;
 
-    Purchases.setAllowSharingStoreAccount(false)
+    await Purchases.setAllowSharingStoreAccount(false)
 
     expect(NativeModules.RNPurchases.setAllowSharingStoreAccount).toBeCalledWith(false);
     expect(NativeModules.RNPurchases.setAllowSharingStoreAccount).toBeCalledTimes(1);
@@ -171,7 +172,7 @@ describe("Purchases", () => {
   });
 
 
-  it("purchaseProduct works", () => {
+  it("purchaseProduct works", async () => {
     const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
@@ -179,19 +180,19 @@ describe("Purchases", () => {
       purchaserInfo: purchaserInfoStub
     });
 
-    Purchases.purchaseProduct("onemonth_freetrial")
+    await Purchases.purchaseProduct("onemonth_freetrial")
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", undefined, "subs", null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
 
-    Purchases.purchaseProduct("onemonth_freetrial", {
+    await Purchases.purchaseProduct("onemonth_freetrial", {
       oldSKU: "viejo"
     }, Purchases.PURCHASE_TYPE.INAPP)
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", { oldSKU: "viejo" }, Purchases.PURCHASE_TYPE.INAPP, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(2);
 
-    Purchases.purchaseProduct("onemonth_freetrial", {
+    await Purchases.purchaseProduct("onemonth_freetrial", {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.DEFERRED
     }, Purchases.PURCHASE_TYPE.INAPP)
@@ -200,7 +201,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(3);
   });
 
-  it("purchasePackage works", () => {
+  it("purchasePackage works", async () => {
     const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
@@ -208,7 +209,7 @@ describe("Purchases", () => {
       purchaserInfo: purchaserInfoStub
     });
 
-    Purchases.purchasePackage(
+    await Purchases.purchasePackage(
       {
         identifier: "$rc_onemonth",
         packageType: Purchases.PACKAGE_TYPE.MONTHLY,
@@ -232,7 +233,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", undefined, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 
-    Purchases.purchasePackage(
+    await Purchases.purchasePackage(
       {
         identifier: "$rc_onemonth",
         packageType: Purchases.PACKAGE_TYPE.MONTHLY,
@@ -287,51 +288,47 @@ describe("Purchases", () => {
     expect(appUserID).toEqual("123");
   })
 
-  it("createAlias throws errors if new app user id is not a string", () => {
+  it("createAlias throws errors if new app user id is not a string", async () => {
     const Purchases = require("../dist/index").default;
 
-    expect(() => {
-      Purchases.createAlias(123)
-    }).toThrowError();
-
-    expect(() => {
-      Purchases.createAlias()
-    }).toThrowError();
-
-    expect(() => {
-      Purchases.createAlias(null)
-    }).toThrowError();
+    expect(async () => {
+      await Purchases.createAlias(123)
+    }).rejects.toThrowError();
 
     expect(async () => {
-      NativeModules.RNPurchases.createAlias.mockResolvedValueOnce(purchaserInfoStub);
-      const info = await Purchases.createAlias("123a")
-      expect(info).toBeEqual(purchaserInfoStub);
-    }).not.toThrowError();
+      await Purchases.createAlias()
+    }).rejects.toThrowError();
+
+    expect(async () => {
+      await Purchases.createAlias(null)
+    }).rejects.toThrowError();
+
+    NativeModules.RNPurchases.createAlias.mockResolvedValueOnce(purchaserInfoStub);
+    const info = await Purchases.createAlias("123a")
+    expect(info).toEqual(purchaserInfoStub);
 
     expect(NativeModules.RNPurchases.createAlias).toBeCalledTimes(1);
     expect(NativeModules.RNPurchases.createAlias).toBeCalledWith("123a");
   })
 
-  it("identify throws errors if new app user id is not a string", () => {
+  it("identify throws errors if new app user id is not a string", async () => {
     const Purchases = require("../dist/index").default;
 
-    expect(() => {
-      Purchases.identify(123)
-    }).toThrowError();
-
-    expect(() => {
-      Purchases.identify()
-    }).toThrowError();
-
-    expect(() => {
-      Purchases.identify(null)
-    }).toThrowError();
+    expect(async () => {
+      await Purchases.identify(123)
+    }).rejects.toThrowError();
 
     expect(async () => {
-      NativeModules.RNPurchases.identify.mockResolvedValueOnce(purchaserInfoStub);
-      const info = await Purchases.identify("123a")
-      expect(info).toBeEqual(purchaserInfoStub);
-    }).not.toThrowError();
+      await Purchases.identify()
+    }).rejects.toThrowError();
+
+    expect(async () => {
+      await Purchases.identify(null)
+    }).rejects.toThrowError();
+
+    NativeModules.RNPurchases.identify.mockResolvedValueOnce(purchaserInfoStub);
+    const info = await Purchases.identify("123a")
+    expect(info).toEqual(purchaserInfoStub);
 
     expect(NativeModules.RNPurchases.identify).toBeCalledTimes(1);
   })
@@ -340,17 +337,17 @@ describe("Purchases", () => {
     const Purchases = require("../dist/index").default;
 
     it("throws an error if the appUserID is not a string", () => { 
-      expect(() => {
-        Purchases.logIn(123)
-      }).toThrowError();
+      expect(async () => {
+        await Purchases.logIn(123)
+      }).rejects.toThrowError();
 
-      expect(() => {
-        Purchases.logIn()
-      }).toThrowError();
+      expect(async () => {
+        await Purchases.logIn()
+      }).rejects.toThrowError();
 
-      expect(() => {
-        Purchases.logIn(null)
-      }).toThrowError();
+      expect(async () => {
+        await Purchases.logIn(null)
+      }).rejects.toThrowError();
     });
 
     it ("returns the correct LogInResult if successful", async () => { 
@@ -439,7 +436,7 @@ describe("Purchases", () => {
     });
   });
 
-  it("cancelled purchasePackage sets userCancelled in the error", () => {
+  it("cancelled purchasePackage sets userCancelled in the error", async () => {
     const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchasePackage.mockRejectedValueOnce({
@@ -449,7 +446,9 @@ describe("Purchases", () => {
       underlyingErrorMessage: "The user cancelled",
     });
 
-    return expect(Purchases.purchasePackage("onemonth_freetrial")).rejects.toEqual({
+    return expect(async () => { 
+      await Purchases.purchasePackage("onemonth_freetrial") 
+    }).rejects.toEqual({
       code: Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
       message: "User cancelled",
       readableErrorCode: "USER_CANCELLED",
@@ -480,48 +479,48 @@ describe("Purchases", () => {
     return expect(Purchases.reset()).resolves.toEqual(purchaserInfoStub);
   })
 
-  it("syncpurchases works for android", () => {
+  it("syncpurchases works for android", async () => {
     const Purchases = require("../dist/index").default;
 
     Platform.OS = "android";
 
-    Purchases.syncPurchases();
+    await Purchases.syncPurchases();
 
     expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
   })
 
-  it("syncpurchases works for ios", () => {
+  it("syncpurchases works for ios", async () => {
     const Purchases = require("../dist/index").default;
 
     Platform.OS = "ios";
 
-    Purchases.syncPurchases();
+    await Purchases.syncPurchases();
 
     expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
   })
 
 
-  it("finishTransactions works", () => {
+  it("finishTransactions works", async () => {
     const Purchases = require("../dist/index").default;
 
-    Purchases.setFinishTransactions(true);
+    await Purchases.setFinishTransactions(true);
     expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(true);
 
-    Purchases.setFinishTransactions(false);
+    await Purchases.setFinishTransactions(false);
     expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(false);
 
     expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledTimes(2);
   })
 
-  it("checkTrialOrIntroductoryPriceEligibility works", () => {
+  it("checkTrialOrIntroductoryPriceEligibility works", async () => {
     const Purchases = require("../dist/index").default;
 
-    Purchases.checkTrialOrIntroductoryPriceEligibility(["monthly"])
+    await Purchases.checkTrialOrIntroductoryPriceEligibility(["monthly"])
 
     expect(NativeModules.RNPurchases.checkTrialOrIntroductoryPriceEligibility).toBeCalledWith(["monthly"]);
   })
 
-  it("getPaymentDiscount works", () => {
+  it("getPaymentDiscount works", async () => {
     const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.getPaymentDiscount.mockResolvedValue(paymentDiscountStub);
@@ -531,7 +530,7 @@ describe("Purchases", () => {
       discounts: [discountStub]
     }
 
-    Purchases.getPaymentDiscount(aProduct, discountStub)
+    await Purchases.getPaymentDiscount(aProduct, discountStub)
 
     expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledWith(aProduct.identifier, discountStub.identifier);
     expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(1);
@@ -552,18 +551,18 @@ describe("Purchases", () => {
     const Purchases = require("../dist/index").default;
     Platform.OS = "ios";
 
-    expect(() => {
-      Purchases.getPaymentDiscount(productStub, null)
-    }).toThrowError();
+    expect(async () => {
+      await Purchases.getPaymentDiscount(productStub, null)
+    }).rejects.toThrowError();
 
-    expect(() => {
+    expect(async () => {
       Purchases.getPaymentDiscount(productStub)
-    }).toThrowError();
+    }).rejects.toThrowError();
 
     expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(0);
   });
 
-  it("purchaseDiscountedProduct works", () => {
+  it("purchaseDiscountedProduct works", async () => {
     const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
@@ -576,7 +575,7 @@ describe("Purchases", () => {
       discounts: [discountStub]
     }
 
-    Purchases.purchaseDiscountedProduct(aProduct, paymentDiscountStub)
+    await Purchases.purchaseDiscountedProduct(aProduct, paymentDiscountStub)
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, paymentDiscountStub.timestamp.toString());
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
@@ -585,18 +584,18 @@ describe("Purchases", () => {
   it("purchaseDiscountedProduct throws if null or undefined discount", () => {
     const Purchases = require("../dist/index").default;
 
-    expect(() => {
+    expect(async () => {
       Purchases.purchaseDiscountedProduct(productStub, null)
-    }).toThrow();
+    }).rejects.toThrow();
 
-    expect(() => {
+    expect(async () => {
       Purchases.purchaseDiscountedProduct(productStub)
-    }).toThrow();
+    }).rejects.toThrow();
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
 
-  it("purchaseDiscountedPackage works", () => {
+  it("purchaseDiscountedPackage works", async () => {
     const Purchases = require("../dist/index").default;
 
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
@@ -614,7 +613,7 @@ describe("Purchases", () => {
       product: aProduct
     }
 
-    Purchases.purchaseDiscountedPackage(aPackage, paymentDiscountStub)
+    await Purchases.purchaseDiscountedPackage(aPackage, paymentDiscountStub)
 
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
       aPackage.identifier,
@@ -629,13 +628,13 @@ describe("Purchases", () => {
   it("purchaseDiscountedPackage throws if null or undefined discount", () => {
     const Purchases = require("../dist/index").default;
 
-    expect(() => {
-      Purchases.purchaseDiscountedPackage(packagestub, null)
-    }).toThrow();
+    expect(async () => {
+      await Purchases.purchaseDiscountedPackage(packagestub, null)
+    }).rejects.toThrow();
 
-    expect(() => {
-      Purchases.purchaseDiscountedPackage(packagestub)
-    }).toThrow();
+    expect(async () => {
+      await Purchases.purchaseDiscountedPackage(packagestub)
+    }).rejects.toThrow();
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
@@ -650,9 +649,9 @@ describe("Purchases", () => {
 
   describe("invalidate purchaser info cache", () => {
     describe("when invalidatePurchaserInfoCache is called", () => {
-      it("makes the right call to Purchases", () => {
+      it("makes the right call to Purchases", async () => {
         const Purchases = require("../dist/index").default;
-        Purchases.invalidatePurchaserInfoCache();
+        await Purchases.invalidatePurchaserInfoCache();
 
         expect(NativeModules.RNPurchases.invalidatePurchaserInfoCache).toBeCalledTimes(1);
       });
@@ -661,10 +660,11 @@ describe("Purchases", () => {
 
   describe("setAttributes", () => {
     describe("when setAttributes is called", () => {
-      it("makes the right call to Purchases", () => {
+      it("makes the right call to Purchases", async () => {
         const Purchases = require("../dist/index").default;
         const attributes = { band: "AirBourne", song: "Back in the game" }
-        Purchases.setAttributes(attributes);
+        
+        await Purchases.setAttributes(attributes);
 
         expect(NativeModules.RNPurchases.setAttributes).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.setAttributes).toBeCalledWith(attributes);
@@ -674,11 +674,11 @@ describe("Purchases", () => {
 
   describe("setEmail", () => {
     describe("when setEmail is called", () => {
-      it("makes the right call to Purchases", () => {
+      it("makes the right call to Purchases", async () => {
         const Purchases = require("../dist/index").default;
         const email = "garfield@revenuecat.com";
 
-        Purchases.setEmail(email);
+        await Purchases.setEmail(email);
 
         expect(NativeModules.RNPurchases.setEmail).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.setEmail).toBeCalledWith(email);
@@ -688,11 +688,11 @@ describe("Purchases", () => {
 
   describe("setPhoneNumber", () => {
     describe("when setPhoneNumber is called", () => {
-      it("makes the right call to Purchases", () => {
+      it("makes the right call to Purchases", async () => {
         const Purchases = require("../dist/index").default;
         const phoneNumber = "+123456789";
 
-        Purchases.setPhoneNumber(phoneNumber);
+        await Purchases.setPhoneNumber(phoneNumber);
 
         expect(NativeModules.RNPurchases.setPhoneNumber).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.setPhoneNumber).toBeCalledWith(phoneNumber);
@@ -702,11 +702,11 @@ describe("Purchases", () => {
 
   describe("setDisplayName", () => {
     describe("when setDisplayName is called", () => {
-      it("makes the right call to Purchases", () => {
+      it("makes the right call to Purchases", async () => {
         const Purchases = require("../dist/index").default;
         const displayName = "Garfield";
 
-        Purchases.setDisplayName(displayName);
+        await Purchases.setDisplayName(displayName);
 
         expect(NativeModules.RNPurchases.setDisplayName).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.setDisplayName).toBeCalledWith(displayName);
@@ -716,11 +716,12 @@ describe("Purchases", () => {
 
   describe("setPushToken", () => {
     describe("when setPushToken is called", () => {
-      it("makes the right call to Purchases", () => {
+      it("makes the right call to Purchases", async () => {
         const Purchases = require("../dist/index").default;
+
         const pushToken = "65a1ds56adsgh6954asd";
 
-        Purchases.setPushToken(pushToken);
+        await Purchases.setPushToken(pushToken);
 
         expect(NativeModules.RNPurchases.setPushToken).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.setPushToken).toBeCalledWith(pushToken);
@@ -774,5 +775,75 @@ describe("Purchases", () => {
           expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([0, 4, 3, 1, 2]);
         });
       });
+  });
+
+  describe("isConfigured", () => {
+    describe("when Purchases is configured", () => {
+      it("isConfigured returns true", async () => {
+        const Purchases = require("../dist/index").default;
+
+        const isConfigured = await Purchases.isConfigured();
+
+        expect(NativeModules.RNPurchases.isConfigured).toBeCalledTimes(1);
+        expect(isConfigured).toBeTruthy();
+      });
+    });
+    describe("when Purchases is not configured", () => {
+      it("isConfigured returns false", async () => {
+        const Purchases = require("../dist/index").default;
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+        const isConfigured = await Purchases.isConfigured();
+
+        expect(NativeModules.RNPurchases.isConfigured).toBeCalledTimes(1);
+        expect(isConfigured).toBeFalsy();
+      });
+    });
+  });
+
+  describe("UninitializedError is thrown", () => {
+    function isFunction(functionToCheck) {
+      return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+    }
+
+    it("for functions that require the SDK to be configured if called before configuring", async () => {
+      const Purchases = require("../dist/index").default;
+      NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+
+      const allPropertyNames = Object.getOwnPropertyNames( Purchases );
+
+      // This functions should skip the test since they not required an instance of Purchases
+      const excludedFunctionNames = [
+        "setup",
+        "setSimulatesAskToBuyInSandbox", 
+        "addPurchaserInfoUpdateListener",
+        "removePurchaserInfoUpdateListener",
+        "addShouldPurchasePromoProductListener",
+        "removeShouldPurchasePromoProductListener",
+        "setAutomaticAppleSearchAdsAttributionCollection",
+        "addAttributionData",
+        "setDebugLogsEnabled",
+        "canMakePayments",
+        "UninitializedPurchasesError",
+        "throwIfNotConfigured",
+        "isConfigured"
+      ];
+      const expected = new Purchases.UninitializedPurchasesError();
+      for (let i = 0; i < allPropertyNames.length; i++) {
+        const property = Purchases[allPropertyNames[i]];
+        if (isFunction(property) && excludedFunctionNames.indexOf(allPropertyNames[i]) === -1) {
+          // Uncomment if test is failing to see which function is giving issues.
+          // If function doesn't require an instance of Purchases, add it to excludedFunctionNames.
+          // console.log(`Testing ${allPropertyNames[i]}`);
+          await property().then(() => {
+            fail(`${ allPropertyNames[i] } should have failed`);
+          }).catch(error => {
+            expect(error.name).toEqual(expected.name);
+            expect(error.message).toEqual(expected.message);
+          });
+          
+        }
+      }
+    });
   });
 });

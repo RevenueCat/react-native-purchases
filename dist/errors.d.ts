@@ -34,3 +34,6 @@ export interface PurchasesError {
 export interface ErrorInfo {
     readableErrorCode: string;
 }
+export declare class UninitializedPurchasesError extends Error {
+    constructor();
+}
