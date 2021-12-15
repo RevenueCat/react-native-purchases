@@ -1,0 +1,158 @@
+{
+  "identifier" : "0C3078F9",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "39.99",
+      "familyShareable" : false,
+      "internalID" : "9E9D4004",
+      "localizations" : [
+        {
+          "description" : "Oh yeah stuff",
+          "displayName" : "The Life Time",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.revenuecat.JoshHoltzSample.stuff.lifetime",
+      "referenceName" : "LIFETIME",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "3.99",
+      "familyShareable" : false,
+      "internalID" : "C83E57FE",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.revenuecat.JoshHoltzSample.tokens.100",
+      "referenceName" : "100 Josh Tokens",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "5.99",
+      "familyShareable" : false,
+      "internalID" : "CF8B039B",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.revenuecat.JoshHoltzSample.tokens.200",
+      "referenceName" : "200 Josh Tokens",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "99.99",
+      "familyShareable" : false,
+      "internalID" : "6439B685",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.revenuecat.JoshHoltzSample.tokens.million",
+      "referenceName" : "1 Million Josh Tokens",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "39EEA9C6",
+      "localizations" : [
+
+      ],
+      "name" : "UNLOCK",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "7348135B",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlock all the things 2",
+              "displayName" : "Yearly Sub",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.revenuecat.JoshHoltzSample.stuff.sub.year",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "YEAR_SUB",
+          "subscriptionGroupID" : "39EEA9C6",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "90BF48F2",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "The awesome monthly sub",
+              "displayName" : "Month Sub",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.revenuecat.JoshHoltzSample.stuff.sub.month",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "MONTH_SUB",
+          "subscriptionGroupID" : "39EEA9C6",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+            {
+              "internalID" : "DE256FE4",
+              "offerID" : "FREE_ONE_YEAR_WEEK",
+              "paymentMode" : "free",
+              "referenceName" : "Free One Year",
+              "subscriptionPeriod" : "P1Y"
+            }
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "AD03222D",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "This is crazy this is a thing",
+              "displayName" : "A week sub",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.revenuecat.JoshHoltzSample.stuff.sub.week",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "WEEK_SUB",
+          "subscriptionGroupID" : "39EEA9C6",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 1
+  }
+}
