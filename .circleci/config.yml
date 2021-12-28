@@ -88,7 +88,6 @@ jobs:
       - yarn_install_example
       - install_pods
       - rn/ios_build:
-          name: Build iOS App (examples/purchaseTester)
           build_configuration: Release
           device: iPhone 11 Pro
           derived_data_path: ~/DerivedData
@@ -96,7 +95,6 @@ jobs:
           project_path: examples/purchaseTester/ios/ReactNativeSample.xcworkspace
           scheme: ReactNativeSample
       - rn/ios_build:
-          name: Build iOS App (examples/purchaseTesterTypescript)
           build_configuration: Release
           device: iPhone 11 Pro
           derived_data_path: ~/DerivedData
