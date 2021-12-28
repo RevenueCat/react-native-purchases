@@ -27,7 +27,11 @@ commands:
       - run:
           command: >-
             yarn --cwd examples/purchaseTester && yarn install --non-interactive --cache-folder /tmp/yarn
-          name: Yarn Install
+          name: Yarn Install (examples/purchaseTester)
+      - run:
+          command: >-
+            yarn --cwd examples/purchaseTesterTypescript && yarn install --non-interactive --cache-folder /tmp/yarn
+          name: Yarn Install (examples/purchaseTesterTypescript)
       # - save_cache:
       #     key: >
       #       yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
