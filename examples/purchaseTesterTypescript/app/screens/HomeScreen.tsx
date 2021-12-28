@@ -71,8 +71,6 @@ const HomeScreen: React.FC<Props> = ({
       const appUserID = await Purchases.getAppUserID();
       const isAnonymous = await Purchases.isAnonymous();
       const offerings = await Purchases.getOfferings();
-      
-      console.log(offerings.current?.availablePackages)
 
       setState((prevState) => (
         { appUserID, purchaserInfo, offerings, isAnonymous }
