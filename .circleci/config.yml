@@ -74,10 +74,8 @@ jobs:
       - checkout
       - yarn_install_example
       - rn/android_build:
-          name: Build Android APK (examples/purchaseTester)
           project_path: examples/purchaseTester/android
       - rn/android_build:
-          name: Build Android APK (examples/purchaseTesterTypescript)
           project_path: examples/purchaseTesterTypescript/android
   ios:
     executor:
