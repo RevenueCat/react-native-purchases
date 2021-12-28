@@ -159,6 +159,8 @@ const AttributesTab: React.FC<{
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const transactions = purchaserInfo?.nonSubscriptionTransactions || [];
+
   return (
     <ScrollView
         contentInsetAdjustmentBehavior="automatic"
@@ -169,7 +171,10 @@ const AttributesTab: React.FC<{
             <Text>No transactions</Text>
           ) : (
             transactions.map((transaction) => {
-              <Section title={transaction.productId} value={transaction.purchaseDate}></Section>
+              <Section
+                key={transaction.revenueCatId}
+                title={transaction.productId}
+                value={transaction.purchaseDate}></Section>
             })
           )
         }

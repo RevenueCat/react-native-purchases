@@ -54,9 +54,11 @@ const HomeScreen: React.FC<Props> = ({
     // Refetch data when purchaser info is updated (login, logout)
     // Fetches new data, updates state, and updates
     // props in subviews and components
-    Purchases.addPurchaserInfoUpdateListener((purchaserInfo) => {
-      fetchData();
-    })
+    //
+    // Weird: This listener doesn't always get called so
+    // currently passing fetchData to components and screens
+    // so everything can be refreshed
+    Purchases.addPurchaserInfoUpdateListener(fetchData);
     fetchData();
 
     return () => {
@@ -162,6 +164,7 @@ const HomeScreen: React.FC<Props> = ({
                   appUserID={state.appUserID}
                   customerInfo={state.purchaserInfo} 
                   isAnonymous={state.isAnonymous}
+                  refreshData={fetchData}
                   />
               </TouchableOpacity>
             </View>

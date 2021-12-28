@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { PurchaserInfo, PurchasesEntitlementInfo } from 'react-native-purchases';
+import { PurchaserInfo, PurchaserInfoUpdateListener } from 'react-native-purchases';
 
 import Purchases from 'react-native-purchases';
+import { useRoute } from '@react-navigation/native';
 
 export type Props = {
   appUserID: String | null;
   customerInfo: PurchaserInfo | null;
-  isAnonymous: boolean
+  isAnonymous: boolean,
+  refreshData: Function
 };
 
 // Taken from https://reactnative.dev/docs/typescript
-const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymous}) => {
+const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymous, refreshData}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -35,13 +37,14 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
   const onModalClose = async () => {
     if (inputValue && inputValue.length > 0) {
       await Purchases.logIn(inputValue);
+      await refreshData();
     }
-    toggleModalVisibility()
   }
 
   const logout = async () => {
     try {
       await Purchases.logOut();
+      await refreshData();
     } catch {
       console.log("error logging out")
     }
@@ -75,7 +78,7 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
       <Modal animationType="slide" 
               transparent visible={isModalVisible} 
               presentationStyle="overFullScreen" 
-              onDismiss={() => {}}>
+              onDismiss={onModalClose}>
           <View style={styles.viewWrapper}>
               <View style={styles.modalView}>
                   <Text>Enter identifier for login</Text>
@@ -85,7 +88,7 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
                     value={inputValue} style={styles.textInput} 
                     onChangeText={(value) => setInputValue(value)} />
 
-                  <Button title="Close" onPress={onModalClose} />
+                  <Button title="Close" onPress={toggleModalVisibility} />
               </View>
           </View>
       </Modal>
