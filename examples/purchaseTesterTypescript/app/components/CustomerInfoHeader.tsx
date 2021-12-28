@@ -34,13 +34,6 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
     toggleModalVisibility()
   }
 
-  const onModalClose = async () => {
-    if (inputValue && inputValue.length > 0) {
-      await Purchases.logIn(inputValue);
-      await refreshData();
-    }
-  }
-
   const logout = async () => {
     try {
       await Purchases.logOut();
@@ -50,7 +43,12 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
     }
   }
 
-  const toggleModalVisibility = () => {
+  const toggleModalVisibility = async () => {
+    if (isModalVisible && inputValue && inputValue.length > 0) {
+      await Purchases.logIn(inputValue);
+      await refreshData();
+    }
+
     setModalVisible(!isModalVisible);
   };
 
@@ -77,8 +75,7 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
 
       <Modal animationType="slide" 
               transparent visible={isModalVisible} 
-              presentationStyle="overFullScreen" 
-              onDismiss={onModalClose}>
+              presentationStyle="overFullScreen">
           <View style={styles.viewWrapper}>
               <View style={styles.modalView}>
                   <Text>Enter identifier for login</Text>

@@ -74,7 +74,11 @@ jobs:
       - checkout
       - yarn_install_example
       - rn/android_build:
+          name: Build Android APK (examples/purchaseTester)
           project_path: examples/purchaseTester/android
+      - rn/android_build:
+          name: Build Android APK (examples/purchaseTesterTypescript)
+          project_path: examples/purchaseTesterTypescript/android
   ios:
     executor:
       name: rn/macos
@@ -86,11 +90,20 @@ jobs:
       - yarn_install_example
       - install_pods
       - rn/ios_build:
+          name: Build iOS App (examples/purchaseTester)
           build_configuration: Release
           device: iPhone 11 Pro
           derived_data_path: ~/DerivedData
           project_type: workspace
           project_path: examples/purchaseTester/ios/ReactNativeSample.xcworkspace
+          scheme: ReactNativeSample
+      - rn/ios_build:
+          name: Build iOS App (examples/purchaseTesterTypescript)
+          build_configuration: Release
+          device: iPhone 11 Pro
+          derived_data_path: ~/DerivedData
+          project_type: workspace
+          project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
           scheme: ReactNativeSample
 
 workflows:
