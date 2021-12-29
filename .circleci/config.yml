@@ -100,7 +100,7 @@ jobs:
           derived_data_path: ~/DerivedData
           project_type: workspace
           project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
-          scheme: ReactNativeSample
+          scheme: PurchaseTest
 
 workflows:
   test:
