@@ -15,8 +15,11 @@ export type Props = {
 
 // Taken from https://reactnative.dev/docs/typescript
 const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymous, refreshData}) => {
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [isLoginModalVisible, setLoginModalVisible] = useState(false);
+  const [isAttributeModalVisible, setAttributeModalVisible] = useState(false);
+  const [inputUserID, setInputUserID] = useState("");
+  const [inputAttributeKey, setInputAttributeKey] = useState("");
+  const [inputAttributeValue, setInputAttributeValue] = useState("");
 
   const activeEntitlements = () => {
     const entitlements = Object.entries(customerInfo?.entitlements?.active ?? {});
@@ -30,8 +33,8 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
   };
 
   const login = () => {
-    setInputValue("")
-    toggleModalVisibility()
+    setInputUserID("")
+    toggleLoginModalVisibility()
   }
 
   const logout = async () => {
@@ -43,13 +46,30 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
     }
   }
 
-  const toggleModalVisibility = async () => {
-    if (isModalVisible && inputValue && inputValue.length > 0) {
-      await Purchases.logIn(inputValue);
+  const toggleLoginModalVisibility = async () => {
+    if (isLoginModalVisible && inputUserID && inputUserID.length > 0) {
+      await Purchases.logIn(inputUserID);
       await refreshData();
     }
 
-    setModalVisible(!isModalVisible);
+    setLoginModalVisible(!isLoginModalVisible);
+  };
+
+  const toggleAttributeModalVisibility = async () => {
+    if (isAttributeModalVisible) {
+      if (inputAttributeKey.length > 0) {
+        const value = inputAttributeValue.length == 0 ? null : inputAttributeValue;
+        await Purchases.setAttributes({
+          [inputAttributeKey]: value
+        })
+        await refreshData();
+      }
+    } else {
+      setInputAttributeKey("");
+      setInputAttributeValue("");
+    }
+
+    setAttributeModalVisible(!isAttributeModalVisible);
   };
 
   return (
@@ -63,7 +83,7 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
       <Text style={styles.entitlements}>
         Entitlements: { activeEntitlements() }
       </Text>
-      <View>
+      <View style={styles.buttons}>
         <TouchableOpacity
           style={styles.button}
           onPress={ isAnonymous ? login : logout } >
@@ -71,21 +91,51 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
             { isAnonymous ? "Login" : "Logout"}
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={ toggleAttributeModalVisibility } >
+          <Text>
+            Add Attribute
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <Modal animationType="slide" 
-              transparent visible={isModalVisible} 
+              transparent visible={isLoginModalVisible} 
               presentationStyle="overFullScreen">
           <View style={styles.viewWrapper}>
               <View style={styles.modalView}>
                   <Text>Enter identifier for login</Text>
-                  <TextInput placeholder="Enter something..." 
+                  <TextInput placeholder="Enter User ID..." 
                     autoCapitalize='none'
                     autoCorrect={false}
-                    value={inputValue} style={styles.textInput} 
-                    onChangeText={(value) => setInputValue(value)} />
+                    value={inputUserID} style={styles.textInput} 
+                    onChangeText={(value) => setInputUserID(value)} />
 
-                  <Button title="Close" onPress={toggleModalVisibility} />
+                  <Button title="Close" onPress={toggleLoginModalVisibility} />
+              </View>
+          </View>
+      </Modal>
+
+      <Modal animationType="slide" 
+              transparent visible={isAttributeModalVisible} 
+              presentationStyle="overFullScreen">
+          <View style={styles.viewWrapper}>
+              <View style={styles.modalView}>
+                  <Text>Enter attriute key and value</Text>
+                  <TextInput placeholder="Enter key..." 
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    value={inputAttributeKey} style={styles.textInput} 
+                    onChangeText={(value) => setInputAttributeKey(value)} />
+                  <TextInput placeholder="Enter value..." 
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    value={inputAttributeValue} style={styles.textInput} 
+                    onChangeText={(value) => setInputAttributeValue(value)} />
+
+                  <Button title="Close" onPress={toggleAttributeModalVisibility} />
               </View>
           </View>
       </Modal>
@@ -101,6 +151,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     paddingHorizontal: 20
+  },
+  buttons: {
+    flex: 1,
+    flexDirection: "row"
   },
   entitlements: {
     flex: 1,
@@ -118,7 +172,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 20,
     marginTop: 20,
-    borderRadius: 4
+    borderRadius: 4,
+    marginHorizontal: 5
   },
   viewWrapper: {
     flex: 1,
