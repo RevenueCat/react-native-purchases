@@ -2,6 +2,49 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@6.0.1
 commands:
+  rc_yarn_install:
+    parameters:
+      path:
+        description: Path to run yarn install
+        type: string
+        default: "./"
+      cache:
+        description: Save and restore the build cache? Defaults to true
+        type: boolean
+        default: true
+      cache_folder:
+        description: The path to the yarn cache folder.  Defaults to /tmp/yarn
+        type: string
+        default: "/tmp/yarn"
+      cache_key:
+        description: A key when cache needs to go
+        type: string
+        default: "v1"
+
+    steps:
+      - when:
+          condition: <<parameters.cache>>
+          steps:
+            - run:
+                name: Create cache checksum file
+                command: |
+                  mkdir -p ~/.tmp/checksumfiles
+                  find . -type f -name 'package.json' -not -path "*node_modules*" -exec cat {} + >> ~/.tmp/checksumfiles/package.json
+                  find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat {} + >> ~/.tmp/checksumfiles/yarn.lock
+            - restore_cache:
+                keys:
+                  - yarn-cache-<<parameters.cache_key>>-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
+      - run:
+          name: Yarn Install
+          command: "yarn install --cwd <<parameters.path>> --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
+      - when:
+          condition: <<parameters.cache>>
+          steps:
+            - save_cache:
+                paths:
+                  - <<parameters.cache_folder>>
+                key: |
+                  yarn-cache-<<parameters.cache_key>>-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
   yarn_install_example:
     steps:
         - run:
@@ -79,8 +122,6 @@ jobs:
       - checkout
       - yarn_install_example
       - rn/android_build:
-          project_path: examples/purchaseTester/android
-      - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
     executor:
@@ -90,8 +131,10 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 11 Pro
-      - yarn_install_example
+      #- yarn_install_example
       #- rn/yarn_install
+      - rc_yarn_install:
+          path: examples/purchaseTesterTypescript
       - install_pods
       - rn/ios_build:
           build_configuration: Release
