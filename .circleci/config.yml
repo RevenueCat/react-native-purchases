@@ -135,6 +135,7 @@ jobs:
       #- rn/yarn_install
       - rc_yarn_install:
           path: examples/purchaseTesterTypescript
+          cache_folder: ~/.cache/yarn
       - install_pods
       - rn/ios_build:
           build_configuration: Release
