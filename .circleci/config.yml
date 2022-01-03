@@ -10,9 +10,6 @@ commands:
   yarn_install:
     description: Install Javascript dependencies using Yarn. This command correctly configures the cache for any number of package.json and yarn.lock files.
     parameters:
-      yarn_install_directory:
-        description: Working path. Defaults to "./"
-        type: string
       cache:
         description: Save and restore the build cache? Defaults to true
         type: boolean
@@ -21,6 +18,10 @@ commands:
         description: The path to the yarn cache folder.  Defaults to /tmp/yarn
         type: string
         default: "/tmp/yarn"
+      yarn_install_directory:
+        description: The working directory to run install at. Defaults to yarn's current working directory
+        type: string
+        default: ""
 
     steps:
       - when:
@@ -35,9 +36,20 @@ commands:
             - restore_cache:
                 keys:
                   - yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
-      - run:
-          name: Yarn Install
-          command: "yarn --cwd <<parameters.yarn_install_directory>> install --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
+      - when:
+          condition:
+            equal: ["", <<parameters.yarn_install_directory>>]
+          steps:
+            - run:
+                name: Yarn Install
+                command: "yarn install --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
+      - unless:
+          condition:
+            equal: ["", <<parameters.yarn_install_directory>>]
+          steps:
+            - run:
+                name: Yarn Install (<<parameters.yarn_install_directory>>)
+                command: "yarn --cwd <<parameters.yarn_install_directory>> install --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
       - when:
           condition: <<parameters.cache>>
           steps:
