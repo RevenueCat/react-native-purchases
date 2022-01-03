@@ -4,10 +4,6 @@ orbs:
 commands:
   rc_yarn_install:
     parameters:
-      path:
-        description: Path to run yarn install
-        type: string
-        default: "./"
       cache:
         description: Save and restore the build cache? Defaults to true
         type: boolean
@@ -36,7 +32,7 @@ commands:
                   - yarn-cache-<<parameters.cache_key>>-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
       - run:
           name: Yarn Install
-          command: "yarn install --cwd <<parameters.path>> --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
+          command: "yarn install --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
       - when:
           condition: <<parameters.cache>>
           steps:
@@ -133,16 +129,10 @@ jobs:
           device: iPhone 11 Pro
       #- yarn_install_example
       #- rn/yarn_install
-      - rc_yarn_install:
-          path: examples/purchaseTesterTypescript
+      - run:
+          command: "yarn --cwd examples/purchaseTesterTypescript"
+      - rc_yarn_install
       - install_pods
-      - rn/ios_build:
-          build_configuration: Release
-          device: iPhone 11 Pro
-          derived_data_path: ~/DerivedData
-          project_type: workspace
-          project_path: examples/purchaseTester/ios/ReactNativeSample.xcworkspace
-          scheme: ReactNativeSample
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 11 Pro
