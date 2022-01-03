@@ -133,7 +133,8 @@ jobs:
           device: iPhone 11 Pro
       #- yarn_install_example
       #- rn/yarn_install
-      - rc_yarn_install
+      - rc_yarn_install:
+          path: examples/purchaseTesterTypescript
       - install_pods
       - rn/ios_build:
           build_configuration: Release
