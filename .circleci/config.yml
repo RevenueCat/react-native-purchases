@@ -26,7 +26,7 @@ commands:
       #         .Environment.CACHE_VERSION }}
       - run:
           command: >-
-            yarn --cwd examples/purchaseTesterTypescript && yarn install --non-interactive --cache-folder /tmp/yarn
+            yarn --cwd examples/purchaseTesterTypescript install --non-interactive --cache-folder /tmp/yarn
           name: Yarn Install (examples/purchaseTesterTypescript)
       # - save_cache:
       #     key: >
@@ -43,7 +43,7 @@ commands:
             - cache-pods-{{ checksum "examples/purchaseTesterTypescript/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
             - cache-pods-
       - run:
-          command: yarn pods
+          command: yarn --cwd examples/purchaseTesterTypescript pods
           name: Pod install
       - save_cache:
           paths:
