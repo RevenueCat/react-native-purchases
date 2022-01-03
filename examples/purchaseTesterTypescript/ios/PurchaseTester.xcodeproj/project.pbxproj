@@ -503,7 +503,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.JoshHoltzSample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.sampleapp;
 				PRODUCT_NAME = PurchaseTester;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -528,7 +528,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.JoshHoltzSample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.sampleapp;
 				PRODUCT_NAME = PurchaseTester;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
