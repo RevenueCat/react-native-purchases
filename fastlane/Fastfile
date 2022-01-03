@@ -135,17 +135,7 @@ lane :update_ios_pod do |options|
   UI.message("ℹ️  New Purchases version    : #{new_version_number}")
   UI.message("ℹ️  Current Pod version      : #{previous_pod_version}")
   UI.message("ℹ️  New Pod version          : #{new_pod_version}")
-  if dry_run
-    UI.message("ℹ️  Nothing more to do, dry_run: true")
-  else
-    UI.message("ℹ️  Current dir:#{sh("pwd")}")
-    Dir.chdir(File.expand_path("scripts", get_root_folder)) do
-      replace_in("download-purchases-framework.sh #{previous_pod_version}", 
-        "download-purchases-framework.sh #{new_pod_version}", "build.js")
-      replace_in("download-purchases-common.sh #{previous_hybrid_version}", 
-        "download-purchases-common.sh #{new_version_number}", "build.js")
-    end
-  end
+  UI.message("ℹ️  Nothing more to do, dry_run: #{dry_run}")
 end
 
 desc "Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod"

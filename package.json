@@ -7,7 +7,6 @@
   "types": "dist/index.d.ts",
   "source": "src/index",
   "files": [
-    "scripts/build.js",
     "dist",
     "android",
     "!android/gradlew*",
@@ -30,7 +29,6 @@
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc --watch",
-    "preinstall": "node scripts/build.js",
     "test": "jest",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepublish": "tsc",
