@@ -2,13 +2,13 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@6.0.1
 commands:
+  # https://github.com/react-native-community/react-native-circleci-orb/blob/master/src/commands/yarn_install.yml
   yarn_install:
     description: Install Javascript dependencies using Yarn. This command correctly configures the cache for any number of package.json and yarn.lock files.
     parameters:
-      path:
+      yarn_install_directory:
         description: Working path. Defaults to "./"
         type: string
-        default: "./"
       cache:
         description: Save and restore the build cache? Defaults to true
         type: boolean
@@ -33,7 +33,7 @@ commands:
                   - yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
       - run:
           name: Yarn Install
-          command: "yarn --cwd <<parameters.path>> install --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
+          command: "yarn --cwd <<parameters.yarn_install_directory>> install --frozen-lockfile --non-interactive --cache-folder <<parameters.cache_folder>>"
       - when:
           condition: <<parameters.cache>>
           steps:
@@ -42,57 +42,6 @@ commands:
                   - <<parameters.cache_folder>>
                 key: |
                   yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
-  yarn_install_example:
-    steps:
-      - run:
-          command: >
-            mkdir -p ~/.tmp/checksumfiles
-
-            find . -type f -name 'package.json' -not -path "*node_modules*" -exec
-            cat {} + >> ~/.tmp/checksumfiles/package.json
-
-            find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat
-            {} + >> ~/.tmp/checksumfiles/yarn.lock
-          name: Create cache checksum file
-
-      # Commented out because something is up with the permissions of the cache folder in the machines.
-      # There's an open issue here:  react-native-community/react-native-circleci-orb#66
-
-      # - restore_cache:
-      #     keys:
-      #       - >-
-      #         yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
-      #         }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
-      #         .Environment.CACHE_VERSION }}
-      - run:
-          command: >
-            yarn --cwd examples/purchaseTester install --non-interactive --cache-folder /tmp/yarn
-          name: Yarn Install (examples/purchaseTester)
-      - run:
-          command: >
-            yarn --cwd examples/purchaseTesterTypescript install --non-interactive --cache-folder /tmp/yarn
-          name: Yarn Install (examples/purchaseTesterTypescript)
-      # - save_cache:
-      #     key: >
-      #       yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json"
-      #       }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
-      #       .Environment.CACHE_VERSION }}
-      #     paths:
-      #       - /tmp/yarn
-
-  install_pods:
-    steps:
-      - restore_cache:
-          keys:
-            - cache-pods-{{ checksum "examples/purchaseTesterTypescript/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
-            - cache-pods-
-      - run:
-          command: yarn pods
-          name: Pod install
-      - save_cache:
-          paths:
-            - examples/purchaseTesterTypescript/ios/Pods
-          key: cache-pods-{{ checksum "examples/purchaseTesterTypescript/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
 
 jobs:
   analyse_js:
@@ -101,7 +50,12 @@ jobs:
       node_version: '12'
     steps:
       - checkout
-      - yarn_install_example
+      - yarn_install:
+          yarn_install_directory: examples/purchaseTester
+          cache_folder: ~/.cache/yarn
+      - yarn_install:
+          yarn_install_directory: examples/purchaseTesterTypescript
+          cache_folder: ~/.cache/yarn
       - run:
           name: Yarn Install
           command: yarn install --non-interactive --cache-folder /tmp/yarn
@@ -115,7 +69,12 @@ jobs:
     executor: rn/linux_android
     steps:
       - checkout
-      - yarn_install_example
+      - yarn_install:
+          yarn_install_directory: examples/purchaseTester
+          cache_folder: ~/.cache/yarn
+      - yarn_install:
+          yarn_install_directory: examples/purchaseTesterTypescript
+          cache_folder: ~/.cache/yarn
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
@@ -126,14 +85,16 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 11 Pro
-      #- yarn_install_example
       - yarn_install:
-          path: examples/purchaseTester
+          yarn_install_directory: examples/purchaseTester
           cache_folder: ~/.cache/yarn
       - yarn_install:
-          path: examples/purchaseTesterTypescript
+          yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
-      - install_pods
+      - rn/pod_install:
+          pod_install_directory: examples/purchaseTester
+      - rn/pod_install:
+          pod_install_directory: examples/purchaseTesterTypescript
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 11 Pro
