@@ -19,7 +19,7 @@ commands:
       cache_key:
         description: A key when cache needs to go
         type: string
-        default: "v1"
+        default: "v2"
 
     steps:
       - when:
