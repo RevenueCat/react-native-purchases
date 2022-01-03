@@ -7,7 +7,8 @@ commands:
         - run:
             command: >
               cd examples/purchaseTester
-        - rn/yarn_install
+        - rn/yarn_install:
+            cache_folder: ~/.cache/yarn
       # - run:
       #     command: >
       #       mkdir -p ~/.tmp/checksumfiles
