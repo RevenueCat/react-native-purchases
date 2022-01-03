@@ -59,26 +59,18 @@ In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you mi
 
 1. Remove `Purchases.framework` and `PurchasesHybridCommon.framework` from the libraries section of the project. 
 
-![](https://media.giphy.com/media/W6LvZkQnvc3QnnPza7/giphy.gif)
-
 ##### Remove iOS Frameworks to Embedded Binaries
 1. In Xcode, in project manager, select your app target.
 1. Select the general tab
 1. Look for `Purchases.framework` and `PurchasesHybridCommon.framework` in the Embedded Binaries section and remove them.
 
-![](https://media.giphy.com/media/iIdIuEkAzlntxANSiV/giphy.gif)
-
 Remove `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` from Framework Search paths in build settings
 
-![](https://media.giphy.com/media/1pAbuARm4TLfZKdfx3/giphy.gif)
-
 ##### Remove Strip Frameworks Phase
-Using previous manual installation instructions, now deprecated, we indicated to add a build phase to strip fat frameworks. 
+During the old manual installation instructions, now deprecated, we indicated to add a build phase to strip fat frameworks. 
 1. In Xcode, in project manager, select your app target.
 2. Open the `Build Phases` tab
 3. Remove the added `Strip Frameworks` phase
-
-![](https://media.giphy.com/media/39zTmnsW1CIrJNk5AM/giphy.gif)
 
 ##### Link static library
 The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
