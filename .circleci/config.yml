@@ -25,7 +25,11 @@ commands:
       #         }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{
       #         .Environment.CACHE_VERSION }}
       - run:
-          command: >-
+          command: >
+            yarn --cwd examples/purchaseTester install --non-interactive --cache-folder /tmp/yarn
+          name: Yarn Install (examples/purchaseTester)
+      - run:
+          command: >
             yarn --cwd examples/purchaseTesterTypescript install --non-interactive --cache-folder /tmp/yarn
           name: Yarn Install (examples/purchaseTesterTypescript)
       # - save_cache:
@@ -43,7 +47,7 @@ commands:
             - cache-pods-{{ checksum "examples/purchaseTesterTypescript/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
             - cache-pods-
       - run:
-          command: (cd examples/purchaseTesterTypescript && yarn pods)
+          command: yarn pods
           name: Pod install
       - save_cache:
           paths:

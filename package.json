@@ -35,7 +35,7 @@
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepublish": "tsc",
     "example": "(yarn --cwd examples/purchaseTester) && (yarn --cwd examples/purchaseTesterTypescript)",
-    "pods": "(cd examples/purchaseTester && pod-install --quiet) && (cd examples/purchaseTesterTypescript && pod-install --quiet)",
+    "pods": "(cd examples/purchaseTester && npx pod-install --quiet) && (cd examples/purchaseTesterTypescript && npx pod-install --quiet)",
     "bootstrap": "yarn example && yarn && yarn pods"
   },
   "repository": {
