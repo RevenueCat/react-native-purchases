@@ -60,10 +60,10 @@ jobs:
       - yarn_install_example
       - run:
           name: Tests
-          command: yarn test
+          command: yarn --cwd ./ test
       - run:
           name: Linter
-          command: yarn run tslint
+          command: yarn --cwd ./ run tslint
   android:
     executor: rn/linux_android
     steps:
