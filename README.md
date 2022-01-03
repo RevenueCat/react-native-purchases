@@ -71,6 +71,7 @@ During the old manual installation instructions, now deprecated, we indicated to
 1. In Xcode, in project manager, select your app target.
 2. Open the `Build Phases` tab
 3. Remove the added `Strip Frameworks` phase
+4. Clean `Derived Data` 
 
 ##### Link static library
 The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
