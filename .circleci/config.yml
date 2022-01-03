@@ -2,7 +2,11 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@6.0.1
 commands:
+  # This command is taken directly from the react-native-circleci-orb
   # https://github.com/react-native-community/react-native-circleci-orb/blob/master/src/commands/yarn_install.yml
+  #
+  # There is an open PR to add the `yarn-Install_directory` parameter
+  # https://github.com/react-native-community/react-native-circleci-orb/pull/124
   yarn_install:
     description: Install Javascript dependencies using Yarn. This command correctly configures the cache for any number of package.json and yarn.lock files.
     parameters:
@@ -92,9 +96,9 @@ jobs:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
       - rn/pod_install:
-          pod_install_directory: examples/purchaseTester
+          pod_install_directory: examples/purchaseTester/ios
       - rn/pod_install:
-          pod_install_directory: examples/purchaseTesterTypescript
+          pod_install_directory: examples/purchaseTesterTypescript/ios
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 11 Pro
