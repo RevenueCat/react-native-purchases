@@ -59,11 +59,14 @@ jobs:
       - checkout
       - yarn_install_example
       - run:
+          name: Yarn Install
+          command: yarn install --non-interactive --cache-folder /tmp/yarn
+      - run:
           name: Tests
-          command: yarn --cwd ./ test
+          command: yarn test
       - run:
           name: Linter
-          command: yarn --cwd ./ run tslint
+          command: yarn run tslint
   android:
     executor: rn/linux_android
     steps:
