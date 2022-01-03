@@ -42,15 +42,6 @@ const HomeScreen: React.FC<Props> = ({
 
   // The functional way of componentDidMount
   useEffect(() => {
-    if (!isSetup()) { return }
-
-    Purchases.setDebugLogsEnabled(true);
-    if (Platform.OS == "android") {
-      Purchases.setup(APIKeys.google);
-    } else {
-      Purchases.setup(APIKeys.apple);
-    }
-
     // Refetch data when purchaser info is updated (login, logout)
     // Fetches new data, updates state, and updates
     // props in subviews and components
@@ -60,10 +51,6 @@ const HomeScreen: React.FC<Props> = ({
     // so everything can be refreshed
     Purchases.addPurchaserInfoUpdateListener(fetchData);
     fetchData();
-
-    return () => {
-      // Unmount but we won't use
-    };
   }, []);
 
   // Gets purchaser info, app user id, if user is anonymous, and offerings
@@ -145,56 +132,50 @@ const HomeScreen: React.FC<Props> = ({
       console.log("error")
     }
   }
-
-  const isSetup = () => {
-    return APIKeys.apple.length > 0 || APIKeys.google.length > 0;
-  }
   
-  return !isSetup() ? (
-      <Text>Update RevenueCat API Keys in APIKeys.tsx</Text>
-    ) : (
-      <SafeAreaView>
-        <ScrollView
-            contentInsetAdjustmentBehavior="automatic">
+  return (
+    <SafeAreaView>
+      <ScrollView
+          contentInsetAdjustmentBehavior="automatic">
 
-            <View>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('CustomerInfo', { appUserID: state.appUserID, purchaserInfo: state.purchaserInfo })}>
-                <CustomerInfoHeader 
-                  appUserID={state.appUserID}
-                  customerInfo={state.purchaserInfo} 
-                  isAnonymous={state.isAnonymous}
-                  refreshData={fetchData}
-                  />
-              </TouchableOpacity>
-            </View>
+          <View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('CustomerInfo', { appUserID: state.appUserID, purchaserInfo: state.purchaserInfo })}>
+              <CustomerInfoHeader 
+                appUserID={state.appUserID}
+                customerInfo={state.purchaserInfo} 
+                isAnonymous={state.isAnonymous}
+                refreshData={fetchData}
+                />
+            </TouchableOpacity>
+          </View>
 
-            <Divider />
+          <Divider />
 
-            <View>
-              { displayOfferings() }
-            </View>
+          <View>
+            { displayOfferings() }
+          </View>
 
-            <Divider />
+          <Divider />
 
-            <View>
-              <TouchableOpacity
-                onPress={makePurchase} >
-                  <Text style={styles.otherActions}>
-                    Purchase by Product ID
-                  </Text>
-              </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              onPress={makePurchase} >
+                <Text style={styles.otherActions}>
+                  Purchase by Product ID
+                </Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={redeemCode} >
-                  <Text style={styles.otherActions}>
-                    Redeem Code
-                  </Text>
-              </TouchableOpacity>
-            </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
+            <TouchableOpacity
+              onPress={redeemCode} >
+                <Text style={styles.otherActions}>
+                  Redeem Code
+                </Text>
+            </TouchableOpacity>
+          </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
 
 const Divider: React.FC<{}> = () => {

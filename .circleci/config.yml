@@ -85,7 +85,8 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 11 Pro
-      - yarn_install_example
+      #- yarn_install_example
+      - rn/yarn_install
       - install_pods
       - rn/ios_build:
           build_configuration: Release
