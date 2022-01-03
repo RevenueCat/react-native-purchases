@@ -43,7 +43,7 @@ commands:
             - cache-pods-{{ checksum "examples/purchaseTesterTypescript/ios/Podfile.lock" }}-{{ .Environment.CACHE_VERSION }}
             - cache-pods-
       - run:
-          command: yarn --cwd examples/purchaseTesterTypescript pods
+          command: (cd examples/purchaseTesterTypescript && yarn pods)
           name: Pod install
       - save_cache:
           paths:
