@@ -1,3 +1,7 @@
+## 4.5.1
+
+- Fix Expo 44 compatibility by fixing `RCTEventEmitter` import [PR](https://github.com/RevenueCat/react-native-purchases/commit/75e3c5a99430168fac3a2a28c17238408580fcb3) [Issue](https://github.com/RevenueCat/react-native-purchases/issues/160)
+
 ## 4.5.0
 
 This release has some changes that should help prevent "There is no singleton instance" errors [issue](https://github.com/RevenueCat/react-native-purchases/issues/101), [PR](https://github.com/RevenueCat/react-native-purchases/pull/310).

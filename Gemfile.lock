@@ -270,6 +270,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-20
+  arm64-darwin-21
   x86_64-darwin-20
 
 DEPENDENCIES
@@ -277,4 +278,4 @@ DEPENDENCIES
   fastlane
 
 BUNDLED WITH
-   2.2.24
+   2.2.33
