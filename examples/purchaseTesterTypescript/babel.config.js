@@ -11,6 +11,7 @@ module.exports = {
     [
       'module-resolver',
       {
+        extensions: ['.ts'],
         alias: {
           [pak.name]: path.join(__dirname, '../..', pak.source),
         },
