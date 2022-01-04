@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import {
   Alert,
-  Button,
-  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -16,7 +14,6 @@ import Purchases, { PurchaserInfo, PurchasesOfferings } from 'react-native-purch
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import APIKeys from '../APIKeys';
 import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList'
 
