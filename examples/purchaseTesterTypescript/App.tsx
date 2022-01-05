@@ -26,12 +26,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const isSetup = () => {
+  const hasKeys = () => {
     return APIKeys.apple.length > 0 || APIKeys.google.length > 0;
   }
 
   useEffect(() => {
-    if (!isSetup()) { return }
+    if (!hasKeys()) { return }
 
     Purchases.setDebugLogsEnabled(true);
     if (Platform.OS == "android") {
@@ -41,7 +41,7 @@ const App = () => {
     }
   }, []);
 
-  return !isSetup() ? (
+  return !hasKeys() ? (
       <SafeAreaView>
         <Text style={{margin: 20, textAlign: 'center'}}>
           Update RevenueCat API Keys in APIKeys.tsx
