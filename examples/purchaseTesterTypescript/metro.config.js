@@ -35,7 +35,7 @@ module.exports = {
           // if (context.projectRoot === '/Users/joshholtz/Developer/react-native-purchases') {
           // if (!context.originModulePath) {
           // console.log("we got a babel", realModuleName, moduleName)
-          if (context.originModulePath.includes('/Users/joshholtz/Developer/react-native-purchases/src')) {
+          if (context.originModulePath.includes('react-native-purchases/src')) {
             
             // console.log("context", context.originModulePath)
 
