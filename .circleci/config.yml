@@ -55,6 +55,8 @@ jobs:
           pod_install_directory: examples/purchaseTester/ios
       - rn/pod_install:
           pod_install_directory: examples/purchaseTesterTypescript/ios
+      - rn/yarn_install:
+          cache_folder: ~/.cache/yarn
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 11 Pro

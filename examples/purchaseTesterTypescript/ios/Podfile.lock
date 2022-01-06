@@ -408,7 +408,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RNPurchases (from `../../../`)
+  - RNPurchases (from `../../..`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -494,7 +494,7 @@ EXTERNAL SOURCES:
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
   RNPurchases:
-    :path: "../../../"
+    :path: "../../.."
   RNScreens:
     :path: "../node_modules/react-native-screens"
   Yoga:
@@ -552,6 +552,6 @@ SPEC CHECKSUMS:
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 33ed4a8d19e916379fff8d32a64e33f1b80d7738
+PODFILE CHECKSUM: cd6af7a9d5d8dd302a106b9b100d159909f7f592
 
 COCOAPODS: 1.11.2
