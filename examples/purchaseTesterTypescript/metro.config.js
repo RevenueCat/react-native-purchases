@@ -5,19 +5,27 @@
  * @format
  */
 
- const packagePath = require('path').resolve('../../');
+// IMPORTANT
+// Make sure `npm install` is run in this refernced package's directory
+// This package will be looking for node_modules in its own directory
+const packagePath = require('path').resolve('../../');
  
  module.exports = {
    resolver: {
-     nodeModulesPaths: [packagePath], // replace 'react-native-purchases` in the package.json
+     // Tells metro to look at for `react-native-purchases`
+     // This fixes issues with referencing file in package.json which 
+     // creates a symlink and metro can't handle symlinks
+     nodeModulesPaths: [packagePath], 
+
+     // Tells metro to first look in the package.json's source,then react-native then main
+     // This is needed so that metro uses the 'source' for `react-native-purchases` and
+     // not the 'dist'
      resolverMainFields: ['source', 'react-native', 'main'], // will first look the source then main
-     // source is needed for 'react-native-purchases`
-     // main is needed for node_module deps
-     // BUT we also need to make sure `npm install` is run in the `react-native-purchases` directory
    },
 
+   // Metro will automatically update when something is changed in this path
    watchFolders: [
-     packagePath // metro will update when something is changed
+     packagePath
    ],
  
    transformer: {
