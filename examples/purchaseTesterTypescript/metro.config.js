@@ -6,7 +6,7 @@
  */
 
 // IMPORTANT
-// Make sure `npm install` is run in this refernced package's directory
+// Make sure `npm install` is run in this referenced package's directory
 // This package will be looking for node_modules in its own directory
 const packagePath = require('path').resolve('../../');
  
