@@ -50,7 +50,10 @@ const HomeScreen: React.FC<Props> = ({
     // currently passing fetchData to components and screens
     // so everything can be refreshed
     Purchases.addPurchaserInfoUpdateListener(fetchData);
-    fetchData();
+
+    // Oddly the cleanest way to call an async function
+    // from a non-asyn function
+    setTimeout(fetchData, 1)
   }, []);
 
   // Gets purchaser info, app user id, if user is anonymous, and offerings
