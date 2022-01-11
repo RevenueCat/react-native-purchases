@@ -39,8 +39,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PurchaseTester/main.m; sourceTree = "<group>"; };
 		1D0AE47A65C8663E3B452821 /* Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig"; path = "Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig"; sourceTree = "<group>"; };
 		2CE2DEA9276A10B500A69CF0 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		2CE2DEAB276A1A9C00A69CF0 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
-		2CE3FDAD2770C521005AB2E6 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = StoreKitTestCertificate.cer; path = ../../../../../Desktop/StoreKitTestCertificate.cer; sourceTree = "<group>"; };
+		2CE2DEAB276A1A9C00A69CF0 /* RevenueCast_PurchaseTesterTypescriptConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = RevenueCast_PurchaseTesterTypescriptConfiguration.storekit; sourceTree = "<group>"; };
 		6423831EA8574132BED9D8CC /* libPods-PurchaseTester.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PurchaseTester.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C97AB639B58BBB4B15BBE30 /* Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig"; path = "Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PurchaseTester/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -122,8 +121,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				2CE2DEAB276A1A9C00A69CF0 /* Configuration.storekit */,
-				2CE3FDAD2770C521005AB2E6 /* StoreKitTestCertificate.cer */,
+				2CE2DEAB276A1A9C00A69CF0 /* RevenueCast_PurchaseTesterTypescriptConfiguration.storekit */,
 				13B07FAE1A68108700A75B9A /* PurchaseTester */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* PurchaseTesterTests */,
