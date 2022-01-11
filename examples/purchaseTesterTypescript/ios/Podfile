@@ -4,9 +4,6 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 platform :ios, '11.0'
 
 target 'PurchaseTester' do
-  # Pods for ReactNativeSample
-  pod 'RNPurchases', :path => '../../../'
-  
   config = use_native_modules!
 
   use_react_native!(
