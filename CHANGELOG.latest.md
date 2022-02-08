@@ -1,1 +1,3 @@
-- Fix Expo 44 compatibility by fixing `RCTEventEmitter` import [PR](https://github.com/RevenueCat/react-native-purchases/commit/75e3c5a99430168fac3a2a28c17238408580fcb3) [Issue](https://github.com/RevenueCat/react-native-purchases/issues/160)
+- Fix [an issue](https://github.com/RevenueCat/react-native-purchases/issues/328) where calling `checkTrialOrIntroductoryPriceEligibility` could cause a log in prompt
+- Bump `purchases-hybrid-common` to 2.0.1
+- Bump `purchases-ios` to 3.14.1
