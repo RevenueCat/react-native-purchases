@@ -102,7 +102,7 @@ lane :build_hybrid_example do |options|
     sh("yarn example")
   end
   Dir.chdir(File.expand_path("examples/purchaseTester/ios", get_root_folder)) do
-    sh("pod update PurchasesHybridCommon")
+    sh("pod update PurchasesHybridCommon --repo-update")
   end
 end
 
@@ -148,7 +148,7 @@ lane :update_ios_pod do |options|
   end
 end
 
-desc "Update Hybrid Common, Build PurchaseTester, and updates download scrips. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod"
+desc "Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod"
 lane :update_hybrid_common do |options|
   update_hybrid_common_versions(options)
   build_hybrid_example(options)
