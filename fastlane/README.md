@@ -49,7 +49,7 @@ Update iOS pod version during hybrid update
 ```
 fastlane update_hybrid_common
 ```
-Update Hybrid Common, Build PurchaseTester, and updates download scrips. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod
+Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod
 
 ----
 

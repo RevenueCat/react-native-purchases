@@ -41,7 +41,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                         observerMode:observerMode
                userDefaultsSuiteName:userDefaultsSuiteName
                       platformFlavor:self.platformFlavor
-               platformFlavorVersion:self.platformFlavorVersion];
+               platformFlavorVersion:self.platformFlavorVersion
+                   dangerousSettings:nil];
     RCPurchases.sharedPurchases.delegate = self;
     [RCCommonFunctionality configure];
 }
@@ -368,7 +369,7 @@ shouldPurchasePromoProduct:(SKProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"4.5.1";
+    return @"4.5.2";
 }
 
 @end
