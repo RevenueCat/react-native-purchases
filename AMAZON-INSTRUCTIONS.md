@@ -1,6 +1,4 @@
-Adds initial Amazon store support. This won't work right away as it requires special RevenueCat setup that's not available for all customers.
-
-In order to use please point to this tag in your `package.json` like this:
+Adds initial Amazon store support. In order to use please point to this tag in your `package.json` like this:
 
 ```
     "react-native-purchases": "RevenueCat/react-native-purchases#amazon"
