@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,10 +11,10 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		51BCD8D20687537868A001F7 /* libPods-MagicWeatherReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A57967CFE44C9D2D73EC2992 /* libPods-MagicWeatherReactNative.a */; };
+		35C6392927E297F700E00929 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35C6392827E297F700E00929 /* StoreKit.framework */; };
+		61E7D598BFE43345B2479B57 /* libPods-MagicWeatherReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EB770C1D2D1477737105C32 /* libPods-MagicWeatherReactNative.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		DA8CBBA9850BBF5B1077898F /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 95FB249058C556FE2623D475 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a */; };
-		DD83EF2E25D0877600FAFBD4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD83EF2D25D0877600FAFBD4 /* StoreKit.framework */; };
+		D6D6DB4CC98EFE7CE58A4241 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F694F51CBCE1D15E4D6A6059 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,32 +28,24 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* MagicWeatherReactNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MagicWeatherReactNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* MagicWeatherReactNativeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MagicWeatherReactNativeTests.m; sourceTree = "<group>"; };
+		0EB770C1D2D1477737105C32 /* libPods-MagicWeatherReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MagicWeatherReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* MagicWeatherReactNative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagicWeatherReactNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = MagicWeatherReactNative/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = MagicWeatherReactNative/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MagicWeatherReactNative/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MagicWeatherReactNative/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MagicWeatherReactNative/main.m; sourceTree = "<group>"; };
-		208816B4F676B39F3471B0ED /* Pods-MagicWeatherReactNative-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-tvOSTests/Pods-MagicWeatherReactNative-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		46C97818896520F4F4B3A64E /* Pods-MagicWeatherReactNative-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-tvOSTests/Pods-MagicWeatherReactNative-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
-		4ED1E90829EEFE00CCE20B44 /* Pods-MagicWeatherReactNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative.debug.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative.debug.xcconfig"; sourceTree = "<group>"; };
-		54A55D504468D193417D548D /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
-		66034B12C0C9F41B24A6F435 /* Pods-MagicWeatherReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative.release.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative.release.xcconfig"; sourceTree = "<group>"; };
-		7FD1E0F8F20CD379DE3A5E07 /* Pods-MagicWeatherReactNative-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-tvOS.release.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-tvOS/Pods-MagicWeatherReactNative-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		35C6392827E297F700E00929 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		570E03D0CC4B953BF445E25E /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		73869F0DFE9D98E1D3C6CBA5 /* Pods-MagicWeatherReactNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative.release.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative.release.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MagicWeatherReactNative/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		83EFDF8E2E8A8008720A6B0A /* libPods-MagicWeatherReactNative-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MagicWeatherReactNative-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		95FB249058C556FE2623D475 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A57967CFE44C9D2D73EC2992 /* libPods-MagicWeatherReactNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MagicWeatherReactNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A62AA2C2D93DDCA6C0E87EE5 /* Pods-MagicWeatherReactNative-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-tvOS/Pods-MagicWeatherReactNative-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		A99341F09A7F2A2470461DA9 /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig"; sourceTree = "<group>"; };
-		AC5496C94CAEC907C7801E49 /* libPods-MagicWeatherReactNative-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MagicWeatherReactNative-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DD83EF2D25D0877600FAFBD4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		CAA536CB97B1B734B838694E /* Pods-MagicWeatherReactNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative.debug.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative.debug.xcconfig"; sourceTree = "<group>"; };
+		D5DAE75955DC9A92D553609F /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig"; path = "Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		F694F51CBCE1D15E4D6A6059 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA8CBBA9850BBF5B1077898F /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a in Frameworks */,
+				D6D6DB4CC98EFE7CE58A4241 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,8 +61,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51BCD8D20687537868A001F7 /* libPods-MagicWeatherReactNative.a in Frameworks */,
-				DD83EF2E25D0877600FAFBD4 /* StoreKit.framework in Frameworks */,
+				61E7D598BFE43345B2479B57 /* libPods-MagicWeatherReactNative.a in Frameworks */,
+				35C6392927E297F700E00929 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +89,6 @@
 		13B07FAE1A68108700A75B9A /* MagicWeatherReactNative */ = {
 			isa = PBXGroup;
 			children = (
-				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -108,31 +99,13 @@
 			name = MagicWeatherReactNative;
 			sourceTree = "<group>";
 		};
-		16AB2EA533F2351836F53BBA /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				4ED1E90829EEFE00CCE20B44 /* Pods-MagicWeatherReactNative.debug.xcconfig */,
-				66034B12C0C9F41B24A6F435 /* Pods-MagicWeatherReactNative.release.xcconfig */,
-				54A55D504468D193417D548D /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig */,
-				A99341F09A7F2A2470461DA9 /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig */,
-				A62AA2C2D93DDCA6C0E87EE5 /* Pods-MagicWeatherReactNative-tvOS.debug.xcconfig */,
-				7FD1E0F8F20CD379DE3A5E07 /* Pods-MagicWeatherReactNative-tvOS.release.xcconfig */,
-				46C97818896520F4F4B3A64E /* Pods-MagicWeatherReactNative-tvOSTests.debug.xcconfig */,
-				208816B4F676B39F3471B0ED /* Pods-MagicWeatherReactNative-tvOSTests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DD83EF2D25D0877600FAFBD4 /* StoreKit.framework */,
+				35C6392827E297F700E00929 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				A57967CFE44C9D2D73EC2992 /* libPods-MagicWeatherReactNative.a */,
-				95FB249058C556FE2623D475 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a */,
-				83EFDF8E2E8A8008720A6B0A /* libPods-MagicWeatherReactNative-tvOS.a */,
-				AC5496C94CAEC907C7801E49 /* libPods-MagicWeatherReactNative-tvOSTests.a */,
+				0EB770C1D2D1477737105C32 /* libPods-MagicWeatherReactNative.a */,
+				F694F51CBCE1D15E4D6A6059 /* libPods-MagicWeatherReactNative-MagicWeatherReactNativeTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -152,7 +125,7 @@
 				00E356EF1AD99517003FC87E /* MagicWeatherReactNativeTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				16AB2EA533F2351836F53BBA /* Pods */,
+				D06763F7649CB5DD4E947E41 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -168,6 +141,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D06763F7649CB5DD4E947E41 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CAA536CB97B1B734B838694E /* Pods-MagicWeatherReactNative.debug.xcconfig */,
+				73869F0DFE9D98E1D3C6CBA5 /* Pods-MagicWeatherReactNative.release.xcconfig */,
+				570E03D0CC4B953BF445E25E /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig */,
+				D5DAE75955DC9A92D553609F /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -175,12 +159,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MagicWeatherReactNativeTests" */;
 			buildPhases = (
-				F436D596ECA98CF40CCCBAFB /* [CP] Check Pods Manifest.lock */,
+				EB487FF46BB3ED376EA6EFA2 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				9620D8ED7D2822A7CD11167B /* [CP] Copy Pods Resources */,
-				51738EC774E2AAC08C8DB526 /* [CP] Embed Pods Frameworks */,
+				0DFCE77FF96099809A16A040 /* [CP] Embed Pods Frameworks */,
+				0E99063298D4271FA82D71FF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -196,14 +180,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "MagicWeatherReactNative" */;
 			buildPhases = (
-				29378987E43BAFCDDC71BAF8 /* [CP] Check Pods Manifest.lock */,
+				57C8EE9EF89B6F22A2A50970 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				41D2E339337C90E8A5FDC4DC /* [CP] Copy Pods Resources */,
-				570E8575A0D39049B9F4543F /* [CP] Embed Pods Frameworks */,
+				D547F4E6097A6D6FB3C30F32 /* [CP] Embed Pods Frameworks */,
+				D612393E047B78435552EB8F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -220,7 +204,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -232,7 +216,7 @@
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "MagicWeatherReactNative" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -282,9 +266,43 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		29378987E43BAFCDDC71BAF8 /* [CP] Check Pods Manifest.lock */ = {
+		0DFCE77FF96099809A16A040 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		0E99063298D4271FA82D71FF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		57C8EE9EF89B6F22A2A50970 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -306,143 +324,41 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		41D2E339337C90E8A5FDC4DC /* [CP] Copy Pods Resources */ = {
+		D547F4E6097A6D6FB3C30F32 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-resources.sh",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		51738EC774E2AAC08C8DB526 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		570E8575A0D39049B9F4543F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9620D8ED7D2822A7CD11167B /* [CP] Copy Pods Resources */ = {
+		D612393E047B78435552EB8F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-resources.sh",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
-				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
-				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Brands.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome5_Solid.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Fontisto.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests/Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MagicWeatherReactNative/Pods-MagicWeatherReactNative-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F436D596ECA98CF40CCCBAFB /* [CP] Check Pods Manifest.lock */ = {
+		EB487FF46BB3ED376EA6EFA2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -516,7 +432,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 54A55D504468D193417D548D /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig */;
+			baseConfigurationReference = 570E03D0CC4B953BF445E25E /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -524,8 +440,12 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = MagicWeatherReactNativeTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -539,13 +459,17 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A99341F09A7F2A2470461DA9 /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig */;
+			baseConfigurationReference = D5DAE75955DC9A92D553609F /* Pods-MagicWeatherReactNative-MagicWeatherReactNativeTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = MagicWeatherReactNativeTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -559,15 +483,20 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4ED1E90829EEFE00CCE20B44 /* Pods-MagicWeatherReactNative.debug.xcconfig */;
+			baseConfigurationReference = CAA536CB97B1B734B838694E /* Pods-MagicWeatherReactNative.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MagicWeatherReactNative/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -575,6 +504,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.sampleapp.reactnative;
 				PRODUCT_NAME = MagicWeatherReactNative;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -583,14 +513,19 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 66034B12C0C9F41B24A6F435 /* Pods-MagicWeatherReactNative.release.xcconfig */;
+			baseConfigurationReference = 73869F0DFE9D98E1D3C6CBA5 /* Pods-MagicWeatherReactNative.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = MagicWeatherReactNative/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -598,6 +533,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.sampleapp.reactnative;
 				PRODUCT_NAME = MagicWeatherReactNative;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -626,6 +562,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -635,6 +572,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -650,11 +588,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -686,6 +627,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -695,6 +637,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -703,11 +646,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
 				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
