@@ -1,3 +1,7 @@
+## 4.5.3
+
+- Fix warnings regarding `new NativeEventEmitter()` being called without the required `addListener` and `removeListeners` methods, which fixes [this issue](https://github.com/RevenueCat/react-native-purchases/issues/309)
+
 ## 4.5.2
 
 - Fix [an issue](https://github.com/RevenueCat/react-native-purchases/issues/328) where calling `checkTrialOrIntroductoryPriceEligibility` could cause a log in prompt
