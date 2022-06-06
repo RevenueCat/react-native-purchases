@@ -8,7 +8,7 @@ import { PRORATION_MODE, PACKAGE_TYPE, INTRO_ELIGIBILITY_STATUS, PurchasesOfferi
  */
 export declare type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
 export declare type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
-declare type MakePurchaseResult = {
+export declare type MakePurchaseResult = {
     productIdentifier: string;
     purchaserInfo: PurchaserInfo;
 };
@@ -578,4 +578,3 @@ export default class Purchases {
     static isConfigured(): Promise<boolean>;
     private static throwIfNotConfigured;
 }
-export {};

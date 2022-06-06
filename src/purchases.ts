@@ -26,7 +26,7 @@ const eventEmitter = new NativeEventEmitter(RNPurchases);
  */
 export type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
 export type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
-type MakePurchaseResult = { productIdentifier: string; purchaserInfo: PurchaserInfo; };
+export type MakePurchaseResult = { productIdentifier: string; purchaserInfo: PurchaserInfo; };
 
 let purchaserInfoUpdateListeners: PurchaserInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
