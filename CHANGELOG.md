@@ -1,3 +1,7 @@
+## 4.6.0
+
+- Export MakePurchaseResult (https://github.com/RevenueCat/react-native-purchases/pull/351)
+
 ## 4.5.3
 
 - Fix warnings regarding `new NativeEventEmitter()` being called without the required `addListener` and `removeListeners` methods, which fixes [this issue](https://github.com/RevenueCat/react-native-purchases/issues/309)
