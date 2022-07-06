@@ -23,6 +23,9 @@ jobs:
           name: Tests
           command: yarn test
       - run:
+          name: API Tests
+          command: yarn tsc -p apitesters
+      - run:
           name: Linter
           command: yarn run tslint
   android:
