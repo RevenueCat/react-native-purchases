@@ -937,9 +937,9 @@ export default class Purchases {
      * Note: Billing features are only relevant to Google Play Android users.
      * For other stores and platforms, billing features won't be checked.
      * 
-     * @param feature An array of feature types to check for support. Feature types must be one of 
+     * @param features An array of feature types to check for support. Feature types must be one of
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
-     * @returns {Promise<Boolean>} promise with boolean response. True if billing is supported, false otherwise.
+     * @returns {Promise<boolean>} promise with boolean response. True if billing is supported, false otherwise.
      */
     public static canMakePayments(features: BILLING_FEATURE[] = []): Promise<boolean> {
         return RNPurchases.canMakePayments(features);
