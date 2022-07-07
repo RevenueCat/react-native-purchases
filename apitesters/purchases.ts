@@ -1,5 +1,5 @@
 import {
-  PurchaserInfo,
+  CustomerInfo,
   PurchasesOfferings,
   PurchasesPackage,
   PurchasesPaymentDiscount,
@@ -7,7 +7,7 @@ import {
   UpgradeInfo,
   MakePurchaseResult,
   PURCHASE_TYPE, PurchasesDiscount, BILLING_FEATURE, IntroEligibility,
-  LogInResult, ShouldPurchasePromoProductListener, PurchaserInfoUpdateListener
+  LogInResult, ShouldPurchasePromoProductListener, CustomerInfoUpdateListener
 } from '../dist';
 
 import Purchases from '../dist/purchases';
@@ -21,15 +21,15 @@ async function checkPurchases(purchases: Purchases) {
     PURCHASE_TYPE.INAPP
   );
 
-  const purchaserInfo: PurchaserInfo = await Purchases.restoreTransactions();
+  const customerInfo: CustomerInfo = await Purchases.restoreTransactions();
 }
 
 async function checkUsers(purchases: Purchases) {
   const userId: string = await Purchases.getAppUserID();
 
   const result: LogInResult = await Purchases.logIn(userId);
-  const info1: PurchaserInfo = await Purchases.logOut();
-  const info2: PurchaserInfo = await Purchases.getPurchaserInfo();
+  const info1: CustomerInfo = await Purchases.logOut();
+  const info2: CustomerInfo = await Purchases.getCustomerInfo();
   const anonymous: boolean = await Purchases.isAnonymous();
 }
 
@@ -104,11 +104,11 @@ async function checkSetup() {
 }
 
 function checkListeners() {
-  const purchaserInfoUpdateListener: PurchaserInfoUpdateListener = purchaserInfo => {};
+  const customerInfoUpdateListener: CustomerInfoUpdateListener = customerInfo => {};
   const shouldPurchaseListener: ShouldPurchasePromoProductListener = deferredPurchase => {};
 
-  Purchases.addPurchaserInfoUpdateListener(purchaserInfoUpdateListener);
-  Purchases.removePurchaserInfoUpdateListener(purchaserInfoUpdateListener);
+  Purchases.addCustomerInfoUpdateListener(customerInfoUpdateListener);
+  Purchases.removeCustomerInfoUpdateListener(customerInfoUpdateListener);
 
   Purchases.addShouldPurchasePromoProductListener(shouldPurchaseListener);
   Purchases.removeShouldPurchasePromoProductListener(shouldPurchaseListener);

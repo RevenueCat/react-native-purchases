@@ -14,7 +14,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.revenuecat.purchases.PurchaserInfo;
+import com.revenuecat.purchases.CustomerInfo;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
@@ -23,9 +23,8 @@ import com.revenuecat.purchases.hybridcommon.OnResult;
 import com.revenuecat.purchases.hybridcommon.OnResultAny;
 import com.revenuecat.purchases.hybridcommon.OnResultList;
 import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
-import com.revenuecat.purchases.hybridcommon.mappers.PurchaserInfoMapperKt;
-import com.revenuecat.purchases.interfaces.UpdatedPurchaserInfoListener;
-import com.revenuecat.purchases.interfaces.Callback;
+import com.revenuecat.purchases.hybridcommon.mappers.CustomerInfoMapperKt;
+import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -39,9 +38,9 @@ import kotlin.UninitializedPropertyAccessException;
 
 import static com.revenuecat.purchases.react.RNPurchasesConverters.convertMapToWriteableMap;
 
-public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedPurchaserInfoListener {
+public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedCustomerInfoListener {
 
-    private static final String PURCHASER_INFO_UPDATED = "Purchases-PurchaserInfoUpdated";
+    private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     public static final String PLATFORM_NAME = "react-native";
     public static final String PLUGIN_VERSION = "4.4.1";
 
@@ -82,21 +81,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean observerMode, @Nullable String userDefaultsSuiteName) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         CommonKt.configure(reactContext, apiKey, appUserID, observerMode, platformInfo);
-        Purchases.getSharedInstance().setUpdatedPurchaserInfoListener(this);
+        Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }
 
     @ReactMethod
     public void setAllowSharingStoreAccount(boolean allowSharingStoreAccount) {
         CommonKt.setAllowSharingAppStoreAccount(allowSharingStoreAccount);
-    }
-
-    @ReactMethod
-    public void addAttributionData(ReadableMap data, Integer network, @Nullable String networkUserId) {
-        try {
-            SubscriberAttributesKt.addAttributionData(RNPurchasesConverters.convertReadableMapToJson(data), network, networkUserId);
-        } catch (JSONException e) {
-            Log.e("RNPurchases", "Error parsing attribution date to JSON: " + e.getLocalizedMessage());
-        }
     }
 
     @ReactMethod
@@ -164,8 +154,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void restoreTransactions(final Promise promise) {
-        CommonKt.restoreTransactions(getOnResult(promise));
+    public void restorePurchases(final Promise promise) {
+        CommonKt.restorePurchases(getOnResult(promise));
     }
 
     @ReactMethod
@@ -179,28 +169,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void reset(final Promise promise) {
-        CommonKt.reset(getOnResult(promise));
-    }
-
-    @ReactMethod
-    public void identify(String appUserID, final Promise promise) {
-        CommonKt.identify(appUserID, getOnResult(promise));
-    }
-
-    @ReactMethod
-    public void createAlias(String newAppUserID, final Promise promise) {
-        CommonKt.createAlias(newAppUserID, getOnResult(promise));
-    }
-
-    @ReactMethod
     public void setDebugLogsEnabled(boolean enabled) {
         CommonKt.setDebugLogsEnabled(enabled);
     }
 
     @ReactMethod
-    public void getPurchaserInfo(final Promise promise) {
-        CommonKt.getPurchaserInfo(getOnResult(promise));
+    public void getCustomerInfo(final Promise promise) {
+        CommonKt.getCustomerInfo(getOnResult(promise));
     }
 
     @ReactMethod
@@ -228,15 +203,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @Override
-    public void onReceived(@NonNull PurchaserInfo purchaserInfo) {
+    public void onReceived(@NonNull CustomerInfo customerInfo) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(RNPurchasesModule.PURCHASER_INFO_UPDATED,
-                        convertMapToWriteableMap(PurchaserInfoMapperKt.map(purchaserInfo)));
+                .emit(RNPurchasesModule.CUSTOMER_INFO_UPDATED,
+                        convertMapToWriteableMap(CustomerInfoMapperKt.map(customerInfo)));
     }
 
     @ReactMethod
-    public void invalidatePurchaserInfoCache() {
-        CommonKt.invalidatePurchaserInfoCache();
+    public void invalidateCustomerInfoCache() {
+        CommonKt.invalidateCustomerInfoCache();
     }
 
     @ReactMethod

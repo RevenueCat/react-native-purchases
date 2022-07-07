@@ -1,17 +1,17 @@
 import {
   LogInResult,
-  PurchaserInfo,
+  CustomerInfo,
   PurchasesEntitlementInfo,
   PurchasesEntitlementInfos,
   PurchasesTransaction
 } from "../src";
 
 function checkLoginResult(result: LogInResult) {
-  const purchaserInfo: PurchaserInfo = result.purchaserInfo;
+  const customerInfo: CustomerInfo = result.customerInfo;
   const created: boolean = result.created;
 }
 
-function checkPurchaserInfo(info: PurchaserInfo) {
+function checkCustomerInfo(info: CustomerInfo) {
   const entitlements: PurchasesEntitlementInfos = info.entitlements;
   const activeSubscriptions: string[] = info.activeSubscriptions;
   const allPurchasedProductIdentifiers: string[] = info.allPurchasedProductIdentifiers;

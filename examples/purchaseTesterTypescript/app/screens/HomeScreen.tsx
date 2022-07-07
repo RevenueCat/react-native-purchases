@@ -12,17 +12,16 @@ import {
   View,
 } from 'react-native';
 
-import Purchases, { PurchaserInfo, PurchasesOfferings } from 'react-native-purchases';
+import Purchases, { CustomerInfo, PurchasesOfferings } from 'react-native-purchases';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import APIKeys from '../APIKeys';
 import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList'
 
 interface State {
   appUserID: String | null;
-  purchaserInfo: PurchaserInfo | null;
+  customerInfo: CustomerInfo | null;
   offerings: PurchasesOfferings | null;
   isAnonymous: boolean;
 }
@@ -34,7 +33,7 @@ const HomeScreen: React.FC<Props> = ({
 }) => {
   const initialState: State = {
     appUserID: null,
-    purchaserInfo: null,
+    customerInfo: null,
     offerings: null,
     isAnonymous: true
   }
@@ -42,30 +41,30 @@ const HomeScreen: React.FC<Props> = ({
 
   // The functional way of componentDidMount
   useEffect(() => {
-    // Refetch data when purchaser info is updated (login, logout)
+    // Refetch data when customer info is updated (login, logout)
     // Fetches new data, updates state, and updates
     // props in subviews and components
     //
     // Weird: This listener doesn't always get called so
     // currently passing fetchData to components and screens
     // so everything can be refreshed
-    Purchases.addPurchaserInfoUpdateListener(fetchData);
+    Purchases.addCustomerInfoUpdateListener(fetchData);
 
     // Oddly the cleanest way to call an async function
     // from a non-asyn function
     setTimeout(fetchData, 1)
   }, []);
 
-  // Gets purchaser info, app user id, if user is anonymous, and offerings
+  // Gets customer info, app user id, if user is anonymous, and offerings
   const fetchData = async () => {
     try {
-      const purchaserInfo = await Purchases.getPurchaserInfo();
+      const customerInfo = await Purchases.getCustomerInfo();
       const appUserID = await Purchases.getAppUserID();
       const isAnonymous = await Purchases.isAnonymous();
       const offerings = await Purchases.getOfferings();
 
       setState((prevState) => (
-        { appUserID, purchaserInfo, offerings, isAnonymous }
+        { appUserID, customerInfo: customerInfo, offerings, isAnonymous }
       ));
     } catch (e) {
       console.log("Purchases Error", e);
@@ -143,10 +142,10 @@ const HomeScreen: React.FC<Props> = ({
 
           <View>
             <TouchableOpacity
-              onPress={() => navigation.navigate('CustomerInfo', { appUserID: state.appUserID, purchaserInfo: state.purchaserInfo })}>
-              <CustomerInfoHeader 
+              onPress={() => navigation.navigate('CustomerInfo', { appUserID: state.appUserID, customerInfo: state.customerInfo })}>
+              <CustomerInfoHeader
                 appUserID={state.appUserID}
-                customerInfo={state.purchaserInfo} 
+                customerInfo={state.customerInfo}
                 isAnonymous={state.isAnonymous}
                 refreshData={fetchData}
                 />
@@ -209,7 +208,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   otherActions: {
-    fontSize: 16,  
+    fontSize: 16,
     textAlign: "center",
     color: "dodgerblue",
     marginVertical: 5

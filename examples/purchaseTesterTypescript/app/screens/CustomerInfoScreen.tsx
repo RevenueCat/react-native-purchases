@@ -20,7 +20,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Purchases, { PurchaserInfo, PurchasesOfferings, PurchasesEntitlementInfo } from 'react-native-purchases';
+import Purchases, { CustomerInfo, PurchasesOfferings, PurchasesEntitlementInfo } from 'react-native-purchases';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -59,8 +59,8 @@ const Section: React.FC<{
 
 const InfoTab: React.FC<{
   appUserID: String | null;
-  purchaserInfo: PurchaserInfo | null;
-}> = ({appUserID, purchaserInfo}) => {
+  customerInfo: CustomerInfo | null;
+}> = ({appUserID, customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
   
   const backgroundStyle = {
@@ -72,26 +72,26 @@ const InfoTab: React.FC<{
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <Section title='App User ID' value={appUserID} />
-        <Section title='Original App User ID' value={purchaserInfo?.originalAppUserId} />
-        <Section title='First Seen' value={purchaserInfo?.firstSeen} />
-        <Section title='Original Application Version' value={purchaserInfo?.originalApplicationVersion} />
-        <Section title='Original Purchase Date' value={purchaserInfo?.originalPurchaseDate} />
-        <Section title='Latest Expiration Date' value={purchaserInfo?.latestExpirationDate} />
-        <Section title='Request Date' value={purchaserInfo?.requestDate} />
+        <Section title='Original App User ID' value={customerInfo?.originalAppUserId} />
+        <Section title='First Seen' value={customerInfo?.firstSeen} />
+        <Section title='Original Application Version' value={customerInfo?.originalApplicationVersion} />
+        <Section title='Original Purchase Date' value={customerInfo?.originalPurchaseDate} />
+        <Section title='Latest Expiration Date' value={customerInfo?.latestExpirationDate} />
+        <Section title='Request Date' value={customerInfo?.requestDate} />
     </ScrollView>
   );
 };
 
 const EntitlementsTab: React.FC<{
-  purchaserInfo: PurchaserInfo | null;
-}> = ({purchaserInfo}) => {
+  customerInfo: CustomerInfo | null;
+}> = ({customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
   
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const entitlements = Object.values(purchaserInfo?.entitlements.all ?? []);
+  const entitlements = Object.values(customerInfo?.entitlements.all ?? []);
   const activeEntitlementIdentifiers = entitlements.filter((entitlement) => {
     return entitlement.isActive;
   }).map((entitlement) => {return entitlement.identifier});
@@ -118,15 +118,15 @@ const EntitlementsTab: React.FC<{
 };
 
 const TransactionsTab: React.FC<{
-  purchaserInfo: PurchaserInfo | null;
-}> = ({purchaserInfo}) => {
+  customerInfo: CustomerInfo | null;
+}> = ({customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
   
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const transactions = purchaserInfo?.nonSubscriptionTransactions ?? []
+  const transactions = customerInfo?.nonSubscriptionTransactions ?? []
 
   return (
     <ScrollView
@@ -151,15 +151,15 @@ const TransactionsTab: React.FC<{
 };
 
 const AttributesTab: React.FC<{
-  purchaserInfo: PurchaserInfo | null;
-}> = ({purchaserInfo}) => {
+  customerInfo: CustomerInfo | null;
+}> = ({customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
   
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const transactions = purchaserInfo?.nonSubscriptionTransactions || [];
+  const transactions = customerInfo?.nonSubscriptionTransactions || [];
 
   return (
     <ScrollView
@@ -194,9 +194,9 @@ const CustomerInfoScreen: React.FC<Props> = ({ route, navigation }: Props) => {
 
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Info" options={{headerShown: false}} children={() => <InfoTab appUserID={route.params.appUserID} purchaserInfo={route.params.purchaserInfo}></InfoTab>}/>
-      <Tab.Screen name="Entitlements" options={{headerShown: false}} children={() => <EntitlementsTab purchaserInfo={route.params.purchaserInfo}></EntitlementsTab>}/>
-      <Tab.Screen name="Transactions" options={{headerShown: false}} children={() => <TransactionsTab purchaserInfo={route.params.purchaserInfo}></TransactionsTab>}/>
+      <Tab.Screen name="Info" options={{headerShown: false}} children={() => <InfoTab appUserID={route.params.appUserID} customerInfo={route.params.customerInfo}></InfoTab>}/>
+      <Tab.Screen name="Entitlements" options={{headerShown: false}} children={() => <EntitlementsTab customerInfo={route.params.customerInfo}></EntitlementsTab>}/>
+      <Tab.Screen name="Transactions" options={{headerShown: false}} children={() => <TransactionsTab customerInfo={route.params.customerInfo}></TransactionsTab>}/>
     </Tab.Navigator>
   );
 };
