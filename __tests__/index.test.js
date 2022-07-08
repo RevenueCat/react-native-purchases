@@ -131,15 +131,6 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setAllowSharingStoreAccount).toBeCalledTimes(1);
   })
 
-  it("adding attribution data works", () => {
-    const Purchases = require("../dist/index").default;
-
-    Purchases.addAttributionData({}, Purchases.ATTRIBUTION_NETWORK.APPSFLYER, "cesar")
-
-    expect(NativeModules.RNPurchases.addAttributionData).toBeCalledWith({}, Purchases.ATTRIBUTION_NETWORKS.APPSFLYER, "cesar");
-    expect(NativeModules.RNPurchases.addAttributionData).toBeCalledTimes(1);
-  })
-
   it("get offerings works", async () => {
     const Purchases = require("../dist/index").default;
 
@@ -467,46 +458,46 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.checkTrialOrIntroductoryPriceEligibility).toBeCalledWith(["monthly"]);
   })
 
-  it("getPaymentDiscount works", async () => {
+  it("getPromotionalOffer works", async () => {
     const Purchases = require("../dist/index").default;
 
-    NativeModules.RNPurchases.getPaymentDiscount.mockResolvedValue(paymentDiscountStub);
+    NativeModules.RNPurchases.getPromotionalOffer.mockResolvedValue(promotionalOfferStub);
 
     const aProduct = {
       ...productStub,
       discounts: [discountStub]
     }
 
-    await Purchases.getPaymentDiscount(aProduct, discountStub)
+    await Purchases.getPromotionalOffer(aProduct, discountStub)
 
-    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledWith(aProduct.identifier, discountStub.identifier);
-    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(1);
+    expect(NativeModules.RNPurchases.getPromotionalOffer).toBeCalledWith(aProduct.identifier, discountStub.identifier);
+    expect(NativeModules.RNPurchases.getPromotionalOffer).toBeCalledTimes(1);
   });
 
-  it("getPaymentDiscount returns undefined for Android", async () => {
+  it("getPromotionalOffer returns undefined for Android", async () => {
     const Purchases = require("../dist/index").default;
 
     Platform.OS = "android";
 
-    let paymentDiscount = await Purchases.getPaymentDiscount(productStub, discountStub);
+    let promotionalOffer = await Purchases.getPromotionalOffer(productStub, discountStub);
 
-    expect(paymentDiscount).toEqual(undefined)
-    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(0);
+    expect(promotionalOffer).toEqual(undefined)
+    expect(NativeModules.RNPurchases.getPromotionalOffer).toBeCalledTimes(0);
   });
 
-  it("getPaymentDiscount throws error when null discount", () => {
+  it("getPromotionalOffer throws error when null discount", () => {
     const Purchases = require("../dist/index").default;
     Platform.OS = "ios";
 
     expect(async () => {
-      await Purchases.getPaymentDiscount(productStub, null)
+      await Purchases.getPromotionalOffer(productStub, null)
     }).rejects.toThrowError();
 
     expect(async () => {
-      Purchases.getPaymentDiscount(productStub)
+      Purchases.getPromotionalOffer(productStub)
     }).rejects.toThrowError();
 
-    expect(NativeModules.RNPurchases.getPaymentDiscount).toBeCalledTimes(0);
+    expect(NativeModules.RNPurchases.getPromotionalOffer).toBeCalledTimes(0);
   });
 
   it("purchaseDiscountedProduct works", async () => {
@@ -522,9 +513,9 @@ describe("Purchases", () => {
       discounts: [discountStub]
     }
 
-    await Purchases.purchaseDiscountedProduct(aProduct, paymentDiscountStub)
+    await Purchases.purchaseDiscountedProduct(aProduct, promotionalOfferStub)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, paymentDiscountStub.timestamp.toString());
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, promotionalOfferStub.timestamp.toString());
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
@@ -560,13 +551,13 @@ describe("Purchases", () => {
       product: aProduct
     }
 
-    await Purchases.purchaseDiscountedPackage(aPackage, paymentDiscountStub)
+    await Purchases.purchaseDiscountedPackage(aPackage, promotionalOfferStub)
 
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
       aPackage.identifier,
       aPackage.offeringIdentifier,
       null,
-      paymentDiscountStub.timestamp.toString()
+      promotionalOfferStub.timestamp.toString()
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 

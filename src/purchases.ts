@@ -8,7 +8,7 @@ import {
     PurchasesOfferings,
     PurchasesProduct,
     UpgradeInfo,
-    PurchasesPaymentDiscount,
+    PurchasesPromotionalOffer,
     PurchasesPackage,
     IntroEligibility,
     PurchasesDiscount
@@ -364,7 +364,7 @@ export default class Purchases {
      * iOS only. Purchase a product applying a given discount.
      *
      * @param {PurchasesProduct} product The product you want to purchase
-     * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
+     * @param {PurchasesPromotionalOffer} discount Discount to apply to this package. Retrieve this discount using getPromotionalOffer.
      * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
      * a customer info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will be
@@ -372,7 +372,7 @@ export default class Purchases {
      */
     public static async purchaseDiscountedProduct(
         product: PurchasesProduct,
-        discount: PurchasesPaymentDiscount
+        discount: PurchasesPromotionalOffer
     ): Promise<MakePurchaseResult> {
         await Purchases.throwIfNotConfigured();
         if (typeof discount === "undefined" || discount == null) {
@@ -420,7 +420,7 @@ export default class Purchases {
      * iOS only. Purchase a package applying a given discount.
      *
      * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
-     * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
+     * @param {PurchasesPromotionalOffer} discount Discount to apply to this package. Retrieve this discount using getPromotionalOffer.
      * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
      * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
      * user cancelled the purchase, and an object with more information. The promise will be also be rejected if setup
@@ -428,7 +428,7 @@ export default class Purchases {
      */
     public static async purchaseDiscountedPackage(
         aPackage: PurchasesPackage,
-        discount: PurchasesPaymentDiscount
+        discount: PurchasesPromotionalOffer
     ): Promise<MakePurchaseResult> {
         await Purchases.throwIfNotConfigured();
         if (typeof discount === "undefined" || discount == null) {
@@ -620,18 +620,18 @@ export default class Purchases {
     }
 
     /**
-     * iOS only. Use this function to retrieve the `PurchasesPaymentDiscount` for a given `PurchasesPackage`.
+     * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
      *
      * @param product The `PurchasesProduct` the user intends to purchase.
      * @param discount The `PurchasesDiscount` to apply to the product.
-     * @returns { Promise<PurchasesPaymentDiscount> } Returns when the `PurchasesPaymentDiscount` is returned.
+     * @returns { Promise<PurchasesPromotionalOffer> } Returns when the `PurchasesPaymentDiscount` is returned.
      * Null is returned for Android and incompatible iOS versions. The promise will be rejected if setup has not been
      * called yet or if there's an error getting the payment discount.
      */
-    public static async getPaymentDiscount(
+    public static async getPromotionalOffer(
         product: PurchasesProduct,
         discount: PurchasesDiscount
-    ): Promise<PurchasesPaymentDiscount | undefined> {
+    ): Promise<PurchasesPromotionalOffer | undefined> {
         await Purchases.throwIfNotConfigured();
         if (Platform.OS === "android") {
             return Promise.resolve(undefined);
@@ -639,12 +639,11 @@ export default class Purchases {
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        return RNPurchases.getPaymentDiscount(
+        return RNPurchases.getPromotionalOffer(
             product.identifier,
             discount.identifier
         );
     }
-
 
     /**
      * Invalidates the cache for customer information.

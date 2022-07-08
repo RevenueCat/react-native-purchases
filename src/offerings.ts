@@ -305,7 +305,7 @@ export interface IntroEligibility {
     readonly description: string;
 }
 
-export interface PurchasesPaymentDiscount {
+export interface PurchasesPromotionalOffer {
     readonly identifier: string;
     readonly keyIdentifier: string;
     readonly nonce: string;

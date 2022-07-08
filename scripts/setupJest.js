@@ -663,7 +663,7 @@ global.discountStub = {
   periodNumberOfUnits: 1,
 };
 
-global.paymentDiscountStub = {
+global.promotionalOfferStub = {
   identifier: "promo_cat",
   keyIdentifier: "keyID",
   nonce: "nonce",
@@ -693,7 +693,7 @@ NativeModules.RNPurchases = {
   checkTrialOrIntroductoryPriceEligibility: jest.fn(),
   purchaseDiscountedPackage: jest.fn(),
   purchaseDiscountedProduct: jest.fn(),
-  getPaymentDiscount: jest.fn(),
+  getPromotionalOffer: jest.fn(),
   invalidateCustomerInfoCache: jest.fn(),
   setAttributes: jest.fn(),
   setEmail: jest.fn(),

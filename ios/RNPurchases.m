@@ -179,6 +179,16 @@ RCT_EXPORT_METHOD(invalidateCustomerInfoCache) {
     [RCCommonFunctionality invalidateCustomerInfoCache];
 }
 
+RCT_REMAP_METHOD(getPromotionalOffer,
+                 getPromotionalOfferForProductIdentifier:(NSString *)productIdentifier
+                 discount:(NSString *)discount
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality promotionalOfferForProductIdentifier:productIdentifier
+                                                       discount:discount
+                                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
 RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
     if (@available(iOS 14.0, *)) {
         [RCCommonFunctionality presentCodeRedemptionSheet];
