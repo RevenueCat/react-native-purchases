@@ -11,9 +11,6 @@ jobs:
     steps:
       - checkout
       - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTester
-          cache_folder: ~/.cache/yarn
-      - rn/yarn_install:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
       - run:
@@ -33,9 +30,6 @@ jobs:
     steps:
       - checkout
       - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTester
-          cache_folder: ~/.cache/yarn
-      - rn/yarn_install:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
       - rn/android_build:
@@ -50,13 +44,8 @@ jobs:
       - rn/ios_simulator_start:
           device: iPhone 11 Pro
       - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTester
-          cache_folder: ~/.cache/yarn
-      - rn/yarn_install:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
-      - rn/pod_install:
-          pod_install_directory: examples/purchaseTester/ios
       - rn/pod_install:
           pod_install_directory: examples/purchaseTesterTypescript/ios
       - rn/yarn_install:
