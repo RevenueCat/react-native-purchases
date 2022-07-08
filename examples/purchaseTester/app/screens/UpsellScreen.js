@@ -61,12 +61,12 @@ export default class UpsellScreen extends React.Component {
           offerings.current.annual.product.price_string
         }`,
         proMonthlyPrice: `Buy Monthly w/ Trial ${
-          offerings.current.lifetime.product.price_string
+          offerings.current.monthly.product.price_string
         }`
       });
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.log("Error handling");
+      console.log(`Error in upsell screen: ${e}`);
     }
   }
 
