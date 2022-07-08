@@ -2,7 +2,7 @@ import {
   CustomerInfo,
   PurchasesOfferings,
   PurchasesPackage,
-  PurchasesPaymentDiscount,
+  PurchasesPromotionalOffer,
   PurchasesProduct,
   UpgradeInfo,
   MakePurchaseResult,
@@ -36,14 +36,14 @@ async function checkUsers(purchases: Purchases) {
 async function checkPurchasing(purchases: Purchases,
                                product: PurchasesProduct,
                                discount: PurchasesDiscount,
-                               paymentDiscount: PurchasesPaymentDiscount,
+                               paymentDiscount: PurchasesPromotionalOffer,
                                pack: PurchasesPackage) {
   const productId: string = ""
   const productIds: string[] = [productId];
   const upgradeInfo: UpgradeInfo | null = null;
   const features: BILLING_FEATURE[] = [];
 
-  const paymentDiscount2: PurchasesPaymentDiscount | undefined = await Purchases.getPaymentDiscount(
+  const paymentDiscount2: PurchasesPromotionalOffer | undefined = await Purchases.getPromotionalOffer(
     product,
     discount,
   );
