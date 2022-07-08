@@ -22,9 +22,9 @@
 
 This release has some changes that should help prevent "There is no singleton instance" errors [issue](https://github.com/RevenueCat/react-native-purchases/issues/101), [PR](https://github.com/RevenueCat/react-native-purchases/pull/310).
 - Added `isConfigured` function to be able to check if the instance of Purchases has been configured before calling any function that accesses the singleton instance.
-- These functions that were returning `void`, now return `Promise<void>`:
+- These functions that were returning `void`, now return `Promise<void>`: 
 
-| Integrations         | Subscriber attributes      | Configuration and other |
+| Integrations         | Subscriber attributes      | Configuration and other | 
 | :------------------: | :------------------------: | :----------------------------: |
 | `addAttributionData` | `collectDeviceIdentifiers` | `invalidatePurchaserInfoCache` |
 | `setAd`              | `setAttributes`            | `presentCodeRedemptionSheet` |
@@ -77,10 +77,10 @@ This release has some changes that should help prevent "There is no singleton in
     https://github.com/RevenueCat/react-native-purchases/pull/302
 - Fix `EntitlementInfo.store` type
     https://github.com/RevenueCat/react-native-purchases/pull/296
-
+    
 ## 4.3.1
 
-- Bumped purchases-android to 4.3.1 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/4.3.1),
+- Bumped purchases-android to 4.3.1 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/4.3.1), 
 which fixes canMakePayments not returning (see related issue: https://github.com/RevenueCat/purchases-unity/issues/61)
 - Bumped purchases-ios to 3.12.3 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.12.3)
 - Bumped purchases-hybrid-common to 1.9.1 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.9.1)
@@ -90,13 +90,13 @@ which fixes canMakePayments not returning (see related issue: https://github.com
 
 ### Identity V3:
 
-In this version, we’ve redesigned the way that user identification works.
+In this version, we’ve redesigned the way that user identification works. 
 Detailed docs about the new system are available [here](https://docs.revenuecat.com/v3.2/docs/user-ids).
 
 #### New methods
-- Introduces `logIn`, a new way of identifying users, which also returns whether a new user has been registered in the system.
-`logIn` uses a new backend endpoint.
-- Introduces `logOut`, a replacement for `reset`.
+- Introduces `logIn`, a new way of identifying users, which also returns whether a new user has been registered in the system. 
+`logIn` uses a new backend endpoint. 
+- Introduces `logOut`, a replacement for `reset`. 
 
 #### Deprecations
 - deprecates `createAlias` in favor of `logIn`.
@@ -165,7 +165,7 @@ Detailed docs about the new system are available [here](https://docs.revenuecat.
 
 - Added a new sample project available at `/Examples/WeatherApp`
     https://github.com/RevenueCat/react-native-purchases/pull/212
-- iOS:
+- iOS: 
     - Added a new method `setSimulatesAskToBuyInSandbox`, that allows developers to test deferred purchases easily.
 - Bumped purchases-hybrid-common to 1.6.1 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/1.6.1)
 - Bumped purchases-ios to 3.10.6 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/3.10.6)
@@ -183,10 +183,10 @@ Detailed docs about the new system are available [here](https://docs.revenuecat.
 ## 4.0.0
 
 - removes deprecated `makePurchase`, replaced by `purchaseProduct`
-- iOS:
+- iOS: 
     - added new method, `syncPurchases`, that enables syncing the purchases in the local receipt with the backend without risking a password prompt. The method was already available on Android.
     - added a new method, `presentCodeRedemptionSheet`, for offer codes redemption.
-    - Updated `React` dependency to `React-Core` and set `DEFINES_MODULE` to fix issues when building in Xcode 12
+    - Updated `React` dependency to `React-Core` and set `DEFINES_MODULE` to fix issues when building in Xcode 12 
 - Bumped `purchases-hybrid-common` to 1.5.0 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.5.0)
 - Bumped `purchases-ios` to 3.9.2 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.9.2)
 - Bumped `purchases-android` to 4.0.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/4.0.1)
@@ -212,9 +212,9 @@ Detailed docs about the new system are available [here](https://docs.revenuecat.
 
 - Removes usage of BuildConfig [#171](https://github.com/RevenueCat/react-native-purchases/pull/171)
 - Bumped common files to 1.4.2 [Changelog here](https://github.com/RevenueCat/purchases-hybrid-common/releases/tag/1.4.2)
-- Bumped iOS to 3.7.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.7.1)
+- Bumped iOS to 3.7.1 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases/tag/3.7.1) 
 - Bumped Android to 3.5.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases/tag/3.5.0)
-- Added a new property `nonSubscriptionTransactions` in `CustomerInfo` to better manage non-subscriptions
+- Added a new property `nonSubscriptionTransactions` in `PurchaserInfo` to better manage non-subscriptions
 - Attribution V2:
  - Deprecated addAttribution in favor of setAdjustId, setAppsflyerId, setFbAnonymousId, setMparticleId.
  - Added support for OneSignal via setOnesignalId
@@ -240,9 +240,9 @@ Detailed docs about the new system are available [here](https://docs.revenuecat.
 
 - Bumped iOS to 3.4.0 [Changelog here](https://github.com/RevenueCat/purchases-ios/releases)
 - Bumped Android to 3.2.0 [Changelog here](https://github.com/RevenueCat/purchases-android/releases)
-- Added managementURL to CustomerInfo
+- Added managementURL to PurchaserInfo
 - Added setProxyURLString
-- Added originalPurchaseDate to CustomerInfo
+- Added originalPurchaseDate to PurchaserInfo
 - Update invalidatePurchaserInfoCache docs [#137](https://github.com/RevenueCat/react-native-purchases/pull/137)
 - Changes the way the common dependency is managed [#144](https://github.com/RevenueCat/react-native-purchases/pull/144) [#145](https://github.com/RevenueCat/react-native-purchases/pull/145)
 - Adds new headers for platformFlavor and platformFlavorVersion
@@ -292,11 +292,11 @@ for a user in RevenueCat. More info: https://docs.revenuecat.com/docs/user-attri
 - Deprecates `makePurchase` methods. Replaces with `purchasePackage`
 - Deprecates `getEntitlements` method. Replaces with `getOfferings`
 - See our migration guide for more info: https://docs.revenuecat.com/v3.0/docs/offerings-migration
-- Updates to BillingClient 2.0.3. If finishTransactions is set to false (or observerMode is true when configuring the SDK),
+- Updates to BillingClient 2.0.3. If finishTransactions is set to false (or observerMode is true when configuring the SDK), 
 this SDK won't acknowledge any purchase and you have to do it yourself.
 - Adds proration mode support on upgrades/downgrades
-- Adds more CustomerInfo missing properties. `activeEntitlements`, `expirationsForActiveEntitlements`
-and `purchaseDatesForActiveEntitlements` have been removed from CustomerInfo
+- Adds more PurchaserInfo missing properties. `activeEntitlements`, `expirationsForActiveEntitlements` 
+and `purchaseDatesForActiveEntitlements` have been removed from PurchaserInfo
 - `intro_price`, `intro_price_period_number_of_units` and `intro_price_cycles` are a number now or null instead of empty
  strings, `intro_price_period_unit` can also be null.
 - Added Typescript types (#72)
@@ -313,7 +313,7 @@ and `purchaseDatesForActiveEntitlements` have been removed from CustomerInfo
 
 ## 2.4.0
 
-- Deprecates activeEntitlements in CustomerInfo and adds entitlements object to RCPurchaserInfo. For more info check out https://docs.revenuecat.com/docs/purchaserinfo
+- Deprecates activeEntitlements in PurchaserInfo and adds entitlements object to RCPurchaserInfo. For more info check out https://docs.revenuecat.com/docs/purchaserinfo
 - Fixes trial info being lost in Android. Access intro_price in the product information to get information around the trial period.
 - Fixes exception when trying to purchase a product that doesn't exist.
 
