@@ -305,23 +305,6 @@ export default class Purchases {
     }
 
     /**
-     * @deprecated, use set<NetworkId> methods instead.
-     *
-     * Add a dict of attribution information
-     * @param {Dict} data Attribution data from AppsFlyer, Adjust, or Branch
-     * @param {ATTRIBUTION_NETWORKS} network Which network, see Purchases.ATTRIBUTION_NETWORKS
-     * @param {String?} networkUserId An optional unique id for identifying the user. Needs to be a string.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
-     */
-    public static async addAttributionData(
-        data: { [key: string]: any },
-        network: ATTRIBUTION_NETWORK,
-        networkUserId?: string
-    ): Promise<void> {
-        RNPurchases.addAttributionData(data, network, networkUserId);
-    }
-
-    /**
      * Gets the map of entitlements -> offerings -> products
      * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure. The promise will be rejected if setup
      * has not been called yet.
