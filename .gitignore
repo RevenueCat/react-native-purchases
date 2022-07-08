@@ -38,6 +38,25 @@ build/
 .gradle
 local.properties
 *.iml
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/gradle-wrapper.jar
+android/gradle/wrapper/gradle-wrapper.properties
+android/.settings/org.eclipse.buildship.core.prefs
+examples/purchaseTester/android/app/.classpath
+examples/purchaseTester/android/app/.project
+examples/purchaseTester/android/app/.settings/org.eclipse.buildship.core.prefs
+examples/purchaseTester/android/.settings/org.eclipse.buildship.core.prefs
+examples/MagicWeather/android/.settings/org.eclipse.buildship.core.prefs
+
+# VSCode
+.vscode/launch.json
+.vscode/settings.json
+android/.classpath
+**/*.project
+examples/purchaseTester/.vscode/launch.json
+examples/purchaseTester/.vscode/settings.json
+examples/purchaseTester/.vscode/
 
 # BUCK
 buck-out/
@@ -46,23 +65,6 @@ buck-out/
 
 # Jest
 .jest/
-android/.settings/org.eclipse.buildship.core.prefs
-examples/purchaseTester/android/.settings/org.eclipse.buildship.core.prefs
-examples/MagicWeather/android/.settings/org.eclipse.buildship.core.prefs
-android/gradlew
-android/gradlew.bat
-android/gradle/wrapper/gradle-wrapper.jar
-android/gradle/wrapper/gradle-wrapper.properties
-.vscode/launch.json
-.vscode/settings.json
-android/.classpath
-**/*.project
-examples/purchaseTester/.vscode/launch.json
-examples/purchaseTester/.vscode/settings.json
-examples/purchaseTester/android/app/.classpath
-examples/purchaseTester/android/app/.project
-examples/purchaseTester/android/app/.settings/org.eclipse.buildship.core.prefs
-examples/purchaseTester/.vscode/
 
 # Cocoapods
 #
@@ -75,3 +77,6 @@ examples/purchaseTester/ios/test_output
 
 # fastlane
 report.xml
+
+# TypeScript
+dist/
