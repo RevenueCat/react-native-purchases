@@ -37,14 +37,15 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
                   observerMode:(BOOL)observerMode
-                  userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName) {
+                  userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
+                  usesStoreKit2IfAvailable:(BOOL)usesStoreKit2IfAvailable) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
                                                   appUserID:appUserID
                                                observerMode:observerMode
                                       userDefaultsSuiteName:userDefaultsSuiteName
                                              platformFlavor:self.platformFlavor
                                       platformFlavorVersion:self.platformFlavorVersion
-                                     usesStoreKit2IfAvailable:NO
+                                     usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
                                           dangerousSettings:nil];
     purchases.delegate = self;
 }
