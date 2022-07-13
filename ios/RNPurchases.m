@@ -105,7 +105,7 @@ RCT_REMAP_METHOD(restoreTransactions,
                  restoreTransactionsWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality restorePurchasesWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve
-                                                                                                       reject:reject]];
+                                                                                                    reject:reject]];
 }
 
 RCT_EXPORT_METHOD(syncPurchases) {
