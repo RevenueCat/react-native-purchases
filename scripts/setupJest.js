@@ -1,6 +1,6 @@
 const {NativeModules} = require("react-native");
 
-global.purchaserInfoStub = {
+global.customerInfoStub = {
   activeSubscriptions: ["annual_freetrial"],
   allExpirationDates: {
     onetime_purchase: null,
@@ -663,7 +663,7 @@ global.discountStub = {
   periodNumberOfUnits: 1,
 };
 
-global.paymentDiscountStub = {
+global.promotionalOfferStub = {
   identifier: "promo_cat",
   keyIdentifier: "keyID",
   nonce: "nonce",
@@ -680,13 +680,10 @@ NativeModules.RNPurchases = {
   makePurchase: jest.fn(),
   restoreTransactions: jest.fn(),
   getAppUserID: jest.fn(),
-  createAlias: jest.fn(),
-  identify: jest.fn(),
   setDebugLogsEnabled: jest.fn(),
-  getPurchaserInfo: jest.fn(),
+  getCustomerInfo: jest.fn(),
   logIn: jest.fn(),
   logOut: jest.fn(),
-  reset: jest.fn(),
   syncPurchases: jest.fn(),
   setFinishTransactions: jest.fn(),
   purchaseProduct: jest.fn(),
@@ -696,8 +693,8 @@ NativeModules.RNPurchases = {
   checkTrialOrIntroductoryPriceEligibility: jest.fn(),
   purchaseDiscountedPackage: jest.fn(),
   purchaseDiscountedProduct: jest.fn(),
-  getPaymentDiscount: jest.fn(),
-  invalidatePurchaserInfoCache: jest.fn(),
+  getPromotionalOffer: jest.fn(),
+  invalidateCustomerInfoCache: jest.fn(),
   setAttributes: jest.fn(),
   setEmail: jest.fn(),
   setPhoneNumber: jest.fn(),
@@ -710,4 +707,3 @@ NativeModules.RNPurchases = {
 jest.mock(
   'react-native/Libraries/EventEmitter/NativeEventEmitter',
  );
- 

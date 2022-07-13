@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { PurchaserInfo, PurchaserInfoUpdateListener } from 'react-native-purchases';
+import { CustomerInfo, CustomerInfoUpdateListener } from 'react-native-purchases';
 
 import Purchases from 'react-native-purchases';
 import { useRoute } from '@react-navigation/native';
 
 export type Props = {
   appUserID: String | null;
-  customerInfo: PurchaserInfo | null;
+  customerInfo: CustomerInfo | null;
   isAnonymous: boolean,
   refreshData: Function
 };
@@ -101,16 +101,16 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
         </TouchableOpacity>
       </View>
 
-      <Modal animationType="slide" 
-              transparent visible={isLoginModalVisible} 
+      <Modal animationType="slide"
+              transparent visible={isLoginModalVisible}
               presentationStyle="overFullScreen">
           <View style={styles.viewWrapper}>
               <View style={styles.modalView}>
                   <Text>Enter identifier for login</Text>
-                  <TextInput placeholder="Enter User ID..." 
+                  <TextInput placeholder="Enter User ID..."
                     autoCapitalize='none'
                     autoCorrect={false}
-                    value={inputUserID} style={styles.textInput} 
+                    value={inputUserID} style={styles.textInput}
                     onChangeText={(value) => setInputUserID(value)} />
 
                   <Button title="Close" onPress={toggleLoginModalVisibility} />
@@ -118,21 +118,21 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
           </View>
       </Modal>
 
-      <Modal animationType="slide" 
-              transparent visible={isAttributeModalVisible} 
+      <Modal animationType="slide"
+              transparent visible={isAttributeModalVisible}
               presentationStyle="overFullScreen">
           <View style={styles.viewWrapper}>
               <View style={styles.modalView}>
                   <Text>Enter attriute key and value</Text>
-                  <TextInput placeholder="Enter key..." 
+                  <TextInput placeholder="Enter key..."
                     autoCapitalize='none'
                     autoCorrect={false}
-                    value={inputAttributeKey} style={styles.textInput} 
+                    value={inputAttributeKey} style={styles.textInput}
                     onChangeText={(value) => setInputAttributeKey(value)} />
-                  <TextInput placeholder="Enter value..." 
+                  <TextInput placeholder="Enter value..."
                     autoCapitalize='none'
                     autoCorrect={false}
-                    value={inputAttributeValue} style={styles.textInput} 
+                    value={inputAttributeValue} style={styles.textInput}
                     onChangeText={(value) => setInputAttributeValue(value)} />
 
                   <Button title="Close" onPress={toggleAttributeModalVisibility} />

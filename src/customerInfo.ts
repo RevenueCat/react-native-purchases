@@ -72,9 +72,9 @@ export interface PurchasesEntitlementInfos {
 }
 
 
-export interface PurchaserInfo {
+export interface CustomerInfo {
     /**
-     * Entitlements attached to this purchaser info
+     * Entitlements attached to this customer info
      */
     readonly entitlements: PurchasesEntitlementInfos;
     /**

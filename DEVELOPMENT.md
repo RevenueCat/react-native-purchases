@@ -24,6 +24,10 @@ You can run the project from XCode without having to run `react-native run-ios`,
 
 In Android, if you are touching common files, you can run in `examples/purchaseTesterTypescript/android` the following command `gradle enableLocalBuild -PcommonPath="$HOME/Development/repos/purchases-hybrid-common/android"`. Make sure you set the right path in your local machine. This will add the `purchases-hybrid-common` as a project that you can edit on the fly when opening the example project.
 
+---
+
+To update the `PurchasesHybridCommon` version, use `fastlane update_hybrid_common version:{new version}`
+
 ## Common issues
 
 > ReferenceError: Module not registered in graph: ~/Development/repos/react-native/react-native-purchases/examples/purchaseTesterTypescript/node_modules/@babel/runtime/helpers/get.js

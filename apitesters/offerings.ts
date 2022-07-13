@@ -5,7 +5,7 @@ import {
   PurchasesDiscount,
   PurchasesIntroPrice,
   PurchasesOffering, PurchasesOfferings,
-  PurchasesPackage, PurchasesPaymentDiscount,
+  PurchasesPackage, PurchasesPromotionalOffer,
   PurchasesProduct, UpgradeInfo
 } from "../dist";
 
@@ -74,7 +74,7 @@ function checkIntroEligibility(eligibility: IntroEligibility) {
   const description: string = eligibility.description;
 }
 
-function checkPaymentDiscount(discount: PurchasesPaymentDiscount) {
+function checkPromotionalOffer(discount: PurchasesPromotionalOffer) {
   const identifier: string = discount.identifier;
   const keyIdentifier: string = discount.keyIdentifier;
   const nonce: string = discount.nonce;

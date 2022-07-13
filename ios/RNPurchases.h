@@ -5,8 +5,8 @@
 
 #import <React/RCTEventEmitter.h>
 
-#import <Purchases/RCPurchases.h>
-#import <PurchasesHybridCommon/PurchasesHybridCommon.h>
+@import PurchasesHybridCommon;
+@import RevenueCat;
 
 @interface RNPurchases : RCTEventEmitter <RCTBridgeModule>
 

@@ -1,6 +1,6 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
 import { PurchasesError, PURCHASES_ERROR_CODE, UninitializedPurchasesError } from "./errors";
-import { PurchaserInfo } from "./purchaserInfo";
+import { CustomerInfo } from "./customerInfo";
 import {
     PRORATION_MODE,
     PACKAGE_TYPE,
@@ -8,7 +8,7 @@ import {
     PurchasesOfferings,
     PurchasesProduct,
     UpgradeInfo,
-    PurchasesPaymentDiscount,
+    PurchasesPromotionalOffer,
     PurchasesPackage,
     IntroEligibility,
     PurchasesDiscount
@@ -20,21 +20,21 @@ const { RNPurchases } = NativeModules;
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
 /**
- * Listener used on updated purchaser info
- * @callback PurchaserInfoUpdateListener
- * @param {Object} purchaserInfo Object containing info for the purchaser
+ * Listener used on updated customer info
+ * @callback CustomerInfoUpdateListener
+ * @param {Object} customerInfo Object containing info for the customer
  */
-export type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
+export type CustomerInfoUpdateListener = (customerInfo: CustomerInfo) => void;
 export type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
-export type MakePurchaseResult = { productIdentifier: string; purchaserInfo: PurchaserInfo; };
+export type MakePurchaseResult = { productIdentifier: string; customerInfo: CustomerInfo; };
 
-let purchaserInfoUpdateListeners: PurchaserInfoUpdateListener[] = [];
+let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
 
 eventEmitter.addListener(
-    "Purchases-PurchaserInfoUpdated",
-    (purchaserInfo: PurchaserInfo) => {
-        purchaserInfoUpdateListeners.forEach(listener => listener(purchaserInfo));
+    "Purchases-CustomerInfoUpdated",
+    (customerInfo: CustomerInfo) => {
+        customerInfoUpdateListeners.forEach(listener => listener(customerInfo));
     }
 );
 
@@ -105,9 +105,9 @@ export enum BILLING_FEATURE {
  */
 export interface LogInResult {
   /**
-   * The Purchaser Info for the user.
+   * The Customer Info for the user.
    */
-  readonly purchaserInfo: PurchaserInfo;
+  readonly customerInfo: CustomerInfo;
   /**
    * True if the call resulted in a new user getting created in the RevenueCat backend.
    */
@@ -169,7 +169,7 @@ export default class Purchases {
     public static INTRO_ELIGIBILITY_STATUS = INTRO_ELIGIBILITY_STATUS;
 
     /**
-     * Enum of all error codes the SDK produces. 
+     * Enum of all error codes the SDK produces.
      * @readonly
      * @enum {string}
      */
@@ -182,7 +182,7 @@ export default class Purchases {
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
      * @param {boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
-     * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android. 
+     * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
      */
@@ -205,9 +205,9 @@ export default class Purchases {
 
     /**
      * @deprecated, configure behavior through the RevenueCat dashboard instead.
-     * If an user tries to purchase a product that is active on the current app store account, 
+     * If an user tries to purchase a product that is active on the current app store account,
      * we will treat it as a restore and alias the new ID with the previous id.
-     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous, 
+     * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous,
      * this is true by default if you didn't pass an appUserID
      * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
      */
@@ -217,7 +217,7 @@ export default class Purchases {
     }
 
     /**
-     * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to 
+     * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to
      * make the purchase
      * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
      */
@@ -228,7 +228,7 @@ export default class Purchases {
 
     /**
      * iOS only.
-     * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA 
+     * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA
      * purchases flow. More information: http://errors.rev.cat/ask-to-buy
      * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
      */
@@ -239,28 +239,28 @@ export default class Purchases {
     }
 
     /**
-     * Sets a function to be called on updated purchaser info
-     * @param {PurchaserInfoUpdateListener} purchaserInfoUpdateListener PurchaserInfo update listener
+     * Sets a function to be called on updated customer info
+     * @param {CustomerInfoUpdateListener} customerInfoUpdateListener CustomerInfo update listener
      */
-    public static addPurchaserInfoUpdateListener(
-        purchaserInfoUpdateListener: PurchaserInfoUpdateListener
+    public static addCustomerInfoUpdateListener(
+        customerInfoUpdateListener: CustomerInfoUpdateListener
     ): void {
-        if (typeof purchaserInfoUpdateListener !== "function") {
-            throw new Error("addPurchaserInfoUpdateListener needs a function");
+        if (typeof customerInfoUpdateListener !== "function") {
+            throw new Error("addCustomerInfoUpdateListener needs a function");
         }
-        purchaserInfoUpdateListeners.push(purchaserInfoUpdateListener);
+        customerInfoUpdateListeners.push(customerInfoUpdateListener);
     }
 
     /**
-     * Removes a given PurchaserInfoUpdateListener
-     * @param {PurchaserInfoUpdateListener} listenerToRemove PurchaserInfoUpdateListener reference of the listener to remove
+     * Removes a given CustomerInfoUpdateListener
+     * @param {CustomerInfoUpdateListener} listenerToRemove CustomerInfoUpdateListener reference of the listener to remove
      * @returns {boolean} True if listener was removed, false otherwise
      */
-    public static removePurchaserInfoUpdateListener(
-        listenerToRemove: PurchaserInfoUpdateListener
+    public static removeCustomerInfoUpdateListener(
+        listenerToRemove: CustomerInfoUpdateListener
     ): boolean {
-        if (purchaserInfoUpdateListeners.includes(listenerToRemove)) {
-            purchaserInfoUpdateListeners = purchaserInfoUpdateListeners.filter(
+        if (customerInfoUpdateListeners.includes(listenerToRemove)) {
+          customerInfoUpdateListeners = customerInfoUpdateListeners.filter(
                 listener => listenerToRemove !== listener
             );
             return true;
@@ -288,7 +288,7 @@ export default class Purchases {
 
     /**
      * Removes a given ShouldPurchasePromoProductListener
-     * @param {ShouldPurchasePromoProductListener} listenerToRemove ShouldPurchasePromoProductListener reference of 
+     * @param {ShouldPurchasePromoProductListener} listenerToRemove ShouldPurchasePromoProductListener reference of
      * the listener to remove
      * @returns {boolean} True if listener was removed, false otherwise
      */
@@ -305,25 +305,8 @@ export default class Purchases {
     }
 
     /**
-     * @deprecated, use set<NetworkId> methods instead.
-     * 
-     * Add a dict of attribution information
-     * @param {Dict} data Attribution data from AppsFlyer, Adjust, or Branch
-     * @param {ATTRIBUTION_NETWORKS} network Which network, see Purchases.ATTRIBUTION_NETWORKS
-     * @param {String?} networkUserId An optional unique id for identifying the user. Needs to be a string.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
-     */
-    public static async addAttributionData(
-        data: { [key: string]: any },
-        network: ATTRIBUTION_NETWORK,
-        networkUserId?: string
-    ): Promise<void> {
-        RNPurchases.addAttributionData(data, network, networkUserId);
-    }
-
-    /**
      * Gets the map of entitlements -> offerings -> products
-     * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure. The promise will be rejected if setup 
+     * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure. The promise will be rejected if setup
      * has not been called yet.
      */
     public static async getOfferings(): Promise<PurchasesOfferings> {
@@ -335,9 +318,9 @@ export default class Purchases {
      * Fetch the product info
      * @param {String[]} productIdentifiers Array of product identifiers
      * @param {String} type Optional type of products to fetch, can be inapp or subs. Subs by default
-     * @returns {Promise<PurchasesProduct[]>} A promise containing an array of products. The promise will be rejected 
-     * if the products are not properly configured in RevenueCat or if there is another error retrieving them. 
-     * Rejections return an error code, and a userInfo object with more information. The promise will also be rejected 
+     * @returns {Promise<PurchasesProduct[]>} A promise containing an array of products. The promise will be rejected
+     * if the products are not properly configured in RevenueCat or if there is another error retrieving them.
+     * Rejections return an error code, and a userInfo object with more information. The promise will also be rejected
      * if setup has not been called yet.
      */
     public static async getProducts(
@@ -355,9 +338,9 @@ export default class Purchases {
      * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
      * and the optional prorationMode.
      * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-     * @returns {Promise<{ productIdentifier: string, purchaserInfo:PurchaserInfo }>} A promise of an object containing
-     * a purchaser info object and a product identifier. Rejections return an error code,
-     * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will 
+     * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
+     * a customer info object and a product identifier. Rejections return an error code,
+     * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will
      * also be rejected if setup has not been called yet.
      */
     public static async purchaseProduct(
@@ -381,15 +364,15 @@ export default class Purchases {
      * iOS only. Purchase a product applying a given discount.
      *
      * @param {PurchasesProduct} product The product you want to purchase
-     * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
-     * @returns {Promise<{ productIdentifier: string, purchaserInfo:PurchaserInfo }>} A promise of an object containing
-     * a purchaser info object and a product identifier. Rejections return an error code,
+     * @param {PurchasesPromotionalOffer} discount Discount to apply to this package. Retrieve this discount using getPromotionalOffer.
+     * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
+     * a customer info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will be
      * rejected if setup has not been called yet.
      */
     public static async purchaseDiscountedProduct(
         product: PurchasesProduct,
-        discount: PurchasesPaymentDiscount
+        discount: PurchasesPromotionalOffer
     ): Promise<MakePurchaseResult> {
         await Purchases.throwIfNotConfigured();
         if (typeof discount === "undefined" || discount == null) {
@@ -412,9 +395,9 @@ export default class Purchases {
      * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
      * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
      * and the optional prorationMode.
-     * @returns {Promise<{ productIdentifier: string, purchaserInfo: PurchaserInfo }>} A promise of an object containing
-     * a purchaser info object and a product identifier. Rejections return an error code, a boolean indicating if the 
-     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if setup 
+     * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
+     * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
+     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if setup
      * has not been called yet.
      */
     public static async purchasePackage(
@@ -437,15 +420,15 @@ export default class Purchases {
      * iOS only. Purchase a package applying a given discount.
      *
      * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
-     * @param {PurchasesPaymentDiscount} discount Discount to apply to this package. Retrieve this discount using getPaymentDiscount.
-     * @returns {Promise<{ productIdentifier: string, purchaserInfo: PurchaserInfo }>} A promise of an object containing
-     * a purchaser info object and a product identifier. Rejections return an error code, a boolean indicating if the 
-     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if setup 
+     * @param {PurchasesPromotionalOffer} discount Discount to apply to this package. Retrieve this discount using getPromotionalOffer.
+     * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
+     * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
+     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if setup
      * has not been called yet.
      */
     public static async purchaseDiscountedPackage(
         aPackage: PurchasesPackage,
-        discount: PurchasesPaymentDiscount
+        discount: PurchasesPromotionalOffer
     ): Promise<MakePurchaseResult> {
         await Purchases.throwIfNotConfigured();
         if (typeof discount === "undefined" || discount == null) {
@@ -464,10 +447,10 @@ export default class Purchases {
 
     /**
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
-     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and an 
+     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
      * userInfo object with more information. The promise will be also be rejected if setup has not been called yet.
      */
-    public static async restoreTransactions(): Promise<PurchaserInfo> {
+    public static async restoreTransactions(): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
         return RNPurchases.restoreTransactions();
     }
@@ -482,11 +465,11 @@ export default class Purchases {
     }
 
     /**
-     * This function will logIn the current user with an appUserID. Typically this would be used after a log in 
+     * This function will logIn the current user with an appUserID. Typically this would be used after a log in
      * to identify a user without calling configure.
      * @param {String} appUserID The appUserID that should be linked to the currently user
-     * @returns {Promise<LogInResult>} A promise of an object that contains the purchaserInfo after logging in, as well 
-     * as a boolean indicating whether the user has just been created for the first time in the RevenueCat backend. The 
+     * @returns {Promise<LogInResult>} A promise of an object that contains the customerInfo after logging in, as well
+     * as a boolean indicating whether the user has just been created for the first time in the RevenueCat backend. The
      * promise will be rejected if setup has not been called yet or if there's an issue logging in.
      */
     public static async logIn(appUserID: string): Promise<LogInResult> {
@@ -500,11 +483,11 @@ export default class Purchases {
 
     /**
      * Logs out the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
-     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, 
-     * and a userInfo object with more information. The promise will be rejected if setup has not been called yet or if 
+     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code,
+     * and a userInfo object with more information. The promise will be rejected if setup has not been called yet or if
      * there's an issue logging out.
      */
-    public static async logOut(): Promise<PurchaserInfo> {
+    public static async logOut(): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
         return RNPurchases.logOut();
     }
@@ -512,13 +495,13 @@ export default class Purchases {
     /**
      * @deprecated, use logIn instead.
      * This function will alias two appUserIDs together.
-     * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID. 
+     * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID.
      * Needs to be a string.
-     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and a 
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if 
+     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and a
+     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
      * there's an issue creating the alias.
      */
-    public static async createAlias(newAppUserID: string): Promise<PurchaserInfo> {
+    public static async createAlias(newAppUserID: string): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
         // noinspection SuspiciousTypeOfGuard
         if (typeof newAppUserID !== "string") {
@@ -529,14 +512,14 @@ export default class Purchases {
 
     /**
      * @deprecated, use logIn instead.
-     * This function will identify the current user with an appUserID. Typically this would be used after a logout to 
+     * This function will identify the current user with an appUserID. Typically this would be used after a logout to
      * identify a new user without calling configure
      * @param {String} newAppUserID The appUserID that should be linked to the currently user
-     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and an 
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if 
+     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
+     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
      * there's an issue identifying the user.
      */
-    public static async identify(newAppUserID: string): Promise<PurchaserInfo> {
+    public static async identify(newAppUserID: string): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
         // noinspection SuspiciousTypeOfGuard
         if (typeof newAppUserID !== "string") {
@@ -549,11 +532,11 @@ export default class Purchases {
      * @deprecated, use logOut instead.
      * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the
      *  cache.
-     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and an 
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if 
+     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
+     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
      * there's an issue resetting the user.
      */
-    public static async reset(): Promise<PurchaserInfo> {
+    public static async reset(): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
         return RNPurchases.reset();
     }
@@ -567,14 +550,14 @@ export default class Purchases {
     }
 
     /**
-     * Gets current purchaser info
-     * @returns {Promise<PurchaserInfo>} A promise of a purchaser info object. Rejections return an error code, and an 
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if 
-     * there's an issue getting the purchaser information.
+     * Gets current customer info
+     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
+     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
+     * there's an issue getting the customer information.
      */
-    public static async getPurchaserInfo(): Promise<PurchaserInfo> {
+    public static async getCustomerInfo(): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
-        return RNPurchases.getPurchaserInfo();
+        return RNPurchases.getCustomerInfo();
     }
 
     /**
@@ -624,7 +607,7 @@ export default class Purchases {
      * iOS so that the subscription group can be collected by the SDK. Android always returns INTRO_ELIGIBILITY_STATUS_UNKNOWN.
      *
      * @param productIdentifiers Array of product identifiers for which you want to compute eligibility
-     * @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId. The promise 
+     * @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId. The promise
      * will be rejected if setup has not been called yet or if there's in an error checking eligibility.
      */
     public static async checkTrialOrIntroductoryPriceEligibility(
@@ -637,18 +620,18 @@ export default class Purchases {
     }
 
     /**
-     * iOS only. Use this function to retrieve the `PurchasesPaymentDiscount` for a given `PurchasesPackage`.
+     * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
      *
      * @param product The `PurchasesProduct` the user intends to purchase.
      * @param discount The `PurchasesDiscount` to apply to the product.
-     * @returns { Promise<PurchasesPaymentDiscount> } Returns when the `PurchasesPaymentDiscount` is returned. 
-     * Null is returned for Android and incompatible iOS versions. The promise will be rejected if setup has not been 
+     * @returns { Promise<PurchasesPromotionalOffer> } Returns when the `PurchasesPaymentDiscount` is returned.
+     * Null is returned for Android and incompatible iOS versions. The promise will be rejected if setup has not been
      * called yet or if there's an error getting the payment discount.
      */
-    public static async getPaymentDiscount(
+    public static async getPromotionalOffer(
         product: PurchasesProduct,
         discount: PurchasesDiscount
-    ): Promise<PurchasesPaymentDiscount | undefined> {
+    ): Promise<PurchasesPromotionalOffer | undefined> {
         await Purchases.throwIfNotConfigured();
         if (Platform.OS === "android") {
             return Promise.resolve(undefined);
@@ -656,34 +639,33 @@ export default class Purchases {
         if (typeof discount === "undefined" || discount == null) {
             throw new Error("A discount is required");
         }
-        return RNPurchases.getPaymentDiscount(
+        return RNPurchases.getPromotionalOffer(
             product.identifier,
             discount.identifier
         );
     }
 
-
     /**
-     * Invalidates the cache for purchaser information.
+     * Invalidates the cache for customer information.
      *
      * Most apps will not need to use this method; invalidating the cache can leave your app in an invalid state.
-     * Refer to https://docs.revenuecat.com/docs/purchaserinfo#section-get-user-information for more information on
+     * Refer to https://docs.revenuecat.com/docs/customer-info#section-get-user-information for more information on
      * using the cache properly.
      *
-     * This is useful for cases where purchaser information might have been updated outside of the app, like if a
+     * This is useful for cases where customer information might have been updated outside of the app, like if a
      * promotional subscription is granted through the RevenueCat dashboard.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or there's an error 
-     * invalidating the purchaser info cache.
+     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or there's an error
+     * invalidating the customer info cache.
      */
-    public static async invalidatePurchaserInfoCache(): Promise<void> {
+    public static async invalidateCustomerInfoCache(): Promise<void> {
         await Purchases.throwIfNotConfigured();
-        RNPurchases.invalidatePurchaserInfoCache();
+        RNPurchases.invalidateCustomerInfoCache();
     }
 
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
-     * to configure and use offer codes 
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or there's an error 
+     * to configure and use offer codes
+     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or there's an error
      * presenting the code redemption sheet.
      */
     public static async presentCodeRedemptionSheet(): Promise<void> {
@@ -759,7 +741,7 @@ export default class Purchases {
     }
 
     /**
-     * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value 
+     * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value
      * from your RevenueCat contact.
      * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
      * setting the proxy url.
@@ -770,7 +752,7 @@ export default class Purchases {
     }
 
     /**
-     * Automatically collect subscriber attributes associated with the device identifiers. 
+     * Automatically collect subscriber attributes associated with the device identifiers.
      * $idfa, $idfv, $ip on iOS
      * $gpsAdId, $androidId, $ip on Android
      * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
@@ -932,11 +914,11 @@ export default class Purchases {
 
     /**
      * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
-     * and optionally, whether a list of specified feature types are supported. 
-     * 
+     * and optionally, whether a list of specified feature types are supported.
+     *
      * Note: Billing features are only relevant to Google Play Android users.
      * For other stores and platforms, billing features won't be checked.
-     * 
+     *
      * @param features An array of feature types to check for support. Feature types must be one of
      *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
      * @returns {Promise<boolean>} promise with boolean response. True if billing is supported, false otherwise.
@@ -947,7 +929,7 @@ export default class Purchases {
 
     /**
      * Check if setup has finished and Purchases has been configured.
-     * 
+     *
      * @returns {Promise<Boolean>} promise with boolean response
      */
     public static isConfigured(): Promise<boolean> {
