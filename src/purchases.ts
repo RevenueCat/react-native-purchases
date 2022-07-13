@@ -181,8 +181,8 @@ export default class Purchases {
      * Sets up Purchases with your API key and an app user id.
      * @param {String} apiKey RevenueCat API Key. Needs to be a String
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
-     * @param {boolean?} observerMode An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
-     * @param {boolean?} usesStoreKit2IfAvailable An optional boolean. iOS-only. Set this to TRUE to enable StoreKit2 on compatible devices.
+     * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+     * @param {boolean} [usesStoreKit2IfAvailable=false] An optional boolean. iOS-only. Set this to TRUE to enable StoreKit2 on compatible devices.
      * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
