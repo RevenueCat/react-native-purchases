@@ -353,14 +353,15 @@ describe("Purchases", () => {
     const Purchases = require("../dist/index").default;
 
     Purchases.setup("key", "user");
-
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false);
 
     Purchases.setup("key", "user", true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined);
+    Purchases.setup("key", "user", true, "suite name", true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(2);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(3);
   })
 
   it("cancelled purchaseProduct sets userCancelled in the error", () => {
@@ -582,7 +583,7 @@ describe("Purchases", () => {
 
     Purchases.setup("key", "user", false, "suitename");
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suitename");
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suitename", false);
   })
 
   describe("invalidate customer info cache", () => {

@@ -81,6 +81,7 @@ async function checkSetup() {
   const aString: string = "";
   const userID: string | null = "";
   const observerMode: boolean = false;
+  const usesStoreKit2IfAvailable: boolean = true;
   const userDefaultsSuiteName: string = "";
 
   Purchases.setup(
@@ -93,6 +94,13 @@ async function checkSetup() {
     userID,
     observerMode,
     userDefaultsSuiteName
+  );
+  Purchases.setup(
+    aString,
+    userID,
+    observerMode,
+    userDefaultsSuiteName,
+    usesStoreKit2IfAvailable
   );
 
   await Purchases.setProxyURL(aString);
