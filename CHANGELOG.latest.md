@@ -1,1 +1,1 @@
-- Export MakePurchaseResult (https://github.com/RevenueCat/react-native-purchases/pull/351)
+- Replaced `jcenter` with `mavenCentral` (https://github.com/RevenueCat/react-native-purchases/pull/369)
