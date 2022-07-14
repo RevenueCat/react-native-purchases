@@ -44,6 +44,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                       userDefaultsSuiteName:userDefaultsSuiteName
                                              platformFlavor:self.platformFlavor
                                       platformFlavorVersion:self.platformFlavorVersion
+                                     usesStoreKit2IfAvailable:NO
                                           dangerousSettings:nil];
     purchases.delegate = self;
 }
