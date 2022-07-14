@@ -53,33 +53,25 @@ pod 'RNPurchases', :path => '../node_modules/react-native-purchases'
 
 In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
 
-#### Manual installation (if your project doesn't use CocoapodsCreate)
+#### Migrating from manual installation (if your project doesn't use CocoapodsCreate)
 
-##### Make a Framework Reference in your project
+##### Remove the Framework Reference from your project
 
-1. Drag `RevenueCat.framework` and `PurchasesHybridCommon.framework` from the `RNPurchases`sub-project under the libraries section to the outer project and create a reference. 
+1. Remove `Purchases.framework` and `PurchasesHybridCommon.framework` from the libraries section of the project. 
 
-![](https://media.giphy.com/media/W6LvZkQnvc3QnnPza7/giphy.gif)
-
-##### Add iOS Frameworks to Embedded Binaries
+##### Remove iOS Frameworks to Embedded Binaries
 1. In Xcode, in project manager, select your app target.
 1. Select the general tab
-1. Drag `RevenueCat.framework` and `PurchasesHybridCommon.framework` from your project to the Embedded Binaries section
+1. Look for `Purchases.framework` and `PurchasesHybridCommon.framework` in the Embedded Binaries section and remove them.
 
-![](https://media.giphy.com/media/iIdIuEkAzlntxANSiV/giphy.gif)
+Remove `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` from Framework Search paths in build settings
 
-Add `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` to Framework Search paths in build settings
-
-![](https://media.giphy.com/media/1pAbuARm4TLfZKdfx3/giphy.gif)
-
-##### Add Strip Frameworks Phase
-The App Store, in it's infinite wisdom, still rejects fat frameworks, so we need to strip our framework before it is deployed. To do this, add the following script phase to your build.
+##### Remove Strip Frameworks Phase
+During the old manual installation instructions, now deprecated, we indicated to add a build phase to strip fat frameworks. 
 1. In Xcode, in project manager, select your app target.
 2. Open the `Build Phases` tab
-3. Add a new `Run Script`, name it `Strip Frameworks`
-4. Add the following command `"${PROJECT_DIR}/../node_modules/react-native-purchases/ios/strip-frameworks.sh"` (quotes included)
-
-![](https://media.giphy.com/media/39zTmnsW1CIrJNk5AM/giphy.gif)
+3. Remove the added `Strip Frameworks` phase
+4. Clean `Derived Data` 
 
 ##### Link static library
 The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
