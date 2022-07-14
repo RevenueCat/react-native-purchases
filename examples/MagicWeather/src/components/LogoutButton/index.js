@@ -18,7 +18,7 @@ const LogoutButton = ({ onLogout }) => {
      Note: Each time you call `reset`, a new installation will be logged in the RevenueCat dashboard as that metric tracks unique user ID's that are in-use. Since this method generates a new anonymous ID, it counts as a new user ID in-use.
      */
     try {
-      await Purchases.reset();
+      await Purchases.logOut();
     } catch (e) {
       Alert.alert('Error resetting purchases', e.message);
     }

@@ -32,16 +32,16 @@ const WeatherScreen = () => {
      */
 
     try {
-      // access latest purchaserInfo
-      const purchaserInfo = await Purchases.getPurchaserInfo();
+      // access latest customerInfo
+      const customerInfo = await Purchases.getCustomerInfo();
 
-      if (typeof purchaserInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
+      if (typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
         setWeatherData(generateSampleData(Environment.EARTH));
       } else {
         navigation.navigate('Paywall');
       }
     } catch (e) {
-      Alert.alert('Error fetching purchaser info', e.message);
+      Alert.alert('Error fetching customer info', e.message);
     }
   };
 
