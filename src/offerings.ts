@@ -63,7 +63,7 @@ export enum INTRO_ELIGIBILITY_STATUS {
 }
 
 
-export interface PurchasesProduct {
+export interface PurchasesStoreProduct {
     /**
      * Product Id.
      */
@@ -131,10 +131,10 @@ export interface PurchasesProduct {
     /**
      * Collection of discount offers for a product. Null for Android.
      */
-    readonly discounts: PurchasesDiscount[] | null;
+    readonly discounts: PurchasesStoreProductDiscount[] | null;
 }
 
-export interface PurchasesDiscount {
+export interface PurchasesStoreProductDiscount {
     /**
      * Identifier of the discount.
      */
@@ -208,7 +208,7 @@ export interface PurchasesPackage {
     /**
      * Product assigned to this package.
      */
-    readonly product: PurchasesProduct;
+    readonly product: PurchasesStoreProduct;
     /**
      * Offering this package belongs to.
      */

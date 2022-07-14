@@ -3,10 +3,10 @@ import {
   PurchasesOfferings,
   PurchasesPackage,
   PurchasesPromotionalOffer,
-  PurchasesProduct,
+  PurchasesStoreProduct,
   UpgradeInfo,
   MakePurchaseResult,
-  PURCHASE_TYPE, PurchasesDiscount, BILLING_FEATURE, IntroEligibility,
+  PURCHASE_TYPE, PurchasesStoreProductDiscount, BILLING_FEATURE, IntroEligibility,
   LogInResult, ShouldPurchasePromoProductListener, CustomerInfoUpdateListener
 } from '../dist';
 
@@ -16,7 +16,7 @@ async function checkPurchases(purchases: Purchases) {
   const productIds: string[] = [];
 
   const offerings: PurchasesOfferings = await Purchases.getOfferings();
-  const products: PurchasesProduct[] = await Purchases.getProducts(
+  const products: PurchasesStoreProduct[] = await Purchases.getProducts(
     productIds,
     PURCHASE_TYPE.INAPP
   );
@@ -34,8 +34,8 @@ async function checkUsers(purchases: Purchases) {
 }
 
 async function checkPurchasing(purchases: Purchases,
-                               product: PurchasesProduct,
-                               discount: PurchasesDiscount,
+                               product: PurchasesStoreProduct,
+                               discount: PurchasesStoreProductDiscount,
                                paymentDiscount: PurchasesPromotionalOffer,
                                pack: PurchasesPackage) {
   const productId: string = ""

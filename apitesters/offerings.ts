@@ -2,14 +2,14 @@ import {
   INTRO_ELIGIBILITY_STATUS,
   IntroEligibility,
   PACKAGE_TYPE, PRORATION_MODE,
-  PurchasesDiscount,
+  PurchasesStoreProductDiscount,
   PurchasesIntroPrice,
   PurchasesOffering, PurchasesOfferings,
   PurchasesPackage, PurchasesPromotionalOffer,
-  PurchasesProduct, UpgradeInfo
+  PurchasesStoreProduct, UpgradeInfo
 } from "../dist";
 
-function checkProduct(product: PurchasesProduct) {
+function checkProduct(product: PurchasesStoreProduct) {
   const identifier: string = product.identifier;
   const description: string = product.description;
   const title: string = product.title;
@@ -17,10 +17,10 @@ function checkProduct(product: PurchasesProduct) {
   const priceString: string = product.price_string;
   const currencyCode: string = product.currency_code;
   const introPrice: PurchasesIntroPrice | null = product.introPrice;
-  const discounts: PurchasesDiscount[] | null = product.discounts;
+  const discounts: PurchasesStoreProductDiscount[] | null = product.discounts;
 }
 
-function checkDiscount(discount: PurchasesDiscount) {
+function checkDiscount(discount: PurchasesStoreProductDiscount) {
   const identifier: string = discount.identifier;
   const price: number = discount.price;
   const priceString: string = discount.priceString;
@@ -42,7 +42,7 @@ function checkIntroPrice(introPrice: PurchasesIntroPrice) {
 function checkPackage(pack: PurchasesPackage) {
   const identifier: string = pack.identifier;
   const packageType: PACKAGE_TYPE = pack.packageType;
-  const product: PurchasesProduct = pack.product;
+  const product: PurchasesStoreProduct = pack.product;
   const offeringIdentifier: string = pack.offeringIdentifier;
 }
 

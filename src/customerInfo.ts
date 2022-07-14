@@ -132,7 +132,7 @@ export interface CustomerInfo {
      */
     readonly managementURL: string | null;
 
-    readonly nonSubscriptionTransactions: PurchasesTransaction[];
+    readonly nonSubscriptionTransactions: PurchasesStoreTransaction[];
 }
 
 /**
@@ -140,7 +140,7 @@ export interface CustomerInfo {
  * non-subscription purchases
  */
 
-export interface PurchasesTransaction {
+export interface PurchasesStoreTransaction {
     /**
      * RevenueCat Id associated to the transaction.
      */
