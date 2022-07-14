@@ -84,18 +84,18 @@ async function checkSetup() {
   const usesStoreKit2IfAvailable: boolean = true;
   const userDefaultsSuiteName: string = "";
 
-  Purchases.setup(
+  Purchases.configure(
     aString,
     userID,
     observerMode
   );
-  Purchases.setup(
+  Purchases.configure(
     aString,
     userID,
     observerMode,
     userDefaultsSuiteName
   );
-  Purchases.setup(
+  Purchases.configure(
     aString,
     userID,
     observerMode,

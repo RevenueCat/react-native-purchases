@@ -162,7 +162,7 @@ export default class Purchases {
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
      */
-    public static setup(
+    public static configure(
         apiKey: string,
         appUserID?: string | null,
         observerMode: boolean = false,
