@@ -43,6 +43,9 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 11 Pro
+      - run:
+          name: Update CocoaPods repo
+          command: pod repo update
       - rn/yarn_install:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
