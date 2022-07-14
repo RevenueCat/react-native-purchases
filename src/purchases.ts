@@ -471,55 +471,6 @@ export default class Purchases {
     }
 
     /**
-     * @deprecated, use logIn instead.
-     * This function will alias two appUserIDs together.
-     * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID.
-     * Needs to be a string.
-     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and a
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
-     * there's an issue creating the alias.
-     */
-    public static async createAlias(newAppUserID: string): Promise<CustomerInfo> {
-        await Purchases.throwIfNotConfigured();
-        // noinspection SuspiciousTypeOfGuard
-        if (typeof newAppUserID !== "string") {
-            throw new Error("newAppUserID needs to be a string");
-        }
-        return RNPurchases.createAlias(newAppUserID);
-    }
-
-    /**
-     * @deprecated, use logIn instead.
-     * This function will identify the current user with an appUserID. Typically this would be used after a logout to
-     * identify a new user without calling configure
-     * @param {String} newAppUserID The appUserID that should be linked to the currently user
-     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
-     * there's an issue identifying the user.
-     */
-    public static async identify(newAppUserID: string): Promise<CustomerInfo> {
-        await Purchases.throwIfNotConfigured();
-        // noinspection SuspiciousTypeOfGuard
-        if (typeof newAppUserID !== "string") {
-            throw new Error("newAppUserID needs to be a string");
-        }
-        return RNPurchases.identify(newAppUserID);
-    }
-
-    /**
-     * @deprecated, use logOut instead.
-     * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the
-     *  cache.
-     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
-     * there's an issue resetting the user.
-     */
-    public static async reset(): Promise<CustomerInfo> {
-        await Purchases.throwIfNotConfigured();
-        return RNPurchases.reset();
-    }
-
-    /**
      * Enables/Disables debugs logs
      * @param {boolean} enabled Enable or not debug logs
      */
