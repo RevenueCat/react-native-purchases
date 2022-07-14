@@ -1,3 +1,7 @@
+## 4.6.1
+
+- Replaced `jcenter` with `mavenCentral` (https://github.com/RevenueCat/react-native-purchases/pull/369)
+
 ## 4.6.0
 
 - Export MakePurchaseResult (https://github.com/RevenueCat/react-native-purchases/pull/351)
