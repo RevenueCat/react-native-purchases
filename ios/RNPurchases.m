@@ -337,7 +337,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"5.0.0-amazon.alpha.1";
+    return @"4.6.0";
 }
 
 @end
