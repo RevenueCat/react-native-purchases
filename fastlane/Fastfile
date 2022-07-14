@@ -30,6 +30,7 @@ lane :bump_and_update_changelog do |options|
     'package.json',
     'ios/RNPurchases.m',
     'android/build.gradle',
+    'android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java',
   ]
 
   if dry_run
