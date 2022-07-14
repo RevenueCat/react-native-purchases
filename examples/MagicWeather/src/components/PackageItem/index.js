@@ -23,7 +23,7 @@ const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
       }
     } catch (e) {
       if (!e.userCancelled) {
-        Alert.alert('Error purchasing package', e);
+        Alert.alert('Error purchasing package', e.message);
       }
     } finally {
       setIsPurchasing(false);

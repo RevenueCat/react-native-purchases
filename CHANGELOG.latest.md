@@ -1,0 +1,1 @@
+- Export MakePurchaseResult (https://github.com/RevenueCat/react-native-purchases/pull/351)

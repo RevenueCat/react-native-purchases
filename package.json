@@ -34,8 +34,8 @@
     "test": "jest",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepublish": "tsc",
-    "example": "yarn --cwd examples/purchaseTester",
-    "pods": "cd examples/purchaseTester && pod-install --quiet",
+    "example": "yarn --cwd examples/MagicWeather && yarn --cwd examples/purchaseTesterTypescript",
+    "pods": "(cd examples/MagicWeather && npx pod-install --quiet) && (cd examples/purchaseTesterTypescript && npx pod-install --quiet)",
     "bootstrap": "yarn example && yarn && yarn pods"
   },
   "repository": {
@@ -77,7 +77,7 @@
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/examples/purchaseTester/node_modules",
+      "<rootDir>/examples/purchaseTesterTypescript/node_modules",
       "<rootDir>/lib/"
     ],
     "moduleFileExtensions": [
