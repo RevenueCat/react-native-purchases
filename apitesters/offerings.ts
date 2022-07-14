@@ -16,7 +16,7 @@ function checkProduct(product: PurchasesStoreProduct) {
   const price: number = product.price;
   const priceString: string = product.price_string;
   const currencyCode: string = product.currency_code;
-  const introPrice: PurchasesIntroPrice | null = product.introPrice;
+  const introPrice: PurchasesIntroPrice | null = product.intro_price;
   const discounts: PurchasesStoreProductDiscount[] | null = product.discounts;
 }
 
