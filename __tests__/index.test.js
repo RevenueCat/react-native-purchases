@@ -94,19 +94,19 @@ describe("Purchases", () => {
     expect(listener).toHaveBeenCalledTimes(0);
   });
 
-  it("calling setup with something other than string throws exception", () => {
+  it("calling configure with something other than string throws exception", () => {
     const Purchases = require("../dist/index").default;
 
     expect(() => {
-      Purchases.setup("api_key", 123)
+      Purchases.configure("api_key", 123)
     }).toThrowError();
 
     expect(() => {
-      Purchases.setup("api_key")
+      Purchases.configure("api_key")
     }).not.toThrowError();
 
     expect(() => {
-      Purchases.setup("api_key", "123a")
+      Purchases.configure("api_key", "123a")
     }).not.toThrowError();
 
 
@@ -349,16 +349,16 @@ describe("Purchases", () => {
     expect(customerInfo).toEqual(customerInfoStub);
   })
 
-  it("setup works", async () => {
+  it("configure works", async () => {
     const Purchases = require("../dist/index").default;
 
-    Purchases.setup("key", "user");
+    Purchases.configure("key", "user");
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false);
 
-    Purchases.setup("key", "user", true);
+    Purchases.configure("key", "user", true);
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false);
 
-    Purchases.setup("key", "user", true, "suite name", true);
+    Purchases.configure("key", "user", true, "suite name", true);
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(3);
@@ -578,10 +578,10 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
 
-  it("calling setup with a userDefaultsSuiteName", () => {
+  it("calling configure with a userDefaultsSuiteName", () => {
     const Purchases = require("../dist/index").default;
 
-    Purchases.setup("key", "user", false, "suitename");
+    Purchases.configure("key", "user", false, "suitename");
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suitename", false);
   })
@@ -753,7 +753,7 @@ describe("Purchases", () => {
 
       // This functions should skip the test since they not required an instance of Purchases
       const excludedFunctionNames = [
-        "setup",
+        "configure",
         "setSimulatesAskToBuyInSandbox",
         "addCustomerInfoUpdateListener",
         "removeCustomerInfoUpdateListener",

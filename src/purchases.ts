@@ -6,12 +6,12 @@ import {
     PACKAGE_TYPE,
     INTRO_ELIGIBILITY_STATUS,
     PurchasesOfferings,
-    PurchasesProduct,
+    PurchasesStoreProduct,
     UpgradeInfo,
     PurchasesPromotionalOffer,
     PurchasesPackage,
     IntroEligibility,
-    PurchasesDiscount
+    PurchasesStoreProductDiscount
 } from "./offerings";
 
 import { Platform } from "react-native";
@@ -46,15 +46,6 @@ eventEmitter.addListener(
         );
     }
 );
-
-export enum ATTRIBUTION_NETWORK {
-    APPLE_SEARCH_ADS = 0,
-    ADJUST = 1,
-    APPSFLYER = 2,
-    BRANCH = 3,
-    TENJIN = 4,
-    FACEBOOK = 5,
-}
 
 export enum PURCHASE_TYPE {
     /**
@@ -116,22 +107,6 @@ export interface LogInResult {
 
 export default class Purchases {
     /**
-     * Enum for attribution networks
-     * @readonly
-     * @enum {number}
-     */
-    public static ATTRIBUTION_NETWORK = ATTRIBUTION_NETWORK;
-
-    /**
-     * @deprecated use ATTRIBUTION_NETWORK instead
-     *
-     * Enum for attribution networks
-     * @readonly
-     * @enum {number}
-     */
-    public static ATTRIBUTION_NETWORKS = ATTRIBUTION_NETWORK;
-
-    /**
      * Supported SKU types.
      * @readonly
      * @enum {string}
@@ -187,7 +162,7 @@ export default class Purchases {
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
      */
-    public static setup(
+    public static configure(
         apiKey: string,
         appUserID?: string | null,
         observerMode: boolean = false,
@@ -321,7 +296,7 @@ export default class Purchases {
      * Fetch the product info
      * @param {String[]} productIdentifiers Array of product identifiers
      * @param {String} type Optional type of products to fetch, can be inapp or subs. Subs by default
-     * @returns {Promise<PurchasesProduct[]>} A promise containing an array of products. The promise will be rejected
+     * @returns {Promise<PurchasesStoreProduct[]>} A promise containing an array of products. The promise will be rejected
      * if the products are not properly configured in RevenueCat or if there is another error retrieving them.
      * Rejections return an error code, and a userInfo object with more information. The promise will also be rejected
      * if setup has not been called yet.
@@ -329,7 +304,7 @@ export default class Purchases {
     public static async getProducts(
         productIdentifiers: string[],
         type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
-    ): Promise<PurchasesProduct[]> {
+    ): Promise<PurchasesStoreProduct[]> {
         await Purchases.throwIfNotConfigured();
         return RNPurchases.getProductInfo(productIdentifiers, type);
     }
@@ -366,7 +341,7 @@ export default class Purchases {
     /**
      * iOS only. Purchase a product applying a given discount.
      *
-     * @param {PurchasesProduct} product The product you want to purchase
+     * @param {PurchasesStoreProduct} product The product you want to purchase
      * @param {PurchasesPromotionalOffer} discount Discount to apply to this package. Retrieve this discount using getPromotionalOffer.
      * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
      * a customer info object and a product identifier. Rejections return an error code,
@@ -374,7 +349,7 @@ export default class Purchases {
      * rejected if setup has not been called yet.
      */
     public static async purchaseDiscountedProduct(
-        product: PurchasesProduct,
+        product: PurchasesStoreProduct,
         discount: PurchasesPromotionalOffer
     ): Promise<MakePurchaseResult> {
         await Purchases.throwIfNotConfigured();
@@ -496,55 +471,6 @@ export default class Purchases {
     }
 
     /**
-     * @deprecated, use logIn instead.
-     * This function will alias two appUserIDs together.
-     * @param {String} newAppUserID The new appUserID that should be linked to the currently identified appUserID.
-     * Needs to be a string.
-     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and a
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
-     * there's an issue creating the alias.
-     */
-    public static async createAlias(newAppUserID: string): Promise<CustomerInfo> {
-        await Purchases.throwIfNotConfigured();
-        // noinspection SuspiciousTypeOfGuard
-        if (typeof newAppUserID !== "string") {
-            throw new Error("newAppUserID needs to be a string");
-        }
-        return RNPurchases.createAlias(newAppUserID);
-    }
-
-    /**
-     * @deprecated, use logIn instead.
-     * This function will identify the current user with an appUserID. Typically this would be used after a logout to
-     * identify a new user without calling configure
-     * @param {String} newAppUserID The appUserID that should be linked to the currently user
-     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
-     * there's an issue identifying the user.
-     */
-    public static async identify(newAppUserID: string): Promise<CustomerInfo> {
-        await Purchases.throwIfNotConfigured();
-        // noinspection SuspiciousTypeOfGuard
-        if (typeof newAppUserID !== "string") {
-            throw new Error("newAppUserID needs to be a string");
-        }
-        return RNPurchases.identify(newAppUserID);
-    }
-
-    /**
-     * @deprecated, use logOut instead.
-     * Resets the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the
-     *  cache.
-     * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
-     * there's an issue resetting the user.
-     */
-    public static async reset(): Promise<CustomerInfo> {
-        await Purchases.throwIfNotConfigured();
-        return RNPurchases.reset();
-    }
-
-    /**
      * Enables/Disables debugs logs
      * @param {boolean} enabled Enable or not debug logs
      */
@@ -632,8 +558,8 @@ export default class Purchases {
      * called yet or if there's an error getting the payment discount.
      */
     public static async getPromotionalOffer(
-        product: PurchasesProduct,
-        discount: PurchasesDiscount
+        product: PurchasesStoreProduct,
+        discount: PurchasesStoreProductDiscount
     ): Promise<PurchasesPromotionalOffer | undefined> {
         await Purchases.throwIfNotConfigured();
         if (Platform.OS === "android") {

@@ -1,22 +1,10 @@
 import {
-  ATTRIBUTION_NETWORK,
   BILLING_FEATURE,
   PURCHASE_TYPE,
   PACKAGE_TYPE,
   INTRO_ELIGIBILITY_STATUS,
   PRORATION_MODE
 } from '../dist';
-
-function checkAttributionNetwork(network: ATTRIBUTION_NETWORK): boolean {
-    switch (network) {
-        case ATTRIBUTION_NETWORK.APPLE_SEARCH_ADS: return true;
-        case ATTRIBUTION_NETWORK.ADJUST: return true;
-        case ATTRIBUTION_NETWORK.APPSFLYER: return true;
-        case ATTRIBUTION_NETWORK.BRANCH: return true;
-        case ATTRIBUTION_NETWORK.TENJIN: return true;
-        case ATTRIBUTION_NETWORK.FACEBOOK: return true;
-    }
-}
 
 function checkPurchaseType(type: PURCHASE_TYPE): boolean {
     switch (type) {

@@ -3,7 +3,7 @@ import {
   CustomerInfo,
   PurchasesEntitlementInfo,
   PurchasesEntitlementInfos,
-  PurchasesTransaction
+  PurchasesStoreTransaction
 } from "../src";
 
 function checkLoginResult(result: LogInResult) {
@@ -24,7 +24,7 @@ function checkCustomerInfo(info: CustomerInfo) {
   const originalApplicationVersion: string | null = info.originalApplicationVersion;
   const originalPurchaseDate: string | null = info.originalPurchaseDate;
   const managementURL: string | null = info.managementURL;
-  const nonSubscriptionTransactions: PurchasesTransaction[] = info.nonSubscriptionTransactions;
+  const nonSubscriptionTransactions: PurchasesStoreTransaction[] = info.nonSubscriptionTransactions;
 }
 
 function checkEntitlementInfos(infos: PurchasesEntitlementInfos) {
@@ -47,7 +47,7 @@ function checkEntitlementInfo(info: PurchasesEntitlementInfo) {
   const billingIssueDetectedAt: string | null = info.billingIssueDetectedAt;
 }
 
-function checkTransaction(transaction: PurchasesTransaction) {
+function checkTransaction(transaction: PurchasesStoreTransaction) {
   const revenueCatId: string = transaction.revenueCatId;
   const productId: string = transaction.productId;
   const purchaseDate: string = transaction.purchaseDate;
