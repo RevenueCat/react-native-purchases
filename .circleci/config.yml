@@ -49,8 +49,10 @@ jobs:
       - rn/yarn_install:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
-      - rn/pod_install:
-          pod_install_directory: examples/purchaseTesterTypescript/ios
+      - run:
+          name: "Install example dependencies"
+          command: |
+            cd examples/purchaseTesterTypescript/ios && pod install --repo-update && cd -
       - rn/yarn_install:
           cache_folder: ~/.cache/yarn
       - rn/ios_build:
