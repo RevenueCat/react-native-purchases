@@ -28,7 +28,7 @@ const LoginForm = ({ onLogin }) => {
     }
 
     try {
-      await Purchases.identify(newUserId);
+      await Purchases.logIn(newUserId);
     } catch (e) {
       Alert.alert('Error identifying user', e.message);
     }

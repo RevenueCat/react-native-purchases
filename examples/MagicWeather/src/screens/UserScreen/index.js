@@ -23,8 +23,8 @@ const UserScreen = () => {
     setIsAnonymous(await Purchases.isAnonymous());
     setUserId(await Purchases.getAppUserID());
 
-    const purchaserInfo = await Purchases.getPurchaserInfo();
-    setSubscriptionActive(typeof purchaserInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined');
+    const customerInfo = await Purchases.getCustomerInfo();
+    setSubscriptionActive(typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined');
   };
 
   useEffect(() => {
@@ -34,9 +34,9 @@ const UserScreen = () => {
 
   useEffect(() => {
     // Subscribe to purchaser updates
-    Purchases.addPurchaserInfoUpdateListener(getUserDetails);
+    Purchases.addCustomerInfoUpdateListener(getUserDetails);
     return () => {
-      Purchases.removePurchaserInfoUpdateListener(getUserDetails);
+      Purchases.removeCustomerInfoUpdateListener(getUserDetails);
     };
   });
 

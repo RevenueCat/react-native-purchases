@@ -11,7 +11,7 @@ import styles from './styles';
 const RestorePurchasesButton = () => {
   const restorePurchases = async () => {
     try {
-      await Purchases.restoreTransactions();
+      await Purchases.restorePurchases();
     } catch (e) {
       Alert.alert('Error restoring purchases', e.message);
     }
