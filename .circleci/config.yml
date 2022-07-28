@@ -1,7 +1,22 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@6.1.0
+
+aliases:
+  release-tags: &release-tags
+    filters: 
+      tags:
+        ignore: /^.*-SNAPSHOT/
+      branches:
+        ignore: /.*/
+
 commands:
+
+  install-dependencies:
+    steps:
+      - run:
+          name: Yarn Install
+          command: yarn install --non-interactive --cache-folder /tmp/yarn
 
 jobs:
   analyse_js:
@@ -13,9 +28,7 @@ jobs:
       - rn/yarn_install:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
-      - run:
-          name: Yarn Install
-          command: yarn install --non-interactive --cache-folder /tmp/yarn
+      - install-dependencies
       - run:
           name: Tests
           command: yarn test
@@ -25,6 +38,18 @@ jobs:
       - run:
           name: Linter
           command: yarn run tslint
+  
+  docs-deploy:
+    executor:
+      name: rn/linux_js
+      node_version: '12'
+    steps:
+      - checkout
+      - install-dependencies
+      - run:
+          name: Build docs
+          command: bundle exec fastlane generate_docs
+
   android:
     executor: rn/linux_android
     steps:
@@ -69,3 +94,7 @@ workflows:
       - analyse_js
       - android
       - ios
+  deploy:
+    jobs:
+      - docs-deploy:
+          <<: *release-tags

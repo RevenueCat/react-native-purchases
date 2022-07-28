@@ -23,6 +23,7 @@ lane :bump_and_update_changelog do |options|
     'ios/RNPurchases.m',
     'android/build.gradle',
     'android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java',
+    'scripts/docs/index.html'
   ]
 
   if dry_run
@@ -137,6 +138,46 @@ lane :update_hybrid_common do |options|
   update_hybrid_common_versions(options)
   build_hybrid_example(options)
   update_ios_pod(options)
+end
+
+desc "Generate docs"
+lane :generate_docs do
+  version_number = current_version_number
+  docs_repo_base_url = "https://github.com/RevenueCat/"
+  docs_repo_name = "react-native-purchases-docs"
+  docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
+  hosting_base_path = File.join(docs_repo_name, version_number)
+  
+  Dir.mktmpdir do |docs_generation_folder|
+    sh(
+      "npx",
+      "typedoc",
+      "--out",
+      docs_generation_folder
+    )
+    
+    docs_index_path = File.join(Dir.pwd, "scripts/docs/index.html")
+
+    # clone docs repo
+    Dir.mktmpdir do |docs_repo_clone_dir|
+      Dir.chdir(docs_repo_clone_dir) do
+        sh("git", "clone", docs_repo_url)
+        Dir.chdir(docs_repo_name) do
+          # copy docs generated in the previous step into the docs folder and push the changes
+          docs_destination_folder = "docs/#{version_number}"
+          index_destination_path = "docs/index.html"
+          FileUtils.cp_r docs_generation_folder, docs_destination_folder
+          FileUtils.cp docs_index_path, index_destination_path
+
+          # using sh instead of fastlane commands because fastlane would run from the repo root
+          sh("git", "add", docs_destination_folder)
+          sh("git", "add", index_destination_path)
+          sh("git", "commit", "-m", "Update documentation for #{version_number}")
+          sh("git", "push")
+        end
+      end
+    end
+  end
 end
 
 ###############################################################################
