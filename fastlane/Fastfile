@@ -14,15 +14,7 @@ lane :bump_and_update_changelog do |options|
     UI.user_error!("Missing `version` argument")
   end
 
-  previous_version_number = nil
-  Dir.chdir(get_root_folder) do
-    previous_version_number = (sh "awk -F\\\" \'/\"version\":\/ {print $4}\' package.json").strip
-  end
-
-  if previous_version_number == nil
-    UI.user_error!("Couldn't get previous version number from package.json")
-    return
-  end
+  previous_version_number = current_version_number
 
   UI.message("ℹ️  Current version: #{previous_version_number}")
   UI.message("ℹ️  Setting version: #{new_version_number}")
@@ -199,4 +191,18 @@ def attach_changelog_to_main(options)
       main_changelog_write_mode.write(whole_file_data)
     }
   end
+end
+
+def current_version_number
+  version = nil
+
+  Dir.chdir(get_root_folder) do
+    version = (sh "awk -F\\\" \'/\"version\":\/ {print $4}\' package.json").strip
+  end
+
+  if version == nil
+    UI.user_error!("Couldn't get current version number from package.json")
+  end
+
+  return version
 end
