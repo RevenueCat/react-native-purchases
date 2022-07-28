@@ -150,7 +150,10 @@ export default class Purchases {
      */
     public static PURCHASES_ERROR_CODE = PURCHASES_ERROR_CODE;
 
-    public static UninitializedPurchasesError = UninitializedPurchasesError;
+  /**
+   * @internal
+   */
+  public static UninitializedPurchasesError = UninitializedPurchasesError;
 
     /**
      * Sets up Purchases with your API key and an app user id.
