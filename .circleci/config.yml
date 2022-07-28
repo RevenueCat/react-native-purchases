@@ -50,7 +50,7 @@ jobs:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
       - run:
-          name: "Install example dependencies"
+          name: Install example dependencies
           command: |
             cd examples/purchaseTesterTypescript/ios && pod install --repo-update && cd -
       - rn/yarn_install:
