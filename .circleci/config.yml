@@ -41,8 +41,7 @@ jobs:
   
   docs-deploy:
     executor:
-      name: rn/linux_js
-      node_version: '12'
+      name: rn/macos
     steps:
       - checkout
       - install-dependencies
