@@ -11,12 +11,25 @@ aliases:
         ignore: /.*/
 
 commands:
-
   install-dependencies:
     steps:
       - run:
           name: Yarn Install
           command: yarn install --non-interactive --cache-folder /tmp/yarn
+      # Bundler
+      - restore_cache:
+          keys: 
+            - v1-gem-cache-{{ checksum "Gemfile.lock" }}
+      - run: 
+          name: Bundle install
+          command: |
+              bundle config set --local clean 'true'
+              bundle config set --local path 'vendor/bundle'
+              bundle install
+      - save_cache:
+          key: v1-gem-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
 jobs:
   analyse_js:
