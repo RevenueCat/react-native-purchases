@@ -17,6 +17,12 @@ commands:
           name: Yarn Install
           command: yarn install --non-interactive --cache-folder /tmp/yarn
 
+  set_up_git_user:
+    description: Set git config parameters
+    steps:
+      - run: git config --global user.email "dev+ci@revenuecat.com"
+      - run: git config --global user.name "RevenueCat CI"
+
 jobs:
   analyse_js:
     executor:
@@ -58,6 +64,7 @@ jobs:
           key: v1-gem-cache-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
+      - set_up_git_user
       - run:
           name: Build docs
           command: bundle exec fastlane generate_docs
