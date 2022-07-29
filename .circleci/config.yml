@@ -21,7 +21,7 @@ commands:
     description: Set git config parameters
     steps:
       - run: git config --global user.email "dev+ci@revenuecat.com"
-      - run: git config --global user.name "CircleCI"
+      - run: git config --global user.name "RevenueCat CI"
 
 jobs:
   analyse_js:
