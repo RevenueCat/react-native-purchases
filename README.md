@@ -23,7 +23,7 @@ React Native Purchases is a client for the [RevenueCat](https://www.revenuecat.c
 
 ## Requirements
 
-The minimum React Native version this SDK requires is `0.58`.
+The minimum React Native version this SDK requires is `0.64`.
 
 ## Installation
 
