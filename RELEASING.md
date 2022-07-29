@@ -6,6 +6,6 @@
 1. Open a PR from branch `release/x.x.x` against `main`
 1. Merge to `main` and pull from your machine
 1. `git tag x.y.z`
-1. `git push origin main && git push --tags`
+1. `git push origin --tags`
 1. Create a new release in github and upload
 1. `npm publish`
