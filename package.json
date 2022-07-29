@@ -70,6 +70,7 @@
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.20.37",
     "typescript": "^3.8.3"
   },
   "jest": {

@@ -26,5 +26,13 @@
     "resolveJsonModule": true
   },
   "files": ["src/index.ts"],
-  "exclude": ["node_modules", "dist", "./installPeerdeps.ts"]
+  "exclude": ["node_modules", "dist", "./installPeerdeps.ts"],
+  "typedocOptions": {
+    "entryPoints": ["src/index.ts"],
+    "out": "docs",
+    "excludeInternal": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "includeVersion": true
+  }
 }

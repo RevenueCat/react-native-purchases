@@ -44,6 +44,9 @@ export interface ErrorInfo {
     readableErrorCode: string;
 }
 
+/**
+ * @internal
+ */
 export class UninitializedPurchasesError extends Error {
     constructor() {
         super("There is no singleton instance. " +
