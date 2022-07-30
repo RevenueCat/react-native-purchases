@@ -9,6 +9,7 @@ This version of the SDK automatically uses StoreKit 2 APIs under the hood only f
 New types that wrap native types from Apple, Google and Amazon, and we cleaned up the naming of other types and methods for a more consistent experience. 
 
 ### Removed APIs
+- `setUp` has been removed in favor of `configure`
 - `identify` and `createAlias` have been removed in favor of `logIn`.
 - `reset` has been removed in favor of `logOut`.
 - `addAttributionData` has been removed in favor of `set<NetworkID> methods`.
