@@ -275,10 +275,11 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  universal-darwin-22
 
 DEPENDENCIES
   cocoapods
   fastlane
 
 BUNDLED WITH
-   2.3.14
+   2.3.6
