@@ -30,7 +30,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
 // Taken from https://reactnative.dev/docs/typescript
 const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => {
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -62,7 +62,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                   <View style={styles.packageInfo}>
                     <Text style={styles.packageHeader}>{ pkg.product.title }</Text>
                     <Text style={styles.packageText}>{ pkg.product.description }</Text>
-                    <Text style={styles.packageText}>{ pkg.product.price_string }</Text>
+                    <Text style={styles.packageText}>{ pkg.product.priceString }</Text>
                     <Text style={styles.packageText}>{ pkg.product.identifier }</Text>
                     <Text style={styles.packageText}>{ pkg.packageType }</Text>
                   </View>
