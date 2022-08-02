@@ -21,7 +21,7 @@ async function checkPurchases(purchases: Purchases) {
     PURCHASE_TYPE.INAPP
   );
 
-  const customerInfo: CustomerInfo = await Purchases.restoreTransactions();
+  const customerInfo: CustomerInfo = await Purchases.restorePurchases();
 }
 
 async function checkUsers(purchases: Purchases) {

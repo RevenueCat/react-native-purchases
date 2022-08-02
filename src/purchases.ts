@@ -431,9 +431,9 @@ export default class Purchases {
      * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
      * userInfo object with more information. The promise will be also be rejected if setup has not been called yet.
      */
-    public static async restoreTransactions(): Promise<CustomerInfo> {
+    public static async restorePurchases(): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
-        return RNPurchases.restoreTransactions();
+        return RNPurchases.restorePurchases();
     }
 
     /**

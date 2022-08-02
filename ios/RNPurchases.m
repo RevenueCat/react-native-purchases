@@ -103,8 +103,8 @@ RCT_REMAP_METHOD(purchasePackage,
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
-RCT_REMAP_METHOD(restoreTransactions,
-                 restoreTransactionsWithResolve:(RCTPromiseResolveBlock)resolve
+RCT_REMAP_METHOD(restorePurchases,
+                 restorePurchasesWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality restorePurchasesWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                     reject:reject]];
