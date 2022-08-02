@@ -257,14 +257,14 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(2);
   });
 
-  it("restoreTransactions works", async () => {
+  it("restorePurchases works", async () => {
     const Purchases = require("../dist/index").default;
 
-    NativeModules.RNPurchases.restoreTransactions.mockResolvedValueOnce(customerInfoStub);
+    NativeModules.RNPurchases.restorePurchases.mockResolvedValueOnce(customerInfoStub);
 
-    const customerInfo = await Purchases.restoreTransactions();
+    const customerInfo = await Purchases.restorePurchases();
 
-    expect(NativeModules.RNPurchases.restoreTransactions).toBeCalledTimes(1);
+    expect(NativeModules.RNPurchases.restorePurchases).toBeCalledTimes(1);
     expect(customerInfo).toEqual(customerInfoStub);
   })
 
