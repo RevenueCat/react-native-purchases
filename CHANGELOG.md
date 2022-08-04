@@ -1,7 +1,5 @@
 ## 5.0.0-beta.2
 
-## 5.0.0-beta.2
-
 ⚠️⚠️ This is a pre-release version. ⚠️⚠️
 
 #### StoreKit 2 support
@@ -33,7 +31,8 @@ New types that wrap native types from Apple, Google and Amazon, and we cleaned u
 | `Purchases.invalidatePurchaserInfoCache` | `Purchases.invalidateCustomerInfoCache` |
 | `Purchases.addPurchaserInfoUpdateListener` | `Purchases.addCustomerInfoUpdateListener` |
 | `Purchases.removePurchaserInfoUpdateListener` | `Purchases.removeCustomerInfoUpdateListener` |
-## 5.0.0-beta.2
+
+## 5.0.0-beta.1
 
 ⚠️⚠️ This is a pre-release version. ⚠️⚠️
 
