@@ -47,6 +47,7 @@ jobs:
   docs-deploy:
     executor:
       name: rn/macos
+      xcode_version: 13.2.0
     steps:
       - checkout
       - install-dependencies
