@@ -187,7 +187,7 @@ export default class Purchases {
         useAmazon = false
     }: PurchasesConfiguration): void {
       if (apiKey === undefined || typeof apiKey !== "string") {
-        throw new Error("Invalid API key. It must be called with an Object: confifure({apiKey: \"key\"})");
+        throw new Error("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");
       }
 
       if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {

@@ -99,7 +99,7 @@ describe("Purchases", () => {
 
     expect(() => {
       Purchases.configure("api_key")
-    }).toThrowError("Invalid API key. It must be called with an Object: confifure({apiKey: \"key\"})");
+    }).toThrowError("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");
 
     expect(() => {
       Purchases.configure("api_key", "user_id")
