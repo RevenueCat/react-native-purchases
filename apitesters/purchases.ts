@@ -112,7 +112,7 @@ async function checkConfigure() {
     useAmazon
   });
 
-  await Purchases.setProxyURL(apiKey);
+  await Purchases.setProxyURL("");
   await Purchases.setDebugLogsEnabled(true);
   await Purchases.setSimulatesAskToBuyInSandbox(true);
   await Purchases.setFinishTransactions(true);
