@@ -105,14 +105,17 @@ export interface LogInResult {
   readonly created: boolean;
 }
 
+/**
+ * Holds parameters to initialize the SDK.
+ */
 export interface PurchasesConfiguration {
-    apiKey: string;
-    appUserID?: string | null;
-    observerMode?: boolean;
-    userDefaultsSuiteName?: string;
-    usesStoreKit2IfAvailable?: boolean;
-    useAmazon?: boolean;
-  }
+  apiKey: string;
+  appUserID?: string | null;
+  observerMode?: boolean;
+  userDefaultsSuiteName?: string;
+  usesStoreKit2IfAvailable?: boolean;
+  useAmazon?: boolean;
+}
 
 export default class Purchases {
     /**
@@ -170,6 +173,7 @@ export default class Purchases {
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
      * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
      * @param {boolean} [usesStoreKit2IfAvailable=false] An optional boolean. iOS-only. Set this to TRUE to enable StoreKit2 on compatible devices.
+     * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
      * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
