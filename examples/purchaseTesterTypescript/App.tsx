@@ -35,9 +35,9 @@ const App = () => {
 
     Purchases.setDebugLogsEnabled(true);
     if (Platform.OS == "android") {
-      Purchases.configure(APIKeys.google);
+      Purchases.configure({apiKey: APIKeys.google});
     } else {
-      Purchases.configure(APIKeys.apple);
+      Purchases.configure({apiKey: APIKeys.apple});
     }
   }, []);
 

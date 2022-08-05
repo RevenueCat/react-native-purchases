@@ -105,6 +105,18 @@ export interface LogInResult {
   readonly created: boolean;
 }
 
+/**
+ * Holds parameters to initialize the SDK.
+ */
+export interface PurchasesConfiguration {
+  apiKey: string;
+  appUserID?: string | null;
+  observerMode?: boolean;
+  userDefaultsSuiteName?: string;
+  usesStoreKit2IfAvailable?: boolean;
+  useAmazon?: boolean;
+}
+
 export default class Purchases {
     /**
      * Supported SKU types.
@@ -161,27 +173,34 @@ export default class Purchases {
      * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
      * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
      * @param {boolean} [usesStoreKit2IfAvailable=false] An optional boolean. iOS-only. Set this to TRUE to enable StoreKit2 on compatible devices.
+     * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
      * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
      */
-    public static configure(
-        apiKey: string,
-        appUserID?: string | null,
-        observerMode: boolean = false,
-        userDefaultsSuiteName?: string,
-        usesStoreKit2IfAvailable: boolean = false
-    ): void {
-        if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
-            throw new Error("appUserID needs to be a string");
-        }
-        RNPurchases.setupPurchases(
-            apiKey,
-            appUserID,
-            observerMode,
-            userDefaultsSuiteName,
-            usesStoreKit2IfAvailable
-        );
+    public static configure({
+        apiKey,
+        appUserID = null,
+        observerMode = false,
+        userDefaultsSuiteName,
+        usesStoreKit2IfAvailable = false,
+        useAmazon = false
+    }: PurchasesConfiguration): void {
+      if (apiKey === undefined || typeof apiKey !== "string") {
+        throw new Error("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");
+      }
+
+      if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
+          throw new Error("appUserID needs to be a string");
+      }
+      RNPurchases.setupPurchases(
+          apiKey,
+          appUserID,
+          observerMode,
+          userDefaultsSuiteName,
+          usesStoreKit2IfAvailable,
+          useAmazon
+      );
     }
 
     /**

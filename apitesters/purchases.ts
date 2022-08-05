@@ -77,33 +77,42 @@ async function checkPurchasing(purchases: Purchases,
   const introEligibilities: { [p: string]: IntroEligibility } = await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
 }
 
-async function checkSetup() {
-  const aString: string = "";
-  const userID: string | null = "";
+async function checkConfigure() {
+  const apiKey: string = "";
+  const appUserID: string | null = "";
   const observerMode: boolean = false;
   const usesStoreKit2IfAvailable: boolean = true;
+  const useAmazon: boolean = true;
   const userDefaultsSuiteName: string = "";
 
-  Purchases.configure(
-    aString,
-    userID,
+  Purchases.configure({
+    apiKey,
+    appUserID,
     observerMode
-  );
-  Purchases.configure(
-    aString,
-    userID,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
     observerMode,
     userDefaultsSuiteName
-  );
-  Purchases.configure(
-    aString,
-    userID,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
     observerMode,
     userDefaultsSuiteName,
     usesStoreKit2IfAvailable
-  );
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    observerMode,
+    userDefaultsSuiteName,
+    usesStoreKit2IfAvailable,
+    useAmazon
+  });
 
-  await Purchases.setProxyURL(aString);
+  await Purchases.setProxyURL("");
   await Purchases.setDebugLogsEnabled(true);
   await Purchases.setSimulatesAskToBuyInSandbox(true);
   await Purchases.setFinishTransactions(true);
