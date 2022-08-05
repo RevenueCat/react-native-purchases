@@ -26,7 +26,7 @@ const App: () => React$Node = () => {
 
       - observerMode is false, so Purchases will automatically handle finishing transactions. Read more about Observer Mode here: https://docs.revenuecat.com/docs/observer-mode
       */
-    Purchases.configure(API_KEY, null, false);
+    Purchases.configure({ apiKey: API_KEY, appUserID: null, observerMode: false });
   }, []);
 
   return (
