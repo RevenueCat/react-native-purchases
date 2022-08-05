@@ -1,1 +1,1 @@
-- Replaced `jcenter` with `mavenCentral` (https://github.com/RevenueCat/react-native-purchases/pull/369)
+- Updated kotlin version to 1.6.21
