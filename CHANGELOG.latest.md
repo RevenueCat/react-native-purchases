@@ -1,4 +1,4 @@
-## 5.0.0-beta.2
+## 5.0.0-beta.3
 
 ⚠️⚠️ This is a pre-release version. ⚠️⚠️
 
@@ -10,6 +10,17 @@ New types that wrap native types from Apple, Google and Amazon, and we cleaned u
 
 ### Removed APIs
 - `setUp` has been removed in favor of `configure`
+- `configure` now expects an Object for the different parameters. Example:
+```javascript
+Purchases.configure({
+    apiKey: "key",
+    appUserID: "user ID",
+    observerMode: false,
+    userDefaultsSuiteName: "suite name",
+    usesStoreKit2IfAvailable: true,
+    useAmazon: true
+});
+```
 - `identify` and `createAlias` have been removed in favor of `logIn`.
 - `reset` has been removed in favor of `logOut`.
 - `addAttributionData` has been removed in favor of `set<NetworkID> methods`.
@@ -31,6 +42,3 @@ New types that wrap native types from Apple, Google and Amazon, and we cleaned u
 | `Purchases.invalidatePurchaserInfoCache` | `Purchases.invalidateCustomerInfoCache` |
 | `Purchases.addPurchaserInfoUpdateListener` | `Purchases.addCustomerInfoUpdateListener` |
 | `Purchases.removePurchaserInfoUpdateListener` | `Purchases.removeCustomerInfoUpdateListener` |
-
-### Known issues:
-- Amazon support currently doesn't work correctly.
