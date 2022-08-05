@@ -94,19 +94,33 @@ describe("Purchases", () => {
     expect(listener).toHaveBeenCalledTimes(0);
   });
 
-  it("calling configure with something other than string throws exception", () => {
+  it("calling configure without an object throws exception", () => {
     const Purchases = require("../dist/index").default;
 
     expect(() => {
-      Purchases.configure("api_key", 123)
+      Purchases.configure("api_key")
+    }).toThrowError("Invalid API key. It must be called with an Object: confifure({apiKey: \"key\"})");
+
+    expect(() => {
+      Purchases.configure("api_key", "user_id")
+    }).toThrowError();
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(0);
+  });
+
+  it("calling configure with invalid user ID type throws exception", () => {
+    const Purchases = require("../dist/index").default;
+
+    expect(() => {
+      Purchases.configure({apiKey: "api_key", appUserID: 123})
     }).toThrowError();
 
     expect(() => {
-      Purchases.configure("api_key")
+      Purchases.configure({apiKey: "api_key"})
     }).not.toThrowError();
 
     expect(() => {
-      Purchases.configure("api_key", "123a")
+      Purchases.configure({apiKey: "api_key", appUserID: "123a"})
     }).not.toThrowError();
 
 
@@ -342,16 +356,19 @@ describe("Purchases", () => {
   it("configure works", async () => {
     const Purchases = require("../dist/index").default;
 
-    Purchases.configure("key", "user");
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false);
+    Purchases.configure({apiKey: "key", appUserID: "user"});
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false);
 
-    Purchases.configure("key", "user", true);
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false);
+    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false);
 
-    Purchases.configure("key", "user", true, "suite name", true);
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true);
+    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: false, userDefaultsSuiteName: "suite name", usesStoreKit2IfAvailable: true});
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(3);
+    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true, userDefaultsSuiteName: "suite name", usesStoreKit2IfAvailable: true, useAmazon: true});
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true);
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(4);
   })
 
   it("cancelled purchaseProduct sets userCancelled in the error", () => {
@@ -567,14 +584,6 @@ describe("Purchases", () => {
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
-
-  it("calling configure with a userDefaultsSuiteName", () => {
-    const Purchases = require("../dist/index").default;
-
-    Purchases.configure("key", "user", false, "suitename");
-
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suitename", false);
-  })
 
   describe("invalidate customer info cache", () => {
     describe("when invalidateCustomerInfoCache is called", () => {

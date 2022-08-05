@@ -186,17 +186,21 @@ export default class Purchases {
         usesStoreKit2IfAvailable = false,
         useAmazon = false
     }: PurchasesConfiguration): void {
-        if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
-            throw new Error("appUserID needs to be a string");
-        }
-        RNPurchases.setupPurchases(
-            apiKey,
-            appUserID,
-            observerMode,
-            userDefaultsSuiteName,
-            usesStoreKit2IfAvailable,
-            useAmazon
-        );
+      if (apiKey === undefined || typeof apiKey !== "string") {
+        throw new Error("Invalid API key. It must be called with an Object: confifure({apiKey: \"key\"})");
+      }
+
+      if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
+          throw new Error("appUserID needs to be a string");
+      }
+      RNPurchases.setupPurchases(
+          apiKey,
+          appUserID,
+          observerMode,
+          userDefaultsSuiteName,
+          usesStoreKit2IfAvailable,
+          useAmazon
+      );
     }
 
     /**
