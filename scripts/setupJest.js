@@ -67,15 +67,9 @@ global.offeringsStub = {
     weekly: {
       offeringIdentifier: 'default',
       product: {
-        intro_price_period_number_of_units: 7,
-        intro_price_period_unit: 'DAY',
-        intro_price_cycles: 3,
-        intro_price_period: 'P1W',
-        intro_price_string: '$4.99',
-        intro_price: 4.99,
         description: 'Product with intro price',
-        currency_code: 'USD',
-        price_string: '$9.99',
+        currencyCode: 'USD',
+        priceString: '$9.99',
         price: 9.99,
         title: 'Introductory Price (PurchasesSample)',
         identifier: 'introductory_price'
@@ -87,15 +81,17 @@ global.offeringsStub = {
     twoMonth: {
       offeringIdentifier: 'default',
       product: {
-        intro_price_period_number_of_units: 16,
-        intro_price_period_unit: 'DAY',
-        intro_price_cycles: 1,
-        intro_price_period: 'P2W2D',
-        intro_price_string: '$0.00',
-        intro_price: 0,
+        introPrice: {
+          periodNumberOfUnits: 16,
+          periodUnit: 'DAY',
+          cycles: 1,
+          period: 'P2W2D',
+          priceString: '$0.00',
+          price: 0
+        },
         description: 'The best service, annually.',
-        currency_code: 'USD',
-        price_string: '$19.99',
+        currencyCode: 'USD',
+        priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
         identifier: 'annual_freetrial'
@@ -106,15 +102,17 @@ global.offeringsStub = {
     threeMonth: {
       offeringIdentifier: 'default',
       product: {
-        intro_price_period_number_of_units: 16,
-        intro_price_period_unit: 'DAY',
-        intro_price_cycles: 1,
-        intro_price_period: 'P2W2D',
-        intro_price_string: '$0.00',
-        intro_price: 0,
+        introPrice: {
+          periodNumberOfUnits: 16,
+          periodUnit: 'DAY',
+          cycles: 1,
+          period: 'P2W2D',
+          priceString: '$0.00',
+          price: 0
+        },
         description: 'The best service, annually.',
-        currency_code: 'USD',
-        price_string: '$19.99',
+        currencyCode: 'USD',
+        priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
         identifier: 'annual_freetrial'
@@ -125,15 +123,17 @@ global.offeringsStub = {
     sixMonth: {
       offeringIdentifier: 'default',
       product: {
-        intro_price_period_number_of_units: 16,
-        intro_price_period_unit: 'DAY',
-        intro_price_cycles: 1,
-        intro_price_period: 'P2W2D',
-        intro_price_string: '$0.00',
-        intro_price: 0,
+        introPrice: {
+          periodNumberOfUnits: 16,
+          periodUnit: 'DAY',
+          cycles: 1,
+          period: 'P2W2D',
+          priceString: '$0.00',
+          price: 0
+        },
         description: 'The best service, annually.',
-        currency_code: 'USD',
-        price_string: '$19.99',
+        currencyCode: 'USD',
+        priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
         identifier: 'annual_freetrial'
@@ -144,15 +144,17 @@ global.offeringsStub = {
     annual: {
       offeringIdentifier: 'default',
       product: {
-        intro_price_period_number_of_units: 16,
-        intro_price_period_unit: 'DAY',
-        intro_price_cycles: 1,
-        intro_price_period: 'P2W2D',
-        intro_price_string: '$0.00',
-        intro_price: 0,
+        introPrice: {
+          periodNumberOfUnits: 16,
+          periodUnit: 'DAY',
+          cycles: 1,
+          period: 'P2W2D',
+          priceString: '$0.00',
+          price: 0
+        },
         description: 'The best service, annually.',
-        currency_code: 'USD',
-        price_string: '$19.99',
+        currencyCode: 'USD',
+        priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
         identifier: 'annual_freetrial'
@@ -163,15 +165,10 @@ global.offeringsStub = {
     lifetime: {
       offeringIdentifier: 'default',
       product: {
-        intro_price_period_number_of_units: null,
-        intro_price_period_unit: null,
-        intro_price_cycles: null,
-        intro_price_period: null,
-        intro_price_string: null,
-        intro_price: null,
+        introPrice: null,
         description: 'you can eat it many times',
-        currency_code: 'USD',
-        price_string: '$4.99',
+        currencyCode: 'USD',
+        priceString: '$4.99',
         price: 4.99,
         title: 'Consumable (PurchasesSample)',
         identifier: 'consumable'
@@ -183,15 +180,17 @@ global.offeringsStub = {
       {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -202,15 +201,17 @@ global.offeringsStub = {
       {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -221,15 +222,17 @@ global.offeringsStub = {
       {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -240,15 +243,17 @@ global.offeringsStub = {
       {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -259,15 +264,17 @@ global.offeringsStub = {
       {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 7,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 3,
-          intro_price_period: 'P1W',
-          intro_price_string: '$4.99',
-          intro_price: 4.99,
+          introPrice: {
+            periodNumberOfUnits: 7,
+            periodUnit: 'DAY',
+            cycles: 3,
+            period: 'P1W',
+            priceString: '$4.99',
+            price: 4.99
+          },
           description: 'Product with intro price',
-          currency_code: 'USD',
-          price_string: '$9.99',
+          currencyCode: 'USD',
+          priceString: '$9.99',
           price: 9.99,
           title: 'Introductory Price (PurchasesSample)',
           identifier: 'introductory_price'
@@ -278,15 +285,10 @@ global.offeringsStub = {
       {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: null,
-          intro_price_period_unit: null,
-          intro_price_cycles: null,
-          intro_price_period: null,
-          intro_price_string: null,
-          intro_price: null,
+          introPrice: null,
           description: 'you can eat it many times',
-          currency_code: 'USD',
-          price_string: '$4.99',
+          currencyCode: 'USD',
+          priceString: '$4.99',
           price: 4.99,
           title: 'Consumable (PurchasesSample)',
           identifier: 'consumable'
@@ -297,15 +299,17 @@ global.offeringsStub = {
       {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -323,15 +327,17 @@ global.offeringsStub = {
       monthly: {
         offeringIdentifier: 'test',
         product: {
-          intro_price_period_number_of_units: 7,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 3,
-          intro_price_period: 'P1W',
-          intro_price_string: '$4.99',
-          intro_price: 4.99,
+          introPrice: {
+            periodNumberOfUnits: 7,
+            periodUnit: 'DAY',
+            cycles: 3,
+            period: 'P1W',
+            priceString: '$4.99',
+            price: 4.99
+          },
           description: 'Product with intro price',
-          currency_code: 'USD',
-          price_string: '$9.99',
+          currencyCode: 'USD',
+          priceString: '$9.99',
           price: 9.99,
           title: 'Introductory Price (PurchasesSample)',
           identifier: 'introductory_price'
@@ -348,15 +354,17 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'test',
           product: {
-            intro_price_period_number_of_units: 7,
-            intro_price_period_unit: 'DAY',
-            intro_price_cycles: 3,
-            intro_price_period: 'P1W',
-            intro_price_string: '$4.99',
-            intro_price: 4.99,
+            introPrice: {
+              periodNumberOfUnits: 7,
+              periodUnit: 'DAY',
+              cycles: 3,
+              period: 'P1W',
+              priceString: '$4.99',
+              price: 4.99
+            },
             description: 'Product with intro price',
-            currency_code: 'USD',
-            price_string: '$9.99',
+            currencyCode: 'USD',
+            priceString: '$9.99',
             price: 9.99,
             title: 'Introductory Price (PurchasesSample)',
             identifier: 'introductory_price'
@@ -372,15 +380,17 @@ global.offeringsStub = {
       weekly: {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 7,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 3,
-          intro_price_period: 'P1W',
-          intro_price_string: '$4.99',
-          intro_price: 4.99,
+          introPrice: {
+            periodNumberOfUnits: 7,
+            periodUnit: 'DAY',
+            cycles: 3,
+            period: 'P1W',
+            priceString: '$4.99',
+            price: 4.99
+          },
           description: 'Product with intro price',
-          currency_code: 'USD',
-          price_string: '$9.99',
+          currencyCode: 'USD',
+          priceString: '$9.99',
           price: 9.99,
           title: 'Introductory Price (PurchasesSample)',
           identifier: 'introductory_price'
@@ -392,15 +402,17 @@ global.offeringsStub = {
       twoMonth: {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -411,15 +423,17 @@ global.offeringsStub = {
       threeMonth: {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -430,15 +444,17 @@ global.offeringsStub = {
       sixMonth: {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -449,15 +465,17 @@ global.offeringsStub = {
       annual: {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: 16,
-          intro_price_period_unit: 'DAY',
-          intro_price_cycles: 1,
-          intro_price_period: 'P2W2D',
-          intro_price_string: '$0.00',
-          intro_price: 0,
+          introPrice: {
+            periodNumberOfUnits: 16,
+            periodUnit: 'DAY',
+            cycles: 1,
+            period: 'P2W2D',
+            priceString: '$0.00',
+            price: 0
+          },
           description: 'The best service, annually.',
-          currency_code: 'USD',
-          price_string: '$19.99',
+          currencyCode: 'USD',
+          priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
           identifier: 'annual_freetrial'
@@ -468,15 +486,10 @@ global.offeringsStub = {
       lifetime: {
         offeringIdentifier: 'default',
         product: {
-          intro_price_period_number_of_units: null,
-          intro_price_period_unit: null,
-          intro_price_cycles: null,
-          intro_price_period: null,
-          intro_price_string: null,
-          intro_price: null,
+          introPrice: null,
           description: 'you can eat it many times',
-          currency_code: 'USD',
-          price_string: '$4.99',
+          currencyCode: 'USD',
+          priceString: '$4.99',
           price: 4.99,
           title: 'Consumable (PurchasesSample)',
           identifier: 'consumable'
@@ -488,15 +501,17 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'default',
           product: {
-            intro_price_period_number_of_units: 16,
-            intro_price_period_unit: 'DAY',
-            intro_price_cycles: 1,
-            intro_price_period: 'P2W2D',
-            intro_price_string: '$0.00',
-            intro_price: 0,
+            introPrice: {
+              periodNumberOfUnits: 16,
+              periodUnit: 'DAY',
+              cycles: 1,
+              period: 'P2W2D',
+              priceString: '$0.00',
+              price: 0
+            },
             description: 'The best service, annually.',
-            currency_code: 'USD',
-            price_string: '$19.99',
+            currencyCode: 'USD',
+            priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
             identifier: 'annual_freetrial'
@@ -507,15 +522,17 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'default',
           product: {
-            intro_price_period_number_of_units: 16,
-            intro_price_period_unit: 'DAY',
-            intro_price_cycles: 1,
-            intro_price_period: 'P2W2D',
-            intro_price_string: '$0.00',
-            intro_price: 0,
+            introPrice: {
+              periodNumberOfUnits: 16,
+              periodUnit: 'DAY',
+              cycles: 1,
+              period: 'P2W2D',
+              priceString: '$0.00',
+              price: 0
+            },
             description: 'The best service, annually.',
-            currency_code: 'USD',
-            price_string: '$19.99',
+            currencyCode: 'USD',
+            priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
             identifier: 'annual_freetrial'
@@ -526,15 +543,17 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'default',
           product: {
-            intro_price_period_number_of_units: 16,
-            intro_price_period_unit: 'DAY',
-            intro_price_cycles: 1,
-            intro_price_period: 'P2W2D',
-            intro_price_string: '$0.00',
-            intro_price: 0,
+            introPrice: {
+              periodNumberOfUnits: 16,
+              periodUnit: 'DAY',
+              cycles: 1,
+              period: 'P2W2D',
+              priceString: '$0.00',
+              price: 0
+            },
             description: 'The best service, annually.',
-            currency_code: 'USD',
-            price_string: '$19.99',
+            currencyCode: 'USD',
+            priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
             identifier: 'annual_freetrial'
@@ -545,15 +564,17 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'default',
           product: {
-            intro_price_period_number_of_units: 16,
-            intro_price_period_unit: 'DAY',
-            intro_price_cycles: 1,
-            intro_price_period: 'P2W2D',
-            intro_price_string: '$0.00',
-            intro_price: 0,
+            introPrice: {
+              periodNumberOfUnits: 16,
+              periodUnit: 'DAY',
+              cycles: 1,
+              period: 'P2W2D',
+              priceString: '$0.00',
+              price: 0
+            },
             description: 'The best service, annually.',
-            currency_code: 'USD',
-            price_string: '$19.99',
+            currencyCode: 'USD',
+            priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
             identifier: 'annual_freetrial'
@@ -564,15 +585,17 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'default',
           product: {
-            intro_price_period_number_of_units: 7,
-            intro_price_period_unit: 'DAY',
-            intro_price_cycles: 3,
-            intro_price_period: 'P1W',
-            intro_price_string: '$4.99',
-            intro_price: 4.99,
+            introPrice: {
+              periodNumberOfUnits: 7,
+              periodUnit: 'DAY',
+              cycles: 3,
+              period: 'P1W',
+              priceString: '$4.99',
+              price: 4.99
+            },
             description: 'Product with intro price',
-            currency_code: 'USD',
-            price_string: '$9.99',
+            currencyCode: 'USD',
+            priceString: '$9.99',
             price: 9.99,
             title: 'Introductory Price (PurchasesSample)',
             identifier: 'introductory_price'
@@ -583,15 +606,10 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'default',
           product: {
-            intro_price_period_number_of_units: null,
-            intro_price_period_unit: null,
-            intro_price_cycles: null,
-            intro_price_period: null,
-            intro_price_string: null,
-            intro_price: null,
+            introPrice: null,
             description: 'you can eat it many times',
-            currency_code: 'USD',
-            price_string: '$4.99',
+            currencyCode: 'USD',
+            priceString: '$4.99',
             price: 4.99,
             title: 'Consumable (PurchasesSample)',
             identifier: 'consumable'
@@ -602,15 +620,17 @@ global.offeringsStub = {
         {
           offeringIdentifier: 'default',
           product: {
-            intro_price_period_number_of_units: 16,
-            intro_price_period_unit: 'DAY',
-            intro_price_cycles: 1,
-            intro_price_period: 'P2W2D',
-            intro_price_string: '$0.00',
-            intro_price: 0,
+            introPrice: {
+              periodNumberOfUnits: 16,
+              periodUnit: 'DAY',
+              cycles: 1,
+              period: 'P2W2D',
+              priceString: '$0.00',
+              price: 0
+            },
             description: 'The best service, annually.',
-            currency_code: 'USD',
-            price_string: '$19.99',
+            currencyCode: 'USD',
+            priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
             identifier: 'annual_freetrial'
@@ -626,16 +646,10 @@ global.offeringsStub = {
 };
 
 global.productStub = {
-  currency_code: "USD",
-  intro_price: null,
-  intro_price_string: null,
-  intro_price_period: null,
-  intro_price_cycles: null,
-  intro_price_period_unit: null,
-  intro_price_period_number_of_units: null,
-  discounts: null,
+  currencyCode: "USD",
   introPrice: null,
-  price_string: "$0.99",
+  discounts: null,
+  priceString: "$0.99",
   price: 0.99,
   description: "The best service.",
   title: "One Month Free Trial",

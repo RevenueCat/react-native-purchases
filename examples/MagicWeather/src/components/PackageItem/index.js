@@ -7,7 +7,7 @@ import styles from './styles.js';
 
 const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
   const {
-    product: { title, description, price_string },
+    product: { title, description, priceString },
   } = purchasePackage;
 
   const navigation = useNavigation();
@@ -36,7 +36,7 @@ const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.terms}>{description}</Text>
       </View>
-      <Text style={styles.title}>{price_string}</Text>
+      <Text style={styles.title}>{priceString}</Text>
     </Pressable>
   );
 };

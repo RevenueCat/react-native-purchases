@@ -87,15 +87,15 @@ export interface PurchasesStoreProduct {
     /**
      * Formatted price of the item, including its currency sign.
      */
-    readonly price_string: string;
+    readonly priceString: string;
     /**
      * Currency code for price and original price.
      */
-    readonly currency_code: string;
+    readonly currencyCode: string;
     /**
      * Introductory price.
      */
-    readonly intro_price: PurchasesIntroPrice | null;
+    readonly introPrice: PurchasesIntroPrice | null;
     /**
      * Collection of discount offers for a product. Null for Android.
      */
