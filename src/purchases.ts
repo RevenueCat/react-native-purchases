@@ -105,6 +105,15 @@ export interface LogInResult {
   readonly created: boolean;
 }
 
+export interface PurchasesConfiguration {
+    apiKey: string;
+    appUserID?: string | null;
+    observerMode?: boolean;
+    userDefaultsSuiteName?: string;
+    usesStoreKit2IfAvailable?: boolean;
+    useAmazon?: boolean;
+  }
+
 export default class Purchases {
     /**
      * Supported SKU types.
@@ -165,13 +174,14 @@ export default class Purchases {
      * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
      * Default is null, which will make the SDK use standardUserDefaults.
      */
-    public static configure(
-        apiKey: string,
-        appUserID?: string | null,
-        observerMode: boolean = false,
-        userDefaultsSuiteName?: string,
-        usesStoreKit2IfAvailable: boolean = false
-    ): void {
+    public static configure({
+        apiKey,
+        appUserID = null,
+        observerMode = false,
+        userDefaultsSuiteName,
+        usesStoreKit2IfAvailable = false,
+        useAmazon = false
+    }: PurchasesConfiguration): void {
         if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
             throw new Error("appUserID needs to be a string");
         }
@@ -180,7 +190,8 @@ export default class Purchases {
             appUserID,
             observerMode,
             userDefaultsSuiteName,
-            usesStoreKit2IfAvailable
+            usesStoreKit2IfAvailable,
+            useAmazon
         );
     }
 
