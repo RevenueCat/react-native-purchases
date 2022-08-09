@@ -24,4 +24,5 @@ async function checkAttributes(purchases: Purchases) {
 
   await Purchases.collectDeviceIdentifiers();
   await Purchases.setAutomaticAppleSearchAdsAttributionCollection(true);
+  await Purchases.enableAdServicesAttributionTokenCollection();
 }
