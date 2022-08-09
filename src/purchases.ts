@@ -539,7 +539,7 @@ export default class Purchases {
     }
 
     /**
-     * Enable automatic collection of Apple Search Ad attribution. Disabled by default
+     * Enable automatic collection of Apple Search Ad attribution on iOS. Disabled by default
      * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
      */
     public static async enableAdServicesAttributionTokenCollection(): Promise<void> {
