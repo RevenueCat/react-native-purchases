@@ -525,6 +525,7 @@ export default class Purchases {
     }
 
     /**
+     * @deprecated, use enableAdServicesAttributionTokenCollection instead.
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
      * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
      * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
@@ -534,6 +535,16 @@ export default class Purchases {
     ): Promise<void> {
         if (Platform.OS === "ios") {
             RNPurchases.setAutomaticAppleSearchAdsAttributionCollection(enabled);
+        }
+    }
+
+    /**
+     * Enable automatic collection of Apple Search Ad attribution. Disabled by default
+     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
+     */
+    public static async enableAdServicesAttributionTokenCollection(): Promise<void> {
+        if (Platform.OS === "ios") {
+            RNPurchases.enableAdServicesAttributionTokenCollection();
         }
     }
 

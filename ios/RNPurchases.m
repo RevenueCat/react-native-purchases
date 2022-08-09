@@ -155,6 +155,11 @@ RCT_EXPORT_METHOD(setAutomaticAppleSearchAdsAttributionCollection:(BOOL)automati
     [RCCommonFunctionality setAutomaticAppleSearchAdsAttributionCollection:automaticAppleSearchAdsAttributionCollection];
 }
 
+RCT_EXPORT_METHOD(enableAdServicesAttributionTokenCollection)
+{
+    [RCCommonFunctionality enableAdServicesAttributionTokenCollection];
+}
+
 RCT_REMAP_METHOD(isAnonymous,
                  isAnonymousWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
