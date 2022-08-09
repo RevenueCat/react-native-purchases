@@ -53,6 +53,7 @@ internal object RNPurchasesConverters {
         return array
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun convertArrayToWritableArray(array: Array<Any?>): WritableArray {
         val writableArray: WritableArray = WritableNativeArray()
         for (item in array) {
@@ -71,6 +72,7 @@ internal object RNPurchasesConverters {
     }
 
     @JvmStatic
+    @Suppress("UNCHECKED_CAST")
     fun convertMapToWriteableMap(map: Map<String, *>): WritableMap {
         val writableMap: WritableMap = WritableNativeMap()
         for ((key, value) in map) {
