@@ -1,7 +1,5 @@
 ## 5.0.0-beta.4
 
-## 5.0.0-beta.4
-
 ⚠️⚠️ This is a pre-release version. ⚠️⚠️
 
 #### Apple AdServices support
