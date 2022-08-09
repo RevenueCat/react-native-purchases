@@ -1,6 +1,9 @@
-## 5.0.0-beta.3
+## 5.0.0-beta.4
 
 ⚠️⚠️ This is a pre-release version. ⚠️⚠️
+
+#### Apple AdServices support
+New method for automatic collecting of attribution tokens on iOS and macOS using AdServices - `Purchases.enableAdServicesAttributionTokenCollection()`
 
 #### StoreKit 2 support
 This version of the SDK automatically uses StoreKit 2 APIs under the hood only for APIs that the RevenueCat team has determined work better than StoreKit 1.

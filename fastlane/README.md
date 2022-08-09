@@ -69,6 +69,14 @@ Update iOS pod version during hybrid update
 
 Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod
 
+### generate_docs
+
+```sh
+[bundle exec] fastlane generate_docs
+```
+
+Generate docs
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
