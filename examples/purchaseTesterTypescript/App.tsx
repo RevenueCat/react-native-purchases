@@ -39,6 +39,8 @@ const App = () => {
     } else {
       Purchases.configure({apiKey: APIKeys.apple});
     }
+
+    Purchases.enableAdServicesAttributionTokenCollection();
   }, []);
 
   return !hasKeys() ? (

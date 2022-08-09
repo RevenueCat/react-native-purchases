@@ -157,7 +157,7 @@ RCT_EXPORT_METHOD(setAutomaticAppleSearchAdsAttributionCollection:(BOOL)automati
 
 RCT_EXPORT_METHOD(enableAdServicesAttributionTokenCollection)
 {
-    if (@available(iOS 14.0, macOS 11.1, macCatalyst 14.3, *)) {
+    if (@available(iOS 14.3, macOS 11.1, macCatalyst 14.3, *)) {
         [RCCommonFunctionality enableAdServicesAttributionTokenCollection];
     } else {
         NSLog(@"[Purchases] Warning: tried to enable AdServices attribution token collction, but it's only available on iOS 14.0 or greater.");
