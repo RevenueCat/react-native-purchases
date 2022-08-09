@@ -544,6 +544,7 @@ export default class Purchases {
      */
     public static async enableAdServicesAttributionTokenCollection(): Promise<void> {
         if (Platform.OS === "ios") {
+            await Purchases.throwIfNotConfigured();
             RNPurchases.enableAdServicesAttributionTokenCollection();
         }
     }
