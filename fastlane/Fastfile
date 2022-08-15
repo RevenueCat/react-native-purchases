@@ -103,13 +103,11 @@ lane :update_hybrid_common_versions do |options|
   if dry_run
     UI.message("ℹ️  Nothing more to do, dry_run: true")
   else
-    Dir.chdir(get_root_folder) do
-      replace_text_in_files(
-        previous_text: previous_version_number, 
-        new_text: new_version_number,
-        paths_of_files_to_update: files_to_update
-      )
-    end
+    replace_text_in_files(
+      previous_text: previous_version_number,
+      new_text: new_version_number,
+      paths_of_files_to_update: files_to_update
+    )
   end
 end
 

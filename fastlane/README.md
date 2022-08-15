@@ -13,13 +13,37 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-### bump_and_update_changelog
+### bump
 
 ```sh
-[bundle exec] fastlane bump_and_update_changelog
+[bundle exec] fastlane bump
 ```
 
-Increment build numbers
+Bump version, edit changelog, and create pull request
+
+### github_release
+
+```sh
+[bundle exec] fastlane github_release
+```
+
+Make github release
+
+### prepare_next_version
+
+```sh
+[bundle exec] fastlane prepare_next_version
+```
+
+Creates PR changing version to next minor adding a -SNAPSHOT suffix
+
+### release
+
+```sh
+[bundle exec] fastlane release
+```
+
+Creates GitHub release and publishes package
 
 ### build_example
 
@@ -28,14 +52,6 @@ Increment build numbers
 ```
 
 Build example
-
-### prepare_for_release
-
-```sh
-[bundle exec] fastlane prepare_for_release
-```
-
-Prepare for release by bumping verion and building the example.
 
 ### update_hybrid_common_versions
 
