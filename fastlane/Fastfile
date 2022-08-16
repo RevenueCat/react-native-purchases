@@ -63,8 +63,8 @@ lane :release do |options|
   version_number = current_version_number
   Dir.chdir(get_root_folder) do
     sh('npm', 'publish')
-    github_release(version: version_number)
   end
+  github_release(version: version_number)
 end
 
 desc "Build example"
@@ -87,9 +87,9 @@ lane :update_hybrid_common_versions do |options|
   else
     UI.user_error!("Missing `version` argument")
   end
-  
+
   previous_version_number = parse_previous_hybrid_version
-  
+
   # Add to options so if we're chaining lanes together, the other lanes get it
   options[:previous_hybrid_version] = previous_version_number
 
@@ -148,7 +148,7 @@ lane :update_ios_pod do |options|
   end
 
   new_pod_version = parse_pod_version
-  
+
   UI.message("ℹ️  Current Purchases version: #{previous_hybrid_version}")
   UI.message("ℹ️  New Purchases version    : #{new_version_number}")
   UI.message("ℹ️  Current Pod version      : #{previous_pod_version}")
@@ -170,7 +170,7 @@ lane :generate_docs do
   docs_repo_name = "react-native-purchases-docs"
   docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
   hosting_base_path = File.join(docs_repo_name, version_number)
-  
+
   Dir.mktmpdir do |docs_generation_folder|
     # Must be run from the root dir
     Dir.chdir("..") do
@@ -180,7 +180,7 @@ lane :generate_docs do
         "--out",
         docs_generation_folder
       )
-      
+
       docs_index_path = File.join(Dir.pwd, "scripts/docs/index.html")
 
       # clone docs repo
