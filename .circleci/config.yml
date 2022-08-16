@@ -45,22 +45,13 @@ commands:
           paths:
             - vendor/bundle
   install-macdocker-dependencies:
-    parameters:
-      directory:
-        type: string
-        default: .
     steps:
-      # Bundler
       - restore_cache:
           keys:
             - v1-gem-cache-{{ checksum "Gemfile.lock" }}
       - run:
           name: Bundle install
-          working_directory: << parameters.directory >>
-          command: |
-            bundle config set --local clean 'true'
-            bundle config set --local path 'vendor/bundle'
-            bundle install
+          command: bundle install --clean --path vendor/bundle
       - save_cache:
           key: v1-gem-cache-{{ checksum "Gemfile.lock" }}
           paths:
