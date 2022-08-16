@@ -7,5 +7,5 @@
     3. A new branch and PR will automatically be created
 1. `bundle exec fastlane update_hybrid_common version:x.x.x` to set the purchases-hybrid-common version number if needed.
 1. Run `npm run build` and make sure it works. If any issues appear, fix them first.
-1. Wait until PR approved and make sure local copy matches remote
+1. Wait until PR is approved and pull branch from origin (to make sure you've got all the changes locally)
 1. Create a tag for the new release in the last commit of the branch and push the tag. The rest will be performed automatically by CircleCI. If the automation fails, you can revert to manually calling `bundle exec fastlane release`.

@@ -44,7 +44,7 @@ commands:
           key: v1-rubydocker-gem-cache-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-  install-macdocker-dependencies:
+  install-mac-dependencies:
     steps:
       - restore_cache:
           keys:
@@ -84,7 +84,7 @@ jobs:
     steps:
       - checkout
       - install-dependencies
-      - install-macdocker-dependencies
+      - install-mac-dependencies
       - set_up_git_user
       - run:
           name: Build docs
@@ -149,7 +149,7 @@ jobs:
     steps:
       - checkout
       - install-dependencies
-      - install-macdocker-dependencies
+      - install-mac-dependencies
       - trust-github-key
       - run:
           name: release
