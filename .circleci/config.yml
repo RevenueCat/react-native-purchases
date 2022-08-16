@@ -32,8 +32,19 @@ commands:
             do ssh-keyscan github.com,$ip; \
             ssh-keyscan $ip; \
             done 2>/dev/null >> ~/.ssh/known_hosts
-
-  install-gem-dependencies:
+  install-rubydocker-dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-rubydocker-gem-cache-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Bundle install
+          command: bundle install --clean --path vendor/bundle
+      - save_cache:
+          key: v1-rubydocker-gem-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+  install-macdocker-dependencies:
     parameters:
       directory:
         type: string
@@ -82,7 +93,7 @@ jobs:
     steps:
       - checkout
       - install-dependencies
-      - install-gem-dependencies
+      - install-macdocker-dependencies
       - set_up_git_user
       - run:
           name: Build docs
@@ -132,7 +143,7 @@ jobs:
       - image: cimg/ruby:3.1.2
     steps:
       - checkout
-      - install-gem-dependencies
+      - install-rubydocker-dependencies
       - trust-github-key
       - set_up_git_user
       - run:
@@ -146,7 +157,7 @@ jobs:
       xcode_version: 13.2.0
     steps:
       - checkout
-      - install-gem-dependencies
+      - install-macdocker-dependencies
       - trust-github-key
       - run:
           name: release
