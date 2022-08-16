@@ -73,3 +73,7 @@ report.xml
 
 # TypeScript
 dist/
+
+# CircleCI folders
+vendor/
+.bundle/
