@@ -24,7 +24,6 @@ lane :bump do |options|
     files_to_update_without_prerelease_modifiers: [],
     repo_name: repo_name,
     github_rate_limit: options[:github_rate_limit],
-    branch: options[:branch],
     editor: options[:editor]
   )
   update_hybrids_versions_file(
