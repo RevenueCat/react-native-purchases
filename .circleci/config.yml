@@ -148,6 +148,7 @@ jobs:
       xcode_version: 13.2.0
     steps:
       - checkout
+      - install-dependencies
       - install-macdocker-dependencies
       - trust-github-key
       - run:
