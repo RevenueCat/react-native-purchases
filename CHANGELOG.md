@@ -1,3 +1,7 @@
+## 5.0.0-beta.6
+### Other Changes
+* Bump purchases-hybrid-common version to 4.1.2 (#408) via Toni Rico (@tonidero)
+
 ## 5.0.0-beta.5
 
 ⚠️⚠️ This is a pre-release version. ⚠️⚠️
