@@ -22,6 +22,9 @@ async function checkPurchases(purchases: Purchases) {
   );
 
   const customerInfo: CustomerInfo = await Purchases.restorePurchases();
+
+  await Purchases.presentCodeRedemptionSheet();
+  await Purchases.invalidateCustomerInfoCache();
 }
 
 async function checkUsers(purchases: Purchases) {
@@ -116,6 +119,7 @@ async function checkConfigure() {
   await Purchases.setDebugLogsEnabled(true);
   await Purchases.setSimulatesAskToBuyInSandbox(true);
   await Purchases.setFinishTransactions(true);
+  await Purchases.setAllowSharingStoreAccount(true);
 
   const configured: boolean = await Purchases.isConfigured();
 }
