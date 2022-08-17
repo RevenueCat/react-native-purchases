@@ -4,7 +4,7 @@ orbs:
 
 aliases:
   release-tags: &release-tags
-    filters: 
+    filters:
       tags:
         ignore: /^.*-SNAPSHOT/
       branches:
@@ -22,6 +22,40 @@ commands:
     steps:
       - run: git config --global user.email "dev+ci@revenuecat.com"
       - run: git config --global user.name "RevenueCat CI"
+
+  trust-github-key:
+    steps:
+      - run:
+          name: Trust GitHub key
+          command: |
+            for ip in $(dig @8.8.8.8 github.com +short); \
+            do ssh-keyscan github.com,$ip; \
+            ssh-keyscan $ip; \
+            done 2>/dev/null >> ~/.ssh/known_hosts
+  install-rubydocker-dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-rubydocker-gem-cache-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Bundle install
+          command: bundle install --clean --path vendor/bundle
+      - save_cache:
+          key: v1-rubydocker-gem-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+  install-mac-dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-gem-cache-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Bundle install
+          command: bundle install --clean --path vendor/bundle
+      - save_cache:
+          key: v1-gem-cache-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
 jobs:
   analyse_js:
@@ -43,7 +77,6 @@ jobs:
       - run:
           name: Linter
           command: yarn run tslint
-  
   docs-deploy:
     executor:
       name: rn/macos
@@ -51,20 +84,7 @@ jobs:
     steps:
       - checkout
       - install-dependencies
-      # Bundler
-      - restore_cache:
-          keys: 
-            - v1-gem-cache-{{ checksum "Gemfile.lock" }}
-      - run: 
-          name: Bundle install
-          command: |
-              bundle config set --local clean 'true'
-              bundle config set --local path 'vendor/bundle'
-              bundle install
-      - save_cache:
-          key: v1-gem-cache-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
+      - install-mac-dependencies
       - set_up_git_user
       - run:
           name: Build docs
@@ -108,6 +128,33 @@ jobs:
           project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
           scheme: PurchaseTester
 
+  prepare-next-version:
+    description: "Creates a PR with the new snapshot version"
+    docker:
+      - image: cimg/ruby:3.1.2
+    steps:
+      - checkout
+      - install-rubydocker-dependencies
+      - trust-github-key
+      - set_up_git_user
+      - run:
+          name: Prepare next version
+          command: bundle exec fastlane prepare_next_version
+
+  make-release:
+    description: "Publishes the new version and creates a github release"
+    executor:
+      name: rn/macos
+      xcode_version: 13.2.0
+    steps:
+      - checkout
+      - install-dependencies
+      - install-mac-dependencies
+      - trust-github-key
+      - run:
+          name: release
+          command: bundle exec fastlane release
+
 workflows:
   test:
     jobs:
@@ -116,5 +163,11 @@ workflows:
       - ios
   deploy:
     jobs:
-      - docs-deploy:
+      - make-release:
           <<: *release-tags
+      - prepare-next-version:
+          requires:
+            - make-release
+      - docs-deploy:
+          requires:
+            - make-release
