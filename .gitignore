@@ -47,6 +47,7 @@ examples/MagicWeather/android/.settings/org.eclipse.buildship.core.prefs
 
 # VSCode
 .vscode/launch.json
+examples/**/.vscode/
 .vscode/settings.json
 android/.classpath
 **/*.project
