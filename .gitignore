@@ -79,3 +79,4 @@ dist/
 # CircleCI folders
 vendor/
 .bundle/
+.npmrc
