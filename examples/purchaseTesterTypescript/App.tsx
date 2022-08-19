@@ -27,7 +27,7 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   const hasKeys = () => {
-    return APIKeys.apple.length > 0 || APIKeys.google.length > 0;
+    return APIKeys.apple.length > 0 || APIKeys.google.length > 0 || APIKeys.amazon.length > 0;
   }
 
   useEffect(() => {
@@ -35,7 +35,12 @@ const App = () => {
 
     Purchases.setDebugLogsEnabled(true);
     if (Platform.OS == "android") {
-      Purchases.configure({apiKey: APIKeys.google});
+      const useAmazon = false;
+      if (useAmazon) {
+        Purchases.configure({apiKey: APIKeys.amazon, useAmazon: true});
+      } else {
+        Purchases.configure({apiKey: APIKeys.google});
+      }
     } else {
       Purchases.configure({apiKey: APIKeys.apple});
     }
