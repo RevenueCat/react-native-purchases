@@ -209,7 +209,7 @@ export default class Purchases {
      * we will treat it as a restore and alias the new ID with the previous id.
      * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous,
      * this is true by default if you didn't pass an appUserID
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
      */
     public static async setAllowSharingStoreAccount(allowSharing: boolean): Promise<void> {
         await Purchases.throwIfNotConfigured();
@@ -219,7 +219,7 @@ export default class Purchases {
     /**
      * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to
      * make the purchase
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
      */
     public static async setFinishTransactions(finishTransactions: boolean): Promise<void> {
         await Purchases.throwIfNotConfigured();
@@ -230,7 +230,7 @@ export default class Purchases {
      * iOS only.
      * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA
      * purchases flow. More information: http://errors.rev.cat/ask-to-buy
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
      */
     public static async setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): Promise<void> {
         if (Platform.OS === "ios") {
@@ -306,7 +306,7 @@ export default class Purchases {
 
     /**
      * Gets the map of entitlements -> offerings -> products
-     * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure. The promise will be rejected if setup
+     * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure. The promise will be rejected if configure
      * has not been called yet.
      */
     public static async getOfferings(): Promise<PurchasesOfferings> {
@@ -321,7 +321,7 @@ export default class Purchases {
      * @returns {Promise<PurchasesStoreProduct[]>} A promise containing an array of products. The promise will be rejected
      * if the products are not properly configured in RevenueCat or if there is another error retrieving them.
      * Rejections return an error code, and a userInfo object with more information. The promise will also be rejected
-     * if setup has not been called yet.
+     * if configure has not been called yet.
      */
     public static async getProducts(
         productIdentifiers: string[],
@@ -341,7 +341,7 @@ export default class Purchases {
      * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
      * a customer info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will
-     * also be rejected if setup has not been called yet.
+     * also be rejected if configure has not been called yet.
      */
     public static async purchaseProduct(
         productIdentifier: string,
@@ -368,7 +368,7 @@ export default class Purchases {
      * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
      * a customer info object and a product identifier. Rejections return an error code,
      * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will be
-     * rejected if setup has not been called yet.
+     * rejected if configure has not been called yet.
      */
     public static async purchaseDiscountedProduct(
         product: PurchasesStoreProduct,
@@ -397,7 +397,7 @@ export default class Purchases {
      * and the optional prorationMode.
      * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
      * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
-     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if setup
+     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if configure
      * has not been called yet.
      */
     public static async purchasePackage(
@@ -423,7 +423,7 @@ export default class Purchases {
      * @param {PurchasesPromotionalOffer} discount Discount to apply to this package. Retrieve this discount using getPromotionalOffer.
      * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
      * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
-     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if setup
+     * user cancelled the purchase, and an object with more information. The promise will be also be rejected if configure
      * has not been called yet.
      */
     public static async purchaseDiscountedPackage(
@@ -448,7 +448,7 @@ export default class Purchases {
     /**
      * Restores a user's previous purchases and links their appUserIDs to any user's also using those purchases.
      * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
-     * userInfo object with more information. The promise will be also be rejected if setup has not been called yet.
+     * userInfo object with more information. The promise will be also be rejected if configure has not been called yet.
      */
     public static async restorePurchases(): Promise<CustomerInfo> {
         await Purchases.throwIfNotConfigured();
@@ -470,7 +470,7 @@ export default class Purchases {
      * @param {String} appUserID The appUserID that should be linked to the currently user
      * @returns {Promise<LogInResult>} A promise of an object that contains the customerInfo after logging in, as well
      * as a boolean indicating whether the user has just been created for the first time in the RevenueCat backend. The
-     * promise will be rejected if setup has not been called yet or if there's an issue logging in.
+     * promise will be rejected if configure has not been called yet or if there's an issue logging in.
      */
     public static async logIn(appUserID: string): Promise<LogInResult> {
         await Purchases.throwIfNotConfigured();
@@ -484,7 +484,7 @@ export default class Purchases {
     /**
      * Logs out the Purchases client clearing the saved appUserID. This will generate a random user id and save it in the cache.
      * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code,
-     * and a userInfo object with more information. The promise will be rejected if setup has not been called yet or if
+     * and a userInfo object with more information. The promise will be rejected if configure has not been called yet or if
      * there's an issue logging out.
      */
     public static async logOut(): Promise<CustomerInfo> {
@@ -503,7 +503,7 @@ export default class Purchases {
     /**
      * Gets current customer info
      * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
-     * userInfo object with more information. The promise will be rejected if setup has not been called yet or if
+     * userInfo object with more information. The promise will be rejected if configure has not been called yet or if
      * there's an issue getting the customer information.
      */
     public static async getCustomerInfo(): Promise<CustomerInfo> {
@@ -516,7 +516,7 @@ export default class Purchases {
      * for subscriptions anytime a sync is needed, like after a successful purchase.
      *
      * @warning This function should only be called if you're not calling purchaseProduct/purchasePackage.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * syncing purchases.
      */
     public static async syncPurchases(): Promise<void> {
@@ -528,7 +528,7 @@ export default class Purchases {
      * @deprecated, use enableAdServicesAttributionTokenCollection instead.
      * Enable automatic collection of Apple Search Ad attribution. Disabled by default
      * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
      */
     public static async setAutomaticAppleSearchAdsAttributionCollection(
         enabled: boolean
@@ -540,7 +540,7 @@ export default class Purchases {
 
     /**
      * Enable automatic collection of Apple Search Ad attribution on iOS. Disabled by default
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
      */
     public static async enableAdServicesAttributionTokenCollection(): Promise<void> {
         if (Platform.OS === "ios") {
@@ -551,7 +551,7 @@ export default class Purchases {
 
     /**
      * @returns { Promise<boolean> } If the `appUserID` has been generated by RevenueCat or not.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
      */
     public static async isAnonymous(): Promise<boolean> {
         await Purchases.throwIfNotConfigured();
@@ -571,7 +571,7 @@ export default class Purchases {
      *
      * @param productIdentifiers Array of product identifiers for which you want to compute eligibility
      * @returns { Promise<[productId: string]: IntroEligibility> } A map of IntroEligility per productId. The promise
-     * will be rejected if setup has not been called yet or if there's in an error checking eligibility.
+     * will be rejected if configure has not been called yet or if there's in an error checking eligibility.
      */
     public static async checkTrialOrIntroductoryPriceEligibility(
         productIdentifiers: string[]
@@ -585,10 +585,10 @@ export default class Purchases {
     /**
      * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
      *
-     * @param product The `PurchasesProduct` the user intends to purchase.
-     * @param discount The `PurchasesDiscount` to apply to the product.
+     * @param product The `PurchasesStoreProduct` the user intends to purchase.
+     * @param discount The `PurchasesStoreProductDiscount` to apply to the product.
      * @returns { Promise<PurchasesPromotionalOffer> } Returns when the `PurchasesPaymentDiscount` is returned.
-     * Null is returned for Android and incompatible iOS versions. The promise will be rejected if setup has not been
+     * Null is returned for Android and incompatible iOS versions. The promise will be rejected if configure has not been
      * called yet or if there's an error getting the payment discount.
      */
     public static async getPromotionalOffer(
@@ -617,7 +617,7 @@ export default class Purchases {
      *
      * This is useful for cases where customer information might have been updated outside of the app, like if a
      * promotional subscription is granted through the RevenueCat dashboard.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
      * invalidating the customer info cache.
      */
     public static async invalidateCustomerInfoCache(): Promise<void> {
@@ -628,7 +628,7 @@ export default class Purchases {
     /** iOS only. Presents a code redemption sheet, useful for redeeming offer codes
      * Refer to https://docs.revenuecat.com/docs/ios-subscription-offers#offer-codes for more information on how
      * to configure and use offer codes
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
      * presenting the code redemption sheet.
      */
     public static async presentCodeRedemptionSheet(): Promise<void> {
@@ -647,7 +647,7 @@ export default class Purchases {
      * restrictions refer to our guide: https://docs.revenuecat.com/docs/subscriber-attributes
      *
      * @param attributes Map of attributes by key. Set the value as an empty string to delete an attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
      * setting the subscriber attributes.
      */
     public static async setAttributes(attributes: { [key: string]: string | null }): Promise<void> {
@@ -659,7 +659,7 @@ export default class Purchases {
      * Subscriber attribute associated with the email address for the user
      *
      * @param email Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the email.
      */
     public static async setEmail(email: string | null): Promise<void> {
@@ -671,7 +671,7 @@ export default class Purchases {
      * Subscriber attribute associated with the phone number for the user
      *
      * @param phoneNumber Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the phone number.
      */
     public static async setPhoneNumber(phoneNumber: string | null): Promise<void> {
@@ -683,7 +683,7 @@ export default class Purchases {
      * Subscriber attribute associated with the display name for the user
      *
      * @param displayName Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the display name.
      */
     public static async setDisplayName(displayName: string | null): Promise<void> {
@@ -695,7 +695,7 @@ export default class Purchases {
      * Subscriber attribute associated with the push token for the user
      *
      * @param pushToken null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the push token.
      */
     public static async setPushToken(pushToken: string | null): Promise<void> {
@@ -706,7 +706,7 @@ export default class Purchases {
     /**
      * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value
      * from your RevenueCat contact.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the proxy url.
      */
     public static async setProxyURL(url: string): Promise<void> {
@@ -718,7 +718,7 @@ export default class Purchases {
      * Automatically collect subscriber attributes associated with the device identifiers.
      * $idfa, $idfv, $ip on iOS
      * $gpsAdId, $androidId, $ip on Android
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting collecting the device identifiers.
      */
     public static async collectDeviceIdentifiers(): Promise<void> {
@@ -731,7 +731,7 @@ export default class Purchases {
      * Required for the RevenueCat Adjust integration
      *
      * @param adjustID Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting Adjust ID.
      */
     public static async setAdjustID(adjustID: string | null): Promise<void> {
@@ -743,7 +743,7 @@ export default class Purchases {
      * Subscriber attribute associated with the AppsFlyer Id for the user
      * Required for the RevenueCat AppsFlyer integration
      * @param appsflyerID Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Appsflyer ID.
      */
     public static async setAppsflyerID(appsflyerID: string | null): Promise<void> {
@@ -756,7 +756,7 @@ export default class Purchases {
      * Recommended for the RevenueCat Facebook integration
      *
      * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Facebook Anonymous ID.
      */
     public static async setFBAnonymousID(fbAnonymousID: string | null): Promise<void> {
@@ -769,7 +769,7 @@ export default class Purchases {
      * Recommended for the RevenueCat mParticle integration
      *
      * @param mparticleID Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Mparticle ID.
      */
     public static async setMparticleID(mparticleID: string | null): Promise<void> {
@@ -782,7 +782,7 @@ export default class Purchases {
      * Required for the RevenueCat OneSignal integration
      *
      * @param onesignalID Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Onesignal ID.
      */
     public static async setOnesignalID(onesignalID: string | null): Promise<void> {
@@ -795,7 +795,7 @@ export default class Purchases {
      * Required for the RevenueCat Airship integration
      *
      * @param airshipChannelID Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Airship Channel ID.
      */
     public static async setAirshipChannelID(airshipChannelID: string | null): Promise<void> {
@@ -807,7 +807,7 @@ export default class Purchases {
      * Subscriber attribute associated with the install media source for the user
      *
      * @param mediaSource Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the media source.
      */
     public static async setMediaSource(mediaSource: string | null): Promise<void> {
@@ -819,7 +819,7 @@ export default class Purchases {
      * Subscriber attribute associated with the install campaign for the user
      *
      * @param campaign Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the campaign.
      */
     public static async setCampaign(campaign: string | null): Promise<void> {
@@ -831,7 +831,7 @@ export default class Purchases {
      * Subscriber attribute associated with the install ad group for the user
      *
      * @param adGroup Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting ad group.
      */
     public static async setAdGroup(adGroup: string | null): Promise<void> {
@@ -843,7 +843,7 @@ export default class Purchases {
      * Subscriber attribute associated with the install ad for the user
      *
      * @param ad Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the ad subscriber attribute.
      */
     public static async setAd(ad: string | null): Promise<void> {
@@ -855,7 +855,7 @@ export default class Purchases {
      * Subscriber attribute associated with the install keyword for the user
      *
      * @param keyword Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the keyword.
      */
     public static async setKeyword(keyword: string | null): Promise<void> {
@@ -867,7 +867,7 @@ export default class Purchases {
      * Subscriber attribute associated with the install ad creative for the user
      *
      * @param creative Empty String or null will delete the subscriber attribute.
-     * @returns {Promise<void>} The promise will be rejected if setup has not been called yet or if there's an error
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the creative subscriber attribute.
      */
     public static async setCreative(creative: string | null): Promise<void> {
@@ -891,7 +891,7 @@ export default class Purchases {
     }
 
     /**
-     * Check if setup has finished and Purchases has been configured.
+     * Check if configure has finished and Purchases has been configured.
      *
      * @returns {Promise<Boolean>} promise with boolean response
      */
