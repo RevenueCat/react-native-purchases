@@ -48,7 +48,7 @@ function checkEntitlementInfo(info: PurchasesEntitlementInfo) {
 }
 
 function checkTransaction(transaction: PurchasesStoreTransaction) {
-  const revenueCatId: string = transaction.revenueCatId;
-  const productId: string = transaction.productId;
+  const transactionIdentifier: string = transaction.transactionIdentifier;
+  const productIdentifier: string = transaction.productIdentifier;
   const purchaseDate: string = transaction.purchaseDate;
 }
