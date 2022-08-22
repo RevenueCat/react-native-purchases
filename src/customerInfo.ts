@@ -142,13 +142,13 @@ export interface CustomerInfo {
 
 export interface PurchasesStoreTransaction {
     /**
-     * RevenueCat Id associated to the transaction.
+     * Id of the transaction.
      */
-    revenueCatId: string;
+    transactionIdentifier: string;
     /**
      * Product Id associated with the transaction.
      */
-    productId: string;
+    productIdentifier: string;
     /**
      * Purchase date of the transaction in ISO 8601 format.
      */

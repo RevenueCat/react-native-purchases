@@ -62,7 +62,7 @@ const InfoTab: React.FC<{
   customerInfo: CustomerInfo | null;
 }> = ({appUserID, customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -86,7 +86,7 @@ const EntitlementsTab: React.FC<{
   customerInfo: CustomerInfo | null;
 }> = ({customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -121,7 +121,7 @@ const TransactionsTab: React.FC<{
   customerInfo: CustomerInfo | null;
 }> = ({customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -132,14 +132,14 @@ const TransactionsTab: React.FC<{
     <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        
+
         {
           transactions.length === 0 ? (
             <Text>No transactions</Text>
           ) : (
             transactions.map((transaction) => {
               return (
-                <Section title={transaction.productId} value={transaction.purchaseDate}>
+                <Section title={transaction.productIdentifier} value={transaction.purchaseDate}>
                 </Section>
               )
             })
@@ -154,7 +154,7 @@ const AttributesTab: React.FC<{
   customerInfo: CustomerInfo | null;
 }> = ({customerInfo}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -165,15 +165,15 @@ const AttributesTab: React.FC<{
     <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        
+
         {
           transactions.length === 0 ? (
             <Text>No transactions</Text>
           ) : (
             transactions.map((transaction) => {
               <Section
-                key={transaction.revenueCatId}
-                title={transaction.productId}
+                key={transaction.transactionIdentifier}
+                title={transaction.productIdentifier}
                 value={transaction.purchaseDate}></Section>
             })
           )
@@ -187,7 +187,7 @@ const Tab = createBottomTabNavigator();
 
 const CustomerInfoScreen: React.FC<Props> = ({ route, navigation }: Props) => {
   const isDarkMode = useColorScheme() === 'dark';
-  
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
