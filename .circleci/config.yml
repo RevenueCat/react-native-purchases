@@ -56,6 +56,11 @@ commands:
           key: v1-gem-cache-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
+  copy-npm-rc:
+    steps:
+      - run:
+          name: Copy npmrc sample file to final location
+          command: cp .npmrc.SAMPLE .npmrc
 
 jobs:
   analyse_js:
@@ -151,6 +156,7 @@ jobs:
       - install-dependencies
       - install-mac-dependencies
       - trust-github-key
+      - copy-npm-rc
       - run:
           name: release
           command: bundle exec fastlane release
