@@ -1,4 +1,12 @@
 ## 5.0.0
+#### Amazon store support
+We have introduced support for using the Amazon Store. You can enable Amazon Store support by configuring the SDK using the new configure function:
+```
+Purchases.configure({ apiKey: "AMAZON_API_KEY", useAmazon: true });
+```
+
+For more information around configuration please take a look at the [Amazon Store section in our docs](https://docs.revenuecat.com/docs/amazon-platform-resources). The official [Amazon In-App Purchasing docs](https://developer.amazon.com/docs/in-app-purchasing/iap-overview.html) also contain very valuable information, specially around testing and best practices.
+
 #### Apple AdServices support
 New method for automatic collecting of attribution tokens on iOS and macOS using AdServices - `Purchases.enableAdServicesAttributionTokenCollection()`
 
