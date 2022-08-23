@@ -172,8 +172,10 @@ workflows:
       - make-release:
           <<: *release-tags
       - prepare-next-version:
+          <<: *release-tags
           requires:
             - make-release
       - docs-deploy:
+          <<: *release-tags
           requires:
             - make-release
