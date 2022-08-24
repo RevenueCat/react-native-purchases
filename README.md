@@ -16,7 +16,7 @@ React Native Purchases is a client for the [RevenueCat](https://www.revenuecat.c
 ➡️ | [Webhooks](https://docs.revenuecat.com/docs/webhooks) - enhanced server-to-server communication with events for purchases, renewals, cancellations, and more   
 🎯 | Subscription status tracking - know whether a user is subscribed whether they're on iOS, Android or web  
 📊 | Analytics - automatic calculation of metrics like conversion, mrr, and churn  
-📝 | [Online documentation](https://docs.revenuecat.com/docs) up to date  
+📝 | [Online documentation](https://docs.revenuecat.com/docs) and [SDK reference](https://revenuecat.github.io/react-native-purchases-docs/) up to date  
 🔀 | [Integrations](https://www.revenuecat.com/integrations) - over a dozen integrations to easily send purchase data where you need it  
 💯 | Well maintained - [frequent releases](https://github.com/RevenueCat/purchases-ios/releases)  
 📮 | Great support - [Help Center](https://revenuecat.zendesk.com) 
