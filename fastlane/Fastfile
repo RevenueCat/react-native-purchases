@@ -35,6 +35,17 @@ lane :bump do |options|
   push_to_git_remote(set_upstream: true)
 end
 
+desc "Automatically bumps version, edit changelog, and create pull request"
+lane :automatic_bump do |options|
+  next_version, type_of_bump = determine_next_version_using_labels(
+    repo_name: repo_name,
+    github_rate_limit: options[:github_rate_limit]
+  )
+  options[:next_version] = next_version
+  UI.user_error!('Skipping automatic bump since the next version is a major release') if type_of_bump == :major
+  bump(options)
+end
+
 desc "Make github release"
 lane :github_release do |options|
   create_github_release(
@@ -203,6 +214,15 @@ lane :generate_docs do
       end
     end
   end
+end
+
+desc "Tag current branch with current version number"
+lane :tag_current_branch do |options|
+  version_number = current_version_number
+  check_no_git_tag_exists(version_number)
+
+  add_git_tag(tag: version_number)
+  push_git_tags(tag: version_number)
 end
 
 ###############################################################################

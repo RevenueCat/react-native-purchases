@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@6.1.0
+  revenuecat: revenuecat/sdks-common-config@dev:01a27fcc557ae1c84721b437e6a7720a9b2e126d
 
 aliases:
   release-tags: &release-tags
@@ -9,6 +10,12 @@ aliases:
         ignore: /^.*-SNAPSHOT/
       branches:
         ignore: /.*/
+  release-branches: &release-branches
+    filters:
+      tags:
+        ignore: /.*/
+      branches:
+        only: /^release\/.*/
 
 commands:
   install-dependencies:
@@ -17,33 +24,6 @@ commands:
           name: Yarn Install
           command: yarn install --non-interactive --cache-folder /tmp/yarn
 
-  set_up_git_user:
-    description: Set git config parameters
-    steps:
-      - run: git config --global user.email "dev+ci@revenuecat.com"
-      - run: git config --global user.name "RevenueCat CI"
-
-  trust-github-key:
-    steps:
-      - run:
-          name: Trust GitHub key
-          command: |
-            for ip in $(dig @8.8.8.8 github.com +short); \
-            do ssh-keyscan github.com,$ip; \
-            ssh-keyscan $ip; \
-            done 2>/dev/null >> ~/.ssh/known_hosts
-  install-rubydocker-dependencies:
-    steps:
-      - restore_cache:
-          keys:
-            - v1-rubydocker-gem-cache-{{ checksum "Gemfile.lock" }}
-      - run:
-          name: Bundle install
-          command: bundle install --clean --path vendor/bundle
-      - save_cache:
-          key: v1-rubydocker-gem-cache-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
   install-mac-dependencies:
     steps:
       - restore_cache:
@@ -90,7 +70,7 @@ jobs:
       - checkout
       - install-dependencies
       - install-mac-dependencies
-      - set_up_git_user
+      - revenuecat/setup-git-credentials
       - run:
           name: Build docs
           command: bundle exec fastlane generate_docs
@@ -139,9 +119,9 @@ jobs:
       - image: cimg/ruby:3.1.2
     steps:
       - checkout
-      - install-rubydocker-dependencies
-      - trust-github-key
-      - set_up_git_user
+      - revenuecat/install-rubydocker-dependencies
+      - revenuecat/trust-github-key
+      - revenuecat/setup-git-credentials
       - run:
           name: Prepare next version
           command: bundle exec fastlane prepare_next_version
@@ -155,7 +135,7 @@ jobs:
       - checkout
       - install-dependencies
       - install-mac-dependencies
-      - trust-github-key
+      - revenuecat/trust-github-key
       - copy-npm-rc
       - run:
           name: release
@@ -163,12 +143,25 @@ jobs:
 
 workflows:
   test:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - analyse_js
       - android
       - ios
   deploy:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
+      - hold:
+          type: approval
+          <<: *release-branches
+      - revenuecat/tag-current-branch:
+          requires:
+            - hold
+          <<: *release-branches
       - make-release:
           <<: *release-tags
       - prepare-next-version:
@@ -179,3 +172,10 @@ workflows:
           <<: *release-tags
           requires:
             - make-release
+  weekly-run-workflow:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "release-train", << pipeline.schedule.name >> ]
+    jobs:
+      - revenuecat/automatic-bump
