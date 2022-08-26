@@ -1,3 +1,9 @@
+## 5.0.1
+### Other Changes
+* Configures Danger (#421) via Cesar de la Vega (@vegaro)
+* Add link to SDK reference to README (#419) via Jens-Fabian Goetzmann (@jefago)
+* Specify branch for deployment dependencies (#418) via Toni Rico (@tonidero)
+
 ## 5.0.0
 #### Amazon store support
 We have introduced support for using the Amazon Store. You can enable Amazon Store support by configuring the SDK using the new configure function:
