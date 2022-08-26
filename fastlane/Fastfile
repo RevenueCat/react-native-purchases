@@ -248,3 +248,9 @@ end
 def current_version_number
   File.read("../.version").strip
 end
+
+def check_no_git_tag_exists(version_number)
+  if git_tag_exists(tag: version_number, remote: true, remote_name: 'origin')
+    raise "git tag with version #{version_number} already exists!"
+  end
+end
