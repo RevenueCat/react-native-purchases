@@ -23,19 +23,6 @@ commands:
       - run:
           name: Yarn Install
           command: yarn install --non-interactive --cache-folder /tmp/yarn
-
-  install-mac-dependencies:
-    steps:
-      - restore_cache:
-          keys:
-            - v1-gem-cache-{{ checksum "Gemfile.lock" }}
-      - run:
-          name: Bundle install
-          command: bundle install --clean --path vendor/bundle
-      - save_cache:
-          key: v1-gem-cache-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
   copy-npm-rc:
     steps:
       - run:
@@ -69,7 +56,8 @@ jobs:
     steps:
       - checkout
       - install-dependencies
-      - install-mac-dependencies
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v1
       - revenuecat/setup-git-credentials
       - run:
           name: Build docs
@@ -119,7 +107,8 @@ jobs:
       - image: cimg/ruby:3.1.2
     steps:
       - checkout
-      - revenuecat/install-rubydocker-dependencies
+      - revenuecat/install-gem-unix-dependencies:
+          cache-version: v1
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
       - run:
@@ -134,7 +123,8 @@ jobs:
     steps:
       - checkout
       - install-dependencies
-      - install-mac-dependencies
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v1
       - revenuecat/trust-github-key
       - copy-npm-rc
       - run:
