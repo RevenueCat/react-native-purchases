@@ -169,9 +169,9 @@ workflows:
     jobs:
       - revenuecat/danger
   weekly-run-workflow:
-    # when:
-      # and:
-        # - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-        # - equal: [ "release-train", << pipeline.schedule.name >> ]
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "release-train", << pipeline.schedule.name >> ]
     jobs:
       - revenuecat/automatic-bump
