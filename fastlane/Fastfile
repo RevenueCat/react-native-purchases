@@ -25,7 +25,8 @@ lane :bump do |options|
     repo_name: repo_name,
     github_rate_limit: options[:github_rate_limit],
     editor: options[:editor],
-    next_version: options[:next_version]
+    next_version: options[:next_version],
+    automatic_release: options[:automatic_release]
   )
   update_hybrids_versions_file(
     versions_file_path: './VERSIONS.md',
@@ -43,6 +44,7 @@ lane :automatic_bump do |options|
     github_rate_limit: options[:github_rate_limit]
   )
   options[:next_version] = next_version
+  options[:automatic_release] = true
   UI.user_error!('Skipping automatic bump since the next version is a major release') if type_of_bump == :major
   bump(options)
 end
