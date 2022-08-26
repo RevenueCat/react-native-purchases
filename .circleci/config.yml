@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@6.1.0
-  revenuecat: revenuecat/sdks-common-config@dev:01a27fcc557ae1c84721b437e6a7720a9b2e126d
+  revenuecat: revenuecat/sdks-common-config@2.0.0
 
 aliases:
   release-tags: &release-tags
@@ -172,6 +172,12 @@ workflows:
           <<: *release-tags
           requires:
             - make-release
+  danger:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+    jobs:
+      - revenuecat/danger
   weekly-run-workflow:
     when:
       and:
