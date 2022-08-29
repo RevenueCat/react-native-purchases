@@ -202,11 +202,19 @@ RCT_REMAP_METHOD(getPromotionalOffer,
 }
 
 RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
+    #if TARGET_OS_MACCATALYST
+    logUnavailablePresentCodeRedemptionSheet();
+    #else
     if (@available(iOS 14.0, *)) {
         [RCCommonFunctionality presentCodeRedemptionSheet];
     } else {
-        NSLog(@"[Purchases] Warning: tried to present codeRedemptionSheet, but it's only available on iOS 14.0 or greater.");
+        logUnavailablePresentCodeRedemptionSheet();
     }
+    #endif
+}
+
+static void logUnavailablePresentCodeRedemptionSheet() {
+    NSLog(@"[Purchases] Warning: tried to present codeRedemptionSheet, but it's only available on iOS 14.0 or greater.");
 }
 
 #pragma mark - Subscriber Attributes
