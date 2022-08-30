@@ -81,3 +81,7 @@ The `react-native link` command should have added the `libRNPurchases.a` library
 ## Getting Started
 
 Please follow the [Quickstart Guide](https://docs.revenuecat.com/docs/) for more information on how to use the SDK
+
+## SDK Reference
+Our full SDK reference [can be found here](https://revenuecat.github.io/react-native-purchases-docs).
+
