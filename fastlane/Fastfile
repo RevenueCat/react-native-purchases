@@ -24,7 +24,9 @@ lane :bump do |options|
     files_to_update_without_prerelease_modifiers: [],
     repo_name: repo_name,
     github_rate_limit: options[:github_rate_limit],
-    editor: options[:editor]
+    editor: options[:editor],
+    next_version: options[:next_version],
+    automatic_release: options[:automatic_release]
   )
   update_hybrids_versions_file(
     versions_file_path: './VERSIONS.md',
@@ -33,6 +35,24 @@ lane :bump do |options|
   )
   commit_current_changes(commit_message: 'Update VERSIONS.md')
   push_to_git_remote(set_upstream: true)
+end
+
+desc "Automatically bumps version, edit changelog, and create pull request"
+lane :automatic_bump do |options|
+  next_version, type_of_bump = determine_next_version_using_labels(
+    repo_name: repo_name,
+    github_rate_limit: options[:github_rate_limit]
+  )
+  options[:next_version] = next_version
+  options[:automatic_release] = true
+  if type_of_bump == :skip
+    UI.message('Skipping automatic bump since the next version doesn\'t include public facing changes')
+    next
+  elsif type_of_bump == :major
+    UI.message('Skipping automatic bump since the next version is a major release')
+    next
+  end
+  bump(options)
 end
 
 desc "Make github release"
@@ -205,6 +225,15 @@ lane :generate_docs do
   end
 end
 
+desc "Tag current branch with current version number"
+lane :tag_current_branch do |options|
+  version_number = current_version_number
+  check_no_git_tag_exists(version_number)
+
+  add_git_tag(tag: version_number)
+  push_git_tags(tag: version_number)
+end
+
 ###############################################################################
 # Helper functions 🤜🤛                                                      #
 ###############################################################################
@@ -227,4 +256,10 @@ end
 
 def current_version_number
   File.read("../.version").strip
+end
+
+def check_no_git_tag_exists(version_number)
+  if git_tag_exists(tag: version_number, remote: true, remote_name: 'origin')
+    raise "git tag with version #{version_number} already exists!"
+  end
 end
