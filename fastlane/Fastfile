@@ -48,8 +48,7 @@ lane :automatic_bump do |options|
   if type_of_bump == :skip
     UI.message('Skipping automatic bump since the next version doesn\'t include public facing changes')
     next
-  end
-  if type_of_bump == :major
+  elsif type_of_bump == :major
     UI.message('Skipping automatic bump since the next version is a major release')
     next
   end
