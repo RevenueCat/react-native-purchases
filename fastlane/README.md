@@ -21,6 +21,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Bump version, edit changelog, and create pull request
 
+### automatic_bump
+
+```sh
+[bundle exec] fastlane automatic_bump
+```
+
+Automatically bumps version, edit changelog, and create pull request
+
 ### github_release
 
 ```sh
@@ -92,6 +100,14 @@ Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls 
 ```
 
 Generate docs
+
+### tag_current_branch
+
+```sh
+[bundle exec] fastlane tag_current_branch
+```
+
+Tag current branch with current version number
 
 ----
 
