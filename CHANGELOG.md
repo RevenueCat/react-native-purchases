@@ -1,3 +1,13 @@
+## 5.0.1
+### Bugfixes
+* `presentCodeRedemptionSheet`: fixed Catalyst build (#425) via NachoSoto (@NachoSoto)
+* `purchaseProduct` not working when SK2 is enabled
+### Other Changes
+* Updated purchases-hybrid-common to 4.2.1
+* Configures Danger (#421) via Cesar de la Vega (@vegaro)
+* Add link to SDK reference to README (#419) via Jens-Fabian Goetzmann (@jefago)
+* Specify branch for deployment dependencies (#418) via Toni Rico (@tonidero)
+
 ## 5.0.0
 #### Amazon store support
 We have introduced support for using the Amazon Store. You can enable Amazon Store support by configuring the SDK using the new configure function:
