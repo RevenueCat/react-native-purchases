@@ -1,3 +1,7 @@
+## 5.0.2
+### Other Changes
+* Add link to reference docs at the bottom (#426) via Andy Boedo (@aboedo)
+
 ## 5.0.1
 ### Bugfixes
 * `presentCodeRedemptionSheet`: fixed Catalyst build (#425) via NachoSoto (@NachoSoto)
