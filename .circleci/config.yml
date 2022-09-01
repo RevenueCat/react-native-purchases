@@ -112,6 +112,9 @@ jobs:
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
       - run:
+          name: Switching to main branch
+          command: git checkout main
+      - run:
           name: Prepare next version
           command: bundle exec fastlane prepare_next_version
 
