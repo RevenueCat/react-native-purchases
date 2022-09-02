@@ -112,9 +112,6 @@ jobs:
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
       - run:
-          name: Switching to main branch
-          command: git checkout main
-      - run:
           name: Prepare next version
           command: bundle exec fastlane prepare_next_version
 
@@ -158,9 +155,11 @@ workflows:
       - make-release:
           <<: *release-tags
       - prepare-next-version:
-          <<: *release-tags
-          requires:
-            - make-release
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only: main
       - docs-deploy:
           <<: *release-tags
           requires:
