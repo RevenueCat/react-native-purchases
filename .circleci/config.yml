@@ -158,8 +158,8 @@ workflows:
           filters:
             tags:
               ignore: /.*/
-            # branches:
-              # only: main
+            branches:
+              only: main
       - docs-deploy:
           <<: *release-tags
           requires:
