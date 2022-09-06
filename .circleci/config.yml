@@ -16,6 +16,12 @@ aliases:
         ignore: /.*/
       branches:
         only: /^release\/.*/
+  only-main-branch: &only-main-branch
+    filters:
+      tags:
+        ignore: /.*/
+      branches:
+        only: main
 
 commands:
   install-dependencies:
@@ -155,9 +161,7 @@ workflows:
       - make-release:
           <<: *release-tags
       - prepare-next-version:
-          <<: *release-tags
-          requires:
-            - make-release
+          <<: *only-main-branch
       - docs-deploy:
           <<: *release-tags
           requires:
