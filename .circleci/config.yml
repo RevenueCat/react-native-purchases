@@ -160,12 +160,17 @@ workflows:
           <<: *release-branches
       - make-release:
           <<: *release-tags
-      - prepare-next-version:
-          <<: *only-main-branch
       - docs-deploy:
           <<: *release-tags
           requires:
             - make-release
+  snapshot-bump:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+    jobs:
+      - prepare-next-version:
+          <<: *only-main-branch
   danger:
     when:
       not:
