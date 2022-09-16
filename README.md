@@ -49,9 +49,6 @@ The minimum React Native version this SDK requires is `0.64`.
 ## SDK Reference
 Our full SDK reference [can be found here](https://revenuecat.github.io/react-native-purchases-docs/).
 
-## Contributing
-Contributions are always welcome! To learn how you can contribute, please see the [Contributing Guide](./Contributing/CONTRIBUTING.md).
-
 ---
 
 ## Installation
