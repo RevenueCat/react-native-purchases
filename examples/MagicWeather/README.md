@@ -19,7 +19,7 @@ See minimum react-native version requirements for RevenueCat's *Purchases* SDK [
 | -------------------------------- | ----------------------------------------- |
 | 🕹 Configuring the *Purchases* SDK  | [App.js](App.js#L17) |
 | 💰 Building a basic paywall         | [src/screens/PaywallScreen/index.js](src/screens/PaywallScreen/index.js) |
-| 🔐 Checking subscription status     | [src/screens/WeatherScreen/index.js](src/screens/WeatherScreen/index.js#L30) |
+| 🔐 Checking subscription status     | [src/screens/WeatherScreen/index.js](src/screens/WeatherScreen/index.js) |
 | 🤑 Restoring transactions           | [src/components/RestorePurchasesButton/index.js](src/components/RestorePurchasesButton/index.js) |
 | 👥 Identifying the user             | [src/components/LoginForm/index.js](src/components/LoginForm/index.js) |
 | 🚪 Logging out the user             | [src/components/LogoutButton/index.js](src/components/LogoutButton/index.js) |
