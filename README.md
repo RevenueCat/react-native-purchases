@@ -77,7 +77,7 @@ $ react-native link react-native-purchases
 
 ### Additional iOS Setup
 
-### If your project uses Cocoapods
+#### If your project uses Cocoapods
 If your project already uses Cocoapods to install iOS dependencies, common in ExpoKit projects, linking the library should have added it to the podfile. If it hasn't, add the following to your project's podfile to reference the library from your node_modules folder:
 
 ```ruby
@@ -87,27 +87,27 @@ pod 'RNPurchases', :path => '../node_modules/react-native-purchases'
 
 In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
 
-### Migrating from manual installation (if your project doesn't use CocoapodsCreate)
+#### Migrating from manual installation (if your project doesn't use CocoapodsCreate)
 
-### Remove the Framework Reference from your project
+##### Remove the Framework Reference from your project
 
 1. Remove `Purchases.framework` and `PurchasesHybridCommon.framework` from the libraries section of the project. 
 
-### Remove iOS Frameworks to Embedded Binaries
+##### Remove iOS Frameworks to Embedded Binaries
 1. In Xcode, in project manager, select your app target.
 1. Select the general tab
 1. Look for `Purchases.framework` and `PurchasesHybridCommon.framework` in the Embedded Binaries section and remove them.
 
 Remove `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` from Framework Search paths in build settings
 
-### Remove Strip Frameworks Phase
+##### Remove Strip Frameworks Phase
 During the old manual installation instructions, now deprecated, we indicated to add a build phase to strip fat frameworks. 
 1. In Xcode, in project manager, select your app target.
 2. Open the `Build Phases` tab
 3. Remove the added `Strip Frameworks` phase
 4. Clean `Derived Data` 
 
-### Link static library
+##### Link static library
 The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
 
 ![](https://media.giphy.com/media/U2MMgrdYlkRhEcy80J/giphy.gif)
