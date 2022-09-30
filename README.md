@@ -1,15 +1,28 @@
+<h3 align="center">😻 In-App Subscriptions Made Easy 😻</h3>
 
-<p align="center">
-  <img src="https://uploads-ssl.webflow.com/5e2613cf294dc30503dcefb7/5e752025f8c3a31d56a51408_logo_red%20(1).svg" width="350" alt="RevenueCat"/>
-<br>
-React Native in-app subscriptions made easy
-</p>
+[![License](https://img.shields.io/cocoapods/l/RevenueCat.svg?style=flat)](http://cocoapods.org/pods/RevenueCat)
 
-# What is react-native-purchases?
+RevenueCat is a powerful, reliable, and free to use in-app purchase server with cross-platform support. Our open-source framework provides a backend and a wrapper around StoreKit and Google Play Billing to make implementing in-app purchases and subscriptions easy. 
 
-React Native Purchases is a client for the [RevenueCat](https://www.revenuecat.com/) subscription and purchase tracking system. It is an open source framework that provides a wrapper around `StoreKit`, `Google Play Billing` and the RevenueCat backend to make implementing in-app purchases in `React Native` easy.
+Whether you are building a new app or already have millions of customers, you can use RevenueCat to:
 
-## Features
+  * Fetch products, make purchases, and check subscription status with our [native SDKs](https://docs.revenuecat.com/docs/installation). 
+  * Host and [configure products](https://docs.revenuecat.com/docs/entitlements) remotely from our dashboard. 
+  * Analyze the most important metrics for your app business [in one place](https://docs.revenuecat.com/docs/charts).
+  * See customer transaction histories, chart lifetime value, and [grant promotional subscriptions](https://docs.revenuecat.com/docs/customers).
+  * Get notified of real-time events through [webhooks](https://docs.revenuecat.com/docs/webhooks).
+  * Send enriched purchase events to analytics and attribution tools with our easy integrations.
+
+Sign up to [get started for free](https://app.revenuecat.com/signup).
+
+## React Native Purchases
+
+React Native Purchases is the client for the [RevenueCat](https://www.revenuecat.com/) subscription and purchase tracking system. It is an open source framework that provides a wrapper around `StoreKit`, `Google Play Billing` and the RevenueCat backend to make implementing in-app purchases in `React Native` easy.
+
+## Migrating from Purchases v3
+- See our [Migration guide](https://revenuecat-docs.netlify.app/documentation/revenuecat/v4_api_migration_guide)
+
+## RevenueCat SDK Features
 |   | RevenueCat |
 | --- | --- |
 ✅ | Server-side receipt validation
@@ -21,25 +34,46 @@ React Native Purchases is a client for the [RevenueCat](https://www.revenuecat.c
 💯 | Well maintained - [frequent releases](https://github.com/RevenueCat/purchases-ios/releases)  
 📮 | Great support - [Help Center](https://revenuecat.zendesk.com) 
 
+## Getting Started
+For more detailed information, you can view our complete documentation at [docs.revenuecat.com](https://docs.revenuecat.com/docs).
+
+Please follow the [Quickstart Guide](https://docs.revenuecat.com/docs/) for more information on how to install the SDK.
+
+Or view our React Native sample app:
+- [MagicWeather](examples/MagicWeather)
+
 ## Requirements
 
 The minimum React Native version this SDK requires is `0.64`.
+
+## SDK Reference
+Our full SDK reference [can be found here](https://revenuecat.github.io/react-native-purchases-docs/).
+
+---
 
 ## Installation
 
 ExpoKit projects of version 33 or higher can successfully use react-native-purchases. If you haven't upgraded, you can follow [the instructions here to upgrade](https://docs.expo.io/versions/latest/expokit/expokit/#upgrading-expokit). 
 
-If you're planning on ejecting from Expo, upgrade your expo version _first_, THEN eject. It'll save you a whole lot of hassle.
+> ❗️ If you're planning on ejecting from Expo, upgrade your expo version _first_, THEN eject. It'll save you a whole lot of hassle. ❗️
 
-### Add the library to the project
+### 1. Add the library to the project
 
-`$ npm install react-native-purchases --save`
+```
+$ npm install react-native-purchases --save
+```
+
 or
-`$ yarn add react-native-purchases`
 
-### Link library to the project
+```
+$ yarn add react-native-purchases
+```
 
-`$ react-native link react-native-purchases`
+### 2. Link library to the project
+
+```
+$ react-native link react-native-purchases
+```
 
 ### Additional iOS Setup
 
@@ -77,11 +111,3 @@ During the old manual installation instructions, now deprecated, we indicated to
 The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
 
 ![](https://media.giphy.com/media/U2MMgrdYlkRhEcy80J/giphy.gif)
-
-## Getting Started
-
-Please follow the [Quickstart Guide](https://docs.revenuecat.com/docs/) for more information on how to use the SDK
-
-## SDK Reference
-Our full SDK reference [can be found here](https://revenuecat.github.io/react-native-purchases-docs).
-
