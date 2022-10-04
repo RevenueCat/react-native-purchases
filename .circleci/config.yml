@@ -23,6 +23,15 @@ aliases:
       branches:
         only: main
 
+parameters:
+   action:
+     type: enum
+     enum: [build, upgrade-hybrid-common, bump]
+     default: build
+   hybrid-common-version:
+     type: string
+     default: ''
+
 commands:
   install-dependencies:
     steps:
@@ -137,6 +146,20 @@ jobs:
           name: release
           command: bundle exec fastlane release
 
+  update-hybrid-common-versions:
+    description: "Creates a PR updating purchases-hybrid-common to latest release"
+    docker:
+      - image: cimg/ruby:3.1.2
+    steps:
+      - checkout
+      - revenuecat/install-gem-unix-dependencies:
+          cache-version: v1
+      - revenuecat/trust-github-key
+      - revenuecat/setup-git-credentials
+      - run:
+          name: Prepare next version
+          command: bundle exec fastlane update_hybrid_common version:<< pipeline.parameters.hybrid-common-version >> open_pr:true automatic_release:true
+
 workflows:
   test:
     when:
@@ -146,6 +169,7 @@ workflows:
       - analyse_js
       - android
       - ios
+
   deploy:
     when:
       not:
@@ -164,6 +188,7 @@ workflows:
           <<: *release-tags
           requires:
             - make-release
+
   snapshot-bump:
     when:
       not:
@@ -171,12 +196,14 @@ workflows:
     jobs:
       - prepare-next-version:
           <<: *only-main-branch
+
   danger:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - revenuecat/danger
+
   weekly-run-workflow:
     when:
       and:
@@ -184,3 +211,15 @@ workflows:
         - equal: [ "release-train", << pipeline.schedule.name >> ]
     jobs:
       - revenuecat/automatic-bump
+  
+  manual-trigger-bump:
+    when:
+      equal: [ bump, << pipeline.parameters.action >> ]
+    jobs:
+      - revenuecat/automatic-bump
+
+  update-hybrid-common-versions:
+     when:
+       equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
+     jobs:
+       - update-hybrid-common-versions
