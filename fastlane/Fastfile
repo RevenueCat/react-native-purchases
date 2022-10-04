@@ -107,9 +107,9 @@ lane :update_hybrid_common_versions do |options|
     UI.user_error!("Missing `version` argument")
   end
 
-  previous_version_number = get_phc_version
+  current_phc_version = get_phc_version
 
-  UI.message("ℹ️  Current Purchases Hybrid Common version: #{previous_version_number}")
+  UI.message("ℹ️  Current Purchases Hybrid Common version: #{current_phc_version}")
   UI.message("ℹ️  Setting Purchases Hybrid Common version: #{new_version_number}")
   files_to_update = [
     'RNPurchases.podspec',
@@ -120,7 +120,7 @@ lane :update_hybrid_common_versions do |options|
     UI.message("ℹ️  Nothing more to do, dry_run: true")
   else
     replace_text_in_files(
-      previous_text: previous_version_number,
+      previous_text: current_phc_version,
       new_text: new_version_number,
       paths_of_files_to_update: files_to_update
     )
