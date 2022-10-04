@@ -118,19 +118,21 @@ lane :update_hybrid_common_versions do |options|
 
   if dry_run
     UI.message("ℹ️  Nothing more to do, dry_run: true")
-  else
-    replace_text_in_files(
-      previous_text: current_phc_version,
-      new_text: new_version_number,
-      paths_of_files_to_update: files_to_update
-    )
+    next
   end
+
+  bump_phc_version(
+    repo_name: 'react-native-purchases',
+    files_to_update: files_to_update,
+    current_version: current_phc_version,
+    next_version: new_version_number,
+    open_pr: options[:open_pr] || false,
+    automatic_release: options[:automatic_release] || false
+  )
 end
 
 desc "Build hybrid example"
 lane :build_hybrid_example do |options|
-  options[:previous_pod_version] = parse_pod_version
-  # If we chain lanes together, we'll need to make sure we don't chdir out of the correct directory
   Dir.chdir(get_root_folder) do
     sh("yarn example")
   end
@@ -140,43 +142,10 @@ lane :build_hybrid_example do |options|
   end
 end
 
-desc "Update iOS pod version during hybrid update"
-lane :update_ios_pod do |options|
-  if options[:dry_run]
-    dry_run = true
-  end
-  if options[:version]
-    new_version_number = options[:version]
-  else
-    UI.user_error!("Missing `version` argument")
-  end
-
-  if options[:previous_pod_version]
-    previous_pod_version = options[:previous_pod_version]
-  else
-    UI.user_error!("Missing `previous_pod_version` argument")
-  end
-
-  if options[:previous_hybrid_version]
-    previous_hybrid_version = options[:previous_hybrid_version]
-  else
-    UI.user_error!("Missing `previous_hybrid_version` argument")
-  end
-
-  new_pod_version = parse_pod_version
-
-  UI.message("ℹ️  Current Purchases version: #{previous_hybrid_version}")
-  UI.message("ℹ️  New Purchases version    : #{new_version_number}")
-  UI.message("ℹ️  Current Pod version      : #{previous_pod_version}")
-  UI.message("ℹ️  New Pod version          : #{new_pod_version}")
-  UI.message("ℹ️  Nothing more to do, dry_run: #{dry_run}")
-end
-
-desc "Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod"
+desc "Update Hybrid Common and builds PurchaseTester. Calls update_hybrid_common then build_hybrid_example"
 lane :update_hybrid_common do |options|
   update_hybrid_common_versions(options)
   build_hybrid_example(options)
-  update_ios_pod(options)
 end
 
 desc "Generate docs"
