@@ -77,21 +77,13 @@ Update hybrid common pod and gradle
 
 Build hybrid example
 
-### update_ios_pod
-
-```sh
-[bundle exec] fastlane update_ios_pod
-```
-
-Update iOS pod version during hybrid update
-
 ### update_hybrid_common
 
 ```sh
 [bundle exec] fastlane update_hybrid_common
 ```
 
-Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod
+Update Hybrid Common and builds PurchaseTester. Calls update_hybrid_common then build_hybrid_example
 
 ### generate_docs
 
