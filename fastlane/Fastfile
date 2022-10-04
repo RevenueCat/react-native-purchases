@@ -137,8 +137,8 @@ lane :build_hybrid_example do |options|
     sh("yarn example")
   end
   Dir.chdir(File.expand_path("examples/purchaseTesterTypescript/ios", get_root_folder)) do
-    sh("pod install --repo-update")
     sh("pod update PurchasesHybridCommon --repo-update")
+    sh("pod install")
   end
 end
 
