@@ -31,7 +31,7 @@ lane :bump do |options|
   update_hybrids_versions_file(
     versions_file_path: './VERSIONS.md',
     new_sdk_version: current_version_number,
-    hybrid_common_version: parse_previous_hybrid_version
+    hybrid_common_version: get_phc_version
   )
   commit_current_changes(commit_message: 'Update VERSIONS.md')
   push_to_git_remote(set_upstream: true)
@@ -107,10 +107,7 @@ lane :update_hybrid_common_versions do |options|
     UI.user_error!("Missing `version` argument")
   end
 
-  previous_version_number = parse_previous_hybrid_version
-
-  # Add to options so if we're chaining lanes together, the other lanes get it
-  options[:previous_hybrid_version] = previous_version_number
+  previous_version_number = get_phc_version
 
   UI.message("ℹ️  Current Purchases Hybrid Common version: #{previous_version_number}")
   UI.message("ℹ️  Setting Purchases Hybrid Common version: #{new_version_number}")
@@ -238,7 +235,7 @@ end
 # Helper functions 🤜🤛                                                      #
 ###############################################################################
 
-def parse_previous_hybrid_version
+def get_phc_version
   Dir.chdir(get_root_folder) do
     return (sh "cat RNPurchases.podspec | grep \'\"PurchasesHybridCommon\", \' | awk \'{print($3)}\' | sed \"s/\'//g\"").strip
   end
