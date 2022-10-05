@@ -136,26 +136,12 @@ lane :build_hybrid_example do |options|
   Dir.chdir(get_root_folder) do
     sh("yarn example")
   end
-  Dir.chdir(File.expand_path("examples/purchaseTesterTypescript/ios", get_root_folder)) do
-    sh("pod update PurchasesHybridCommon --repo-update")
-    sh("pod install")
-  end
 end
 
 desc "Update Hybrid Common and builds examples. Calls update_hybrid_common, then build_hybrid_example and pushes changes to a new branch if open_pr option is true"
 lane :update_hybrid_common do |options|
   update_hybrid_common_versions(options)
   build_hybrid_example(options)
-  
-  return unless options[:open_pr]
-
-  current_branch = sh("git branch --show-current").strip
-  unless current_branch == 'main'
-    commit_current_changes(commit_message: 'Update examples')
-    push_to_git_remote(set_upstream: true)
-  else
-    UI.message("Current branch is main. Skipping pushing to branch.")
-  end
 end
 
 desc "Generate docs"
