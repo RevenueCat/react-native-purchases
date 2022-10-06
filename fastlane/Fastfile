@@ -96,8 +96,8 @@ lane :build_example do |options|
   end
 end
 
-desc "Update hybrid common pod and gradle"
-lane :update_hybrid_common_versions do |options|
+desc "Update purchases-hybrid-common version, pushes changes to a new branch if open_pr option is true"
+lane :update_hybrid_common do |options|
   if options[:dry_run]
     dry_run = true
   end
@@ -129,19 +129,6 @@ lane :update_hybrid_common_versions do |options|
     open_pr: options[:open_pr] || false,
     automatic_release: options[:automatic_release] || false
   )
-end
-
-desc "Build hybrid example"
-lane :build_hybrid_example do |options|
-  Dir.chdir(get_root_folder) do
-    sh("yarn example")
-  end
-end
-
-desc "Update Hybrid Common and builds examples. Calls update_hybrid_common, then build_hybrid_example and pushes changes to a new branch if open_pr option is true"
-lane :update_hybrid_common do |options|
-  update_hybrid_common_versions(options)
-  build_hybrid_example(options)
 end
 
 desc "Generate docs"
