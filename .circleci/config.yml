@@ -162,7 +162,7 @@ jobs:
       - run:
           name: Updating to next version of phc
           command: |
-            bundle exec fastlane update_hybrid_common 
+            bundle exec fastlane update_hybrid_common \
             version:<< pipeline.parameters.version >> \
             open_pr:true \
             automatic_release:<< pipeline.parameters.automatic >>
