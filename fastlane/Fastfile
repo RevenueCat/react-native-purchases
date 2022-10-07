@@ -31,7 +31,7 @@ lane :bump do |options|
   update_hybrids_versions_file(
     versions_file_path: './VERSIONS.md',
     new_sdk_version: current_version_number,
-    hybrid_common_version: parse_previous_hybrid_version
+    hybrid_common_version: get_phc_version
   )
   commit_current_changes(commit_message: 'Update VERSIONS.md')
   push_to_git_remote(set_upstream: true)
@@ -96,8 +96,8 @@ lane :build_example do |options|
   end
 end
 
-desc "Update hybrid common pod and gradle"
-lane :update_hybrid_common_versions do |options|
+desc "Update purchases-hybrid-common version, pushes changes to a new branch if open_pr option is true"
+lane :update_hybrid_common do |options|
   if options[:dry_run]
     dry_run = true
   end
@@ -107,12 +107,9 @@ lane :update_hybrid_common_versions do |options|
     UI.user_error!("Missing `version` argument")
   end
 
-  previous_version_number = parse_previous_hybrid_version
+  current_phc_version = get_phc_version
 
-  # Add to options so if we're chaining lanes together, the other lanes get it
-  options[:previous_hybrid_version] = previous_version_number
-
-  UI.message("ℹ️  Current Purchases Hybrid Common version: #{previous_version_number}")
+  UI.message("ℹ️  Current Purchases Hybrid Common version: #{current_phc_version}")
   UI.message("ℹ️  Setting Purchases Hybrid Common version: #{new_version_number}")
   files_to_update = [
     'RNPurchases.podspec',
@@ -121,65 +118,17 @@ lane :update_hybrid_common_versions do |options|
 
   if dry_run
     UI.message("ℹ️  Nothing more to do, dry_run: true")
-  else
-    replace_text_in_files(
-      previous_text: previous_version_number,
-      new_text: new_version_number,
-      paths_of_files_to_update: files_to_update
-    )
-  end
-end
-
-desc "Build hybrid example"
-lane :build_hybrid_example do |options|
-  options[:previous_pod_version] = parse_pod_version
-  # If we chain lanes together, we'll need to make sure we don't chdir out of the correct directory
-  Dir.chdir(get_root_folder) do
-    sh("yarn example")
-  end
-  Dir.chdir(File.expand_path("examples/purchaseTesterTypescript/ios", get_root_folder)) do
-    sh("pod install --repo-update")
-    sh("pod update PurchasesHybridCommon --repo-update")
-  end
-end
-
-desc "Update iOS pod version during hybrid update"
-lane :update_ios_pod do |options|
-  if options[:dry_run]
-    dry_run = true
-  end
-  if options[:version]
-    new_version_number = options[:version]
-  else
-    UI.user_error!("Missing `version` argument")
+    next
   end
 
-  if options[:previous_pod_version]
-    previous_pod_version = options[:previous_pod_version]
-  else
-    UI.user_error!("Missing `previous_pod_version` argument")
-  end
-
-  if options[:previous_hybrid_version]
-    previous_hybrid_version = options[:previous_hybrid_version]
-  else
-    UI.user_error!("Missing `previous_hybrid_version` argument")
-  end
-
-  new_pod_version = parse_pod_version
-
-  UI.message("ℹ️  Current Purchases version: #{previous_hybrid_version}")
-  UI.message("ℹ️  New Purchases version    : #{new_version_number}")
-  UI.message("ℹ️  Current Pod version      : #{previous_pod_version}")
-  UI.message("ℹ️  New Pod version          : #{new_pod_version}")
-  UI.message("ℹ️  Nothing more to do, dry_run: #{dry_run}")
-end
-
-desc "Update Hybrid Common, Build PurchaseTester, and updates download scripts. Calls update_hybrid_common, then build_hybrid_example then update_ios_pod"
-lane :update_hybrid_common do |options|
-  update_hybrid_common_versions(options)
-  build_hybrid_example(options)
-  update_ios_pod(options)
+  bump_phc_version(
+    repo_name: 'react-native-purchases',
+    files_to_update: files_to_update,
+    current_version: current_phc_version,
+    next_version: new_version_number,
+    open_pr: options[:open_pr] || false,
+    automatic_release: options[:automatic_release] || false
+  )
 end
 
 desc "Generate docs"
@@ -238,7 +187,7 @@ end
 # Helper functions 🤜🤛                                                      #
 ###############################################################################
 
-def parse_previous_hybrid_version
+def get_phc_version
   Dir.chdir(get_root_folder) do
     return (sh "cat RNPurchases.podspec | grep \'\"PurchasesHybridCommon\", \' | awk \'{print($3)}\' | sed \"s/\'//g\"").strip
   end
