@@ -1,3 +1,9 @@
+## 5.1.1
+### Other Changes
+* bump fastlane plugin to latest version (#452) via Andy Boedo (@aboedo)
+* [AUTOMATIC] Updates purchases-hybrid-common to 4.3.2 (#451) via RevenueCat Git Bot (@RCGitBot)
+* Adds missing \ via Cesar de la Vega (@vegaro)
+
 ## 5.1.0
 ### Other Changes
 * [AUTOMATIC] Updates purchases-hybrid-common to 4.3.1 (#447) via Cesar de la Vega (@vegaro)
