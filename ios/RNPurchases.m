@@ -314,7 +314,7 @@ RCT_REMAP_METHOD(isConfigured,
 
 #pragma mark -
 #pragma mark Delegate Methods
-- (void)purchases:(RCPurchases *)purchases didReceiveUpdatedCustomerInfo:(RCCustomerInfo *)customerInfo {
+- (void)purchases:(RCPurchases *)purchases receivedUpdatedCustomerInfo:(RCCustomerInfo *)customerInfo {
     [self sendEventWithName:RNPurchasesCustomerInfoUpdatedEvent body:customerInfo.dictionary];
 }
 
