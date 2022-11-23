@@ -1,2 +1,2 @@
-### Bugfixes
-* Use receivedUpdatedCustomerInfo instead of didReceiveUpdatedCustomerInfo (#473) via Ian Ownbey (@imownbey)
+### Other Changes
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.4.2 (#477) via RevenueCat Git Bot (@RCGitBot)
