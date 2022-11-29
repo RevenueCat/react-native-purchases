@@ -190,7 +190,10 @@ workflows:
           <<: *release-branches
       - make-release:
           <<: *release-tags
-      - docs-deploy
+      - docs-deploy:
+          <<: *release-tags
+          requires:
+            - make-release
 
   snapshot-bump:
     when:
