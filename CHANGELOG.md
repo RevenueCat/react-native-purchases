@@ -1,3 +1,7 @@
+## 5.3.2
+### Other Changes
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.5.2 (#495) via RevenueCat Git Bot (@RCGitBot)
+
 ## 5.3.1
 ### Other Changes
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.5.1 (#491) via RevenueCat Git Bot (@RCGitBot)
