@@ -715,7 +715,10 @@ NativeModules.RNPurchases = {
   setDisplayName: jest.fn(),
   setPushToken: jest.fn(),
   canMakePayments: jest.fn(),
-  isConfigured: jest.fn()
+  isConfigured: jest.fn(),
+  setCleverTapID: jest.fn(),
+  setMixpanelDistinctID: jest.fn(),
+  setFirebaseAppInstanceID: jest.fn()
 };
 
 jest.mock(
