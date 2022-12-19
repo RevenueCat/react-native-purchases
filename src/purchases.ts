@@ -778,6 +778,45 @@ export default class Purchases {
     }
 
     /**
+     * Subscriber attribute associated with the CleverTap Id for the user
+     * Required for the RevenueCat CleverTap integration
+     *
+     * @param cleverTapID Empty String or null will delete the subscriber attribute.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+     * setting the CleverTap ID.
+     */
+    public static async setCleverTapID(cleverTapID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setCleverTapID(cleverTapID);
+    }
+
+    /**
+     * Subscriber attribute associated with the Mixpanel Distinct Id for the user
+     * Required for the RevenueCat Mixpanel integration
+     *
+     * @param mixpanelDistinctID Empty String or null will delete the subscriber attribute.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+     * setting the Mixpanel Distinct ID.
+     */
+    public static async setMixpanelDistinctID(mixpanelDistinctID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setMixpanelDistinctID(mixpanelDistinctID);
+    }
+
+    /**
+     * Subscriber attribute associated with the Firebase App Instance ID for the user
+     * Required for the RevenueCat Firebase integration
+     *
+     * @param mixpanelDistinctID Empty String or null will delete the subscriber attribute.
+     * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+     * setting the Firebase App Instance ID.
+     */
+    public static async setFirebaseAppInstanceID(firebaseAppInstanceID: string | null): Promise<void> {
+        await Purchases.throwIfNotConfigured();
+        RNPurchases.setFirebaseAppInstanceID(firebaseAppInstanceID);
+    }
+
+    /**
      * Subscriber attribute associated with the OneSignal Player Id for the user
      * Required for the RevenueCat OneSignal integration
      *

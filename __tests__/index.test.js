@@ -784,4 +784,49 @@ describe("Purchases", () => {
       }
     });
   });
+
+  describe("setCleverTapID", () => {
+    describe("when setCleverTapID is called", () => {
+      it("makes the right call to Purchases", async () => {
+        const Purchases = require("../dist/index").default;
+
+        const attributionID = "65a1ds56adsgh6954asd";
+
+        await Purchases.setCleverTapID(attributionID);
+
+        expect(NativeModules.RNPurchases.setCleverTapID).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setCleverTapID).toBeCalledWith(attributionID);
+      });
+    });
+  });
+
+  describe("setMixpanelDistinctID", () => {
+    describe("when setMixpanelDistinctID is called", () => {
+      it("makes the right call to Purchases", async () => {
+        const Purchases = require("../dist/index").default;
+
+        const attributionID = "65a1ds56adsgh6954asd";
+
+        await Purchases.setMixpanelDistinctID(attributionID);
+
+        expect(NativeModules.RNPurchases.setMixpanelDistinctID).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setMixpanelDistinctID).toBeCalledWith(attributionID);
+      });
+    });
+  });
+
+  describe("setFirebaseAppInstanceID", () => {
+    describe("when setFirebaseAppInstanceID is called", () => {
+      it("makes the right call to Purchases", async () => {
+        const Purchases = require("../dist/index").default;
+
+        const attributionID = "65a1ds56adsgh6954asd";
+
+        await Purchases.setFirebaseAppInstanceID(attributionID);
+
+        expect(NativeModules.RNPurchases.setFirebaseAppInstanceID).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setFirebaseAppInstanceID).toBeCalledWith(attributionID);
+      });
+    });
+  });
 });
