@@ -730,7 +730,7 @@ export default class Purchases {
      * Subscriber attribute associated with the Adjust Id for the user
      * Required for the RevenueCat Adjust integration
      *
-     * @param adjustID Empty String or null will delete the subscriber attribute.
+     * @param adjustID Adjust ID to use in Adjust integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting Adjust ID.
      */
@@ -742,7 +742,7 @@ export default class Purchases {
     /**
      * Subscriber attribute associated with the AppsFlyer Id for the user
      * Required for the RevenueCat AppsFlyer integration
-     * @param appsflyerID Empty String or null will delete the subscriber attribute.
+     * @param appsflyerID Appsflyer ID to use in Appsflyer integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Appsflyer ID.
      */
@@ -755,7 +755,7 @@ export default class Purchases {
      * Subscriber attribute associated with the Facebook SDK Anonymous Id for the user
      * Recommended for the RevenueCat Facebook integration
      *
-     * @param fbAnonymousID Empty String or null will delete the subscriber attribute.
+     * @param fbAnonymousID Facebook Anonymous ID to use in Mparticle integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Facebook Anonymous ID.
      */
@@ -768,7 +768,7 @@ export default class Purchases {
      * Subscriber attribute associated with the mParticle Id for the user
      * Recommended for the RevenueCat mParticle integration
      *
-     * @param mparticleID Empty String or null will delete the subscriber attribute.
+     * @param mparticleID Mparticle ID to use in Mparticle integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Mparticle ID.
      */
@@ -781,7 +781,7 @@ export default class Purchases {
      * Subscriber attribute associated with the CleverTap Id for the user
      * Required for the RevenueCat CleverTap integration
      *
-     * @param cleverTapID Empty String or null will delete the subscriber attribute.
+     * @param cleverTapID CleverTap user ID to use in CleverTap integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the CleverTap ID.
      */
@@ -794,7 +794,7 @@ export default class Purchases {
      * Subscriber attribute associated with the Mixpanel Distinct Id for the user
      * Required for the RevenueCat Mixpanel integration
      *
-     * @param mixpanelDistinctID Empty String or null will delete the subscriber attribute.
+     * @param mixpanelDistinctID Mixpanel Distinct ID to use in Mixpanel integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Mixpanel Distinct ID.
      */
@@ -807,7 +807,7 @@ export default class Purchases {
      * Subscriber attribute associated with the Firebase App Instance ID for the user
      * Required for the RevenueCat Firebase integration
      *
-     * @param mixpanelDistinctID Empty String or null will delete the subscriber attribute.
+     * @param firebaseAppInstanceID Firebase App Instance ID to use in Firebase integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Firebase App Instance ID.
      */
@@ -820,9 +820,9 @@ export default class Purchases {
      * Subscriber attribute associated with the OneSignal Player Id for the user
      * Required for the RevenueCat OneSignal integration
      *
-     * @param onesignalID Empty String or null will delete the subscriber attribute.
+     * @param onesignalID OneSignal Player ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
-     * setting the Onesignal ID.
+     * setting the OneSignal ID.
      */
     public static async setOnesignalID(onesignalID: string | null): Promise<void> {
         await Purchases.throwIfNotConfigured();
@@ -833,7 +833,7 @@ export default class Purchases {
      * Subscriber attribute associated with the Airship Channel Id for the user
      * Required for the RevenueCat Airship integration
      *
-     * @param airshipChannelID Empty String or null will delete the subscriber attribute.
+     * @param airshipChannelID Airship Channel ID to use in Airship integration. Empty String or null will delete the subscriber attribute.
      * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
      * setting the Airship Channel ID.
      */
