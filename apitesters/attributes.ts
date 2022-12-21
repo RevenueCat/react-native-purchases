@@ -13,6 +13,9 @@ async function checkAttributes(purchases: Purchases) {
   await Purchases.setAppsflyerID(stringOrNull);
   await Purchases.setFBAnonymousID(stringOrNull);
   await Purchases.setMparticleID(stringOrNull);
+  await Purchases.setCleverTapID(stringOrNull);
+  await Purchases.setMixpanelDistinctID(stringOrNull);
+  await Purchases.setFirebaseAppInstanceID(stringOrNull);
   await Purchases.setOnesignalID(stringOrNull);
   await Purchases.setAirshipChannelID(stringOrNull);
   await Purchases.setMediaSource(stringOrNull);

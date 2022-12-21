@@ -288,6 +288,21 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void setCleverTapID(String cleverTapID) {
+      SubscriberAttributesKt.setCleverTapID(cleverTapID);
+    }
+
+    @ReactMethod
+    public void setMixpanelDistinctID(String mixpanelDistinctID) {
+      SubscriberAttributesKt.setMixpanelDistinctID(mixpanelDistinctID);
+    }
+
+    @ReactMethod
+    public void setFirebaseAppInstanceID(String firebaseAppInstanceId) {
+      SubscriberAttributesKt.setFirebaseAppInstanceID(firebaseAppInstanceId);
+    }
+
+    @ReactMethod
     public void setOnesignalID(String onesignalID) {
       SubscriberAttributesKt.setOnesignalID(onesignalID);
     }

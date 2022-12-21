@@ -265,6 +265,18 @@ RCT_EXPORT_METHOD(setMparticleID:(NSString *)mparticleID) {
     [RCCommonFunctionality setMparticleID:mparticleID];
 }
 
+RCT_EXPORT_METHOD(setCleverTapID:(NSString *)cleverTapID) {
+    [RCCommonFunctionality setCleverTapID:cleverTapID];
+}
+
+RCT_EXPORT_METHOD(setMixpanelDistinctID:(NSString *)mixpanelDistinctID) {
+    [RCCommonFunctionality setMixpanelDistinctID:mixpanelDistinctID];
+}
+
+RCT_EXPORT_METHOD(setFirebaseAppInstanceID:(NSString *)firebaseAppInstanceId) {
+    [RCCommonFunctionality setFirebaseAppInstanceID:firebaseAppInstanceId];
+}
+
 RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID) {
     [RCCommonFunctionality setOnesignalID:onesignalID];
 }
