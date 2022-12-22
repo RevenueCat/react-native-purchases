@@ -33,7 +33,7 @@
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepublish": "tsc",
     "example": "yarn --cwd examples/MagicWeather && yarn --cwd examples/purchaseTesterTypescript",
-    "pods": "(cd examples/MagicWeather && npx pod-install --quiet) && (cd examples/purchaseTesterTypescript && npx pod-install --quiet)",
+    "pods": "(cd examples/MagicWeather && rm -f ios/Podfile.lock && npx pod-install --quiet) && (cd examples/purchaseTesterTypescript && rm -f ios/Podfile.lock && npx pod-install --quiet)",
     "bootstrap": "yarn example && yarn && yarn pods"
   },
   "repository": {
