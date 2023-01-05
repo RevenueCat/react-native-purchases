@@ -9,6 +9,7 @@ files_with_version_number = [
 repo_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
 changelog_path = './CHANGELOG.md'
+versions_path = './VERSIONS.md'
 
 before_all do
   setup_circle_ci
@@ -16,6 +17,7 @@ end
 
 desc "Bump version, edit changelog, and create pull request"
 lane :bump do |options|
+  phc_version = get_phc_version
   bump_version_update_changelog_create_pr(
     current_version: current_version_number,
     changelog_latest_path: changelog_latest_path,
@@ -26,12 +28,14 @@ lane :bump do |options|
     github_rate_limit: options[:github_rate_limit],
     editor: options[:editor],
     next_version: options[:next_version],
-    automatic_release: options[:automatic_release]
+    automatic_release: options[:automatic_release],
+    hybrid_common_version: phc_version,
+    versions_file_path: versions_path
   )
   update_hybrids_versions_file(
-    versions_file_path: './VERSIONS.md',
+    versions_file_path: versions_path,
     new_sdk_version: current_version_number,
-    hybrid_common_version: get_phc_version
+    hybrid_common_version: phc_version
   )
   commit_current_changes(commit_message: 'Update VERSIONS.md')
   push_to_git_remote(set_upstream: true)
