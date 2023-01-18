@@ -67,6 +67,7 @@ global.offeringsStub = {
     weekly: {
       offeringIdentifier: 'default',
       product: {
+        introPrice: null,
         description: 'Product with intro price',
         currencyCode: 'USD',
         priceString: '$9.99',
@@ -94,7 +95,8 @@ global.offeringsStub = {
         priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
-        identifier: 'annual_freetrial'
+        identifier: 'annual_freetrial',
+        subscriptionPeriod: "P1Y"
       },
       packageType: 'TWO_MONTH',
       identifier: '$rc_two_month'
@@ -115,7 +117,8 @@ global.offeringsStub = {
         priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
-        identifier: 'annual_freetrial'
+        identifier: 'annual_freetrial',
+        subscriptionPeriod: "P1Y"
       },
       packageType: 'THREE_MONTH',
       identifier: '$rc_three_month'
@@ -136,7 +139,8 @@ global.offeringsStub = {
         priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
-        identifier: 'annual_freetrial'
+        identifier: 'annual_freetrial',
+        subscriptionPeriod: "P1Y"
       },
       packageType: 'SIX_MONTH',
       identifier: '$rc_six_month'
@@ -157,7 +161,8 @@ global.offeringsStub = {
         priceString: '$19.99',
         price: 19.99,
         title: 'Annual Free Trial (PurchasesSample)',
-        identifier: 'annual_freetrial'
+        identifier: 'annual_freetrial',
+        subscriptionPeriod: "P1Y"
       },
       packageType: 'ANNUAL',
       identifier: '$rc_annual'
@@ -171,7 +176,8 @@ global.offeringsStub = {
         priceString: '$4.99',
         price: 4.99,
         title: 'Consumable (PurchasesSample)',
-        identifier: 'consumable'
+        identifier: 'consumable',
+        subscriptionPeriod: null
       },
       packageType: 'LIFETIME',
       identifier: '$rc_lifetime'
@@ -193,7 +199,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'ANNUAL',
         identifier: '$rc_annual'
@@ -214,7 +221,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'SIX_MONTH',
         identifier: '$rc_six_month'
@@ -235,7 +243,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'THREE_MONTH',
         identifier: '$rc_three_month'
@@ -256,7 +265,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'TWO_MONTH',
         identifier: '$rc_two_month'
@@ -277,7 +287,8 @@ global.offeringsStub = {
           priceString: '$9.99',
           price: 9.99,
           title: 'Introductory Price (PurchasesSample)',
-          identifier: 'introductory_price'
+          identifier: 'introductory_price',
+          subscriptionPeriod: "P1M"
         },
         packageType: 'WEEKLY',
         identifier: '$rc_weekly'
@@ -312,7 +323,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'CUSTOM',
         identifier: 'Custom'
@@ -340,7 +352,8 @@ global.offeringsStub = {
           priceString: '$9.99',
           price: 9.99,
           title: 'Introductory Price (PurchasesSample)',
-          identifier: 'introductory_price'
+          identifier: 'introductory_price',
+          subscriptionPeriod: "P1M"
         },
         packageType: 'MONTHLY',
         identifier: '$rc_monthly'
@@ -367,7 +380,8 @@ global.offeringsStub = {
             priceString: '$9.99',
             price: 9.99,
             title: 'Introductory Price (PurchasesSample)',
-            identifier: 'introductory_price'
+            identifier: 'introductory_price',
+            subscriptionPeriod: "P1M"
           },
           packageType: 'MONTHLY',
           identifier: '$rc_monthly'
@@ -393,7 +407,8 @@ global.offeringsStub = {
           priceString: '$9.99',
           price: 9.99,
           title: 'Introductory Price (PurchasesSample)',
-          identifier: 'introductory_price'
+          identifier: 'introductory_price',
+          subscriptionPeriod: "P1M"
         },
         packageType: 'WEEKLY',
         identifier: '$rc_weekly'
@@ -415,7 +430,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'TWO_MONTH',
         identifier: '$rc_two_month'
@@ -436,7 +452,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'THREE_MONTH',
         identifier: '$rc_three_month'
@@ -457,7 +474,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'SIX_MONTH',
         identifier: '$rc_six_month'
@@ -478,7 +496,8 @@ global.offeringsStub = {
           priceString: '$19.99',
           price: 19.99,
           title: 'Annual Free Trial (PurchasesSample)',
-          identifier: 'annual_freetrial'
+          identifier: 'annual_freetrial',
+          subscriptionPeriod: "P1Y"
         },
         packageType: 'ANNUAL',
         identifier: '$rc_annual'
@@ -492,7 +511,8 @@ global.offeringsStub = {
           priceString: '$4.99',
           price: 4.99,
           title: 'Consumable (PurchasesSample)',
-          identifier: 'consumable'
+          identifier: 'consumable',
+          subscriptionPeriod: null
         },
         packageType: 'LIFETIME',
         identifier: '$rc_lifetime'
@@ -514,7 +534,8 @@ global.offeringsStub = {
             priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
-            identifier: 'annual_freetrial'
+            identifier: 'annual_freetrial',
+            subscriptionPeriod: "P1Y"
           },
           packageType: 'ANNUAL',
           identifier: '$rc_annual'
@@ -535,7 +556,8 @@ global.offeringsStub = {
             priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
-            identifier: 'annual_freetrial'
+            identifier: 'annual_freetrial',
+            subscriptionPeriod: "P1Y"
           },
           packageType: 'SIX_MONTH',
           identifier: '$rc_six_month'
@@ -556,7 +578,8 @@ global.offeringsStub = {
             priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
-            identifier: 'annual_freetrial'
+            identifier: 'annual_freetrial',
+            subscriptionPeriod: "P1Y"
           },
           packageType: 'THREE_MONTH',
           identifier: '$rc_three_month'
@@ -577,7 +600,8 @@ global.offeringsStub = {
             priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
-            identifier: 'annual_freetrial'
+            identifier: 'annual_freetrial',
+            subscriptionPeriod: "P1Y"
           },
           packageType: 'TWO_MONTH',
           identifier: '$rc_two_month'
@@ -598,7 +622,8 @@ global.offeringsStub = {
             priceString: '$9.99',
             price: 9.99,
             title: 'Introductory Price (PurchasesSample)',
-            identifier: 'introductory_price'
+            identifier: 'introductory_price',
+            subscriptionPeriod: "P1M"
           },
           packageType: 'WEEKLY',
           identifier: '$rc_weekly'
@@ -612,7 +637,8 @@ global.offeringsStub = {
             priceString: '$4.99',
             price: 4.99,
             title: 'Consumable (PurchasesSample)',
-            identifier: 'consumable'
+            identifier: 'consumable',
+            subscriptionPeriod: null
           },
           packageType: 'LIFETIME',
           identifier: '$rc_lifetime'
@@ -633,7 +659,8 @@ global.offeringsStub = {
             priceString: '$19.99',
             price: 19.99,
             title: 'Annual Free Trial (PurchasesSample)',
-            identifier: 'annual_freetrial'
+            identifier: 'annual_freetrial',
+            subscriptionPeriod: "P1Y"
           },
           packageType: 'CUSTOM',
           identifier: 'Custom'
