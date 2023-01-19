@@ -18,6 +18,7 @@ function checkProduct(product: PurchasesStoreProduct) {
   const currencyCode: string = product.currencyCode;
   const introPrice: PurchasesIntroPrice | null = product.introPrice;
   const discounts: PurchasesStoreProductDiscount[] | null = product.discounts;
+  const subscriptionPeriod: string | null = product.subscriptionPeriod;
 }
 
 function checkDiscount(discount: PurchasesStoreProductDiscount) {

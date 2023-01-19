@@ -64,6 +64,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                     <Text style={styles.packageText}>{ pkg.product.description }</Text>
                     <Text style={styles.packageText}>{ pkg.product.priceString }</Text>
                     <Text style={styles.packageText}>{ pkg.product.identifier }</Text>
+                    <Text style={styles.packageText}>{ pkg.product.subscriptionPeriod }</Text>
                     <Text style={styles.packageText}>{ pkg.packageType }</Text>
                   </View>
 

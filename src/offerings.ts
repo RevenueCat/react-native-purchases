@@ -100,6 +100,15 @@ export interface PurchasesStoreProduct {
      * Collection of discount offers for a product. Null for Android.
      */
     readonly discounts: PurchasesStoreProductDiscount[] | null;
+
+    /**
+     * Subscription period, specified in ISO 8601 format. For example,
+     * P1W equates to one week, P1M equates to one month,
+     * P3M equates to three months, P6M equates to six months,
+     * and P1Y equates to one year.
+     * Note: Not available for Amazon.
+     */
+    readonly subscriptionPeriod: string | null;
 }
 
 export interface PurchasesStoreProductDiscount {
