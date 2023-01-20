@@ -1,6 +1,6 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
-import { PurchasesError, PURCHASES_ERROR_CODE, UninitializedPurchasesError } from "./errors";
-import { CustomerInfo } from "./customerInfo";
+import { PurchasesError, PURCHASES_ERROR_CODE, UninitializedPurchasesError, UnsupportedPlatformError } from "./errors";
+import { CustomerInfo, PurchasesEntitlementInfo } from "./customerInfo";
 import {
     PRORATION_MODE,
     PACKAGE_TYPE,
@@ -89,6 +89,23 @@ export enum BILLING_FEATURE {
      * Launch a price change confirmation flow.
      */
     PRICE_CHANGE_CONFIRMATION,
+}
+
+export enum REFUND_REQUEST_STATUS {
+    /**
+     * User canceled submission of the refund request.
+     */
+    USER_CANCELLED,
+
+    /**
+     * Apple has received the refund request.
+     */
+    SUCCESS,
+
+    /**
+     * There was an error with the request. See message for more details.
+     */
+    ERROR
 }
 
 /**
@@ -930,6 +947,62 @@ export default class Purchases {
     }
 
     /**
+     * iOS 15+ only. Presents a refund request sheet in the current window scene for
+     * the latest transaction associated with the active entitlement.
+     *
+     * If called in an unsupported platform (Android or iOS < 15), an `UnsupportedPlatformException` will be thrown.
+     *
+     * Important: This method should only be used if your user can only have a single active entitlement at a given time.
+     * If a user could have more than one entitlement at a time, use `beginRefundRequestForEntitlement` instead.
+     *
+     * @returns {Promise<REFUND_REQUEST_STATUS>} Returns REFUND_REQUEST_STATUS: The status of the
+     *  refund request. Keep in mind the status could be REFUND_REQUEST_STATUS.USER_CANCELLED
+     */
+    public static async beginRefundRequestForActiveEntitlement(): Promise<REFUND_REQUEST_STATUS> {
+        await Purchases.throwIfNotConfigured();
+        await Purchases.throwIfAndroidPlatform();
+        let refundRequestStatusInt = await RNPurchases.beginRefundRequestForActiveEntitlement();
+        if (refundRequestStatusInt == null) { throw new UnsupportedPlatformError() }
+        return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
+    }
+
+    /**
+     * iOS 15+ only. Presents a refund request sheet in the current window scene for
+     * the latest transaction associated with the `entitlement`.
+     *
+     * If called in an unsupported platform (Android or iOS < 15), an `UnsupportedPlatformException` will be thrown.
+     *
+     * @param entitlementInfo The entitlement to begin a refund request for.
+     * @returns {Promise<REFUND_REQUEST_STATUS>} Returns REFUND_REQUEST_STATUS: The status of the
+     *  refund request. Keep in mind the status could be REFUND_REQUEST_STATUS.USER_CANCELLED
+     */
+    public static async beginRefundRequestForEntitlement(entitlementInfo: PurchasesEntitlementInfo): Promise<REFUND_REQUEST_STATUS> {
+        await Purchases.throwIfNotConfigured();
+        await Purchases.throwIfAndroidPlatform();
+        let refundRequestStatusInt = await RNPurchases.beginRefundRequestForEntitlementId(entitlementInfo.identifier);
+        if (refundRequestStatusInt == null) { throw new UnsupportedPlatformError() }
+        return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
+    }
+
+    /**
+     * iOS 15+ only. Presents a refund request sheet in the current window scene for
+     * the latest transaction associated with the `product`.
+     *
+     * If called in an unsupported platform (Android or iOS < 15), an `UnsupportedPlatformException` will be thrown.
+     *
+     * @param storeProduct The StoreProduct to begin a refund request for.
+     * @returns {Promise<REFUND_REQUEST_STATUS>} Returns a REFUND_REQUEST_STATUS: The status of the
+     *  refund request. Keep in mind the status could be REFUND_REQUEST_STATUS.USER_CANCELLED
+     */
+    public static async beginRefundRequestForProduct(storeProduct: PurchasesStoreProduct): Promise<REFUND_REQUEST_STATUS> {
+        await Purchases.throwIfNotConfigured();
+        await Purchases.throwIfAndroidPlatform();
+        let refundRequestStatusInt = await RNPurchases.beginRefundRequestForProductId(storeProduct.identifier);
+        if (refundRequestStatusInt == null) { throw new UnsupportedPlatformError() }
+        return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
+    }
+
+    /**
      * Check if configure has finished and Purchases has been configured.
      *
      * @returns {Promise<Boolean>} promise with boolean response
@@ -945,4 +1018,21 @@ export default class Purchases {
         }
     }
 
+    private static async throwIfAndroidPlatform() {
+        if (Platform.OS === "android") {
+            throw new UnsupportedPlatformError()
+        }
+    }
+
+    private static convertIntToRefundRequestStatus(refundRequestStatusInt: number): REFUND_REQUEST_STATUS {
+        console.log(`REFUND STATUS: ${refundRequestStatusInt}`);
+        switch (refundRequestStatusInt) {
+            case 0:
+                return REFUND_REQUEST_STATUS.SUCCESS;
+            case 1:
+                return REFUND_REQUEST_STATUS.USER_CANCELLED;
+            default:
+                return REFUND_REQUEST_STATUS.ERROR;
+        }
+    }
 }

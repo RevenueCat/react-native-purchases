@@ -1,16 +1,21 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
+const { UnsupportedPlatformError } = require("../dist/errors");
+const { REFUND_REQUEST_STATUS } = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
 
 describe("Purchases", () => {
+  var Purchases;
+
   beforeEach(() => {
     jest.resetAllMocks();
     NativeModules.RNPurchases.isConfigured.mockResolvedValue(true);
+
+    Purchases = require("../dist/index").default;
   });
 
   it("addCustomerInfoUpdateListener correctly saves listeners", () => {
     const listener = jest.fn();
-    const Purchases = require("../dist/index").default;
 
     Purchases.addCustomerInfoUpdateListener(listener);
 
@@ -20,7 +25,6 @@ describe("Purchases", () => {
   });
 
   it("removeCustomerInfoUpdateListener correctly removes a listener", () => {
-    const Purchases = require("../dist/index").default;
     const listener = jest.fn();
     Purchases.addCustomerInfoUpdateListener(listener);
     Purchases.removeCustomerInfoUpdateListener(listener);
@@ -37,7 +41,6 @@ describe("Purchases", () => {
 
   it("addShouldPurchasePromoProductListener correctly saves listeners", () => {
     const listener = jest.fn();
-    const Purchases = require("../dist/index").default;
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
@@ -54,8 +57,6 @@ describe("Purchases", () => {
     const listener = deferredPurchase => {
       this.deferredPurchase = deferredPurchase;
     };
-
-    const Purchases = require("../dist/index").default;
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
@@ -78,7 +79,6 @@ describe("Purchases", () => {
   });
 
   it("removeShouldPurchasePromoProductListener correctly removes a listener", () => {
-    const Purchases = require("../dist/index").default;
     const listener = jest.fn();
     Purchases.addShouldPurchasePromoProductListener(listener);
     Purchases.removeShouldPurchasePromoProductListener(listener);
@@ -95,8 +95,6 @@ describe("Purchases", () => {
   });
 
   it("calling configure without an object throws exception", () => {
-    const Purchases = require("../dist/index").default;
-
     expect(() => {
       Purchases.configure("api_key")
     }).toThrowError("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");
@@ -109,8 +107,6 @@ describe("Purchases", () => {
   });
 
   it("calling configure with invalid user ID type throws exception", () => {
-    const Purchases = require("../dist/index").default;
-
     expect(() => {
       Purchases.configure({apiKey: "api_key", appUserID: 123})
     }).toThrowError();
@@ -128,8 +124,6 @@ describe("Purchases", () => {
   })
 
   it("allowing sharing store account works", async () => {
-    const Purchases = require("../dist/index").default;
-
     await Purchases.setAllowSharingStoreAccount(true)
 
     expect(NativeModules.RNPurchases.setAllowSharingStoreAccount).toBeCalledWith(true);
@@ -137,8 +131,6 @@ describe("Purchases", () => {
   })
 
   it("disallowing sharing store account works", async () => {
-    const Purchases = require("../dist/index").default;
-
     await Purchases.setAllowSharingStoreAccount(false)
 
     expect(NativeModules.RNPurchases.setAllowSharingStoreAccount).toBeCalledWith(false);
@@ -146,8 +138,6 @@ describe("Purchases", () => {
   })
 
   it("get offerings works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.getOfferings.mockResolvedValueOnce(offeringsStub);
 
     const offerings = await Purchases.getOfferings();
@@ -157,8 +147,6 @@ describe("Purchases", () => {
   })
 
   it("getProducts works and gets subs by default", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce(productsStub);
 
     let products = await Purchases.getProducts("onemonth_freetrial");
@@ -178,8 +166,6 @@ describe("Purchases", () => {
 
 
   it("purchaseProduct works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
       purchasedProductIdentifier: "123",
       customerInfo: customerInfoStub
@@ -207,8 +193,6 @@ describe("Purchases", () => {
   });
 
   it("purchasePackage works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
       customerInfo: customerInfoStub
@@ -262,8 +246,6 @@ describe("Purchases", () => {
   });
 
   it("restorePurchases works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.restorePurchases.mockResolvedValueOnce(customerInfoStub);
 
     const customerInfo = await Purchases.restorePurchases();
@@ -273,8 +255,6 @@ describe("Purchases", () => {
   })
 
   it("getAppUserID works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.getAppUserID.mockResolvedValueOnce("123");
 
     const appUserID = await Purchases.getAppUserID()
@@ -284,8 +264,6 @@ describe("Purchases", () => {
   })
 
   describe("when calling logIn", () => {
-    const Purchases = require("../dist/index").default;
-
     it("throws an error if the appUserID is not a string", () => {
       expect(async () => {
         await Purchases.logIn(123)
@@ -317,7 +295,6 @@ describe("Purchases", () => {
   });
 
   describe("when calling logOut", () => {
-    const Purchases = require("../dist/index").default;
     it("correctly passes the call to the native module and returns the value", async () => {
       NativeModules.RNPurchases.logOut.mockResolvedValueOnce(customerInfoStub);
 
@@ -329,8 +306,6 @@ describe("Purchases", () => {
   });
 
   it("setDebugLogsEnabled works", () => {
-    const Purchases = require("../dist/index").default;
-
     Purchases.setDebugLogsEnabled(true)
 
     expect(NativeModules.RNPurchases.setDebugLogsEnabled).toBeCalledWith(true);
@@ -343,8 +318,6 @@ describe("Purchases", () => {
   })
 
   it("getCustomerInfo works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.getCustomerInfo.mockResolvedValueOnce(customerInfoStub);
 
     const customerInfo = await Purchases.getCustomerInfo();
@@ -354,8 +327,6 @@ describe("Purchases", () => {
   })
 
   it("configure works", async () => {
-    const Purchases = require("../dist/index").default;
-
     Purchases.configure({apiKey: "key", appUserID: "user"});
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false);
 
@@ -372,8 +343,6 @@ describe("Purchases", () => {
   })
 
   it("cancelled purchaseProduct sets userCancelled in the error", () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.purchaseProduct.mockRejectedValueOnce({
       code: "1",
       message: "User cancelled",
@@ -391,8 +360,6 @@ describe("Purchases", () => {
   });
 
   it("cancelled purchasePackage sets userCancelled in the error", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.purchasePackage.mockRejectedValueOnce({
       code: "1",
       message: "User cancelled",
@@ -412,8 +379,6 @@ describe("Purchases", () => {
   });
 
   it("successful purchase works", () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValueOnce({
       purchasedProductIdentifier: "123",
       customerInfo: customerInfoStub
@@ -426,8 +391,6 @@ describe("Purchases", () => {
   })
 
   it("syncpurchases works for android", async () => {
-    const Purchases = require("../dist/index").default;
-
     Platform.OS = "android";
 
     await Purchases.syncPurchases();
@@ -436,8 +399,6 @@ describe("Purchases", () => {
   })
 
   it("syncpurchases works for ios", async () => {
-    const Purchases = require("../dist/index").default;
-
     Platform.OS = "ios";
 
     await Purchases.syncPurchases();
@@ -447,8 +408,6 @@ describe("Purchases", () => {
 
 
   it("finishTransactions works", async () => {
-    const Purchases = require("../dist/index").default;
-
     await Purchases.setFinishTransactions(true);
     expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(true);
 
@@ -459,16 +418,12 @@ describe("Purchases", () => {
   })
 
   it("checkTrialOrIntroductoryPriceEligibility works", async () => {
-    const Purchases = require("../dist/index").default;
-
     await Purchases.checkTrialOrIntroductoryPriceEligibility(["monthly"])
 
     expect(NativeModules.RNPurchases.checkTrialOrIntroductoryPriceEligibility).toBeCalledWith(["monthly"]);
   })
 
   it("getPromotionalOffer works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.getPromotionalOffer.mockResolvedValue(promotionalOfferStub);
 
     const aProduct = {
@@ -483,8 +438,6 @@ describe("Purchases", () => {
   });
 
   it("getPromotionalOffer returns undefined for Android", async () => {
-    const Purchases = require("../dist/index").default;
-
     Platform.OS = "android";
 
     let promotionalOffer = await Purchases.getPromotionalOffer(productStub, discountStub);
@@ -494,7 +447,6 @@ describe("Purchases", () => {
   });
 
   it("getPromotionalOffer throws error when null discount", () => {
-    const Purchases = require("../dist/index").default;
     Platform.OS = "ios";
 
     expect(async () => {
@@ -509,8 +461,6 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedProduct works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
       purchasedProductIdentifier: "123",
       customerInfo: customerInfoStub
@@ -528,8 +478,6 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedProduct throws if null or undefined discount", () => {
-    const Purchases = require("../dist/index").default;
-
     expect(async () => {
       Purchases.purchaseDiscountedProduct(productStub, null)
     }).rejects.toThrow();
@@ -542,8 +490,6 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedPackage works", async () => {
-    const Purchases = require("../dist/index").default;
-
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
       customerInfo: customerInfoStub
@@ -572,8 +518,6 @@ describe("Purchases", () => {
   });
 
   it("purchaseDiscountedPackage throws if null or undefined discount", () => {
-    const Purchases = require("../dist/index").default;
-
     expect(async () => {
       await Purchases.purchaseDiscountedPackage(packagestub, null)
     }).rejects.toThrow();
@@ -588,7 +532,6 @@ describe("Purchases", () => {
   describe("invalidate customer info cache", () => {
     describe("when invalidateCustomerInfoCache is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
         await Purchases.invalidateCustomerInfoCache();
 
         expect(NativeModules.RNPurchases.invalidateCustomerInfoCache).toBeCalledTimes(1);
@@ -599,7 +542,6 @@ describe("Purchases", () => {
   describe("setAttributes", () => {
     describe("when setAttributes is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
         const attributes = { band: "AirBourne", song: "Back in the game" }
 
         await Purchases.setAttributes(attributes);
@@ -613,7 +555,6 @@ describe("Purchases", () => {
   describe("setEmail", () => {
     describe("when setEmail is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
         const email = "garfield@revenuecat.com";
 
         await Purchases.setEmail(email);
@@ -627,7 +568,6 @@ describe("Purchases", () => {
   describe("setPhoneNumber", () => {
     describe("when setPhoneNumber is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
         const phoneNumber = "+123456789";
 
         await Purchases.setPhoneNumber(phoneNumber);
@@ -641,7 +581,6 @@ describe("Purchases", () => {
   describe("setDisplayName", () => {
     describe("when setDisplayName is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
         const displayName = "Garfield";
 
         await Purchases.setDisplayName(displayName);
@@ -655,8 +594,6 @@ describe("Purchases", () => {
   describe("setPushToken", () => {
     describe("when setPushToken is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
-
         const pushToken = "65a1ds56adsgh6954asd";
 
         await Purchases.setPushToken(pushToken);
@@ -670,8 +607,6 @@ describe("Purchases", () => {
   describe("canMakePayments", () => {
     describe("when no parameters are passed", () => {
       it("calls Purchases with empty list", () => {
-        const Purchases = require("../dist/index").default;
-
         Purchases.canMakePayments();
 
         expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
@@ -680,8 +615,6 @@ describe("Purchases", () => {
     });
     describe("when empty list is passed", () => {
       it("calls Purchases with empty list", () => {
-        const Purchases = require("../dist/index").default;
-
         Purchases.canMakePayments([]);
 
         expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
@@ -690,8 +623,6 @@ describe("Purchases", () => {
     });
     describe("when list of parameters are passed", () => {
       it("calls Purchases with list of features", () => {
-        const Purchases = require("../dist/index").default;
-
         Purchases.canMakePayments([Purchases.BILLING_FEATURE.SUBSCRIPTIONS]);
 
         expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
@@ -700,8 +631,6 @@ describe("Purchases", () => {
     });
     describe("when list of parameters are passed", () => {
         it("parameters are mapped successfully", () => {
-          const Purchases = require("../dist/index").default;
-
           Purchases.canMakePayments([Purchases.BILLING_FEATURE.SUBSCRIPTIONS,
             Purchases.BILLING_FEATURE.PRICE_CHANGE_CONFIRMATION,
             Purchases.BILLING_FEATURE.SUBSCRIPTIONS_ON_VR,
@@ -718,8 +647,6 @@ describe("Purchases", () => {
   describe("isConfigured", () => {
     describe("when Purchases is configured", () => {
       it("isConfigured returns true", async () => {
-        const Purchases = require("../dist/index").default;
-
         const isConfigured = await Purchases.isConfigured();
 
         expect(NativeModules.RNPurchases.isConfigured).toBeCalledTimes(1);
@@ -728,7 +655,6 @@ describe("Purchases", () => {
     });
     describe("when Purchases is not configured", () => {
       it("isConfigured returns false", async () => {
-        const Purchases = require("../dist/index").default;
         NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
 
         const isConfigured = await Purchases.isConfigured();
@@ -745,7 +671,6 @@ describe("Purchases", () => {
     }
 
     it("for functions that require the SDK to be configured if called before configuring", async () => {
-      const Purchases = require("../dist/index").default;
       NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
 
       const allPropertyNames = Object.getOwnPropertyNames( Purchases );
@@ -764,7 +689,9 @@ describe("Purchases", () => {
         "canMakePayments",
         "UninitializedPurchasesError",
         "throwIfNotConfigured",
-        "isConfigured"
+        "throwIfAndroidPlatform",
+        "convertIntToRefundRequestStatus",
+        "isConfigured",
       ];
       const expected = new Purchases.UninitializedPurchasesError();
       for (let i = 0; i < allPropertyNames.length; i++) {
@@ -788,8 +715,6 @@ describe("Purchases", () => {
   describe("setCleverTapID", () => {
     describe("when setCleverTapID is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
-
         const attributionID = "65a1ds56adsgh6954asd";
 
         await Purchases.setCleverTapID(attributionID);
@@ -803,8 +728,6 @@ describe("Purchases", () => {
   describe("setMixpanelDistinctID", () => {
     describe("when setMixpanelDistinctID is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
-
         const attributionID = "65a1ds56adsgh6954asd";
 
         await Purchases.setMixpanelDistinctID(attributionID);
@@ -818,14 +741,191 @@ describe("Purchases", () => {
   describe("setFirebaseAppInstanceID", () => {
     describe("when setFirebaseAppInstanceID is called", () => {
       it("makes the right call to Purchases", async () => {
-        const Purchases = require("../dist/index").default;
-
         const attributionID = "65a1ds56adsgh6954asd";
 
         await Purchases.setFirebaseAppInstanceID(attributionID);
 
         expect(NativeModules.RNPurchases.setFirebaseAppInstanceID).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.setFirebaseAppInstanceID).toBeCalledWith(attributionID);
+      });
+    });
+  });
+
+  describe("beginRefundRequest", () => {
+    beforeEach(() => {
+      Platform.OS = "iOS";
+    });
+
+    describe("forActiveEntitlement", () => {
+      it("throws UnsupportedPlatformError if called on Android", async () => {
+        Platform.OS = "android";
+
+        try {
+          await Purchases.beginRefundRequestForActiveEntitlement();
+          fail("expected error");
+        } catch (error) {
+          if (!(error instanceof UnsupportedPlatformError)) {
+            fail("expected UnsupportedPlatformException");
+          }
+        }
+      });
+
+      it("throws UnsupportedPlatformError if native returns null", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForActiveEntitlement.mockResolvedValueOnce(null);
+
+        try {
+          await Purchases.beginRefundRequestForActiveEntitlement();
+          fail("expected error");
+        } catch (error) {
+          if (!(error instanceof UnsupportedPlatformError)) {
+            fail("expected UnsupportedPlatformException");
+          }
+        }
+      });
+
+      it("returns success if getting success from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForActiveEntitlement.mockResolvedValueOnce(0);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForActiveEntitlement();
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.SUCCESS);
+      });
+
+      it("returns user cancelled if getting user cancelled from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForActiveEntitlement.mockResolvedValueOnce(1);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForActiveEntitlement();
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.USER_CANCELLED);
+      });
+
+      it("returns error if getting different code from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForActiveEntitlement.mockResolvedValueOnce(2);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForActiveEntitlement();
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.ERROR);
+      });
+
+      it("makes right calls", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForActiveEntitlement.mockResolvedValueOnce(0);
+
+        await Purchases.beginRefundRequestForActiveEntitlement();
+
+        expect(NativeModules.RNPurchases.beginRefundRequestForActiveEntitlement).toBeCalledTimes(1);
+      });
+    });
+
+    describe("forEntitlement", () => {
+      it("throws UnsupportedPlatformError if called on Android", async () => {
+        Platform.OS = "android";
+
+        try {
+          await Purchases.beginRefundRequestForEntitlement(entitlementInfoStub);
+          fail("expected error");
+        } catch (error) {
+          if (!(error instanceof UnsupportedPlatformError)) {
+            fail("expected UnsupportedPlatformException");
+          }
+        }
+      });
+
+      it("throws UnsupportedPlatformError if native returns null", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForEntitlementId.mockResolvedValueOnce(null);
+
+        try {
+          await Purchases.beginRefundRequestForEntitlement(entitlementInfoStub);
+          fail("expected error");
+        } catch (error) {
+          if (!(error instanceof UnsupportedPlatformError)) {
+            fail("expected UnsupportedPlatformException");
+          }
+        }
+      });
+
+      it("returns success if getting success from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForEntitlementId.mockResolvedValueOnce(0);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForEntitlement(entitlementInfoStub);
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.SUCCESS);
+      });
+
+      it("returns user cancelled if getting user cancelled from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForEntitlementId.mockResolvedValueOnce(1);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForEntitlement(entitlementInfoStub);
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.USER_CANCELLED);
+      });
+
+      it("returns error if getting different code from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForEntitlementId.mockResolvedValueOnce(2);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForEntitlement(entitlementInfoStub);
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.ERROR);
+      });
+
+      it("makes right calls", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForEntitlementId.mockResolvedValueOnce(0);
+
+        await Purchases.beginRefundRequestForEntitlement(entitlementInfoStub);
+
+        expect(NativeModules.RNPurchases.beginRefundRequestForEntitlementId).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.beginRefundRequestForEntitlementId).toBeCalledWith("entitlement_id");
+      });
+    });
+
+    describe("forProduct", () => {
+      it("throws UnsupportedPlatformError if called on Android", async () => {
+        Platform.OS = "android";
+
+        try {
+          await Purchases.beginRefundRequestForProduct(productStub);
+          fail("expected error");
+        } catch (error) {
+          if (!(error instanceof UnsupportedPlatformError)) {
+            fail("expected UnsupportedPlatformException");
+          }
+        }
+      });
+
+      it("throws UnsupportedPlatformError if native returns null", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForProductId.mockResolvedValueOnce(null);
+
+        try {
+          await Purchases.beginRefundRequestForProduct(productStub);
+          fail("expected error");
+        } catch (error) {
+          if (!(error instanceof UnsupportedPlatformError)) {
+            fail("expected UnsupportedPlatformException");
+          }
+        }
+      });
+
+      it("returns success if getting success from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForProductId.mockResolvedValueOnce(0);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForProduct(productStub);
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.SUCCESS);
+      });
+
+      it("returns user cancelled if getting user cancelled from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForProductId.mockResolvedValueOnce(1);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForProduct(productStub);
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.USER_CANCELLED);
+      });
+
+      it("returns error if getting different code from native layer", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForProductId.mockResolvedValueOnce(2);
+
+        let refundRequestStatus = await Purchases.beginRefundRequestForProduct(productStub);
+        expect(refundRequestStatus).toEqual(REFUND_REQUEST_STATUS.ERROR);
+      });
+
+      it("makes right calls", async () => {
+        NativeModules.RNPurchases.beginRefundRequestForProductId.mockResolvedValueOnce(0);
+
+        await Purchases.beginRefundRequestForProduct(productStub);
+
+        expect(NativeModules.RNPurchases.beginRefundRequestForProductId).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.beginRefundRequestForProductId).toBeCalledWith("onemonth_freetrial");
       });
     });
   });

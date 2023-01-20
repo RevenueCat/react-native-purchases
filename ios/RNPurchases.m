@@ -318,6 +318,52 @@ RCT_REMAP_METHOD(canMakePayments,
       resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features]));
 }
 
+RCT_EXPORT_METHOD(beginRefundRequestForActiveEntitlement:(RCTPromiseResolveBlock)resolve
+                                                  reject:(RCTPromiseRejectBlock)reject) {
+    #if TARGET_OS_IPHONE
+    if (@available(iOS 15.0, *)) {
+        [RCCommonFunctionality beginRefundRequestForActiveEntitlementCompletion:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
+                                                                                                                                reject:reject]];
+    } else {
+        resolve(nil);
+    }
+    #else
+    resolve(nil);
+    #endif
+}
+
+RCT_EXPORT_METHOD(beginRefundRequestForEntitlementId:(NSString *)entitlementIdentifier
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    #if TARGET_OS_IPHONE
+    if (@available(iOS 15.0, *)) {
+        [RCCommonFunctionality beginRefundRequestEntitlementId:entitlementIdentifier
+                                               completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
+                                                                                                               reject:reject]];
+    } else {
+        resolve(nil);
+    }
+    #else
+    resolve(nil);
+    #endif
+}
+
+RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    #if TARGET_OS_IPHONE
+    if (@available(iOS 15.0, *)) {
+        [RCCommonFunctionality beginRefundRequestProductId:productIdentifier
+                                           completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
+                                                                                                           reject:reject]];
+    } else {
+        resolve(nil);
+    }
+    #else
+    resolve(nil);
+    #endif
+}
+
 RCT_REMAP_METHOD(isConfigured,
                  isConfiguredWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
@@ -344,19 +390,35 @@ readyForPromotedProduct:(RCStoreProduct *)product
 #pragma mark -
 #pragma mark Helper Methods
 
-- (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject error:(NSError *)error {
-    reject([NSString stringWithFormat: @"%ld", (long)error.code], error.localizedDescription, error);
+- (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject error:(RCErrorContainer *)error {
+    reject([NSString stringWithFormat:@"%ld", (long) error.code], error.message, error.error);
 }
 
 - (void (^)(NSDictionary *, RCErrorContainer *))getResponseCompletionBlockWithResolve:(RCTPromiseResolveBlock)resolve
                                                                                reject:(RCTPromiseRejectBlock)reject {
     return ^(NSDictionary *_Nullable responseDictionary, RCErrorContainer *_Nullable error) {
         if (error) {
-            reject([NSString stringWithFormat:@"%ld", (long) error.code], error.message, error.error);
+            [self rejectPromiseWithBlock:reject error:error];
         } else if (responseDictionary) {
             resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
         } else {
             resolve(nil);
+        }
+    };
+}
+
+- (void (^)(RCErrorContainer *))getBeginRefundResponseCompletionBlockWithResolve:(RCTPromiseResolveBlock)resolve
+                                                                          reject:(RCTPromiseRejectBlock)reject {
+    return ^(RCErrorContainer * _Nullable error) {
+        if (error == nil) {
+            NSLog(@"[Purchases] TEST LOG: 0");
+            resolve(@0);
+        } else if ([error.info[@"userCancelled"] isEqual:@YES]) {
+                        NSLog(@"[Purchases] TEST LOG: 1");
+            resolve(@1);
+        } else {
+                        NSLog(@"[Purchases] TEST LOG: 2");
+            [self rejectPromiseWithBlock:reject error:error];
         }
     };
 }
