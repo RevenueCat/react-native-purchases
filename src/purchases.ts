@@ -1025,7 +1025,6 @@ export default class Purchases {
     }
 
     private static convertIntToRefundRequestStatus(refundRequestStatusInt: number): REFUND_REQUEST_STATUS {
-        console.log(`REFUND STATUS: ${refundRequestStatusInt}`);
         switch (refundRequestStatusInt) {
             case 0:
                 return REFUND_REQUEST_STATUS.SUCCESS;
