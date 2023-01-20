@@ -95,7 +95,7 @@ export enum REFUND_REQUEST_STATUS {
     /**
      * Apple has received the refund request.
      */
-        SUCCESS,
+    SUCCESS,
 
     /**
      * User canceled submission of the refund request.
