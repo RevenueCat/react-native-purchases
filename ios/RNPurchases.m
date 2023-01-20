@@ -411,13 +411,10 @@ readyForPromotedProduct:(RCStoreProduct *)product
                                                                           reject:(RCTPromiseRejectBlock)reject {
     return ^(RCErrorContainer * _Nullable error) {
         if (error == nil) {
-            NSLog(@"[Purchases] TEST LOG: 0");
             resolve(@0);
         } else if ([error.info[@"userCancelled"] isEqual:@YES]) {
-                        NSLog(@"[Purchases] TEST LOG: 1");
             resolve(@1);
         } else {
-                        NSLog(@"[Purchases] TEST LOG: 2");
             [self rejectPromiseWithBlock:reject error:error];
         }
     };
