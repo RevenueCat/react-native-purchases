@@ -1,4 +1,4 @@
-
+/* tslint:disable:max-classes-per-file */
 // Error codes indicating the reason for an error.
 export enum PURCHASES_ERROR_CODE {
     UNKNOWN_ERROR = "0",
