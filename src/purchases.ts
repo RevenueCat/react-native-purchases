@@ -964,7 +964,7 @@ export default class Purchases {
     public static async beginRefundRequestForActiveEntitlement(): Promise<REFUND_REQUEST_STATUS> {
         await Purchases.throwIfNotConfigured();
         await Purchases.throwIfAndroidPlatform();
-        let refundRequestStatusInt = await RNPurchases.beginRefundRequestForActiveEntitlement();
+        const refundRequestStatusInt = await RNPurchases.beginRefundRequestForActiveEntitlement();
         if (refundRequestStatusInt == null) { throw new UnsupportedPlatformError() }
         return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
     }
@@ -983,7 +983,7 @@ export default class Purchases {
     public static async beginRefundRequestForEntitlement(entitlementInfo: PurchasesEntitlementInfo): Promise<REFUND_REQUEST_STATUS> {
         await Purchases.throwIfNotConfigured();
         await Purchases.throwIfAndroidPlatform();
-        let refundRequestStatusInt = await RNPurchases.beginRefundRequestForEntitlementId(entitlementInfo.identifier);
+        const refundRequestStatusInt = await RNPurchases.beginRefundRequestForEntitlementId(entitlementInfo.identifier);
         if (refundRequestStatusInt == null) { throw new UnsupportedPlatformError() }
         return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
     }
@@ -1002,7 +1002,7 @@ export default class Purchases {
     public static async beginRefundRequestForProduct(storeProduct: PurchasesStoreProduct): Promise<REFUND_REQUEST_STATUS> {
         await Purchases.throwIfNotConfigured();
         await Purchases.throwIfAndroidPlatform();
-        let refundRequestStatusInt = await RNPurchases.beginRefundRequestForProductId(storeProduct.identifier);
+        const refundRequestStatusInt = await RNPurchases.beginRefundRequestForProductId(storeProduct.identifier);
         if (refundRequestStatusInt == null) { throw new UnsupportedPlatformError() }
         return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
     }
