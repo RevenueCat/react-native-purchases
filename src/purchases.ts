@@ -93,14 +93,14 @@ export enum BILLING_FEATURE {
 
 export enum REFUND_REQUEST_STATUS {
     /**
+     * Apple has received the refund request.
+     */
+        SUCCESS,
+
+    /**
      * User canceled submission of the refund request.
      */
     USER_CANCELLED,
-
-    /**
-     * Apple has received the refund request.
-     */
-    SUCCESS,
 
     /**
      * There was an error with the request. See message for more details.
