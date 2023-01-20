@@ -950,6 +950,9 @@ export default class Purchases {
      * iOS 15+ only. Presents a refund request sheet in the current window scene for
      * the latest transaction associated with the active entitlement.
      *
+     * If the request was unsuccessful, no active entitlements could be found for
+     * the user, or multiple active entitlements were found for the user,
+     * the promise will return an error.
      * If called in an unsupported platform (Android or iOS < 15), an `UnsupportedPlatformException` will be thrown.
      *
      * Important: This method should only be used if your user can only have a single active entitlement at a given time.
@@ -970,6 +973,7 @@ export default class Purchases {
      * iOS 15+ only. Presents a refund request sheet in the current window scene for
      * the latest transaction associated with the `entitlement`.
      *
+     * If the request was unsuccessful, the promise will return an error.
      * If called in an unsupported platform (Android or iOS < 15), an `UnsupportedPlatformException` will be thrown.
      *
      * @param entitlementInfo The entitlement to begin a refund request for.
@@ -988,6 +992,7 @@ export default class Purchases {
      * iOS 15+ only. Presents a refund request sheet in the current window scene for
      * the latest transaction associated with the `product`.
      *
+     * If the request was unsuccessful, the promise will return an error.
      * If called in an unsupported platform (Android or iOS < 15), an `UnsupportedPlatformException` will be thrown.
      *
      * @param storeProduct The StoreProduct to begin a refund request for.
