@@ -2,16 +2,18 @@ Make sure react-native-purchases is not part of the `example/package.json`
 
 Setup the development by running: 
 
-    `yarn bootstrap`
+```
+yarn bootstrap
+```
 
 That will link the local package so that changes are automatically applied to the example
 
 ---
 
 - Plug a device and run:
-`yarn android`
+`npx react-native run-android`
 or 
-`yarn ios`
+`npx react-native run-ios`
 
 
 You can install Flipper https://fbflipper.com/docs/features/index in your machine as a helper for debugging. I don't think it works with physical iOS devices.
