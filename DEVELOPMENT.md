@@ -20,9 +20,9 @@ You can install Flipper https://fbflipper.com/docs/features/index in your machin
 
 ---
 
-To edit the iOS code, open the example project with XCode, there should be a subproject there RNPurchases.xcodeproj that can be used to edit the plugin. 
+To edit the iOS code, open the example project with Xcode, there should be a subproject there RNPurchases.xcodeproj that can be used to edit the plugin. 
 If touching common files, you can point to your local project in the podspec. 
-You can run the project from XCode without having to run `react-native run-ios`, but make sure that if you are touching `.ts` files, you run `npm run build` to compile the plugin.
+You can run the project from Xcode without having to run `react-native run-ios`, but make sure that if you are touching `.ts` files, you run `npm run build` to compile the plugin.
 
 In Android, if you are touching common files, you can run in `examples/purchaseTesterTypescript/android` the following command `gradle enableLocalBuild -PcommonPath="$HOME/Development/repos/purchases-hybrid-common/android"`. Make sure you set the right path in your local machine. This will add the `purchases-hybrid-common` as a project that you can edit on the fly when opening the example project.
 
