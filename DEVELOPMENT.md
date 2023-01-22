@@ -10,11 +10,13 @@ That will link the local package so that changes are automatically applied to th
 
 ---
 
-- Plug a device and run:
+`cd` one of the example projects (`cd examples/MagicWeather` or `cd examples/purchaseTesterTypescript`), then run:
+
 `npx react-native run-android`
 or 
 `npx react-native run-ios`
 
+If you have a connected device, the app will run on that device. If not, it will run on a simulator.
 
 You can install Flipper https://fbflipper.com/docs/features/index in your machine as a helper for debugging. I don't think it works with physical iOS devices.
 
