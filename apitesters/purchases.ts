@@ -7,6 +7,7 @@ import {
   PurchasesStoreProduct,
   UpgradeInfo,
   MakePurchaseResult,
+  LOG_LEVEL,
   REFUND_REQUEST_STATUS,
   PURCHASE_TYPE, PurchasesStoreProductDiscount, BILLING_FEATURE, IntroEligibility,
   LogInResult, ShouldPurchasePromoProductListener, CustomerInfoUpdateListener
@@ -124,6 +125,20 @@ async function checkConfigure() {
   await Purchases.setAllowSharingStoreAccount(true);
 
   const configured: boolean = await Purchases.isConfigured();
+}
+
+async function checkLogLevel() {
+  await Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+}
+
+async function checkLogLevelEnum(level: LOG_LEVEL) {
+  switch (level) {
+    case LOG_LEVEL.DEBUG:
+    case LOG_LEVEL.VERBOSE:
+    case LOG_LEVEL.INFO:
+    case LOG_LEVEL.WARN:
+    case LOG_LEVEL.ERROR:
+  }
 }
 
 function checkListeners() {

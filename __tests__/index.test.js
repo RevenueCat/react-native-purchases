@@ -315,7 +315,21 @@ describe("Purchases", () => {
 
     expect(NativeModules.RNPurchases.setDebugLogsEnabled).toBeCalledWith(false);
     expect(NativeModules.RNPurchases.setDebugLogsEnabled).toBeCalledTimes(2);
-  })
+  });
+
+  it("setLogLevel works", () => {
+    const Purchases = require("../dist/index").default;
+
+    Purchases.setLogLevel(Purchases.LOG_LEVEL.ERROR);
+
+    expect(NativeModules.RNPurchases.setLogLevel).toBeCalledWith("ERROR");
+    expect(NativeModules.RNPurchases.setLogLevel).toBeCalledTimes(1);
+
+    Purchases.setLogLevel(Purchases.LOG_LEVEL.VERBOSE);
+
+    expect(NativeModules.RNPurchases.setLogLevel).toBeCalledWith("VERBOSE");
+    expect(NativeModules.RNPurchases.setLogLevel).toBeCalledTimes(2);
+  });
 
   it("getCustomerInfo works", async () => {
     NativeModules.RNPurchases.getCustomerInfo.mockResolvedValueOnce(customerInfoStub);
@@ -686,6 +700,7 @@ describe("Purchases", () => {
         "setAutomaticAppleSearchAdsAttributionCollection",
         "addAttributionData",
         "setDebugLogsEnabled",
+        "setLogLevel",
         "canMakePayments",
         "UninitializedPurchasesError",
         "UnsupportedPlatformError",

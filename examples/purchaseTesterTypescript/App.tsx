@@ -33,7 +33,7 @@ const App = () => {
   useEffect(() => {
     if (!hasKeys()) { return }
 
-    Purchases.setDebugLogsEnabled(true);
+    Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
     if (Platform.OS == "android") {
       const useAmazon = false;
       if (useAmazon) {
