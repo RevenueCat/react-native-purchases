@@ -688,6 +688,7 @@ describe("Purchases", () => {
         "setDebugLogsEnabled",
         "canMakePayments",
         "UninitializedPurchasesError",
+        "UnsupportedPlatformError",
         "throwIfNotConfigured",
         "throwIfAndroidPlatform",
         "convertIntToRefundRequestStatus",
