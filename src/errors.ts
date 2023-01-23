@@ -64,8 +64,5 @@ export class UninitializedPurchasesError extends Error {
 export class UnsupportedPlatformError extends Error {
     constructor() {
         super("This method is not available in the current platform.");
-
-        // Set the prototype explicitly.
-        Object.setPrototypeOf(this, UnsupportedPlatformError.prototype);
     }
 }

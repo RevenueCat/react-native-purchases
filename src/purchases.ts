@@ -151,6 +151,13 @@ export default class Purchases {
      */
      public static BILLING_FEATURE = BILLING_FEATURE;
 
+     /**
+      * Enum with possible return states for beginning refund request.
+      * @readonly
+      * @enum  {string}
+      */
+     public static REFUND_REQUEST_STATUS = REFUND_REQUEST_STATUS;
+
     /**
      * Replace SKU's ProrationMode.
      * @readonly
@@ -179,10 +186,15 @@ export default class Purchases {
      */
     public static PURCHASES_ERROR_CODE = PURCHASES_ERROR_CODE;
 
-  /**
-   * @internal
-   */
-  public static UninitializedPurchasesError = UninitializedPurchasesError;
+    /**
+     * @internal
+     */
+    public static UninitializedPurchasesError = UninitializedPurchasesError;
+
+    /**
+     * @internal
+     */
+    public static UnsupportedPlatformError = UnsupportedPlatformError;
 
     /**
      * Sets up Purchases with your API key and an app user id.
