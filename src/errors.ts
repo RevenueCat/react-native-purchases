@@ -1,4 +1,4 @@
-
+/* tslint:disable:max-classes-per-file */
 // Error codes indicating the reason for an error.
 export enum PURCHASES_ERROR_CODE {
     UNKNOWN_ERROR = "0",
@@ -34,7 +34,7 @@ export interface PurchasesError {
     readableErrorCode: string;
     userInfo: ErrorInfo;
     underlyingErrorMessage: string;
-    
+
     // @deprecated
     // use code === Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR instead
     userCancelled: boolean | null;
@@ -55,5 +55,17 @@ export class UninitializedPurchasesError extends Error {
 
         // Set the prototype explicitly.
         Object.setPrototypeOf(this, UninitializedPurchasesError.prototype);
+    }
+}
+
+/**
+ * @internal
+ */
+export class UnsupportedPlatformError extends Error {
+    constructor() {
+        super("This method is not available in the current platform.");
+
+        // Set the prototype explicitly.
+        Object.setPrototypeOf(this, UnsupportedPlatformError.prototype);
     }
 }
