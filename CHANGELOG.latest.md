@@ -8,11 +8,6 @@
   * [iOS 4.17.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.2)
   * [iOS 4.17.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.1)
   * [iOS 4.17.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.0)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.9.0 (#532) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 5.6.7](https://github.com/RevenueCat/purchases-android/releases/tag/5.6.7)
-  * [iOS 4.17.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.2)
-  * [iOS 4.17.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.1)
-  * [iOS 4.17.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.0)
 * Bump activesupport from 6.1.4.6 to 6.1.7.1 in /examples/MagicWeather (#529) via dependabot[bot] (@dependabot[bot])
 ### Other Changes
 * `DEVELOPMENT.md`: clarified invocation commands (#527) via NachoSoto (@NachoSoto)
