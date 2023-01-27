@@ -131,8 +131,8 @@ export interface PurchasesConfiguration {
   userDefaultsSuiteName?: string;
   /**
    * iOS-only, will be ignored for Android.
-   * Set this to FALSE to disable StoreKit2.
-   * Default is TRUE.
+   * Set this to TRUE to enable StoreKit2.
+   * Default is FALSE.
    */
   usesStoreKit2IfAvailable?: boolean;
   /**
