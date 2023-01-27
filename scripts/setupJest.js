@@ -710,7 +710,22 @@ global.promotionalOfferStub = {
   nonce: "nonce",
   signature: "signature",
   timestamp: 123,
-}
+};
+
+global.entitlementInfoStub = {
+  identifier: "entitlement_id",
+  isActive: true,
+  willRenew: true,
+  periodType: "",
+  latestPurchaseDate: "",
+  originalPurchaseDate: "",
+  expirationDate: "",
+  store: "APP_STORE",
+  productIdentifier: "product_id",
+  isSandbox: false,
+  unsubscribeDetectedAt: null,
+  billingIssueDetectedAt: null
+};
 
 NativeModules.RNPurchases = {
   setupPurchases: jest.fn(),
@@ -745,6 +760,9 @@ NativeModules.RNPurchases = {
   setMixpanelDistinctID: jest.fn(),
   setFirebaseAppInstanceID: jest.fn(),
   canMakePayments: jest.fn(),
+  beginRefundRequestForActiveEntitlement: jest.fn(),
+  beginRefundRequestForEntitlementId: jest.fn(),
+  beginRefundRequestForProductId: jest.fn(),
   isConfigured: jest.fn()
 };
 

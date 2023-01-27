@@ -1,11 +1,13 @@
 import {
   CustomerInfo,
+  PurchasesEntitlementInfo,
   PurchasesOfferings,
   PurchasesPackage,
   PurchasesPromotionalOffer,
   PurchasesStoreProduct,
   UpgradeInfo,
   MakePurchaseResult,
+  REFUND_REQUEST_STATUS,
   PURCHASE_TYPE, PurchasesStoreProductDiscount, BILLING_FEATURE, IntroEligibility,
   LogInResult, ShouldPurchasePromoProductListener, CustomerInfoUpdateListener
 } from '../dist';
@@ -133,4 +135,10 @@ function checkListeners() {
 
   Purchases.addShouldPurchasePromoProductListener(shouldPurchaseListener);
   Purchases.removeShouldPurchasePromoProductListener(shouldPurchaseListener);
+}
+
+async function checkBeginRefundRequest(entitlementInfo: PurchasesEntitlementInfo, storeProduct: PurchasesStoreProduct) {
+  const refundStatus1: REFUND_REQUEST_STATUS = await Purchases.beginRefundRequestForActiveEntitlement();
+  const refundStatus2: REFUND_REQUEST_STATUS = await Purchases.beginRefundRequestForEntitlement(entitlementInfo);
+  const refundStatus3: REFUND_REQUEST_STATUS = await Purchases.beginRefundRequestForProduct(storeProduct);
 }
