@@ -2,6 +2,7 @@ import {
   BILLING_FEATURE,
   PURCHASE_TYPE,
   PACKAGE_TYPE,
+  REFUND_REQUEST_STATUS,
   INTRO_ELIGIBILITY_STATUS,
   PRORATION_MODE
 } from '../dist';
@@ -53,5 +54,13 @@ function checkProrationMode(mode: PRORATION_MODE): boolean {
     case PRORATION_MODE.IMMEDIATE_AND_CHARGE_PRORATED_PRICE: return true;
     case PRORATION_MODE.IMMEDIATE_WITHOUT_PRORATION: return true;
     case PRORATION_MODE.DEFERRED: return true;
+  }
+}
+
+function checkRefundRequestStatus(status: REFUND_REQUEST_STATUS): boolean {
+  switch (status) {
+    case REFUND_REQUEST_STATUS.SUCCESS: return true;
+    case REFUND_REQUEST_STATUS.USER_CANCELLED: return true;
+    case REFUND_REQUEST_STATUS.ERROR: return true;
   }
 }

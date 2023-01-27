@@ -1,4 +1,4 @@
-
+/* tslint:disable:max-classes-per-file */
 // Error codes indicating the reason for an error.
 export enum PURCHASES_ERROR_CODE {
     UNKNOWN_ERROR = "0",
@@ -24,6 +24,18 @@ export enum PURCHASES_ERROR_CODE {
     PAYMENT_PENDING_ERROR = "20",
     INVALID_SUBSCRIBER_ATTRIBUTES_ERROR = "21",
     LOG_OUT_ANONYMOUS_USER_ERROR = "22",
+    CONFIGURATION_ERROR = "23",
+    UNSUPPORTED_ERROR = "24",
+    EMPTY_SUBSCRIBER_ATTRIBUTES_ERROR = "25",
+    PRODUCT_DISCOUNT_MISSING_IDENTIFIER_ERROR = "26",
+    PRODUCT_DISCOUNT_MISSING_SUBSCRIPTION_GROUP_IDENTIFIER_ERROR = "28",
+    CUSTOMER_INFO_ERROR = "29",
+    SYSTEM_INFO_ERROR = "30",
+    BEGIN_REFUND_REQUEST_ERROR = "31",
+    PRODUCT_REQUEST_TIMED_OUT_ERROR = "32",
+    API_ENDPOINT_BLOCKED = "33",
+    INVALID_PROMOTIONAL_OFFER_ERROR = "34",
+    OFFLINE_CONNECTION_ERROR = "35",
 }
 
 export interface PurchasesError {
@@ -34,7 +46,7 @@ export interface PurchasesError {
     readableErrorCode: string;
     userInfo: ErrorInfo;
     underlyingErrorMessage: string;
-    
+
     // @deprecated
     // use code === Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR instead
     userCancelled: boolean | null;
@@ -55,5 +67,17 @@ export class UninitializedPurchasesError extends Error {
 
         // Set the prototype explicitly.
         Object.setPrototypeOf(this, UninitializedPurchasesError.prototype);
+    }
+}
+
+/**
+ * @internal
+ */
+export class UnsupportedPlatformError extends Error {
+    constructor() {
+        super("This method is not available in the current platform.");
+
+        // Set the prototype explicitly.
+        Object.setPrototypeOf(this, UnsupportedPlatformError.prototype);
     }
 }
