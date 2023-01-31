@@ -27,9 +27,11 @@ const eventEmitter = new NativeEventEmitter(RNPurchases);
 export type CustomerInfoUpdateListener = (customerInfo: CustomerInfo) => void;
 export type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
 export type MakePurchaseResult = { productIdentifier: string; customerInfo: CustomerInfo; };
+export type LogHandler = (logLevel: LOG_LEVEL, message: string) => void;
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
+// let logHandler: LogHandler;
 
 eventEmitter.addListener(
     "Purchases-CustomerInfoUpdated",
@@ -46,6 +48,13 @@ eventEmitter.addListener(
         );
     }
 );
+//
+// eventEmitter.addListener(
+//     "Purchases-LogHandlerEvent",
+//     ({ logLevel: string, message: string }) => {
+//         handleLogHandlerEvent(logLevel, message);
+//     }
+// );
 
 export enum PURCHASE_TYPE {
     /**
@@ -579,6 +588,20 @@ export default class Purchases {
     }
 
     /**
+     * Set a custom log handler for redirecting logs to your own logging system.
+     * By default, this sends info, warning, and error messages.
+     * If you wish to receive Debug level messages, see [setLogLevel].
+     * @param {LogHandler} logHandler It will get called for each log event.
+     * Use this function to redirect the log to your own logging system
+     */
+    public static setLogHandler(logHandler: LogHandler): void {
+        RNPurchases.setLogHandler(({ logLevel, message }: { logLevel: LOG_LEVEL, message: string }) => {
+          const logLevelEnum = LOG_LEVEL[logLevel];
+          logHandler(logLevelEnum, message);
+        });
+    }
+
+    /**
      * Gets current customer info
      * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
      * userInfo object with more information. The promise will be rejected if configure has not been called yet or if
@@ -1100,4 +1123,9 @@ export default class Purchases {
                 return REFUND_REQUEST_STATUS.ERROR;
         }
     }
+    //
+    // private static void handleLogHandlerEvent(logLevel: string, message: string) {
+    //     let logLevel = LogLevel[logLevel];
+    //     logHandler(logLevel, message);
+    // }
 }

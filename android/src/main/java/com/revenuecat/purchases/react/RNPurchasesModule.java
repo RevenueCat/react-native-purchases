@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -183,6 +184,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setLogLevel(final String level) {
         CommonKt.setLogLevel(level);
+    }
+
+    @ReactMethod
+    public void setLogHandler(final Callback callback) {
+        CommonKt.setLogHandler(logDetails -> {
+          callback.invoke(convertMapToWriteableMap(logDetails));
+          return null;
+        });
     }
 
     @ReactMethod
