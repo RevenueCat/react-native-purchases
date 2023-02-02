@@ -139,6 +139,11 @@ RCT_REMAP_METHOD(setDebugLogsEnabled,
     [RCCommonFunctionality setDebugLogsEnabled:enabled];
 }
 
+RCT_EXPORT_METHOD(setLogLevel:(NSString *)level)
+{
+    [RCCommonFunctionality setLogLevel:level];
+}
+
 RCT_EXPORT_METHOD(setSimulatesAskToBuyInSandbox:(BOOL)simulatesAskToBuyInSandbox)
 {
     [RCCommonFunctionality setSimulatesAskToBuyInSandbox:simulatesAskToBuyInSandbox];

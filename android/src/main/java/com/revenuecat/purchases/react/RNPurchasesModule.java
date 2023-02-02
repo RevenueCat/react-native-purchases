@@ -174,9 +174,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         CommonKt.logIn(appUserID, getOnResult(promise));
     }
 
+    @Deprecated // Use setLogLevel instead
     @ReactMethod
     public void setDebugLogsEnabled(boolean enabled) {
         CommonKt.setDebugLogsEnabled(enabled);
+    }
+
+    @ReactMethod
+    public void setLogLevel(final String level) {
+        CommonKt.setLogLevel(level);
     }
 
     @ReactMethod

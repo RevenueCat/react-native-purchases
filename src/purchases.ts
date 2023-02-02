@@ -122,6 +122,14 @@ export interface LogInResult {
   readonly created: boolean;
 }
 
+export enum LOG_LEVEL {
+    VERBOSE = "VERBOSE",
+    DEBUG = "DEBUG",
+    INFO = "INFO",
+    WARN = "WARN",
+    ERROR = "ERROR"
+}
+
 /**
  * Holds parameters to initialize the SDK.
  */
@@ -209,6 +217,13 @@ export default class Purchases {
      * @enum {string}
      */
     public static PURCHASES_ERROR_CODE = PURCHASES_ERROR_CODE;
+
+    /**
+     * List of valid log levels.
+     * @readonly
+     * @enum {string}
+     */
+    public static LOG_LEVEL = LOG_LEVEL;
 
     /**
      * @internal
@@ -548,9 +563,19 @@ export default class Purchases {
     /**
      * Enables/Disables debugs logs
      * @param {boolean} enabled Enable or not debug logs
+     * @deprecated, use setLogLevel instead
      */
     public static async setDebugLogsEnabled(enabled: boolean): Promise<void> {
         RNPurchases.setDebugLogsEnabled(enabled);
+    }
+
+    /**
+     * Used to set the log level. Useful for debugging issues with the lovely team @RevenueCat.
+     * The default is {LOG_LEVEL.INFO} in release builds and {LOG_LEVEL.DEBUG} in debug builds.
+     * @param {LOG_LEVEL} level
+     */
+    public static async setLogLevel(level: LOG_LEVEL): Promise<void> {
+        RNPurchases.setLogLevel(level);
     }
 
     /**

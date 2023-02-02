@@ -17,7 +17,7 @@ import { API_KEY } from './src/constants';
 const App: () => React$Node = () => {
   useEffect(() => {
     /* Enable debug logs before calling `setup`. */
-    Purchases.setDebugLogsEnabled(true);
+    Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
 
     /*
       Initialize the RevenueCat Purchases SDK.
