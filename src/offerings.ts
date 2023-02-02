@@ -318,4 +318,3 @@ export enum PRORATION_MODE {
      */
     DEFERRED = 4,
 }
-
