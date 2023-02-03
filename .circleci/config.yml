@@ -84,6 +84,7 @@ jobs:
   android:
     executor: 
       name: rn/linux_android
+      # These are the default options in the orb, but with more memory because we were getting out of memory errors
       gradle_options: >-
         -Xmx4096m -Dorg.gradle.daemon=false
         -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
