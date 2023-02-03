@@ -91,6 +91,11 @@ jobs:
           yarn_install_directory: examples/purchaseTesterTypescript
           cache_folder: ~/.cache/yarn
       - rn/android_build:
+          gradle_options: >-
+              -Xmx4096m -Dorg.gradle.daemon=false
+              -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
+              -XX:+HeapDumpOnOutOfMemoryError"
+          java_options: '-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport'
           project_path: examples/purchaseTesterTypescript/android
   ios:
     executor:
