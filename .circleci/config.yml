@@ -51,7 +51,7 @@ jobs:
   analyse_js:
     executor:
       name: rn/linux_js
-      node_version: '18'
+      node_version: '18.2'
     steps:
       - checkout
       - rn/yarn_install:
