@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Dummy.swift
 //  PurchaseTester
 //
 
