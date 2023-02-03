@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  rn: react-native-community/react-native@6.1.0
+  rn: react-native-community/react-native@7.1.1
   revenuecat: revenuecat/sdks-common-config@2.0.0
 
 aliases:
@@ -51,7 +51,7 @@ jobs:
   analyse_js:
     executor:
       name: rn/linux_js
-      node_version: '14'
+      node_version: '18.2'
     steps:
       - checkout
       - rn/yarn_install:
@@ -82,7 +82,15 @@ jobs:
           command: bundle exec fastlane generate_docs
 
   android:
-    executor: rn/linux_android
+    executor: 
+      name: rn/linux_android
+      # These are the default options in the orb, but with more memory because we were getting out of memory errors
+      gradle_options: >-
+        -Xmx4096m -Dorg.gradle.daemon=false
+        -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
+        -XX:+HeapDumpOnOutOfMemoryError"
+      java_options: '-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport'
+      resource_class: medium
     steps:
       - checkout
       - rn/yarn_install:

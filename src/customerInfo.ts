@@ -154,5 +154,3 @@ export interface PurchasesStoreTransaction {
      */
     purchaseDate: string;
 }
-
-

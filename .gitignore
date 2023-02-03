@@ -80,3 +80,4 @@ dist/
 vendor/
 .bundle/
 .npmrc
+!**/**/.bundle/config
