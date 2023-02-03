@@ -34,7 +34,7 @@
     "prepare": "tsc",
     "example": "yarn --cwd examples/MagicWeather && yarn --cwd examples/purchaseTesterTypescript",
     "pods": "(cd examples/MagicWeather && rm -f ios/Podfile.lock && bundle install && npx pod-install --quiet) && (cd examples/purchaseTesterTypescript && rm -f ios/Podfile.lock && bundle install && npx pod-install --quiet)",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "bootstrap": "yarn && yarn example && yarn pods"
   },
   "repository": {
     "type": "git",
