@@ -82,7 +82,9 @@ jobs:
           command: bundle exec fastlane generate_docs
 
   android:
-    executor: rn/linux_android
+    executor: 
+      name: rn/linux_android
+      resource_class: large
     steps:
       - checkout
       - rn/yarn_install:
