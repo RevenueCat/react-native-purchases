@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "pods": "bundle install && rm -f ios/Podfile.lock && pod-install --quiet"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^6.0.9",
