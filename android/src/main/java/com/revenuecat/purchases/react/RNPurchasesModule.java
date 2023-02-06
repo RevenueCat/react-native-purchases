@@ -42,6 +42,7 @@ import static com.revenuecat.purchases.react.RNPurchasesConverters.convertMapToW
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedCustomerInfoListener {
 
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
+    private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
     public static final String PLUGIN_VERSION = "4.6.0";
 
@@ -183,6 +184,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setLogLevel(final String level) {
         CommonKt.setLogLevel(level);
+    }
+
+    @ReactMethod
+    public void setLogHandler() {
+        CommonKt.setLogHandler(logDetails -> {
+            reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(RNPurchasesModule.LOG_HANDLER_EVENT, convertMapToWriteableMap(logDetails));
+            return null;
+        });
     }
 
     @ReactMethod

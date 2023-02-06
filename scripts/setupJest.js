@@ -738,6 +738,7 @@ NativeModules.RNPurchases = {
   getAppUserID: jest.fn(),
   setDebugLogsEnabled: jest.fn(),
   setLogLevel: jest.fn(),
+  setLogHandler: jest.fn(),
   getCustomerInfo: jest.fn(),
   logIn: jest.fn(),
   logOut: jest.fn(),

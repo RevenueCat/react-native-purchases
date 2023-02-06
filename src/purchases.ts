@@ -27,9 +27,11 @@ const eventEmitter = new NativeEventEmitter(RNPurchases);
 export type CustomerInfoUpdateListener = (customerInfo: CustomerInfo) => void;
 export type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
 export type MakePurchaseResult = { productIdentifier: string; customerInfo: CustomerInfo; };
+export type LogHandler = (logLevel: LOG_LEVEL, message: string) => void;
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
+let customLogHandler: LogHandler;
 
 eventEmitter.addListener(
     "Purchases-CustomerInfoUpdated",
@@ -44,6 +46,14 @@ eventEmitter.addListener(
         shouldPurchasePromoProductListeners.forEach(listener =>
             listener(() => RNPurchases.makeDeferredPurchase(callbackID))
         );
+    }
+);
+
+eventEmitter.addListener(
+    "Purchases-LogHandlerEvent",
+    ({ logLevel, message }: { logLevel: LOG_LEVEL, message: string }) => {
+        const logLevelEnum = LOG_LEVEL[logLevel];
+        customLogHandler(logLevelEnum, message);
     }
 );
 
@@ -576,6 +586,18 @@ export default class Purchases {
      */
     public static async setLogLevel(level: LOG_LEVEL): Promise<void> {
         RNPurchases.setLogLevel(level);
+    }
+
+    /**
+     * Set a custom log handler for redirecting logs to your own logging system.
+     * By default, this sends info, warning, and error messages.
+     * If you wish to receive Debug level messages, see [setLogLevel].
+     * @param {LogHandler} logHandler It will get called for each log event.
+     * Use this function to redirect the log to your own logging system
+     */
+    public static setLogHandler(logHandler: LogHandler): void {
+        customLogHandler = logHandler;
+        RNPurchases.setLogHandler();
     }
 
     /**
