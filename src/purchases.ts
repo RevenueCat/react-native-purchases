@@ -36,7 +36,6 @@ let customLogHandler: LogHandler;
 eventEmitter.addListener(
     "Purchases-CustomerInfoUpdated",
     (customerInfo: CustomerInfo) => {
-        console.log("Purchases-CustomerInfoUpdated");
         customerInfoUpdateListeners.forEach(listener => listener(customerInfo));
     }
 );
@@ -53,7 +52,6 @@ eventEmitter.addListener(
 eventEmitter.addListener(
     "Purchases-LogHandlerEvent",
     ({ logLevel, message }: { logLevel: LOG_LEVEL, message: string }) => {
-        console.log("Purchases-LogHandlerEvent");
         const logLevelEnum = LOG_LEVEL[logLevel];
         customLogHandler(logLevelEnum, message);
     }
