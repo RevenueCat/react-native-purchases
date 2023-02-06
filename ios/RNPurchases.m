@@ -20,6 +20,7 @@ typedef void (^StartPurchaseBlock)(PurchaseCompletedBlock);
 
 NSString *RNPurchasesCustomerInfoUpdatedEvent = @"Purchases-CustomerInfoUpdated";
 NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchasePromoProduct";
+NSString *RNPurchasesLogHandlerEvent = @"Purchases-LogHandlerEvent";
 
 
 @implementation RNPurchases
@@ -29,7 +30,9 @@ NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchas
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[RNPurchasesCustomerInfoUpdatedEvent, RNPurchasesShouldPurchasePromoProductEvent];
+    return @[RNPurchasesCustomerInfoUpdatedEvent,
+             RNPurchasesShouldPurchasePromoProductEvent,
+             RNPurchasesLogHandlerEvent];
 }
 
 RCT_EXPORT_MODULE();
@@ -373,6 +376,12 @@ RCT_REMAP_METHOD(isConfigured,
                  isConfiguredWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     resolve(@(RCPurchases.isConfigured));
+}
+
+RCT_EXPORT_METHOD(setLogHandler) {
+    [RCCommonFunctionality setLogHanderOnLogReceived:^(NSDictionary<NSString *,NSString *> * _Nonnull logDetails) {
+        [self sendEventWithName:RNPurchasesLogHandlerEvent body:logDetails];
+    }];
 }
 
 #pragma mark -
