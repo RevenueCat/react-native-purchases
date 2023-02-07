@@ -371,6 +371,28 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setLogLevel).toBeCalledTimes(1);
   });
 
+  describe("setLogHandler", () => {
+    const Purchases = require("../dist/index").default;
+
+    const logDetailsStub = { logLevel: Purchases.LOG_LEVEL.INFO, message: "a message" }
+
+    for (const logLevel of Object.keys(Purchases.LOG_LEVEL)) {
+      it(`setLogHandler fires the callback for ${logLevel} logs`, () => {
+        let receivedLogLevel;
+        Purchases.setLogHandler((logLevel, message) => {
+          receivedLogLevel = logLevel
+          expect(message).toEqual(logDetailsStub.message);
+        });
+        nativeEmitter.emit("Purchases-LogHandlerEvent", { ...logDetailsStub, logLevel });
+
+        expect(NativeModules.RNPurchases.setLogHandler).toBeCalledTimes(1);
+
+        expect(receivedLogLevel).toEqual(logLevel);
+      });
+    }
+
+  });
+
   it("getCustomerInfo works", async () => {
     NativeModules.RNPurchases.getCustomerInfo.mockResolvedValueOnce(customerInfoStub);
 
@@ -741,6 +763,7 @@ describe("Purchases", () => {
         "addAttributionData",
         "setDebugLogsEnabled",
         "setLogLevel",
+        "setLogHandler",
         "canMakePayments",
         "UninitializedPurchasesError",
         "UnsupportedPlatformError",
