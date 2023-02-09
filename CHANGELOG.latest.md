@@ -1,8 +1,10 @@
+### New Features
+* Adds setLogHandler (#544) via Cesar de la Vega (@vegaro)
+* Added `setLogLevel` (#531) via NachoSoto (@NachoSoto)
 ### Dependency Updates
-* Update gems (#540) via Cesar de la Vega (@vegaro)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.12.0 (#539) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 5.7.0](https://github.com/RevenueCat/purchases-android/releases/tag/5.7.0)
-  * [iOS 4.17.3](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.3)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.12.1 (#547) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 4.17.4](https://github.com/RevenueCat/purchases-ios/releases/tag/4.17.4)
+* Configures dependabot (#541) via Cesar de la Vega (@vegaro)
 ### Other Changes
-* Change prepublish hook to prepare (#534) via Cesar de la Vega (@vegaro)
-* Adds missing docs for PurchasesConfiguration (#528) via Cesar de la Vega (@vegaro)
+* Changes to npm scripts and DEVELOPMENT.md (#546) via Cesar de la Vega (@vegaro)
+* Upgrade purchase tester to React Native 0.71.2 (#545) via Cesar de la Vega (@vegaro)
