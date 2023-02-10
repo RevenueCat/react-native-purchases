@@ -519,6 +519,29 @@ describe("Purchases", () => {
     );
   })
 
+  it("syncObserverModeAmazonPurchase throws UninitializedError if called before configuring", async () => {
+    Platform.OS = "android";
+
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+
+    const expected = new Purchases.UninitializedPurchasesError();
+
+
+    await Purchases.syncObserverModeAmazonPurchase(
+      'productID_test',
+      'receiptID_test',
+      'amazonUserID_test',
+      'isoCurrencyCode_test',
+      3.4,
+    ).then(() => {
+      fail(`${allPropertyNames[i]} should have failed`);
+    }).catch(error => {
+      expect(error.name).toEqual(expected.name);
+      expect(error.message).toEqual(expected.message);
+    });
+  });
+
+
   it("syncObserverModeAmazonPurchase works for ios", async () => {
     Platform.OS = "ios";
 
@@ -821,6 +844,7 @@ describe("Purchases", () => {
         "throwIfAndroidPlatform",
         "convertIntToRefundRequestStatus",
         "isConfigured",
+        "syncObserverModeAmazonPurchase",
       ];
       const expected = new Purchases.UninitializedPurchasesError();
       for (let i = 0; i < allPropertyNames.length; i++) {
