@@ -28,6 +28,7 @@ internal object RNPurchasesConverters {
                     key,
                     convertReadableMapToJson(readableMap.getMap(key))
                 )
+
                 ReadableType.Array -> jsonObject.put(
                     key,
                     convertReadableArrayToJson(readableMap.getArray(key))
@@ -42,7 +43,7 @@ internal object RNPurchasesConverters {
         val array = JSONArray()
         for (i in 0 until readableArray!!.size()) {
             when (readableArray.getType(i)) {
-                ReadableType.Null -> { }
+                ReadableType.Null -> {}
                 ReadableType.Boolean -> array.put(readableArray.getBoolean(i))
                 ReadableType.Number -> array.put(readableArray.getDouble(i))
                 ReadableType.String -> array.put(readableArray.getString(i))
