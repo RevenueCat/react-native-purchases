@@ -641,7 +641,7 @@ export default class Purchases {
     public static async syncObserverModeAmazonPurchase(productID: string, receiptID: string,
                                                        amazonUserID: string, isoCurrencyCode?: string | null,
                                                        price?: number | null): Promise<void> {
-      if (Platform.OS === "android") {
+      if (Platform.OS === 'android') {
         await Purchases.throwIfNotConfigured();
         RNPurchases.syncObserverModeAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price);
       }
