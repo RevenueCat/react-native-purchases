@@ -70,12 +70,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void addListener(String eventName) {
-      // Keep: Required for RN built in Event Emitter Calls.
+        // Keep: Required for RN built in Event Emitter Calls.
     }
 
     @ReactMethod
     public void removeListeners(Integer count) {
-      // Keep: Required for RN built in Event Emitter Calls.
+        // Keep: Required for RN built in Event Emitter Calls.
     }
 
     @ReactMethod
@@ -120,7 +120,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             @Override
             public void onError(ErrorContainer errorContainer) {
                 promise.reject(errorContainer.getCode() + "", errorContainer.getMessage(),
-                        convertMapToWriteableMap(errorContainer.getInfo()));
+                    convertMapToWriteableMap(errorContainer.getInfo()));
             }
         });
     }
@@ -132,12 +132,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final String discountTimestamp,
                                 final Promise promise) {
         CommonKt.purchaseProduct(
-                getCurrentActivity(),
-                productIdentifier,
-                upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null,
-                upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null,
-                type,
-                getOnResult(promise));
+            getCurrentActivity(),
+            productIdentifier,
+            upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null,
+            upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null,
+            type,
+            getOnResult(promise));
     }
 
     @ReactMethod
@@ -147,12 +147,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final String discountTimestamp,
                                 final Promise promise) {
         CommonKt.purchasePackage(
-                getCurrentActivity(),
-                packageIdentifier,
-                offeringIdentifier,
-                upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null,
-                upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null,
-                getOnResult(promise));
+            getCurrentActivity(),
+            packageIdentifier,
+            offeringIdentifier,
+            upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null,
+            upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null,
+            getOnResult(promise));
     }
 
     @ReactMethod
@@ -227,8 +227,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @Override
     public void onReceived(@NonNull CustomerInfo customerInfo) {
         reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(RNPurchasesModule.CUSTOMER_INFO_UPDATED,
-                        convertMapToWriteableMap(CustomerInfoMapperKt.map(customerInfo)));
+            .emit(RNPurchasesModule.CUSTOMER_INFO_UPDATED,
+                convertMapToWriteableMap(CustomerInfoMapperKt.map(customerInfo)));
     }
 
     @ReactMethod
@@ -243,7 +243,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void isConfigured(Promise promise) {
-      promise.resolve(Purchases.isConfigured());
+        promise.resolve(Purchases.isConfigured());
     }
 
     //================================================================================
@@ -258,74 +258,74 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setEmail(String email) {
-      SubscriberAttributesKt.setEmail(email);
+        SubscriberAttributesKt.setEmail(email);
     }
 
     @ReactMethod
     public void setPhoneNumber(String phoneNumber) {
-      SubscriberAttributesKt.setPhoneNumber(phoneNumber);
+        SubscriberAttributesKt.setPhoneNumber(phoneNumber);
     }
 
     @ReactMethod
     public void setDisplayName(String displayName) {
-      SubscriberAttributesKt.setDisplayName(displayName);
+        SubscriberAttributesKt.setDisplayName(displayName);
     }
 
     @ReactMethod
     public void setPushToken(String pushToken) {
-      SubscriberAttributesKt.setPushToken(pushToken);
+        SubscriberAttributesKt.setPushToken(pushToken);
     }
 
     // region Attribution IDs
 
     @ReactMethod
     public void collectDeviceIdentifiers() {
-      SubscriberAttributesKt.collectDeviceIdentifiers();
+        SubscriberAttributesKt.collectDeviceIdentifiers();
     }
 
     @ReactMethod
     public void setAdjustID(String adjustID) {
-      SubscriberAttributesKt.setAdjustID(adjustID);
+        SubscriberAttributesKt.setAdjustID(adjustID);
     }
 
     @ReactMethod
     public void setAppsflyerID(String appsflyerID) {
-      SubscriberAttributesKt.setAppsflyerID(appsflyerID);
+        SubscriberAttributesKt.setAppsflyerID(appsflyerID);
     }
 
     @ReactMethod
     public void setFBAnonymousID(String fbAnonymousID) {
-      SubscriberAttributesKt.setFBAnonymousID(fbAnonymousID);
+        SubscriberAttributesKt.setFBAnonymousID(fbAnonymousID);
     }
 
     @ReactMethod
     public void setMparticleID(String mparticleID) {
-      SubscriberAttributesKt.setMparticleID(mparticleID);
+        SubscriberAttributesKt.setMparticleID(mparticleID);
     }
 
     @ReactMethod
     public void setCleverTapID(String cleverTapID) {
-      SubscriberAttributesKt.setCleverTapID(cleverTapID);
+        SubscriberAttributesKt.setCleverTapID(cleverTapID);
     }
 
     @ReactMethod
     public void setMixpanelDistinctID(String mixpanelDistinctID) {
-      SubscriberAttributesKt.setMixpanelDistinctID(mixpanelDistinctID);
+        SubscriberAttributesKt.setMixpanelDistinctID(mixpanelDistinctID);
     }
 
     @ReactMethod
     public void setFirebaseAppInstanceID(String firebaseAppInstanceId) {
-      SubscriberAttributesKt.setFirebaseAppInstanceID(firebaseAppInstanceId);
+        SubscriberAttributesKt.setFirebaseAppInstanceID(firebaseAppInstanceId);
     }
 
     @ReactMethod
     public void setOnesignalID(String onesignalID) {
-      SubscriberAttributesKt.setOnesignalID(onesignalID);
+        SubscriberAttributesKt.setOnesignalID(onesignalID);
     }
 
     @ReactMethod
     public void setAirshipChannelID(String airshipChannelID) {
-      SubscriberAttributesKt.setAirshipChannelID(airshipChannelID);
+        SubscriberAttributesKt.setAirshipChannelID(airshipChannelID);
     }
 
     // endregion
@@ -364,25 +364,25 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void canMakePayments(ReadableArray features, final Promise promise) {
-      ArrayList<Integer> featureList = new ArrayList<>();
+        ArrayList<Integer> featureList = new ArrayList<>();
 
-      if (features != null) {
-        for (int i = 0; i < features.size(); i++) {
-          featureList.add(features.getInt(i));
+        if (features != null) {
+            for (int i = 0; i < features.size(); i++) {
+                featureList.add(features.getInt(i));
+            }
         }
-      }
-      CommonKt.canMakePayments(reactContext, featureList, new OnResultAny<Boolean>() {
-        @Override
-        public void onError(@Nullable ErrorContainer errorContainer) {
-          promise.reject(errorContainer.getCode() + "", errorContainer.getMessage(),
-            convertMapToWriteableMap(errorContainer.getInfo()));
-        }
+        CommonKt.canMakePayments(reactContext, featureList, new OnResultAny<Boolean>() {
+            @Override
+            public void onError(@Nullable ErrorContainer errorContainer) {
+                promise.reject(errorContainer.getCode() + "", errorContainer.getMessage(),
+                    convertMapToWriteableMap(errorContainer.getInfo()));
+            }
 
-        @Override
-        public void onReceived(Boolean result) {
-          promise.resolve(result);
-        }
-      });
+            @Override
+            public void onReceived(Boolean result) {
+                promise.resolve(result);
+            }
+        });
     }
 
     // endregion
@@ -402,7 +402,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             @Override
             public void onError(ErrorContainer errorContainer) {
                 promise.reject(errorContainer.getCode() + "", errorContainer.getMessage(),
-                        convertMapToWriteableMap(errorContainer.getInfo()));
+                    convertMapToWriteableMap(errorContainer.getInfo()));
             }
         };
     }

@@ -80,7 +80,9 @@ async function checkPurchasing(purchases: Purchases,
   const canMakePayments1: boolean = await Purchases.canMakePayments();
   const canMakePayments2: boolean = await Purchases.canMakePayments(features);
 
-  const introEligibilities: { [p: string]: IntroEligibility } = await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
+  const introEligibilities: {
+    [p: string]: IntroEligibility
+  } = await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
 }
 
 async function checkConfigure() {
@@ -142,8 +144,10 @@ async function checkLogLevelEnum(level: LOG_LEVEL) {
 }
 
 function checkListeners() {
-  const customerInfoUpdateListener: CustomerInfoUpdateListener = customerInfo => {};
-  const shouldPurchaseListener: ShouldPurchasePromoProductListener = deferredPurchase => {};
+  const customerInfoUpdateListener: CustomerInfoUpdateListener = customerInfo => {
+  };
+  const shouldPurchaseListener: ShouldPurchasePromoProductListener = deferredPurchase => {
+  };
 
   Purchases.addCustomerInfoUpdateListener(customerInfoUpdateListener);
   Purchases.removeCustomerInfoUpdateListener(customerInfoUpdateListener);
