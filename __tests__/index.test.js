@@ -542,18 +542,23 @@ describe("Purchases", () => {
   });
 
 
-  it("syncObserverModeAmazonPurchase works for ios", async () => {
+  it("syncObserverModeAmazonPurchase throws UnsupportedPlatformError for ios", async () => {
     Platform.OS = "ios";
 
-    await Purchases.syncObserverModeAmazonPurchase(
-      'productID_test',
-      'receiptID_test',
-      'amazonUserID_test',
-      'isoCurrencyCode_test',
-      3.4,
-    );
-
-    expect(NativeModules.RNPurchases.syncObserverModeAmazonPurchase).toBeCalledTimes(0);
+    try {
+      await Purchases.syncObserverModeAmazonPurchase(
+        'productID_test',
+        'receiptID_test',
+        'amazonUserID_test',
+        'isoCurrencyCode_test',
+        3.4,
+      );
+      fail("expected error");
+    } catch (error) {
+      if (!(error instanceof UnsupportedPlatformError)) {
+        fail("expected UnsupportedPlatformException");
+      }
+    }
   })
 
   it("finishTransactions works", async () => {

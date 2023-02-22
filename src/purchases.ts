@@ -641,10 +641,9 @@ export default class Purchases {
   public static async syncObserverModeAmazonPurchase(productID: string, receiptID: string,
                                                      amazonUserID: string, isoCurrencyCode?: string | null,
                                                      price?: number | null): Promise<void> {
-    if (Platform.OS === 'android') {
-      await Purchases.throwIfNotConfigured();
-      RNPurchases.syncObserverModeAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price);
-    }
+    await Purchases.throwIfNotConfigured();
+    await Purchases.throwIfIOSPlatform();
+    RNPurchases.syncObserverModeAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price);
   }
 
   /**
@@ -1137,6 +1136,12 @@ export default class Purchases {
 
   private static async throwIfAndroidPlatform() {
     if (Platform.OS === "android") {
+      throw new UnsupportedPlatformError()
+    }
+  }
+
+  private static async throwIfIOSPlatform() {
+    if (Platform.OS === "ios") {
       throw new UnsupportedPlatformError()
     }
   }
