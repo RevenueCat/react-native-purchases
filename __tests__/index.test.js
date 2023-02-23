@@ -824,50 +824,62 @@ describe("Purchases", () => {
       return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
     }
 
-    it("for functions that require the SDK to be configured if called before configuring", async () => {
-      NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+    Purchases = require("../dist/index").default;
 
-      const allPropertyNames = Object.getOwnPropertyNames(Purchases);
+    const allPropertyNames = Object.getOwnPropertyNames(Purchases);
 
-      // This functions should skip the test since they not required an instance of Purchases
-      const excludedFunctionNames = [
-        "configure",
-        "setSimulatesAskToBuyInSandbox",
-        "addCustomerInfoUpdateListener",
-        "removeCustomerInfoUpdateListener",
-        "addShouldPurchasePromoProductListener",
-        "removeShouldPurchasePromoProductListener",
-        "setAutomaticAppleSearchAdsAttributionCollection",
-        "addAttributionData",
-        "setDebugLogsEnabled",
-        "setLogLevel",
-        "setLogHandler",
-        "canMakePayments",
-        "UninitializedPurchasesError",
-        "UnsupportedPlatformError",
-        "throwIfNotConfigured",
-        "throwIfAndroidPlatform",
-        "convertIntToRefundRequestStatus",
-        "isConfigured",
-        "syncObserverModeAmazonPurchase",
-      ];
-      const expected = new Purchases.UninitializedPurchasesError();
-      for (let i = 0; i < allPropertyNames.length; i++) {
-        const property = Purchases[allPropertyNames[i]];
-        if (isFunction(property) && excludedFunctionNames.indexOf(allPropertyNames[i]) === -1) {
+    // This functions should skip the test since they not required an instance of Purchases
+    const excludedFunctionNames = [
+      "configure",
+      "setSimulatesAskToBuyInSandbox",
+      "addCustomerInfoUpdateListener",
+      "removeCustomerInfoUpdateListener",
+      "addShouldPurchasePromoProductListener",
+      "removeShouldPurchasePromoProductListener",
+      "setAutomaticAppleSearchAdsAttributionCollection",
+      "addAttributionData",
+      "setDebugLogsEnabled",
+      "setLogLevel",
+      "setLogHandler",
+      "canMakePayments",
+      "UninitializedPurchasesError",
+      "UnsupportedPlatformError",
+      "throwIfNotConfigured",
+      "throwIfAndroidPlatform",
+      "throwIfIOSPlatform",
+      "convertIntToRefundRequestStatus",
+      "isConfigured",
+    ];
+    const functionsThatRequireAndroidAndInstance = [
+      "syncObserverModeAmazonPurchase",
+    ];
+    const expected = new Purchases.UninitializedPurchasesError();
+    for (let i = 0; i < allPropertyNames.length; i++) {
+      let propertyName = allPropertyNames[i];
+
+      const property = Purchases[propertyName];
+      if (isFunction(property) && excludedFunctionNames.indexOf(propertyName) === -1) {
+
+        it(`${propertyName} for functions that require the SDK to be configured if called before configuring`, async () => {
+          NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+          if (functionsThatRequireAndroidAndInstance.indexOf(propertyName) !== -1) {
+            Platform.OS = "android";
+          } else {
+            Platform.OS = "ios";
+          }
+
           // Uncomment if test is failing to see which function is giving issues.
           // If function doesn't require an instance of Purchases, add it to excludedFunctionNames.
           // console.log(`Testing ${allPropertyNames[i]}`);
           await property().then(() => {
-            fail(`${allPropertyNames[i]} should have failed`);
+            fail(`${propertyName} should have failed`);
           }).catch(error => {
             expect(error.name).toEqual(expected.name);
             expect(error.message).toEqual(expected.message);
           });
-
-        }
+        });
       }
-    });
+    }
   });
 
   describe("setCleverTapID", () => {
@@ -911,7 +923,7 @@ describe("Purchases", () => {
 
   describe("beginRefundRequest", () => {
     beforeEach(() => {
-      Platform.OS = "iOS";
+      Platform.OS = "ios";
     });
 
     describe("forActiveEntitlement", () => {
