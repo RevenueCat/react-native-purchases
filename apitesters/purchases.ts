@@ -161,3 +161,13 @@ async function checkBeginRefundRequest(entitlementInfo: PurchasesEntitlementInfo
   const refundStatus2: REFUND_REQUEST_STATUS = await Purchases.beginRefundRequestForEntitlement(entitlementInfo);
   const refundStatus3: REFUND_REQUEST_STATUS = await Purchases.beginRefundRequestForProduct(storeProduct);
 }
+
+
+async function checkSyncObserverModeAmazonPurchase(productID: string,
+                                                   receiptID: string,
+                                                   amazonUserID: string,
+                                                   isoCurrencyCode?: string | null,
+                                                   price?: number | null): Promise<void> {
+  return Purchases.syncObserverModeAmazonPurchase(
+    productID, receiptID, amazonUserID, isoCurrencyCode, price);
+}

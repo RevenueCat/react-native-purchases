@@ -1,6 +1,6 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
-const { UnsupportedPlatformError } = require("../dist/errors");
-const { REFUND_REQUEST_STATUS } = require("../dist/purchases");
+const {UnsupportedPlatformError} = require("../dist/errors");
+const {REFUND_REQUEST_STATUS} = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
 
@@ -180,7 +180,7 @@ describe("Purchases", () => {
       oldSKU: "viejo"
     }, Purchases.PURCHASE_TYPE.INAPP)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", { oldSKU: "viejo" }, Purchases.PURCHASE_TYPE.INAPP, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {oldSKU: "viejo"}, Purchases.PURCHASE_TYPE.INAPP, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(2);
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
@@ -188,7 +188,10 @@ describe("Purchases", () => {
       prorationMode: Purchases.PRORATION_MODE.DEFERRED
     }, Purchases.PURCHASE_TYPE.INAPP)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", { oldSKU: "viejo", prorationMode: Purchases.PRORATION_MODE.DEFERRED}, Purchases.PURCHASE_TYPE.INAPP, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {
+      oldSKU: "viejo",
+      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+    }, Purchases.PURCHASE_TYPE.INAPP, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(3);
   });
 
@@ -278,7 +281,7 @@ describe("Purchases", () => {
       }).rejects.toThrowError();
     });
 
-    it ("returns the correct LogInResult if successful", async () => {
+    it("returns the correct LogInResult if successful", async () => {
       const mockCreated = (Math.random() < 0.5);
 
       NativeModules.RNPurchases.logIn.mockResolvedValueOnce({
@@ -374,7 +377,7 @@ describe("Purchases", () => {
   describe("setLogHandler", () => {
     const Purchases = require("../dist/index").default;
 
-    const logDetailsStub = { logLevel: Purchases.LOG_LEVEL.INFO, message: "a message" }
+    const logDetailsStub = {logLevel: Purchases.LOG_LEVEL.INFO, message: "a message"}
 
     for (const logLevel of Object.keys(Purchases.LOG_LEVEL)) {
       it(`setLogHandler fires the callback for ${logLevel} logs`, () => {
@@ -383,7 +386,7 @@ describe("Purchases", () => {
           receivedLogLevel = logLevel
           expect(message).toEqual(logDetailsStub.message);
         });
-        nativeEmitter.emit("Purchases-LogHandlerEvent", { ...logDetailsStub, logLevel });
+        nativeEmitter.emit("Purchases-LogHandlerEvent", {...logDetailsStub, logLevel});
 
         expect(NativeModules.RNPurchases.setLogHandler).toBeCalledTimes(1);
 
@@ -409,10 +412,23 @@ describe("Purchases", () => {
     Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false);
 
-    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: false, userDefaultsSuiteName: "suite name", usesStoreKit2IfAvailable: true});
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      observerMode: false,
+      userDefaultsSuiteName: "suite name",
+      usesStoreKit2IfAvailable: true
+    });
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false);
 
-    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true, userDefaultsSuiteName: "suite name", usesStoreKit2IfAvailable: true, useAmazon: true});
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      observerMode: true,
+      userDefaultsSuiteName: "suite name",
+      usesStoreKit2IfAvailable: true,
+      useAmazon: true
+    });
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(4);
@@ -482,6 +498,68 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.syncPurchases).toBeCalledTimes(1);
   })
 
+  it("syncObserverModeAmazonPurchase works for android", async () => {
+    Platform.OS = "android";
+
+    await Purchases.syncObserverModeAmazonPurchase(
+      'productID_test',
+      'receiptID_test',
+      'amazonUserID_test',
+      'isoCurrencyCode_test',
+      3.4,
+    );
+
+    expect(NativeModules.RNPurchases.syncObserverModeAmazonPurchase).toBeCalledTimes(1);
+    expect(NativeModules.RNPurchases.syncObserverModeAmazonPurchase).toBeCalledWith(
+      'productID_test',
+      'receiptID_test',
+      'amazonUserID_test',
+      'isoCurrencyCode_test',
+      3.4
+    );
+  })
+
+  it("syncObserverModeAmazonPurchase throws UninitializedError if called before configuring", async () => {
+    Platform.OS = "android";
+
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+
+    const expected = new Purchases.UninitializedPurchasesError();
+
+
+    await Purchases.syncObserverModeAmazonPurchase(
+      'productID_test',
+      'receiptID_test',
+      'amazonUserID_test',
+      'isoCurrencyCode_test',
+      3.4,
+    ).then(() => {
+      fail(`${allPropertyNames[i]} should have failed`);
+    }).catch(error => {
+      expect(error.name).toEqual(expected.name);
+      expect(error.message).toEqual(expected.message);
+    });
+  });
+
+
+  it("syncObserverModeAmazonPurchase throws UnsupportedPlatformError for ios", async () => {
+    Platform.OS = "ios";
+
+    try {
+      await Purchases.syncObserverModeAmazonPurchase(
+        'productID_test',
+        'receiptID_test',
+        'amazonUserID_test',
+        'isoCurrencyCode_test',
+        3.4,
+      );
+      fail("expected error");
+    } catch (error) {
+      if (!(error instanceof UnsupportedPlatformError)) {
+        fail("expected UnsupportedPlatformException");
+      }
+    }
+  })
 
   it("finishTransactions works", async () => {
     await Purchases.setFinishTransactions(true);
@@ -618,7 +696,7 @@ describe("Purchases", () => {
   describe("setAttributes", () => {
     describe("when setAttributes is called", () => {
       it("makes the right call to Purchases", async () => {
-        const attributes = { band: "AirBourne", song: "Back in the game" }
+        const attributes = {band: "AirBourne", song: "Back in the game"}
 
         await Purchases.setAttributes(attributes);
 
@@ -706,18 +784,18 @@ describe("Purchases", () => {
       });
     });
     describe("when list of parameters are passed", () => {
-        it("parameters are mapped successfully", () => {
-          Purchases.canMakePayments([Purchases.BILLING_FEATURE.SUBSCRIPTIONS,
-            Purchases.BILLING_FEATURE.PRICE_CHANGE_CONFIRMATION,
-            Purchases.BILLING_FEATURE.SUBSCRIPTIONS_ON_VR,
-            Purchases.BILLING_FEATURE.SUBSCRIPTIONS_UPDATE,
-            Purchases.BILLING_FEATURE.IN_APP_ITEMS_ON_VR,
-            ]);
+      it("parameters are mapped successfully", () => {
+        Purchases.canMakePayments([Purchases.BILLING_FEATURE.SUBSCRIPTIONS,
+          Purchases.BILLING_FEATURE.PRICE_CHANGE_CONFIRMATION,
+          Purchases.BILLING_FEATURE.SUBSCRIPTIONS_ON_VR,
+          Purchases.BILLING_FEATURE.SUBSCRIPTIONS_UPDATE,
+          Purchases.BILLING_FEATURE.IN_APP_ITEMS_ON_VR,
+        ]);
 
-          expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
-          expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([0, 4, 3, 1, 2]);
-        });
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.canMakePayments).toBeCalledWith([0, 4, 3, 1, 2]);
       });
+    });
   });
 
   describe("isConfigured", () => {
@@ -746,49 +824,62 @@ describe("Purchases", () => {
       return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
     }
 
-    it("for functions that require the SDK to be configured if called before configuring", async () => {
-      NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+    Purchases = require("../dist/index").default;
 
-      const allPropertyNames = Object.getOwnPropertyNames( Purchases );
+    const allPropertyNames = Object.getOwnPropertyNames(Purchases);
 
-      // This functions should skip the test since they not required an instance of Purchases
-      const excludedFunctionNames = [
-        "configure",
-        "setSimulatesAskToBuyInSandbox",
-        "addCustomerInfoUpdateListener",
-        "removeCustomerInfoUpdateListener",
-        "addShouldPurchasePromoProductListener",
-        "removeShouldPurchasePromoProductListener",
-        "setAutomaticAppleSearchAdsAttributionCollection",
-        "addAttributionData",
-        "setDebugLogsEnabled",
-        "setLogLevel",
-        "setLogHandler",
-        "canMakePayments",
-        "UninitializedPurchasesError",
-        "UnsupportedPlatformError",
-        "throwIfNotConfigured",
-        "throwIfAndroidPlatform",
-        "convertIntToRefundRequestStatus",
-        "isConfigured",
-      ];
-      const expected = new Purchases.UninitializedPurchasesError();
-      for (let i = 0; i < allPropertyNames.length; i++) {
-        const property = Purchases[allPropertyNames[i]];
-        if (isFunction(property) && excludedFunctionNames.indexOf(allPropertyNames[i]) === -1) {
+    // This functions should skip the test since they not required an instance of Purchases
+    const excludedFunctionNames = [
+      "configure",
+      "setSimulatesAskToBuyInSandbox",
+      "addCustomerInfoUpdateListener",
+      "removeCustomerInfoUpdateListener",
+      "addShouldPurchasePromoProductListener",
+      "removeShouldPurchasePromoProductListener",
+      "setAutomaticAppleSearchAdsAttributionCollection",
+      "addAttributionData",
+      "setDebugLogsEnabled",
+      "setLogLevel",
+      "setLogHandler",
+      "canMakePayments",
+      "UninitializedPurchasesError",
+      "UnsupportedPlatformError",
+      "throwIfNotConfigured",
+      "throwIfAndroidPlatform",
+      "throwIfIOSPlatform",
+      "convertIntToRefundRequestStatus",
+      "isConfigured",
+    ];
+    const functionsThatRequireAndroidAndInstance = [
+      "syncObserverModeAmazonPurchase",
+    ];
+    const expected = new Purchases.UninitializedPurchasesError();
+    for (let i = 0; i < allPropertyNames.length; i++) {
+      let propertyName = allPropertyNames[i];
+
+      const property = Purchases[propertyName];
+      if (isFunction(property) && excludedFunctionNames.indexOf(propertyName) === -1) {
+
+        it(`${propertyName} for functions that require the SDK to be configured if called before configuring`, async () => {
+          NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+          if (functionsThatRequireAndroidAndInstance.indexOf(propertyName) !== -1) {
+            Platform.OS = "android";
+          } else {
+            Platform.OS = "ios";
+          }
+
           // Uncomment if test is failing to see which function is giving issues.
           // If function doesn't require an instance of Purchases, add it to excludedFunctionNames.
           // console.log(`Testing ${allPropertyNames[i]}`);
           await property().then(() => {
-            fail(`${ allPropertyNames[i] } should have failed`);
+            fail(`${propertyName} should have failed`);
           }).catch(error => {
             expect(error.name).toEqual(expected.name);
             expect(error.message).toEqual(expected.message);
           });
-
-        }
+        });
       }
-    });
+    }
   });
 
   describe("setCleverTapID", () => {
@@ -832,7 +923,7 @@ describe("Purchases", () => {
 
   describe("beginRefundRequest", () => {
     beforeEach(() => {
-      Platform.OS = "iOS";
+      Platform.OS = "ios";
     });
 
     describe("forActiveEntitlement", () => {

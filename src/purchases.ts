@@ -189,14 +189,14 @@ export default class Purchases {
    * Currently, these are only relevant for Google Play Android users:
    * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
    * @readonly
-   * @enum  {string}
+   * @enum {string}
    */
   public static BILLING_FEATURE = BILLING_FEATURE;
 
   /**
    * Enum with possible return states for beginning refund request.
    * @readonly
-   * @enum  {string}
+   * @enum {string}
    */
   public static REFUND_REQUEST_STATUS = REFUND_REQUEST_STATUS;
 
@@ -622,6 +622,28 @@ export default class Purchases {
   public static async syncPurchases(): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.syncPurchases();
+  }
+
+  /**
+   * This method will send a purchase to the RevenueCat backend. This function should only be called if you are
+   * in Amazon observer mode or performing a client side migration of your current users to RevenueCat.
+   *
+   * The receipt IDs are cached if successfully posted so they are not posted more than once.
+   *
+   * @param {string} productID Product ID associated to the purchase.
+   * @param {string} receiptID ReceiptId that represents the Amazon purchase.
+   * @param {string} amazonUserID Amazon's userID. This parameter will be ignored when syncing a Google purchase.
+   * @param {(string|null|undefined)} isoCurrencyCode Product's currency code in ISO 4217 format.
+   * @param {(number|null|undefined)} price Product's price.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * syncing purchases.
+   */
+  public static async syncObserverModeAmazonPurchase(productID: string, receiptID: string,
+                                                     amazonUserID: string, isoCurrencyCode?: string | null,
+                                                     price?: number | null): Promise<void> {
+    await Purchases.throwIfIOSPlatform();
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.syncObserverModeAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price);
   }
 
   /**
@@ -1114,6 +1136,12 @@ export default class Purchases {
 
   private static async throwIfAndroidPlatform() {
     if (Platform.OS === "android") {
+      throw new UnsupportedPlatformError()
+    }
+  }
+
+  private static async throwIfIOSPlatform() {
+    if (Platform.OS === "ios") {
       throw new UnsupportedPlatformError()
     }
   }
