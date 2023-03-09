@@ -1,3 +1,7 @@
+## 5.11.1
+### Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.13.5 (#569) via RevenueCat Git Bot (@RCGitBot)
+
 ## 5.11.0
 ### New Features
 * Add `syncObserverModeAmazonPurchase` (#552) via Cesar de la Vega (@vegaro)
