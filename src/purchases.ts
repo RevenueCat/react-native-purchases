@@ -173,7 +173,7 @@ export interface PurchasesConfiguration {
    * proven to be more performant than StoreKit 2.
    * We're collecting more data on the best approach, but StoreKit 1 vs StoreKit 2 is an implementation detail
    * that you shouldn't need to care about.
-   * Simply remove this method call to let RevenueCat decide for you which StoreKit implementation to use.
+   * We recommend not using this parameter, letting RevenueCat decide for you which StoreKit implementation to use.
    */
   usesStoreKit2IfAvailable?: boolean;
   /**
@@ -257,7 +257,7 @@ export default class Purchases {
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
    * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
    * @param {boolean} [usesStoreKit2IfAvailable=false] DEPRECATED. An optional boolean. iOS-only. Defaults to FALSE. Setting this to TRUE will enable StoreKit2 on compatible devices. 
-   * Simply remove this parameter to let RevenueCat decide for you which StoreKit implementation to use.
+   * We recommend not using this parameter, letting RevenueCat decide for you which StoreKit implementation to use.
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
