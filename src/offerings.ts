@@ -317,4 +317,11 @@ export enum PRORATION_MODE {
      * be charged at the same time.
      */
     DEFERRED = 4,
+     
+    /**
+     * Replacement takes effect immediately, and the user is charged full price 
+     * of new plan and is given a full billing cycle of subscription, 
+     * plus remaining prorated time from the old plan.
+     */
+    IMMEDIATE_AND_CHARGE_FULL_PRICE = 5,
 }
