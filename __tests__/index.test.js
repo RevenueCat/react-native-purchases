@@ -195,6 +195,38 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(3);
   });
 
+  it("purchaseProduct with immediate_and_change_full_price proration mode sends the correct proration mode", async () => {
+    NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub
+    });
+
+    await Purchases.purchasePackage(
+      {
+        identifier: "$rc_onemonth",
+        packageType: Purchases.PACKAGE_TYPE.MONTHLY,
+        product: {
+          identifier: "onemonth_freetrial",
+          description: "description",
+          title: "title",
+          price: 4.5,
+          priceString: "$4.5",
+          currency_code: "USD",
+          introPrice: null
+        },
+        offeringIdentifier: "offering",
+      },
+      {
+        oldSKU: "viejo",
+        prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
+      },
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
+      oldSKU: "viejo",
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
+    }, null);
+  });
+
   it("purchasePackage works", async () => {
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",

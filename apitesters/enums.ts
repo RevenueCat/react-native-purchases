@@ -79,6 +79,8 @@ function checkProrationMode(mode: PRORATION_MODE): boolean {
       return true;
     case PRORATION_MODE.DEFERRED:
       return true;
+    case PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE:
+      return true;
   }
 }
 
