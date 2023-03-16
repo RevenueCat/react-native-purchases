@@ -48,7 +48,7 @@ export interface PurchasesEntitlementInfo {
      *
      * @note: Entitlement may still be active even if user has unsubscribed. Check the `isActive` property.
      */
-    readonly unsubscribeDetectedAt: string | null;
+    readonly unsubscribedDetectedAt: string | null;
     /**
      * The date a billing issue was detected. Can be `null` if there is no billing issue or an issue has been resolved
      *
