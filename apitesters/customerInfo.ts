@@ -43,7 +43,7 @@ function checkEntitlementInfo(info: PurchasesEntitlementInfo) {
   const store: string = info.store;
   const productIdentifier: string = info.productIdentifier;
   const isSandbox: boolean = info.isSandbox;
-  const unsubscribeDetectedAt: string | null = info.unsubscribeDetectedAt;
+  const unsubscribedDetectedAt: string | null = info.unsubscribedDetectedAt;
   const billingIssueDetectedAt: string | null = info.billingIssueDetectedAt;
 }
 
