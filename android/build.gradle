@@ -29,7 +29,7 @@ android {
         minSdkVersion getExtOrIntegerDefault('minSdkVersion')
         targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
         versionCode 1
-        versionName '5.14.0-SNAPSHOT'
+        versionName '5.13.1'
     }
 
     buildTypes {
