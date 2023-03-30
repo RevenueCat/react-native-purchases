@@ -328,7 +328,7 @@ RCT_REMAP_METHOD(canMakePayments,
 
 RCT_EXPORT_METHOD(beginRefundRequestForActiveEntitlement:(RCTPromiseResolveBlock)resolve
                                                   reject:(RCTPromiseRejectBlock)reject) {
-    #if TARGET_OS_IPHONE
+    #if defined(TARGET_OS_IPHONE) && !defined(TARGET_OS_MACCATALYST)
     if (@available(iOS 15.0, *)) {
         [RCCommonFunctionality beginRefundRequestForActiveEntitlementCompletion:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
                                                                                                                                 reject:reject]];
@@ -343,7 +343,7 @@ RCT_EXPORT_METHOD(beginRefundRequestForActiveEntitlement:(RCTPromiseResolveBlock
 RCT_EXPORT_METHOD(beginRefundRequestForEntitlementId:(NSString *)entitlementIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    #if TARGET_OS_IPHONE
+    #if defined(TARGET_OS_IPHONE) && !defined(TARGET_OS_MACCATALYST)
     if (@available(iOS 15.0, *)) {
         [RCCommonFunctionality beginRefundRequestEntitlementId:entitlementIdentifier
                                                completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
@@ -359,7 +359,7 @@ RCT_EXPORT_METHOD(beginRefundRequestForEntitlementId:(NSString *)entitlementIden
 RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    #if TARGET_OS_IPHONE
+    #if defined(TARGET_OS_IPHONE) && !defined(TARGET_OS_MACCATALYST)
     if (@available(iOS 15.0, *)) {
         [RCCommonFunctionality beginRefundRequestProductId:productIdentifier
                                            completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
