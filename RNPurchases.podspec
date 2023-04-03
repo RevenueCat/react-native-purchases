@@ -24,6 +24,6 @@ Pod::Spec.new do |spec|
   ]
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommon", '4.14.1'
+  spec.dependency   "PurchasesHybridCommon", '5.0.0-beta.2'
   spec.swift_version    = '5.0'
 end
