@@ -26,6 +26,7 @@ import com.revenuecat.purchases.hybridcommon.OnResultList;
 import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
 import com.revenuecat.purchases.hybridcommon.mappers.CustomerInfoMapperKt;
 import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener;
+import com.revenuecat.purchases.models.GoogleProrationMode;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -131,12 +132,21 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 final String type,
                                 @Nullable final String discountTimestamp,
                                 final Promise promise) {
+        String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+
+        // TODO: Map int
+        int prorationModeInt = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+        GoogleProrationMode googleProrationModeEnum = GoogleProrationMode.IMMEDIATE_WITHOUT_PRORATION;
+
+        boolean googleIsPersonalized = false;
+
         CommonKt.purchaseProduct(
             getCurrentActivity(),
             productIdentifier,
-            upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null,
-            upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null,
             type,
+            googleOldProductId,
+            googleProrationModeEnum,
+            googleIsPersonalized,
             getOnResult(promise));
     }
 
@@ -146,12 +156,21 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final ReadableMap upgradeInfo,
                                 @Nullable final String discountTimestamp,
                                 final Promise promise) {
+        String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+
+        // TODO: Map int
+        Integer prorationModeInt = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+        GoogleProrationMode googleProrationModeEnum = GoogleProrationMode.IMMEDIATE_WITHOUT_PRORATION;
+
+        boolean googleIsPersonalized = false;
+
         CommonKt.purchasePackage(
             getCurrentActivity(),
             packageIdentifier,
             offeringIdentifier,
-            upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null,
-            upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null,
+            googleOldProductId,
+            googleProrationModeEnum,
+            googleIsPersonalized,
             getOnResult(promise));
     }
 
