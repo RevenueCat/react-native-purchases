@@ -109,6 +109,11 @@ export interface PurchasesStoreProduct {
      * Note: Not available for Amazon.
      */
     readonly subscriptionPeriod: string | null;
+
+    readonly defaultOption: SubscriptionOption | null;
+    readonly subscriptionOptions: SubscriptionOption[] | null;
+
+    readonly presentedOfferingIdentifier: string | null;
 }
 
 export interface PurchasesStoreProductDiscount {
@@ -262,7 +267,7 @@ export interface UpgradeInfo {
      * The oldSKU to upgrade from.
      */
     readonly oldSKU: string;
-    /**
+    /*
      * The [PRORATION_MODE] to use when upgrading the given oldSKU.
      */
     readonly prorationMode?: PRORATION_MODE;
@@ -324,4 +329,41 @@ export enum PRORATION_MODE {
      * plus remaining prorated time from the old plan.
      */
     IMMEDIATE_AND_CHARGE_FULL_PRICE = 5,
+}
+
+export interface SubscriptionOption {
+    
+    readonly id: string;
+    readonly storeProductId: string;
+    readonly productId: string;
+    readonly pricingPhases: PricingPhase[];
+    readonly tags: string[];
+    readonly isBasePlan: boolean;
+    readonly billingPeriod: Period | null;
+    readonly fullPricePhase: PricingPhase | null;
+    readonly freePhase: PricingPhase | null;
+    readonly introPhase: PricingPhase | null;
+    readonly presentedOfferingIdentifier: string | null;
+}
+
+export interface PricingPhase {
+    
+    readonly billingPeriod: Period;
+    readonly recurrenceMode: number | null;
+    readonly billingCycleCount: number | null;
+    readonly price: Price;
+}
+
+export interface Price {
+    
+    readonly formatted: string;
+    readonly amountMicros: number;
+    readonly currencyCode: string;
+}
+
+export interface Period {
+    
+    readonly unit: string;
+    readonly value: number;
+    readonly iso8601: string;
 }

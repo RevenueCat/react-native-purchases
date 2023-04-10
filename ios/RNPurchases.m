@@ -86,6 +86,7 @@ RCT_REMAP_METHOD(purchaseProduct,
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  type:(NSString *)type
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
+                 presentedOfferingIdentifier:(NSString *)presentedOfferingIdentifier
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchaseProduct:productIdentifier

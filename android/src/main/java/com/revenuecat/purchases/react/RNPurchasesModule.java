@@ -131,22 +131,21 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final ReadableMap upgradeInfo,
                                 final String type,
                                 @Nullable final String discountTimestamp,
+                                @Nullable final String presentedOfferingIdentifier,
                                 final Promise promise) {
         String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
-
-        // TODO: Map int
-        int prorationModeInt = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
-        GoogleProrationMode googleProrationModeEnum = GoogleProrationMode.IMMEDIATE_WITHOUT_PRORATION;
-
-        boolean googleIsPersonalized = false;
+        Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+        Boolean googleIsPersonalized = upgradeInfo != null && upgradeInfo.hasKey("googleIsPersonalized") ? upgradeInfo.getBoolean("googleIsPersonalized") : null;
 
         CommonKt.purchaseProduct(
             getCurrentActivity(),
             productIdentifier,
             type,
+            null,
             googleOldProductId,
-            googleProrationModeEnum,
+            googleProrationMode,
             googleIsPersonalized,
+            presentedOfferingIdentifier,
             getOnResult(promise));
     }
 
@@ -157,20 +156,38 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final String discountTimestamp,
                                 final Promise promise) {
         String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
-
-        // TODO: Map int
-        Integer prorationModeInt = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
-        GoogleProrationMode googleProrationModeEnum = GoogleProrationMode.IMMEDIATE_WITHOUT_PRORATION;
-
-        boolean googleIsPersonalized = false;
+        Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+        Boolean googleIsPersonalized = upgradeInfo != null && upgradeInfo.hasKey("googleIsPersonalized") ? upgradeInfo.getBoolean("googleIsPersonalized") : null;
 
         CommonKt.purchasePackage(
             getCurrentActivity(),
             packageIdentifier,
             offeringIdentifier,
             googleOldProductId,
-            googleProrationModeEnum,
+            googleProrationMode,
             googleIsPersonalized,
+            getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void purchaseSubscriptionOption(final String productIdentifer,
+                                           final String optionIdentifier,
+                                           @Nullable final ReadableMap upgradeInfo,
+                                           @Nullable final String discountTimestamp,
+                                           @Nullable final String presentedOfferingIdentifier,
+                                           final Promise promise) {
+        String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+        Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+        Boolean googleIsPersonalized = upgradeInfo != null && upgradeInfo.hasKey("googleIsPersonalized") ? upgradeInfo.getBoolean("googleIsPersonalized") : null;
+
+        CommonKt.purchaseSubscriptionOption(
+            getCurrentActivity(),
+            productIdentifer,
+            optionIdentifier,
+            googleOldProductId,
+            googleProrationMode,
+            googleIsPersonalized,
+            presentedOfferingIdentifier,
             getOnResult(promise));
     }
 

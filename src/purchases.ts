@@ -11,7 +11,8 @@ import {
   PurchasesPromotionalOffer,
   PurchasesPackage,
   IntroEligibility,
-  PurchasesStoreProductDiscount
+  PurchasesStoreProductDiscount,
+  SubscriptionOption
 } from "./offerings";
 
 import {Platform} from "react-native";
@@ -431,14 +432,16 @@ export default class Purchases {
   public static async purchaseProduct(
     productIdentifier: string,
     upgradeInfo?: UpgradeInfo | null,
-    type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
+    type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS,
+    presentedOfferingIdentifier: string | null = null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
       productIdentifier,
       upgradeInfo,
       type,
-      null
+      null,
+      presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
@@ -467,7 +470,8 @@ export default class Purchases {
       product.identifier,
       null,
       null,
-      discount.timestamp.toString()
+      discount.timestamp.toString(),
+      product.presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
@@ -495,6 +499,34 @@ export default class Purchases {
       aPackage.offeringIdentifier,
       upgradeInfo,
       null
+    ).catch((error: PurchasesError) => {
+      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      throw error;
+    });
+  }
+
+  /**
+   * Make a purchase
+   *
+   * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
+   * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
+   * and the optional prorationMode.
+   * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
+   * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
+   * user cancelled the purchase, and an object with more information. The promise will be also be rejected if configure
+   * has not been called yet.
+   */
+  public static async purchaseSubscriptionOption(
+    aOption: SubscriptionOption,
+    upgradeInfo?: UpgradeInfo | null
+  ): Promise<MakePurchaseResult> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.purchaseSubscriptionOption(
+      aOption.productId,
+      aOption.id,
+      upgradeInfo,
+      null,
+      aOption.presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
