@@ -20,7 +20,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Purchases, { PurchasesPackage, PurchasesStoreProduct, SubscriptionOption, PURCHASE_TYPE } from 'react-native-purchases';
+import Purchases, { PurchasesPackage, PurchasesStoreProduct, SubscriptionOption, PURCHASE_TYPE, UNIT } from 'react-native-purchases';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
@@ -47,6 +47,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
       product.identifier,
       null,
       PURCHASE_TYPE.SUBS,
+      null,
       product.presentedOfferingIdentifier,
       ).then((result) => {
     }).catch((err) => {

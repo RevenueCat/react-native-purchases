@@ -424,6 +424,11 @@ export default class Purchases {
    * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
    * and the optional prorationMode.
    * @param {String} type Optional type of product, can be inapp or subs. Subs by default
+   * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
+   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
+   * @param {String} presentedOfferingIdentifier The offering identifier this product was returned from. The presentedOfferingIdentifier
+   * can be found on a StoreProduct.
    * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code,
    * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will
@@ -433,6 +438,7 @@ export default class Purchases {
     productIdentifier: string,
     upgradeInfo?: UpgradeInfo | null,
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS,
+    googleIsPersonalizedPrice: boolean | null = null,
     presentedOfferingIdentifier: string | null = null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
@@ -441,6 +447,7 @@ export default class Purchases {
       upgradeInfo,
       type,
       null,
+      googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
       presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
@@ -453,6 +460,9 @@ export default class Purchases {
    *
    * @param {PurchasesStoreProduct} product The product you want to purchase
    * @param {PurchasesPromotionalOffer} discount Discount to apply to this package. Retrieve this discount using getPromotionalOffer.
+   * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
+   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code,
    * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will be
@@ -460,7 +470,7 @@ export default class Purchases {
    */
   public static async purchaseDiscountedProduct(
     product: PurchasesStoreProduct,
-    discount: PurchasesPromotionalOffer
+    discount: PurchasesPromotionalOffer,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     if (typeof discount === "undefined" || discount == null) {
@@ -471,6 +481,7 @@ export default class Purchases {
       null,
       null,
       discount.timestamp.toString(),
+      null,
       product.presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
@@ -484,6 +495,9 @@ export default class Purchases {
    * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
    * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
    * and the optional prorationMode.
+   * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
+   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
    * user cancelled the purchase, and an object with more information. The promise will be also be rejected if configure
@@ -491,14 +505,16 @@ export default class Purchases {
    */
   public static async purchasePackage(
     aPackage: PurchasesPackage,
-    upgradeInfo?: UpgradeInfo | null
+    upgradeInfo?: UpgradeInfo | null,
+    googleIsPersonalizedPrice: boolean | null = null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.offeringIdentifier,
       upgradeInfo,
-      null
+      null,
+      googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
@@ -511,6 +527,9 @@ export default class Purchases {
    * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProdcuts by calling getOfferings
    * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
    * and the optional prorationMode.
+   * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
+   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
    * user cancelled the purchase, and an object with more information. The promise will be also be rejected if configure
@@ -518,7 +537,8 @@ export default class Purchases {
    */
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
-    upgradeInfo?: UpgradeInfo | null
+    upgradeInfo?: UpgradeInfo | null,
+    googleIsPersonalizedPrice: boolean | null = null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseSubscriptionOption(
@@ -526,6 +546,7 @@ export default class Purchases {
       subscriptionOption.id,
       upgradeInfo,
       null,
+      googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
       subscriptionOption.presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;

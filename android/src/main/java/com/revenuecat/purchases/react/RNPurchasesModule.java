@@ -131,11 +131,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final ReadableMap upgradeInfo,
                                 final String type,
                                 @Nullable final String discountTimestamp,
+                                @Nullable final ReadableMap googleInfo,
                                 @Nullable final String presentedOfferingIdentifier,
                                 final Promise promise) {
         String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
         Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
-        Boolean googleIsPersonalized = upgradeInfo != null && upgradeInfo.hasKey("googleIsPersonalized") ? upgradeInfo.getBoolean("googleIsPersonalized") : null;
+
+        Log.d("GROVER", "googleInfo: " + googleInfo);
+        Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
         CommonKt.purchaseProduct(
             getCurrentActivity(),
@@ -154,10 +157,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 final String offeringIdentifier,
                                 @Nullable final ReadableMap upgradeInfo,
                                 @Nullable final String discountTimestamp,
+                                @Nullable final ReadableMap googleInfo,
                                 final Promise promise) {
         String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
         Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
-        Boolean googleIsPersonalized = upgradeInfo != null && upgradeInfo.hasKey("googleIsPersonalized") ? upgradeInfo.getBoolean("googleIsPersonalized") : null;
+
+        Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
         CommonKt.purchasePackage(
             getCurrentActivity(),
@@ -174,11 +179,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                            final String optionIdentifier,
                                            @Nullable final ReadableMap upgradeInfo,
                                            @Nullable final String discountTimestamp,
+                                           @Nullable final ReadableMap googleInfo,
                                            @Nullable final String presentedOfferingIdentifier,
                                            final Promise promise) {
         String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
         Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
-        Boolean googleIsPersonalized = upgradeInfo != null && upgradeInfo.hasKey("googleIsPersonalized") ? upgradeInfo.getBoolean("googleIsPersonalized") : null;
+
+        Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
         CommonKt.purchaseSubscriptionOption(
             getCurrentActivity(),
