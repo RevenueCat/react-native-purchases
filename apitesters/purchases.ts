@@ -14,6 +14,7 @@ import {
 } from '../dist';
 
 import Purchases from '../dist/purchases';
+import { SubscriptionOption } from '../src';
 
 async function checkPurchases(purchases: Purchases) {
   const productIds: string[] = [];
@@ -43,7 +44,8 @@ async function checkPurchasing(purchases: Purchases,
                                product: PurchasesStoreProduct,
                                discount: PurchasesStoreProductDiscount,
                                paymentDiscount: PurchasesPromotionalOffer,
-                               pack: PurchasesPackage) {
+                               pack: PurchasesPackage,
+                               subscriptionOpton: SubscriptionOption) {
   const productId: string = ""
   const productIds: string[] = [productId];
   const upgradeInfo: UpgradeInfo | null = null;
@@ -73,6 +75,11 @@ async function checkPurchasing(purchases: Purchases,
   const result4: MakePurchaseResult = await Purchases.purchaseDiscountedPackage(
     pack,
     paymentDiscount
+  );
+
+  const result5: MakePurchaseResult = await Purchases.purchaseSubscriptionOption(
+    subscriptionOpton,
+    upgradeInfo
   );
 
   const syncPurchases: void = await Purchases.syncPurchases();
