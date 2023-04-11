@@ -12,9 +12,6 @@ For more information around configuration please take a look at the [Amazon Stor
 #### Apple AdServices support
 New method for automatic collecting of attribution tokens on iOS and macOS using AdServices - `Purchases.enableAdServicesAttributionTokenCollection()`
 
-#### StoreKit 2 support
-This version of the SDK automatically uses StoreKit 2 APIs under the hood only for APIs that the RevenueCat team has determined work better than StoreKit 1.
-
 #### New types and cleaned up naming
 New types that wrap native types from Apple, Google and Amazon, and we cleaned up the naming of other types and methods for a more consistent experience.
 
@@ -27,7 +24,6 @@ Purchases.configure({
     appUserID: "user ID",
     observerMode: false,
     userDefaultsSuiteName: "suite name",
-    usesStoreKit2IfAvailable: true,
     useAmazon: true
 });
 ```
