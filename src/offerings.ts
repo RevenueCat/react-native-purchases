@@ -267,7 +267,7 @@ export interface UpgradeInfo {
      * The oldSKU to upgrade from.
      */
     readonly oldSKU: string;
-    /*
+    /**
      * The [PRORATION_MODE] to use when upgrading the given oldSKU.
      */
     readonly prorationMode?: PRORATION_MODE;
@@ -331,39 +331,181 @@ export enum PRORATION_MODE {
     IMMEDIATE_AND_CHARGE_FULL_PRICE = 5,
 }
 
+/**
+ * Contains all details associated with a SubscriptionOption
+ * Used only for Google
+ */
 export interface SubscriptionOption {
-    
+    /**
+     * Identifier of the subscription option
+     * If this SubscriptionOption represents a base plan, this will be the basePlanId.
+     * If it represents an offer, it will be {basePlanId}:{offerId}
+     */
     readonly id: string;
+
+    /**
+     * Identifier of the StoreProduct associated with this SubscriptionOption
+     * This will be {subId}:{basePlanId}
+     */
     readonly storeProductId: string;
+
+    /**
+     * Identifer of the subscription associated with this SubsriptionOption
+     * This will be {subId}
+     */
     readonly productId: string;
+
+    /**
+     * Pricing phases defining a user's payment plan for the product over time.
+     */
     readonly pricingPhases: PricingPhase[];
+
+    /**
+     * Tags defined on the base plan or offer. Empty for Amazon.
+     */
     readonly tags: string[];
+
+    /**
+     * True if this SubscriptionOption represents a Google subscription base plan (rather than an offer).
+     * Not applicable for Amazon subscriptions.
+     */
     readonly isBasePlan: boolean;
+
+    /**
+     * The subscription period of fullPricePhase (after free and intro trials).
+     */
     readonly billingPeriod: Period | null;
+
+    /**
+     * The full price PricingPhase of the subscription.
+     * Looks for the last price phase of the SubscriptionOption.
+     */
     readonly fullPricePhase: PricingPhase | null;
+
+    /**
+     * The free trial PricingPhase of the subscription.
+     * Looks for the first pricing phase of the SubscriptionOption where amountMicros is 0.
+     * There can be a freeTrialPhase and an introductoryPhase in the same SubscriptionOption.
+     */
     readonly freePhase: PricingPhase | null;
+
+    /**
+     * The intro trial PricingPhase of the subscription.
+     * Looks for the first pricing phase of the SubscriptionOption where amountMicros is greater than 0.
+     * There can be a freeTrialPhase and an introductoryPhase in the same SubscriptionOption.
+     */
     readonly introPhase: PricingPhase | null;
+
+    /**
+     * Offering identifier the subscriptioni option was presented from
+     */
     readonly presentedOfferingIdentifier: string | null;
 }
 
+/**
+ * Contains all the details associated with a PricingPhase
+ */
 export interface PricingPhase {
-    
+    /**
+     * Billing period for which the PricingPhase applies
+     */
     readonly billingPeriod: Period;
-    readonly recurrenceMode: number | null;
+
+    /**
+     * Recurrence mode of the PricingPhase
+     */
+    readonly recurrenceMode: RECURRENCE_MODE | null;
+
+    /**
+     * Number of cycles for which the pricing phase applies.
+     * Null for infiniteRecurring or finiteRecurring recurrence modes.
+     */
     readonly billingCycleCount: number | null;
+
+    /**
+     * Price of the PricingPhase
+     */
     readonly price: Price;
+
+    /**
+     * Indicates how the pricing phase is charged for finiteRecurring pricing phases
+     */
+    readonly offerPaymentMode: OFFER_PAYMENT_MODE | null;
 }
 
+/**
+ * Recurrence mode for a pricing phase
+ */
+export enum RECURRENCE_MODE {
+    INFINITE_RECURRING = 1,
+    FINITE_RECURRING = 2,
+    NON_RECURRING = 3,
+}
+
+/**
+ * Payment mode for offer pricing phases
+ */
+export enum OFFER_PAYMENT_MODE {
+    FREE_TRIAL = "FREE_TRIAL",
+    SINGLE_PAYMENT = "SINGLE_PAYMENT",
+    DISCOUNTED_RECURRING_PAYMENT = "DISCOUNTED_RECURRING_PAYMENT",
+}
+
+/**
+ * Contains all the details associated with a Price
+ */
 export interface Price {
-    
+    /**
+     * Formatted price of the item, including its currency sign. For example $3.00
+     */
     readonly formatted: string;
+
+    /**
+     * Price in micro-units, where 1,000,000 micro-units equal one unit of the currency.
+     * 
+     * For example, if price is "€7.99", price_amount_micros is 7,990,000. This value represents
+     * the localized, rounded price for a particular currency.
+     */
     readonly amountMicros: number;
+
+    /**
+     * Returns ISO 4217 currency code for price and original price.
+     * 
+     * For example, if price is specified in British pounds sterling, price_currency_code is "GBP".
+     * If currency code cannot be determined, currency symbol is returned.
+     */
     readonly currencyCode: string;
 }
 
+/**
+ * Contains all the details associated with a Period
+ */
 export interface Period {
-    
-    readonly unit: string;
+    /**
+     * The number of period units: day, week, month, year, unknown
+     */
+    readonly unit: UNIT;
+
+    /**
+     * The increment of time that a subscription period is specified in
+     */
     readonly value: number;
+
+    /**
+     * Specified in ISO 8601 format. For example, P1W equates to one week,
+     * P1M equates to one month, P3M equates to three months, P6M equates to six months,
+     * and P1Y equates to one year
+     */
     readonly iso8601: string;
+}
+
+/**
+ * Time duration unit for Period.
+ */
+export enum UNIT {
+    DAY = "DAY",
+    WEEK = "WEEK",
+    MONTH = "MONTH",
+    YEAR = "YEAR",
+    UNKNOWN = "UNKNOWN",
 }
