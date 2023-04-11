@@ -508,7 +508,7 @@ export default class Purchases {
   /**
    * Make a purchase
    *
-   * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
+   * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProdcuts by calling getOfferings
    * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
    * and the optional prorationMode.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
@@ -517,16 +517,16 @@ export default class Purchases {
    * has not been called yet.
    */
   public static async purchaseSubscriptionOption(
-    aOption: SubscriptionOption,
+    subscriptionOption: SubscriptionOption,
     upgradeInfo?: UpgradeInfo | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseSubscriptionOption(
-      aOption.productId,
-      aOption.id,
+      subscriptionOption.productId,
+      subscriptionOption.id,
       upgradeInfo,
       null,
-      aOption.presentedOfferingIdentifier
+      subscriptionOption.presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
