@@ -109,7 +109,7 @@ function checkPricingPhase(pricePhase: PricingPhase) {
 }
 
 function checkPeriod(period: Period) {
-  const unit: UNIT = period.unit;
+  const unit: PERIOD_UNIT = period.unit;
   const value: number = period.value;
   const iso8601: string = period.iso8601;
 }
