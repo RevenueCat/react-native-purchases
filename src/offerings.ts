@@ -397,7 +397,7 @@ export interface SubscriptionOption {
     readonly introPhase: PricingPhase | null;
 
     /**
-     * Offering identifier the subscriptioni option was presented from
+     * Offering identifier the subscription option was presented from
      */
     readonly presentedOfferingIdentifier: string | null;
 }
@@ -484,7 +484,7 @@ export interface Period {
     /**
      * The number of period units: day, week, month, year, unknown
      */
-    readonly unit: UNIT;
+    readonly unit: PERIOD_UNIT;
 
     /**
      * The increment of time that a subscription period is specified in
@@ -502,7 +502,7 @@ export interface Period {
 /**
  * Time duration unit for Period.
  */
-export enum UNIT {
+export enum PERIOD_UNIT {
     DAY = "DAY",
     WEEK = "WEEK",
     MONTH = "MONTH",

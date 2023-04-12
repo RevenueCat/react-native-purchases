@@ -8,7 +8,7 @@ import {
   PurchasesPackage, PurchasesPromotionalOffer,
   PurchasesStoreProduct, UpgradeInfo,
   SubscriptionOption, PricingPhase,
-  Price, Period, OFFER_PAYMENT_MODE, UNIT, RECURRENCE_MODE
+  Price, Period, OFFER_PAYMENT_MODE, PERIOD_UNIT, RECURRENCE_MODE
 } from "../dist";
 
 function checkProduct(product: PurchasesStoreProduct) {
@@ -130,13 +130,13 @@ function checkRecurrenceMode(mode: RECURRENCE_MODE) {
   };
 }
 
-function checkUnit(unit: UNIT) {
-  switch(unit) { 
-    case UNIT.DAY, 
-    UNIT.WEEK, 
-    UNIT.MONTH,
-    UNIT.YEAR,
-    UNIT.UNKNOWN: { 
+function checkPeriodUnit(periodUnit: PERIOD_UNIT) {
+  switch(periodUnit) { 
+    case PERIOD_UNIT.DAY, 
+    PERIOD_UNIT.WEEK, 
+    PERIOD_UNIT.MONTH,
+    PERIOD_UNIT.YEAR,
+    PERIOD_UNIT.UNKNOWN: { 
        break; 
     } 
   };

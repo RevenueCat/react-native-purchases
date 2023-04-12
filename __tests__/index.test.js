@@ -173,14 +173,14 @@ describe("Purchases", () => {
 
     await Purchases.purchaseProduct("onemonth_freetrial")
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", undefined, "subs", null, null, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", undefined, "subs", null, null, undefined);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
       oldSKU: "viejo"
     }, Purchases.PURCHASE_TYPE.INAPP)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {oldSKU: "viejo"}, Purchases.PURCHASE_TYPE.INAPP, null, null, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {oldSKU: "viejo"}, Purchases.PURCHASE_TYPE.INAPP, null, null, undefined);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(2);
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
@@ -191,7 +191,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.DEFERRED
-    }, Purchases.PURCHASE_TYPE.INAPP, null, null, null);
+    }, Purchases.PURCHASE_TYPE.INAPP, null, null, undefined);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(3);
   });
 

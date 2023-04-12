@@ -438,8 +438,8 @@ export default class Purchases {
     productIdentifier: string,
     upgradeInfo?: UpgradeInfo | null,
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS,
-    googleIsPersonalizedPrice: boolean | null = null,
-    presentedOfferingIdentifier: string | null = null,
+    googleIsPersonalizedPrice?: boolean | null,
+    presentedOfferingIdentifier?: string | null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
@@ -506,7 +506,7 @@ export default class Purchases {
   public static async purchasePackage(
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
-    googleIsPersonalizedPrice: boolean | null = null,
+    googleIsPersonalizedPrice?: boolean | null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchasePackage(
@@ -522,9 +522,9 @@ export default class Purchases {
   }
 
   /**
-   * Make a purchase
+   * Google only. Make a purchase of a subscriptionOption
    *
-   * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProdcuts by calling getOfferings
+   * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProducts by calling getOfferings
    * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
    * and the optional prorationMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
@@ -538,10 +538,10 @@ export default class Purchases {
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
     upgradeInfo?: UpgradeInfo | null,
-    googleIsPersonalizedPrice: boolean | null = null,
+    googleIsPersonalizedPrice?: boolean | null,
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfIOSPlatform();
     await Purchases.throwIfNotConfigured();
+    await Purchases.throwIfIOSPlatform();
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
       subscriptionOption.id,

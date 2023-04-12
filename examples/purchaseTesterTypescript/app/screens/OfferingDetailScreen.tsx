@@ -20,7 +20,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Purchases, { PurchasesPackage, PurchasesStoreProduct, SubscriptionOption, PURCHASE_TYPE, UNIT } from 'react-native-purchases';
+import Purchases, { PurchasesPackage, PurchasesStoreProduct, SubscriptionOption, PURCHASE_TYPE, PERIOD_UNIT } from 'react-native-purchases';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'

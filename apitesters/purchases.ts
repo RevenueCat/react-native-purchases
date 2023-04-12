@@ -45,7 +45,7 @@ async function checkPurchasing(purchases: Purchases,
                                discount: PurchasesStoreProductDiscount,
                                paymentDiscount: PurchasesPromotionalOffer,
                                pack: PurchasesPackage,
-                               subscriptionOpton: SubscriptionOption) {
+                               subscriptionOption: SubscriptionOption) {
   const productId: string = ""
   const productIds: string[] = [productId];
   const upgradeInfo: UpgradeInfo | null = null;
@@ -78,7 +78,7 @@ async function checkPurchasing(purchases: Purchases,
   );
 
   const result5: MakePurchaseResult = await Purchases.purchaseSubscriptionOption(
-    subscriptionOpton,
+    subscriptionOption,
     upgradeInfo
   );
 
