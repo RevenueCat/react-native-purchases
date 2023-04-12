@@ -101,7 +101,7 @@ RCT_REMAP_METHOD(purchasePackage,
                  offeringIdentifier:(NSString *)offeringIdentifier
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
-                 googleIsPersonalized:(BOOL)googleIsPersonalized
+                 googleInfo:(NSDictionary *)googleInfo
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchasePackage:packageIdentifier
