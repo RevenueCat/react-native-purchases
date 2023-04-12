@@ -18,7 +18,7 @@ This latest release updates the Android SDK dependency from v5 to [v6](https://g
 | `Period`                   |
 | `Price`                    |
 | `RecurrenceMode`           |
-| `Unit`                     |
+| `PeriodUnit`               |
 
 #### Methods
 
