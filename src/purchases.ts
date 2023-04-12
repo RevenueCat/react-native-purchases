@@ -540,6 +540,7 @@ export default class Purchases {
     upgradeInfo?: UpgradeInfo | null,
     googleIsPersonalizedPrice: boolean | null = null,
   ): Promise<MakePurchaseResult> {
+    await Purchases.throwIfIOSPlatform();
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
