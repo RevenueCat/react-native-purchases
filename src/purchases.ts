@@ -12,7 +12,8 @@ import {
   PurchasesPackage,
   IntroEligibility,
   PurchasesStoreProductDiscount,
-  SubscriptionOption
+  SubscriptionOption,
+  PRODUCT_CATEGORY
 } from "./offerings";
 
 import {Platform} from "react-native";
@@ -58,6 +59,9 @@ eventEmitter.addListener(
   }
 );
 
+/**
+ * @deprecated, use PRODUCT_CATEGORY
+ */
 export enum PURCHASE_TYPE {
   /**
    * A type of SKU for in-app products.
@@ -188,8 +192,16 @@ export default class Purchases {
    * Supported SKU types.
    * @readonly
    * @enum {string}
+   * @deprecated, use PRODUCT_CATEGORY
    */
   public static PURCHASE_TYPE = PURCHASE_TYPE;
+
+  /**
+   * Supported product categories.
+   * @readonly
+   * @enum {string}
+   */
+  public static PRODUCT_CATEGORY = PRODUCT_CATEGORY;
 
   /**
    * Enum for billing features.
@@ -403,7 +415,7 @@ export default class Purchases {
   /**
    * Fetch the product info
    * @param {String[]} productIdentifiers Array of product identifiers
-   * @param {String} type Optional type of products to fetch, can be inapp or subs. Subs by default
+   * @param {String} type Optional type of products to fetch, can be SUBSCRIPTION or NON_SUBSCRIPTION. SUBSCRIPTION by default
    * @returns {Promise<PurchasesStoreProduct[]>} A promise containing an array of products. The promise will be rejected
    * if the products are not properly configured in RevenueCat or if there is another error retrieving them.
    * Rejections return an error code, and a userInfo object with more information. The promise will also be rejected
@@ -411,7 +423,7 @@ export default class Purchases {
    */
   public static async getProducts(
     productIdentifiers: string[],
-    type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
+    type: PURCHASE_TYPE | PRODUCT_CATEGORY = PRODUCT_CATEGORY.SUBSCRIPTION
   ): Promise<PurchasesStoreProduct[]> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.getProductInfo(productIdentifiers, type);
@@ -427,19 +439,12 @@ export default class Purchases {
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
-   * @param {String} presentedOfferingIdentifier The offering identifier this product was returned from. The presentedOfferingIdentifier
-   * can be found on a StoreProduct.
-   * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
-   * a customer info object and a product identifier. Rejections return an error code,
-   * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will
-   * also be rejected if configure has not been called yet.
+   * @deprecated, use purchaseStoreProduct instead
    */
   public static async purchaseProduct(
     productIdentifier: string,
     upgradeInfo?: UpgradeInfo | null,
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS,
-    googleIsPersonalizedPrice?: boolean | null,
-    presentedOfferingIdentifier?: string | null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
@@ -447,8 +452,41 @@ export default class Purchases {
       upgradeInfo,
       type,
       null,
+      null,
+      null
+    ).catch((error: PurchasesError) => {
+      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      throw error;
+    });
+  }
+
+  /**
+   * Make a purchase
+   *
+   * @param {PurchasesStoreProduct} product The product you want to purchase
+   * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
+   * and the optional prorationMode.
+   * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
+   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
+   * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
+   * a customer info object and a product identifier. Rejections return an error code,
+   * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will
+   * also be rejected if configure has not been called yet.
+   */
+  public static async purchaseStoreProduct(
+    product: PurchasesStoreProduct,
+    upgradeInfo?: UpgradeInfo | null,
+    googleIsPersonalizedPrice?: boolean | null,
+  ): Promise<MakePurchaseResult> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.purchaseProduct(
+      product.identifier,
+      upgradeInfo,
+      null, // TODO: JOSH
+      null,
       googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
-      presentedOfferingIdentifier
+      product.presentedOfferingIdentifier
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
@@ -676,7 +714,7 @@ export default class Purchases {
    * This method will send all the purchases to the RevenueCat backend. Call this when using your own implementation
    * for subscriptions anytime a sync is needed, like after a successful purchase.
    *
-   * @warning This function should only be called if you're not calling purchaseProduct/purchasePackage.
+   * @warning This function should only be called if you're not calling purchaseProduct/purchaseStoreProduct/purchasePackage/purchaseSubscriptionOption.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * syncing purchases.
    */

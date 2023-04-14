@@ -100,7 +100,10 @@ export interface PurchasesStoreProduct {
      * Collection of discount offers for a product. Null for Android.
      */
     readonly discounts: PurchasesStoreProductDiscount[] | null;
-
+    /**
+     * Product category.
+     */
+    readonly productCategory: PRODUCT_CATEGORY | null;
     /**
      * Subscription period, specified in ISO 8601 format. For example,
      * P1W equates to one week, P1M equates to one month,
@@ -109,12 +112,37 @@ export interface PurchasesStoreProduct {
      * Note: Not available for Amazon.
      */
     readonly subscriptionPeriod: string | null;
-
+    /**
+     * Default subscription option for a product. Google Play only.
+     */
     readonly defaultOption: SubscriptionOption | null;
+    /**
+     * Collection of subscription options for a product. Google Play only.
+     */
     readonly subscriptionOptions: SubscriptionOption[] | null;
-
+    /**
+     * Offering identifier the store product was presented from.
+     * Null if not using offerings or if fetched directly from store via getProducts.
+     */
     readonly presentedOfferingIdentifier: string | null;
 }
+
+export enum PRODUCT_CATEGORY {
+    /**
+     * A type of product for non-subscription.
+     */
+    NON_SUBSCRIPTION = "NON_SUBSCRIPTION",
+  
+    /**
+     * A type of product for subscriptions.
+     */
+    SUBSCRIPTION = "SUBSCRIPTION",
+
+    /**
+     * A type of product for unknowns.
+     */
+    UNKNOWN = "UNKNOWN",
+  }
 
 export interface PurchasesStoreProductDiscount {
     /**
@@ -261,12 +289,27 @@ export interface PurchasesOfferings {
 
 /**
  * Holds the information used when upgrading from another sku. For Android use only.
+ * @deprecated, use GoogleProductChangeInfo
  */
 export interface UpgradeInfo {
     /**
      * The oldSKU to upgrade from.
      */
     readonly oldSKU: string;
+    /**
+     * The [PRORATION_MODE] to use when upgrading the given oldSKU.
+     */
+    readonly prorationMode?: PRORATION_MODE;
+}
+
+/**
+ * Holds the information used when upgrading from another sku. For Android use only.
+ */
+export interface GoogleProductChangeInfo {
+    /**
+     * The old product identifier to upgrade from.
+     */
+    readonly oldProductIdentifier: string;
     /**
      * The [PRORATION_MODE] to use when upgrading the given oldSKU.
      */
