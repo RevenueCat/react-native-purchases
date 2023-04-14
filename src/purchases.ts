@@ -483,7 +483,7 @@ export default class Purchases {
     return RNPurchases.purchaseProduct(
       product.identifier,
       upgradeInfo,
-      null, // TODO: JOSH
+      product.productCategory,
       null,
       googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
       product.presentedOfferingIdentifier
