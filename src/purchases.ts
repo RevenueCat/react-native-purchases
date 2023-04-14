@@ -13,7 +13,8 @@ import {
   IntroEligibility,
   PurchasesStoreProductDiscount,
   SubscriptionOption,
-  PRODUCT_CATEGORY
+  PRODUCT_CATEGORY,
+  GoogleProductChangeInfo
 } from "./offerings";
 
 import {Platform} from "react-native";
@@ -464,8 +465,8 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesStoreProduct} product The product you want to purchase
-   * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
-   * and the optional prorationMode.
+   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you 
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
@@ -476,13 +477,13 @@ export default class Purchases {
    */
   public static async purchaseStoreProduct(
     product: PurchasesStoreProduct,
-    upgradeInfo?: UpgradeInfo | null,
+    googleProductChangeInfo?: GoogleProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
       product.identifier,
-      upgradeInfo,
+      googleProductChangeInfo,
       product.productCategory,
       null,
       googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
@@ -531,8 +532,9 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
-   * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
-   * and the optional prorationMode.
+   * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use googleProductChangeInfo.
+   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you 
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
@@ -544,13 +546,14 @@ export default class Purchases {
   public static async purchasePackage(
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
+    googleProductChangeInfo?: GoogleProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.offeringIdentifier,
-      upgradeInfo,
+      googleProductChangeInfo || upgradeInfo,
       null,
       googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
     ).catch((error: PurchasesError) => {

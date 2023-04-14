@@ -128,16 +128,29 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void purchaseProduct(final String productIdentifier,
-                                @Nullable final ReadableMap upgradeInfo,
+                                @Nullable final ReadableMap googleProductChangeInfo,
                                 final String type,
                                 @Nullable final String discountTimestamp,
                                 @Nullable final ReadableMap googleInfo,
                                 @Nullable final String presentedOfferingIdentifier,
                                 final Promise promise) {
-        String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
-        Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+        String googleOldProductId = null;
+        Integer googleProrationMode = null;
 
-        Log.d("GROVER", "googleInfo: " + googleInfo);
+        if (googleProductChangeInfo != null) {
+            // GoogleProductChangeInfo in V6 and later
+            googleOldProductId = googleProductChangeInfo.hasKey("oldProductIdentifier") ? googleProductChangeInfo.getString("oldProductIdentifier") : null;
+            googleProrationMode = googleProductChangeInfo.hasKey("prorationMode") ? googleProductChangeInfo.getInt("prorationMode") : null;
+
+            // Legacy UpgradeInfo in V5 and earlier
+            if (googleOldProductId == null) {
+                googleOldProductId = googleProductChangeInfo.hasKey("oldSKU") ? googleProductChangeInfo.getString("oldSKU") : null;
+            }
+            if (googleProrationMode == null) {
+                googleProrationMode = googleProductChangeInfo.hasKey("prorationMode") ? googleProductChangeInfo.getInt("prorationMode") : null;
+            }
+        }
+
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
         CommonKt.purchaseProduct(
