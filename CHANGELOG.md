@@ -1,3 +1,8 @@
+## 5.13.3
+### Dependency Updates
+* Bump cocoapods from 1.12.0 to 1.12.1 (#609) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.212.1 to 2.212.2 (#608) via dependabot[bot] (@dependabot[bot])
+
 ## 5.13.2
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.14.2 (#603) via RevenueCat Git Bot (@RCGitBot)
