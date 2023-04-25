@@ -2,4 +2,6 @@
 #
 # Ensure this file is checked in to source control!
 
-gem "fastlane-plugin-revenuecat_internal", git: "https://github.com/RevenueCat/fastlane-plugin-revenuecat_internal"
+# Using ref: 8482a43 for files_with_version_number can still be an array
+# This is only temporary until main udpates files_with_version_number to be a hash 
+gem "fastlane-plugin-revenuecat_internal", git: "https://github.com/RevenueCat/fastlane-plugin-revenuecat_internal", ref: "8482a43"
