@@ -1,3 +1,6 @@
+## 6.0.0-alpha.1
+_Coming soon_
+
 ## 5.13.3
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.14.3 (#612) via RevenueCat Git Bot (@RCGitBot)
