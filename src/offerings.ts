@@ -82,14 +82,17 @@ export interface PurchasesStoreProduct {
     readonly title: string;
     /**
      * Price of the product in the local currency.
+     * Contains the price value of defaultOption for Google Play.
      */
     readonly price: number;
     /**
      * Formatted price of the item, including its currency sign.
+     * Contains the formatted price value of defaultOption for Google Play.
      */
     readonly priceString: string;
     /**
      * Currency code for price and original price.
+     * Contains the currency code value of defaultOption for Google Play.
      */
     readonly currencyCode: string;
     /**
@@ -393,7 +396,7 @@ export interface SubscriptionOption {
     readonly storeProductId: string;
 
     /**
-     * Identifer of the subscription associated with this SubsriptionOption
+     * Identifer of the subscription associated with this SubscriptionOption
      * This will be {subId}
      */
     readonly productId: string;
@@ -409,8 +412,7 @@ export interface SubscriptionOption {
     readonly tags: string[];
 
     /**
-     * True if this SubscriptionOption represents a Google subscription base plan (rather than an offer).
-     * Not applicable for Amazon subscriptions.
+     * True if this SubscriptionOption represents a subscription base plan (rather than an offer).
      */
     readonly isBasePlan: boolean;
 
@@ -486,7 +488,7 @@ export enum RECURRENCE_MODE {
 }
 
 /**
- * Payment mode for offer pricing phases
+ * Payment mode for offer pricing phases. Google Play only.
  */
 export enum OFFER_PAYMENT_MODE {
     FREE_TRIAL = "FREE_TRIAL",
