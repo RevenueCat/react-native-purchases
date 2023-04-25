@@ -566,8 +566,8 @@ export default class Purchases {
    * Google only. Make a purchase of a subscriptionOption
    *
    * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProducts by calling getOfferings
-   * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
-   * and the optional prorationMode.
+   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you 
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
@@ -578,7 +578,7 @@ export default class Purchases {
    */
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
-    upgradeInfo?: UpgradeInfo | null,
+    googleProductChangeInfo?: GoogleProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null,
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
@@ -586,7 +586,7 @@ export default class Purchases {
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
       subscriptionOption.id,
-      upgradeInfo,
+      googleProductChangeInfo,
       null,
       googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
       subscriptionOption.presentedOfferingIdentifier

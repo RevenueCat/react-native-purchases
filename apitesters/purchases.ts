@@ -14,7 +14,7 @@ import {
 } from '../dist';
 
 import Purchases from '../dist/purchases';
-import { SubscriptionOption } from '../src';
+import { GoogleProductChangeInfo, SubscriptionOption } from '../src';
 
 async function checkPurchases(purchases: Purchases) {
   const productIds: string[] = [];
@@ -45,41 +45,70 @@ async function checkPurchasing(purchases: Purchases,
                                discount: PurchasesStoreProductDiscount,
                                paymentDiscount: PurchasesPromotionalOffer,
                                pack: PurchasesPackage,
-                               subscriptionOption: SubscriptionOption) {
+                               subscriptionOption: SubscriptionOption,
+                               upgradeInfo: UpgradeInfo,
+                               googleProductChangeInfo: GoogleProductChangeInfo) {
   const productId: string = ""
   const productIds: string[] = [productId];
-  const upgradeInfo: UpgradeInfo | null = null;
   const features: BILLING_FEATURE[] = [];
+  const googleIsPersonalizedPrice: boolean = false;
 
   const paymentDiscount2: PurchasesPromotionalOffer | undefined = await Purchases.getPromotionalOffer(
     product,
     discount,
   );
 
-  const result1: MakePurchaseResult = await Purchases.purchaseProduct(
+  const productResult1: MakePurchaseResult = await Purchases.purchaseProduct(
     productId,
     upgradeInfo,
     PURCHASE_TYPE.INAPP
   );
 
-  const result2: MakePurchaseResult = await Purchases.purchaseDiscountedProduct(
+  const storeProductResult1: MakePurchaseResult = await Purchases.purchaseStoreProduct(
+    product,
+    googleProductChangeInfo
+  );
+  const storeProductResult2: MakePurchaseResult = await Purchases.purchaseStoreProduct(
+    product,
+    googleProductChangeInfo,
+    googleIsPersonalizedPrice
+  );
+
+  const discountedProductResult1: MakePurchaseResult = await Purchases.purchaseDiscountedProduct(
     product,
     paymentDiscount
   );
 
-  const result3: MakePurchaseResult = await Purchases.purchasePackage(
+  const packageResult1: MakePurchaseResult = await Purchases.purchasePackage(
     pack,
     upgradeInfo
   );
+  const packageResult2: MakePurchaseResult = await Purchases.purchasePackage(
+    pack,
+    upgradeInfo,
+    null,
+    googleIsPersonalizedPrice
+  );
+  const packageResult3: MakePurchaseResult = await Purchases.purchasePackage(
+    pack,
+    null,
+    googleProductChangeInfo,
+    googleIsPersonalizedPrice
+  );
 
-  const result4: MakePurchaseResult = await Purchases.purchaseDiscountedPackage(
+  const discountedPackageResult1: MakePurchaseResult = await Purchases.purchaseDiscountedPackage(
     pack,
     paymentDiscount
   );
 
-  const result5: MakePurchaseResult = await Purchases.purchaseSubscriptionOption(
+  const subscriptionOptionResult1: MakePurchaseResult = await Purchases.purchaseSubscriptionOption(
     subscriptionOption,
-    upgradeInfo
+    googleProductChangeInfo
+  );
+  const subscriptionOptionResult2: MakePurchaseResult = await Purchases.purchaseSubscriptionOption(
+    subscriptionOption,
+    googleProductChangeInfo,
+    googleIsPersonalizedPrice
   );
 
   const syncPurchases: void = await Purchases.syncPurchases();

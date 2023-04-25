@@ -227,6 +227,23 @@ describe("Purchases", () => {
     }, null, null);
   });
 
+  it("purchaseStoreProduct works", async () => {
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      presentedOfferingIdentifier: "the-offerings"
+    }
+
+    await Purchases.purchaseStoreProduct(aProduct)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, undefined, Purchases.PRODUCT_CATEGORY.SUBSCRIPTION, null, null, "the-offerings");
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
+  });
+
   it("purchasePackage works", async () => {
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
