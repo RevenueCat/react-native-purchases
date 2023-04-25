@@ -128,25 +128,40 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void purchaseProduct(final String productIdentifier,
-                                @Nullable final ReadableMap upgradeInfo,
+                                @Nullable final ReadableMap googleProductChangeInfo,
                                 final String type,
                                 @Nullable final String discountTimestamp,
+                                @Nullable final ReadableMap googleInfo,
+                                @Nullable final String presentedOfferingIdentifier,
                                 final Promise promise) {
-        String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+        String googleOldProductId = null;
+        Integer googleProrationMode = null;
 
-        // TODO: Map int
-        int prorationModeInt = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
-        GoogleProrationMode googleProrationModeEnum = GoogleProrationMode.IMMEDIATE_WITHOUT_PRORATION;
+        if (googleProductChangeInfo != null) {
+            // GoogleProductChangeInfo in V6 and later
+            googleOldProductId = googleProductChangeInfo.hasKey("oldProductIdentifier") ? googleProductChangeInfo.getString("oldProductIdentifier") : null;
+            googleProrationMode = googleProductChangeInfo.hasKey("prorationMode") ? googleProductChangeInfo.getInt("prorationMode") : null;
 
-        boolean googleIsPersonalized = false;
+            // Legacy UpgradeInfo in V5 and earlier
+            if (googleOldProductId == null) {
+                googleOldProductId = googleProductChangeInfo.hasKey("oldSKU") ? googleProductChangeInfo.getString("oldSKU") : null;
+            }
+            if (googleProrationMode == null) {
+                googleProrationMode = googleProductChangeInfo.hasKey("prorationMode") ? googleProductChangeInfo.getInt("prorationMode") : null;
+            }
+        }
+
+        Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
         CommonKt.purchaseProduct(
             getCurrentActivity(),
             productIdentifier,
             type,
+            null,
             googleOldProductId,
-            googleProrationModeEnum,
+            googleProrationMode,
             googleIsPersonalized,
+            presentedOfferingIdentifier,
             getOnResult(promise));
     }
 
@@ -155,22 +170,44 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 final String offeringIdentifier,
                                 @Nullable final ReadableMap upgradeInfo,
                                 @Nullable final String discountTimestamp,
+                                @Nullable final ReadableMap googleInfo,
                                 final Promise promise) {
         String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+        Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
 
-        // TODO: Map int
-        Integer prorationModeInt = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
-        GoogleProrationMode googleProrationModeEnum = GoogleProrationMode.IMMEDIATE_WITHOUT_PRORATION;
-
-        boolean googleIsPersonalized = false;
+        Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
         CommonKt.purchasePackage(
             getCurrentActivity(),
             packageIdentifier,
             offeringIdentifier,
             googleOldProductId,
-            googleProrationModeEnum,
+            googleProrationMode,
             googleIsPersonalized,
+            getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void purchaseSubscriptionOption(final String productIdentifer,
+                                           final String optionIdentifier,
+                                           @Nullable final ReadableMap upgradeInfo,
+                                           @Nullable final String discountTimestamp,
+                                           @Nullable final ReadableMap googleInfo,
+                                           @Nullable final String presentedOfferingIdentifier,
+                                           final Promise promise) {
+        String googleOldProductId = upgradeInfo != null && upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+        Integer googleProrationMode = upgradeInfo != null && upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+
+        Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
+
+        CommonKt.purchaseSubscriptionOption(
+            getCurrentActivity(),
+            productIdentifer,
+            optionIdentifier,
+            googleOldProductId,
+            googleProrationMode,
+            googleIsPersonalized,
+            presentedOfferingIdentifier,
             getOnResult(promise));
     }
 

@@ -680,7 +680,8 @@ global.productStub = {
   price: 0.99,
   description: "The best service.",
   title: "One Month Free Trial",
-  identifier: "onemonth_freetrial"
+  identifier: "onemonth_freetrial",
+  productCategory: "SUBSCRIPTION",
 };
 
 global.productsStub = [
