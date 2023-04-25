@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@7.1.1
+  resource_class: macos.x86.medium.gen2
   revenuecat: revenuecat/sdks-common-config@2.0.0
 
 aliases:
@@ -70,6 +71,7 @@ jobs:
   docs-deploy:
     executor:
       name: rn/macos
+      resource_class: macos.x86.medium.gen2
       xcode_version: 14.3.0
     steps:
       - checkout
@@ -145,6 +147,7 @@ jobs:
     description: "Publishes the new version and creates a github release"
     executor:
       name: rn/macos
+      resource_class: macos.x86.medium.gen2
       xcode_version: 14.3.0
     steps:
       - checkout
