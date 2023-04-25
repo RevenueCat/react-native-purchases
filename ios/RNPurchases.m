@@ -86,6 +86,8 @@ RCT_REMAP_METHOD(purchaseProduct,
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  type:(NSString *)type
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
+                 googleInfo:(NSDictionary *)googleInfo
+                 presentedOfferingIdentifier:(NSString *)presentedOfferingIdentifier
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchaseProduct:productIdentifier
@@ -99,6 +101,7 @@ RCT_REMAP_METHOD(purchasePackage,
                  offeringIdentifier:(NSString *)offeringIdentifier
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
+                 googleInfo:(NSDictionary *)googleInfo
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchasePackage:packageIdentifier
