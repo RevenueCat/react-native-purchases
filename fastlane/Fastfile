@@ -34,7 +34,8 @@ lane :bump do |options|
     next_version: options[:next_version],
     automatic_release: options[:automatic_release],
     hybrid_common_version: phc_version,
-    versions_file_path: versions_path
+    versions_file_path: versions_path,
+    is_prerelease: options[:is_prerelease]
   )
   update_hybrids_versions_file(
     versions_file_path: versions_path,
