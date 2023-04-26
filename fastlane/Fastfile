@@ -1,11 +1,15 @@
-files_with_version_number = [
-  './.version',
-  './package.json',
-  './ios/RNPurchases.m',
-  './android/build.gradle',
-  './android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java',
-  './scripts/docs/index.html'
-]
+files_with_version_number = {
+    './.version' => ['{x}'],
+    './package.json' => ['"version": "{x}"'],
+    './ios/RNPurchases.m' => ['return @"{x}"'],
+    './android/build.gradle' => ['versionName \'{x}\''],
+    './android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java' => ['PLUGIN_VERSION = "{x}"'],
+    './scripts/docs/index.html' => ['react-native-purchases-docs/{x}/']
+}
+files_to_update_phc_version = {
+    'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
+    'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
+}
 repo_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
 changelog_path = './CHANGELOG.md'
@@ -23,7 +27,7 @@ lane :bump do |options|
     changelog_latest_path: changelog_latest_path,
     changelog_path: changelog_path,
     files_to_update: files_with_version_number,
-    files_to_update_without_prerelease_modifiers: [],
+    files_to_update_without_prerelease_modifiers: {},
     repo_name: repo_name,
     github_rate_limit: options[:github_rate_limit],
     editor: options[:editor],
@@ -77,7 +81,7 @@ lane :prepare_next_version do |options|
     repo_name: repo_name,
     github_pr_token: ENV["GITHUB_PULL_REQUEST_API_TOKEN"],
     files_to_update: files_with_version_number,
-    files_to_update_without_prerelease_modifiers: []
+    files_to_update_without_prerelease_modifiers: {}
   )
 end
 
@@ -115,10 +119,6 @@ lane :update_hybrid_common do |options|
 
   UI.message("ℹ️  Current Purchases Hybrid Common version: #{current_phc_version}")
   UI.message("ℹ️  Setting Purchases Hybrid Common version: #{new_version_number}")
-  files_to_update = [
-    'RNPurchases.podspec',
-    'android/build.gradle',
-  ]
 
   if dry_run
     UI.message("ℹ️  Nothing more to do, dry_run: true")
@@ -127,7 +127,7 @@ lane :update_hybrid_common do |options|
 
   bump_phc_version(
     repo_name: 'react-native-purchases',
-    files_to_update: files_to_update,
+    files_to_update: files_to_update_phc_version,
     current_version: current_phc_version,
     next_version: new_version_number,
     open_pr: options[:open_pr] || false,
@@ -141,7 +141,6 @@ lane :generate_docs do
   docs_repo_base_url = "https://github.com/RevenueCat/"
   docs_repo_name = "react-native-purchases-docs"
   docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
-  hosting_base_path = File.join(docs_repo_name, version_number)
 
   Dir.mktmpdir do |docs_generation_folder|
     # Must be run from the root dir
