@@ -90,7 +90,7 @@ lane :release do |options|
   args = [
     'npm',
     'publish',
-    is_prerelease ? 'tag --next' : nil
+    is_prerelease ? '--tag next' : nil
   ].compact
 
   Dir.chdir(get_root_folder) do
