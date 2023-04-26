@@ -85,8 +85,16 @@ end
 desc "Creates GitHub release and publishes package"
 lane :release do |options|
   version_number = current_version_number
+  is_prerelease = Gem::Version.new(version_number).prerelease?
+
+  args = [
+    'npm',
+    'publish',
+    is_prerelease ? 'tag --next' : nil
+  ].compact
+
   Dir.chdir(get_root_folder) do
-    sh('npm', 'publish')
+    sh(args)
   end
   github_release(version: version_number)
 end
