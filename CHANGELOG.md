@@ -1,3 +1,8 @@
+## 5.15.0
+### Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.16.0 (#628) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 4.19.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.19.0)
+
 ## 5.14.0
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.15.0 (#623) via RevenueCat Git Bot (@RCGitBot)
