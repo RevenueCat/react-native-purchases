@@ -1,3 +1,2 @@
 ### Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 4.16.0 (#628) via RevenueCat Git Bot (@RCGitBot)
-  * [iOS 4.19.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.19.0)
+* Bump fastlane from 2.212.2 to 2.213.0 (#632) via dependabot[bot] (@dependabot[bot])
