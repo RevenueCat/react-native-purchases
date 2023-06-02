@@ -167,6 +167,26 @@ dependencies {
     }
 }
 
+// Call passing parameter -PcommonPath="$HOME/Development/repos/purchases-hybrid-common/android"
+task enableLocalBuild {
+  group = 'Tools'
+  description = 'Enable composite build'
+  doLast {
+    new File(".composite-enable").text = commonPath
+  }
+}
+
+task disableLocalBuild {
+  group = 'Tools'
+  description = 'Disable composite build'
+  doLast {
+    File file = file(".composite-enable")
+    if (file.exists()) {
+      file.delete()
+    }
+  }
+}
+
 // Required by CircleCI orb react-native-community/react-native@7.1.1
 task downloadDependencies() {
   description 'Download all dependencies to the Gradle cache'
