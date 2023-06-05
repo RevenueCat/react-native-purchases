@@ -7,7 +7,7 @@ apply from: file("../node_modules/@react-native-community/cli-platform-android/n
 include ':app'
 includeBuild('../node_modules/react-native-gradle-plugin')
 
-if (file(".composite-enable").exists()) {
-  String path = new File(".composite-enable").text
+if (file(".local-dependency-build-enabled").exists()) {
+  String path = new File(".local-dependency-build-enabled").text
   includeBuild (path)
 }

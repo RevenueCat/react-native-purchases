@@ -170,17 +170,17 @@ dependencies {
 // Call passing parameter -PcommonPath="$HOME/Development/repos/purchases-hybrid-common/android"
 task enableLocalBuild {
   group = 'Tools'
-  description = 'Enable composite build'
+  description = 'Enable local dependency build'
   doLast {
-    new File(".composite-enable").text = commonPath
+    new File(".local-dependency-build-enabled").text = commonPath
   }
 }
 
 task disableLocalBuild {
   group = 'Tools'
-  description = 'Disable composite build'
+  description = 'Disable local dependency build'
   doLast {
-    File file = file(".composite-enable")
+    File file = new File(".local-dependency-build-enabled")
     if (file.exists()) {
       file.delete()
     }
