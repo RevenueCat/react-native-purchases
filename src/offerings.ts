@@ -242,6 +242,10 @@ export interface PurchasesOffering {
      */
     readonly serverDescription: string;
     /**
+     * Offering metadata defined in RevenueCat dashboard.
+     */
+    readonly metadata: Map<string, any>;
+    /**
      * Array of `Package` objects available for purchase.
      */
     readonly availablePackages: PurchasesPackage[];

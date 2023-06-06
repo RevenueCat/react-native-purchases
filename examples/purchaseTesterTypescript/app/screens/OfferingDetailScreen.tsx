@@ -80,6 +80,10 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
           <Text style={styles.value}>
             { route.params.offering?.identifier }
           </Text>
+          <Text style={styles.title}>Metadata</Text>
+          <Text style={styles.value}>
+            { JSON.stringify(route.params.offering?.metadata) }
+          </Text>
 
           {
             route.params.offering?.availablePackages.map((pkg: PurchasesPackage) => {

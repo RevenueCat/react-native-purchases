@@ -53,6 +53,7 @@ function checkPackage(pack: PurchasesPackage) {
 function checkOffering(offering: PurchasesOffering) {
   const identifier: string = offering.identifier;
   const serverDescription: string = offering.serverDescription;
+  const metadata: Map<string, any> = offering.metadata;
   const availablePackages: PurchasesPackage[] = offering.availablePackages;
   const lifetime: PurchasesPackage | null = offering.lifetime;
   const annual: PurchasesPackage | null = offering.annual;
