@@ -330,6 +330,16 @@ global.offeringsStub = {
         identifier: 'Custom'
       }
     ],
+    metadata: {
+      "int": 5,
+      "double": 5.5,
+      "boolean": true,
+      "string": "five",
+      "array": ["five"],
+      "dictionary": {
+          "string": "five"
+      }
+    },
     serverDescription: 'Default Offering',
     identifier: 'default'
   },
