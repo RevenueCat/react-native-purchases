@@ -297,6 +297,78 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(2);
   });
 
+  it("purchaseSubscriptionOption works", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+
+    await Purchases.purchaseSubscriptionOption(
+      {
+        id: "monthly",
+        storeProductId: "gold:monthly",
+        productId: "gold",
+        pricingPhases: [phase],
+        tags: [],
+        isBasePlan: true,
+        billingPeriod: billingPeriod,
+        isPrePaid: false,
+        fullPricePhase: phase,
+        freePhase: null,
+        introPhase: null,
+        presentedOfferingIdentifier: null
+      });
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", undefined, null, null, null);
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+
+    await Purchases.purchaseSubscriptionOption(
+      {
+        id: "monthly",
+        storeProductId: "gold:monthly",
+        productId: "gold",
+        pricingPhases: [phase],
+        tags: [],
+        isBasePlan: true,
+        billingPeriod: billingPeriod,
+        isPrePaid: false,
+        fullPricePhase: phase,
+        freePhase: null,
+        introPhase: null,
+        presentedOfferingIdentifier: "offering"
+      },
+      {
+        oldProductIdentifier: "viejo",
+        prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      },
+      true
+    );
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", {
+      oldProductIdentifier: "viejo",
+      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+    }, null, {isPersonalizedPrice: true}, "offering");
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(2);
+  });
+
   it("restorePurchases works", async () => {
     NativeModules.RNPurchases.restorePurchases.mockResolvedValueOnce(customerInfoStub);
 

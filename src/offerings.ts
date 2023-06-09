@@ -486,8 +486,17 @@ export interface PricingPhase {
  * Recurrence mode for a pricing phase
  */
 export enum RECURRENCE_MODE {
+    /**
+     * Pricing phase repeats infinitely until cancellation
+     */
     INFINITE_RECURRING = 1,
+    /**
+     * Pricing phase repeats for a fixed number of billing periods
+     */
     FINITE_RECURRING = 2,
+    /**
+     * Pricing phase does not repeat
+     */
     NON_RECURRING = 3,
 }
 
@@ -495,8 +504,17 @@ export enum RECURRENCE_MODE {
  * Payment mode for offer pricing phases. Google Play only.
  */
 export enum OFFER_PAYMENT_MODE {
+    /**
+     * Subscribers don't pay until the specified period ends
+     */
     FREE_TRIAL = "FREE_TRIAL",
+    /**
+     * Subscribers pay up front for a specified period
+     */
     SINGLE_PAYMENT = "SINGLE_PAYMENT",
+    /**
+     * Subscribers pay a discounted amount for a specified number of periods
+     */
     DISCOUNTED_RECURRING_PAYMENT = "DISCOUNTED_RECURRING_PAYMENT",
 }
 

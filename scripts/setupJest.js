@@ -758,6 +758,7 @@ NativeModules.RNPurchases = {
   setFinishTransactions: jest.fn(),
   purchaseProduct: jest.fn(),
   purchasePackage: jest.fn(),
+  purchaseSubscriptionOption: jest.fn(),
   isAnonymous: jest.fn(),
   makeDeferredPurchase: jest.fn(),
   checkTrialOrIntroductoryPriceEligibility: jest.fn(),

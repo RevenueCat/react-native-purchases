@@ -437,9 +437,6 @@ export default class Purchases {
    * @param {UpgradeInfo} upgradeInfo Android only. Optional UpgradeInfo you wish to upgrade from containing the oldSKU
    * and the optional prorationMode.
    * @param {String} type Optional type of product, can be inapp or subs. Subs by default
-   * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
-   * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @deprecated, use purchaseStoreProduct instead
    */
   public static async purchaseProduct(
