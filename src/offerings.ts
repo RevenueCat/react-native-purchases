@@ -426,6 +426,11 @@ export interface SubscriptionOption {
     readonly billingPeriod: Period | null;
 
     /**
+     * True if the subscription is pre-paid.
+     */
+    readonly isPrepaid: boolean;
+
+    /**
      * The full price PricingPhase of the subscription.
      * Looks for the last price phase of the SubscriptionOption.
      */

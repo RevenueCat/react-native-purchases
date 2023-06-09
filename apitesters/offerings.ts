@@ -95,6 +95,7 @@ function checkSubscriptionOption(option: SubscriptionOption) {
   const tags: string[] = option.tags;
   const isBasePlan: boolean = option.isBasePlan;
   const billingPeriod: Period | null = option.billingPeriod;
+  const isPrepaid: boolean = option.isPrepaid;
   const fullPricePhase: PricingPhase | null = option.fullPricePhase;
   const freePhase: PricingPhase | null = option.freePhase;
   const introPhase: PricingPhase | null = option.introPhase;
