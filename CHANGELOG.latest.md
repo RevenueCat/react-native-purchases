@@ -1,4 +1,4 @@
-The first release candidate of **RevenueCat Purchases React Native v6** is here!! 😻
+**RevenueCat Purchases React Native v6** is here!! 😻
 
 This latest release updates the Android SDK dependency from v5 to [v6](https://github.com/RevenueCat/purchases-android/releases/tag/6.0.0) to use BillingClient 5. This version of BillingClient brings an entire new subscription model which has resulted in large changes across the entire SDK.
 
@@ -35,8 +35,13 @@ For more control, purchase subscription options with the new `purchaseSubscripti
 ### Observer Mode
 
 Observer mode is still supported in v6. Other than updating the SDK version, there are no changes required.
+​
+### Offline Entitlements
 
-### New Features
-* Add offering metadata (#641) via Josh Holtz (@joshdholtz)
-### Other Changes
-* Fix issue where Long type values weren't getting set on models (#636)
+✨ With this new feature, even if our main and backup servers are down, the SDK can continue to process purchases. This is enabled transparently to the user, and when the servers come back online, the SDK automatically syncs the information so it can be visible in the dashboard.
+
+### Offering Metadata
+
+✨ Metadata allows attaching arbitrary information as key/value pairs to your Offering to control how to display your products inside your app. The metadata you configure in an Offering is available from the RevenueCat SDK. For example, you could use it to remotely configure strings on your paywall, or even URLs of images shown on the paywall.
+
+See the [metadata documentation](https://www.revenuecat.com/docs/offering-metadata) for more info!
