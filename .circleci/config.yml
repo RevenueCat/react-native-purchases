@@ -70,7 +70,8 @@ jobs:
   docs-deploy:
     executor:
       name: rn/macos
-      xcode_version: 13.4.0
+      resource_class: macos.x86.medium.gen2
+      xcode_version: 14.3.1
     steps:
       - checkout
       - install-dependencies
@@ -102,11 +103,11 @@ jobs:
     executor:
       name: rn/macos
       resource_class: macos.x86.medium.gen2
-      xcode_version: 13.4.0
+      xcode_version: 14.3.1
     steps:
       - checkout
       - rn/ios_simulator_start:
-          device: iPhone 11 Pro
+          device: iPhone 14
       - run:
           name: Update CocoaPods repo
           command: pod repo update
@@ -121,7 +122,7 @@ jobs:
           cache_folder: ~/.cache/yarn
       - rn/ios_build:
           build_configuration: Release
-          device: iPhone 11 Pro
+          device: iPhone 14
           derived_data_path: ~/DerivedData
           project_type: workspace
           project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
@@ -145,7 +146,8 @@ jobs:
     description: "Publishes the new version and creates a github release"
     executor:
       name: rn/macos
-      xcode_version: 13.4.0
+      resource_class: macos.x86.medium.gen2
+      xcode_version: 14.3.1
     steps:
       - checkout
       - install-dependencies

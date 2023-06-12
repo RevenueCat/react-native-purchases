@@ -330,6 +330,16 @@ global.offeringsStub = {
         identifier: 'Custom'
       }
     ],
+    metadata: {
+      "int": 5,
+      "double": 5.5,
+      "boolean": true,
+      "string": "five",
+      "array": ["five"],
+      "dictionary": {
+          "string": "five"
+      }
+    },
     serverDescription: 'Default Offering',
     identifier: 'default'
   },
@@ -680,7 +690,8 @@ global.productStub = {
   price: 0.99,
   description: "The best service.",
   title: "One Month Free Trial",
-  identifier: "onemonth_freetrial"
+  identifier: "onemonth_freetrial",
+  productCategory: "SUBSCRIPTION",
 };
 
 global.productsStub = [
@@ -747,6 +758,7 @@ NativeModules.RNPurchases = {
   setFinishTransactions: jest.fn(),
   purchaseProduct: jest.fn(),
   purchasePackage: jest.fn(),
+  purchaseSubscriptionOption: jest.fn(),
   isAnonymous: jest.fn(),
   makeDeferredPurchase: jest.fn(),
   checkTrialOrIntroductoryPriceEligibility: jest.fn(),

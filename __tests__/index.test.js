@@ -151,15 +151,15 @@ describe("Purchases", () => {
 
     let products = await Purchases.getProducts("onemonth_freetrial");
 
-    expect(NativeModules.RNPurchases.getProductInfo).toBeCalledWith("onemonth_freetrial", "subs");
+    expect(NativeModules.RNPurchases.getProductInfo).toBeCalledWith("onemonth_freetrial", "SUBSCRIPTION");
     expect(NativeModules.RNPurchases.getProductInfo).toBeCalledTimes(1);
     expect(products).toEqual(productsStub);
 
     NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce([]);
 
-    products = await Purchases.getProducts("onemonth_freetrial", "nosubs")
+    products = await Purchases.getProducts("onemonth_freetrial", "NON_SUBSCRIPTION")
 
-    expect(NativeModules.RNPurchases.getProductInfo).toBeCalledWith("onemonth_freetrial", "nosubs");
+    expect(NativeModules.RNPurchases.getProductInfo).toBeCalledWith("onemonth_freetrial", "NON_SUBSCRIPTION");
     expect(NativeModules.RNPurchases.getProductInfo).toBeCalledTimes(2);
     expect(products).toEqual([]);
   });
@@ -173,14 +173,14 @@ describe("Purchases", () => {
 
     await Purchases.purchaseProduct("onemonth_freetrial")
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", undefined, "subs", null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", undefined, "subs", null, null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
       oldSKU: "viejo"
-    }, Purchases.PURCHASE_TYPE.INAPP)
+    }, Purchases.PRODUCT_CATEGORY.NON_SUBSCRIPTION)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {oldSKU: "viejo"}, Purchases.PURCHASE_TYPE.INAPP, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {oldSKU: "viejo"}, Purchases.PRODUCT_CATEGORY.NON_SUBSCRIPTION, null, null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(2);
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
@@ -191,7 +191,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.DEFERRED
-    }, Purchases.PURCHASE_TYPE.INAPP, null);
+    }, Purchases.PURCHASE_TYPE.INAPP, null, null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(3);
   });
 
@@ -224,7 +224,24 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
-    }, null);
+    }, null, null);
+  });
+
+  it("purchaseStoreProduct works", async () => {
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      presentedOfferingIdentifier: "the-offerings"
+    }
+
+    await Purchases.purchaseStoreProduct(aProduct)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, undefined, Purchases.PRODUCT_CATEGORY.SUBSCRIPTION, null, null, "the-offerings");
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
   it("purchasePackage works", async () => {
@@ -249,7 +266,7 @@ describe("Purchases", () => {
         offeringIdentifier: "offering",
       });
 
-    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", undefined, null);
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", undefined, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 
     await Purchases.purchasePackage(
@@ -276,8 +293,80 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.DEFERRED
-    }, null);
+    }, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(2);
+  });
+
+  it("purchaseSubscriptionOption works", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+
+    await Purchases.purchaseSubscriptionOption(
+      {
+        id: "monthly",
+        storeProductId: "gold:monthly",
+        productId: "gold",
+        pricingPhases: [phase],
+        tags: [],
+        isBasePlan: true,
+        billingPeriod: billingPeriod,
+        isPrePaid: false,
+        fullPricePhase: phase,
+        freePhase: null,
+        introPhase: null,
+        presentedOfferingIdentifier: null
+      });
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", undefined, null, null, null);
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+
+    await Purchases.purchaseSubscriptionOption(
+      {
+        id: "monthly",
+        storeProductId: "gold:monthly",
+        productId: "gold",
+        pricingPhases: [phase],
+        tags: [],
+        isBasePlan: true,
+        billingPeriod: billingPeriod,
+        isPrePaid: false,
+        fullPricePhase: phase,
+        freePhase: null,
+        introPhase: null,
+        presentedOfferingIdentifier: "offering"
+      },
+      {
+        oldProductIdentifier: "viejo",
+        prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      },
+      true
+    );
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", {
+      oldProductIdentifier: "viejo",
+      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+    }, null, {isPersonalizedPrice: true}, "offering");
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(2);
   });
 
   it("restorePurchases works", async () => {
@@ -654,12 +743,13 @@ describe("Purchases", () => {
 
     const aProduct = {
       ...productStub,
-      discounts: [discountStub]
+      discounts: [discountStub],
+      presentedOfferingIdentifier: null
     }
 
     await Purchases.purchaseDiscountedProduct(aProduct, promotionalOfferStub)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, promotionalOfferStub.timestamp.toString());
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, promotionalOfferStub.timestamp.toString(), null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 

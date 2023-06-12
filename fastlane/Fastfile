@@ -34,7 +34,8 @@ lane :bump do |options|
     next_version: options[:next_version],
     automatic_release: options[:automatic_release],
     hybrid_common_version: phc_version,
-    versions_file_path: versions_path
+    versions_file_path: versions_path,
+    is_prerelease: options[:is_prerelease]
   )
   update_hybrids_versions_file(
     versions_file_path: versions_path,
@@ -88,8 +89,16 @@ end
 desc "Creates GitHub release and publishes package"
 lane :release do |options|
   version_number = current_version_number
+  is_prerelease = Gem::Version.new(version_number).prerelease?
+
+  args = [
+    'npm',
+    'publish',
+    is_prerelease ? '--tag next' : nil
+  ].compact
+
   Dir.chdir(get_root_folder) do
-    sh('npm', 'publish')
+    sh(args)
   end
   github_release(version: version_number)
 end
