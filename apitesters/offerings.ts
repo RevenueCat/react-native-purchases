@@ -156,3 +156,13 @@ function checkOfferPaymentMode(offerPaymentMode: OFFER_PAYMENT_MODE) {
     } 
   };
 }
+
+function checkOfferProductCategory(productCategory: PRODUCT_CATEGORY) {
+  switch(productCategory) { 
+    case PRODUCT_CATEGORY.NON_SUBSCRIPTION, 
+    PRODUCT_CATEGORY.SUBSCRIPTION, 
+    PRODUCT_CATEGORY.UNKNOWN: { 
+       break; 
+    } 
+  };
+}
