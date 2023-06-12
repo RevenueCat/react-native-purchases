@@ -14,8 +14,7 @@ This latest release updates the Android SDK dependency from v5 to [v6](https://g
 In v5, a Google Play Android `Package` or `StoreProduct` represented a single purchaseable entity, and free trials or intro
 offers would automatically be applied to the purchase if the user was eligible.
 
-Now, in React Native v6, an Google Play Android `Package` or `StoreProduct` represents a duration of a subscription and contains all the ways to
-purchase that duration -- any offers and its base plan. Each of these purchase options are `SubscriptionOption`s.
+Now, in React Native v6, an Google Play Android `Package` or `StoreProduct` represents a duration of a subscription and contains all the ways to purchase that duration -- any offers and its base plan. Each of these purchase options are `SubscriptionOption`s.
 When passing a `Package` to `purchasePackage()` or `StoreProduct` to `purchaseStoreProduct()`, the SDK will use the following logic to choose which
 `SubscriptionOption` to purchase:
 - Filters out offers with "rc-ignore-offer" tag
