@@ -8,7 +8,7 @@ import {
   PurchasesPackage, PurchasesPromotionalOffer,
   PurchasesStoreProduct, UpgradeInfo,
   SubscriptionOption, PricingPhase,
-  Price, Period, OFFER_PAYMENT_MODE, PERIOD_UNIT, RECURRENCE_MODE
+  Price, Period, OFFER_PAYMENT_MODE, PERIOD_UNIT, PRODUCT_CATEGORY, RECURRENCE_MODE
 } from "../dist";
 
 function checkProduct(product: PurchasesStoreProduct) {
@@ -21,6 +21,9 @@ function checkProduct(product: PurchasesStoreProduct) {
   const introPrice: PurchasesIntroPrice | null = product.introPrice;
   const discounts: PurchasesStoreProductDiscount[] | null = product.discounts;
   const subscriptionPeriod: string | null = product.subscriptionPeriod;
+  const productCategory: PRODUCT_CATEGORY | null = product.productCategory;
+  const defaultOption: SubscriptionOption | null = product.defaultOption;
+  const subscriptionOptions: SubscriptionOption[] | null =  product.subscriptionOptions;
   const presentedOfferingIdentifier: string | null = product.presentedOfferingIdentifier;
 }
 
