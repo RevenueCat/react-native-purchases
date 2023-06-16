@@ -295,6 +295,31 @@ describe("Purchases", () => {
       prorationMode: Purchases.PRORATION_MODE.DEFERRED
     }, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(2);
+    await Purchases.purchasePackage(
+      {
+        identifier: "$rc_onemonth",
+        packageType: Purchases.PACKAGE_TYPE.MONTHLY,
+        product: {
+          identifier: "onemonth_freetrial",
+          description: "description",
+          title: "title",
+          price: 4.5,
+          priceString: "$4.5",
+          currency_code: "USD",
+          introPrice: null
+        },
+        offeringIdentifier: "offering",
+      },
+      {
+        oldProductIdentifier: "viejo",
+        prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      },
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
+      oldProductIdentifier: "viejo",
+      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+    }, null, null);
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(3);
   });
 
   it("purchaseSubscriptionOption works", async () => {
