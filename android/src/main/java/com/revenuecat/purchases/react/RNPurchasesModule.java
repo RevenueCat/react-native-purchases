@@ -172,6 +172,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final String discountTimestamp,
                                 @Nullable final ReadableMap googleInfo,
                                 final Promise promise) {
+        String googleOldProductId = null;
+        Integer googleProrationMode = null;
+
         if (googleProductChangeInfo != null) {
             // GoogleProductChangeInfo in V6 and later
             googleOldProductId = googleProductChangeInfo.hasKey("oldProductIdentifier") ? googleProductChangeInfo.getString("oldProductIdentifier") : null;
