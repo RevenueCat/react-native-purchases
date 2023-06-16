@@ -146,9 +146,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             if (googleOldProductId == null) {
                 googleOldProductId = googleProductChangeInfo.hasKey("oldSKU") ? googleProductChangeInfo.getString("oldSKU") : null;
             }
-            if (googleProrationMode == null) {
-                googleProrationMode = googleProductChangeInfo.hasKey("prorationMode") ? googleProductChangeInfo.getInt("prorationMode") : null;
-            }
         }
 
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
@@ -183,9 +180,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             // Legacy UpgradeInfo in V5 and earlier
             if (googleOldProductId == null) {
                 googleOldProductId = googleProductChangeInfo.hasKey("oldSKU") ? googleProductChangeInfo.getString("oldSKU") : null;
-            }
-            if (googleProrationMode == null) {
-                googleProrationMode = googleProductChangeInfo.hasKey("prorationMode") ? googleProductChangeInfo.getInt("prorationMode") : null;
             }
         }
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
