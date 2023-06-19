@@ -1,3 +1,7 @@
+## 6.0.1
+### Bugfixes
+* [DENG-418] Accept `GoogleProductChangeInfo` in `purchasePackage` in Android (#657) via Mark Villacampa (@MarkVillacampa)
+
 ## 6.0.0
 **RevenueCat Purchases React Native v6** is here!! 😻
 
