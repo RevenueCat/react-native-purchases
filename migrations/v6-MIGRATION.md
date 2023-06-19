@@ -44,7 +44,7 @@ be found through `subscriptionOptions` on `StoreProduct`:
 
 ```dart
 const basePlan = storeProduct.subscriptionOptions?.filter((option) => { option.isBasePlan });
-const defaultOffer = storeProduct.defaultOffer
+const defaultOption = storeProduct.defaultOption
 const freeOffer = storeProduct.subscriptionOptions?.filter((option) => { !!option.freePhase });
 const trialOffer = storeProduct.subscriptionOptions?.filter((option) => { !!option.introPhase });
 ```
