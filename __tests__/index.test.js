@@ -1,6 +1,6 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
-const {REFUND_REQUEST_STATUS} = require("../dist/purchases");
+const {REFUND_REQUEST_STATUS, ENTITLEMENT_VERIFICATION_MODE} = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
 
@@ -552,11 +552,13 @@ describe("Purchases", () => {
   })
 
   it("configure works", async () => {
+    const defaultVerificationMode= "DISABLED"
+
     Purchases.configure({apiKey: "key", appUserID: "user"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false, true, defaultVerificationMode);
 
     Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false, true, defaultVerificationMode);
 
     Purchases.configure({
       apiKey: "key",
@@ -565,7 +567,7 @@ describe("Purchases", () => {
       userDefaultsSuiteName: "suite name",
       usesStoreKit2IfAvailable: true
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false, true, defaultVerificationMode);
 
     Purchases.configure({
       apiKey: "key",
@@ -573,9 +575,10 @@ describe("Purchases", () => {
       observerMode: true,
       userDefaultsSuiteName: "suite name",
       usesStoreKit2IfAvailable: true,
+      entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
       useAmazon: true
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true, "INFORMATIONAL");
 
     Purchases.configure({
       apiKey: "key",
