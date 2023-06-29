@@ -552,7 +552,7 @@ describe("Purchases", () => {
   })
 
   it("configure works", async () => {
-    const defaultVerificationMode= "DISABLED"
+    const defaultVerificationMode = "DISABLED"
 
     Purchases.configure({apiKey: "key", appUserID: "user"});
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false, true, defaultVerificationMode);
