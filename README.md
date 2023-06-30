@@ -22,6 +22,9 @@ React Native Purchases is the client for the [RevenueCat](https://www.revenuecat
 ## Migrating from React-Native Purchases v4 to v5
 - See our [Migration guide](./v4_to_v5_migration_guide.md)
 
+## Migrating from React-Native Purchases v5 to v6
+- See our [Migration guide](./migrations/v6-MIGRATION.md)
+
 ## RevenueCat SDK Features
 |   | RevenueCat |
 | --- | --- |
