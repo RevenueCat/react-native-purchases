@@ -93,5 +93,8 @@
     "setupFiles": [
       "./scripts/setupJest.js"
     ]
+  },
+  "dependencies": {
+    "@revenuecat/purchases-hybrid-typescript-interfaces": "file:../purchases-hybrid-common/typescript"
   }
 }
