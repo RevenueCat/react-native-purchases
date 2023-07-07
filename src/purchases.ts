@@ -1,7 +1,11 @@
 import {NativeEventEmitter, NativeModules} from "react-native";
-import {PurchasesError, PURCHASES_ERROR_CODE, UninitializedPurchasesError, UnsupportedPlatformError} from "./errors";
-import {CustomerInfo, PurchasesEntitlementInfo} from "./customerInfo";
 import {
+  PurchasesError,
+  PURCHASES_ERROR_CODE,
+  UninitializedPurchasesError,
+  UnsupportedPlatformError,
+  CustomerInfo,
+  PurchasesEntitlementInfo,
   PRORATION_MODE,
   PACKAGE_TYPE,
   INTRO_ELIGIBILITY_STATUS,
@@ -14,23 +18,37 @@ import {
   PurchasesStoreProductDiscount,
   SubscriptionOption,
   PRODUCT_CATEGORY,
-  GoogleProductChangeInfo
-} from "./offerings";
+  GoogleProductChangeInfo,
+  PURCHASE_TYPE,
+  BILLING_FEATURE,
+  REFUND_REQUEST_STATUS,
+  LOG_LEVEL,
+  PurchasesConfiguration,
+  CustomerInfoUpdateListener,
+  ShouldPurchasePromoProductListener,
+  MakePurchaseResult,
+  LogHandler,
+  LogInResult
+} from '@revenuecat/purchases-hybrid-typescript-interfaces';
+
+// This export is kept to keep backwards compatibility to any possible users using this file directly
+export {
+  PURCHASE_TYPE,
+  BILLING_FEATURE,
+  REFUND_REQUEST_STATUS,
+  LOG_LEVEL,
+  PurchasesConfiguration,
+  CustomerInfoUpdateListener,
+  ShouldPurchasePromoProductListener,
+  MakePurchaseResult,
+  LogHandler,
+  LogInResult
+} from '@revenuecat/purchases-hybrid-typescript-interfaces';
 
 import {Platform} from "react-native";
 
 const {RNPurchases} = NativeModules;
 const eventEmitter = new NativeEventEmitter(RNPurchases);
-
-/**
- * Listener used on updated customer info
- * @callback CustomerInfoUpdateListener
- * @param {Object} customerInfo Object containing info for the customer
- */
-export type CustomerInfoUpdateListener = (customerInfo: CustomerInfo) => void;
-export type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
-export type MakePurchaseResult = { productIdentifier: string; customerInfo: CustomerInfo; };
-export type LogHandler = (logLevel: LOG_LEVEL, message: string) => void;
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
@@ -59,134 +77,6 @@ eventEmitter.addListener(
     customLogHandler(logLevelEnum, message);
   }
 );
-
-/**
- * @deprecated, use PRODUCT_CATEGORY
- */
-export enum PURCHASE_TYPE {
-  /**
-   * A type of SKU for in-app products.
-   */
-  INAPP = "inapp",
-
-  /**
-   * A type of SKU for subscriptions.
-   */
-  SUBS = "subs",
-}
-
-/**
- * Enum for billing features.
- * Currently, these are only relevant for Google Play Android users:
- * https://developer.android.com/reference/com/android/billingclient/api/BillingClient.FeatureType
- */
-export enum BILLING_FEATURE {
-  /**
-   * Purchase/query for subscriptions.
-   */
-  SUBSCRIPTIONS,
-
-  /**
-   * Subscriptions update/replace.
-   */
-  SUBSCRIPTIONS_UPDATE,
-
-  /**
-   * Purchase/query for in-app items on VR.
-   */
-  IN_APP_ITEMS_ON_VR,
-
-  /**
-   * Purchase/query for subscriptions on VR.
-   */
-  SUBSCRIPTIONS_ON_VR,
-
-  /**
-   * Launch a price change confirmation flow.
-   */
-  PRICE_CHANGE_CONFIRMATION,
-}
-
-export enum REFUND_REQUEST_STATUS {
-  /**
-   * Apple has received the refund request.
-   */
-  SUCCESS,
-
-  /**
-   * User canceled submission of the refund request.
-   */
-  USER_CANCELLED,
-
-  /**
-   * There was an error with the request. See message for more details.
-   */
-  ERROR
-}
-
-/**
- * Holds the logIn result
- */
-export interface LogInResult {
-  /**
-   * The Customer Info for the user.
-   */
-  readonly customerInfo: CustomerInfo;
-  /**
-   * True if the call resulted in a new user getting created in the RevenueCat backend.
-   */
-  readonly created: boolean;
-}
-
-export enum LOG_LEVEL {
-  VERBOSE = "VERBOSE",
-  DEBUG = "DEBUG",
-  INFO = "INFO",
-  WARN = "WARN",
-  ERROR = "ERROR"
-}
-
-/**
- * Holds parameters to initialize the SDK.
- */
-export interface PurchasesConfiguration {
-  /**
-   * RevenueCat API Key. Needs to be a string
-   */
-  apiKey: string;
-  /**
-   * A unique id for identifying the user
-   */
-  appUserID?: string | null;
-  /**
-   * An optional boolean. Set this to TRUE if you have your own IAP implementation and
-   * want to use only RevenueCat's backend. Default is FALSE. If you are on Android and setting this to ON, you will have
-   * to acknowledge the purchases yourself.
-   */
-  observerMode?: boolean;
-  /**
-   * An optional string. iOS-only, will be ignored for Android.
-   * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults
-   * suite, otherwise it will use standardUserDefaults. Default is null, which will make the SDK use standardUserDefaults.
-   */
-  userDefaultsSuiteName?: string;
-  /**
-   * iOS-only, will be ignored for Android.
-   * Set this to TRUE to enable StoreKit2.
-   * Default is FALSE.
-   *
-   * @deprecated RevenueCat currently uses StoreKit 1 for purchases, as its stability in production scenarios has
-   * proven to be more performant than StoreKit 2.
-   * We're collecting more data on the best approach, but StoreKit 1 vs StoreKit 2 is an implementation detail
-   * that you shouldn't need to care about.
-   * We recommend not using this parameter, letting RevenueCat decide for you which StoreKit implementation to use.
-   */
-  usesStoreKit2IfAvailable?: boolean;
-  /**
-   * An optional boolean. Android only. Required to configure the plugin to be used in the Amazon Appstore.
-   */
-  useAmazon?: boolean;
-}
 
 export default class Purchases {
   /**
