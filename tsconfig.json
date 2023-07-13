@@ -33,6 +33,10 @@
     "excludeInternal": true,
     "excludePrivate": true,
     "excludeProtected": true,
-    "includeVersion": true
+    "includeVersion": true,
+    "visibilityFilters": {
+      "external": true,
+      "inherited": true
+    }
   }
 }
