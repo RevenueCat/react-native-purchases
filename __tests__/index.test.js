@@ -812,7 +812,8 @@ describe("Purchases", () => {
       aPackage.identifier,
       aPackage.offeringIdentifier,
       null,
-      promotionalOfferStub.timestamp.toString()
+      promotionalOfferStub.timestamp.toString(),
+      null
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 
