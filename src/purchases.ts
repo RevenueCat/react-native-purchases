@@ -174,7 +174,7 @@ export interface PurchasesConfiguration {
    * iOS-only, will be ignored for Android.
    * Set this to TRUE to enable StoreKit2.
    * Default is FALSE.
-   * 
+   *
    * @deprecated RevenueCat currently uses StoreKit 1 for purchases, as its stability in production scenarios has
    * proven to be more performant than StoreKit 2.
    * We're collecting more data on the best approach, but StoreKit 1 vs StoreKit 2 is an implementation detail
@@ -270,7 +270,7 @@ export default class Purchases {
    * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
    * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
-   * @param {boolean} [usesStoreKit2IfAvailable=false] DEPRECATED. An optional boolean. iOS-only. Defaults to FALSE. Setting this to TRUE will enable StoreKit2 on compatible devices. 
+   * @param {boolean} [usesStoreKit2IfAvailable=false] DEPRECATED. An optional boolean. iOS-only. Defaults to FALSE. Setting this to TRUE will enable StoreKit2 on compatible devices.
    * We recommend not using this parameter, letting RevenueCat decide for you which StoreKit implementation to use.
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
@@ -462,7 +462,7 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesStoreProduct} product The product you want to purchase
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you 
+   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
    * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
@@ -530,7 +530,7 @@ export default class Purchases {
    *
    * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
    * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use googleProductChangeInfo.
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you 
+   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
    * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
@@ -563,7 +563,7 @@ export default class Purchases {
    * Google only. Make a purchase of a subscriptionOption
    *
    * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProducts by calling getOfferings
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you 
+   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
    * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
@@ -615,7 +615,8 @@ export default class Purchases {
       aPackage.identifier,
       aPackage.offeringIdentifier,
       null,
-      discount.timestamp.toString()
+      discount.timestamp.toString(),
+      null,
     ).catch((error: PurchasesError) => {
       error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
