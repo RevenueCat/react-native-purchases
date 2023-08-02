@@ -1,14 +1,6 @@
 ### Bugfixes
-* Fix purchaseDiscountedPackage error with missing parameter (#694) via Josh Holtz (@joshdholtz)
+* Use correct type in offering metadata (#702) via Toni Rico (@tonidero)
 ### Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 5.4.1 (#695) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 6.7.0](https://github.com/RevenueCat/purchases-android/releases/tag/6.7.0)
-  * [Android 6.6.0](https://github.com/RevenueCat/purchases-android/releases/tag/6.6.0)
-  * [iOS 4.25.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.25.1)
-  * [iOS 4.25.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.25.0)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 5.4.0 (#692) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 6.7.0](https://github.com/RevenueCat/purchases-android/releases/tag/6.7.0)
-  * [Android 6.6.0](https://github.com/RevenueCat/purchases-android/releases/tag/6.6.0)
-  * [iOS 4.25.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.25.1)
-  * [iOS 4.25.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.25.0)
-* Bump fastlane from 2.213.0 to 2.214.0 (#691) via dependabot[bot] (@dependabot[bot])
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 5.5.0 (#699) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 6.8.0](https://github.com/RevenueCat/purchases-android/releases/tag/6.8.0)
+  * [iOS 4.25.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.25.2)
