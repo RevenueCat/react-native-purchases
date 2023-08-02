@@ -242,9 +242,12 @@ export interface PurchasesOffering {
      */
     readonly serverDescription: string;
     /**
-     * Offering metadata defined in RevenueCat dashboard.
+     * Offering metadata defined in RevenueCat dashboard. To access values, you need
+     * to check the type beforehand. For example:
+     * const my_unknown_value: unknown = offering.metadata['my_key'];
+     * const my_string_value: string | undefined = typeof(my_unknown_value) === 'string' ? my_unknown_value : undefined;
      */
-    readonly metadata: Map<string, any>;
+    readonly metadata: { [key: string]: unknown };
     /**
      * Array of `Package` objects available for purchase.
      */
