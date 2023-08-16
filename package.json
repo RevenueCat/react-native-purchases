@@ -95,6 +95,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-hybrid-typescript-interfaces": "file:../purchases-hybrid-common/typescript"
+    "@revenuecat/purchases-typescript-internal": "5.6.1"
   }
 }

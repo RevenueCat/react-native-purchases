@@ -29,7 +29,7 @@ import {
   MakePurchaseResult,
   LogHandler,
   LogInResult
-} from '@revenuecat/purchases-hybrid-typescript-interfaces';
+} from '@revenuecat/purchases-typescript-internal';
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
@@ -43,7 +43,7 @@ export {
   MakePurchaseResult,
   LogHandler,
   LogInResult
-} from '@revenuecat/purchases-hybrid-typescript-interfaces';
+} from '@revenuecat/purchases-typescript-internal';
 
 import {Platform} from "react-native";
 
