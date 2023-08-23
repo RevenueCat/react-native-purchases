@@ -9,6 +9,7 @@ files_with_version_number = {
 files_to_update_phc_version = {
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
+    'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
 }
 repo_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
