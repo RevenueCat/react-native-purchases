@@ -1,3 +1,7 @@
+## 6.6.4
+### Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 6.1.0 (#724) via RevenueCat Git Bot (@RCGitBot)
+
 ## 6.6.3
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 5.6.4 (#719) via RevenueCat Git Bot (@RCGitBot)
