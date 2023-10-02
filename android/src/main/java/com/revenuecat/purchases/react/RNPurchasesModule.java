@@ -45,7 +45,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "6.7.0-SNAPSHOT";
+    public static final String PLUGIN_VERSION = "6.7.0";
 
     private final ReactApplicationContext reactContext;
 
