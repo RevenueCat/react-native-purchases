@@ -1,3 +1,18 @@
+## 6.7.0
+### Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 6.3.0 (#743) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 6.9.5](https://github.com/RevenueCat/purchases-android/releases/tag/6.9.5)
+  * [iOS 4.26.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.26.1)
+  * [iOS 4.26.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.26.0)
+  * [iOS 4.25.10](https://github.com/RevenueCat/purchases-ios/releases/tag/4.25.10)
+  * [iOS 4.26.0-beta.4](https://github.com/RevenueCat/purchases-ios/releases/tag/4.26.0-beta.4)
+  * [iOS 4.26.0-beta.3](https://github.com/RevenueCat/purchases-ios/releases/tag/4.26.0-beta.3)
+  * [iOS 4.26.0-beta.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.26.0-beta.2)
+  * [iOS 4.26.0-beta.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.26.0-beta.1)
+* Bump danger from 9.3.1 to 9.3.2 (#737) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.215.1 to 2.216.0 (#736) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.214.0 to 2.215.1 (#734) via dependabot[bot] (@dependabot[bot])
+
 ## 6.6.5
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 6.1.2 (#729) via RevenueCat Git Bot (@RCGitBot)
