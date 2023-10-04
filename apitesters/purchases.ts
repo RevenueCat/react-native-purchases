@@ -1,3 +1,4 @@
+import { IN_APP_MESSAGE_TYPE } from '@revenuecat/purchases-typescript-internal';
 import {
   CustomerInfo,
   PurchasesEntitlementInfo,
@@ -51,6 +52,7 @@ async function checkPurchasing(purchases: Purchases,
   const productId: string = ""
   const productIds: string[] = [productId];
   const features: BILLING_FEATURE[] = [];
+  const messageTypes: IN_APP_MESSAGE_TYPE[] = [];
   const googleIsPersonalizedPrice: boolean = false;
 
   const paymentDiscount2: PurchasesPromotionalOffer | undefined = await Purchases.getPromotionalOffer(
@@ -119,6 +121,9 @@ async function checkPurchasing(purchases: Purchases,
   const introEligibilities: {
     [p: string]: IntroEligibility
   } = await Purchases.checkTrialOrIntroductoryPriceEligibility(productIds);
+
+  await Purchases.showInAppMessages();
+  await Purchases.showInAppMessages(messageTypes);
 }
 
 async function checkConfigure() {
@@ -128,6 +133,7 @@ async function checkConfigure() {
   const usesStoreKit2IfAvailable: boolean = true;
   const useAmazon: boolean = true;
   const userDefaultsSuiteName: string = "";
+  const shouldShowInAppMessagesAutomatically: boolean = true;
 
   Purchases.configure({
     apiKey,
@@ -154,6 +160,15 @@ async function checkConfigure() {
     userDefaultsSuiteName,
     usesStoreKit2IfAvailable,
     useAmazon
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    observerMode,
+    userDefaultsSuiteName,
+    usesStoreKit2IfAvailable,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically
   });
 
   await Purchases.setProxyURL("");

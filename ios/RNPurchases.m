@@ -42,7 +42,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   observerMode:(BOOL)observerMode
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
                   usesStoreKit2IfAvailable:(BOOL)usesStoreKit2IfAvailable
-                  useAmazon:(BOOL)useAmazon) {
+                  useAmazon:(BOOL)useAmazon
+                  shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
                                                     appUserID:appUserID
                                                  observerMode:observerMode
@@ -50,8 +51,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
                                      usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
-                                            dangerousSettings:nil
-                         shouldShowInAppMessagesAutomatically:YES];
+                                            dangerousSettings:nil 
+                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically];
     purchases.delegate = self;
 }
 
@@ -368,6 +369,23 @@ RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
         [RCCommonFunctionality beginRefundRequestProductId:productIdentifier
                                            completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
                                                                                                            reject:reject]];
+    } else {
+        resolve(nil);
+    }
+    #else
+    resolve(nil);
+    #endif
+}
+
+RCT_EXPORT_METHOD(showInAppMessages:(NSArray<NSNumber *> *)messageTypes,
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    #if TARGET_OS_IPHONE
+    if (@available(iOS 16.0, *)) {
+        NSSet *types = [[NSOrderedSet alloc] initWithArray:messageTypes];
+        [RCCommonFunctionality showStoreMessagesForTypes:types completion:^{
+            resolve(nil);
+        }];
     } else {
         resolve(nil);
     }

@@ -553,10 +553,10 @@ describe("Purchases", () => {
 
   it("configure works", async () => {
     Purchases.configure({apiKey: "key", appUserID: "user"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false, true);
 
     Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false, true);
 
     Purchases.configure({
       apiKey: "key",
@@ -565,7 +565,7 @@ describe("Purchases", () => {
       userDefaultsSuiteName: "suite name",
       usesStoreKit2IfAvailable: true
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false, true);
 
     Purchases.configure({
       apiKey: "key",
@@ -575,9 +575,20 @@ describe("Purchases", () => {
       usesStoreKit2IfAvailable: true,
       useAmazon: true
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(4);
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      observerMode: true,
+      userDefaultsSuiteName: "suite name",
+      usesStoreKit2IfAvailable: true,
+      useAmazon: true,
+      shouldShowInAppMessagesAutomatically: false
+    });
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, false);
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(5);
   })
 
   it("cancelled purchaseProduct sets userCancelled in the error", () => {
@@ -1066,6 +1077,33 @@ describe("Purchases", () => {
         expect(NativeModules.RNPurchases.setFirebaseAppInstanceID).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.setFirebaseAppInstanceID).toBeCalledWith(attributionID);
       });
+    });
+  });
+
+  describe("showInAppMessages", () => {
+    beforeEach(() => {
+      Platform.OS = "ios";
+    });
+
+    describe("when Purchases is not configured", () => {
+      it("it rejects", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+        try {
+          await Purchases.showInAppMessages();
+          fail("expected error");
+        } catch (error) { }
+
+        expect(NativeModules.RNPurchases.showInAppMessages).toBeCalledTimes(0);
+      });
+    });
+
+    it("makes right calls", async () => {
+      NativeModules.RNPurchases.showInAppMessages.mockResolvedValueOnce(0);
+
+      await Purchases.showInAppMessages();
+
+      expect(NativeModules.RNPurchases.showInAppMessages).toBeCalledTimes(1);
     });
   });
 

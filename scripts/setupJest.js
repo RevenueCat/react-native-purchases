@@ -778,6 +778,7 @@ NativeModules.RNPurchases = {
   beginRefundRequestForActiveEntitlement: jest.fn(),
   beginRefundRequestForEntitlementId: jest.fn(),
   beginRefundRequestForProductId: jest.fn(),
+  showInAppMessages: jest.fn(),
   isConfigured: jest.fn()
 };
 
