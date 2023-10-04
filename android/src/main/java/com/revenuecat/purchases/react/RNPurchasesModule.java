@@ -2,6 +2,8 @@ package com.revenuecat.purchases.react;
 
 import static com.revenuecat.purchases.react.RNPurchasesConverters.convertMapToWriteableMap;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -475,7 +477,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             for (int i = 0; i < messageTypes.size(); i++) {
                 int messageTypeInt = messageTypes.getInt(i);
                 InAppMessageType messageType = InAppMessageType.values()[messageTypeInt];
-                messageTypesList.add(messageType);
+                if (messageType != null) {
+                    messageTypesList.add(messageType);
+                } else {
+                    Log.e("RNPurchases", "Invalid in-app message type: " + messageTypeInt);
+                }
             }
             CommonKt.showInAppMessagesIfNeeded(getCurrentActivity(), messageTypesList);
         }
