@@ -15,6 +15,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.CustomerInfo;
+import com.revenuecat.purchases.DangerousSettings;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.common.PlatformInfo;
@@ -94,6 +95,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             observerMode,
             platformInfo,
             store,
+            new DangerousSettings(),
             shouldShowInAppMessagesAutomatically
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);

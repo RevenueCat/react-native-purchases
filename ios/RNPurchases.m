@@ -377,19 +377,27 @@ RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
     #endif
 }
 
-RCT_EXPORT_METHOD(showInAppMessages:(NSArray<NSNumber *> *)messageTypes,
+RCT_EXPORT_METHOD(showInAppMessages:(NSArray<NSNumber *> *)messageTypes
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     #if TARGET_OS_IPHONE
     if (@available(iOS 16.0, *)) {
-        NSSet *types = [[NSOrderedSet alloc] initWithArray:messageTypes];
-        [RCCommonFunctionality showStoreMessagesForTypes:types completion:^{
-            resolve(nil);
-        }];
+        if (messageTypes == nil) {
+            [RCCommonFunctionality showStoreMessagesCompletion:^{
+                resolve(nil);
+            }];
+        } else {
+            NSSet *types = [[NSSet alloc] initWithArray:messageTypes];
+            [RCCommonFunctionality showStoreMessagesForTypes:types completion:^{
+                resolve(nil);
+            }];
+        }
     } else {
+        NSLog(@"[Purchases] Warning: tried to showInAppMessages in iOS <16.0. That's not supported.");
         resolve(nil);
     }
     #else
+    NSLog(@"[Purchases] Warning: tried to showInAppMessages in non-ios devices. That's not supported.");
     resolve(nil);
     #endif
 }
