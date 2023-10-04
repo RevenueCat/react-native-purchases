@@ -185,12 +185,12 @@ describe("Purchases", () => {
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
       oldSKU: "viejo",
-      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, Purchases.PURCHASE_TYPE.INAPP)
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {
       oldSKU: "viejo",
-      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, Purchases.PURCHASE_TYPE.INAPP, null, null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(3);
   });
@@ -286,13 +286,13 @@ describe("Purchases", () => {
       },
       {
         oldSKU: "viejo",
-        prorationMode: Purchases.PRORATION_MODE.DEFERRED
+        prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
       },
     );
 
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
       oldSKU: "viejo",
-      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(2);
     await Purchases.purchasePackage(
@@ -312,12 +312,12 @@ describe("Purchases", () => {
       },
       {
         oldProductIdentifier: "viejo",
-        prorationMode: Purchases.PRORATION_MODE.DEFERRED
+        prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
       },
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
       oldProductIdentifier: "viejo",
-      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(3);
   });
@@ -382,14 +382,14 @@ describe("Purchases", () => {
       },
       {
         oldProductIdentifier: "viejo",
-        prorationMode: Purchases.PRORATION_MODE.DEFERRED
+        prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
       },
       true
     );
 
     expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", {
       oldProductIdentifier: "viejo",
-      prorationMode: Purchases.PRORATION_MODE.DEFERRED
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, null, {isPersonalizedPrice: true}, "offering");
     expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(2);
   });
