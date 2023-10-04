@@ -1121,7 +1121,8 @@ export default class Purchases {
   }
 
   /**
-   * Shows in-app messages available from the App Store or Google Play. 
+   * Shows in-app messages available from the App Store or Google Play. You need to disable messages from showing
+   * automatically using [PurchasesConfiguration.shouldShowInAppMessagesAutomatically].
    *
    * Note: In iOS, this requires version 16+. In older versions the promise will be resolved successfully
    * immediately.
