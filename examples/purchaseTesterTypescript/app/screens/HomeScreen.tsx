@@ -140,7 +140,7 @@ const HomeScreen: React.FC<Props> = ({
       await Purchases.showInAppMessages();
       console.log("Shown messages successfully");
     } catch {
-      console.log("error");
+      console.log("Error showing in-app messages: ${error}");
     }
   }
   
