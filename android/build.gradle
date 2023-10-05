@@ -29,7 +29,7 @@ android {
         minSdkVersion getExtOrIntegerDefault('minSdkVersion')
         targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
         versionCode 1
-        versionName '6.8.0-SNAPSHOT'
+        versionName '7.0.0'
     }
 
     buildTypes {
