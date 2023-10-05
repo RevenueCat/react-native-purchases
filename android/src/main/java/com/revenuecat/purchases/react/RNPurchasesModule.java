@@ -474,9 +474,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             CommonKt.showInAppMessagesIfNeeded(getCurrentActivity());
         } else {
             ArrayList<InAppMessageType> messageTypesList = new ArrayList<>();
+            InAppMessageType[] inAppMessageTypes = InAppMessageType.values();
             for (int i = 0; i < messageTypes.size(); i++) {
                 int messageTypeInt = messageTypes.getInt(i);
-                InAppMessageType messageType = InAppMessageType.values()[messageTypeInt];
+                InAppMessageType messageType = null;
+                if (messageTypeInt < inAppMessageTypes.length) {
+                    messageType = inAppMessageTypes[messageTypeInt];
+                }
                 if (messageType != null) {
                     messageTypesList.add(messageType);
                 } else {
