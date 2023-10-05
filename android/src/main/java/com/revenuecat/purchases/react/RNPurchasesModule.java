@@ -1,5 +1,7 @@
 package com.revenuecat.purchases.react;
 
+import static com.revenuecat.purchases.react.RNPurchasesConverters.convertMapToWriteableMap;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.CustomerInfo;
+import com.revenuecat.purchases.DangerousSettings;
 import com.revenuecat.purchases.Purchases;
 import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.common.PlatformInfo;
@@ -26,19 +29,17 @@ import com.revenuecat.purchases.hybridcommon.OnResultList;
 import com.revenuecat.purchases.hybridcommon.SubscriberAttributesKt;
 import com.revenuecat.purchases.hybridcommon.mappers.CustomerInfoMapperKt;
 import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener;
-import com.revenuecat.purchases.models.GoogleProrationMode;
+import com.revenuecat.purchases.models.InAppMessageType;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import kotlin.UninitializedPropertyAccessException;
-
-import static com.revenuecat.purchases.react.RNPurchasesConverters.convertMapToWriteableMap;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedCustomerInfoListener {
 
@@ -82,13 +83,23 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
                                boolean observerMode, @Nullable String userDefaultsSuiteName,
-                               @Nullable Boolean usesStoreKit2IfAvailable, boolean useAmazon) {
+                               @Nullable Boolean usesStoreKit2IfAvailable, boolean useAmazon,
+                               boolean shouldShowInAppMessagesAutomatically) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
             store = Store.AMAZON;
         }
-        CommonKt.configure(reactContext, apiKey, appUserID, observerMode, platformInfo, store);
+        CommonKt.configure(
+            reactContext,
+            apiKey,
+            appUserID,
+            observerMode,
+            platformInfo,
+            store,
+            new DangerousSettings(),
+            shouldShowInAppMessagesAutomatically
+        );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }
 
@@ -455,6 +466,30 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
       Purchases.getSharedInstance().syncObserverModeAmazonPurchase(productID, receiptID,
         amazonUserID, isoCurrencyCode, price);
       promise.resolve(null);
+    }
+
+    @ReactMethod
+    public void showInAppMessages(ReadableArray messageTypes, final Promise promise) {
+        if (messageTypes == null) {
+            CommonKt.showInAppMessagesIfNeeded(getCurrentActivity());
+        } else {
+            ArrayList<InAppMessageType> messageTypesList = new ArrayList<>();
+            InAppMessageType[] inAppMessageTypes = InAppMessageType.values();
+            for (int i = 0; i < messageTypes.size(); i++) {
+                int messageTypeInt = messageTypes.getInt(i);
+                InAppMessageType messageType = null;
+                if (messageTypeInt < inAppMessageTypes.length) {
+                    messageType = inAppMessageTypes[messageTypeInt];
+                }
+                if (messageType != null) {
+                    messageTypesList.add(messageType);
+                } else {
+                    Log.e("RNPurchases", "Invalid in-app message type: " + messageTypeInt);
+                }
+            }
+            CommonKt.showInAppMessagesIfNeeded(getCurrentActivity(), messageTypesList);
+        }
+        promise.resolve(null);
     }
 
     // endregion

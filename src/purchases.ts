@@ -28,7 +28,8 @@ import {
   ShouldPurchasePromoProductListener,
   MakePurchaseResult,
   LogHandler,
-  LogInResult
+  LogInResult,
+  IN_APP_MESSAGE_TYPE
 } from '@revenuecat/purchases-typescript-internal';
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
@@ -146,6 +147,13 @@ export default class Purchases {
   public static LOG_LEVEL = LOG_LEVEL;
 
   /**
+   * List of valid in app message types.
+   * @readonly
+   * @enum {number}
+   */
+  public static IN_APP_MESSAGE_TYPE = IN_APP_MESSAGE_TYPE;
+
+  /**
    * @internal
    */
   public static UninitializedPurchasesError = UninitializedPurchasesError;
@@ -173,7 +181,8 @@ export default class Purchases {
                             observerMode = false,
                             userDefaultsSuiteName,
                             usesStoreKit2IfAvailable = false,
-                            useAmazon = false
+                            useAmazon = false,
+                            shouldShowInAppMessagesAutomatically = true
                           }: PurchasesConfiguration): void {
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");
@@ -188,7 +197,8 @@ export default class Purchases {
       observerMode,
       userDefaultsSuiteName,
       usesStoreKit2IfAvailable,
-      useAmazon
+      useAmazon,
+      shouldShowInAppMessagesAutomatically
     );
   }
 
@@ -1107,6 +1117,22 @@ export default class Purchases {
     }
     return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
   }
+
+  /**
+   * Shows in-app messages available from the App Store or Google Play. You need to disable messages from showing
+   * automatically using [PurchasesConfiguration.shouldShowInAppMessagesAutomatically].
+   *
+   * Note: In iOS, this requires version 16+. In older versions the promise will be resolved successfully
+   * immediately.
+   *
+   * @param messageTypes An array of message types that the stores can display inside your app. Must be one of
+   *       [IN_APP_MESSAGE_TYPE]. By default, is undefined and all message types will be shown.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
+   */
+    public static async showInAppMessages(messageTypes?: IN_APP_MESSAGE_TYPE[]): Promise<void> {
+      await Purchases.throwIfNotConfigured();
+      return RNPurchases.showInAppMessages(messageTypes);
+    }
 
   /**
    * Check if configure has finished and Purchases has been configured.

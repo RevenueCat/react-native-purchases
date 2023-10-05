@@ -134,6 +134,15 @@ const HomeScreen: React.FC<Props> = ({
       console.log("error")
     }
   }
+
+  const showInAppMessages = async() => {
+    try {
+      await Purchases.showInAppMessages();
+      console.log("Shown messages successfully");
+    } catch {
+      console.log("Error showing in-app messages: ${error}");
+    }
+  }
   
   return (
     <SafeAreaView>
@@ -172,6 +181,13 @@ const HomeScreen: React.FC<Props> = ({
               onPress={redeemCode} >
                 <Text style={styles.otherActions}>
                   Redeem Code
+                </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={showInAppMessages} >
+                <Text style={styles.otherActions}>
+                  Show In-App messages
                 </Text>
             </TouchableOpacity>
           </View>
