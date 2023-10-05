@@ -646,8 +646,6 @@ export default class Purchases {
     RNPurchases.syncObserverModeAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price);
   }
 
-
-
   /**
    * @deprecated, use enableAdServicesAttributionTokenCollection instead.
    * Enable automatic collection of Apple Search Ad attribution. Disabled by default
