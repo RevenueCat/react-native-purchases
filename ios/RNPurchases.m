@@ -470,7 +470,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"7.2.0-SNAPSHOT";
+    return @"7.2.0";
 }
 
 @end
