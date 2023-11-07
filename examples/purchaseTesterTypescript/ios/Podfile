@@ -28,9 +28,9 @@ target 'PurchaseTester' do
   flags = get_default_flags()
 
 #  # Uncomment these to use a local version of `purchases-ios` and `purchases-hybrid-common`:
-  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'
-  pod 'RevenueCatUI',  :path => '../../../../../purchases-ios/'
-  pod 'PurchasesHybridCommon', :path => '../../../../../purchases-hybrid-common/'
+#  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'
+#  pod 'RevenueCatUI',  :path => '../../../../../purchases-ios/'
+#  pod 'PurchasesHybridCommon', :path => '../../../../../purchases-hybrid-common/'
 
   use_react_native!(
     :path => config[:reactNativePath],
