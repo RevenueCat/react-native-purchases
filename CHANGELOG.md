@@ -1,3 +1,6 @@
+## 7.4.0-beta.1
+### New Features
+*   `RevenueCatUI` initial support via NachoSoto (@NachoSoto)
 ## 7.3.0
 ### Bugfixes
 * Fix purchaseSubscriptionOption not accepting oldProductIdentifier (#764) via Toni Rico (@tonidero)
