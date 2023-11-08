@@ -51,8 +51,5 @@
       "json",
       "node"
     ]
-  },
-  "engines": {
-    "node": ">=16"
   }
 }
