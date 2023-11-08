@@ -4,6 +4,7 @@ import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { CustomerInfo, CustomerInfoUpdateListener } from 'react-native-purchases';
 
 import Purchases from 'react-native-purchases';
+import { presentPaywall } from 'react-native-purchases';
 import { useRoute } from '@react-navigation/native';
 
 export type Props = {
@@ -90,6 +91,12 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
           <Text>
             { isAnonymous ? "Login" : "Logout"}
           </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={ presentPaywall } >
+          <Text>Present paywall</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
