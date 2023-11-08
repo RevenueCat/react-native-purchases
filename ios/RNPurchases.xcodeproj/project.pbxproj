@@ -10,6 +10,8 @@
 		3552B97D252CF5900098008A /* PurchasesPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3552B97C252CF5900098008A /* PurchasesPlugin.swift */; };
 		35BFF4DC247DDAD3008B64DA /* PurchasesHybridCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35BFF4DB247DDAD3008B64DA /* PurchasesHybridCommon.framework */; };
 		35D0736B20AD0F740012EB8C /* Purchases.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D0736A20AD0F740012EB8C /* Purchases.framework */; };
+		4F72072A2AF30E7E0017395F /* RNPaywallManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F7207292AF30E7E0017395F /* RNPaywallManager.m */; };
+		4F7D88D52AF9666800855875 /* RNPaywalls.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F7D88D32AF9666800855875 /* RNPaywalls.m */; };
 		B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPurchases.m */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +33,10 @@
 		3552B97C252CF5900098008A /* PurchasesPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesPlugin.swift; sourceTree = "<group>"; };
 		35BFF4DB247DDAD3008B64DA /* PurchasesHybridCommon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PurchasesHybridCommon.framework; sourceTree = "<group>"; };
 		35D0736A20AD0F740012EB8C /* Purchases.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Purchases.framework; sourceTree = SOURCE_ROOT; };
+		4F7207282AF30E7E0017395F /* RNPaywallManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNPaywallManager.h; sourceTree = "<group>"; };
+		4F7207292AF30E7E0017395F /* RNPaywallManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNPaywallManager.m; sourceTree = "<group>"; };
+		4F7D88D32AF9666800855875 /* RNPaywalls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPaywalls.m; sourceTree = "<group>"; };
+		4F7D88D42AF9666800855875 /* RNPaywalls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPaywalls.h; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNPurchases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPurchases.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNPurchases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPurchases.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +77,10 @@
 				35BFF4DB247DDAD3008B64DA /* PurchasesHybridCommon.framework */,
 				B3E7B5881CC2AC0600A0062D /* RNPurchases.h */,
 				B3E7B5891CC2AC0600A0062D /* RNPurchases.m */,
+				4F7207282AF30E7E0017395F /* RNPaywallManager.h */,
+				4F7207292AF30E7E0017395F /* RNPaywallManager.m */,
+				4F7D88D42AF9666800855875 /* RNPaywalls.h */,
+				4F7D88D32AF9666800855875 /* RNPaywalls.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				35493AC8202D4BCD004DFA39 /* Frameworks */,
 				3552B97B252CF5900098008A /* RNPurchases-Bridging-Header.h */,
@@ -136,8 +146,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F7D88D52AF9666800855875 /* RNPaywalls.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */,
 				3552B97D252CF5900098008A /* PurchasesPlugin.swift in Sources */,
+				4F72072A2AF30E7E0017395F /* RNPaywallManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
