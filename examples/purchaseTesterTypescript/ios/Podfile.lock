@@ -74,11 +74,11 @@ PODS:
   - glog (0.3.5)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.180)
-  - Purchases (3.14.1):
-    - PurchasesCoreSwift (= 3.14.1)
-  - PurchasesCoreSwift (3.14.1)
-  - PurchasesHybridCommon (2.0.1):
-    - Purchases (= 3.14.1)
+  - Purchases (3.14.4):
+    - PurchasesCoreSwift (= 3.14.4)
+  - PurchasesCoreSwift (3.14.4)
+  - PurchasesHybridCommon (2.0.2):
+    - Purchases (= 3.14.4)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -277,7 +277,7 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
-  - react-native-safe-area-context (3.3.2):
+  - react-native-safe-area-context (3.4.1):
     - React-Core
   - React-perflogger (0.66.4)
   - React-RCTActionSheet (0.66.4):
@@ -344,10 +344,10 @@ PODS:
     - React-jsi (= 0.66.4)
     - React-logger (= 0.66.4)
     - React-perflogger (= 0.66.4)
-  - RNPurchases (4.5.2):
-    - PurchasesHybridCommon (= 2.0.1)
+  - RNPurchases (4.6.3):
+    - PurchasesHybridCommon (= 2.0.2)
     - React-Core
-  - RNScreens (3.10.2):
+  - RNScreens (3.27.0):
     - React-Core
     - React-RCTImage
   - Yoga (1.14.0)
@@ -519,9 +519,9 @@ SPEC CHECKSUMS:
   glog: 5337263514dd6f09803962437687240c5dc39aa4
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
-  Purchases: b714751c386c2204d2d5aafaa903fd424a25cd59
-  PurchasesCoreSwift: 2cf98c52dd4b785177539fbfd1c32f60c89eafe7
-  PurchasesHybridCommon: e9bc1677cb11fe584ad29c0309f78142a8f14b5a
+  Purchases: 2c326c3a0a93445db8fe194d4938fc001e2cec1c
+  PurchasesCoreSwift: 00f41d415f3fb701a5c4bc9909bcbbcf1b1c4b05
+  PurchasesHybridCommon: dc003a04a86cb5fb378f9bd138ad70bd7ccfc124
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 4bf86c70714490bca4bf2696148638284622644b
   RCTTypeSafety: c475a7059eb77935fa53d2c17db299893f057d5d
@@ -534,7 +534,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
-  react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
+  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
   React-RCTActionSheet: 7d3041e6761b4f3044a37079ddcb156575fb6d89
   React-RCTAnimation: 743e88b55ac62511ae5c2e22803d4f503f2a3a13
@@ -547,11 +547,11 @@ SPEC CHECKSUMS:
   React-RCTVibration: e3ffca672dd3772536cb844274094b0e2c31b187
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
-  RNPurchases: fbae56ea06b0d4bf88df691f26d4b8906f918917
-  RNScreens: d6da2b9e29cf523832c2542f47bf1287318b1868
+  RNPurchases: d77b6c037f9883e359f65b4547e254db7aaab091
+  RNScreens: 2b19e2471db8a581c83f381f4ea5d43071c9a3bf
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
 PODFILE CHECKSUM: cd6af7a9d5d8dd302a106b9b100d159909f7f592
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.14.2
