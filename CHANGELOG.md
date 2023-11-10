@@ -1,3 +1,7 @@
+## 4.6.2
+
+- Update purchases-ios to version [3.14.4](https://github.com/RevenueCat/purchases-ios/releases/tag/3.14.4)
+
 ## 4.6.1
 
 - Replaced `jcenter` with `mavenCentral` (https://github.com/RevenueCat/react-native-purchases/pull/369)
