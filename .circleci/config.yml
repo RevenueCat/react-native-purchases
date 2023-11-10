@@ -41,7 +41,7 @@ jobs:
     executor:
       name: rn/macos
       resource_class: macos.x86.medium.gen2
-      xcode_version: 13.2.0
+      xcode_version: 13.4.1
     steps:
       - checkout
       - rn/ios_simulator_start:

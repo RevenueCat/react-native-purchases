@@ -1,3 +1,7 @@
+## 4.6.3
+
+- Update purchases-ios to version [3.14.4](https://github.com/RevenueCat/purchases-ios/releases/tag/3.14.4)
+
 ## 4.6.2
 
 - Updated kotlin version to 1.6.21
