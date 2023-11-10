@@ -6,9 +6,9 @@ import { PRORATION_MODE, PACKAGE_TYPE, INTRO_ELIGIBILITY_STATUS, PurchasesOfferi
  * @callback PurchaserInfoUpdateListener
  * @param {Object} purchaserInfo Object containing info for the purchaser
  */
-export type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
-export type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
-export type MakePurchaseResult = {
+export declare type PurchaserInfoUpdateListener = (purchaserInfo: PurchaserInfo) => void;
+export declare type ShouldPurchasePromoProductListener = (deferredPurchase: () => Promise<MakePurchaseResult>) => void;
+export declare type MakePurchaseResult = {
     productIdentifier: string;
     purchaserInfo: PurchaserInfo;
 };
