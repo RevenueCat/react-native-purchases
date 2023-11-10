@@ -120,7 +120,7 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 
 dependencies {
     //noinspection GradleDynamicVersion
-    api 'com.facebook.react:react-native:0.70.0'
+    api 'com.facebook.react:react-native:+'
     implementation 'com.revenuecat.purchases:purchases-hybrid-common:2.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
