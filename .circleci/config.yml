@@ -128,20 +128,6 @@ jobs:
           project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
           scheme: PurchaseTester
 
-  prepare-next-version:
-    description: "Creates a PR with the new snapshot version"
-    docker:
-      - image: cimg/ruby:3.1.2
-    steps:
-      - checkout
-      - revenuecat/install-gem-unix-dependencies:
-          cache-version: v1
-      - revenuecat/trust-github-key
-      - revenuecat/setup-git-credentials
-      - run:
-          name: Prepare next version
-          command: bundle exec fastlane prepare_next_version
-
   make-release:
     description: "Publishes the new version and creates a github release"
     executor:
@@ -204,14 +190,6 @@ workflows:
           <<: *release-tags
           requires:
             - make-release
-
-  snapshot-bump:
-    when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-    jobs:
-      - prepare-next-version:
-          <<: *only-main-branch
 
   danger:
     when:
