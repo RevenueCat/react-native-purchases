@@ -14,6 +14,10 @@ RCT_EXPORT_MODULE();
     return @[];
 }
 
+- (dispatch_queue_t)methodQueue {
+    return dispatch_get_main_queue();
+}
+
 RCT_EXPORT_METHOD(presentPaywall) {
     if (@available(iOS 15.0, *)) {
         [PaywallProxy presentPaywall];
