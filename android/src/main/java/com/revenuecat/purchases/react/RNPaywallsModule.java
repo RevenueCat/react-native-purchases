@@ -1,6 +1,6 @@
 package com.revenuecat.purchases.react;
 
-import static com.revenuecat.purchases.hybridcommon.PaywallsKt.presentPaywallFromFragment;
+import static com.revenuecat.purchases.hybridcommon.PaywallHelpersKt.presentPaywallFromFragment;
 
 import android.app.Activity;
 
