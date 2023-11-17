@@ -1,12 +1,29 @@
-### Bugfixes
-* Fix purchaseSubscriptionOption not accepting oldProductIdentifier (#764) via Toni Rico (@tonidero)
-### Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 7.3.0 (#765) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 7.2.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.2.0)
-  * [Android 7.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/7.1.1)
-  * [Android 7.1.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.1.0)
-  * [Android 7.1.0-beta.2](https://github.com/RevenueCat/purchases-android/releases/tag/7.1.0-beta.2)
-  * [Android 7.1.0-beta.1](https://github.com/RevenueCat/purchases-android/releases/tag/7.1.0-beta.1)
-  * [iOS 4.30.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.30.2)
-  * [iOS 4.30.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.30.1)
-  * [iOS 4.30.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.30.0)
+### New Features
+*   📱 Initial support for cross-platform RevenueCat Paywalls 🐾 🧱  (#766) 
+
+#### Instructions:
+- Update `react-native-purchases` in your `package.json`:
+```json
+{
+  "dependencies": {
+    "react-native-purchases": "7.4.0-beta.2"
+  }
+}
+```
+
+#### Usage:
+```javascript
+import { presentPaywallIfNeeded } from 'react-native-purchases';
+
+<TouchableOpacity
+  style={styles.button}
+  onPress={ presentPaywallIfNeeded("pro") } >
+  <Text>Present paywall if PRO entitlement is not active</Text>
+</TouchableOpacity>
+```
+
+#### Limitations:
+
+- Currently only full screen paywalls are supported
+- There is no way to detect paywall events other than using `addCustomerInfoUpdateListener`
+- Android's `minSdkVersion` is temporarily increased from `19` to `24` to support paywalls. This will be reverted in a future release as we split `react-native-purchases` and `react-native-purchases-ui`
