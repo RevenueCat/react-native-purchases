@@ -52,7 +52,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                         platformFlavorVersion:self.platformFlavorVersion
                                      usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
                                             dangerousSettings:nil 
-                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically];
+                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically 
+                                             verificationMode:nil];
     purchases.delegate = self;
 }
 
