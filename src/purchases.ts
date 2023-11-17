@@ -29,7 +29,9 @@ import {
   MakePurchaseResult,
   LogHandler,
   LogInResult,
-  IN_APP_MESSAGE_TYPE
+  IN_APP_MESSAGE_TYPE,
+  ENTITLEMENT_VERIFICATION_MODE,
+  VERIFICATION_RESULT
 } from '@revenuecat/purchases-typescript-internal';
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
@@ -154,6 +156,20 @@ export default class Purchases {
   public static IN_APP_MESSAGE_TYPE = IN_APP_MESSAGE_TYPE;
 
   /**
+   * Enum of entitlement verification modes.
+   * @readonly
+   * @enum {string}
+   */
+  public static ENTITLEMENT_VERIFICATION_MODE = ENTITLEMENT_VERIFICATION_MODE;
+
+  /**
+   * The result of the verification process.
+   * @readonly
+   * @enum {string}
+   */
+  public static VERIFICATION_RESULT = VERIFICATION_RESULT;
+
+  /**
    * @internal
    */
   public static UninitializedPurchasesError = UninitializedPurchasesError;
@@ -181,10 +197,10 @@ export default class Purchases {
                             appUserID = null,
                             observerMode = false,
                             userDefaultsSuiteName,
-                            entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
                             usesStoreKit2IfAvailable = false,
                             useAmazon = false,
-                            shouldShowInAppMessagesAutomatically = true
+                            shouldShowInAppMessagesAutomatically = true,
+                            entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED
                           }: PurchasesConfiguration): void {
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");

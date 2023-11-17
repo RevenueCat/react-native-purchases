@@ -43,7 +43,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
                   usesStoreKit2IfAvailable:(BOOL)usesStoreKit2IfAvailable
                   useAmazon:(BOOL)useAmazon
-                  shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically) {
+                  shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
+                  entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
                                                     appUserID:appUserID
                                                  observerMode:observerMode
