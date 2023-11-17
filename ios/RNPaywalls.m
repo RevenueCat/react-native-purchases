@@ -10,6 +10,10 @@
 
 RCT_EXPORT_MODULE();
 
+- (NSArray<NSString *> *)supportedEvents {
+    return @[];
+}
+
 RCT_EXPORT_METHOD(presentPaywall) {
     if (@available(iOS 15.0, *)) {
         [PaywallProxy presentPaywall];
