@@ -589,7 +589,7 @@ describe("Purchases", () => {
       useAmazon: true,
       shouldShowInAppMessagesAutomatically: false
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, false, defaultVerificationMode);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(5);
   })
