@@ -1,6 +1,6 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
-const {REFUND_REQUEST_STATUS, ENTITLEMENT_VERIFICATION_MODE} = require("../dist/purchases");
+const {REFUND_REQUEST_STATUS} = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
 
@@ -575,10 +575,11 @@ describe("Purchases", () => {
       observerMode: true,
       userDefaultsSuiteName: "suite name",
       usesStoreKit2IfAvailable: true,
-      entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
-      useAmazon: true
+      useAmazon: true,
+      shouldShowInAppMessagesAutomatically: true,
+      entitlementVerificationMode: Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true, "INFORMATIONAL");
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL);
 
     Purchases.configure({
       apiKey: "key",
