@@ -54,7 +54,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                      usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
                                             dangerousSettings:nil 
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically 
-                                             verificationMode:nil];
+                                             verificationMode:entitlementVerificationMode];
     purchases.delegate = self;
 }
 
