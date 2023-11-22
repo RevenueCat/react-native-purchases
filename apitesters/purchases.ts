@@ -1,4 +1,4 @@
-import { IN_APP_MESSAGE_TYPE } from '@revenuecat/purchases-typescript-internal';
+import {ENTITLEMENT_VERIFICATION_MODE, IN_APP_MESSAGE_TYPE} from '@revenuecat/purchases-typescript-internal';
 import {
   CustomerInfo,
   PurchasesEntitlementInfo,
@@ -132,6 +132,7 @@ async function checkConfigure() {
   const observerMode: boolean = false;
   const usesStoreKit2IfAvailable: boolean = true;
   const useAmazon: boolean = true;
+  const entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE = Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
 
@@ -159,6 +160,15 @@ async function checkConfigure() {
     observerMode,
     userDefaultsSuiteName,
     usesStoreKit2IfAvailable,
+    entitlementVerificationMode
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    observerMode,
+    userDefaultsSuiteName,
+    usesStoreKit2IfAvailable,
+    entitlementVerificationMode,
     useAmazon
   });
   Purchases.configure({
@@ -191,6 +201,15 @@ async function checkLogLevelEnum(level: LOG_LEVEL) {
     case LOG_LEVEL.INFO:
     case LOG_LEVEL.WARN:
     case LOG_LEVEL.ERROR:
+  }
+}
+
+async function checkEntitlementVerificationModeEnum(mode: ENTITLEMENT_VERIFICATION_MODE) {
+  switch (mode) {
+    case ENTITLEMENT_VERIFICATION_MODE.DISABLED:
+    case ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL:
+    // Add back when adding enforced support.
+    // case ENTITLEMENT_VERIFICATION_MODE.ENFORCED:
   }
 }
 
