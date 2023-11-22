@@ -1,4 +1,4 @@
-import { IN_APP_MESSAGE_TYPE } from '@revenuecat/purchases-typescript-internal';
+import {ENTITLEMENT_VERIFICATION_MODE, IN_APP_MESSAGE_TYPE} from '@revenuecat/purchases-typescript-internal';
 import {
   CustomerInfo,
   PurchasesEntitlementInfo,
@@ -15,7 +15,7 @@ import {
 } from '../dist';
 
 import Purchases from '../dist/purchases';
-import { ENTITLEMENT_VERIFICATION_MODE, GoogleProductChangeInfo, SubscriptionOption } from '../src';
+import { GoogleProductChangeInfo, SubscriptionOption } from '../src';
 
 async function checkPurchases(purchases: Purchases) {
   const productIds: string[] = [];
@@ -132,7 +132,7 @@ async function checkConfigure() {
   const observerMode: boolean = false;
   const usesStoreKit2IfAvailable: boolean = true;
   const useAmazon: boolean = true;
-  const entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE = ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
+  const entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE = Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
 
@@ -161,7 +161,7 @@ async function checkConfigure() {
     userDefaultsSuiteName,
     usesStoreKit2IfAvailable,
     entitlementVerificationMode
-  });  
+  });
   Purchases.configure({
     apiKey,
     appUserID,
@@ -208,7 +208,8 @@ async function checkEntitlementVerificationModeEnum(mode: ENTITLEMENT_VERIFICATI
   switch (mode) {
     case ENTITLEMENT_VERIFICATION_MODE.DISABLED:
     case ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL:
-    case ENTITLEMENT_VERIFICATION_MODE.ENFORCED:
+    // Add back when adding enforced support.
+    // case ENTITLEMENT_VERIFICATION_MODE.ENFORCED:
   }
 }
 
