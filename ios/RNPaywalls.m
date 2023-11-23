@@ -6,9 +6,43 @@
 
 #import "RNPaywalls.h"
 
+@interface RNPaywalls ()
+
+@property (nonatomic, strong) id paywallProxy;
+
+@end
+
 @implementation RNPaywalls
 
 RCT_EXPORT_MODULE();
+
+- (instancetype)initWithDisabledObservation
+{
+    if ((self = [super initWithDisabledObservation])) {
+        [self initializePaywalls];
+    }
+
+    return self;
+}
+
+- (instancetype)init
+{
+    if (([super init])) {
+        [self initializePaywalls];
+    }
+    return self;
+}
+
+// `RCTEventEmitter` does not implement designated iniitializers correctly so we have to duplicate the call in both constructors.
+- (void)initializePaywalls {
+    if (@available(iOS 15.0, *)) {
+        self.paywallProxy = [PaywallProxy new];
+    } else {
+        self.paywallProxy = nil;
+    }
+}
+
+// MARK: -
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[];
@@ -18,20 +52,30 @@ RCT_EXPORT_MODULE();
     return dispatch_get_main_queue();
 }
 
+- (PaywallProxy *)paywalls API_AVAILABLE(ios(15.0)){
+    return self.paywallProxy;
+}
+
+// MARK: -
+
 RCT_EXPORT_METHOD(presentPaywall) {
     if (@available(iOS 15.0, *)) {
-        [PaywallProxy presentPaywall];
+        [self.paywalls presentPaywall];
     } else {
-        // TODO: log
+        [self logPaywallsUnsupportedError];
     }
 }
 
 RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier) {
     if (@available(iOS 15.0, *)) {
-        [PaywallProxy presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier];
+        [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier];
     } else {
-        // TODO: log
+        [self logPaywallsUnsupportedError];
     }
+}
+
+- (void)logPaywallsUnsupportedError {
+    NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
 }
 
 @end
