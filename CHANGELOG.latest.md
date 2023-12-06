@@ -1,9 +1,7 @@
-### New Features
-* `Trusted Entitlements`: add support for setting `EntitlementVerificationMode` (#678) via NachoSoto (@NachoSoto)
 ### Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 8.0.0 (#790) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 7.2.4](https://github.com/RevenueCat/purchases-android/releases/tag/7.2.4)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 7.4.0 (#785) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 7.2.4](https://github.com/RevenueCat/purchases-android/releases/tag/7.2.4)
-### Other Changes
-* `CI`: disable `prepare-next-version` (#782) via NachoSoto (@NachoSoto)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 8.1.0 (#800) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 7.2.6](https://github.com/RevenueCat/purchases-android/releases/tag/7.2.6)
+  * [Android 7.2.5](https://github.com/RevenueCat/purchases-android/releases/tag/7.2.5)
+  * [iOS 4.31.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.31.1)
+  * [iOS 4.31.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.31.0)
+* Bump cocoapods from 1.14.2 to 1.14.3 (#788) via dependabot[bot] (@dependabot[bot])
