@@ -4,7 +4,7 @@ import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { CustomerInfo, CustomerInfoUpdateListener } from 'react-native-purchases';
 
 import Purchases from 'react-native-purchases';
-import { presentPaywall } from 'react-native-purchases';
+import { presentPaywall } from 'react-native-purchases-ui';
 import { useRoute } from '@react-navigation/native';
 
 export type Props = {
