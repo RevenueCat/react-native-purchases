@@ -34,7 +34,8 @@
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepare": "tsc",
     "example": "yarn --cwd examples/purchaseTesterTypescript",
-    "bootstrap": "yarn && yarn example && yarn example pods"
+    "ui": "yarn --cwd react-native-purchases-ui",
+    "bootstrap": "yarn && yarn ui && yarn example && yarn example pods"
   },
   "repository": {
     "type": "git",

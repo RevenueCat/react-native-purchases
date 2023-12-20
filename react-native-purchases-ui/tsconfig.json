@@ -25,10 +25,12 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "files": ["src/index.tsx"],
+  "files": [
+    "src/index.ts"
+  ],
   "exclude": ["node_modules", "dist", "./installPeerdeps.ts"],
   "typedocOptions": {
-    "entryPoints": ["src/index.tsx"],
+    "entryPoints": ["src/index.ts"],
     "out": "docs",
     "excludeInternal": true,
     "excludePrivate": true,
