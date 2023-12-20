@@ -10,12 +10,11 @@
 
  import React, { useEffect } from 'react';
 
-import {Animated, Platform, Text} from 'react-native';
+import { Platform, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Purchases from 'react-native-purchases';
-import { multiply } from 'react-native-purchases-ui';
 
 import HomeScreen from './app/screens/HomeScreen';
 import CustomerInfoScreen from './app/screens/CustomerInfoScreen';
@@ -32,10 +31,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    multiply(3, 7).then((result: number) => {
-      console.log(`3 *   7 = ${result}`);
-    });
-    // if (!hasKeys()) { return }
+    if (!hasKeys()) { return }
 
     Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
     if (Platform.OS == "android") {
