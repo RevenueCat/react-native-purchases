@@ -44,7 +44,7 @@ def supportsNamespace() {
 
 android {
   if (supportsNamespace()) {
-    namespace "com.purchasesui"
+    namespace "com.revenuecat.purchases.react.ui"
 
     sourceSets {
       main {
@@ -90,5 +90,8 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'com.revenuecat.purchases:purchases-hybrid-common:7.4.0-beta.3'
+  implementation 'androidx.compose.ui:ui-android:1.5.4'
+  implementation "androidx.appcompat:appcompat:1.6.1"
 }
 

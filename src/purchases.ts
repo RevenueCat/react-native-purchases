@@ -585,6 +585,7 @@ export default class Purchases {
    * @param {LOG_LEVEL} level
    */
   public static async setLogLevel(level: LOG_LEVEL): Promise<void> {
+    console.log("setloglevel called");
     RNPurchases.setLogLevel(level);
   }
 

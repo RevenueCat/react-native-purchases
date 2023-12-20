@@ -1,11 +1,9 @@
 {
   "name": "react-native-purchases-ui",
   "version": "0.1.0",
-  "description": "RevenueCat UI",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
-  "react-native": "src/index",
+  "description": "Cross-platform subscriptions framework for ReactNative",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "source": "src/index",
   "files": [
     "src",
@@ -23,7 +21,7 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "!**/.*"
+    "!**/.*",
   ],
   "scripts": {
     "example": "yarn workspace react-native-purchases-ui-example",
@@ -36,22 +34,21 @@
   },
   "keywords": [
     "react-native",
-    "ios",
-    "android"
+    "in-app purchase",
+    "subscriptions",
+    "iap",
+    "iOS",
+    "Apple",
+    "Android"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RevenueCat/react-native-purchases-ui.git"
+    "url": "git+https://github.com/revenuecat/react-native-purchases.git",
+    "baseUrl": "https://github.com/revenuecat/react-native-purchases"
   },
-  "author": "RevenueCat <support@revenuecat.com> (https://github.com/RevenueCat)",
+  "author": "RevenueCat, Inc.",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/RevenueCat/react-native-purchases-ui/issues"
-  },
-  "homepage": "https://github.com/RevenueCat/react-native-purchases-ui#readme",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
+  "readmeFilename": "README.md",
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
     "@evilmartians/lefthook": "^1.5.0",
@@ -82,84 +79,29 @@
     "react": "*",
     "react-native": "*"
   },
-  "workspaces": [
-    "example"
-  ],
-  "packageManager": "yarn@3.6.1",
-  "engines": {
-    "node": ">= 18.0.0"
-  },
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
+      "<rootDir>/examples/purchaseTesterTypescript/node_modules",
       "<rootDir>/lib/"
-    ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native",
-      "prettier"
     ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
-  "prettier": {
-    "quoteProps": "consistent",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "useTabs": false
-  },
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "project": "tsconfig.build.json"
-        }
-      ]
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.js$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ],
+    "cacheDirectory": ".jest/cache",
+    "setupFiles": [
+      "./scripts/setupJest.js"
     ]
+  },
+  "dependencies": {
+    "react-native-purchases": "^7.4.0-SNAPSHOT"
   }
 }

@@ -24,7 +24,8 @@
     "!**/.idea",
     "!**/*.iml",
     "!**/.DS_Store",
-    "!**/.gitignore"
+    "!**/.gitignore",
+    "!react-native-purchases-ui"
   ],
   "scripts": {
     "build": "tsc",

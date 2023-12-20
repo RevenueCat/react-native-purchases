@@ -18,5 +18,6 @@ const PurchasesUi = NativeModules.PurchasesUi
     );
 
 export function multiply(a: number, b: number): Promise<number> {
+  console.log("Executing");
   return PurchasesUi.multiply(a, b);
 }

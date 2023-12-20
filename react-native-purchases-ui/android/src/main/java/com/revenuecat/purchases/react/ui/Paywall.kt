@@ -1,4 +1,4 @@
-package com.revenuecat.purchases.react
+package com.revenuecat.purchases.react.ui
 
 import android.app.PendingIntent.getActivity
 import android.content.Context
