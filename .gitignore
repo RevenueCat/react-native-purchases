@@ -88,3 +88,4 @@ vendor/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+/examples/MagicWeather/yarn.lock
