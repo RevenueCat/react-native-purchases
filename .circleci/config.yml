@@ -54,9 +54,6 @@ jobs:
       node_version: '18.2'
     steps:
       - checkout
-      - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTesterTypescript
-          cache_folder: ~/.cache/yarn
       - install-dependencies
       - run:
           name: Tests
