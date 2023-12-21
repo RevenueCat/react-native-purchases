@@ -3,11 +3,14 @@
   "title": "React Native Purchases UI",
   "version": "7.4.0-SNAPSHOT",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
   "source": "src/index",
   "files": [
-    "dist",
+    "src",
+    "lib",
     "android",
     "!android/build",
     "!android/gradle",
@@ -15,23 +18,19 @@
     "!android/gradlew.bat",
     "!android/local.properties",
     "ios",
+    "cpp",
+    "*.podspec",
     "!ios/build",
-    "RNPaywalls.podspec",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "!**/.idea",
-    "!**/*.iml",
-    "!**/.DS_Store",
-    "!**/.gitignore",
     "!**/.*"
   ],
   "scripts": {
-    "build": "tsc",
-    "build-watch": "tsc --watch",
     "test": "jest",
+    "typecheck": "tsc --noEmit",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
-    "prepare": "tsc"
+    "prepare": "bob build"
   },
   "repository": {
     "type": "git",
@@ -60,6 +59,7 @@
     "prettier": "^2.0.5",
     "react": "18.2.0",
     "react-native": "0.73.1",
+    "react-native-builder-bob": "^0.20.0",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
@@ -76,7 +76,6 @@
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/examples/purchaseTesterTypescript/node_modules",
       "<rootDir>/lib/"
     ],
     "moduleFileExtensions": [
@@ -93,6 +92,20 @@
     "cacheDirectory": ".jest/cache",
     "setupFiles": [
       "./scripts/setupJest.js"
+    ]
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
     ]
   },
   "dependencies": {

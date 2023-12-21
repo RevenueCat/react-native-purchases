@@ -31,12 +31,17 @@
     "build": "tsc",
     "build-watch": "tsc --watch",
     "test": "jest",
+    "typecheck": "tsc --noEmit",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepare": "tsc",
-    "example": "yarn --cwd examples/purchaseTesterTypescript",
-    "ui": "yarn --cwd react-native-purchases-ui",
-    "bootstrap": "yarn && yarn ui && yarn example && yarn example pods"
+    "example": "yarn workspace purchasetester",
+    "ui": "yarn workspace react-native-purchases-ui",
+    "bootstrap": "yarn && yarn example && yarn example pods"
   },
+  "workspaces": [
+    "examples/purchaseTesterTypescript",
+    "react-native-purchases-ui"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revenuecat/react-native-purchases.git",
