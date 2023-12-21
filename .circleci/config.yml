@@ -94,9 +94,7 @@ jobs:
       resource_class: medium
     steps:
       - checkout
-      - run:
-          name: Yarn install tester
-          command: yarn workspace purchasetester install
+      - install-dependencies
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
@@ -111,9 +109,7 @@ jobs:
       - run:
           name: Update CocoaPods repo
           command: pod repo update
-      - run:
-          name: Yarn install tester
-          command: yarn workspace purchasetester install
+      - install-dependencies
       - run:
           name: Install example dependencies
           command: |

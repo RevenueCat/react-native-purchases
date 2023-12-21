@@ -36,7 +36,7 @@
     "prepare": "tsc",
     "example": "yarn workspace purchasetester",
     "ui": "yarn workspace react-native-purchases-ui",
-    "bootstrap": "yarn && yarn example && yarn example pods"
+    "bootstrap": "yarn && yarn example pods"
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
