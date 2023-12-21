@@ -96,7 +96,7 @@ jobs:
       - checkout
       - run:
           name: Yarn install tester
-          command: yarn workspace purchasetester
+          command: yarn workspace purchasetester install
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
@@ -113,7 +113,7 @@ jobs:
           command: pod repo update
       - run:
           name: Yarn install tester
-          command: yarn workspace purchasetester
+          command: yarn workspace purchasetester install
       - run:
           name: Install example dependencies
           command: |
