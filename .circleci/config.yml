@@ -80,7 +80,7 @@ jobs:
           command: bundle exec fastlane generate_docs
 
   android:
-    executor: 
+    executor:
       name: rn/linux_android
       # These are the default options in the orb, but with more memory because we were getting out of memory errors
       gradle_options: >-
@@ -91,9 +91,6 @@ jobs:
       resource_class: medium
     steps:
       - checkout
-      - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTesterTypescript
-          cache_folder: ~/.cache/yarn
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
@@ -108,9 +105,6 @@ jobs:
       - run:
           name: Update CocoaPods repo
           command: pod repo update
-      - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTesterTypescript
-          cache_folder: ~/.cache/yarn
       - run:
           name: Install example dependencies
           command: |
@@ -224,7 +218,7 @@ workflows:
         - equal: [ "release-train", << pipeline.schedule.name >> ]
     jobs:
       - revenuecat/automatic-bump
-  
+
   manual-trigger-bump:
     when:
       equal: [ bump, << pipeline.parameters.action >> ]
