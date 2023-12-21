@@ -112,11 +112,12 @@ jobs:
           name: Update CocoaPods repo
           command: pod repo update
       - run:
+          name: Yarn install tester
+          command: yarn workspace purchasetester
+      - run:
           name: Install example dependencies
           command: |
             cd examples/purchaseTesterTypescript/ios && pod install --repo-update && cd -
-      - rn/yarn_install:
-          cache_folder: ~/.cache/yarn
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 14
