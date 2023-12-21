@@ -40,7 +40,7 @@ commands:
     steps:
       - run:
           name: Yarn Install
-          command: yarn install
+          command: yarn
   copy-npm-rc:
     steps:
       - run:
