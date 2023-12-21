@@ -94,6 +94,9 @@ jobs:
       resource_class: medium
     steps:
       - checkout
+      - run:
+          name: Yarn install tester
+          command: yarn workspace purchasetester
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:

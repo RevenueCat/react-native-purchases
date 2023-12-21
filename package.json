@@ -83,7 +83,7 @@
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/examples/purchaseTesterTypescript/node_modules",
-      "<rootDir>/lib/"
+      "<rootDir>/dir/"
     ],
     "moduleFileExtensions": [
       "js"
