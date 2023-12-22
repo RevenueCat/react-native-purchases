@@ -25,7 +25,9 @@
     "!**/*.iml",
     "!**/.DS_Store",
     "!**/.gitignore",
-    "!react-native-purchases-ui"
+    "!react-native-purchases-ui",
+    "!scripts/docs/index.html",
+    "!scripts/setupJest.js"
   ],
   "scripts": {
     "build": "tsc",

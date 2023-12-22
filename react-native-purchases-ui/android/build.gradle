@@ -58,7 +58,8 @@ android {
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
-
+    versionCode 1
+    versionName '7.4.0-SNAPSHOT'
   }
 
   buildTypes {
