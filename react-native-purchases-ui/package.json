@@ -109,6 +109,6 @@
     ]
   },
   "dependencies": {
-    "react-native-purchases": "^7.4.0-SNAPSHOT"
+    "react-native-purchases": "7.4.0-SNAPSHOT"
   }
 }
