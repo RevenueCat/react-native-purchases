@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   spec.source_files = "ios/**/*.{h,m,swift}"
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
-  # Ignore the Purchases.framework that would get downloaded by the download script, meant for 
+  # Ignore the Purchases.framework that would get downloaded by the download script, meant for
   # developers who don't want to use Cocoapods
   spec.exclude_files = [
     "ios/Purchases.framework",
@@ -24,6 +24,6 @@ Pod::Spec.new do |spec|
   ]
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommon", '7.4.0-beta.3'
+  spec.dependency   "PurchasesHybridCommon", '7.4.0-beta.5'
   spec.swift_version    = '5.7'
 end
