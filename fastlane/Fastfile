@@ -14,6 +14,7 @@ files_to_update_phc_version = {
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
     'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
+    'react-native-purchases-ui/package.json' => ['"react-native-purchases": "{x}"']
 }
 repo_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
