@@ -12564,7 +12564,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.73.1
     react-native-builder-bob: ^0.20.0
-    react-native-purchases: ^7.4.0-SNAPSHOT
+    react-native-purchases: 7.4.0-SNAPSHOT
     ts-jest: ^24.1.0
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
@@ -12576,7 +12576,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-native-purchases@^7.4.0-SNAPSHOT, react-native-purchases@workspace:.":
+"react-native-purchases@7.4.0-SNAPSHOT, react-native-purchases@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
