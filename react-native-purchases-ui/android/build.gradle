@@ -90,7 +90,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'com.revenuecat.purchases:purchases-hybrid-common-ui:7.4.0-beta.5'
+  implementation 'com.revenuecat.purchases:purchases-hybrid-common-ui:8.1.3-beta.5'
   implementation 'androidx.compose.ui:ui-android:1.5.4'
   implementation "androidx.appcompat:appcompat:1.6.1"
 }

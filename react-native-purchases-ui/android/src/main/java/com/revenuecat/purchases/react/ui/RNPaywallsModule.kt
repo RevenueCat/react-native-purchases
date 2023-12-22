@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.revenuecat.purchases.hybridcommon.presentPaywallFromFragment
+import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
 
 class RNPaywallsModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
