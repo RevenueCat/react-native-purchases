@@ -6,7 +6,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
 
-class RNPaywallsModule(reactContext: ReactApplicationContext) :
+internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
     companion object {
         const val NAME = "RNPaywalls"
