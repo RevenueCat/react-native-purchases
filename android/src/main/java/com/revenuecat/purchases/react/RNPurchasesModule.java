@@ -45,7 +45,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "7.4.0-SNAPSHOT";
+    public static final String PLUGIN_VERSION = "7.5.1";
 
     private final ReactApplicationContext reactContext;
 
@@ -83,7 +83,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     public void setupPurchases(String apiKey, @Nullable String appUserID,
                                boolean observerMode, @Nullable String userDefaultsSuiteName,
                                @Nullable Boolean usesStoreKit2IfAvailable, boolean useAmazon,
-                               boolean shouldShowInAppMessagesAutomatically) {
+                               boolean shouldShowInAppMessagesAutomatically,
+                               @Nullable String entitlementVerificationMode) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
@@ -97,7 +98,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             platformInfo,
             store,
             new DangerousSettings(),
-            shouldShowInAppMessagesAutomatically
+            shouldShowInAppMessagesAutomatically,
+            entitlementVerificationMode
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }

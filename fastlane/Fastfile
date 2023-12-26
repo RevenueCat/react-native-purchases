@@ -81,17 +81,6 @@ lane :github_release do |options|
   )
 end
 
-desc "Creates PR changing version to next minor adding a -SNAPSHOT suffix"
-lane :prepare_next_version do |options|
-  create_next_snapshot_version(
-    current_version: current_version_number,
-    repo_name: repo_name,
-    github_pr_token: ENV["GITHUB_PULL_REQUEST_API_TOKEN"],
-    files_to_update: files_with_version_number,
-    files_to_update_without_prerelease_modifiers: {}
-  )
-end
-
 desc "Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui"
 lane :release do |options|
   version_number = current_version_number
