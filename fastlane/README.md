@@ -51,7 +51,7 @@ Creates PR changing version to next minor adding a -SNAPSHOT suffix
 [bundle exec] fastlane release
 ```
 
-Creates GitHub release and publishes package
+Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui
 
 ### build_example
 

@@ -13,7 +13,7 @@ files_to_update_phc_version = {
     'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
-    'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
+    'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"'],
     'react-native-purchases-ui/package.json' => ['"react-native-purchases": "{x}"']
 }
 repo_name = 'react-native-purchases'
@@ -92,7 +92,7 @@ lane :prepare_next_version do |options|
   )
 end
 
-desc "Creates GitHub release and publishes package"
+desc "Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui"
 lane :release do |options|
   version_number = current_version_number
   is_prerelease = Gem::Version.new(version_number).prerelease?
