@@ -1,15 +1,20 @@
 files_with_version_number = {
     './.version' => ['{x}'],
     './package.json' => ['"version": "{x}"'],
+    './react-native-purchases-ui/package.json' => ['"version": "{x}"'],
     './ios/RNPurchases.m' => ['return @"{x}"'],
     './android/build.gradle' => ['versionName \'{x}\''],
+    './react-native-purchases-ui/android/build.gradle' => ['versionName \'{x}\''],
     './android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java' => ['PLUGIN_VERSION = "{x}"'],
     './scripts/docs/index.html' => ['react-native-purchases-docs/{x}/']
 }
 files_to_update_phc_version = {
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
+    'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
-    'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
+    'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
+    'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"'],
+    'react-native-purchases-ui/package.json' => ['"react-native-purchases": "{x}"']
 }
 repo_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
@@ -87,7 +92,7 @@ lane :prepare_next_version do |options|
   )
 end
 
-desc "Creates GitHub release and publishes package"
+desc "Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui"
 lane :release do |options|
   version_number = current_version_number
   is_prerelease = Gem::Version.new(version_number).prerelease?
@@ -101,13 +106,16 @@ lane :release do |options|
   Dir.chdir(get_root_folder) do
     sh(args)
   end
+  Dir.chdir(File.expand_path('react-native-purchases-ui', get_root_folder)) do
+      sh(args)
+  end
   github_release(version: version_number)
 end
 
 desc "Build example"
 lane :build_example do |options|
   Dir.chdir(get_root_folder) do
-    sh("yarn example")
+    sh("yarn")
   end
   Dir.chdir(File.expand_path('examples/purchaseTesterTypescript', get_root_folder)) do
     sh("npx pod-install")
