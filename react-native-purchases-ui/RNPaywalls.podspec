@@ -3,7 +3,7 @@ require 'json'
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 Pod::Spec.new do |spec|
-  spec.name         = "RNPurchases"
+  spec.name         = "RNPaywalls"
   spec.summary      = "Cross-platform subscriptions framework for ReactNative"
   spec.version      = package['version']
 
@@ -15,13 +15,6 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => "https://github.com/RevenueCat/react-native-purchases.git" }
   spec.source_files = "ios/**/*.{h,m,swift}"
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
-
-  # Ignore the Purchases.framework that would get downloaded by the download script, meant for
-  # developers who don't want to use Cocoapods
-  spec.exclude_files = [
-    "ios/Purchases.framework",
-    "ios/PurchasesHybridCommon.framework"
-  ]
 
   spec.dependency   "React-Core"
   spec.dependency   "PurchasesHybridCommon", '8.1.3-beta.5'

@@ -1,47 +1,37 @@
 {
-  "name": "react-native-purchases",
-  "title": "React Native Purchases",
+  "name": "react-native-purchases-ui",
+  "title": "React Native Purchases UI",
   "version": "7.4.0-SNAPSHOT",
-  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android. ",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android.",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
   "source": "src/index",
   "files": [
-    "dist",
+    "src",
+    "lib",
     "android",
-    "!android/gradlew*",
-    "!android/.gradle",
-    "!android/gradle",
     "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
     "!android/local.properties",
     "ios",
+    "cpp",
+    "*.podspec",
     "!ios/build",
-    "!ios/RNPurchases.xcodeproj/project.xcworkspace",
-    "!ios/RNPurchases.xcodeproj/xcuserdata",
-    "RNPurchases.podspec",
-    "scripts",
     "!**/__tests__",
-    "!**/.idea",
-    "!**/*.iml",
-    "!**/.DS_Store",
-    "!**/.gitignore",
-    "!react-native-purchases-ui"
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
   ],
   "scripts": {
-    "build": "tsc",
-    "build-watch": "tsc --watch",
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
-    "prepare": "tsc",
-    "example": "yarn workspace purchasetester",
-    "ui": "yarn workspace react-native-purchases-ui",
-    "bootstrap": "yarn && yarn example pods"
+    "prepare": "bob build"
   },
-  "workspaces": [
-    "examples/purchaseTesterTypescript",
-    "react-native-purchases-ui"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revenuecat/react-native-purchases.git",
@@ -59,31 +49,34 @@
   "author": "RevenueCat, Inc.",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "peerDependencies": {
-    "react": ">= 16.6.3",
-    "react-native": ">= 0.58.2"
-  },
   "devDependencies": {
-    "@types/jest": "^26.0.0",
-    "@types/react": "^16.9.19",
-    "@types/react-native": "0.62.13",
-    "jest": "^26.0.1",
+    "@types/jest": "^28.1.2",
+    "@types/react": "~17.0.21",
+    "@types/react-native": "0.70.0",
+    "jest": "^28.1.1",
     "jest-react-native": "^18.0.0",
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
-    "react": "16.11.0",
-    "react-native": "^0.64.0",
+    "react": "18.2.0",
+    "react-native": "0.73.1",
+    "react-native-builder-bob": "^0.20.0",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.23.21",
-    "typescript": "^4.9.3"
+    "typescript": "^5.0.2"
+  },
+  "resolutions": {
+    "@types/react": "17.0.21"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
   },
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/examples/purchaseTesterTypescript/node_modules",
-      "<rootDir>/dir/"
+      "<rootDir>/lib/"
     ],
     "moduleFileExtensions": [
       "js"
@@ -101,7 +94,21 @@
       "./scripts/setupJest.js"
     ]
   },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "7.3.3"
+    "react-native-purchases": "7.4.0-SNAPSHOT"
   }
 }

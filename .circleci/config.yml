@@ -40,7 +40,7 @@ commands:
     steps:
       - run:
           name: Yarn Install
-          command: yarn install --non-interactive --cache-folder /tmp/yarn
+          command: yarn
   copy-npm-rc:
     steps:
       - run:
@@ -54,10 +54,10 @@ jobs:
       node_version: '18.2'
     steps:
       - checkout
-      - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTesterTypescript
-          cache_folder: ~/.cache/yarn
       - install-dependencies
+      - run:
+          name: Prepare package
+          command: yarn prepare
       - run:
           name: Tests
           command: yarn test
@@ -83,7 +83,7 @@ jobs:
           command: bundle exec fastlane generate_docs
 
   android:
-    executor: 
+    executor:
       name: rn/linux_android
       # These are the default options in the orb, but with more memory because we were getting out of memory errors
       gradle_options: >-
@@ -94,9 +94,7 @@ jobs:
       resource_class: medium
     steps:
       - checkout
-      - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTesterTypescript
-          cache_folder: ~/.cache/yarn
+      - install-dependencies
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
@@ -111,15 +109,11 @@ jobs:
       - run:
           name: Update CocoaPods repo
           command: pod repo update
-      - rn/yarn_install:
-          yarn_install_directory: examples/purchaseTesterTypescript
-          cache_folder: ~/.cache/yarn
+      - install-dependencies
       - run:
           name: Install example dependencies
           command: |
             cd examples/purchaseTesterTypescript/ios && pod install --repo-update && cd -
-      - rn/yarn_install:
-          cache_folder: ~/.cache/yarn
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 14
@@ -227,7 +221,7 @@ workflows:
         - equal: [ "release-train", << pipeline.schedule.name >> ]
     jobs:
       - revenuecat/automatic-bump
-  
+
   manual-trigger-bump:
     when:
       equal: [ bump, << pipeline.parameters.action >> ]

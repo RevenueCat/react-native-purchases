@@ -8,7 +8,6 @@
 node_modules/
 npm-debug.log
 yarn-error.log
-**/yarn.lock
 **/package-lock.json
 
 # Xcode
@@ -81,3 +80,12 @@ vendor/
 .bundle/
 .npmrc
 !**/**/.bundle/config
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+/examples/MagicWeather/yarn.lock

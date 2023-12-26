@@ -19,8 +19,7 @@ public class RNPurchasesPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
-            new RNPurchasesModule(reactContext),
-            new RNPaywallsModule(reactContext)
+            new RNPurchasesModule(reactContext)
         );
     }
 
@@ -32,8 +31,6 @@ public class RNPurchasesPackage implements ReactPackage {
     @NonNull
     @Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-        return Arrays.asList(
-            new RNPaywallManager()
-        );
+        return Collections.emptyList();
     }
 }
