@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { CustomerInfo, CustomerInfoUpdateListener } from 'react-native-purchases';
-
-import Purchases from 'react-native-purchases';
+import Purchases, { CustomerInfo } from 'react-native-purchases';
 import { presentPaywall } from 'react-native-purchases-ui';
-import { useRoute } from '@react-navigation/native';
 
 export type Props = {
   appUserID: String | null;
@@ -72,7 +69,6 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
 
     setAttributeModalVisible(!isAttributeModalVisible);
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>
@@ -82,26 +78,26 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
         User ID: {appUserID ?? 'N/A'}
       </Text>
       <Text style={styles.entitlements}>
-        Entitlements: { activeEntitlements() }
+        Entitlements: {activeEntitlements()}
       </Text>
       <View style={styles.buttons}>
         <TouchableOpacity
           style={styles.button}
-          onPress={ isAnonymous ? login : logout } >
+          onPress={isAnonymous ? login : logout}>
           <Text>
-            { isAnonymous ? "Login" : "Logout"}
+            {isAnonymous ? "Login" : "Logout"}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
-          onPress={ presentPaywall } >
+          onPress={presentPaywall}>
           <Text>Present paywall</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
-          onPress={ toggleAttributeModalVisibility } >
+          onPress={toggleAttributeModalVisibility}>
           <Text>
             Add Attribute
           </Text>
@@ -109,42 +105,41 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
       </View>
 
       <Modal animationType="slide"
-              transparent visible={isLoginModalVisible}
-              presentationStyle="overFullScreen">
-          <View style={styles.viewWrapper}>
-              <View style={styles.modalView}>
-                  <Text>Enter identifier for login</Text>
-                  <TextInput placeholder="Enter User ID..."
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                    value={inputUserID} style={styles.textInput}
-                    onChangeText={(value) => setInputUserID(value)} />
+             transparent visible={isLoginModalVisible}
+             presentationStyle="overFullScreen">
+        <View style={styles.viewWrapper}>
+          <View style={styles.modalView}>
+            <Text>Enter identifier for login</Text>
+            <TextInput placeholder="Enter User ID..."
+                       autoCapitalize='none'
+                       autoCorrect={false}
+                       value={inputUserID} style={styles.textInput}
+                       onChangeText={(value) => setInputUserID(value)}/>
 
-                  <Button title="Close" onPress={toggleLoginModalVisibility} />
-              </View>
+            <Button title="Close" onPress={toggleLoginModalVisibility}/>
           </View>
+        </View>
       </Modal>
 
       <Modal animationType="slide"
-              transparent visible={isAttributeModalVisible}
-              presentationStyle="overFullScreen">
-          <View style={styles.viewWrapper}>
-              <View style={styles.modalView}>
-                  <Text>Enter attriute key and value</Text>
-                  <TextInput placeholder="Enter key..."
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                    value={inputAttributeKey} style={styles.textInput}
-                    onChangeText={(value) => setInputAttributeKey(value)} />
-                  <TextInput placeholder="Enter value..."
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                    value={inputAttributeValue} style={styles.textInput}
-                    onChangeText={(value) => setInputAttributeValue(value)} />
-
-                  <Button title="Close" onPress={toggleAttributeModalVisibility} />
-              </View>
+             transparent visible={isAttributeModalVisible}
+             presentationStyle="overFullScreen">
+        <View style={styles.viewWrapper}>
+          <View style={styles.modalView}>
+            <Text>Enter attriute key and value</Text>
+            <TextInput placeholder="Enter key..."
+                       autoCapitalize='none'
+                       autoCorrect={false}
+                       value={inputAttributeKey} style={styles.textInput}
+                       onChangeText={(value) => setInputAttributeKey(value)}/>
+            <TextInput placeholder="Enter value..."
+                       autoCapitalize='none'
+                       autoCorrect={false}
+                       value={inputAttributeValue} style={styles.textInput}
+                       onChangeText={(value) => setInputAttributeValue(value)}/>
+            <Button title="Close" onPress={toggleAttributeModalVisibility}/>
           </View>
+        </View>
       </Modal>
 
     </View>
@@ -189,23 +184,23 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
   modalView: {
-      alignItems: "center",
-      justifyContent: "center",
-      position: "absolute",
-      width: "90%",
-      elevation: 5,
-      height: 180,
-      backgroundColor: "#fff",
-      borderRadius: 7,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    width: "90%",
+    elevation: 5,
+    height: 180,
+    backgroundColor: "#fff",
+    borderRadius: 7,
   },
   textInput: {
-      width: "80%",
-      borderRadius: 5,
-      paddingVertical: 8,
-      paddingHorizontal: 16,
-      borderColor: "rgba(0, 0, 0, 0.2)",
-      borderWidth: 1,
-      marginBottom: 8,
+    width: "80%",
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderColor: "rgba(0, 0, 0, 0.2)",
+    borderWidth: 1,
+    marginBottom: 8,
   },
 });
 

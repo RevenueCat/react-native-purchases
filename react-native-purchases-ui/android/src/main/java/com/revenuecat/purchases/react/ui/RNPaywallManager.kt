@@ -2,8 +2,11 @@ package com.revenuecat.purchases.react.ui
 
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
+import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
+import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
-internal class RNPaywallManager : SimpleViewManager<Paywall>() {
+@OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
+internal class RNPaywallManager : SimpleViewManager<PaywallView>() {
     companion object {
         const val REACT_CLASS = "RNPaywall"
     }
@@ -12,7 +15,7 @@ internal class RNPaywallManager : SimpleViewManager<Paywall>() {
         return REACT_CLASS
     }
 
-    override fun createViewInstance(themedReactContext: ThemedReactContext): Paywall {
-        return Paywall(themedReactContext)
+    override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallView {
+        return PaywallView(themedReactContext)
     }
 }
