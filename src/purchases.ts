@@ -29,7 +29,9 @@ import {
   MakePurchaseResult,
   LogHandler,
   LogInResult,
-  IN_APP_MESSAGE_TYPE
+  IN_APP_MESSAGE_TYPE,
+  ENTITLEMENT_VERIFICATION_MODE,
+  VERIFICATION_RESULT
 } from '@revenuecat/purchases-typescript-internal';
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
@@ -154,6 +156,20 @@ export default class Purchases {
   public static IN_APP_MESSAGE_TYPE = IN_APP_MESSAGE_TYPE;
 
   /**
+   * Enum of entitlement verification modes.
+   * @readonly
+   * @enum {string}
+   */
+  public static ENTITLEMENT_VERIFICATION_MODE = ENTITLEMENT_VERIFICATION_MODE;
+
+  /**
+   * The result of the verification process.
+   * @readonly
+   * @enum {string}
+   */
+  public static VERIFICATION_RESULT = VERIFICATION_RESULT;
+
+  /**
    * @internal
    */
   public static UninitializedPurchasesError = UninitializedPurchasesError;
@@ -170,6 +186,7 @@ export default class Purchases {
    * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
    * @param {boolean} [usesStoreKit2IfAvailable=false] DEPRECATED. An optional boolean. iOS-only. Defaults to FALSE. Setting this to TRUE will enable StoreKit2 on compatible devices.
    * We recommend not using this parameter, letting RevenueCat decide for you which StoreKit implementation to use.
+   * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode=ENTITLEMENT_VERIFICATION_MODE.DISABLED] Sets the entitlement verifciation mode to use. For more details, check https://rev.cat/trusted-entitlements
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
@@ -182,7 +199,8 @@ export default class Purchases {
                             userDefaultsSuiteName,
                             usesStoreKit2IfAvailable = false,
                             useAmazon = false,
-                            shouldShowInAppMessagesAutomatically = true
+                            shouldShowInAppMessagesAutomatically = true,
+                            entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED
                           }: PurchasesConfiguration): void {
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");
@@ -191,6 +209,7 @@ export default class Purchases {
     if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
     }
+
     RNPurchases.setupPurchases(
       apiKey,
       appUserID,
@@ -198,7 +217,8 @@ export default class Purchases {
       userDefaultsSuiteName,
       usesStoreKit2IfAvailable,
       useAmazon,
-      shouldShowInAppMessagesAutomatically
+      shouldShowInAppMessagesAutomatically,
+      entitlementVerificationMode
     );
   }
 

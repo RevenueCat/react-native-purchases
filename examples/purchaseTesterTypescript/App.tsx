@@ -34,15 +34,18 @@ const App = () => {
     if (!hasKeys()) { return }
 
     Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
+
+    const verificationMode = Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
+
     if (Platform.OS == "android") {
       const useAmazon = false;
       if (useAmazon) {
-        Purchases.configure({apiKey: APIKeys.amazon, useAmazon: true});
+        Purchases.configure({apiKey: APIKeys.amazon, useAmazon: true, entitlementVerificationMode: verificationMode});
       } else {
-        Purchases.configure({apiKey: APIKeys.google});
+        Purchases.configure({apiKey: APIKeys.google, entitlementVerificationMode: verificationMode});
       }
     } else {
-      Purchases.configure({apiKey: APIKeys.apple});
+      Purchases.configure({apiKey: APIKeys.apple, entitlementVerificationMode: verificationMode});
     }
 
     Purchases.enableAdServicesAttributionTokenCollection();
