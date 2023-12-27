@@ -40,12 +40,12 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - yarn-v1-{{ checksum "yarn.lock" }}
+            - yarn-v2-{{ checksum "yarn.lock" }}
       - run:
           name: Yarn Install
           command: yarn
       - save_cache:
-          key: yarn-v1-{{ checksum "yarn.lock" }}
+          key: yarn-v2-{{ checksum "yarn.lock" }}
           paths:
             - .yarn/cache
 
