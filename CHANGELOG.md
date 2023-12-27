@@ -1,3 +1,38 @@
+## 7.15.0-beta.4
+### New Features
+* 📱 Initial support for cross-platform RevenueCat Paywalls 🐾 🧱  (#766)
+
+### Breaking changes from previous betas
+- We have split the library in two, `react-native-purchases` and `react-native-purchases-ui`. The first one contains
+the core functionality of the SDK, while the second one contains the RevenueCat Paywalls functionality.
+- Android's `minSdkVersion` is brought back to 19 in `react-native-purchases`. The `minSdkVersion` in
+`react-native-purchases-ui` is 24.
+
+### Instructions:
+- Update your `package.json` to include `react-native-purchases-ui`:
+```json
+{
+  "dependencies": {
+    "react-native-purchases-ui": "7.15.0-beta.4"
+  }
+}
+```
+
+### Usage:
+```javascript
+import { presentPaywallIfNeeded } from 'react-native-purchases-ui';
+
+<TouchableOpacity
+  style={styles.button}
+  onPress={ presentPaywallIfNeeded("pro") } >
+  <Text>Present paywall if PRO entitlement is not active</Text>
+</TouchableOpacity>
+```
+
+### Limitations:
+- Currently only full screen paywalls are supported
+- There is no way to detect paywall events other than using `addCustomerInfoUpdateListener`
+
 ## 7.5.1
 ### Dependency Updates
 * Bump danger from 9.4.0 to 9.4.1 (#798) via dependabot[bot] (@dependabot[bot])
@@ -100,7 +135,7 @@ RevenueCat SDK v7 bumps minimum Android SDK version from Android 4.0 (API level 
 ### Support for InApp Messages
 
 We've added new APIs to support InApp messages both in Android and iOS. You can read more about:
-* [Google Play InApp Messages](https://rev.cat/googleplayinappmessaging) which will show users a snackbar message during grace period and account hold once per day and provide them an opportunity to fix their payment without leaving the app. 
+* [Google Play InApp Messages](https://rev.cat/googleplayinappmessaging) which will show users a snackbar message during grace period and account hold once per day and provide them an opportunity to fix their payment without leaving the app.
 * [App Store InApp messages](https://rev.cat/storekit-message) which will show a modal during grace period once per subscription.
 
 InApp Messages are shown by default in both platforms. If you want to disable this behaviour during configuration of the RevenueCat SDK, setup the `shouldShowInAppMessagesAutomatically` property during configuration to `false`:
