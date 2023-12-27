@@ -47,7 +47,7 @@ commands:
       - save_cache:
           key: yarn-v1-{{ checksum "yarn.lock" }}
           paths:
-            - ~/.yarn/cache
+            - .yarn/cache
 
   copy-npm-rc:
     steps:
