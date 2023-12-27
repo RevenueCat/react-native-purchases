@@ -12,7 +12,7 @@
 ```json
 {
   "dependencies": {
-    "react-native-purchases-ui": "7.15.0-beta.4"
+    "react-native-purchases-ui": "7.15.0-rc.1"
   }
 }
 ```

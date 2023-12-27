@@ -1,4 +1,4 @@
-## 7.15.0-beta.4
+## 7.15.0-rc.1
 ### New Features
 * 📱 Initial support for cross-platform RevenueCat Paywalls 🐾 🧱  (#766)
 
@@ -13,7 +13,7 @@ the core functionality of the SDK, while the second one contains the RevenueCat 
 ```json
 {
   "dependencies": {
-    "react-native-purchases-ui": "7.15.0-beta.4"
+    "react-native-purchases-ui": "7.15.0-rc.1"
   }
 }
 ```
