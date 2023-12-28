@@ -20,7 +20,6 @@ const PaywallScreen: React.FC<Props> = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 0,
     width: '100%',
     height: '100%'
   },
