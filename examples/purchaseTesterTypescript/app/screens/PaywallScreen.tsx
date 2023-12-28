@@ -13,14 +13,16 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Paywall'>;
 const PaywallScreen: React.FC<Props> = () => {
   return (
     <View style={styles.container}>
-      <RNPaywall style={{width: '100%', height: 800}} />
+      <RNPaywall style={{flex: 1}} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 0
+    padding: 0,
+    width: '100%',
+    height: '100%'
   },
 });
 
