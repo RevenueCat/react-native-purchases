@@ -16,7 +16,7 @@ RCT_EXPORT_MODULE(RCPaywallFooterView)
 {
     if (@available(iOS 15.0, *)) {
         PaywallProxy *proxy = [[PaywallProxy alloc] init];
-        return [proxy createPaywallView].view;
+        return [proxy createFooterPaywallView].view;
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
         return nil;
