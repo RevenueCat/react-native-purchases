@@ -9,7 +9,7 @@ import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIP
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
 @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
-class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>() {
+internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>() {
     override fun getName(): String {
         return "RCPaywallFooterView"
     }
@@ -40,8 +40,8 @@ class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>() {
         return paywallFooterView
     }
 
-    override fun createShadowNodeInstance(): FooterViewShadowNode {
-        return FooterViewShadowNode()
+    override fun createShadowNodeInstance(): PaywallViewShadowNode {
+        return PaywallViewShadowNode()
     }
 
 }
