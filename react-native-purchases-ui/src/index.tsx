@@ -26,3 +26,5 @@ export const Paywall =
     : () => {
       throw new Error(LINKING_ERROR);
     };
+
+export const PaywallFooterView = requireNativeComponent('RCPaywallFooterView');
