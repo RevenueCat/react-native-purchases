@@ -1,24 +1,22 @@
 import React from 'react';
-import { PaywallFooterView } from 'react-native-purchases-ui';
+import {PaywallFooterView} from 'react-native-purchases-ui';
 
-import { Text, View } from 'react-native';
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import RootStackParamList from "../RootStackParamList";
+import {StyleSheet, View} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import RootStackParamList from '../RootStackParamList';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FooterPaywall'>;
 
 const FooterPaywallScreen: React.FC<Props> = () => {
+  const styles = StyleSheet.create({
+    flex1: {
+      flex: 1,
+    },
+  });
+
   return (
-    <View style={{
-      justifyContent: 'space-between',
-      flexDirection: 'column',
-      flexGrow: 1,
-      backgroundColor: '#4b72f6',
-    }}>
-      <View style={{ backgroundColor: '#ff0000'}}>
-        <Text>Top</Text>
-      </View>
-      <PaywallFooterView/>
+    <View style={styles.flex1}>
+      <PaywallFooterView style={styles.flex1} />
     </View>
   );
 };
