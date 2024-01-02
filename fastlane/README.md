@@ -21,6 +21,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Bump version, edit changelog, and create pull request
 
+### update_version
+
+```sh
+[bundle exec] fastlane update_version
+```
+
+Update version number in all files that need to be updated
+
 ### automatic_bump
 
 ```sh
@@ -36,14 +44,6 @@ Automatically bumps version, edit changelog, and create pull request
 ```
 
 Make github release
-
-### prepare_next_version
-
-```sh
-[bundle exec] fastlane prepare_next_version
-```
-
-Creates PR changing version to next minor adding a -SNAPSHOT suffix
 
 ### release
 

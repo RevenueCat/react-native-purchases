@@ -52,8 +52,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
                                      usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
-                                            dangerousSettings:nil 
-                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically 
+                                            dangerousSettings:nil
+                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode];
     purchases.delegate = self;
 }
@@ -472,7 +472,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"7.5.1";
+    return @"7.15.0-rc.1";
 }
 
 @end
