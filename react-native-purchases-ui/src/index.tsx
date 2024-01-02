@@ -18,9 +18,9 @@ export function presentPaywallIfNeeded(requiredEntitlementIdentifier: String) {
   RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
 }
 
-const ComponentName = 'RNPaywall';
+const ComponentName = 'Paywall';
 
-export const RNPaywall =
+export const Paywall =
   UIManager.getViewManagerConfig(ComponentName) != null
     ? requireNativeComponent(ComponentName)
     : () => {

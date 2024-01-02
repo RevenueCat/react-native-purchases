@@ -1,5 +1,5 @@
 import React from 'react';
-import { RNPaywall } from 'react-native-purchases-ui';
+import { Paywall } from 'react-native-purchases-ui';
 
 import {
   StyleSheet,
@@ -13,7 +13,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Paywall'>;
 const PaywallScreen: React.FC<Props> = () => {
   return (
     <View style={styles.container}>
-      <RNPaywall/>
+      <Paywall/>
     </View>
   );
 };
