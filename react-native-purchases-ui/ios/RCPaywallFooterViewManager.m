@@ -21,61 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-@interface CustomFooterView ()
-
-@property (strong, nonatomic) UIView *footerView;
-
-@end
-
-@implementation CustomFooterView
-
-- (instancetype)initWithFooterView:(UIView *)footerView {
-    if ((self = [super init])) {
-        _footerView = footerView;
-        [self addSubview:_footerView];
-    }
-    return self;
-}
-
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    self.footerView.frame = self.bounds;
-    CGSize footerSize = self.footerView.intrinsicContentSize;
-    footerSize;
-}
-
-@end
-
-
-@interface PaywallViewShadowNode : RCTShadowView
-
-@end
-
-@implementation PaywallViewShadowNode
-
-static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode)
-{
-    PaywallViewShadowNode *shadowText = (__bridge PaywallViewShadowNode *)YGNodeGetContext(node);
-    YGSize result;
-
-    result.width = width;
-    result.height = height;
-    
-    return result;
-}
-
-- (instancetype)init
-{
-    if ((self = [super init])) {
-        YGNodeSetMeasureFunc(self.yogaNode, RCTMeasure);
-    }
-    return self;
-}
-
-@end
-
-
-
 @implementation RCPaywallFooterViewManager
 
 RCT_EXPORT_MODULE(RCPaywallFooterView)
@@ -85,16 +30,36 @@ RCT_EXPORT_MODULE(RCPaywallFooterView)
     if (@available(iOS 15.0, *)) {
         PaywallProxy *proxy = [[PaywallProxy alloc] init];
         UIView *footerView = [proxy createFooterPaywallView].view;
-        CustomFooterView *customFooterView = [[CustomFooterView alloc] initWithFooterView:footerView];
-        return customFooterView;
+        return footerView;
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
         return nil;
     }
 }
 
-- (RCTShadowView *)shadowView {
-    return [PaywallViewShadowNode new];
+- (NSDictionary *)constantsToExport
+{
+    PaywallProxy *proxy = [[PaywallProxy alloc] init];
+    UIView *footerView = [proxy createFooterPaywallView].view;
+    [footerView sizeToFit];
+
+    [footerView layoutIfNeeded];
+
+    NSLog(@"Height of footerView: %f", CGRectGetHeight(footerView.frame));
+
+    NSLog(@"Width of footerView: %f", CGRectGetWidth(footerView.frame));
+
+    // this is too big, it might be because it renders a full UIViewController which defaults to full screen
+//    return @{
+//        @"ComponentHeight": @(CGRectGetHeight(footerView.frame)),
+//        @"ComponentWidth": @(CGRectGetWidth(footerView.frame))
+//    };
+//
+    return @{
+        @"ComponentHeight": @(344.0f),
+        @"ComponentWidth": @(CGRectGetWidth(footerView.frame))
+    };
+
 }
 
 @end
