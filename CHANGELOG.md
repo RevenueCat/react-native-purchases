@@ -1,3 +1,7 @@
+## 7.6.1
+### Dependency Updates
+* Bump fastlane from 2.217.0 to 2.218.0 (#823) via dependabot[bot] (@dependabot[bot])
+
 ## 7.6.0
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 8.2.1 (#814) via RevenueCat Git Bot (@RCGitBot)
