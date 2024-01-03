@@ -78,4 +78,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
     NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return YES;
+}
+
 @end
