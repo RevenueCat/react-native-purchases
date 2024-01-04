@@ -1,6 +1,9 @@
 package com.revenuecat.purchases.react.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Canvas
+import android.util.Log
+import android.view.View
 import androidx.core.view.children
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
@@ -17,8 +20,25 @@ internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>()
     @SuppressLint("UnsafeOptInUsageError")
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallFooterView {
         val paywallFooterView: PaywallFooterView = object : PaywallFooterView(themedReactContext) {
+
+            override fun onDraw(canvas: Canvas) {
+                super.onDraw(canvas)
+                Log.d("RCPaywallFooterView", "onDraw")
+            }
+
+            override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+                super.onLayout(changed, left, top, right, bottom)
+                Log.d("RCPaywallFooterView", "onLayout")
+            }
+
+            override fun requestLayout() {
+                super.requestLayout()
+                Log.d("RCPaywallFooterView", "requestLayout")
+            }
+
             public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+                Log.d("RCPaywallFooterView", "onMeasure")
                 var maxWidth = 0
                 var maxHeight = 0
                 children.forEach {
@@ -37,11 +57,22 @@ internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>()
                 }
             }
         }
+        paywallFooterView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View?,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int,
+            ) {
+                Log.d("RCPaywallFooterView", "onLayoutChange")
+            }
+        })
         return paywallFooterView
-    }
-
-    override fun createShadowNodeInstance(): PaywallViewShadowNode {
-        return PaywallViewShadowNode()
     }
 
 }
