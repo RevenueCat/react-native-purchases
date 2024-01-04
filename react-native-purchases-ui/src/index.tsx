@@ -37,21 +37,21 @@ export const Paywall =
       throw new Error(LINKING_ERROR);
     };
 
-const PaywallFooterView = requireNativeComponent('RCPaywallFooterView');
+export const PaywallFooterView = requireNativeComponent('RCPaywallFooterView');
 
 type FlexPaywallFooterViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
 };
 
-export const FlexPaywallFooterView: React.FC<FlexPaywallFooterViewProps> = ({ style, children }) => (
+const FlexPaywallFooterView: React.FC<FlexPaywallFooterViewProps> = ({ style, children }) => (
   <View style={[{ flex: 1 }, style]}>
     <ScrollView
-      style={{ backgroundColor: '#4b72f6' }}
-      contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}
+      style={{ backgroundColor: '#4b72f6', flex: 1 }}
+      contentContainerStyle={{flexGrow: 1}}
     >
       {children}
     </ScrollView>
-    <PaywallFooterView style={{ marginTop: -50}}/>
+    <PaywallFooterView style={{ flex: 1 }}/>
   </View>
 );

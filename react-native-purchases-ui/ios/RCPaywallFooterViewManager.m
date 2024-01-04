@@ -30,18 +30,42 @@ NS_ASSUME_NONNULL_END
 @implementation CustomFooterView
 
 - (instancetype)initWithFooterView:(UIView *)footerView {
-    if ((self = [super init])) {
+    if ((self = [super initWithFrame:CGRectZero])) {
         _footerView = footerView;
-        [self addSubview:_footerView];
+        [self addSubview:footerView];
+        footerView.translatesAutoresizingMaskIntoConstraints = NO;
+        // Set constraints to match the size and position of the footerView to the CustomFooterView
+        [NSLayoutConstraint activateConstraints:@[
+            [footerView.topAnchor constraintEqualToAnchor:self.topAnchor],
+            [footerView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
+            [footerView.leftAnchor constraintEqualToAnchor:self.leftAnchor],
+            [footerView.rightAnchor constraintEqualToAnchor:self.rightAnchor]
+        ]];
     }
     return self;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.footerView.frame = self.bounds;
-    CGSize footerSize = self.footerView.intrinsicContentSize;
-    footerSize;
+    UIView *contentView = _footerView.subviews.firstObject;
+    [contentView layoutIfNeeded];
+
+    // Get the size of the contentView
+    CGSize contentSize = contentView.frame.size;
+
+    // Now, adjust the _footerView to match the size of the contentView
+    CGRect newFrame = self.frame;
+    newFrame.size = contentSize;
+    self.frame = newFrame;
+
+    // Set the _footerView frame or constraints to match the content size
+    _footerView.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);
+}
+
+- (CGSize)intrinsicContentSize {
+    UIView *contentView = _footerView.subviews.firstObject;
+    [contentView layoutIfNeeded];  // Ensure layout calculations have been made
+    return contentView.frame.size; // Return the content size
 }
 
 @end
@@ -55,13 +79,21 @@ NS_ASSUME_NONNULL_END
 
 static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, float height, YGMeasureMode heightMode)
 {
-    PaywallViewShadowNode *shadowText = (__bridge PaywallViewShadowNode *)YGNodeGetContext(node);
-    YGSize result;
-
-    result.width = width;
-    result.height = height;
+    PaywallViewShadowNode *footerView = (__bridge PaywallViewShadowNode *)YGNodeGetContext(node);
     
-    return result;
+    CGSize size = CGSizeZero;
+
+    size.width = width;
+
+    if (heightMode == YGMeasureModeExactly) {
+        size.height = height;
+    } else if (heightMode == YGMeasureModeAtMost) {
+        size.height = MIN(footerView.intrinsicContentSize.height, height);
+    } else {
+        size.height = footerView.intrinsicContentSize.height;
+    }
+
+    return (YGSize){RCTYogaFloatFromCoreGraphicsFloat(size.width), RCTYogaFloatFromCoreGraphicsFloat(321)};
 }
 
 - (instancetype)init
@@ -73,8 +105,6 @@ static YGSize RCTMeasure(YGNodeRef node, float width, YGMeasureMode widthMode, f
 }
 
 @end
-
-
 
 @implementation RCPaywallFooterViewManager
 
