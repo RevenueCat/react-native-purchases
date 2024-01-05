@@ -24,7 +24,7 @@ const FooterPaywallScreen: React.FC<Props> = () => {
       <View style={{flex: 1}}>
         <ScrollView
           style={{backgroundColor: '#4b72f6'}}
-          contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
         >
           <Text>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
@@ -71,7 +71,7 @@ const FooterPaywallScreen: React.FC<Props> = () => {
             justo neque nec felis.
           </Text>
         </ScrollView>
-        <PaywallFooterView style={{marginTop: -50}}/>
+        <PaywallFooterView style={{ marginTop: -20 }}/>
       </View>
     </SafeAreaView>
   );
