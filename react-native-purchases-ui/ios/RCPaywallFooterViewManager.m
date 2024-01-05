@@ -63,12 +63,6 @@ NS_ASSUME_NONNULL_END
     [self.bridge.uiManager setSize:contentView.bounds.size forView:self];
 }
 
-- (CGSize)intrinsicContentSize {
-    UIView *contentView = self.footerView.subviews.firstObject;
-    [contentView layoutIfNeeded];  // Ensure layout calculations have been made
-    return contentView.frame.size; // Return the content size
-}
-
 @end
 
 @implementation RCPaywallFooterViewManager
