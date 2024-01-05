@@ -3759,21 +3759,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:~18.2.0":
+  version: 18.2.18
+  resolution: "@types/react-dom@npm:18.2.18"
+  dependencies:
+    "@types/react": "*"
+  checksum: 8e3da404c980e2b2a76da3852f812ea6d8b9d0e7f5923fbaf3bfbbbfa1d59116ff91c129de8f68e9b7668a67ae34484fe9df74d5a7518cf8591ec07a0c4dad57
+  languageName: node
+  linkType: hard
+
 "@types/react-native@npm:0.62.13":
   version: 0.62.13
   resolution: "@types/react-native@npm:0.62.13"
   dependencies:
     "@types/react": "*"
   checksum: 1c66e64b2ff67ac393b638b3c5683cabd0127a9a272ba5707c08d06c646c23684ee7bae3974e7c461cba987255ad8c37800ebe01b7d26df3c685109339c11b62
-  languageName: node
-  linkType: hard
-
-"@types/react-native@npm:0.70.0":
-  version: 0.70.0
-  resolution: "@types/react-native@npm:0.70.0"
-  dependencies:
-    "@types/react": "*"
-  checksum: 0150a5520925ae009e49eb81e4ca528548ec118b95c363516362bba39ffc068f0df97c43e4543c10ac8f514a42e48cad312c9da49e37257c62180b36f921fa84
   languageName: node
   linkType: hard
 
@@ -3808,14 +3808,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:~17.0.21":
-  version: 17.0.73
-  resolution: "@types/react@npm:17.0.73"
+"@types/react@npm:~18.2.0":
+  version: 18.2.46
+  resolution: "@types/react@npm:18.2.46"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 08107645acdd734c8ddb4d26f1b43dfa0d75f7a8d268eaacb897337e103eaa620fe8c3c6972dab9860aaa47bbee1da587cf06b11bb4e655588e38485daf48a6c
+  checksum: cb0e4dc7f41988a059e1246a19ec377101f5b16097ec4bf7000ef3c431ec0c8c873f40e95075821f908db1f4e3352775f0f18cea53dcad14dce67c0f5110f2bd
   languageName: node
   linkType: hard
 
@@ -12555,8 +12555,8 @@ __metadata:
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
     "@types/jest": ^28.1.2
-    "@types/react": ~17.0.21
-    "@types/react-native": 0.70.0
+    "@types/react": ~18.2.0
+    "@types/react-dom": ~18.2.0
     jest: ^28.1.1
     jest-react-native: ^18.0.0
     pod-install: ^0.1.0
