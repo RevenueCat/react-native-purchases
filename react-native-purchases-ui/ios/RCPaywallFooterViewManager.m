@@ -48,6 +48,10 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
+// This is needed so it measures correctly the size of the children and react native can
+// size the Javascript view correctly. Not doing this will render the view with height 0
+// and will require the devs to set a fixed height to the view, which is not ideal
+// https://medium.com/traveloka-engineering/react-native-at-traveloka-native-ui-components-c6b66f789f35
 - (void)layoutSubviews {
     [super layoutSubviews];
     UIView *contentView = self.footerView.subviews.firstObject;

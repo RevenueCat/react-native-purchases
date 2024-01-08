@@ -33,6 +33,10 @@ internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>()
                 layout(left, top, right, bottom)
             }
 
+            // This is needed so it measures correctly the size of the children and react native can
+            // size the Javascript view correctly. Not doing this will render the view with height 0
+            // and will require the devs to set a fixed height to the view, which is not ideal
+            // https://medium.com/traveloka-engineering/react-native-at-traveloka-native-ui-components-c6b66f789f35
             public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec)
                 var maxWidth = 0
