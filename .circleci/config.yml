@@ -67,6 +67,10 @@ jobs:
           name: Prepare package
           command: yarn prepare
       - run:
+          name: Prepare UI package
+          working_directory: react-native-purchases-ui
+          command: yarn prepare
+      - run:
           name: Tests
           command: yarn test
       - run:

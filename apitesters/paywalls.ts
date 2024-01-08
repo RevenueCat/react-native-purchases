@@ -1,4 +1,4 @@
-import RNPaywalls from "../dist/react-native-purchases-ui/src";
+import RNPaywalls from "../react-native-purchases-ui/";
 
 async function checkpresentPaywall() {
   await RNPaywalls.presentPaywall();
