@@ -16,7 +16,7 @@ const PaywallScreen: React.FC<Props> = () => {
 
   return (
     <View style={styles.flex1}>
-      <Paywall style={styles.flex1} />
+      <Paywall/>
     </View>
   );
 };

@@ -28,16 +28,22 @@ export function presentPaywallIfNeeded(requiredEntitlementIdentifier: String) {
   RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
 }
 
-const ComponentName = 'Paywall';
-
-export const Paywall =
-  UIManager.getViewManagerConfig(ComponentName) != null
-    ? requireNativeComponent(ComponentName)
+const InternalPaywall =
+  UIManager.getViewManagerConfig('Paywall') != null
+    ? requireNativeComponent('Paywall')
     : () => {
       throw new Error(LINKING_ERROR);
     };
 
-const InternalPaywallFooterView = requireNativeComponent('RCPaywallFooterView');
+export const Paywall: React.FC<FlexPaywallFooterViewProps> = ({style, children}) => (
+  <InternalPaywall style={[{flex: 1}, style]}/>
+);
+
+const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
+  ? requireNativeComponent('RCPaywallFooterView')
+  : () => {
+    throw new Error(LINKING_ERROR);
+  };
 
 type FlexPaywallFooterViewProps = {
   style?: StyleProp<ViewStyle>;
