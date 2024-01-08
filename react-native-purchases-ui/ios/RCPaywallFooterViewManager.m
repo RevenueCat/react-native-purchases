@@ -14,7 +14,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CustomFooterView : UIView
+@interface FooterViewWrapper : UIView
 
 - (instancetype)initWithFooterView:(UIView *)footerView bridge:(RCTBridge *)bridge;
 
@@ -22,14 +22,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-@interface CustomFooterView ()
+@interface FooterViewWrapper ()
 
 @property (strong, nonatomic) UIView *footerView;
 @property (strong, nonatomic) RCTBridge *bridge;
 
 @end
 
-@implementation CustomFooterView
+@implementation FooterViewWrapper
 
 - (instancetype)initWithFooterView:(UIView *)footerView bridge:(RCTBridge *)bridge {
     if ((self = [super initWithFrame:CGRectZero])) {
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_END
         _footerView = footerView;
         [self addSubview:footerView];
         footerView.translatesAutoresizingMaskIntoConstraints = NO;
-        // Set constraints to match the size and position of the footerView to the CustomFooterView
+        // Set constraints to match the size and position of the footerView to the FooterViewWrapper
         [NSLayoutConstraint activateConstraints:@[
             [footerView.topAnchor constraintEqualToAnchor:self.topAnchor],
             [footerView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
@@ -78,8 +78,8 @@ RCT_EXPORT_MODULE(RCPaywallFooterView)
     if (@available(iOS 15.0, *)) {
         PaywallProxy *proxy = [[PaywallProxy alloc] init];
         UIView *footerView = [proxy createFooterPaywallView].view;
-        CustomFooterView *customFooterView = [[CustomFooterView alloc] initWithFooterView:footerView bridge:self.bridge];
-        return customFooterView;
+        FooterViewWrapper *viewWrapper = [[FooterViewWrapper alloc] initWithFooterView:footerView bridge:self.bridge];
+        return viewWrapper;
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
         return nil;
