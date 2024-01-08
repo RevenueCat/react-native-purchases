@@ -1,5 +1,5 @@
 import React from 'react';
-import { PaywallFooterView } from 'react-native-purchases-ui';
+import { PaywallFooterContainerView } from 'react-native-purchases-ui';
 
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -18,7 +18,7 @@ const FooterPaywallScreen: React.FC<Props> = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <PaywallFooterView>
+      <PaywallFooterContainerView>
         <Text>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
           ligula in dolor efficitur accumsan nec vel nisl. Sed vitae lectus eget
@@ -63,7 +63,7 @@ const FooterPaywallScreen: React.FC<Props> = () => {
           augue et tincidunt fringilla, dui elit vulputate mauris, vel fermentum
           justo neque nec felis.
         </Text>
-      </PaywallFooterView>
+      </PaywallFooterContainerView>
     </SafeAreaView>
   );
 };

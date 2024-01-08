@@ -44,7 +44,7 @@ type FlexPaywallFooterViewProps = {
   children?: ReactNode;
 };
 
-export const PaywallFooterView: React.FC<FlexPaywallFooterViewProps> = ({style, children}) => (
+export const PaywallFooterContainerView: React.FC<FlexPaywallFooterViewProps> = ({style, children}) => (
   <View style={[{flex: 1}, style]}>
     <ScrollView
       style={{backgroundColor: '#4b72f6'}}
