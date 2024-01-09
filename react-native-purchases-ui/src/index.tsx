@@ -1,9 +1,8 @@
 import {
-  Button,
   NativeModules,
   Platform,
   requireNativeComponent, ScrollView,
-  type StyleProp, Text,
+  type StyleProp,
   UIManager,
   View,
   type ViewStyle,
@@ -28,29 +27,29 @@ export function presentPaywallIfNeeded(requiredEntitlementIdentifier: String) {
   RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
 }
 
-const InternalPaywall =
-  UIManager.getViewManagerConfig('Paywall') != null
-    ? requireNativeComponent('Paywall')
-    : () => {
-      throw new Error(LINKING_ERROR);
-    };
-
-export const Paywall: React.FC<FlexPaywallFooterViewProps> = ({style, children}) => (
-  <InternalPaywall style={[{flex: 1}, style]}/>
-);
-
-const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent('RCPaywallFooterView')
-  : () => {
-    throw new Error(LINKING_ERROR);
-  };
-
-type FlexPaywallFooterViewProps = {
+type PaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
 };
 
-export const PaywallFooterContainerView: React.FC<FlexPaywallFooterViewProps> = ({style, children}) => (
+const InternalPaywall =
+  UIManager.getViewManagerConfig('Paywall') != null
+    ? requireNativeComponent<PaywallViewProps>('Paywall')
+    : () => {
+      throw new Error(LINKING_ERROR);
+    };
+
+export const Paywall: React.FC<PaywallViewProps> = (props) => (
+  <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
+);
+
+const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
+  ? requireNativeComponent<PaywallViewProps>('RCPaywallFooterView')
+  : () => {
+    throw new Error(LINKING_ERROR);
+  };
+
+export const PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, children}) => (
   <View style={[{flex: 1}, style]}>
     <ScrollView
       style={{backgroundColor: '#4b72f6'}}
