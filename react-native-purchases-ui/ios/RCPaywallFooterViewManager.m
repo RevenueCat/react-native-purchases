@@ -6,66 +6,61 @@
 //
 
 #import "RCPaywallFooterViewManager.h"
+@import RevenueCatUI;
 @import PurchasesHybridCommon;
 
 #import <React/RCTShadowView.h>
 #import <React/RCTUIManager.h>
 #import <React/RCTBridge.h>
+#import <React/RCTRootViewDelegate.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FooterViewWrapper : UIView
 
-- (instancetype)initWithFooterView:(UIView *)footerView bridge:(RCTBridge *)bridge;
+- (instancetype)initWithFooterViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge;
 
 @end
 
 NS_ASSUME_NONNULL_END
 
-@interface FooterViewWrapper ()
+@interface FooterViewWrapper () <RCPaywallViewControllerDelegate>
 
-@property (strong, nonatomic) UIView *footerView;
+@property (strong, nonatomic) UIViewController *footerViewController;
 @property (strong, nonatomic) RCTBridge *bridge;
 
 @end
 
 @implementation FooterViewWrapper
 
-- (instancetype)initWithFooterView:(UIView *)footerView bridge:(RCTBridge *)bridge {
-    if ((self = [super initWithFrame:CGRectZero])) {
+- (instancetype)initWithFooterViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge {
+    if ((self = [super initWithFrame:footerViewController.view.bounds])) {
         _bridge = bridge;
-        _footerView = footerView;
-        [self addSubview:footerView];
-        footerView.translatesAutoresizingMaskIntoConstraints = NO;
+        // TODO: look into retain cycles
+        _footerViewController = footerViewController;
+
+        [self addSubview:footerViewController.view];
+        footerViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
         // Set constraints to match the size and position of the footerView to the FooterViewWrapper
         [NSLayoutConstraint activateConstraints:@[
-            [footerView.topAnchor constraintEqualToAnchor:self.topAnchor],
-            [footerView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
-            [footerView.leftAnchor constraintEqualToAnchor:self.leftAnchor],
-            [footerView.rightAnchor constraintEqualToAnchor:self.rightAnchor]
+            [footerViewController.view.topAnchor constraintEqualToAnchor:self.topAnchor],
+            [footerViewController.view.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
+            [footerViewController.view.leftAnchor constraintEqualToAnchor:self.leftAnchor],
+            [footerViewController.view.rightAnchor constraintEqualToAnchor:self.rightAnchor]
         ]];
     }
     return self;
 }
 
-// This is needed so it measures correctly the size of the children and react native can
-// size the Javascript view correctly. Not doing this will render the view with height 0
-// and will require the devs to set a fixed height to the view, which is not ideal
-// https://medium.com/traveloka-engineering/react-native-at-traveloka-native-ui-components-c6b66f789f35
-- (void)layoutSubviews {
-    [super layoutSubviews];
-    UIView *contentView = self.footerView.subviews.firstObject;
-    [contentView layoutIfNeeded];
-
-    CGSize contentSize = contentView.frame.size;
-
-    CGRect newFrame = self.frame;
-    newFrame.size = contentSize;
-    self.frame = newFrame;
-
-    self.footerView.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);
-    [self.bridge.uiManager setSize:contentView.bounds.size forView:self];
+- (void)paywallViewControlleSizeDidChange:(CGSize)size {
+    [_bridge.uiManager setSize:size forView:self];
 }
+
+@end
+
+@interface RCPaywallFooterViewManager ()
+
+@property (nonatomic, strong) id proxyIfAvailable;
 
 @end
 
@@ -73,16 +68,37 @@ NS_ASSUME_NONNULL_END
 
 RCT_EXPORT_MODULE(RCPaywallFooterView)
 
+- (instancetype)init {
+    if ((self = [super init])) {
+        if (@available(iOS 15.0, *)) {
+            _proxyIfAvailable = [[PaywallProxy alloc] init];
+        }
+    }
+
+    return self;
+}
+
+- (PaywallProxy *)proxy API_AVAILABLE(ios(15.0)){
+    return (PaywallProxy *)self.proxyIfAvailable;
+}
+
 - (UIView *)view
 {
     if (@available(iOS 15.0, *)) {
-        PaywallProxy *proxy = [[PaywallProxy alloc] init];
-        UIView *footerView = [proxy createFooterPaywallView].view;
-        return [[FooterViewWrapper alloc] initWithFooterView:footerView bridge:self.bridge];
+        UIViewController *footerViewController = [self.proxy createFooterPaywallView];
+        FooterViewWrapper *wrapper = [[FooterViewWrapper alloc] initWithFooterViewController:footerViewController
+                                                                                      bridge:self.bridge];
+        self.proxy.delegate = wrapper;
+
+        return wrapper;
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
         return nil;
     }
+}
+
++ (BOOL)requiresMainQueueSetup {
+    return YES;
 }
 
 @end
