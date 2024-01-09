@@ -6,12 +6,12 @@
 //  Copyright © 2023 Facebook. All rights reserved.
 //
 
-#import "RNPaywallManager.h"
+#import "PaywallViewManager.h"
 @import PurchasesHybridCommon;
 
-@implementation RNPaywallManager
+@implementation PaywallViewManager
 
-RCT_EXPORT_MODULE(RNPaywall)
+RCT_EXPORT_MODULE(Paywall)
 
 - (UIView *)view
 {

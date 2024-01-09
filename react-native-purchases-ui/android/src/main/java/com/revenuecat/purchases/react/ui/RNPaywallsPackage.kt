@@ -12,6 +12,6 @@ class RNPaywallsPackage : ReactPackage {
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-        return listOf(RNPaywallManager())
+        return listOf(PaywallViewManager())
     }
 }

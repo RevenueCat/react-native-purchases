@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RNPaywallManager : RCTViewManager
+@interface PaywallViewManager : RCTViewManager
 
 @end
 
