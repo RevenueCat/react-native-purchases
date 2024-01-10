@@ -1,4 +1,7 @@
 import {NativeModules, Platform, requireNativeComponent, UIManager} from "react-native";
+import {PAYWALL_RESULT} from "@revenuecat/purchases-typescript-internal";
+
+export {PAYWALL_RESULT} from "@revenuecat/purchases-typescript-internal";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-view' doesn't seem to be linked. Make sure: \n\n` +
@@ -8,14 +11,14 @@ const LINKING_ERROR =
 
 const RNPaywalls = NativeModules.RNPaywalls;
 
-export function presentPaywall() {
+export function presentPaywall(): Promise<PAYWALL_RESULT> {
   // TODO: check iOS/Android version
-  RNPaywalls.presentPaywall();
+  return RNPaywalls.presentPaywall();
 }
 
-export function presentPaywallIfNeeded(requiredEntitlementIdentifier: String) {
+export function presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
   // TODO: check iOS/Android version
-  RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
+  return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
 }
 
 const ComponentName = 'Paywall';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import Purchases, { CustomerInfo } from 'react-native-purchases';
-import { presentPaywall } from 'react-native-purchases-ui';
+import { presentPaywallIfNeeded } from 'react-native-purchases-ui';
 
 export type Props = {
   appUserID: String | null;
@@ -91,7 +91,10 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
 
         <TouchableOpacity
           style={styles.button}
-          onPress={presentPaywall}>
+          onPress={async () => {
+            const paywallResult = await presentPaywallIfNeeded('pro_cat');
+            console.log('Paywall result: ', paywallResult);
+          }}>
           <Text>Present paywall</Text>
         </TouchableOpacity>
 
