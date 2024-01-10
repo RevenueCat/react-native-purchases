@@ -1,6 +1,8 @@
 import {NativeModules, Platform, requireNativeComponent, UIManager} from "react-native";
 import {PAYWALL_RESULT} from "@revenuecat/purchases-typescript-internal";
 
+export {PAYWALL_RESULT} from "@revenuecat/purchases-typescript-internal";
+
 const LINKING_ERROR =
   `The package 'react-native-purchases-view' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
