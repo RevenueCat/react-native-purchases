@@ -1,5 +1,5 @@
 import React from 'react';
-import {Paywall} from 'react-native-purchases-ui';
+import RevenueCatUI from 'react-native-purchases-ui';
 
 import {StyleSheet, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -16,7 +16,7 @@ const PaywallScreen: React.FC<Props> = () => {
 
   return (
     <View style={styles.flex1}>
-      <Paywall/>
+      <RevenueCatUI.Paywall/>
     </View>
   );
 };
