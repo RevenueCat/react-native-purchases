@@ -11,7 +11,7 @@ import {
 import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode } from "react";
 
-export {PAYWALL_RESULT} from "@revenuecat/purchases-typescript-internal";
+export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-view' doesn't seem to be linked. Make sure: \n\n` +
@@ -20,16 +20,6 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 const RNPaywalls = NativeModules.RNPaywalls;
-
-export function presentPaywall(): Promise<PAYWALL_RESULT> {
-  // TODO: check iOS/Android version
-  return RNPaywalls.presentPaywall();
-}
-
-export function presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
-  // TODO: check iOS/Android version
-  return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
-}
 
 type PaywallViewProps = {
   style?: StyleProp<ViewStyle>;
@@ -64,3 +54,25 @@ export const PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, c
     <InternalPaywallFooterView style={{marginTop: -20}}/>
   </View>
 );
+
+
+export default class RevenueCatUI {
+
+  /**
+   * The result of presenting a paywall. This will be the last situation the user experienced before the paywall closed.
+   * @readonly
+   * @enum {string}
+   */
+  public static PAYWALL_RESULT = PAYWALL_RESULT;
+
+  public static presentPaywall(): Promise<PAYWALL_RESULT> {
+    // TODO: check iOS/Android version
+    return RNPaywalls.presentPaywall();
+  }
+
+  public static presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
+    // TODO: check iOS/Android version
+    return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
+  }
+
+}
