@@ -10,7 +10,15 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 const RNPaywalls = NativeModules.RNPaywalls;
+
 export default class RevenueCatUI {
+
+  /**
+   * The result of presenting a paywall. This will be the last situation the user experienced before the paywall closed.
+   * @readonly
+   * @enum {string}
+   */
+  public static PAYWALL_RESULT = PAYWALL_RESULT;
 
   public static presentPaywall(): Promise<PAYWALL_RESULT> {
     // TODO: check iOS/Android version
