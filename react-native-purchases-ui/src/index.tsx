@@ -1,13 +1,17 @@
 import {
   NativeModules,
   Platform,
-  requireNativeComponent, ScrollView,
+  requireNativeComponent,
+  ScrollView,
   type StyleProp,
   UIManager,
   View,
   type ViewStyle,
 } from "react-native";
+import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode } from "react";
+
+export {PAYWALL_RESULT} from "@revenuecat/purchases-typescript-internal";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-view' doesn't seem to be linked. Make sure: \n\n` +
@@ -17,14 +21,14 @@ const LINKING_ERROR =
 
 const RNPaywalls = NativeModules.RNPaywalls;
 
-export function presentPaywall() {
+export function presentPaywall(): Promise<PAYWALL_RESULT> {
   // TODO: check iOS/Android version
-  RNPaywalls.presentPaywall();
+  return RNPaywalls.presentPaywall();
 }
 
-export function presentPaywallIfNeeded(requiredEntitlementIdentifier: String) {
+export function presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
   // TODO: check iOS/Android version
-  RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
+  return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
 }
 
 type PaywallViewProps = {

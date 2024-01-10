@@ -58,24 +58,35 @@ RCT_EXPORT_MODULE();
 
 // MARK: -
 
-RCT_EXPORT_METHOD(presentPaywall) {
+RCT_REMAP_METHOD(presentPaywall,
+                 presentPaywallWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        [self.paywalls presentPaywall];
+        [self.paywalls presentPaywallWithPaywallResultHandler:^(NSString *result) {
+            resolve(result);
+        }];
     } else {
-        [self logPaywallsUnsupportedError];
+        [self rejectPaywallsUnsupportedError:reject];
     }
 }
 
-RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier) {
+RCT_REMAP_METHOD(presentPaywallIfNeeded,
+                 presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier
+                 withResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier];
+        [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
+                                                          paywallResultHandler:^(NSString *result) {
+            resolve(result);
+        }];
     } else {
-        [self logPaywallsUnsupportedError];
+        [self rejectPaywallsUnsupportedError:reject];
     }
 }
 
-- (void)logPaywallsUnsupportedError {
+- (void)rejectPaywallsUnsupportedError:(RCTPromiseRejectBlock)reject {
     NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
+    reject(@"PaywallsUnsupportedCode", @"Paywalls are not supported prior to iOS 15.", nil);
 }
 
 + (BOOL)requiresMainQueueSetup
