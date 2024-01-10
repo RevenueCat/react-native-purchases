@@ -1,9 +1,9 @@
 import RNPaywalls from "../react-native-purchases-ui/";
 
-async function checkpresentPaywall() {
+async function checkPresentPaywall() {
   const paywallResult: RNPaywalls.PAYWALL_RESULT = await RNPaywalls.presentPaywall();
 }
 
-async function checkpresentPaywallIfNeeded() {
+async function checkPresentPaywallIfNeeded() {
   const paywallResult: RNPaywalls.PAYWALL_RESULT = await RNPaywalls.presentPaywallIfNeeded("entitlement");
 }
