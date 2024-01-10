@@ -33,28 +33,11 @@ const InternalPaywall =
       throw new Error(LINKING_ERROR);
     };
 
-export const Paywall: React.FC<PaywallViewProps> = (props) => (
-  <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
-);
-
 const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
   ? requireNativeComponent<PaywallViewProps>('RCPaywallFooterView')
   : () => {
     throw new Error(LINKING_ERROR);
   };
-
-export const PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, children}) => (
-  <View style={[{flex: 1}, style]}>
-    <ScrollView
-      style={{backgroundColor: '#4b72f6'}}
-      contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
-    >
-      {children}
-    </ScrollView>
-    <InternalPaywallFooterView style={{marginTop: -20}}/>
-  </View>
-);
-
 
 export default class RevenueCatUI {
 
@@ -75,4 +58,19 @@ export default class RevenueCatUI {
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
   }
 
+  public static Paywall: React.FC<PaywallViewProps> = (props) => (
+    <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
+  );
+
+  public static PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, children}) => (
+    <View style={[{flex: 1}, style]}>
+      <ScrollView
+        style={{backgroundColor: '#4b72f6'}}
+        contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
+      >
+        {children}
+      </ScrollView>
+      <InternalPaywallFooterView style={{marginTop: -20}}/>
+    </View>
+  );
 }
