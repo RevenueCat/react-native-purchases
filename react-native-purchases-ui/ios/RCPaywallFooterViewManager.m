@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
-- (void)paywallViewControlleSizeDidChange:(CGSize)size {
+- (void)paywallViewControlle:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size  API_AVAILABLE(ios(15.0)){
     [_bridge.uiManager setSize:size forView:self];
 }
 
