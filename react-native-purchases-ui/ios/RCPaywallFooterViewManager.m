@@ -33,6 +33,11 @@ NS_ASSUME_NONNULL_END
 
 @implementation FooterViewWrapper
 
+- (void)safeAreaInsetsDidChange {
+    [super safeAreaInsetsDidChange];
+    self.footerViewController.additionalSafeAreaInsets = self.safeAreaInsets;
+}
+
 - (instancetype)initWithFooterViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge {
     if ((self = [super initWithFrame:footerViewController.view.bounds])) {
         _bridge = bridge;
@@ -51,7 +56,7 @@ NS_ASSUME_NONNULL_END
     return self;
 }
 
-- (void)paywallViewControlle:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size  API_AVAILABLE(ios(15.0)){
+- (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size  API_AVAILABLE(ios(15.0)){
     [_bridge.uiManager setSize:size forView:self];
 }
 
