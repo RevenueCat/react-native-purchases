@@ -6,8 +6,11 @@
 //
 
 #import "RCPaywallFooterViewManager.h"
+
 @import RevenueCatUI;
 @import PurchasesHybridCommon;
+
+#import "UIViewExtensions.h"
 
 #import <React/RCTShadowView.h>
 #import <React/RCTUIManager.h>
@@ -29,35 +32,47 @@ NS_ASSUME_NONNULL_END
 @property (strong, nonatomic) UIViewController *footerViewController;
 @property (strong, nonatomic) RCTBridge *bridge;
 
+@property (strong) BOOL addedToHierarchy;
+
 @end
 
 @implementation FooterViewWrapper
-
-- (void)safeAreaInsetsDidChange {
-    [super safeAreaInsetsDidChange];
-    self.footerViewController.additionalSafeAreaInsets = self.safeAreaInsets;
-}
 
 - (instancetype)initWithFooterViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge {
     if ((self = [super initWithFrame:footerViewController.view.bounds])) {
         _bridge = bridge;
         _footerViewController = footerViewController;
-
-        [self addSubview:footerViewController.view];
-        footerViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
-        // Set constraints to match the size and position of the footerView to the FooterViewWrapper
-        [NSLayoutConstraint activateConstraints:@[
-            [footerViewController.view.topAnchor constraintEqualToAnchor:self.topAnchor],
-            [footerViewController.view.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
-            [footerViewController.view.leftAnchor constraintEqualToAnchor:self.leftAnchor],
-            [footerViewController.view.rightAnchor constraintEqualToAnchor:self.rightAnchor]
-        ]];
+        _addedToHierarchy = NO;
     }
+
     return self;
 }
 
-- (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size  API_AVAILABLE(ios(15.0)){
+- (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)){
     [_bridge.uiManager setSize:size forView:self];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+
+    if (!self.addedToHierarchy) {
+        UIViewController *parentController = self.parentViewController;
+        if (parentController) {
+            self.footerViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+            [parentController addChildViewController:self.footerViewController];
+            [self addSubview:self.footerViewController.view];
+            [self.footerViewController didMoveToParentViewController:parentController];
+
+            [NSLayoutConstraint activateConstraints:@[
+                [self.footerViewController.view.topAnchor constraintEqualToAnchor:self.topAnchor],
+                [self.footerViewController.view.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
+                [self.footerViewController.view.leftAnchor constraintEqualToAnchor:self.leftAnchor],
+                [self.footerViewController.view.rightAnchor constraintEqualToAnchor:self.rightAnchor]
+            ]];
+
+            self.addedToHierarchy = YES;
+        }
+    }
 }
 
 @end
