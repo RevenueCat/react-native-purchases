@@ -36,7 +36,6 @@ NS_ASSUME_NONNULL_END
 - (instancetype)initWithFooterViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge {
     if ((self = [super initWithFrame:footerViewController.view.bounds])) {
         _bridge = bridge;
-        // TODO: look into retain cycles
         _footerViewController = footerViewController;
 
         [self addSubview:footerViewController.view];
