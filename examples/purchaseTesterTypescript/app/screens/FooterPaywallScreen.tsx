@@ -19,7 +19,7 @@ const FooterPaywallScreen: React.FC<Props> = () => {
   return (
     <SafeAreaView style={styles.container}>
       <RevenueCatUI.PaywallFooterContainerView>
-        <Text>
+        <Text style={{backgroundColor: '#ecf0f1'}}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
           ligula in dolor efficitur accumsan nec vel nisl. Sed vitae lectus eget
           odio volutpat bibendum. Duis condimentum venenatis nisl, nec vulputate

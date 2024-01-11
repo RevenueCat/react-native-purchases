@@ -65,7 +65,6 @@ export default class RevenueCatUI {
   public static PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, children}) => (
     <View style={[{flex: 1}, style]}>
       <ScrollView
-        style={{backgroundColor: '#4b72f6'}}
         contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
       >
         {children}
