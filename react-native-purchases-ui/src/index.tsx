@@ -11,10 +11,10 @@ const LINKING_ERROR =
 
 const RNPaywalls = NativeModules.RNPaywalls;
 
-interface PresentPaywallParams {
+export interface PresentPaywallParams {
 }
 
-type PresentPaywallIfNeededParams = PresentPaywallParams & {
+export type PresentPaywallIfNeededParams = PresentPaywallParams & {
   /**
    * The paywall will only be presented if this entitlement is not active.
    */
