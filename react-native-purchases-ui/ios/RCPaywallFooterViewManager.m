@@ -76,6 +76,9 @@ NS_ASSUME_NONNULL_END
 - (void)layoutSubviews {
     [super layoutSubviews];
 
+    // Need to wait for this view to be in the hierarchy to look for the parent UIVC.
+    // This is required to add a SwiftUI `UIHostingController` to the hierarchy in a way that allows
+    // UIKit to read properties from the environment, like traits and safe area.
     if (!self.addedToHierarchy) {
         UIViewController *parentController = self.parentViewController;
         if (parentController) {
