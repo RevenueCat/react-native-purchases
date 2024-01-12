@@ -1,5 +1,6 @@
 package com.revenuecat.purchases.react.ui
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -18,7 +19,10 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
         get() {
             return when (val currentActivity = currentActivity) {
                 is FragmentActivity -> currentActivity
-                else -> null
+                else -> {
+                    Log.e(NAME, "RevenueCat paywalls require application to use a FragmentActivity")
+                    null
+                }
             }
         }
 
@@ -37,9 +41,7 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
     }
 
     private fun presentPaywall(requiredEntitlementIdentifier: String?, promise: Promise) {
-        val fragment = currentActivityFragment
-            ?: // TODO: log
-            return
+        val fragment = currentActivityFragment ?: return
 
         presentPaywallFromFragment(
             fragment,
