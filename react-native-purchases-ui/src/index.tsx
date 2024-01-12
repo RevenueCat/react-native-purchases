@@ -11,7 +11,10 @@ const LINKING_ERROR =
 
 const RNPaywalls = NativeModules.RNPaywalls;
 
-export interface PresentPaywallIfNeededParams {
+interface PresentPaywallParams {
+}
+
+type PresentPaywallIfNeededParams = PresentPaywallParams & {
   /**
    * The paywall will only be presented if this entitlement is not active.
    */
@@ -27,7 +30,7 @@ export default class RevenueCatUI {
    */
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
-  public static presentPaywall(): Promise<PAYWALL_RESULT> {
+  public static presentPaywall({}: PresentPaywallParams): Promise<PAYWALL_RESULT> {
     // TODO: check iOS/Android version
     return RNPaywalls.presentPaywall();
   }
