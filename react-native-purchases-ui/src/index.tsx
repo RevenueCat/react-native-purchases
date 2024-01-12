@@ -52,14 +52,10 @@ export default class RevenueCatUI {
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
   public static presentPaywall(): Promise<PAYWALL_RESULT> {
-    // leave this
-    // TODO: check iOS/Android version
     return RNPaywalls.presentPaywall();
   }
 
-  // make this an object
   public static presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
-    // TODO: check iOS/Android version
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
   }
 
