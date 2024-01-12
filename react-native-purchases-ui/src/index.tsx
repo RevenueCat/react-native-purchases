@@ -1,4 +1,5 @@
 import {
+  NativeEventEmitter,
   NativeModules,
   Platform,
   requireNativeComponent,
@@ -9,7 +10,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
-import React, { type ReactNode } from "react";
+import React, { type ReactNode, useEffect, useState } from "react";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
@@ -20,6 +21,8 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 const RNPaywalls = NativeModules.RNPaywalls;
+
+const eventEmitter = new NativeEventEmitter(RNPaywalls);
 
 type PaywallViewProps = {
   style?: StyleProp<ViewStyle>;
@@ -49,10 +52,12 @@ export default class RevenueCatUI {
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
   public static presentPaywall(): Promise<PAYWALL_RESULT> {
+    // leave this
     // TODO: check iOS/Android version
     return RNPaywalls.presentPaywall();
   }
 
+  // make this an object
   public static presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
     // TODO: check iOS/Android version
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
@@ -62,14 +67,36 @@ export default class RevenueCatUI {
     <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
   );
 
-  public static PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, children}) => (
-    <View style={[{flex: 1}, style]}>
-      <ScrollView
-        contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
-      >
-        {children}
-      </ScrollView>
-      <InternalPaywallFooterView style={{marginTop: -20}}/>
-    </View>
-  );
+  public static PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, children}) => {
+    // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
+    // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
+    // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
+    // to be hidden behind the rounded corners of the paywall.
+    const [paddingBottom, setPaddingBottom] = useState(20);
+
+    useEffect(() => {
+      const handleSafeAreaInsetsChange = (safeAreaInsets) => {
+        setPaddingBottom(20 + safeAreaInsets.bottom);
+      };
+
+      const subscription = eventEmitter.addListener(
+        'safeAreaInsetsDidChange',
+        handleSafeAreaInsetsChange
+      );
+
+      return () => {
+        subscription.remove();
+      };
+    }, []);
+
+    return (
+      <View style={[{flex: 1}, style]}>
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom}}>
+          {children}
+        </ScrollView>
+        {/*Adding negative margin to the footer view to make it overlap with the extra padding of the scroll*/}
+        <InternalPaywallFooterView style={{marginTop: -20}}/>
+      </View>
+    );
+  };
 }

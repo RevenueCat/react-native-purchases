@@ -16,12 +16,15 @@
 #import <React/RCTUIManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTRootViewDelegate.h>
+#import <React/RCTEventEmitter.h>
+
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FooterViewWrapper : UIView
 
-- (instancetype)initWithFooterViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge;
+- (instancetype)initWithFooterViewController:(UIViewController *)footerViewController 
+                                      bridge:(RCTBridge *)bridge;
 
 @end
 
@@ -42,10 +45,27 @@ NS_ASSUME_NONNULL_END
     if ((self = [super initWithFrame:footerViewController.view.bounds])) {
         _bridge = bridge;
         _footerViewController = footerViewController;
-        _addedToHierarchy = NO;
     }
 
     return self;
+}
+
+- (void)safeAreaInsetsDidChange {
+    [super safeAreaInsetsDidChange];
+
+    // Get the safe area insets, for example
+    UIEdgeInsets safeAreaInsets = self.safeAreaInsets;
+
+//    TODO: figure out a better way of sending event, since this is deprecated
+//    It's probably better to create a singleton from the module that this view manager can call and use to send events
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    [self.bridge.eventDispatcher sendAppEventWithName:@"safeAreaInsetsDidChange"
+                                                 body:@{@"top": @(safeAreaInsets.top),
+                                                        @"left": @(safeAreaInsets.left),
+                                                        @"bottom": @(safeAreaInsets.bottom),
+                                                        @"right": @(safeAreaInsets.right)}];
+#pragma clang diagnostic pop
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)){

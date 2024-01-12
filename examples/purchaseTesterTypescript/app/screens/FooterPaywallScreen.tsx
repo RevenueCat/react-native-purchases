@@ -9,8 +9,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'FooterPaywall'>;
 
 const FooterPaywallScreen: React.FC<Props> = () => {
   return (
-    <RevenueCatUI.PaywallFooterContainerView>
-      <Text style={{backgroundColor: '#ecf0f1'}}>
+    <RevenueCatUI.PaywallFooterContainerView style={{ backgroundColor: '#f8f8f8' }}>
+      <Text>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
         ligula in dolor efficitur accumsan nec vel nisl. Sed vitae lectus eget
         odio volutpat bibendum. Duis condimentum venenatis nisl, nec vulputate

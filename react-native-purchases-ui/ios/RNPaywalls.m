@@ -45,7 +45,7 @@ RCT_EXPORT_MODULE();
 // MARK: -
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[];
+    return @[@"safeAreaInsetsDidChange"];
 }
 
 - (dispatch_queue_t)methodQueue {
