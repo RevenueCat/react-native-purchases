@@ -24,17 +24,26 @@
     "!**/.idea",
     "!**/*.iml",
     "!**/.DS_Store",
-    "!**/.gitignore"
+    "!**/.gitignore",
+    "!react-native-purchases-ui",
+    "!scripts/docs/index.html",
+    "!scripts/setupJest.js"
   ],
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc --watch",
     "test": "jest",
+    "typecheck": "tsc --noEmit",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepare": "tsc",
-    "example": "yarn --cwd examples/purchaseTesterTypescript",
-    "bootstrap": "yarn && yarn example && yarn example pods"
+    "example": "yarn workspace purchasetester",
+    "ui": "yarn workspace react-native-purchases-ui",
+    "bootstrap": "yarn && yarn example pods"
   },
+  "workspaces": [
+    "examples/purchaseTesterTypescript",
+    "react-native-purchases-ui"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revenuecat/react-native-purchases.git",
@@ -76,7 +85,7 @@
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/examples/purchaseTesterTypescript/node_modules",
-      "<rootDir>/lib/"
+      "<rootDir>/dir/"
     ],
     "moduleFileExtensions": [
       "js"
@@ -95,6 +104,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "8.2.1"
+    "@revenuecat/purchases-typescript-internal": "8.10.1"
   }
 }

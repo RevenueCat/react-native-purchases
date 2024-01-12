@@ -19,6 +19,8 @@ import Purchases from 'react-native-purchases';
 import HomeScreen from './app/screens/HomeScreen';
 import CustomerInfoScreen from './app/screens/CustomerInfoScreen';
 import OfferingDetailScreen from './app/screens/OfferingDetailScreen';
+import PaywallScreen from './app/screens/PaywallScreen';
+import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -67,6 +69,8 @@ const App = () => {
           />
           <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
           <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
+          <Stack.Screen name="Paywall" component={PaywallScreen} />
+          <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );

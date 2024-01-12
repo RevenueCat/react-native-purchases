@@ -1,20 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
-import {
-  Alert,
-  Button,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 
-import Purchases, { CustomerInfo, PurchasesOfferings } from 'react-native-purchases';
+import Purchases, {CustomerInfo, PurchasesOfferings} from 'react-native-purchases';
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList'
@@ -73,7 +63,7 @@ const HomeScreen: React.FC<Props> = ({
 
   const displayOfferings = () => {
     const offerings = Object.values(state.offerings?.all ?? {});
-    
+
     const sections = offerings.sort((a, b) => {
       return a.identifier.localeCompare(b.identifier)
     }).map((offering) => {
@@ -126,7 +116,7 @@ const HomeScreen: React.FC<Props> = ({
       ]
     );
   }
-  
+
   const redeemCode = async() => {
     try {
       const rtn = await Purchases.presentCodeRedemptionSheet();
@@ -143,7 +133,7 @@ const HomeScreen: React.FC<Props> = ({
       console.log("Error showing in-app messages: ${error}");
     }
   }
-  
+
   return (
     <SafeAreaView>
       <ScrollView
@@ -168,7 +158,6 @@ const HomeScreen: React.FC<Props> = ({
           </View>
 
           <Divider />
-
           <View>
             <TouchableOpacity
               onPress={makePurchase} >
@@ -189,6 +178,18 @@ const HomeScreen: React.FC<Props> = ({
                 <Text style={styles.otherActions}>
                   Show In-App messages
                 </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Paywall')}>
+              <Text style={styles.otherActions}>
+                Go to Paywall Screen
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('FooterPaywall')}>
+              <Text style={styles.otherActions}>
+                Go to Paywall Screen as Footer
+              </Text>
             </TouchableOpacity>
           </View>
       </ScrollView>
