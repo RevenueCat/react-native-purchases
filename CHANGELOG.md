@@ -24,7 +24,7 @@ async function presentPaywallIfNeeded() {
 }
 ```
 
-You can find more information in [our documentation](https://www.revenuecat.com/docs/displaying-paywalls).
+You can find more information in [our documentation](https://www.revenuecat.com/docs/displaying-paywalls#react-native).
 
 ## 7.6.0
 ### Dependency Updates
