@@ -10,7 +10,7 @@
 @import RevenueCatUI;
 @import PurchasesHybridCommon;
 
-#import "UIViewExtensions.h"
+#import "UIView+Extensions.h"
 
 #import <React/RCTShadowView.h>
 #import <React/RCTUIManager.h>
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_END
 @property (strong, nonatomic) UIViewController *footerViewController;
 @property (strong, nonatomic) RCTBridge *bridge;
 
-@property (strong) BOOL addedToHierarchy;
+@property BOOL addedToHierarchy;
 
 @end
 
