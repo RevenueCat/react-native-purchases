@@ -45,7 +45,7 @@ RCT_EXPORT_MODULE();
 // MARK: -
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[];
+    return @[safeAreaInsetsDidChangeEvent];
 }
 
 - (dispatch_queue_t)methodQueue {
@@ -87,6 +87,11 @@ RCT_REMAP_METHOD(presentPaywallIfNeeded,
 - (void)rejectPaywallsUnsupportedError:(RCTPromiseRejectBlock)reject {
     NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     reject(@"PaywallsUnsupportedCode", @"Paywalls are not supported prior to iOS 15.", nil);
+}
+
++ (BOOL)requiresMainQueueSetup
+{
+    return YES;
 }
 
 @end

@@ -185,6 +185,12 @@ const HomeScreen: React.FC<Props> = ({
                 Go to Paywall Screen
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('FooterPaywall')}>
+              <Text style={styles.otherActions}>
+                Go to Paywall Screen as Footer
+              </Text>
+            </TouchableOpacity>
           </View>
       </ScrollView>
     </SafeAreaView>

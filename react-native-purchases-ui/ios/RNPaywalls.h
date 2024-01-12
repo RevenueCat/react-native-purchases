@@ -8,6 +8,8 @@
 @import PurchasesHybridCommon;
 @import RevenueCat;
 
+static NSString *const safeAreaInsetsDidChangeEvent = @"safeAreaInsetsDidChange";
+
 @interface RNPaywalls : RCTEventEmitter <RCTBridgeModule>
 
 @end
