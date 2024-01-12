@@ -5,6 +5,7 @@
 //  Created by Cesar de la Vega on 29/12/23.
 //
 
+#import "RNPaywalls.h"
 #import "RCPaywallFooterViewManager.h"
 
 @import RevenueCatUI;
@@ -60,7 +61,7 @@ NS_ASSUME_NONNULL_END
 //    It's probably better to create a singleton from the module that this view manager can call and use to send events
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    [self.bridge.eventDispatcher sendAppEventWithName:@"safeAreaInsetsDidChange"
+    [self.bridge.eventDispatcher sendAppEventWithName:safeAreaInsetsDidChangeEvent
                                                  body:@{@"top": @(safeAreaInsets.top),
                                                         @"left": @(safeAreaInsets.left),
                                                         @"bottom": @(safeAreaInsets.bottom),
