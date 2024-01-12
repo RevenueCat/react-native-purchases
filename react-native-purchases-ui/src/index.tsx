@@ -71,8 +71,12 @@ export default class RevenueCatUI {
     const [paddingBottom, setPaddingBottom] = useState(20);
 
     useEffect(() => {
-      const handleSafeAreaInsetsChange = (safeAreaInsets) => {
-        setPaddingBottom(20 + safeAreaInsets.bottom);
+      interface HandleSafeAreaInsetsChangeParams {
+        bottom: number;
+      }
+
+      const handleSafeAreaInsetsChange = ({ bottom }: HandleSafeAreaInsetsChangeParams) => {
+        setPaddingBottom(20 + bottom);
       };
 
       const subscription = eventEmitter.addListener(

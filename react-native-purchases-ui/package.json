@@ -111,7 +111,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "8.10.0",
+    "@revenuecat/purchases-typescript-internal": "8.10.1",
     "react-native-purchases": "7.15.0-rc.1"
   }
 }
