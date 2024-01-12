@@ -42,6 +42,16 @@ const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != n
     throw new Error(LINKING_ERROR);
   };
 
+export interface PresentPaywallParams {
+}
+
+export type PresentPaywallIfNeededParams = PresentPaywallParams & {
+  /**
+   * The paywall will only be presented if this entitlement is not active.
+   */
+  requiredEntitlementIdentifier: string;
+}
+
 export default class RevenueCatUI {
 
   /**
@@ -51,11 +61,11 @@ export default class RevenueCatUI {
    */
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
-  public static presentPaywall(): Promise<PAYWALL_RESULT> {
+  public static presentPaywall({}: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
     return RNPaywalls.presentPaywall();
   }
 
-  public static presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
+  public static presentPaywallIfNeeded({requiredEntitlementIdentifier}: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
   }
 
