@@ -92,7 +92,7 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
         <TouchableOpacity
           style={styles.button}
           onPress={async () => {
-            const paywallResult = await RevenueCatUI.presentPaywallIfNeeded('pro_cat');
+            const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({requiredEntitlementIdentifier: 'pro_cat'});
             console.log('Paywall result: ', paywallResult);
           }}>
           <Text>Present paywall</Text>

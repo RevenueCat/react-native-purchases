@@ -5,5 +5,7 @@ async function checkPresentPaywall() {
 }
 
 async function checkPresentPaywallIfNeeded() {
-  const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywallIfNeeded("entitlement");
+  const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement"
+  });
 }

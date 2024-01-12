@@ -11,6 +11,13 @@ const LINKING_ERROR =
 
 const RNPaywalls = NativeModules.RNPaywalls;
 
+export interface PresentPaywallIfNeededParams {
+  /**
+   * The paywall will only be presented if this entitlement is not active.
+   */
+  requiredEntitlementIdentifier: string;
+}
+
 export default class RevenueCatUI {
 
   /**
@@ -25,7 +32,7 @@ export default class RevenueCatUI {
     return RNPaywalls.presentPaywall();
   }
 
-  public static presentPaywallIfNeeded(requiredEntitlementIdentifier: string): Promise<PAYWALL_RESULT> {
+  public static presentPaywallIfNeeded({requiredEntitlementIdentifier}: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     // TODO: check iOS/Android version
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
   }
