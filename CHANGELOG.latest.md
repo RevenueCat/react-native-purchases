@@ -21,5 +21,6 @@ async function presentPaywallIfNeeded() {
         requiredEntitlementIdentifier: "pro"
     });
 }
+```
 
 You can find more information in [our documentation](https://www.revenuecat.com/docs/displaying-paywalls).

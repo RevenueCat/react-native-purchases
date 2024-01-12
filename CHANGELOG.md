@@ -22,8 +22,10 @@ async function presentPaywallIfNeeded() {
         requiredEntitlementIdentifier: "pro"
     });
 }
+```
 
 You can find more information in [our documentation](https://www.revenuecat.com/docs/displaying-paywalls).
+
 ## 7.6.0
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 8.2.1 (#814) via RevenueCat Git Bot (@RCGitBot)
