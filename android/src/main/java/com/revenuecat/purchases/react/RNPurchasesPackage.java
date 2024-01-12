@@ -18,7 +18,9 @@ public class RNPurchasesPackage implements ReactPackage {
     @NonNull
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new RNPurchasesModule(reactContext));
+        return Arrays.<NativeModule>asList(
+            new RNPurchasesModule(reactContext)
+        );
     }
 
     // Deprecated from RN 0.47

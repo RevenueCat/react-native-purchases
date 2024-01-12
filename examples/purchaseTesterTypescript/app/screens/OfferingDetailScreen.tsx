@@ -1,28 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import {
-  Button,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View,} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors,} from 'react-native/Libraries/NewAppScreen';
 
-import Purchases, { PurchasesPackage, PurchasesStoreProduct, SubscriptionOption, PURCHASE_TYPE, PERIOD_UNIT } from 'react-native-purchases';
+import Purchases, {
+  PURCHASE_TYPE,
+  PurchasesPackage,
+  PurchasesStoreProduct,
+  SubscriptionOption
+} from 'react-native-purchases';
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
