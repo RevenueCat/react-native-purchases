@@ -1,6 +1,7 @@
 files_with_version_number = {
     './.version' => ['{x}'],
     './package.json' => ['"version": "{x}"'],
+    './yarn.lock' => ['react-native-purchases: {x}', '"react-native-purchases@{x},'],
     './react-native-purchases-ui/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
     './ios/RNPurchases.m' => ['return @"{x}"'],
     './android/build.gradle' => ['versionName \'{x}\''],
