@@ -73,12 +73,8 @@ export default class RevenueCatUI {
     return RNPaywalls.presentPaywall(params);
   }
 
-  public static presentPaywallIfNeeded({
-                                         offeringIdentifier,
-                                         displayCloseButton,
-                                         requiredEntitlementIdentifier
-                                       }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier, offeringIdentifier, displayCloseButton);
+  public static presentPaywallIfNeeded(params: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywallIfNeeded(params);
   }
 
   public static Paywall: React.FC<PaywallViewProps> = (props) => (

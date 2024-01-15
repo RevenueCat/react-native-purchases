@@ -82,12 +82,25 @@ RCT_EXPORT_METHOD(presentPaywall:(NSDictionary *)options
     }
 }
 
-RCT_REMAP_METHOD(presentPaywallIfNeeded,
-                 presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier
-                 withResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSDictionary *)options
+                  withResolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
+        NSString *requiredEntitlementIdentifier = options[@"requiredEntitlementIdentifier"];
+        NSString *offeringIdentifier = options[@"offeringIdentifier"];
+        NSNumber *displayCloseButton = options[@"displayCloseButton"];
+        if (displayCloseButton == nil) {
+            [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
+                                                                offeringIdentifier:offeringIdentifier
+                                                              paywallResultHandler:^(NSString *result) {
+                resolve(result);
+            }];
+            return;
+        }
+
         [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
+                                                            offeringIdentifier:offeringIdentifier
+                                                            displayCloseButton:displayCloseButton.boolValue
                                                           paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
