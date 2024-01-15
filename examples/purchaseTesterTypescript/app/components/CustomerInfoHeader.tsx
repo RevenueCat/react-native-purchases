@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import Purchases, { CustomerInfo } from 'react-native-purchases';
-import RevenueCatUI from 'react-native-purchases-ui';
 
 export type Props = {
   appUserID: String | null;
@@ -91,15 +90,6 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
 
         <TouchableOpacity
           style={styles.button}
-          onPress={async () => {
-            const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({requiredEntitlementIdentifier: 'pro_cat'});
-            console.log('Paywall result: ', paywallResult);
-          }}>
-          <Text>Present paywall</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
           onPress={toggleAttributeModalVisibility}>
           <Text>
             Add Attribute
@@ -129,7 +119,7 @@ const CustomerInfoHeader: React.FC<Props> = ({appUserID, customerInfo, isAnonymo
              presentationStyle="overFullScreen">
         <View style={styles.viewWrapper}>
           <View style={styles.modalView}>
-            <Text>Enter attriute key and value</Text>
+            <Text>Enter attribute key and value</Text>
             <TextInput placeholder="Enter key..."
                        autoCapitalize='none'
                        autoCorrect={false}

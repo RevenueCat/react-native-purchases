@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 
 import Purchases, {CustomerInfo, PurchasesOfferings} from 'react-native-purchases';
+import RevenueCatUI from 'react-native-purchases-ui';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
@@ -179,10 +180,29 @@ const HomeScreen: React.FC<Props> = ({
                   Show In-App messages
                 </Text>
             </TouchableOpacity>
+            <Divider />
             <TouchableOpacity
               onPress={() => navigation.navigate('Paywall')}>
               <Text style={styles.otherActions}>
                 Go to Paywall Screen
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={async () => {
+                const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({requiredEntitlementIdentifier: 'pro_cat'});
+                console.log('Paywall result: ', paywallResult);
+              }}>
+              <Text style={styles.otherActions}>
+                Present paywall if needed ("pro_cat")
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={async () => {
+                const paywallResult = await RevenueCatUI.presentPaywall({  });
+                console.log('Paywall result: ', paywallResult);
+              }}>
+              <Text style={styles.otherActions}>
+                Present paywall
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
