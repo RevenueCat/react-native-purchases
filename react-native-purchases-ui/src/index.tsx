@@ -43,6 +43,14 @@ const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != n
   };
 
 export interface PresentPaywallParams {
+  /**
+   * The identifier of the offering to present. If not passed, the current one will be used.
+   */
+  offeringIdentifier?: string;
+  /**
+   * Whether to display the close button or not.
+   */
+  displayCloseButton?: boolean;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -61,12 +69,19 @@ export default class RevenueCatUI {
    */
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
-  public static presentPaywall({}: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywall();
+  public static presentPaywall({
+                                 offeringIdentifier,
+                                 displayCloseButton,
+                               }: PresentPaywallParams): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywall(offeringIdentifier, displayCloseButton);
   }
 
-  public static presentPaywallIfNeeded({requiredEntitlementIdentifier}: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier);
+  public static presentPaywallIfNeeded({
+                                         offeringIdentifier,
+                                         displayCloseButton,
+                                         requiredEntitlementIdentifier
+                                       }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier, offeringIdentifier, displayCloseButton);
   }
 
   public static Paywall: React.FC<PaywallViewProps> = (props) => (
@@ -85,7 +100,7 @@ export default class RevenueCatUI {
         bottom: number;
       }
 
-      const handleSafeAreaInsetsChange = ({ bottom }: HandleSafeAreaInsetsChangeParams) => {
+      const handleSafeAreaInsetsChange = ({bottom}: HandleSafeAreaInsetsChangeParams) => {
         setPaddingBottom(20 + bottom);
       };
 
