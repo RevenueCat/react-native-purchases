@@ -58,40 +58,22 @@ RCT_EXPORT_MODULE();
 
 // MARK: -
 
-RCT_REMAP_METHOD(presentPaywall,
-                 presentPaywallWithResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(presentPaywall:(NSDictionary *)options
+                  withResolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        [self.paywalls presentPaywallWithPaywallResultHandler:^(NSString *result) {
-            resolve(result);
-        }];
-    } else {
-        [self rejectPaywallsUnsupportedError:reject];
-    }
-}
+        NSString *offeringIdentifier = options[@"offeringIdentifier"];
+        NSNumber *displayCloseButton = options[@"displayCloseButton"];
 
-RCT_REMAP_METHOD(presentPaywall,
-                 presentPaywall:(NSString *)offeringId
-                 withResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
-    if (@available(iOS 15.0, *)) {
-        [self.paywalls presentPaywallWithOfferingIdentifier:offeringId
-                                       paywallResultHandler:^(NSString *result) {
-            resolve(result);
-        }];
-    } else {
-        [self rejectPaywallsUnsupportedError:reject];
-    }
-}
-
-RCT_REMAP_METHOD(presentPaywall,
-                 presentPaywall:(nullable NSString *)offeringId
-                 shouldDisplayCloseButton:(NSNumber *)displayCloseButton
-                 withResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
-    if (@available(iOS 15.0, *)) {
-        [self.paywalls presentPaywallWithOfferingIdentifier:offeringId
-                                         displayCloseButton:displayCloseButton
+        if (displayCloseButton == nil) {
+            [self.paywalls presentPaywallWithOfferingIdentifier:offeringIdentifier
+                                           paywallResultHandler:^(NSString *result) {
+                resolve(result);
+            }];
+            return;
+        }
+        [self.paywalls presentPaywallWithOfferingIdentifier:offeringIdentifier
+                                         displayCloseButton:displayCloseButton.boolValue
                                        paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];

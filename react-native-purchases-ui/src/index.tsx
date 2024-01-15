@@ -69,11 +69,8 @@ export default class RevenueCatUI {
    */
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
-  public static presentPaywall({
-                                 offeringIdentifier,
-                                 displayCloseButton,
-                               }: PresentPaywallParams): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywall(offeringIdentifier, displayCloseButton);
+  public static presentPaywall(params: PresentPaywallParams): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywall(params);
   }
 
   public static presentPaywallIfNeeded({

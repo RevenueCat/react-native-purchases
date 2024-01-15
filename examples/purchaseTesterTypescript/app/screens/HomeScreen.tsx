@@ -198,7 +198,10 @@ const HomeScreen: React.FC<Props> = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={async () => {
-                const paywallResult = await RevenueCatUI.presentPaywall({  });
+                const paywallResult = await RevenueCatUI.presentPaywall({
+                  offeringIdentifier: 'default',
+                  displayCloseButton: true,
+                });
                 console.log('Paywall result: ', paywallResult);
               }}>
               <Text style={styles.otherActions}>
