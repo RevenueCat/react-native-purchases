@@ -36,16 +36,29 @@ parameters:
     default: false
 
 commands:
-  install-dependencies:
+  install-dependencies-unix:
     steps:
       - restore_cache:
           keys:
-            - yarn-v2-{{ checksum "yarn.lock" }}
+            - yarn-v2-unix-{{ checksum "yarn.lock" }}
       - run:
           name: Yarn Install
           command: yarn
       - save_cache:
-          key: yarn-v2-{{ checksum "yarn.lock" }}
+          key: yarn-v2-unix-{{ checksum "yarn.lock" }}
+          paths:
+            - .yarn/cache
+
+  install-dependencies-macos:
+    steps:
+      - restore_cache:
+          keys:
+            - yarn-v2-macos-{{ checksum "yarn.lock" }}
+      - run:
+          name: Yarn Install
+          command: yarn
+      - save_cache:
+          key: yarn-v2-macos-{{ checksum "yarn.lock" }}
           paths:
             - .yarn/cache
 
@@ -62,7 +75,7 @@ jobs:
       node_version: '18.2'
     steps:
       - checkout
-      - install-dependencies
+      - install-dependencies-unix
       - run:
           name: Prepare package
           command: yarn prepare
@@ -86,7 +99,7 @@ jobs:
       xcode_version: 14.3.1
     steps:
       - checkout
-      - install-dependencies
+      - install-dependencies-macos
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v1
       - revenuecat/setup-git-credentials
@@ -106,7 +119,7 @@ jobs:
       resource_class: medium
     steps:
       - checkout
-      - install-dependencies
+      - install-dependencies-unix
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
@@ -121,7 +134,7 @@ jobs:
       - run:
           name: Update CocoaPods repo
           command: pod repo update
-      - install-dependencies
+      - install-dependencies-macos
       - run:
           name: Install example dependencies
           command: |
@@ -142,7 +155,7 @@ jobs:
       xcode_version: 14.3.1
     steps:
       - checkout
-      - install-dependencies
+      - install-dependencies-macos
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v1
       - revenuecat/trust-github-key
