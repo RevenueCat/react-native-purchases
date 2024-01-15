@@ -70,6 +70,36 @@ RCT_REMAP_METHOD(presentPaywall,
     }
 }
 
+RCT_REMAP_METHOD(presentPaywall,
+                 presentPaywall:(NSString *)offeringId
+                 withResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 15.0, *)) {
+        [self.paywalls presentPaywallWithOfferingIdentifier:offeringId
+                                       paywallResultHandler:^(NSString *result) {
+            resolve(result);
+        }];
+    } else {
+        [self rejectPaywallsUnsupportedError:reject];
+    }
+}
+
+RCT_REMAP_METHOD(presentPaywall,
+                 presentPaywall:(nullable NSString *)offeringId
+                 shouldDisplayCloseButton:(NSNumber *)displayCloseButton
+                 withResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 15.0, *)) {
+        [self.paywalls presentPaywallWithOfferingIdentifier:offeringId
+                                         displayCloseButton:displayCloseButton
+                                       paywallResultHandler:^(NSString *result) {
+            resolve(result);
+        }];
+    } else {
+        [self rejectPaywallsUnsupportedError:reject];
+    }
+}
+
 RCT_REMAP_METHOD(presentPaywallIfNeeded,
                  presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier
                  withResolve:(RCTPromiseResolveBlock)resolve
