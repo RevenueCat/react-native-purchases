@@ -62,18 +62,17 @@ RCT_EXPORT_METHOD(presentPaywall:(NSDictionary *)options
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
+        // TODO wire offeringIdentifier
         NSString *offeringIdentifier = options[@"offeringIdentifier"];
         NSNumber *displayCloseButton = options[@"displayCloseButton"];
 
         if (displayCloseButton == nil) {
-            [self.paywalls presentPaywallWithOfferingIdentifier:offeringIdentifier
-                                           paywallResultHandler:^(NSString *result) {
+            [self.paywallProxy presentPaywallWithPaywallResultHandler:^(NSString *result) {
                 resolve(result);
             }];
             return;
         }
-        [self.paywalls presentPaywallWithOfferingIdentifier:offeringIdentifier
-                                         displayCloseButton:displayCloseButton.boolValue
+        [self.paywalls presentPaywallWithDisplayCloseButton:displayCloseButton.boolValue
                                        paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
@@ -87,11 +86,11 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSDictionary *)options
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
         NSString *requiredEntitlementIdentifier = options[@"requiredEntitlementIdentifier"];
+        // TODO wire offeringIdentifier
         NSString *offeringIdentifier = options[@"offeringIdentifier"];
         NSNumber *displayCloseButton = options[@"displayCloseButton"];
         if (displayCloseButton == nil) {
             [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
-                                                                offeringIdentifier:offeringIdentifier
                                                               paywallResultHandler:^(NSString *result) {
                 resolve(result);
             }];
@@ -99,7 +98,6 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSDictionary *)options
         }
 
         [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
-                                                            offeringIdentifier:offeringIdentifier
                                                             displayCloseButton:displayCloseButton.boolValue
                                                           paywallResultHandler:^(NSString *result) {
             resolve(result);
