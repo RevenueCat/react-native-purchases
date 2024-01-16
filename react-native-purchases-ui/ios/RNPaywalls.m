@@ -58,11 +58,22 @@ RCT_EXPORT_MODULE();
 
 // MARK: -
 
-RCT_REMAP_METHOD(presentPaywall,
-                 presentPaywallWithResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(presentPaywall:(NSDictionary *)options
+                  withResolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        [self.paywalls presentPaywallWithPaywallResultHandler:^(NSString *result) {
+        // TODO wire offeringIdentifier
+        NSString *offeringIdentifier = options[@"offeringIdentifier"];
+        NSNumber *displayCloseButton = options[@"displayCloseButton"];
+
+        if (displayCloseButton == nil) {
+            [self.paywallProxy presentPaywallWithPaywallResultHandler:^(NSString *result) {
+                resolve(result);
+            }];
+            return;
+        }
+        [self.paywalls presentPaywallWithDisplayCloseButton:displayCloseButton.boolValue
+                                       paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
     } else {
@@ -70,12 +81,24 @@ RCT_REMAP_METHOD(presentPaywall,
     }
 }
 
-RCT_REMAP_METHOD(presentPaywallIfNeeded,
-                 presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier
-                 withResolve:(RCTPromiseResolveBlock)resolve
-                 reject:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSDictionary *)options
+                  withResolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
+        NSString *requiredEntitlementIdentifier = options[@"requiredEntitlementIdentifier"];
+        // TODO wire offeringIdentifier
+        NSString *offeringIdentifier = options[@"offeringIdentifier"];
+        NSNumber *displayCloseButton = options[@"displayCloseButton"];
+        if (displayCloseButton == nil) {
+            [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
+                                                              paywallResultHandler:^(NSString *result) {
+                resolve(result);
+            }];
+            return;
+        }
+
         [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
+                                                            displayCloseButton:displayCloseButton.boolValue
                                                           paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];

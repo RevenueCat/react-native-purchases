@@ -6,6 +6,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
 import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
 
@@ -31,21 +32,53 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod
-    fun presentPaywall(promise: Promise) {
-        presentPaywall(null, promise)
+    fun presentPaywall(
+        options: ReadableMap,
+        promise: Promise
+    ) {
+        val hashMap = options.toHashMap()
+        val offeringIdentifier = hashMap["offeringIdentifier"] as String?
+        val displayCloseButton = hashMap["displayCloseButton"] as Boolean?
+
+        presentPaywall(
+            null,
+            offeringIdentifier,
+            displayCloseButton,
+            promise
+        )
     }
 
     @ReactMethod
-    fun presentPaywallIfNeeded(requiredEntitlementIdentifier: String?, promise: Promise) {
-        presentPaywall(requiredEntitlementIdentifier, promise)
+    fun presentPaywallIfNeeded(
+        options: ReadableMap,
+        promise: Promise
+    ) {
+        val hashMap = options.toHashMap()
+        val requiredEntitlementIdentifier = hashMap["requiredEntitlementIdentifier"] as String?
+        val offeringIdentifier = hashMap["offeringIdentifier"] as String?
+        val displayCloseButton = hashMap["displayCloseButton"] as Boolean?
+
+        presentPaywall(
+            requiredEntitlementIdentifier,
+            offeringIdentifier,
+            displayCloseButton,
+            promise
+        )
     }
 
-    private fun presentPaywall(requiredEntitlementIdentifier: String?, promise: Promise) {
+    private fun presentPaywall(
+        requiredEntitlementIdentifier: String?,
+        offeringIdentifier: String?,
+        displayCloseButton: Boolean?,
+        promise: Promise
+    ) {
         val fragment = currentActivityFragment ?: return
 
+        // TODO wire offeringIdentifier
         presentPaywallFromFragment(
-            fragment,
-            requiredEntitlementIdentifier,
+            fragment = fragment,
+            requiredEntitlementIdentifier = requiredEntitlementIdentifier,
+            shouldDisplayDismissButton = displayCloseButton,
             paywallResultListener = object : PaywallResultListener {
                 override fun onPaywallResult(paywallResult: String) {
                     promise.resolve(paywallResult)
