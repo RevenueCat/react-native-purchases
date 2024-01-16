@@ -9,13 +9,13 @@ import RevenueCatUI, {
 async function checkPresentPaywall() {
   let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({});
   paywallResult = await RevenueCatUI.presentPaywall({
-    offeringIdentifier: "offering",
+    // offeringIdentifier: "offering",
   });
   paywallResult = await RevenueCatUI.presentPaywall({
     displayCloseButton: false,
   });
   paywallResult = await RevenueCatUI.presentPaywall({
-    offeringIdentifier: "offering",
+    // offeringIdentifier: "offering",
     displayCloseButton: false,
   });
 }
@@ -26,7 +26,7 @@ async function checkPresentPaywallIfNeeded() {
   });
   paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement",
-    offeringIdentifier: "offering",
+    // offeringIdentifier: "offering",
   });
   paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement",
@@ -34,19 +34,19 @@ async function checkPresentPaywallIfNeeded() {
   });
   paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement",
-    offeringIdentifier: "offering",
+    // offeringIdentifier: "offering",
     displayCloseButton: false,
   });
 }
 
 function checkPresentPaywallParams(params: PresentPaywallIfNeededParams) {
   const requiredEntitlementIdentifier: string = params.requiredEntitlementIdentifier;
-  const offeringIdentifier: string | undefined = params.offeringIdentifier;
+  // const offeringIdentifier: string | undefined = params.offeringIdentifier;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
 }
 
 function checkPresentPaywallIfNeededParams(params: PresentPaywallParams) {
-  const offeringIdentifier: string | undefined = params.offeringIdentifier;
+  // const offeringIdentifier: string | undefined = params.offeringIdentifier;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
 }
 

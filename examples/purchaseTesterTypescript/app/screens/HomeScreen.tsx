@@ -189,7 +189,11 @@ const HomeScreen: React.FC<Props> = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={async () => {
-                const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({requiredEntitlementIdentifier: 'pro_cat'});
+                const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+                  requiredEntitlementIdentifier: 'pro_cat',
+                  // offeringIdentifier: 'default',
+                  displayCloseButton: true,
+                });
                 console.log('Paywall result: ', paywallResult);
               }}>
               <Text style={styles.otherActions}>
@@ -199,7 +203,7 @@ const HomeScreen: React.FC<Props> = ({
             <TouchableOpacity
               onPress={async () => {
                 const paywallResult = await RevenueCatUI.presentPaywall({
-                  offeringIdentifier: 'default',
+                  // offeringIdentifier: 'default',
                   displayCloseButton: true,
                 });
                 console.log('Paywall result: ', paywallResult);
