@@ -44,10 +44,6 @@ const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != n
 
 export interface PresentPaywallParams {
   /**
-   * The identifier of the offering to present. If not passed, the current one will be used.
-   */
-  offeringIdentifier?: string;
-  /**
    * Whether to display the close button or not.
    */
   displayCloseButton?: boolean;
