@@ -8,6 +8,7 @@ import RevenueCatUI, {
 
 async function checkPresentPaywall() {
   let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({});
+  paywallResult = await RevenueCatUI.presentPaywall();
   paywallResult = await RevenueCatUI.presentPaywall({
     // offeringIdentifier: "offering",
   });
