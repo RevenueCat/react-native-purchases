@@ -14,7 +14,8 @@ files_to_update_phc_version = {
     'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
-    'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
+    'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"'],
+    'yarn.lock' => ['"@revenuecat/purchases-typescript-internal": {x}']
 }
 repo_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
