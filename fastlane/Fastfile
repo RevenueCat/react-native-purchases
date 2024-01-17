@@ -151,6 +151,10 @@ lane :update_hybrid_common do |options|
     open_pr: options[:open_pr] || false,
     automatic_release: options[:automatic_release] || false
   )
+
+  # Update `yarn.lock` too
+  sh('yarn')
+
 end
 
 desc "Generate docs"
