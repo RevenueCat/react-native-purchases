@@ -154,7 +154,9 @@ lane :update_hybrid_common do |options|
   # Update `yarn.lock` too
   sh('yarn install --no-immutable')
 
-  # TODO: push
+  sh("git", "add", "yarn.lock")
+  sh("git", "commit", "-m", "Update yarn.lock")
+  sh("git", "push")
 end
 
 desc "Generate docs"
