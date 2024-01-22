@@ -9,7 +9,7 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
-import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
+import { PAYWALL_RESULT, type PurchasesOffering } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
@@ -47,6 +47,11 @@ export interface PresentPaywallParams {
    * Whether to display the close button or not.
    */
   displayCloseButton?: boolean;
+
+  /**
+   * The offering to load the paywall with. This will be the "current" offering by default.
+   */
+  offering?: PurchasesOffering;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -65,12 +70,19 @@ export default class RevenueCatUI {
    */
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
-  public static presentPaywall(params: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywall(params);
+  public static presentPaywall({
+                                 offering,
+                                 displayCloseButton = true
+                               }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywall(offering?.identifier ?? null, displayCloseButton)
   }
 
-  public static presentPaywallIfNeeded(params: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywallIfNeeded(params);
+  public static presentPaywallIfNeeded({
+                                         requiredEntitlementIdentifier,
+                                         offering,
+                                         displayCloseButton = true
+                                       }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier, offering?.identifier ?? null, displayCloseButton)
   }
 
   public static Paywall: React.FC<PaywallViewProps> = (props) => (
