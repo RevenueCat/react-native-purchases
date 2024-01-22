@@ -1,3 +1,7 @@
+## 7.16.1
+### Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 8.11.2 (#854) via RevenueCat Git Bot (@RCGitBot)
+
 ## 7.16.0
 ### RevenueCatUI
 * Add `displayCloseButton` parameters to functions (#842) via Cesar de la Vega (@vegaro)
