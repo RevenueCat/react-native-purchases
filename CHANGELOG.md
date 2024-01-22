@@ -1,5 +1,7 @@
 ## 7.16.1
-### Dependency Updates
+### RevenueCatUI
+* Fix `presentPaywall` and `presentPaywallIfNeeded` in iOS opening the paywall
+* ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 8.11.2 (#854) via RevenueCat Git Bot (@RCGitBot)
 
 ## 7.16.0
@@ -175,7 +177,7 @@ RevenueCat SDK v7 bumps minimum Android SDK version from Android 4.0 (API level 
 ### Support for InApp Messages
 
 We've added new APIs to support InApp messages both in Android and iOS. You can read more about:
-* [Google Play InApp Messages](https://rev.cat/googleplayinappmessaging) which will show users a snackbar message during grace period and account hold once per day and provide them an opportunity to fix their payment without leaving the app. 
+* [Google Play InApp Messages](https://rev.cat/googleplayinappmessaging) which will show users a snackbar message during grace period and account hold once per day and provide them an opportunity to fix their payment without leaving the app.
 * [App Store InApp messages](https://rev.cat/storekit-message) which will show a modal during grace period once per subscription.
 
 InApp Messages are shown by default in both platforms. If you want to disable this behaviour during configuration of the RevenueCat SDK, setup the `shouldShowInAppMessagesAutomatically` property during configuration to `false`:
