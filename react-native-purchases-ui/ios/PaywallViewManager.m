@@ -8,6 +8,7 @@
 
 #import "PaywallViewManager.h"
 @import PurchasesHybridCommon;
+@import RevenueCatUI;
 
 @implementation PaywallViewManager
 
