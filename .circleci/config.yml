@@ -162,7 +162,7 @@ jobs:
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
     docker:
-      - image: cimg/ruby:3.1.2
+      - image: cimg/ruby:3.3.0-node
     steps:
       - checkout
       - revenuecat/install-gem-unix-dependencies:
