@@ -58,4 +58,18 @@
     }
 }
 
+- (void)setOptions:(NSDictionary *)options {
+    if (@available(iOS 15.0, *)) {
+        NSDictionary *offering = options[@"offering"];
+        if (offering && ![offering isKindOfClass:[NSNull class]]) {
+            NSString *identifier = offering[@"identifier"];
+            if (identifier) {
+                [(RCPaywallViewController *)self.paywallViewController updateWithOfferingIdentifier:identifier];
+            }
+        }
+    } else {
+        NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
+    }
+}
+
 @end

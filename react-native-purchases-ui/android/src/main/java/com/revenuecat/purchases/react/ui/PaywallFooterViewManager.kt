@@ -2,9 +2,11 @@ package com.revenuecat.purchases.react.ui
 
 import android.annotation.SuppressLint
 import androidx.core.view.children
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerModule
+import com.facebook.react.uimanager.annotations.ReactProp
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
@@ -59,6 +61,20 @@ internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>()
         }
 
         return paywallFooterView
+    }
+
+    @ReactProp(name = "options")
+    fun setOptions(view: PaywallFooterView, options: ReadableMap?) {
+        options?.let { props ->
+            if (props.hasKey("offering")) {
+                props.getDynamic("offering").asMap()?.let { offeringMap ->
+                    if (offeringMap.hasKey("identifier")) {
+                        view.setOfferingId(offeringMap.getString("identifier"))
+                    }
+                }
+
+            }
+        }
     }
 
 }

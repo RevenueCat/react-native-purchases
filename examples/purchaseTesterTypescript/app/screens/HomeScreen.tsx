@@ -182,9 +182,15 @@ const HomeScreen: React.FC<Props> = ({
             </TouchableOpacity>
             <Divider />
             <TouchableOpacity
-              onPress={() => navigation.navigate('Paywall')}>
+              onPress={() => navigation.navigate('Paywall', { offering: null })}>
               <Text style={styles.otherActions}>
                 Go to Paywall Screen
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('FooterPaywall', { offering: null })}>
+              <Text style={styles.otherActions}>
+                Go to Paywall Screen as Footer
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -208,12 +214,6 @@ const HomeScreen: React.FC<Props> = ({
               }}>
               <Text style={styles.otherActions}>
                 Present paywall
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('FooterPaywall')}>
-              <Text style={styles.otherActions}>
-                Go to Paywall Screen as Footer
               </Text>
             </TouchableOpacity>
           </View>

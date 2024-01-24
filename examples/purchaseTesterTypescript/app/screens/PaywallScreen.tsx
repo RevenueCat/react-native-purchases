@@ -1,22 +1,24 @@
 import React from 'react';
 import RevenueCatUI from 'react-native-purchases-ui';
 
-import {StyleSheet, View} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { StyleSheet, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Paywall'>;
 
-const PaywallScreen: React.FC<Props> = () => {
+const PaywallScreen: React.FC<Props> = ({ route }: Props) => {
   const styles = StyleSheet.create({
     flex1: {
       flex: 1,
     },
   });
-
   return (
     <View style={styles.flex1}>
-      <RevenueCatUI.Paywall/>
+      <RevenueCatUI.Paywall
+        options={{
+          offering: route.params.offering,
+        }}/>
     </View>
   );
 };

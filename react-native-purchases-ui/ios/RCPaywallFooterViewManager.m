@@ -24,8 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FooterViewWrapper: PaywallViewWrapper
 
-- (instancetype)initWithFooterViewController:(UIViewController *)footerViewController 
-                                      bridge:(RCTBridge *)bridge;
+- (instancetype)initWithPaywallViewController:(UIViewController *)footerViewController
+                                       bridge:(RCTBridge *)bridge;
 
 @end
 
@@ -35,13 +35,11 @@ NS_ASSUME_NONNULL_END
 
 @property (strong, nonatomic) RCTBridge *bridge;
 
-@property BOOL addedToHierarchy;
-
 @end
 
 @implementation FooterViewWrapper
 
-- (instancetype)initWithFooterViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge {
+- (instancetype)initWithPaywallViewController:(UIViewController *)footerViewController bridge:(RCTBridge *)bridge {
     if ((self = [super initWithPaywallViewController:footerViewController])) {
         _bridge = bridge;
     }
@@ -81,6 +79,8 @@ NS_ASSUME_NONNULL_END
 
 @implementation RCPaywallFooterViewManager
 
+RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary);
+
 RCT_EXPORT_MODULE(RCPaywallFooterView)
 
 - (instancetype)init {
@@ -101,8 +101,8 @@ RCT_EXPORT_MODULE(RCPaywallFooterView)
 {
     if (@available(iOS 15.0, *)) {
         UIViewController *footerViewController = [self.proxy createFooterPaywallView];
-        FooterViewWrapper *wrapper = [[FooterViewWrapper alloc] initWithFooterViewController:footerViewController
-                                                                                      bridge:self.bridge];
+        FooterViewWrapper *wrapper = [[FooterViewWrapper alloc] initWithPaywallViewController:footerViewController 
+                                                                                       bridge:self.bridge];
         self.proxy.delegate = wrapper;
 
         return wrapper;
