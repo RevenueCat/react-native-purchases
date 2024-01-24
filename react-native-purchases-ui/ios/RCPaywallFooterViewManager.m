@@ -9,7 +9,7 @@
 #import "RCPaywallFooterViewManager.h"
 
 @import RevenueCatUI;
-@import PurchasesHybridCommon;
+@import PurchasesHybridCommonUI;
 
 #import "UIView+Extensions.h"
 

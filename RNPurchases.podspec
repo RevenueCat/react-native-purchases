@@ -20,10 +20,11 @@ Pod::Spec.new do |spec|
   # developers who don't want to use Cocoapods
   spec.exclude_files = [
     "ios/Purchases.framework",
-    "ios/PurchasesHybridCommon.framework"
+    "ios/PurchasesHybridCommon.framework",
+    "ios/PurchasesHybridCommonUI.framework"
   ]
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommon", '8.12.0'
+  spec.dependency   "PurchasesHybridCommon", '9.0.0'
   spec.swift_version    = '5.7'
 end

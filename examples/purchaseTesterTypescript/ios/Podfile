@@ -31,6 +31,7 @@ target 'PurchaseTester' do
 #  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'
 #  pod 'RevenueCatUI',  :path => '../../../../../purchases-ios/'
 #  pod 'PurchasesHybridCommon', :path => '../../../../../purchases-hybrid-common/'
+#  pod 'PurchasesHybridCommonUI', :path => '../../../../../purchases-hybrid-common/'
 
   use_react_native!(
     :path => config[:reactNativePath],
