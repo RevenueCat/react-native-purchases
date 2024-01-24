@@ -10,6 +10,6 @@
 
 @interface UIView (ParentViewController)
 
-- (UIViewController *)parentViewController;
+@property (nonatomic, readonly) UIViewController *_Nullable parentViewController;
 
 @end

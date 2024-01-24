@@ -7,6 +7,7 @@
 //
 
 #import "PaywallViewManager.h"
+#import "PaywallViewWrapper.h"
 
 @import PurchasesHybridCommonUI;
 @import RevenueCatUI;
@@ -19,7 +20,8 @@ RCT_EXPORT_MODULE(Paywall)
 {
     if (@available(iOS 15.0, *)) {
         PaywallProxy *proxy = [[PaywallProxy alloc] init];
-        return [proxy createPaywallView].view;
+
+        return [[PaywallViewWrapper alloc] initWithPaywallViewController:[proxy createPaywallView]];
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
         return nil;
