@@ -5,7 +5,7 @@
 
 #import <React/RCTEventEmitter.h>
 
-@import PurchasesHybridCommon;
+@import PurchasesHybridCommonUI;
 @import RevenueCat;
 
 static NSString *const safeAreaInsetsDidChangeEvent = @"safeAreaInsetsDidChange";

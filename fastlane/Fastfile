@@ -11,7 +11,7 @@ files_with_version_number = {
 }
 files_to_update_phc_version = {
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
-    'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
+    'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommon", \'{x}\'', '"PurchasesHybridCommonUI", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
     'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
