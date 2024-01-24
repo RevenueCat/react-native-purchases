@@ -10,6 +10,7 @@ import Purchases, {
   PurchasesStoreProduct,
   SubscriptionOption
 } from 'react-native-purchases';
+import RevenueCatUI from 'react-native-purchases-ui';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
@@ -80,16 +81,18 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                 offering: route.params.offering
               })}>
               <Text>
-                Show paywall
+                Present paywall
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => RevenueCatUI.presentPaywall({
-                offering: route.params.offering
+              onPress={() => RevenueCatUI.presentPaywallIfNeeded({
+                offering: route.params.offering,
+                displayCloseButton: false,
+                requiredEntitlementIdentifier: "pro_cat",
               })}>
               <Text>
-                Show paywall as footer
+                Present paywall if needed "pro_cat"
               </Text>
             </TouchableOpacity>
           </View>
