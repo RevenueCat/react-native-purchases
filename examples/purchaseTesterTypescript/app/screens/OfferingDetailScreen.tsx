@@ -10,6 +10,7 @@ import Purchases, {
   PurchasesStoreProduct,
   SubscriptionOption
 } from 'react-native-purchases';
+import RevenueCatUI from 'react-native-purchases-ui';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
@@ -73,7 +74,28 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
           <Text style={styles.value}>
             { JSON.stringify(route.params.offering?.metadata) }
           </Text>
-
+          <View style={styles.paywallsButtonStack}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => RevenueCatUI.presentPaywall({
+                offering: route.params.offering
+              })}>
+              <Text>
+                Present paywall
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => RevenueCatUI.presentPaywallIfNeeded({
+                offering: route.params.offering,
+                displayCloseButton: false,
+                requiredEntitlementIdentifier: "pro_cat",
+              })}>
+              <Text>
+                Present paywall if needed "pro_cat"
+              </Text>
+            </TouchableOpacity>
+          </View>
           {
             route.params.offering?.availablePackages.map((pkg: PurchasesPackage) => {
               return (
@@ -90,13 +112,13 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
 
                     <View style={styles.buttonStack}>
                       <TouchableOpacity
-                        style={styles.packageBuy}
+                        style={styles.actionButton}
                         onPress={() => { purchasePackage(pkg) }}>
                         <Text>Buy Package</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        style={styles.packageBuy}
+                        style={styles.actionButton}
                         onPress={() => { purchaseProduct(pkg.product) }}>
                         <Text>Buy Product</Text>
                       </TouchableOpacity>
@@ -116,7 +138,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                             <Text>{renderOptionInfo(option)}</Text>
                           </View>
                           <TouchableOpacity
-                            style={styles.packageBuy}
+                            style={styles.actionButton}
                             onPress={() => { purchaseSubscriptionOption(option) }}>
                             <Text>Buy</Text>
                           </TouchableOpacity>
@@ -169,7 +191,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexGrow: 1,
   },
-  packageBuy: {
+  actionButton: {
     backgroundColor: "lightcoral",
     paddingVertical: 5,
     paddingHorizontal: 20,
@@ -180,6 +202,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-end",
+    justifyContent: "flex-start",
+    gap: 10,
+    margin: 5,
+    flexGrow: 1,
+  },
+  paywallsButtonStack: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
     justifyContent: "flex-start",
     gap: 10,
     margin: 5,

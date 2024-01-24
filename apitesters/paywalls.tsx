@@ -5,29 +5,30 @@ import RevenueCatUI, {
   PresentPaywallIfNeededParams,
   PresentPaywallParams
 } from "../react-native-purchases-ui";
+import { PurchasesOffering } from "@revenuecat/purchases-typescript-internal";
 
-async function checkPresentPaywall() {
+async function checkPresentPaywall(offering: PurchasesOffering) {
   let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({});
   paywallResult = await RevenueCatUI.presentPaywall();
   paywallResult = await RevenueCatUI.presentPaywall({
-    // offeringIdentifier: "offering",
+    offering: offering,
   });
   paywallResult = await RevenueCatUI.presentPaywall({
     displayCloseButton: false,
   });
   paywallResult = await RevenueCatUI.presentPaywall({
-    // offeringIdentifier: "offering",
+    offering: offering,
     displayCloseButton: false,
   });
 }
 
-async function checkPresentPaywallIfNeeded() {
+async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
   let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement"
   });
   paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement",
-    // offeringIdentifier: "offering",
+    offering: offering,
   });
   paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement",
@@ -35,19 +36,19 @@ async function checkPresentPaywallIfNeeded() {
   });
   paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement",
-    // offeringIdentifier: "offering",
+    offering: offering,
     displayCloseButton: false,
   });
 }
 
 function checkPresentPaywallParams(params: PresentPaywallIfNeededParams) {
   const requiredEntitlementIdentifier: string = params.requiredEntitlementIdentifier;
-  // const offeringIdentifier: string | undefined = params.offeringIdentifier;
+  const offeringIdentifier: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
 }
 
 function checkPresentPaywallIfNeededParams(params: PresentPaywallParams) {
-  // const offeringIdentifier: string | undefined = params.offeringIdentifier;
+  const offeringIdentifier: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
 }
 

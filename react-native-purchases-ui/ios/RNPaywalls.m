@@ -58,21 +58,20 @@ RCT_EXPORT_MODULE();
 
 // MARK: -
 
-RCT_EXPORT_METHOD(presentPaywall:(NSDictionary *)options
+RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
+                  shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        // TODO wire offeringIdentifier
-        NSString *offeringIdentifier = options[@"offeringIdentifier"];
-        NSNumber *displayCloseButton = options[@"displayCloseButton"];
-
-        if (displayCloseButton == nil) {
-            [self.paywallProxy presentPaywallWithPaywallResultHandler:^(NSString *result) {
+        if (offeringIdentifier != nil) {
+            [self.paywalls presentPaywallWithOfferingIdentifier:offeringIdentifier
+                                             displayCloseButton:displayCloseButton
+                                           paywallResultHandler:^(NSString *result) {
                 resolve(result);
             }];
             return;
         }
-        [self.paywalls presentPaywallWithDisplayCloseButton:displayCloseButton.boolValue
+        [self.paywalls presentPaywallWithDisplayCloseButton:displayCloseButton
                                        paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
@@ -81,24 +80,23 @@ RCT_EXPORT_METHOD(presentPaywall:(NSDictionary *)options
     }
 }
 
-RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSDictionary *)options
+RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier
+                  withOfferingIdentifier:(nullable NSString *)offeringIdentifier
+                  shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        NSString *requiredEntitlementIdentifier = options[@"requiredEntitlementIdentifier"];
-        // TODO wire offeringIdentifier
-        NSString *offeringIdentifier = options[@"offeringIdentifier"];
-        NSNumber *displayCloseButton = options[@"displayCloseButton"];
-        if (displayCloseButton == nil) {
+        if (offeringIdentifier != nil) {
             [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
+                                                                offeringIdentifier:offeringIdentifier
+                                                                displayCloseButton:displayCloseButton
                                                               paywallResultHandler:^(NSString *result) {
                 resolve(result);
             }];
             return;
         }
-
         [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
-                                                            displayCloseButton:displayCloseButton.boolValue
+                                                            displayCloseButton:displayCloseButton
                                                           paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];

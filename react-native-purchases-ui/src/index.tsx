@@ -9,7 +9,7 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
-import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
+import { PAYWALL_RESULT, type PurchasesOffering } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
@@ -47,6 +47,11 @@ export interface PresentPaywallParams {
    * Whether to display the close button or not.
    */
   displayCloseButton?: boolean;
+
+  /**
+   * The offering to load the paywall with. This will be the "current" offering by default.
+   */
+  offering?: PurchasesOffering;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -58,6 +63,10 @@ export type PresentPaywallIfNeededParams = PresentPaywallParams & {
 
 export default class RevenueCatUI {
 
+  private static Defaults = {
+    PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON: true
+  }
+
   /**
    * The result of presenting a paywall. This will be the last situation the user experienced before the paywall closed.
    * @readonly
@@ -65,12 +74,42 @@ export default class RevenueCatUI {
    */
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
-  public static presentPaywall(params: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywall(params);
+  /**
+   * Presents a paywall to the user with optional customization.
+   *
+   * This method allows for presenting a specific offering's paywall to the user. The caller
+   * can decide whether to display a close button on the paywall through the `displayCloseButton`
+   * parameter. By default, the close button is displayed.
+   *
+   * @param {PresentPaywallParams} params - The options for presenting the paywall.
+   * @returns {Promise<PAYWALL_RESULT>} A promise that resolves with the result of the paywall presentation.
+   */
+  public static presentPaywall({
+                                 offering,
+                                 displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON
+                               }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywall(offering?.identifier ?? null, displayCloseButton)
   }
 
-  public static presentPaywallIfNeeded(params: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
-    return RNPaywalls.presentPaywallIfNeeded(params);
+  /**
+   * Presents a paywall to the user if a specific entitlement is not already owned.
+   *
+   * This method evaluates whether the user already owns the specified entitlement.
+   * If the entitlement is not owned, it presents a paywall for the specified offering (if provided), or the
+   * default offering (if no offering is provided), to the user. The paywall will be presented
+   * allowing the user the opportunity to purchase the offering. The caller
+   * can decide whether to display a close button on the paywall through the `displayCloseButton`
+   * parameter. By default, the close button is displayed.
+   *
+   * @param {PresentPaywallIfNeededParams} params - The parameters for presenting the paywall.
+   * @returns {Promise<PAYWALL_RESULT>} A promise that resolves with the result of the paywall presentation.
+   */
+  public static presentPaywallIfNeeded({
+                                         requiredEntitlementIdentifier,
+                                         offering,
+                                         displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON
+                                       }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
+    return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier, offering?.identifier ?? null, displayCloseButton)
   }
 
   public static Paywall: React.FC<PaywallViewProps> = (props) => (
