@@ -8,7 +8,8 @@ import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIP
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
 @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
-internal class PaywallViewManager : SimpleViewManager<PaywallView>() {
+internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
+
     companion object {
         const val REACT_CLASS = "Paywall"
     }
@@ -25,17 +26,8 @@ internal class PaywallViewManager : SimpleViewManager<PaywallView>() {
         return PaywallViewShadowNode()
     }
 
-    @ReactProp(name = "options")
-    fun setOptions(view: PaywallView, options: ReadableMap?) {
-        options?.let { props ->
-            if (props.hasKey("offering")) {
-                props.getDynamic("offering").asMap()?.let { offeringMap ->
-                    if (offeringMap.hasKey("identifier")) {
-                        view.setOfferingId(offeringMap.getString("identifier"))
-                    }
-                }
-
-            }
-        }
+    override fun setOfferingId(view: PaywallView, identifier: String) {
+        view.setOfferingId(identifier)
     }
+
 }

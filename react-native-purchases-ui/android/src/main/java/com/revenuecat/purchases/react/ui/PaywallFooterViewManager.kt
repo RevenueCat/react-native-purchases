@@ -11,7 +11,8 @@ import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIP
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
 @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
-internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>() {
+internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterView>() {
+
     override fun getName(): String {
         return "RCPaywallFooterView"
     }
@@ -63,18 +64,8 @@ internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>()
         return paywallFooterView
     }
 
-    @ReactProp(name = "options")
-    fun setOptions(view: PaywallFooterView, options: ReadableMap?) {
-        options?.let { props ->
-            if (props.hasKey("offering")) {
-                props.getDynamic("offering").asMap()?.let { offeringMap ->
-                    if (offeringMap.hasKey("identifier")) {
-                        view.setOfferingId(offeringMap.getString("identifier"))
-                    }
-                }
-
-            }
-        }
+    override fun setOfferingId(view: PaywallFooterView, identifier: String) {
+        view.setOfferingId(identifier)
     }
 
 }
