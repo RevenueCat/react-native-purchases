@@ -32,7 +32,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
   }
 
   const purchaseProduct = (product: PurchasesStoreProduct) => {
-    Purchases.purchaseStoreProduct(product,).then(() => {
+    Purchases.purchaseStoreProduct(product).then(() => {
     }).catch((err) => {
       console.log("error", err)
     });
