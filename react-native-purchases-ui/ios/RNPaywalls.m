@@ -6,6 +6,9 @@
 
 #import "RNPaywalls.h"
 
+@import PurchasesHybridCommonUI;
+@import RevenueCat;
+
 @interface RNPaywalls ()
 
 @property (nonatomic, strong) id paywallProxy;
