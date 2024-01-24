@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
+import com.revenuecat.purchases.hybridcommon.ui.PaywallSource
 import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
 import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
 
@@ -74,7 +75,9 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
             PresentPaywallOptions(
                 requiredEntitlementIdentifier = requiredEntitlementIdentifier,
                 shouldDisplayDismissButton = displayCloseButton,
-                offeringIdentifier = offeringIdentifier,
+                paywallSource = offeringIdentifier?.let {
+                    PaywallSource.OfferingIdentifier(it)
+                } ?: PaywallSource.DefaultOffering,
                 paywallResultListener = object : PaywallResultListener {
                     override fun onPaywallResult(paywallResult: String) {
                         promise.resolve(paywallResult)
