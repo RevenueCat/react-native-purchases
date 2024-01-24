@@ -9,7 +9,7 @@
 
 #import "UIView+Extensions.h"
 
-@import PurchasesHybridCommon;
+@import PurchasesHybridCommonUI;
 @import RevenueCatUI;
 
 @interface PaywallViewWrapper () <RCPaywallViewControllerDelegate>
