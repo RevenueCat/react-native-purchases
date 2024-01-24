@@ -9,7 +9,7 @@
 
 @implementation UIView (ParentViewController)
 
-- (UIViewController *)parentViewController {
+- (UIViewController * _Nullable)parentViewController {
     UIResponder *responder = self;
     while (responder) {
         responder = responder.nextResponder;
