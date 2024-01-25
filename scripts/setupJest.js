@@ -61,6 +61,11 @@ global.customerInfoStub = {
   requestDate: "2019-12-03T00:47:58.000Z",
   managementURL: "https://url.com"
 };
+global.transactionStub = {
+    productIdentifier: "com.revenuecat.purchases_hybrid_common.monthly_19.99_.1_week_intro",
+    transactionIdentifier: "1",
+    purchaseDateMilis: 1000
+};
 
 global.offeringsStub = {
   current: {
