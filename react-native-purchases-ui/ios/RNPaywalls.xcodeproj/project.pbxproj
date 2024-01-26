@@ -1,0 +1,329 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		354FF7CC2B6423CB0050DDFD /* PaywallViewWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 354FF7C12B6423CB0050DDFD /* PaywallViewWrapper.m */; };
+		354FF7CD2B6423CB0050DDFD /* RNPaywalls.m in Sources */ = {isa = PBXBuildFile; fileRef = 354FF7C22B6423CB0050DDFD /* RNPaywalls.m */; };
+		354FF7CE2B6423CB0050DDFD /* RCPaywallFooterViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 354FF7C62B6423CB0050DDFD /* RCPaywallFooterViewManager.m */; };
+		354FF7CF2B6423CB0050DDFD /* PaywallViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 354FF7C72B6423CB0050DDFD /* PaywallViewManager.m */; };
+		354FF7D02B6423CB0050DDFD /* PurchasesPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354FF7C92B6423CB0050DDFD /* PurchasesPlugin.swift */; };
+		354FF7D12B6423CB0050DDFD /* UIView+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 354FF7CA2B6423CB0050DDFD /* UIView+Extensions.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		354FF7B32B6422970050DDFD /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		354FF7B52B6422970050DDFD /* libRNPaywalls.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPaywalls.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		354FF7BF2B6423CA0050DDFD /* RNPaywalls-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNPaywalls-Bridging-Header.h"; sourceTree = "<group>"; };
+		354FF7C02B6423CB0050DDFD /* RNPaywalls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPaywalls.h; sourceTree = "<group>"; };
+		354FF7C12B6423CB0050DDFD /* PaywallViewWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaywallViewWrapper.m; sourceTree = "<group>"; };
+		354FF7C22B6423CB0050DDFD /* RNPaywalls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPaywalls.m; sourceTree = "<group>"; };
+		354FF7C32B6423CB0050DDFD /* RNPaywalls-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RNPaywalls-Bridging-Header.h"; sourceTree = "<group>"; };
+		354FF7C42B6423CB0050DDFD /* PaywallViewWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaywallViewWrapper.h; sourceTree = "<group>"; };
+		354FF7C52B6423CB0050DDFD /* RCPaywallFooterViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCPaywallFooterViewManager.h; sourceTree = "<group>"; };
+		354FF7C62B6423CB0050DDFD /* RCPaywallFooterViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCPaywallFooterViewManager.m; sourceTree = "<group>"; };
+		354FF7C72B6423CB0050DDFD /* PaywallViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaywallViewManager.m; sourceTree = "<group>"; };
+		354FF7C82B6423CB0050DDFD /* UIView+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extensions.h"; sourceTree = "<group>"; };
+		354FF7C92B6423CB0050DDFD /* PurchasesPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchasesPlugin.swift; sourceTree = "<group>"; };
+		354FF7CA2B6423CB0050DDFD /* UIView+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extensions.m"; sourceTree = "<group>"; };
+		354FF7CB2B6423CB0050DDFD /* PaywallViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaywallViewManager.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		354FF7B22B6422970050DDFD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		354FF7AC2B6422970050DDFD = {
+			isa = PBXGroup;
+			children = (
+				354FF7CB2B6423CB0050DDFD /* PaywallViewManager.h */,
+				354FF7C72B6423CB0050DDFD /* PaywallViewManager.m */,
+				354FF7C42B6423CB0050DDFD /* PaywallViewWrapper.h */,
+				354FF7C12B6423CB0050DDFD /* PaywallViewWrapper.m */,
+				354FF7C92B6423CB0050DDFD /* PurchasesPlugin.swift */,
+				354FF7C52B6423CB0050DDFD /* RCPaywallFooterViewManager.h */,
+				354FF7C62B6423CB0050DDFD /* RCPaywallFooterViewManager.m */,
+				354FF7C32B6423CB0050DDFD /* RNPaywalls-Bridging-Header.h */,
+				354FF7C02B6423CB0050DDFD /* RNPaywalls.h */,
+				354FF7C22B6423CB0050DDFD /* RNPaywalls.m */,
+				354FF7C82B6423CB0050DDFD /* UIView+Extensions.h */,
+				354FF7CA2B6423CB0050DDFD /* UIView+Extensions.m */,
+				354FF7B62B6422970050DDFD /* Products */,
+				354FF7BF2B6423CA0050DDFD /* RNPaywalls-Bridging-Header.h */,
+			);
+			sourceTree = "<group>";
+		};
+		354FF7B62B6422970050DDFD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				354FF7B52B6422970050DDFD /* libRNPaywalls.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		354FF7B42B6422970050DDFD /* RNPaywalls */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 354FF7BC2B6422970050DDFD /* Build configuration list for PBXNativeTarget "RNPaywalls" */;
+			buildPhases = (
+				354FF7B12B6422970050DDFD /* Sources */,
+				354FF7B22B6422970050DDFD /* Frameworks */,
+				354FF7B32B6422970050DDFD /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RNPaywalls;
+			productName = RNPaywalls;
+			productReference = 354FF7B52B6422970050DDFD /* libRNPaywalls.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		354FF7AD2B6422970050DDFD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = NO;
+				LastSwiftUpdateCheck = 1520;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					354FF7B42B6422970050DDFD = {
+						CreatedOnToolsVersion = 15.2;
+						LastSwiftMigration = 1520;
+					};
+				};
+			};
+			buildConfigurationList = 354FF7B02B6422970050DDFD /* Build configuration list for PBXProject "RNPaywalls" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 354FF7AC2B6422970050DDFD;
+			productRefGroup = 354FF7B62B6422970050DDFD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				354FF7B42B6422970050DDFD /* RNPaywalls */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		354FF7B12B6422970050DDFD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				354FF7CE2B6423CB0050DDFD /* RCPaywallFooterViewManager.m in Sources */,
+				354FF7CD2B6423CB0050DDFD /* RNPaywalls.m in Sources */,
+				354FF7CC2B6423CB0050DDFD /* PaywallViewWrapper.m in Sources */,
+				354FF7D02B6423CB0050DDFD /* PurchasesPlugin.swift in Sources */,
+				354FF7D12B6423CB0050DDFD /* UIView+Extensions.m in Sources */,
+				354FF7CF2B6423CB0050DDFD /* PaywallViewManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		354FF7BA2B6422970050DDFD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		354FF7BB2B6422970050DDFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		354FF7BD2B6422970050DDFD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNPaywalls-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		354FF7BE2B6422970050DDFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNPaywalls-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		354FF7B02B6422970050DDFD /* Build configuration list for PBXProject "RNPaywalls" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				354FF7BA2B6422970050DDFD /* Debug */,
+				354FF7BB2B6422970050DDFD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		354FF7BC2B6422970050DDFD /* Build configuration list for PBXNativeTarget "RNPaywalls" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				354FF7BD2B6422970050DDFD /* Debug */,
+				354FF7BE2B6422970050DDFD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 354FF7AD2B6422970050DDFD /* Project object */;
+}
