@@ -89,19 +89,9 @@
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/examples/purchaseTesterTypescript/node_modules",
+      "<rootDir>/examples/purchaseTesterTypescript/",
+      "<rootDir>/react-native-purchases-ui/",
       "<rootDir>/dir/"
-    ],
-    "moduleFileExtensions": [
-      "js"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.js$",
-    "testPathIgnorePatterns": [
-      "\\.snap$",
-      "<rootDir>/node_modules/"
     ],
     "cacheDirectory": ".jest/cache",
     "setupFiles": [
