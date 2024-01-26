@@ -761,16 +761,16 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.getPromotionalOffer).toBeCalledTimes(0);
   });
 
-  it("getPromotionalOffer throws error when null discount", () => {
+  it("getPromotionalOffer throws error when null discount", async () => {
     Platform.OS = "ios";
 
-    expect(async () => {
-      await Purchases.getPromotionalOffer(productStub, null)
-    }).rejects.toThrowError();
+    await expect(Purchases.getPromotionalOffer(productStub, null))
+      .rejects
+      .toThrow("A discount is required");
 
-    expect(async () => {
-      Purchases.getPromotionalOffer(productStub)
-    }).rejects.toThrowError();
+    await expect(Purchases.getPromotionalOffer(productStub))
+      .rejects
+      .toThrow("A discount is required");
 
     expect(NativeModules.RNPurchases.getPromotionalOffer).toBeCalledTimes(0);
   });
@@ -793,14 +793,14 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
-  it("purchaseDiscountedProduct throws if null or undefined discount", () => {
-    expect(async () => {
-      Purchases.purchaseDiscountedProduct(productStub, null)
-    }).rejects.toThrow();
+  it("purchaseDiscountedProduct throws if null or undefined discount", async () => {
+    await expect(Purchases.purchaseDiscountedProduct(productStub, null))
+      .rejects
+      .toThrow("A discount is required");
 
-    expect(async () => {
-      Purchases.purchaseDiscountedProduct(productStub)
-    }).rejects.toThrow();
+    await expect(Purchases.purchaseDiscountedProduct(productStub))
+      .rejects
+      .toThrow("A discount is required");
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
@@ -834,14 +834,14 @@ describe("Purchases", () => {
 
   });
 
-  it("purchaseDiscountedPackage throws if null or undefined discount", () => {
-    expect(async () => {
-      await Purchases.purchaseDiscountedPackage(packagestub, null)
-    }).rejects.toThrow();
+  it("purchaseDiscountedPackage throws if null or undefined discount", async () => {
+    await expect(Purchases.purchaseDiscountedPackage(packagestub, null))
+      .rejects
+      .toThrow("A discount is required");
 
-    expect(async () => {
-      await Purchases.purchaseDiscountedPackage(packagestub)
-    }).rejects.toThrow();
+    await expect(Purchases.purchaseDiscountedPackage(packagestub))
+      .rejects
+      .toThrow("A discount is required");
 
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(0);
   });
