@@ -12,9 +12,10 @@
 @import PurchasesHybridCommonUI;
 @import RevenueCatUI;
 
+API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper () <RCPaywallViewControllerDelegate>
 
-@property (strong, nonatomic) UIViewController *paywallViewController;
+@property (strong, nonatomic) RCPaywallViewController *paywallViewController;
 
 @property (nonatomic) BOOL addedToHierarchy;
 
@@ -22,7 +23,7 @@
 
 @implementation PaywallViewWrapper
 
-- (instancetype)initWithPaywallViewController:(UIViewController *)paywallViewController {
+- (instancetype)initWithPaywallViewController:(RCPaywallViewController *)paywallViewController API_AVAILABLE(ios(15.0)){
     NSParameterAssert(paywallViewController);
 
     if ((self = [super initWithFrame:paywallViewController.view.bounds])) {
@@ -64,7 +65,7 @@
         if (offering && ![offering isKindOfClass:[NSNull class]]) {
             NSString *identifier = offering[@"identifier"];
             if (identifier) {
-                [(RCPaywallViewController *)self.paywallViewController updateWithOfferingIdentifier:identifier];
+                [self.paywallViewController updateWithOfferingIdentifier:identifier];
             }
         }
     } else {
