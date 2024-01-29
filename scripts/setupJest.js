@@ -64,7 +64,7 @@ global.customerInfoStub = {
 global.transactionStub = {
     productIdentifier: "com.revenuecat.purchases_hybrid_common.monthly_19.99_.1_week_intro",
     transactionIdentifier: "1",
-    purchaseDateMilis: 1000
+    purchaseDate: "2024-01-29T18:43:21.000Z"
 };
 
 global.offeringsStub = {
