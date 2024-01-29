@@ -198,7 +198,8 @@ describe("Purchases", () => {
   it("purchaseProduct with immediate_and_change_full_price proration mode sends the correct proration mode", async () => {
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
-      customerInfo: customerInfoStub
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
     });
 
     await Purchases.purchasePackage(
@@ -230,7 +231,8 @@ describe("Purchases", () => {
   it("purchaseStoreProduct works", async () => {
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
       purchasedProductIdentifier: "123",
-      customerInfo: customerInfoStub
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
     });
 
     const aProduct = {
@@ -247,7 +249,9 @@ describe("Purchases", () => {
   it("purchasePackage works", async () => {
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
-      customerInfo: customerInfoStub
+      customerInfo: customerInfoStub,
+      transaction: transactionStub,
+      transaction: transactionStub
     });
 
     await Purchases.purchasePackage(
@@ -326,7 +330,8 @@ describe("Purchases", () => {
     Platform.OS = "android";
     NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
       purchasedProductIdentifier: "123",
-      customerInfo: customerInfoStub
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
     });
 
     const billingPeriod = {
