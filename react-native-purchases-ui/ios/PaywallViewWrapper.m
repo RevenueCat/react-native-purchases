@@ -12,9 +12,10 @@
 @import PurchasesHybridCommonUI;
 @import RevenueCatUI;
 
+API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper () <RCPaywallViewControllerDelegate>
 
-@property (strong, nonatomic) UIViewController *paywallViewController;
+@property (strong, nonatomic) RCPaywallViewController *paywallViewController;
 
 @property (nonatomic) BOOL addedToHierarchy;
 
@@ -22,7 +23,7 @@
 
 @implementation PaywallViewWrapper
 
-- (instancetype)initWithPaywallViewController:(UIViewController *)paywallViewController {
+- (instancetype)initWithPaywallViewController:(RCPaywallViewController *)paywallViewController API_AVAILABLE(ios(15.0)){
     NSParameterAssert(paywallViewController);
 
     if ((self = [super initWithFrame:paywallViewController.view.bounds])) {
@@ -55,6 +56,20 @@
 
             self.addedToHierarchy = YES;
         }
+    }
+}
+
+- (void)setOptions:(NSDictionary *)options {
+    if (@available(iOS 15.0, *)) {
+        NSDictionary *offering = options[@"offering"];
+        if (offering && ![offering isKindOfClass:[NSNull class]]) {
+            NSString *identifier = offering[@"identifier"];
+            if (identifier) {
+                [self.paywallViewController updateWithOfferingIdentifier:identifier];
+            }
+        }
+    } else {
+        NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     }
 }
 

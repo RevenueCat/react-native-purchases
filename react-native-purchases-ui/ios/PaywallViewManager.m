@@ -14,6 +14,8 @@
 
 @implementation PaywallViewManager
 
+RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary);
+
 RCT_EXPORT_MODULE(Paywall)
 
 - (UIView *)view

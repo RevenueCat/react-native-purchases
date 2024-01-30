@@ -2,14 +2,17 @@ package com.revenuecat.purchases.react.ui
 
 import android.annotation.SuppressLint
 import androidx.core.view.children
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerModule
+import com.facebook.react.uimanager.annotations.ReactProp
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
 @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
-internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>() {
+internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterView>() {
+
     override fun getName(): String {
         return "RCPaywallFooterView"
     }
@@ -59,6 +62,10 @@ internal class PaywallFooterViewManager : SimpleViewManager<PaywallFooterView>()
         }
 
         return paywallFooterView
+    }
+
+    override fun setOfferingId(view: PaywallFooterView, identifier: String) {
+        view.setOfferingId(identifier)
     }
 
 }

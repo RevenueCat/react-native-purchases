@@ -24,20 +24,15 @@ const RNPaywalls = NativeModules.RNPaywalls;
 
 const eventEmitter = new NativeEventEmitter(RNPaywalls);
 
-type PaywallViewProps = {
-  style?: StyleProp<ViewStyle>;
-  children?: ReactNode;
-};
-
 const InternalPaywall =
   UIManager.getViewManagerConfig('Paywall') != null
-    ? requireNativeComponent<PaywallViewProps>('Paywall')
+    ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
     : () => {
       throw new Error(LINKING_ERROR);
     };
 
 const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<PaywallViewProps>('RCPaywallFooterView')
+  ? requireNativeComponent<FooterPaywallViewProps>('RCPaywallFooterView')
   : () => {
     throw new Error(LINKING_ERROR);
   };
@@ -60,6 +55,31 @@ export type PresentPaywallIfNeededParams = PresentPaywallParams & {
    */
   requiredEntitlementIdentifier: string;
 }
+
+export interface PaywallViewOptions {
+  offering?: PurchasesOffering | null;
+}
+
+export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
+  // Additional properties for FullScreenPaywallViewOptions can be added here if needed in the future
+}
+
+// Currently the same as the base type, but can be extended later if needed
+export interface FooterPaywallViewOptions extends PaywallViewOptions {
+  // Additional properties for FooterPaywallViewOptions can be added here if needed in the future
+}
+
+type FullScreenPaywallViewProps = {
+  style?: StyleProp<ViewStyle>;
+  children?: ReactNode;
+  options?: FullScreenPaywallViewOptions;
+};
+
+type FooterPaywallViewProps = {
+  style?: StyleProp<ViewStyle>;
+  children?: ReactNode;
+  options?: FooterPaywallViewOptions;
+};
 
 export default class RevenueCatUI {
 
@@ -112,11 +132,11 @@ export default class RevenueCatUI {
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier, offering?.identifier ?? null, displayCloseButton)
   }
 
-  public static Paywall: React.FC<PaywallViewProps> = (props) => (
+  public static Paywall: React.FC<FullScreenPaywallViewProps> = (props) => (
     <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
   );
 
-  public static PaywallFooterContainerView: React.FC<PaywallViewProps> = ({style, children}) => {
+  public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({style, children, options}) => {
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
     // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
@@ -148,7 +168,7 @@ export default class RevenueCatUI {
           {children}
         </ScrollView>
         {/*Adding negative margin to the footer view to make it overlap with the extra padding of the scroll*/}
-        <InternalPaywallFooterView style={{marginTop: -20}}/>
+        <InternalPaywallFooterView style={{marginTop: -20}} options={options}/>
       </View>
     );
   };

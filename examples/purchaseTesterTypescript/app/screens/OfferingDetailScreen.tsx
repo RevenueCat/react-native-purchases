@@ -1,18 +1,17 @@
 import React from 'react';
 
-import {ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View,} from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, } from 'react-native';
 
-import {Colors,} from 'react-native/Libraries/NewAppScreen';
+import { Colors, } from 'react-native/Libraries/NewAppScreen';
 
 import Purchases, {
-  PURCHASE_TYPE,
   PurchasesPackage,
   PurchasesStoreProduct,
   SubscriptionOption
 } from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
 
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
@@ -26,27 +25,22 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
   };
 
   const purchasePackage = (pkg: PurchasesPackage) => {
-    Purchases.purchasePackage(pkg).then((result) => {
+    Purchases.purchasePackage(pkg).then(() => {
     }).catch((err) => {
       console.log("error", err)
     });
   }
 
   const purchaseProduct = (product: PurchasesStoreProduct) => {
-    Purchases.purchaseProduct(
-      product.identifier,
-      null,
-      PURCHASE_TYPE.SUBS,
-      null,
-      product.presentedOfferingIdentifier,
-      ).then((result) => {
+    Purchases.purchaseStoreProduct(product).then((result) => {
+      console.log("success", result)
     }).catch((err) => {
       console.log("error", err)
     });
   }
 
   const purchaseSubscriptionOption = (option: SubscriptionOption) => {
-    Purchases.purchaseSubscriptionOption(option).then((result) => {
+    Purchases.purchaseSubscriptionOption(option).then(() => {
     }).catch((err) => {
       console.log("error", err)
     });
@@ -93,6 +87,20 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
               })}>
               <Text>
                 Present paywall if needed "pro_cat"
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => navigation.navigate('Paywall', { offering: route.params.offering })}>
+              <Text>
+                Show paywall
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => navigation.navigate('FooterPaywall', { offering: route.params.offering })}>
+              <Text>
+                Show paywall as footer
               </Text>
             </TouchableOpacity>
           </View>
