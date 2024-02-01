@@ -9,7 +9,12 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
-import { PAYWALL_RESULT, type PurchasesOffering } from "@revenuecat/purchases-typescript-internal";
+import {
+  type CustomerInfo,
+  PAYWALL_RESULT, type PurchasesError,
+  type PurchasesOffering,
+  type PurchasesPackage, type PurchasesStoreTransaction
+} from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
@@ -83,6 +88,16 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  onPurchaseStarted?: (aPackage: PurchasesPackage) => void;
+  onPurchaseCompleted?: ({
+                           customerInfo,
+                           storeTransaction
+  } : {customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction}) => void;
+  onPurchaseError?: (error: PurchasesError) => void;
+  onPurchaseCancelled?: () => void;
+  onRestoreStarted?: () => void;
+  onRestoreCompleted?: (customerInfo: CustomerInfo) => void;
+  onRestoreError?: (error: PurchasesError) => void;
 };
 
 export default class RevenueCatUI {
@@ -140,7 +155,17 @@ export default class RevenueCatUI {
     <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
   );
 
-  public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({style, children, options}) => {
+  public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
+                                                                                  style,
+                                                                                  children,
+                                                                                  options,
+                                                                                  onPurchaseStarted,
+                                                                                  onPurchaseCompleted,
+                                                                                  onPurchaseError,
+                                                                                  onPurchaseCancelled,
+                                                                                  onRestoreStarted,
+                                                                                  onRestoreCompleted,
+                                                                                  onRestoreError,}) => {
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
     // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
@@ -172,7 +197,17 @@ export default class RevenueCatUI {
           {children}
         </ScrollView>
         {/*Adding negative margin to the footer view to make it overlap with the extra padding of the scroll*/}
-        <InternalPaywallFooterView style={{marginTop: -20}} options={options}/>
+        <InternalPaywallFooterView
+          style={{marginTop: -20}}
+          options={options}
+          onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+          onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+          onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+          onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+          onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+          onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+          onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        />
       </View>
     );
   };

@@ -4,15 +4,56 @@ import RevenueCatUI from 'react-native-purchases-ui';
 import { Text } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList';
+import {
+  CustomerInfo,
+  PurchasesError,
+  PurchasesPackage,
+  PurchasesStoreTransaction
+} from "@revenuecat/purchases-typescript-internal";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FooterPaywall'>;
 
-const FooterPaywallScreen: React.FC<Props> = ({ route, navigation }: Props) => {
+const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
+  // Example handlers for the events
+  const onPurchaseStarted = (aPackage: PurchasesPackage) => {
+    console.log('Purchase started for package:', aPackage);
+  };
+
+  const onPurchaseCompleted = (customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction) => {
+    console.log('Purchase completed:', customerInfo, storeTransaction);
+  };
+
+  const onPurchaseError = (error: PurchasesError) => {
+    console.error('Purchase error:', error);
+  };
+
+  const onPurchaseCancelled = () => {
+    console.log('Purchase was cancelled');
+  };
+
+  const onRestoreStarted = () => {
+    console.log('Restore started');
+  };
+
+  const onRestoreCompleted = (customerInfo: CustomerInfo) => {
+    console.log('Restore completed:', customerInfo);
+  };
+
+  const onRestoreError = (error: PurchasesError) => {
+    console.error('Restore error:', error);
+  };
   return (
     <RevenueCatUI.PaywallFooterContainerView style={{backgroundColor: '#f8f8f8'}}
                                              options={{
                                                offering: route.params.offering,
-                                             }}>
+                                             }}
+                                             onPurchaseStarted={onPurchaseStarted}
+                                             onPurchaseCompleted={onPurchaseCompleted}
+                                             onPurchaseError={onPurchaseError}
+                                             onPurchaseCancelled={onPurchaseCancelled}
+                                             onRestoreStarted={onRestoreStarted}
+                                             onRestoreCompleted={onRestoreCompleted}
+                                             onRestoreError={onRestoreError}>
       <Text>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
         ligula in dolor efficitur accumsan nec vel nisl. Sed vitae lectus eget
