@@ -1,3 +1,21 @@
+## 7.19.0
+### Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 9.6.0 (#897) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 7.5.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.5.0)
+  * [iOS 4.35.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.35.0)
+  * [iOS 4.34.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.34.0)
+* Bump cocoapods from 1.15.0 to 1.15.1 (#895) via dependabot[bot] (@dependabot[bot])
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 9.5.0 (#893) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 7.5.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.5.0)
+  * [iOS 4.35.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.35.0)
+  * [iOS 4.34.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.34.0)
+* Upgrade purchase tester dependencies to upgrade JSON5 (#889) via Toni Rico (@tonidero)
+* Bump danger from 9.4.2 to 9.4.3 (#890) via dependabot[bot] (@dependabot[bot])
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 9.4.0 (#888) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 7.5.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.5.0)
+  * [iOS 4.35.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.35.0)
+  * [iOS 4.34.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.34.0)
+
 ## 7.18.0
 ### RevenueCatUI
 * Add `offering` option to paywall views (#850) via Cesar de la Vega (@vegaro)
