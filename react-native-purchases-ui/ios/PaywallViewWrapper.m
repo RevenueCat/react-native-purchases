@@ -13,7 +13,7 @@
 @import RevenueCatUI;
 
 API_AVAILABLE(ios(15.0))
-@interface PaywallViewWrapper () <RCPaywallViewControllerDelegate>
+@interface PaywallViewWrapper () <RCPaywallViewControllerDelegateWrapper>
 
 @property (strong, nonatomic) RCPaywallViewController *paywallViewController;
 
@@ -72,5 +72,38 @@ API_AVAILABLE(ios(15.0))
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     }
 }
+
+- (void)                paywallViewController:(RCPaywallViewController *)controller
+didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
+                        transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {
+    self.onPurchaseCompleted(@{
+        @"customerInfo": customerInfoDictionary,
+        @"storeTransaction": transactionDictionary,
+    });
+}
+
+- (void)paywallViewControllerDidCancelPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    self.onPurchaseCancelled(@{});
+}
+
+- (void)          paywallViewController:(RCPaywallViewController *)controller
+   didFailPurchasingWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
+    self.onPurchaseError(errorDictionary);
+}
+
+- (void)               paywallViewController:(RCPaywallViewController *)controller
+didFinishRestoringWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
+    self.onRestoreCompleted(customerInfoDictionary);
+}
+
+- (void)      paywallViewController:(RCPaywallViewController *)controller
+didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
+    self.onRestoreError(errorDictionary);
+}
+
+- (void) paywallViewControllerWasDismissed:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    self.onDismiss(@{});
+}
+
 
 @end

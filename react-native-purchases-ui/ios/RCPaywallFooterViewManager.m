@@ -17,8 +17,6 @@
 #import <React/RCTUIManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTRootViewDelegate.h>
-#import <React/RCTEventEmitter.h>
-
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -34,14 +32,6 @@ NS_ASSUME_NONNULL_END
 @interface FooterViewWrapper () <RCPaywallViewControllerDelegateWrapper>
 
 @property (strong, nonatomic) RCTBridge *bridge;
-
-@property (nonatomic, copy) RCTDirectEventBlock onPurchaseStarted;
-@property (nonatomic, copy) RCTDirectEventBlock onPurchaseCompleted;
-@property (nonatomic, copy) RCTDirectEventBlock onPurchaseError;
-@property (nonatomic, copy) RCTDirectEventBlock onPurchaseCancelled;
-@property (nonatomic, copy) RCTDirectEventBlock onRestoreStarted;
-@property (nonatomic, copy) RCTDirectEventBlock onRestoreCompleted;
-@property (nonatomic, copy) RCTDirectEventBlock onRestoreError;
 
 @end
 
@@ -71,38 +61,6 @@ NS_ASSUME_NONNULL_END
                                                         @"bottom": @(safeAreaInsets.bottom),
                                                         @"right": @(safeAreaInsets.right)}];
 #pragma clang diagnostic pop
-}
-
-- (void)                paywallViewController:(RCPaywallViewController *)controller
-didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
-                        transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseCompleted(@{
-        @"customerInfo": customerInfoDictionary,
-        @"storeTransaction": transactionDictionary,
-    });
-}
-
-- (void)paywallViewControllerDidCancelPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseCancelled(@{});
-}
-
-- (void)          paywallViewController:(RCPaywallViewController *)controller
-   didFailPurchasingWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseError(errorDictionary);
-}
-
-- (void)               paywallViewController:(RCPaywallViewController *)controller
-didFinishRestoringWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreCompleted(customerInfoDictionary);
-}
-
-- (void)      paywallViewController:(RCPaywallViewController *)controller
-didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreError(errorDictionary);
-}
-
-- (void) paywallViewControllerWasDismissed:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    // TODO
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)) {

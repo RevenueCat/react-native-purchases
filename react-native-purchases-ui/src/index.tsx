@@ -82,6 +82,7 @@ type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
+  // Only Android
   onPurchaseStarted?: (aPackage: PurchasesPackage) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -89,6 +90,7 @@ type FullScreenPaywallViewProps = {
                          } : {customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction}) => void;
   onPurchaseError?: (error: PurchasesError) => void;
   onPurchaseCancelled?: () => void;
+  // Only Android
   onRestoreStarted?: () => void;
   onRestoreCompleted?: (customerInfo: CustomerInfo) => void;
   onRestoreError?: (error: PurchasesError) => void;
@@ -99,6 +101,7 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  // Only Android
   onPurchaseStarted?: (aPackage: PurchasesPackage) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -106,6 +109,7 @@ type FooterPaywallViewProps = {
   } : {customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction}) => void;
   onPurchaseError?: (error: PurchasesError) => void;
   onPurchaseCancelled?: () => void;
+  // Only Android
   onRestoreStarted?: () => void;
   onRestoreCompleted?: (customerInfo: CustomerInfo) => void;
   onRestoreError?: (error: PurchasesError) => void;
