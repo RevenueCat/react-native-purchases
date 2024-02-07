@@ -1,6 +1,7 @@
 package com.revenuecat.purchases.react.ui
 
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
@@ -17,6 +18,18 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallView {
         val paywallView = PaywallView(themedReactContext)
+
+        @Suppress("DEPRECATION")
+        paywallView.setDismissHandler {
+            themedReactContext
+                .getJSModule(RCTEventEmitter::class.java)
+                .receiveEvent(
+                    paywallView.id,
+                    "onDismiss",
+                    null
+                )
+        }
+
         return paywallView
     }
 

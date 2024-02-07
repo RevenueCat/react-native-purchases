@@ -1,20 +1,9 @@
 package com.revenuecat.purchases.react.ui
 
-import android.annotation.SuppressLint
 import androidx.core.view.children
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.WritableNativeMap
-import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.UIManagerModule
-import com.facebook.react.uimanager.events.Event
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import com.facebook.react.uimanager.events.RCTModernEventEmitter
-import com.facebook.react.uimanager.events.ReactEventEmitter
-import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
-import com.revenuecat.purchases.react.ui.RNPurchasesConverters.convertMapToWriteableMap
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
@@ -71,6 +60,17 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
         paywallFooterView.setPaywallListener(
             createPaywallListenerWrapper(themedReactContext, paywallFooterView)
         )
+
+        @Suppress("DEPRECATION")
+        paywallFooterView.setDismissHandler {
+            themedReactContext
+                .getJSModule(RCTEventEmitter::class.java)
+                .receiveEvent(
+                    paywallFooterView.id,
+                    "onDismiss",
+                    null
+                )
+        }
 
         return paywallFooterView
     }

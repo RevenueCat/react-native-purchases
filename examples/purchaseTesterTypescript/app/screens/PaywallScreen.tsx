@@ -13,7 +13,7 @@ import {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Paywall'>;
 
-const PaywallScreen: React.FC<Props> = ({ route }: Props) => {
+const PaywallScreen: React.FC<Props> = ({route}: Props) => {
   // Example handlers for the events
   const onPurchaseStarted = (aPackage: PurchasesPackage) => {
     console.log('Purchase started for package:', aPackage);
@@ -42,11 +42,17 @@ const PaywallScreen: React.FC<Props> = ({ route }: Props) => {
   const onRestoreError = (error: PurchasesError) => {
     console.error('Restore error:', error);
   };
+
+  const onDismiss = () => {
+    console.error('Dismissed');
+  };
+
   const styles = StyleSheet.create({
     flex1: {
       flex: 1,
     },
   });
+
   return (
     <View style={styles.flex1}>
       <RevenueCatUI.Paywall
@@ -60,6 +66,7 @@ const PaywallScreen: React.FC<Props> = ({ route }: Props) => {
         onRestoreStarted={onRestoreStarted}
         onRestoreCompleted={onRestoreCompleted}
         onRestoreError={onRestoreError}
+        onDismiss={onDismiss}
       />
     </View>
   );

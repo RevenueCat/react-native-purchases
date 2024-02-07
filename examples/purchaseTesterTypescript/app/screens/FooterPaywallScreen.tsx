@@ -42,6 +42,11 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
   const onRestoreError = (error: PurchasesError) => {
     console.error('Restore error:', error);
   };
+
+  const onDismiss = () => {
+    console.error('Dismissed');
+  };
+
   return (
     <RevenueCatUI.PaywallFooterContainerView style={{backgroundColor: '#f8f8f8'}}
                                              options={{
@@ -53,7 +58,8 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
                                              onPurchaseCancelled={onPurchaseCancelled}
                                              onRestoreStarted={onRestoreStarted}
                                              onRestoreCompleted={onRestoreCompleted}
-                                             onRestoreError={onRestoreError}>
+                                             onRestoreError={onRestoreError}
+                                             onDismiss={onDismiss}>
       <Text>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
         ligula in dolor efficitur accumsan nec vel nisl. Sed vitae lectus eget
