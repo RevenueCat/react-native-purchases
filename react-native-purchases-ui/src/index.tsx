@@ -82,6 +82,17 @@ type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
+  onPurchaseStarted?: (aPackage: PurchasesPackage) => void;
+  onPurchaseCompleted?: ({
+                           customerInfo,
+                           storeTransaction
+                         } : {customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction}) => void;
+  onPurchaseError?: (error: PurchasesError) => void;
+  onPurchaseCancelled?: () => void;
+  onRestoreStarted?: () => void;
+  onRestoreCompleted?: (customerInfo: CustomerInfo) => void;
+  onRestoreError?: (error: PurchasesError) => void;
+  onDismiss?: () => void;
 };
 
 type FooterPaywallViewProps = {
@@ -98,6 +109,7 @@ type FooterPaywallViewProps = {
   onRestoreStarted?: () => void;
   onRestoreCompleted?: (customerInfo: CustomerInfo) => void;
   onRestoreError?: (error: PurchasesError) => void;
+  onDismiss?: () => void;
 };
 
 export default class RevenueCatUI {
@@ -151,8 +163,29 @@ export default class RevenueCatUI {
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier, offering?.identifier ?? null, displayCloseButton)
   }
 
-  public static Paywall: React.FC<FullScreenPaywallViewProps> = (props) => (
-    <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
+  public static Paywall: React.FC<FullScreenPaywallViewProps> = ({
+                                                                   style,
+                                                                   children,
+                                                                   options,
+                                                                   onPurchaseStarted,
+                                                                   onPurchaseCompleted,
+                                                                   onPurchaseError,
+                                                                   onPurchaseCancelled,
+                                                                   onRestoreStarted,
+                                                                   onRestoreCompleted,
+                                                                   onRestoreError,
+                                                                   onDismiss,}) => (
+    <InternalPaywall  options={options}
+                      children={children}
+                      onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+                      onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+                      onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+                      onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+                      onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+                      onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+                      onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+                      onDismiss={() => onDismiss && onDismiss()}
+                      style={[{flex: 1}, style]}/>
   );
 
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
@@ -165,7 +198,8 @@ export default class RevenueCatUI {
                                                                                   onPurchaseCancelled,
                                                                                   onRestoreStarted,
                                                                                   onRestoreCompleted,
-                                                                                  onRestoreError,}) => {
+                                                                                  onRestoreError,
+                                                                                  onDismiss,}) => {
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
     // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
@@ -207,6 +241,7 @@ export default class RevenueCatUI {
           onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
           onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
           onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+          onDismiss={() => onDismiss && onDismiss()}
         />
       </View>
     );

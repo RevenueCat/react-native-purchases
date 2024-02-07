@@ -56,20 +56,9 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
                     }
                 }
             }
-        }
-        paywallFooterView.setPaywallListener(
-            createPaywallListenerWrapper(themedReactContext, paywallFooterView)
-        )
-
-        @Suppress("DEPRECATION")
-        paywallFooterView.setDismissHandler {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    paywallFooterView.id,
-                    "onDismiss",
-                    null
-                )
+        }.also {
+            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
+            it.setDismissHandler(getDismissHandler(themedReactContext, it))
         }
 
         return paywallFooterView

@@ -19,7 +19,9 @@ const PaywallScreen: React.FC<Props> = ({route}: Props) => {
     console.log('Purchase started for package:', aPackage);
   };
 
-  const onPurchaseCompleted = (customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction) => {
+  const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
+    customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
+  }) => {
     console.log('Purchase completed:', customerInfo, storeTransaction);
   };
 

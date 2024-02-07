@@ -17,20 +17,10 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
     }
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallView {
-        val paywallView = PaywallView(themedReactContext)
-
-        @Suppress("DEPRECATION")
-        paywallView.setDismissHandler {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    paywallView.id,
-                    "onDismiss",
-                    null
-                )
+        return PaywallView(themedReactContext).also {
+            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
+            it.setDismissHandler(getDismissHandler(themedReactContext, it))
         }
-
-        return paywallView
     }
 
     override fun createShadowNodeInstance(): PaywallViewShadowNode {

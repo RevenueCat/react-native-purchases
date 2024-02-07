@@ -9,6 +9,7 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
+import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
 
@@ -120,6 +121,22 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 )
         }
 
+    }
+
+    @Suppress("DEPRECATION")
+    internal fun getDismissHandler(
+        themedReactContext: ThemedReactContext,
+        view: T
+    ): (() -> Unit) {
+        return {
+            themedReactContext
+                .getJSModule(RCTEventEmitter::class.java)
+                .receiveEvent(
+                    view.id,
+                    "onDismiss",
+                    null
+                )
+        }
     }
 
     private fun MapBuilder.Builder<String, Any>.putEvent(
