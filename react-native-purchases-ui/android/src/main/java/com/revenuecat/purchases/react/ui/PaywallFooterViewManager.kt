@@ -16,7 +16,7 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
     }
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallFooterView {
-        val paywallFooterView: PaywallFooterView = object : PaywallFooterView(themedReactContext) {
+        return object : PaywallFooterView(themedReactContext) {
 
             // This is required so the change from Loading to Loaded resizes the view
             // https://github.com/facebook/react-native/issues/17968#issuecomment-1672111483
@@ -60,8 +60,6 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
             it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
             it.setDismissHandler(getDismissHandler(themedReactContext, it))
         }
-
-        return paywallFooterView
     }
 
     override fun setOfferingId(view: PaywallFooterView, identifier: String) {

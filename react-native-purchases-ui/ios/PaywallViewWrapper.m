@@ -83,7 +83,7 @@ didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictio
 }
 
 - (void)paywallViewControllerDidCancelPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseCancelled(@{});
+    self.onPurchaseCancelled(nil);
 }
 
 - (void)          paywallViewController:(RCPaywallViewController *)controller
@@ -102,7 +102,7 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
 }
 
 - (void) paywallViewControllerWasDismissed:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    self.onDismiss(@{});
+    self.onDismiss(nil);
 }
 
 
