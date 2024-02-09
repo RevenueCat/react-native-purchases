@@ -46,7 +46,7 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
   };
 
   const onDismiss = () => {
-    console.error('Dismissed');
+    console.log('Dismissed');
   };
 
   return (

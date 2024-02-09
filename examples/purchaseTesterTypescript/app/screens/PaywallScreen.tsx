@@ -46,7 +46,7 @@ const PaywallScreen: React.FC<Props> = ({route}: Props) => {
   };
 
   const onDismiss = () => {
-    console.error('Dismissed');
+    console.log('Dismissed');
   };
 
   const styles = StyleSheet.create({
