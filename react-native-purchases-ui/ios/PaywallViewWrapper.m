@@ -73,6 +73,13 @@ API_AVAILABLE(ios(15.0))
     }
 }
 
+- (void) paywallViewControllerDidStartPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    // TODO We need to send the package being purchased to match Android
+    self.onPurchaseStarted(@{
+        @"package": [NSNull null]
+    });
+}
+
 - (void)                paywallViewController:(RCPaywallViewController *)controller
 didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
                         transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {

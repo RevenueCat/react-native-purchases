@@ -55,7 +55,12 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 .receiveEvent(
                     view.id,
                     "onPurchaseStarted",
-                    RNPurchasesConverters.convertMapToWriteableMap(rcPackage)
+                    WritableNativeMap().apply {
+                        putMap(
+                            "package",
+                            RNPurchasesConverters.convertMapToWriteableMap(rcPackage)
+                        )
+                    }
                 )
         }
 
@@ -81,7 +86,12 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 .getJSModule(RCTEventEmitter::class.java)
                 .receiveEvent(
                     view.id, "onPurchaseError",
-                    RNPurchasesConverters.convertMapToWriteableMap(error)
+                    WritableNativeMap().apply {
+                        putMap(
+                            "error",
+                            RNPurchasesConverters.convertMapToWriteableMap(error)
+                        )
+                    }
                 )
         }
 
@@ -107,7 +117,12 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 .receiveEvent(
                     view.id,
                     "onRestoreCompleted",
-                    RNPurchasesConverters.convertMapToWriteableMap(customerInfo)
+                    WritableNativeMap().apply {
+                        putMap(
+                            "customerInfo",
+                            RNPurchasesConverters.convertMapToWriteableMap(customerInfo)
+                        )
+                    }
                 )
         }
 
@@ -117,7 +132,12 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 .receiveEvent(
                     view.id,
                     "onRestoreError",
-                    RNPurchasesConverters.convertMapToWriteableMap(error)
+                    WritableNativeMap().apply {
+                        putMap(
+                            "error",
+                            RNPurchasesConverters.convertMapToWriteableMap(error)
+                        )
+                    }
                 )
         }
 
