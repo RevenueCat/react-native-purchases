@@ -68,6 +68,11 @@ API_AVAILABLE(ios(15.0))
                 [self.paywallViewController updateWithOfferingIdentifier:identifier];
             }
         }
+        
+        NSString *fontFamily = options[@"fontFamily"];
+        if (fontFamily && [fontFamily isKindOfClass:[NSString class]] && fontFamily.length > 0) {
+            [self.paywallViewController updateFontWithFontName:fontFamily];
+        }
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     }
