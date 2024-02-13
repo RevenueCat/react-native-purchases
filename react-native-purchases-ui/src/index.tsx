@@ -13,7 +13,7 @@ import {
   type CustomerInfo,
   PAYWALL_RESULT, type PurchasesError,
   type PurchasesOffering,
-  type PurchasesPackage, type PurchasesStoreTransaction
+  type PurchasesStoreTransaction
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 
