@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-@interface FooterViewWrapper () <RCPaywallViewControllerDelegateWrapper>
+@interface FooterViewWrapper ()
 
 @property (strong, nonatomic) RCTBridge *bridge;
 
@@ -79,13 +79,12 @@ NS_ASSUME_NONNULL_END
 
 RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary);
 
-RCT_EXPORT_VIEW_PROPERTY(onPurchaseStarted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchaseCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchaseError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchaseCancelled, RCTDirectEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onRestoreStarted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreError, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(RCPaywallFooterView)
 

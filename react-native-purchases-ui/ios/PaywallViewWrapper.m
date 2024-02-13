@@ -13,7 +13,7 @@
 @import RevenueCatUI;
 
 API_AVAILABLE(ios(15.0))
-@interface PaywallViewWrapper () <RCPaywallViewControllerDelegateWrapper>
+@interface PaywallViewWrapper ()
 
 @property (strong, nonatomic) RCPaywallViewController *paywallViewController;
 
@@ -75,9 +75,6 @@ API_AVAILABLE(ios(15.0))
 
 - (void) paywallViewControllerDidStartPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
     // TODO We need to send the package being purchased to match Android
-    self.onPurchaseStarted(@{
-        @"package": [NSNull null]
-    });
 }
 
 - (void)                paywallViewController:(RCPaywallViewController *)controller
@@ -95,17 +92,23 @@ didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictio
 
 - (void)          paywallViewController:(RCPaywallViewController *)controller
    didFailPurchasingWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseError(errorDictionary);
+    self.onPurchaseError(@{
+        @"error": errorDictionary
+    });
 }
 
 - (void)               paywallViewController:(RCPaywallViewController *)controller
 didFinishRestoringWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreCompleted(customerInfoDictionary);
+    self.onRestoreCompleted(@{
+        @"customerInfo": customerInfoDictionary
+    });
 }
 
 - (void)      paywallViewController:(RCPaywallViewController *)controller
 didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreError(errorDictionary);
+    self.onRestoreError(@{
+        @"error": errorDictionary
+    });
 }
 
 - (void) paywallViewControllerWasDismissed:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {

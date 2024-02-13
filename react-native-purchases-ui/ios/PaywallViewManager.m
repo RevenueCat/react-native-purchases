@@ -22,6 +22,13 @@
 
 RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary);
 
+RCT_EXPORT_VIEW_PROPERTY(onPurchaseCompleted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPurchaseError, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPurchaseCancelled, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRestoreError, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
+
 RCT_EXPORT_MODULE(Paywall)
 
 - (instancetype)init {
@@ -41,7 +48,11 @@ RCT_EXPORT_MODULE(Paywall)
 - (UIView *)view
 {
     if (@available(iOS 15.0, *)) {
-        return [[PaywallViewWrapper alloc] initWithPaywallViewController:[self.proxy createPaywallView]];
+        UIViewController *viewController = [self.proxy createPaywallView];
+        PaywallViewWrapper *wrapper = [[PaywallViewWrapper alloc] initWithPaywallViewController:viewController];
+        self.proxy.delegate = wrapper;
+
+        return wrapper;
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
         return nil;

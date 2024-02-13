@@ -9,7 +9,6 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
-import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
 
@@ -17,12 +16,12 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
-            .putEvent("onPurchaseCompleted")
-            .putEvent("onPurchaseError")
-            .putEvent("onPurchaseCancelled")
-            .putEvent("onRestoreCompleted")
-            .putEvent("onRestoreError")
-            .putEvent("onDismiss")
+            .putEvent(PaywallEvent.ON_PURCHASE_COMPLETED)
+            .putEvent(PaywallEvent.ON_PURCHASE_ERROR)
+            .putEvent(PaywallEvent.ON_PURCHASE_CANCELLED)
+            .putEvent(PaywallEvent.ON_RESTORE_COMPLETED)
+            .putEvent(PaywallEvent.ON_RESTORE_ERROR)
+            .putEvent(PaywallEvent.ON_DISMISS)
             .build()
     }
 
@@ -41,7 +40,6 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     // TODO: RCTEventEmitter is deprecated, and RCTModernEventEmitter should be used instead
     // but documentation is not clear on how to use it so keeping this for now
-    @Suppress("DEPRECATION")
     internal fun createPaywallListenerWrapper(
         themedReactContext: ThemedReactContext,
         view: View
@@ -55,39 +53,20 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             customerInfo: Map<String, Any?>,
             storeTransaction: Map<String, Any?>
         ) {
-            val writableMap = WritableNativeMap().apply {
-                putMap("customerInfo", RNPurchasesConverters.convertMapToWriteableMap(customerInfo))
-                putMap(
-                    "storeTransaction",
-                    RNPurchasesConverters.convertMapToWriteableMap(storeTransaction)
-                )
-            }
-
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(view.id, "onPurchaseCompleted", writableMap)
+            val payload = mapOf(
+                PaywallEventKey.CUSTOMER_INFO to customerInfo,
+                PaywallEventKey.STORE_TRANSACTION to storeTransaction
+            )
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_PURCHASE_COMPLETED, payload)
         }
 
         override fun onPurchaseError(error: Map<String, Any?>) {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    view.id, "onPurchaseError",
-                    WritableNativeMap().apply {
-                        putMap(
-                            "error",
-                            RNPurchasesConverters.convertMapToWriteableMap(error)
-                        )
-                    }
-                )
+            val payload = mapOf(PaywallEventKey.ERROR to error)
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_PURCHASE_ERROR, payload)
         }
 
         override fun onPurchaseCancelled() {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    view.id, "onPurchaseCancelled", null
-                )
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_PURCHASE_CANCELLED)
         }
 
         override fun onRestoreStarted() {
@@ -95,58 +74,66 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         }
 
         override fun onRestoreCompleted(customerInfo: Map<String, Any?>) {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    view.id,
-                    "onRestoreCompleted",
-                    WritableNativeMap().apply {
-                        putMap(
-                            "customerInfo",
-                            RNPurchasesConverters.convertMapToWriteableMap(customerInfo)
-                        )
-                    }
-                )
+            val payload = mapOf(PaywallEventKey.CUSTOMER_INFO to customerInfo)
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_RESTORE_COMPLETED, payload)
         }
 
         override fun onRestoreError(error: Map<String, Any?>) {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    view.id,
-                    "onRestoreError",
-                    WritableNativeMap().apply {
-                        putMap(
-                            "error",
-                            RNPurchasesConverters.convertMapToWriteableMap(error)
-                        )
-                    }
-                )
+            val payload = mapOf(PaywallEventKey.ERROR to error)
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_RESTORE_ERROR, payload)
         }
 
     }
 
-    @Suppress("DEPRECATION")
     internal fun getDismissHandler(
         themedReactContext: ThemedReactContext,
         view: T
     ): (() -> Unit) {
         return {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    view.id,
-                    "onDismiss",
-                    null
-                )
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_DISMISS)
         }
     }
 
     private fun MapBuilder.Builder<String, Any>.putEvent(
-        registrationName: String
+        paywallEvent: PaywallEvent
     ): MapBuilder.Builder<String, Any> {
-        return this.put(registrationName, MapBuilder.of("registrationName", registrationName))
+        val registrationName = MapBuilder.of("registrationName", paywallEvent.eventName)
+        return this.put(paywallEvent.eventName, registrationName)
     }
 
+    private fun WritableNativeMap.putMap(keyMap: PaywallEventKey, dictionary: Map<String, Any?>) {
+        putMap(
+            keyMap.key,
+            RNPurchasesConverters.convertMapToWriteableMap(dictionary)
+        )
+    }
+
+    private fun emitEvent(
+        context: ThemedReactContext,
+        viewId: Int,
+        event: PaywallEvent,
+        payload: Map<PaywallEventKey, Map<String, Any?>>,
+    ) {
+        val convertedPayload = WritableNativeMap().apply {
+            payload.forEach { (key, value) ->
+                putMap(key.key, RNPurchasesConverters.convertMapToWriteableMap(value))
+            }
+        }
+        emitEvent(context, viewId, event, convertedPayload)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun emitEvent(
+        context: ThemedReactContext,
+        viewId: Int,
+        event: PaywallEvent,
+        payload: WritableNativeMap? = null
+    ) {
+        context.getJSModule(RCTEventEmitter::class.java).receiveEvent(
+            viewId,
+            event.eventName,
+            payload
+        )
+    }
 }
 
