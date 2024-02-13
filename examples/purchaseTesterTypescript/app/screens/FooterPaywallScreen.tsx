@@ -7,7 +7,6 @@ import RootStackParamList from '../RootStackParamList';
 import {
   CustomerInfo,
   PurchasesError,
-  PurchasesPackage,
   PurchasesStoreTransaction
 } from "@revenuecat/purchases-typescript-internal";
 
@@ -15,10 +14,6 @@ type Props = NativeStackScreenProps<RootStackParamList, 'FooterPaywall'>;
 
 const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
   // Example handlers for the events
-  const onPurchaseStarted = (aPackage: PurchasesPackage) => {
-    console.log('Purchase started for package:', aPackage);
-  };
-
   const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
     customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
   }) => {
@@ -31,10 +26,6 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
 
   const onPurchaseCancelled = () => {
     console.log('Purchase was cancelled');
-  };
-
-  const onRestoreStarted = () => {
-    console.log('Restore started');
   };
 
   const onRestoreCompleted = (customerInfo: CustomerInfo) => {
@@ -54,11 +45,9 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
                                              options={{
                                                offering: route.params.offering,
                                              }}
-                                             onPurchaseStarted={onPurchaseStarted}
                                              onPurchaseCompleted={onPurchaseCompleted}
                                              onPurchaseError={onPurchaseError}
                                              onPurchaseCancelled={onPurchaseCancelled}
-                                             onRestoreStarted={onRestoreStarted}
                                              onRestoreCompleted={onRestoreCompleted}
                                              onRestoreError={onRestoreError}
                                              onDismiss={onDismiss}>

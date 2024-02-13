@@ -17,11 +17,9 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
-            .putEvent("onPurchaseStarted")
             .putEvent("onPurchaseCompleted")
             .putEvent("onPurchaseError")
             .putEvent("onPurchaseCancelled")
-            .putEvent("onRestoreStarted")
             .putEvent("onRestoreCompleted")
             .putEvent("onRestoreError")
             .putEvent("onDismiss")
@@ -50,18 +48,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     ) = object : PaywallListenerWrapper() {
 
         override fun onPurchaseStarted(rcPackage: Map<String, Any?>) {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    view.id,
-                    "onPurchaseStarted",
-                    WritableNativeMap().apply {
-                        putMap(
-                            "package",
-                            RNPurchasesConverters.convertMapToWriteableMap(rcPackage)
-                        )
-                    }
-                )
+            // Will implement when iOS sends package as argument
         }
 
         override fun onPurchaseCompleted(
@@ -104,11 +91,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         }
 
         override fun onRestoreStarted() {
-            themedReactContext
-                .getJSModule(RCTEventEmitter::class.java)
-                .receiveEvent(
-                    view.id, "onRestoreStarted", null
-                )
+            // Will implement when iOS starts sending this event
         }
 
         override fun onRestoreCompleted(customerInfo: Map<String, Any?>) {
