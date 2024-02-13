@@ -6,31 +6,32 @@
 //
 
 #import "PaywallViewWrapper.h"
-
 #import "UIView+Extensions.h"
 
 @import PurchasesHybridCommonUI;
 @import RevenueCatUI;
 
+static NSString *const KeyCustomerInfo = @"customerInfo";
+static NSString *const KeyStoreTransaction = @"storeTransaction";
+static NSString *const KeyError = @"error";
+
 API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper ()
 
-@property(strong, nonatomic)RCPaywallViewController *paywallViewController;
-
+@property(strong, nonatomic) RCPaywallViewController *paywallViewController;
 @property(nonatomic) BOOL addedToHierarchy;
 
 @end
 
 @implementation PaywallViewWrapper
 
-- (instancetype)initWithPaywallViewController:(RCPaywallViewController *)paywallViewController
-API_AVAILABLE(ios(15.0)) {
+- (instancetype)initWithPaywallViewController:(RCPaywallViewController *)paywallViewController API_AVAILABLE(ios(15.0)) {
     NSParameterAssert(paywallViewController);
-    
+
     if ((self = [super initWithFrame:paywallViewController.view.bounds])) {
         _paywallViewController = paywallViewController;
     }
-    
+
     return self;
 }
 
@@ -47,14 +48,14 @@ API_AVAILABLE(ios(15.0)) {
             [parentController addChildViewController:self.paywallViewController];
             [self addSubview:self.paywallViewController.view];
             [self.paywallViewController didMoveToParentViewController:parentController];
-            
+
             [NSLayoutConstraint activateConstraints:@[
                 [self.paywallViewController.view.topAnchor constraintEqualToAnchor:self.topAnchor],
                 [self.paywallViewController.view.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
                 [self.paywallViewController.view.leftAnchor constraintEqualToAnchor:self.leftAnchor],
                 [self.paywallViewController.view.rightAnchor constraintEqualToAnchor:self.rightAnchor]
             ]];
-            
+
             self.addedToHierarchy = YES;
         }
     }
@@ -75,15 +76,15 @@ API_AVAILABLE(ios(15.0)) {
 }
 
 - (void)paywallViewControllerDidStartPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    // TODO We need to send the package being purchased to match Android
+    // TODO: We need to send the package being purchased to match Android
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
         transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {
     self.onPurchaseCompleted(@{
-        @"customerInfo" : customerInfoDictionary,
-        @"storeTransaction" : transactionDictionary,
+        KeyCustomerInfo: customerInfoDictionary,
+        KeyStoreTransaction: transactionDictionary,
     });
 }
 
@@ -93,17 +94,23 @@ didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictio
 
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didFailPurchasingWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseError(@{@"error" : errorDictionary});
+    self.onPurchaseError(@{
+        KeyError: errorDictionary
+    });
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didFinishRestoringWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreCompleted(@{@"customerInfo" : customerInfoDictionary});
+    self.onRestoreCompleted(@{
+        KeyCustomerInfo: customerInfoDictionary
+    });
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreError(@{@"error" : errorDictionary});
+    self.onRestoreError(@{
+        KeyError: errorDictionary
+    });
 }
 
 - (void)paywallViewControllerWasDismissed:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
