@@ -85,11 +85,11 @@ type FullScreenPaywallViewProps = {
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
-                         } : {customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction}) => void;
-  onPurchaseError?: (error: PurchasesError) => void;
+                         }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  onPurchaseError?: ({error}: { error: PurchasesError }) => void;
   onPurchaseCancelled?: () => void;
-  onRestoreCompleted?: (customerInfo: CustomerInfo) => void;
-  onRestoreError?: (error: PurchasesError) => void;
+  onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
 };
 
@@ -100,11 +100,11 @@ type FooterPaywallViewProps = {
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
-  } : {customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction}) => void;
-  onPurchaseError?: (error: PurchasesError) => void;
+                         }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  onPurchaseError?: ({error}: { error: PurchasesError }) => void;
   onPurchaseCancelled?: () => void;
-  onRestoreCompleted?: (customerInfo: CustomerInfo) => void;
-  onRestoreError?: (error: PurchasesError) => void;
+  onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
 };
 
@@ -168,17 +168,17 @@ export default class RevenueCatUI {
                                                                    onPurchaseCancelled,
                                                                    onRestoreCompleted,
                                                                    onRestoreError,
-    <InternalPaywall  options={options}
-                      children={children}
-                      onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-                      onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
-                      onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
-                      onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-                      onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
-                      onDismiss={() => onDismiss && onDismiss()}
-                      style={[{flex: 1}, style]}/>
                                                                    onDismiss,
                                                                  }) => (
+    <InternalPaywall options={options}
+                     children={children}
+                     onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+                     onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+                     onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+                     onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+                     onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+                     onDismiss={() => onDismiss && onDismiss()}
+                     style={[{flex: 1}, style]}/>
   );
 
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({

@@ -20,7 +20,7 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
     console.log('Purchase completed:', customerInfo, storeTransaction);
   };
 
-  const onPurchaseError = (error: PurchasesError) => {
+  const onPurchaseError = ({error}: { error: PurchasesError }) => {
     console.error('Purchase error:', error);
   };
 
@@ -28,11 +28,11 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
     console.log('Purchase was cancelled');
   };
 
-  const onRestoreCompleted = (customerInfo: CustomerInfo) => {
+  const onRestoreCompleted = ({customerInfo}: { customerInfo: CustomerInfo }) => {
     console.log('Restore completed:', customerInfo);
   };
 
-  const onRestoreError = (error: PurchasesError) => {
+  const onRestoreError = ({error}: { error: PurchasesError }) => {
     console.error('Restore error:', error);
   };
 
