@@ -1,9 +1,7 @@
 package com.revenuecat.purchases.react.ui
 
-import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.annotations.ReactProp
+import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
@@ -19,7 +17,10 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
     }
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallView {
-        return PaywallView(themedReactContext)
+        return PaywallView(themedReactContext).also {
+            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
+            it.setDismissHandler(getDismissHandler(themedReactContext, it))
+        }
     }
 
     override fun createShadowNodeInstance(): PaywallViewShadowNode {

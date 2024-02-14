@@ -6,10 +6,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <React/RCTComponent.h>
+@import PurchasesHybridCommonUI;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PaywallViewWrapper : UIView
+@interface PaywallViewWrapper : UIView <RCPaywallViewControllerDelegateWrapper>
+
+@property (nonatomic, copy) RCTDirectEventBlock onPurchaseCompleted;
+@property (nonatomic, copy) RCTDirectEventBlock onPurchaseError;
+@property (nonatomic, copy) RCTDirectEventBlock onPurchaseCancelled;
+@property (nonatomic, copy) RCTDirectEventBlock onRestoreCompleted;
+@property (nonatomic, copy) RCTDirectEventBlock onRestoreError;
+@property (nonatomic, copy) RCTDirectEventBlock onDismiss;
 
 - (instancetype)initWithCoder:(NSCoder *)coder NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
