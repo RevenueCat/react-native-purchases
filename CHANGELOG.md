@@ -1,3 +1,7 @@
+## 7.21.0
+### New Features
+* Add listener functions to views (#887) via Cesar de la Vega (@vegaro)
+
 ## 7.20.0
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 9.7.1 (#903) via RevenueCat Git Bot (@RCGitBot)
