@@ -126,4 +126,8 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
     self.onDismiss(nil);
 }
 
+- (void)paywallViewControllerDidStartRestore:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    self.onRestoreStarted(nil);
+}
+
 @end
