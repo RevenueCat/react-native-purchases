@@ -10,7 +10,7 @@ import RevenueCatUI, {
 import {
   CustomerInfo, PurchasesError,
   PurchasesOffering,
-  PurchasesOfferings,
+  PurchasesOfferings, PurchasesPackage,
   PurchasesStoreTransaction
 } from "@revenuecat/purchases-typescript-internal";
 
@@ -67,6 +67,8 @@ function checkFooterPaywallViewOptions(options: FooterPaywallViewOptions) {
   const offering: PurchasesOffering | undefined | null = options.offering;
 }
 
+const onPurchaseStarted = ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => {
+};
 
 const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
   customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
@@ -112,6 +114,7 @@ const PaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering) => {
       options={{
         offering: offering
       }}
+      onPurchaseStarted={onPurchaseStarted}
       onPurchaseCompleted={onPurchaseCompleted}
       onPurchaseError={onPurchaseError}
       onPurchaseCancelled={onPurchaseCancelled}
@@ -151,6 +154,7 @@ const FooterPaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering) =
       options={{
         offering: offering,
       }}
+      onPurchaseStarted={onPurchaseStarted}
       onPurchaseCompleted={onPurchaseCompleted}
       onPurchaseError={onPurchaseError}
       onPurchaseCancelled={onPurchaseCancelled}

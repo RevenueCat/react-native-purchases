@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PaywallViewWrapper : UIView <RCPaywallViewControllerDelegateWrapper>
 
+@property (nonatomic, copy) RCTDirectEventBlock onPurchaseStarted;
 @property (nonatomic, copy) RCTDirectEventBlock onPurchaseCompleted;
 @property (nonatomic, copy) RCTDirectEventBlock onPurchaseError;
 @property (nonatomic, copy) RCTDirectEventBlock onPurchaseCancelled;

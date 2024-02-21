@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList';
 import {
   CustomerInfo,
-  PurchasesError,
+  PurchasesError, PurchasesPackage,
   PurchasesStoreTransaction
 } from "@revenuecat/purchases-typescript-internal";
 
@@ -18,6 +18,10 @@ const PaywallScreen: React.FC<Props> = ({route}: Props) => {
     customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
   }) => {
     console.log('Purchase completed:', customerInfo, storeTransaction);
+  };
+
+  const onPurchaseStarted = ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => {
+    console.log('Purchase started:', packageBeingPurchased);
   };
 
   const onPurchaseError = ({error}: { error: PurchasesError }) => {
@@ -52,6 +56,7 @@ const PaywallScreen: React.FC<Props> = ({route}: Props) => {
         options={{
           offering: route.params.offering,
         }}
+        onPurchaseStarted={onPurchaseStarted}
         onPurchaseCompleted={onPurchaseCompleted}
         onPurchaseError={onPurchaseError}
         onPurchaseCancelled={onPurchaseCancelled}

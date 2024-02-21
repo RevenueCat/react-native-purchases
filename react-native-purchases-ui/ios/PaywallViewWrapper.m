@@ -14,6 +14,7 @@
 static NSString *const KeyCustomerInfo = @"customerInfo";
 static NSString *const KeyStoreTransaction = @"storeTransaction";
 static NSString *const KeyError = @"error";
+static NSString *const KeyPackage = @"packageBeingPurchased";
 
 API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper ()
@@ -75,8 +76,11 @@ API_AVAILABLE(ios(15.0))
     }
 }
 
-- (void)paywallViewControllerDidStartPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    // TODO: We need to send the package being purchased to match Android
+- (void)paywallViewController:(RCPaywallViewController *)controller
+  didStartPurchaseWithPackage:(NSDictionary *)packageDictionary API_AVAILABLE(ios(15.0)) {
+    self.onPurchaseStarted(@{
+        KeyPackage: packageDictionary,
+    });
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller
