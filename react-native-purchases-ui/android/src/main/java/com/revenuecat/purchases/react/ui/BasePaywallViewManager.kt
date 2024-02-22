@@ -35,7 +35,6 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .build()
     }
 
-    @ReactProp(name = "options")
     @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
     abstract fun setFontFamily(view: T, customFontProvider: CustomFontProvider)
 

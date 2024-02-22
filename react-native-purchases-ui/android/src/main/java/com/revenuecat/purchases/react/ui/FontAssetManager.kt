@@ -8,7 +8,7 @@ import com.facebook.infer.annotation.Nullsafe
 
 @Nullsafe(Nullsafe.Mode.LOCAL)
 object FontAssetManager {
-    private val mFontCache: MutableMap<String, List<Font>> = hashMapOf()
+    private val mFontCache: MutableMap<String?, List<Font>?> = hashMapOf()
     private val EXTENSIONS = arrayOf("", "_bold", "_italic", "_bold_italic")
     private val FILE_EXTENSIONS = arrayOf(".ttf", ".otf")
 
@@ -30,20 +30,24 @@ object FontAssetManager {
         fontFamilyName: String,
         assetManager: AssetManager
     ): List<Font> {
-        return mFontCache.getOrPut(fontFamilyName) {
-            mutableListOf<Font>().apply {
-                for (style in EXTENSIONS.indices) {
-                    for (fileNameExtension in FILE_EXTENSIONS) {
-                        val fileName = "fonts/$fontFamilyName${EXTENSIONS[style]}$fileNameExtension"
-                        add(Font(
-                            path = fileName,
-                            assetManager = assetManager,
-                            weight = getWeightFromExtension(style),
-                            style = getStyleFromExtension(style),
-                        ))
-                    }
+        var assetFontFamily = mFontCache[fontFamilyName]
+        if (assetFontFamily == null) {
+            assetFontFamily = mutableListOf()
+            mFontCache[fontFamilyName] = assetFontFamily
+            for ((style, styleExtension) in EXTENSIONS.withIndex()) {
+                for (fileNameExtension in FILE_EXTENSIONS) {
+                    val fileName = "fonts/$fontFamilyName$styleExtension$fileNameExtension"
+                    val font = Font(
+                        path = fileName,
+                        assetManager = assetManager,
+                        weight = getWeightFromExtension(style),
+                        style = getStyleFromExtension(style),
+                    )
+                    assetFontFamily.add(font)
                 }
             }
         }
+        return assetFontFamily
     }
+
 }
