@@ -3142,10 +3142,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:9.6.0":
-  version: 9.6.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:9.6.0"
-  checksum: f0a399786347d76670fce1df1f379a8d09f753f13ca36b1d9b53a44fd3b527fa73034b752d3f4469f3252a28dd2c86b24346bf45144642d01be191eaf786202e
+"@revenuecat/purchases-typescript-internal@npm:9.7.2":
+  version: 9.7.2
+  resolution: "@revenuecat/purchases-typescript-internal@npm:9.7.2"
+  checksum: 2a959ce1344456eead8110428420aba25c384fb33a791d0d5c675977adc0c7946c69ce6fd6419a9a9152a89ed823d4719d46d8397bcc0f9545c75bdce31e8377
   languageName: node
   linkType: hard
 
@@ -6420,9 +6420,9 @@ __metadata:
   linkType: hard
 
 "ip@npm:^1.1.5":
-  version: 1.1.8
-  resolution: "ip@npm:1.1.8"
-  checksum: a2ade53eb339fb0cbe9e69a44caab10d6e3784662285eb5d2677117ee4facc33a64679051c35e0dfdb1a3983a51ce2f5d2cb36446d52e10d01881789b76e28fb
+  version: 1.1.9
+  resolution: "ip@npm:1.1.9"
+  checksum: b6d91fd45a856e3bd6d4f601ea0619d90f3517638f6918ebd079f959a8a6308568d8db5ef4fdf037e0d9cfdcf264f46833dfeea81ca31309cf0a7eb4b1307b84
   languageName: node
   linkType: hard
 
@@ -10172,7 +10172,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.73.1
     react-native-builder-bob: ^0.20.0
-    react-native-purchases: 7.19.0
+    react-native-purchases: 7.21.0
     ts-jest: ^24.1.0
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
@@ -10184,11 +10184,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-native-purchases@7.19.0, react-native-purchases@workspace:.":
+"react-native-purchases@7.21.0, react-native-purchases@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 9.6.0
+    "@revenuecat/purchases-typescript-internal": 9.7.2
     "@types/jest": ^28.1.2
     "@types/react": ~18.2.0
     "@types/react-dom": ~18.2.0

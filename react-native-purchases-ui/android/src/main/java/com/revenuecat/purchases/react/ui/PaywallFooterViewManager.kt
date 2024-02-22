@@ -1,6 +1,5 @@
 package com.revenuecat.purchases.react.ui
 
-import android.annotation.SuppressLint
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerModule
@@ -15,9 +14,8 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
         return "RCPaywallFooterView"
     }
 
-    @SuppressLint("UnsafeOptInUsageError")
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallFooterView {
-        val paywallFooterView: PaywallFooterView = object : PaywallFooterView(themedReactContext) {
+        return object : PaywallFooterView(themedReactContext) {
 
             // This is required so the change from Loading to Loaded resizes the view
             // https://github.com/facebook/react-native/issues/17968#issuecomment-1672111483
@@ -57,9 +55,10 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
                     }
                 }
             }
+        }.also {
+            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
+            it.setDismissHandler(getDismissHandler(themedReactContext, it))
         }
-
-        return paywallFooterView
     }
 
     override fun setOfferingId(view: PaywallFooterView, identifier: String) {

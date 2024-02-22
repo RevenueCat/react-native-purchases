@@ -17,7 +17,10 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
     }
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallView {
-        return PaywallView(themedReactContext)
+        return PaywallView(themedReactContext).also {
+            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
+            it.setDismissHandler(getDismissHandler(themedReactContext, it))
+        }
     }
 
     override fun createShadowNodeInstance(): PaywallViewShadowNode {

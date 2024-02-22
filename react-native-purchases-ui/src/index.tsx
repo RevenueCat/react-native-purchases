@@ -9,7 +9,12 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
-import { PAYWALL_RESULT, type PurchasesOffering } from "@revenuecat/purchases-typescript-internal";
+import {
+  type CustomerInfo,
+  PAYWALL_RESULT, type PurchasesError,
+  type PurchasesOffering,
+  type PurchasesStoreTransaction
+} from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
@@ -78,12 +83,30 @@ type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
+  onPurchaseCompleted?: ({
+                           customerInfo,
+                           storeTransaction
+                         }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  onPurchaseError?: ({error}: { error: PurchasesError }) => void;
+  onPurchaseCancelled?: () => void;
+  onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  onRestoreError?: ({error}: { error: PurchasesError }) => void;
+  onDismiss?: () => void;
 };
 
 type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  onPurchaseCompleted?: ({
+                           customerInfo,
+                           storeTransaction
+                         }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  onPurchaseError?: ({error}: { error: PurchasesError }) => void;
+  onPurchaseCancelled?: () => void;
+  onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  onRestoreError?: ({error}: { error: PurchasesError }) => void;
+  onDismiss?: () => void;
 };
 
 export default class RevenueCatUI {
@@ -137,11 +160,39 @@ export default class RevenueCatUI {
     return RNPaywalls.presentPaywallIfNeeded(requiredEntitlementIdentifier, offering?.identifier ?? null, displayCloseButton)
   }
 
-  public static Paywall: React.FC<FullScreenPaywallViewProps> = (props) => (
-    <InternalPaywall {...props} style={[{flex: 1}, props.style]}/>
+  public static Paywall: React.FC<FullScreenPaywallViewProps> = ({
+                                                                   style,
+                                                                   children,
+                                                                   options,
+                                                                   onPurchaseCompleted,
+                                                                   onPurchaseError,
+                                                                   onPurchaseCancelled,
+                                                                   onRestoreCompleted,
+                                                                   onRestoreError,
+                                                                   onDismiss,
+                                                                 }) => (
+    <InternalPaywall options={options}
+                     children={children}
+                     onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+                     onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+                     onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+                     onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+                     onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+                     onDismiss={() => onDismiss && onDismiss()}
+                     style={[{flex: 1}, style]}/>
   );
 
-  public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({style, children, options}) => {
+  public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
+                                                                                  style,
+                                                                                  children,
+                                                                                  options,
+                                                                                  onPurchaseCompleted,
+                                                                                  onPurchaseError,
+                                                                                  onPurchaseCancelled,
+                                                                                  onRestoreCompleted,
+                                                                                  onRestoreError,
+                                                                                  onDismiss,
+                                                                                }) => {
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
     // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
@@ -173,7 +224,16 @@ export default class RevenueCatUI {
           {children}
         </ScrollView>
         {/*Adding negative margin to the footer view to make it overlap with the extra padding of the scroll*/}
-        <InternalPaywallFooterView style={{marginTop: -20}} options={options}/>
+        <InternalPaywallFooterView
+          style={{marginTop: -20}}
+          options={options}
+          onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+          onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+          onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+          onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+          onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+          onDismiss={() => onDismiss && onDismiss()}
+        />
       </View>
     );
   };

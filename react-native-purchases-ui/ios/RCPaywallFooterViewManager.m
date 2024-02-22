@@ -17,8 +17,6 @@
 #import <React/RCTUIManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTRootViewDelegate.h>
-#import <React/RCTEventEmitter.h>
-
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-@interface FooterViewWrapper () <RCPaywallViewControllerDelegate>
+@interface FooterViewWrapper ()
 
 @property (strong, nonatomic) RCTBridge *bridge;
 
@@ -53,8 +51,8 @@ NS_ASSUME_NONNULL_END
     // Get the safe area insets, for example
     UIEdgeInsets safeAreaInsets = self.safeAreaInsets;
 
-//    TODO: figure out a better way of sending event, since this is deprecated
-//    It's probably better to create a singleton from the module that this view manager can call and use to send events
+    //    TODO: figure out a better way of sending event, since this is deprecated
+    //    It's probably better to create a singleton from the module that this view manager can call and use to send events
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [self.bridge.eventDispatcher sendAppEventWithName:safeAreaInsetsDidChangeEvent
@@ -65,7 +63,7 @@ NS_ASSUME_NONNULL_END
 #pragma clang diagnostic pop
 }
 
-- (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)){
+- (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)) {
     [_bridge.uiManager setIntrinsicContentSize:CGSizeMake(UIViewNoIntrinsicMetric, size.height) forView:self];
 }
 
@@ -80,6 +78,13 @@ NS_ASSUME_NONNULL_END
 @implementation RCPaywallFooterViewManager
 
 RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary);
+
+RCT_EXPORT_VIEW_PROPERTY(onPurchaseCompleted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPurchaseError, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPurchaseCancelled, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRestoreError, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(RCPaywallFooterView)
 
@@ -101,7 +106,7 @@ RCT_EXPORT_MODULE(RCPaywallFooterView)
 {
     if (@available(iOS 15.0, *)) {
         UIViewController *footerViewController = [self.proxy createFooterPaywallView];
-        FooterViewWrapper *wrapper = [[FooterViewWrapper alloc] initWithPaywallViewController:footerViewController 
+        FooterViewWrapper *wrapper = [[FooterViewWrapper alloc] initWithPaywallViewController:footerViewController
                                                                                        bridge:self.bridge];
         self.proxy.delegate = wrapper;
 

@@ -7,7 +7,12 @@ import RevenueCatUI, {
   PresentPaywallIfNeededParams,
   PresentPaywallParams
 } from "../react-native-purchases-ui";
-import { PurchasesOffering, PurchasesOfferings } from "@revenuecat/purchases-typescript-internal";
+import {
+  CustomerInfo, PurchasesError,
+  PurchasesOffering,
+  PurchasesOfferings,
+  PurchasesStoreTransaction
+} from "@revenuecat/purchases-typescript-internal";
 
 async function checkPresentPaywall(offering: PurchasesOffering) {
   let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({});
@@ -62,6 +67,28 @@ function checkFooterPaywallViewOptions(options: FooterPaywallViewOptions) {
   const offering: PurchasesOffering | undefined | null = options.offering;
 }
 
+
+const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
+  customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
+}) => {
+};
+
+const onPurchaseError = ({error}: { error: PurchasesError }) => {
+};
+
+const onPurchaseCancelled = () => {
+};
+
+const onRestoreCompleted = ({customerInfo}: { customerInfo: CustomerInfo }) => {
+};
+
+const onRestoreError = ({error}: { error: PurchasesError }) => {
+};
+
+const onDismiss = () => {
+};
+
+
 const PaywallScreen = () => {
   return (
     <RevenueCatUI.Paywall style={{marginBottom: 10}} options={{
@@ -75,6 +102,22 @@ const PaywallScreenWithOffering = (offering: PurchasesOffering) => {
     <RevenueCatUI.Paywall style={{marginBottom: 10}} options={{
       offering: offering
     }}/>
+  );
+};
+
+const PaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering) => {
+  return (
+    <RevenueCatUI.Paywall
+      style={{marginBottom: 10}}
+      options={{
+        offering: offering
+      }}
+      onPurchaseCompleted={onPurchaseCompleted}
+      onPurchaseError={onPurchaseError}
+      onPurchaseCancelled={onPurchaseCancelled}
+      onRestoreCompleted={onRestoreCompleted}
+      onRestoreError={onRestoreError}
+      onDismiss={onDismiss}/>
   );
 };
 
@@ -98,6 +141,21 @@ const FooterPaywallScreenWithOffering = (offering: PurchasesOffering) => {
     <RevenueCatUI.PaywallFooterContainerView options={{
       offering: offering,
     }}>
+    </RevenueCatUI.PaywallFooterContainerView>
+  );
+};
+
+const FooterPaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering) => {
+  return (
+    <RevenueCatUI.PaywallFooterContainerView
+      options={{
+        offering: offering,
+      }}
+      onPurchaseCompleted={onPurchaseCompleted}
+      onPurchaseError={onPurchaseError}
+      onPurchaseCancelled={onPurchaseCancelled}
+      onRestoreCompleted={onRestoreCompleted}
+      onDismiss={onDismiss}>
     </RevenueCatUI.PaywallFooterContainerView>
   );
 };
