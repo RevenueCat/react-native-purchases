@@ -83,6 +83,9 @@ const onPurchaseError = ({error}: { error: PurchasesError }) => {
 const onPurchaseCancelled = () => {
 };
 
+const onRestoreStarted = () => {
+};
+
 const onRestoreCompleted = ({customerInfo}: { customerInfo: CustomerInfo }) => {
 };
 
@@ -129,6 +132,7 @@ const PaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, fontFam
       onPurchaseCompleted={onPurchaseCompleted}
       onPurchaseError={onPurchaseError}
       onPurchaseCancelled={onPurchaseCancelled}
+      onRestoreStarted={onRestoreStarted}
       onRestoreCompleted={onRestoreCompleted}
       onRestoreError={onRestoreError}
       onDismiss={onDismiss}/>
@@ -180,6 +184,7 @@ const FooterPaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, f
       onPurchaseCompleted={onPurchaseCompleted}
       onPurchaseError={onPurchaseError}
       onPurchaseCancelled={onPurchaseCancelled}
+      onRestoreStarted={onRestoreStarted}
       onRestoreCompleted={onRestoreCompleted}
       onDismiss={onDismiss}>
     </RevenueCatUI.PaywallFooterContainerView>

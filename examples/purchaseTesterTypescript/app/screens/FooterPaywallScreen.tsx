@@ -32,6 +32,10 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
     console.log('Purchase was cancelled');
   };
 
+  const onRestoreStarted = () => {
+    console.log('Restore started');
+  };
+
   const onRestoreCompleted = ({customerInfo}: { customerInfo: CustomerInfo }) => {
     console.log('Restore completed:', customerInfo);
   };
@@ -54,6 +58,7 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
                                              onPurchaseCompleted={onPurchaseCompleted}
                                              onPurchaseError={onPurchaseError}
                                              onPurchaseCancelled={onPurchaseCancelled}
+                                             onRestoreStarted={onRestoreStarted}
                                              onRestoreCompleted={onRestoreCompleted}
                                              onRestoreError={onRestoreError}
                                              onDismiss={onDismiss}>
