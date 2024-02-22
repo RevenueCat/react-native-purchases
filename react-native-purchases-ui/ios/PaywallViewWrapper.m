@@ -101,6 +101,10 @@ didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictio
     self.onPurchaseCancelled(nil);
 }
 
+- (void)paywallViewControllerDidStartRestore:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    self.onRestoreStarted(nil);
+}
+
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didFailPurchasingWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
     self.onPurchaseError(@{
