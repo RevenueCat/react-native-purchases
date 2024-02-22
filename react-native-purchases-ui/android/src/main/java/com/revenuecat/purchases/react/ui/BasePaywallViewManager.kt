@@ -41,10 +41,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
     private fun setFontFamilyProp(view: T, props: ReadableMap) {
         props.getString(FONT_FAMILY)?.let {
-            val typeface = ReactFontManager.getInstance()
-                .getTypeface(it, ReactFontManager.TypefaceStyle.NORMAL, view.resources.assets)
-            val customFontProp = CustomFontProvider(FontFamily(typeface))
-            setFontFamily(view, customFontProp)
+            val fontList = FontAssetManager.getFontList(fontFamilyName = it, view.resources.assets)
+            setFontFamily(view, CustomFontProvider(FontFamily(fontList)))
         }
     }
 }
