@@ -78,11 +78,11 @@ PODS:
   - hermes-engine/Pre-built (0.71.6)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - PurchasesHybridCommon (9.7.2):
-    - RevenueCat
-  - PurchasesHybridCommonUI (9.7.2):
-    - PurchasesHybridCommon (= 9.7.2)
-    - RevenueCatUI
+  - PurchasesHybridCommon (9.8.0):
+    - RevenueCat (= 4.37.0)
+  - PurchasesHybridCommonUI (9.8.0):
+    - PurchasesHybridCommon (= 9.8.0)
+    - RevenueCatUI (= 4.37.0)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -420,14 +420,14 @@ PODS:
     - React-jsi (= 0.71.6)
     - React-logger (= 0.71.6)
     - React-perflogger (= 0.71.6)
-  - RevenueCat (4.38.0-SNAPSHOT)
-  - RevenueCatUI (4.38.0-SNAPSHOT):
-    - RevenueCat (= 4.38.0-SNAPSHOT)
+  - RevenueCat (4.37.0)
+  - RevenueCatUI (4.37.0):
+    - RevenueCat (= 4.37.0)
   - RNPaywalls (7.21.1):
-    - PurchasesHybridCommonUI
+    - PurchasesHybridCommonUI (= 9.8.0)
     - React-Core
   - RNPurchases (7.21.1):
-    - PurchasesHybridCommon
+    - PurchasesHybridCommon (= 9.8.0)
     - React-Core
   - RNScreens (3.29.0):
     - RCT-Folly (= 2021.07.22.00)
@@ -467,8 +467,6 @@ DEPENDENCIES:
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
   - OpenSSL-Universal (= 1.1.1100)
-  - PurchasesHybridCommon (from `/Users/cesardelavega/Development/repos/purchases-hybrid-common/`)
-  - PurchasesHybridCommonUI (from `/Users/cesardelavega/Development/repos/purchases-hybrid-common/`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -499,8 +497,6 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RevenueCat (from `/Users/cesardelavega/Development/repos/purchases-ios/`)
-  - RevenueCatUI (from `/Users/cesardelavega/Development/repos/purchases-ios/`)
   - RNPaywalls (from `../../../react-native-purchases-ui`)
   - RNPurchases (from `../../..`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -521,6 +517,10 @@ SPEC REPOS:
     - fmt
     - libevent
     - OpenSSL-Universal
+    - PurchasesHybridCommon
+    - PurchasesHybridCommonUI
+    - RevenueCat
+    - RevenueCatUI
     - SocketRocket
     - YogaKit
 
@@ -537,10 +537,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
-  PurchasesHybridCommon:
-    :path: "/Users/cesardelavega/Development/repos/purchases-hybrid-common/"
-  PurchasesHybridCommonUI:
-    :path: "/Users/cesardelavega/Development/repos/purchases-hybrid-common/"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -597,10 +593,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  RevenueCat:
-    :path: "/Users/cesardelavega/Development/repos/purchases-ios/"
-  RevenueCatUI:
-    :path: "/Users/cesardelavega/Development/repos/purchases-ios/"
   RNPaywalls:
     :path: "../../../react-native-purchases-ui"
   RNPurchases:
@@ -630,8 +622,8 @@ SPEC CHECKSUMS:
   hermes-engine: b434cea529ad0152c56c7cb6486b0c4c0b23b5de
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  PurchasesHybridCommon: e26a3f98108c960f0694ce211a9c1917cc5d755d
-  PurchasesHybridCommonUI: 63403311769ef792dca3ba40987d1bbc8ee7e8b3
+  PurchasesHybridCommon: 42fe7946cc2828b1d54b1c80068d6042e4d3d5d1
+  PurchasesHybridCommonUI: c79328cb692c479abb9ac160afea1cc0f4b66701
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 5c6fd63b03abb06947d348dadac51c93e3485bd8
   RCTTypeSafety: 1c66daedd66f674e39ce9f40782f0d490c78b175
@@ -660,15 +652,15 @@ SPEC CHECKSUMS:
   React-RCTVibration: 73d201599a64ea14b4e0b8f91b64970979fd92e6
   React-runtimeexecutor: 8692ac548bec648fa121980ccb4304afd136d584
   ReactCommon: 0c43eaeaaee231d7d8dc24fc5a6e4cf2b75bf196
-  RevenueCat: 4436ba8e365ec9beb025174ac50c71a64a6a55df
-  RevenueCatUI: 540bcafa8e6b5b19112b1465705d680f236db802
-  RNPaywalls: 9ba61f8c192603451fed5479122836c760e55525
-  RNPurchases: 01887215ada38af23e3dbac700c96832ffacff5a
+  RevenueCat: b4fb058d7ced6a37327f6bc9636752dbc4a7235b
+  RevenueCatUI: adc29653d59fb7a333ed1834d4d9a67e2c87dc4c
+  RNPaywalls: 40cc3770d0aaa9a4aa75c2121a682c59cb80173c
+  RNPurchases: 31cab05817f3a8c9a138d95e3cb590099ea62c19
   RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 6dc602c798cf6938024e8779f335216aa055c916
+PODFILE CHECKSUM: 4c7d9212ea6263e383127ca06fc14a66a2fb941c
 
 COCOAPODS: 1.15.2
