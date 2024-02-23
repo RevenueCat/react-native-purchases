@@ -55,6 +55,7 @@ const PaywallScreen: React.FC<Props> = ({route}: Props) => {
       <RevenueCatUI.Paywall
         options={{
           offering: route.params.offering,
+          fontFamily: route.params.fontFamily,
         }}
         onPurchaseStarted={onPurchaseStarted}
         onPurchaseCompleted={onPurchaseCompleted}

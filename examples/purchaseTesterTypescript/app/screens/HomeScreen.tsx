@@ -194,6 +194,24 @@ const HomeScreen: React.FC<Props> = ({
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => navigation.navigate(
+                'Paywall',
+                { offering: null, fontFamily: 'Ubuntu' }
+              )}>
+              <Text style={styles.otherActions}>
+                Go to Paywall Screen with custom font
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate(
+                'FooterPaywall',
+                { offering: null, fontFamily: 'Ubuntu' }
+              )}>
+              <Text style={styles.otherActions}>
+                Go to Paywall Screen as Footer with custom font
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={async () => {
                 const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
                   requiredEntitlementIdentifier: 'pro_cat',
