@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  rn: react-native-community/react-native@7.1.1
+  rn: react-native-community/react-native@7.4.0
   revenuecat: revenuecat/sdks-common-config@2.2.0
 
 aliases:
@@ -36,6 +36,27 @@ parameters:
     default: false
 
 commands:
+  # rn/ios_build depends on a specific cache key, so we need to create a custom step to install dependencies
+  # we could use rn/yarn_install but that's not compatible with yarn 2
+  install-dependencies-ios-build:
+    steps:
+      - run:
+          name: Create cache checksum file
+          command: |
+            mkdir -p ~/.tmp/checksumfiles
+            find . -type f -name 'package.json' -not -path "*node_modules*" -exec cat {} + >> ~/.tmp/checksumfiles/package.json
+            find . -type f -name 'yarn.lock' -not -path "*node_modules*" -exec cat {} + >> ~/.tmp/checksumfiles/yarn.lock
+      - restore_cache:
+          keys:
+            - yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
+      - run:
+          name: Yarn Install
+          command: yarn
+      - save_cache:
+          key: yarn-cache-{{ arch }}-{{ checksum "~/.tmp/checksumfiles/package.json" }}-{{ checksum "~/.tmp/checksumfiles/yarn.lock" }}-{{ .Environment.CACHE_VERSION }}
+          paths:
+            - .yarn/cache
+
   install-dependencies:
     parameters:
       machine:
@@ -124,15 +145,9 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 14
-      - run:
-          name: Update CocoaPods repo
-          command: pod repo update
-      - install-dependencies:
-          machine: "macos"
-      - run:
-          name: Install example dependencies
-          command: |
-            cd examples/purchaseTesterTypescript/ios && pod install --repo-update && cd -
+      - install-dependencies-ios-build
+      - rn/pod_install:
+          pod_install_directory: examples/purchaseTesterTypescript/ios
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 14

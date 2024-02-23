@@ -104,7 +104,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  cocoapods (~> 1.11, >= 1.11.3)
+  cocoapods
 
 RUBY VERSION
    ruby 3.0.6p216
