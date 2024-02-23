@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) RCTDirectEventBlock onPurchaseCompleted;
 @property (nonatomic, copy) RCTDirectEventBlock onPurchaseError;
 @property (nonatomic, copy) RCTDirectEventBlock onPurchaseCancelled;
+@property (nonatomic, copy) RCTDirectEventBlock onRestoreStarted;
 @property (nonatomic, copy) RCTDirectEventBlock onRestoreCompleted;
 @property (nonatomic, copy) RCTDirectEventBlock onRestoreError;
 @property (nonatomic, copy) RCTDirectEventBlock onDismiss;

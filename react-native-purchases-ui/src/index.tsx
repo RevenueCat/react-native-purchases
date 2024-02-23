@@ -104,6 +104,7 @@ type FullScreenPaywallViewProps = {
                          }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
   onPurchaseError?: ({error}: { error: PurchasesError }) => void;
   onPurchaseCancelled?: () => void;
+  onRestoreStarted?: () => void;
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
@@ -120,6 +121,7 @@ type FooterPaywallViewProps = {
                          }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
   onPurchaseError?: ({error}: { error: PurchasesError }) => void;
   onPurchaseCancelled?: () => void;
+  onRestoreStarted?: () => void;
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
@@ -184,6 +186,7 @@ export default class RevenueCatUI {
                                                                    onPurchaseCompleted,
                                                                    onPurchaseError,
                                                                    onPurchaseCancelled,
+                                                                   onRestoreStarted,
                                                                    onRestoreCompleted,
                                                                    onRestoreError,
                                                                    onDismiss,
@@ -194,6 +197,7 @@ export default class RevenueCatUI {
                      onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
                      onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
                      onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+                     onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
                      onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
                      onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
                      onDismiss={() => onDismiss && onDismiss()}
@@ -208,6 +212,7 @@ export default class RevenueCatUI {
                                                                                   onPurchaseCompleted,
                                                                                   onPurchaseError,
                                                                                   onPurchaseCancelled,
+                                                                                  onRestoreStarted,
                                                                                   onRestoreCompleted,
                                                                                   onRestoreError,
                                                                                   onDismiss,
@@ -250,6 +255,7 @@ export default class RevenueCatUI {
           onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
           onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
           onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+          onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
           onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
           onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
           onDismiss={() => onDismiss && onDismiss()}

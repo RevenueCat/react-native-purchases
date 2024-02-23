@@ -29,6 +29,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .putEvent(PaywallEvent.ON_PURCHASE_COMPLETED)
             .putEvent(PaywallEvent.ON_PURCHASE_ERROR)
             .putEvent(PaywallEvent.ON_PURCHASE_CANCELLED)
+            .putEvent(PaywallEvent.ON_RESTORE_STARTED)
             .putEvent(PaywallEvent.ON_RESTORE_COMPLETED)
             .putEvent(PaywallEvent.ON_RESTORE_ERROR)
             .putEvent(PaywallEvent.ON_DISMISS)
@@ -98,7 +99,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         }
 
         override fun onRestoreStarted() {
-            // Will implement when iOS starts sending this event
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_RESTORE_STARTED)
         }
 
         override fun onRestoreCompleted(customerInfo: Map<String, Any?>) {
