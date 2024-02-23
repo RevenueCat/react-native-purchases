@@ -46,18 +46,19 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         }
     }
 
-    private fun setOfferingIdProp(view: T, props: ReadableMap) {
-        val offeringIdentifier = props.getDynamic(OFFERING).asMap()?.getString(IDENTIFIER)
+    private fun setOfferingIdProp(view: T, props: ReadableMap?) {
+        val offeringIdentifier = props?.getDynamic(OFFERING)?.asMap()?.getString(IDENTIFIER)
         offeringIdentifier?.let {
             setOfferingId(view, it)
         }
     }
 
     @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
-    private fun setFontFamilyProp(view: T, props: ReadableMap) {
-        props.getString(FONT_FAMILY)?.let {
-            val fontList = FontAssetManager.getFontList(fontFamilyName = it, view.resources.assets)
-            setFontFamily(view, CustomFontProvider(FontFamily(fontList)))
+    private fun setFontFamilyProp(view: T, props: ReadableMap?) {
+        props?.getString(FONT_FAMILY)?.let {
+            val fontFamily =
+                FontAssetManager.getFontList(fontFamilyName = it, view.resources.assets)
+            setFontFamily(view, CustomFontProvider(fontFamily))
         }
     }
 
