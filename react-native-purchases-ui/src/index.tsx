@@ -66,8 +66,22 @@ export type PresentPaywallIfNeededParams = PresentPaywallParams & {
 }
 
 export interface PaywallViewOptions {
+  /**
+   * The offering to load the paywall with. This will be the "current" offering by default.
+   */
   offering?: PurchasesOffering | null;
-  fontFamily?: String | null;
+
+  /**
+   * The fontFamily name to use in the Paywall. In order to add a font family, add it in the react native app and make
+   * sure to run `npx react-native-asset` so it's added to the native components.
+   * Supported font types are `.ttf` and `.otf`.
+   * Make sure the file names follow the convention:
+   * - Regular: MyFont.ttf/MyFont.otf
+   * - Bold: MyFont_bold.ttf/MyFont_bold.otf
+   * - Italic: MyFont_italic.ttf/MyFont_italic.otf
+   * - Bold and Italic: MyFont_bold_italic.ttf/MyFont_bold_italic.otf
+   */
+  fontFamily?: string | null;
 }
 
 export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
