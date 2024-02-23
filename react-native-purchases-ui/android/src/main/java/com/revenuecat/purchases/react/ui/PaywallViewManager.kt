@@ -1,8 +1,8 @@
 package com.revenuecat.purchases.react.ui
 
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
+import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
 @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
@@ -31,4 +31,7 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
         view.setOfferingId(identifier)
     }
 
+    override fun setFontFamily(view: PaywallView, customFontProvider: CustomFontProvider) {
+        view.setFontProvider(customFontProvider)
+    }
 }

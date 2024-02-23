@@ -67,6 +67,7 @@ export type PresentPaywallIfNeededParams = PresentPaywallParams & {
 
 export interface PaywallViewOptions {
   offering?: PurchasesOffering | null;
+  fontFamily?: String | null;
 }
 
 export interface FullScreenPaywallViewOptions extends PaywallViewOptions {

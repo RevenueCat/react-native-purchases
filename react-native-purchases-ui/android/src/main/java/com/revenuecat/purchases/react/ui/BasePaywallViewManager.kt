@@ -9,8 +9,17 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
+import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
+import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
+
+    companion object PropNames {
+        private const val PROP_OPTIONS = "options"
+        private const val OFFERING = "offering"
+        private const val IDENTIFIER = "identifier"
+        private const val FONT_FAMILY = "fontFamily"
+    }
 
     abstract fun setOfferingId(view: T, identifier: String)
 
@@ -25,16 +34,31 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .build()
     }
 
-    @ReactProp(name = "options")
+    @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
+    abstract fun setFontFamily(view: T, customFontProvider: CustomFontProvider)
+
+    @ReactProp(name = PROP_OPTIONS)
     fun setOptions(view: T, options: ReadableMap?) {
         options?.let { props ->
-            if (props.hasKey("offering")) {
-                props.getDynamic("offering").asMap()?.let { offeringMap ->
-                    if (offeringMap.hasKey("identifier") && !offeringMap.isNull("identifier")) {
-                        setOfferingId(view, offeringMap.getString("identifier")!!)
-                    }
-                }
+            setOfferingIdProp(view, props)
+            setFontFamilyProp(view, props)
+        }
+    }
+
+    private fun setOfferingIdProp(view: T, props: ReadableMap?) {
+        val offeringIdentifier = props?.getDynamic(OFFERING)?.asMap()?.getString(IDENTIFIER)
+        offeringIdentifier?.let {
+            setOfferingId(view, it)
+        }
+    }
+
+    @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
+    private fun setFontFamilyProp(view: T, props: ReadableMap?) {
+        props?.getString(FONT_FAMILY)?.let {
+            FontAssetManager.getFontFamily(fontFamilyName = it, view.resources.assets)?.let {
+                setFontFamily(view, CustomFontProvider(it))
             }
+
         }
     }
 
