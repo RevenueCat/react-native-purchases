@@ -2,52 +2,50 @@ package com.revenuecat.purchases.react.ui
 
 import android.content.res.AssetManager
 import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.facebook.infer.annotation.Nullsafe
 
-@Nullsafe(Nullsafe.Mode.LOCAL)
 object FontAssetManager {
-    private val mFontCache: MutableMap<String?, List<Font>?> = hashMapOf()
-    private val EXTENSIONS = arrayOf("", "_bold", "_italic", "_bold_italic")
+    private val fontFamilyHashMap: MutableMap<String, FontFamily> = hashMapOf()
     private val FILE_EXTENSIONS = arrayOf(".ttf", ".otf")
 
-    private fun getStyleFromExtension(style: Int): FontStyle {
-        return when (style) {
-            2, 3 -> FontStyle.Italic
-            else -> FontStyle.Normal
-        }
+    private enum class FontStyleExtension(
+        val extension: String,
+        val weight: FontWeight,
+        val style: FontStyle
+    ) {
+        REGULAR("", FontWeight.Normal, FontStyle.Normal),
+        BOLD("_bold", FontWeight.Bold, FontStyle.Normal),
+        ITALIC("_italic", FontWeight.Normal, FontStyle.Italic),
+        BOLD_ITALIC("_bold_italic", FontWeight.Bold, FontStyle.Italic);
     }
 
-    private fun getWeightFromExtension(style: Int): FontWeight {
-        return when (style) {
-            1, 3 -> FontWeight.Bold
-            else -> FontWeight.Normal
-        }
-    }
-
-    fun getFontList(
+    fun getFontFamily(
         fontFamilyName: String,
         assetManager: AssetManager
-    ): List<Font> {
-        var assetFontFamily = mFontCache[fontFamilyName]
-        if (assetFontFamily == null) {
-            assetFontFamily = mutableListOf()
-            mFontCache[fontFamilyName] = assetFontFamily
-            for ((style, styleExtension) in EXTENSIONS.withIndex()) {
+    ): FontFamily {
+        val cachedFontFamily = fontFamilyHashMap[fontFamilyName]
+        if (cachedFontFamily == null) {
+            val fontList = mutableListOf<Font>()
+            for (styleExtension in FontStyleExtension.values()) {
                 for (fileNameExtension in FILE_EXTENSIONS) {
-                    val fileName = "fonts/$fontFamilyName$styleExtension$fileNameExtension"
+                    val fileName =
+                        "fonts/$fontFamilyName${styleExtension.extension}$fileNameExtension"
                     val font = Font(
                         path = fileName,
                         assetManager = assetManager,
-                        weight = getWeightFromExtension(style),
-                        style = getStyleFromExtension(style),
+                        weight = styleExtension.weight,
+                        style = styleExtension.style,
                     )
-                    assetFontFamily.add(font)
+                    fontList.add(font)
                 }
             }
+            val fontFamily = FontFamily(fontList)
+            fontFamilyHashMap[fontFamilyName] = fontFamily
+            return fontFamily
         }
-        return assetFontFamily
+        return cachedFontFamily
     }
 
 }

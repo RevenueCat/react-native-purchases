@@ -1,7 +1,6 @@
 package com.revenuecat.purchases.react.ui
 
 import android.view.View
-import androidx.compose.ui.text.font.FontFamily
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.common.MapBuilder
@@ -57,7 +56,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     private fun setFontFamilyProp(view: T, props: ReadableMap?) {
         props?.getString(FONT_FAMILY)?.let {
             val fontFamily =
-                FontAssetManager.getFontList(fontFamilyName = it, view.resources.assets)
+                FontAssetManager.getFontFamily(fontFamilyName = it, view.resources.assets)
             setFontFamily(view, CustomFontProvider(fontFamily))
         }
     }
