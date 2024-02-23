@@ -61,10 +61,12 @@ function checkPresentPaywallIfNeededParams(params: PresentPaywallParams) {
 
 function checkFullScreenPaywallViewOptions(options: FullScreenPaywallViewOptions) {
   const offering: PurchasesOffering | undefined | null = options.offering;
+  const fontFamily: string | undefined | null = options.fontFamily;
 }
 
 function checkFooterPaywallViewOptions(options: FooterPaywallViewOptions) {
   const offering: PurchasesOffering | undefined | null = options.offering;
+  const fontFamily: string | undefined | null = options.fontFamily;
 }
 
 const onPurchaseStarted = ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => {
@@ -107,12 +109,21 @@ const PaywallScreenWithOffering = (offering: PurchasesOffering) => {
   );
 };
 
-const PaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering) => {
+const PaywallScreenWithFontFamily = (fontFamily: string | undefined | null) => {
+  return (
+    <RevenueCatUI.Paywall style={{marginBottom: 10}} options={{
+      fontFamily: fontFamily
+    }}/>
+  );
+};
+
+const PaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, fontFamily: string | undefined | null) => {
   return (
     <RevenueCatUI.Paywall
       style={{marginBottom: 10}}
       options={{
-        offering: offering
+        offering: offering,
+        fontFamily: fontFamily,
       }}
       onPurchaseStarted={onPurchaseStarted}
       onPurchaseCompleted={onPurchaseCompleted}
@@ -148,11 +159,22 @@ const FooterPaywallScreenWithOffering = (offering: PurchasesOffering) => {
   );
 };
 
-const FooterPaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering) => {
+const FooterPaywallScreenWithFontFamily = (fontFamily: string | null | undefined) => {
+  return (
+    <RevenueCatUI.PaywallFooterContainerView options={{
+      fontFamily: fontFamily,
+    }}>
+    </RevenueCatUI.PaywallFooterContainerView>
+  );
+};
+
+
+const FooterPaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, fontFamily: string | undefined | null) => {
   return (
     <RevenueCatUI.PaywallFooterContainerView
       options={{
         offering: offering,
+        fontFamily: fontFamily,
       }}
       onPurchaseStarted={onPurchaseStarted}
       onPurchaseCompleted={onPurchaseCompleted}
