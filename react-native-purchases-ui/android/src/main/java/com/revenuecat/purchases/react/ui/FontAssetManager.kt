@@ -7,8 +7,9 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 
 
-object FontAssetManager {
-    private val fontFamilyHashMap: MutableMap<String, FontFamily> = hashMapOf()
+internal object FontAssetManager {
+    @get:Synchronized
+    private var fontFamilyCache = mapOf<String, FontFamily>()
     private val FILE_EXTENSIONS = arrayOf(".ttf", ".otf")
 
     private const val FONT_PATH = "fonts/"
@@ -22,21 +23,29 @@ object FontAssetManager {
         BOLD("_bold", FontWeight.Bold, FontStyle.Normal),
         ITALIC("_italic", FontWeight.Normal, FontStyle.Italic),
         BOLD_ITALIC("_bold_italic", FontWeight.Bold, FontStyle.Italic);
+
+        companion object {
+            fun possibleFileNames(fontFamilyName: String) = values().flatMap { styleExtension ->
+                FILE_EXTENSIONS.map { fileNameExtension ->
+                    "$fontFamilyName${styleExtension.extension}$fileNameExtension"
+                }
+            }
+        }
     }
 
+    @Synchronized
     fun getFontFamily(fontFamilyName: String, assetManager: AssetManager): FontFamily? {
-        val cachedFontFamily = fontFamilyHashMap[fontFamilyName]
+        val cachedFontFamily = fontFamilyCache[fontFamilyName]
         if (cachedFontFamily != null) {
             return cachedFontFamily
         }
-
-        val fontList = mutableListOf<Font>()
+        val existingFontFileNames = assetManager.list(FONT_PATH)?.toList() ?: emptyList()
+        val fontsInFamily = mutableListOf<Font>()
         FontStyleExtension.values().forEach { styleExtension ->
             FILE_EXTENSIONS.forEach { fileNameExtension ->
                 val fileName = "$fontFamilyName${styleExtension.extension}$fileNameExtension"
-                val mapList = assetManager.list(FONT_PATH)?.toList() ?: emptyList()
-                if (mapList.contains(fileName)) {
-                    fontList.add(
+                if (existingFontFileNames.contains(fileName)) {
+                    fontsInFamily.add(
                         Font(
                             path = FONT_PATH + fileName,
                             assetManager = assetManager,
@@ -48,9 +57,9 @@ object FontAssetManager {
             }
         }
 
-        return if (fontList.isNotEmpty()) {
-            val fontFamily = FontFamily(fontList)
-            fontFamilyHashMap[fontFamilyName] = fontFamily
+        return if (fontsInFamily.isNotEmpty()) {
+            val fontFamily = FontFamily(fontsInFamily)
+            fontFamilyCache = fontFamilyCache + (fontFamilyName to fontFamily)
             fontFamily
         } else {
             null

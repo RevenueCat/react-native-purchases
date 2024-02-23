@@ -16,9 +16,9 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     companion object PropNames {
         private const val PROP_OPTIONS = "options"
-        private const val OFFERING = "offering"
-        private const val IDENTIFIER = "identifier"
-        private const val FONT_FAMILY = "fontFamily"
+        private const val OPTION_OFFERING = "offering"
+        private const val OFFERING_IDENTIFIER = "identifier"
+        private const val OPTION_FONT_FAMILY = "fontFamily"
     }
 
     abstract fun setOfferingId(view: T, identifier: String)
@@ -46,7 +46,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     }
 
     private fun setOfferingIdProp(view: T, props: ReadableMap?) {
-        val offeringIdentifier = props?.getDynamic(OFFERING)?.asMap()?.getString(IDENTIFIER)
+        val offeringIdentifier = props?.getDynamic(OPTION_OFFERING)?.asMap()?.getString(OFFERING_IDENTIFIER)
         offeringIdentifier?.let {
             setOfferingId(view, it)
         }
@@ -54,7 +54,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
     private fun setFontFamilyProp(view: T, props: ReadableMap?) {
-        props?.getString(FONT_FAMILY)?.let {
+        props?.getString(OPTION_FONT_FAMILY)?.let {
             FontAssetManager.getFontFamily(fontFamilyName = it, view.resources.assets)?.let {
                 setFontFamily(view, CustomFontProvider(it))
             }
@@ -160,4 +160,3 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         )
     }
 }
-
