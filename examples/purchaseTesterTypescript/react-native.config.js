@@ -9,6 +9,7 @@ module.exports = {
     },
     [pak_ui.name]: {
       root: path.join(__dirname, '../../react-native-purchases-ui'),
-    }
+    },
   },
+  assets: ['./assets/fonts'],
 };

@@ -48,6 +48,7 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
     <RevenueCatUI.PaywallFooterContainerView style={{backgroundColor: '#f8f8f8'}}
                                              options={{
                                                offering: route.params.offering,
+                                               fontFamily: route.params.fontFamily,
                                              }}
                                              onPurchaseStarted={onPurchaseStarted}
                                              onPurchaseCompleted={onPurchaseCompleted}
