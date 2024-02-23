@@ -12,7 +12,7 @@ import {
 import {
   type CustomerInfo,
   PAYWALL_RESULT, type PurchasesError,
-  type PurchasesOffering,
+  type PurchasesOffering, type PurchasesPackage,
   type PurchasesStoreTransaction
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
@@ -82,6 +82,7 @@ type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
+  onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
@@ -97,6 +98,7 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
@@ -163,6 +165,7 @@ export default class RevenueCatUI {
                                                                    style,
                                                                    children,
                                                                    options,
+                                                                   onPurchaseStarted,
                                                                    onPurchaseCompleted,
                                                                    onPurchaseError,
                                                                    onPurchaseCancelled,
@@ -172,6 +175,7 @@ export default class RevenueCatUI {
                                                                  }) => (
     <InternalPaywall options={options}
                      children={children}
+                     onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
                      onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
                      onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
                      onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
@@ -185,6 +189,7 @@ export default class RevenueCatUI {
                                                                                   style,
                                                                                   children,
                                                                                   options,
+                                                                                  onPurchaseStarted,
                                                                                   onPurchaseCompleted,
                                                                                   onPurchaseError,
                                                                                   onPurchaseCancelled,
@@ -226,6 +231,7 @@ export default class RevenueCatUI {
         <InternalPaywallFooterView
           style={{marginTop: -20}}
           options={options}
+          onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
           onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
           onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
           onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}

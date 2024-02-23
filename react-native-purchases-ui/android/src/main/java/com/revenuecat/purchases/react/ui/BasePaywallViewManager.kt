@@ -16,6 +16,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
+            .putEvent(PaywallEvent.ON_PURCHASE_STARTED)
             .putEvent(PaywallEvent.ON_PURCHASE_COMPLETED)
             .putEvent(PaywallEvent.ON_PURCHASE_ERROR)
             .putEvent(PaywallEvent.ON_PURCHASE_CANCELLED)
@@ -46,7 +47,10 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     ) = object : PaywallListenerWrapper() {
 
         override fun onPurchaseStarted(rcPackage: Map<String, Any?>) {
-            // Will implement when iOS sends package as argument
+            val payload = mapOf(
+                PaywallEventKey.PACKAGE to rcPackage,
+            )
+            emitEvent(themedReactContext, view.id, PaywallEvent.ON_PURCHASE_STARTED, payload)
         }
 
         override fun onPurchaseCompleted(
