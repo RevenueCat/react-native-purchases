@@ -38,7 +38,7 @@ API_AVAILABLE(ios(15.0))
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     // Need to wait for this view to be in the hierarchy to look for the parent UIVC.
     // This is required to add a SwiftUI `UIHostingController` to the hierarchy in a way that allows
     // UIKit to read properties from the environment, like traits and safe area.
@@ -71,7 +71,7 @@ API_AVAILABLE(ios(15.0))
                 [self.paywallViewController updateWithOfferingIdentifier:identifier];
             }
         }
-        
+
         NSString *fontFamily = options[@"fontFamily"];
         if (fontFamily && [fontFamily isKindOfClass:[NSString class]] && fontFamily.length > 0) {
             [self.paywallViewController updateFontWithFontName:fontFamily];
@@ -128,10 +128,6 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
 
 - (void)paywallViewControllerWasDismissed:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
     self.onDismiss(nil);
-}
-
-- (void)paywallViewControllerDidStartRestore:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    self.onRestoreStarted(nil);
 }
 
 @end
