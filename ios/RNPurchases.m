@@ -41,7 +41,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
                   observerMode:(BOOL)observerMode
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
-                  usesStoreKit2IfAvailable:(BOOL)usesStoreKit2IfAvailable
+                  storeKitVersion:(nullable NSString *)storeKitVersion
                   useAmazon:(BOOL)useAmazon
                   shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode) {
@@ -51,7 +51,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                         userDefaultsSuiteName:userDefaultsSuiteName
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
-                                     usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
+                                              storeKitVersion:storeKitVersion
                                             dangerousSettings:nil
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode];
@@ -252,6 +252,19 @@ RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
 
 static void logUnavailablePresentCodeRedemptionSheet() {
     NSLog(@"[Purchases] Warning: tried to present codeRedemptionSheet, but it's only available on iOS 14.0 or greater.");
+}
+
+RCT_EXPORT_METHOD(handleObserverModeTransactionForProductID:(nonnull NSString *)productID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 15.0, *)) {
+        [RCCommonFunctionality handleObserverModeTransactionForProductID:@""
+                                                              completion: [self getResponseCompletionBlockWithResolve:resolve
+                                                                                                               reject:reject]];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to handle Observer Mode transaction, but it's only available on iOS 15.0 or greater.");
+        resolve(nil);
+    }
 }
 
 #pragma mark - Subscriber Attributes

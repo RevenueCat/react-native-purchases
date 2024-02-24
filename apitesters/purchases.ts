@@ -1,6 +1,7 @@
 import {
   ENTITLEMENT_VERIFICATION_MODE,
   IN_APP_MESSAGE_TYPE,
+  STOREKIT_VERSION,
   PurchasesOffering,
 } from "@revenuecat/purchases-typescript-internal";
 import {
@@ -135,13 +136,14 @@ async function checkPurchasing(
 
   await Purchases.showInAppMessages();
   await Purchases.showInAppMessages(messageTypes);
+  await Purchases.handleObserverModeTransaction("product_id");
 }
 
 async function checkConfigure() {
   const apiKey: string = "";
   const appUserID: string | null = "";
   const observerMode: boolean = false;
-  const usesStoreKit2IfAvailable: boolean = true;
+  const storeKitVersion: STOREKIT_VERSION = Purchases.STOREKIT_VERSION.DEFAULT;
   const useAmazon: boolean = true;
   const entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE =
     Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
@@ -158,20 +160,22 @@ async function checkConfigure() {
     appUserID,
     observerMode,
     userDefaultsSuiteName,
+    storeKitVersion
   });
   Purchases.configure({
     apiKey,
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
+    entitlementVerificationMode
   });
   Purchases.configure({
     apiKey,
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     entitlementVerificationMode,
   });
   Purchases.configure({
@@ -179,7 +183,7 @@ async function checkConfigure() {
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     entitlementVerificationMode,
     useAmazon,
   });
@@ -188,7 +192,7 @@ async function checkConfigure() {
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     useAmazon,
     shouldShowInAppMessagesAutomatically,
   });
@@ -224,6 +228,14 @@ async function checkEntitlementVerificationModeEnum(
     case ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL:
     // Add back when adding enforced support.
     // case ENTITLEMENT_VERIFICATION_MODE.ENFORCED:
+  }
+}
+
+function checkStoreKitVersion(status: STOREKIT_VERSION) {
+  switch (status) {
+    case STOREKIT_VERSION.DEFAULT:
+    case STOREKIT_VERSION.STOREKIT_1:
+    case STOREKIT_VERSION.STOREKIT_2:
   }
 }
 
