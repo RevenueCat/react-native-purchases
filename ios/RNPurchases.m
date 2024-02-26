@@ -53,7 +53,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                         platformFlavorVersion:self.platformFlavorVersion
                                               storeKitVersion:storeKitVersion
                                             dangerousSettings:nil
-                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically 
+                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode];
     purchases.delegate = self;
 }
@@ -236,9 +236,9 @@ RCT_EXPORT_METHOD(handleObserverModeTransactionForProductID:(nonnull NSString *)
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        [RCCommonFunctionality handleObserverModeTransactionForProductID:@"" 
-                                                              completion: [self getResponseCompletionBlockWithResolve:resolve
-                                                                                                               reject:reject]];
+        [RCCommonFunctionality handleObserverModeTransactionForProductID:productID
+                                                              completion:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                              reject:reject]];
     } else {
         NSLog(@"[Purchases] Warning: tried to handle Observer Mode transaction, but it's only available on iOS 15.0 or greater.");
         resolve(nil);
