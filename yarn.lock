@@ -2530,23 +2530,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:10.1.0":
-  version: 10.1.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:10.1.0"
-  checksum: 7986a806a631113a9db29d73852c307ff91ac23f12bf8f0ff34fa99cbfd6d062c8fc6493249f0b2a588b37e1532b89b407a081d2d66e20a4e82452b9ef0a4c7e
+"@revenuecat/purchases-typescript-internal@npm:10.0.0-beta.1":
+  version: 10.0.0-beta.1
+  resolution: "@revenuecat/purchases-typescript-internal@npm:10.0.0-beta.1"
+  checksum: 7dfac6b183011f717ddbfa70d399c661049ada98d2fbbc1990ad003f21092ed84d7281b87c23a82b7526f6ee0cd55d4de4e9ca9e2e798393ce225a3db85aced3
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:10.3.2":
-  version: 10.3.2
-  resolution: "@revenuecat/purchases-typescript-internal@npm:10.3.2"
-  checksum: c203081b146f6b65682cfbda5a03022cee219abbea32e2479df58cb0ec327669d94a95adc576fca3a463e1465830cc7a953eb72523de1658a56dd9c43a94258f
+"@revenuecat/purchases-typescript-internal@npm:8.10.1":
+  version: 8.10.1
+  resolution: "@revenuecat/purchases-typescript-internal@npm:8.10.1"
+  checksum: 1563bb24fd326d5b1cc584b563ea48dbb2a4f50908d8955e704782f8646770e47a74221e89a3dd21733f6fc2201914e406c7aca6cde6fe4fab1ee890cf2189c0
   languageName: node
   linkType: hard
 
-"@sideway/address@npm:^4.1.5":
-  version: 4.1.5
-  resolution: "@sideway/address@npm:4.1.5"
+"@sideway/address@npm:^4.1.3":
+  version: 4.1.4
+  resolution: "@sideway/address@npm:4.1.4"
   dependencies:
     "@hapi/hoek": ^9.0.0
   checksum: 3e3ea0f00b4765d86509282290368a4a5fd39a7995fdc6de42116ca19a96120858e56c2c995081def06e1c53e1f8bccc7d013f6326602bec9d56b72ee2772b9d
@@ -6993,9 +6993,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 10.3.2
-    "@types/jest": ^29.5.12
-    "@types/react": ^18.2.44
+    "@revenuecat/purchases-typescript-internal": 10.0.0-beta.1
+    "@types/jest": ^28.1.2
+    "@types/react": ~18.2.0
     "@types/react-dom": ~18.2.0
     jest: ^29.7.0
     jest-react-native: ^18.0.0
