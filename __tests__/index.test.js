@@ -560,42 +560,42 @@ describe("Purchases", () => {
     const defaultVerificationMode = "DISABLED"
 
     Purchases.configure({apiKey: "key", appUserID: "user"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false, true, defaultVerificationMode);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, "DEFAULT", false, true, defaultVerificationMode);
 
     Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false, true, defaultVerificationMode);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, "DEFAULT", false, true, defaultVerificationMode);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
       observerMode: false,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true
+      storeKitVersion: Purchases.STOREKIT_VERSION.STOREKIT_1
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false, true, defaultVerificationMode);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", "STOREKIT_1", false, true, defaultVerificationMode);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
       observerMode: true,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true,
+      storeKitVersion: Purchases.STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
       shouldShowInAppMessagesAutomatically: true,
       entitlementVerificationMode: Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", "DEFAULT", true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
       observerMode: true,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true,
+      storeKitVersion: Purchases.STOREKIT_VERSION.STOREKIT_2,
       useAmazon: true,
       shouldShowInAppMessagesAutomatically: false
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, false, defaultVerificationMode);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", "STOREKIT_2", true, false, defaultVerificationMode);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(5);
   })
