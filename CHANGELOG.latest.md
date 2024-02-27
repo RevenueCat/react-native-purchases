@@ -1,3 +1,9 @@
+### Other Changes
+* Bump PHC to version 10.0.0-beta.1 via Mark Villacampa (@MarkVillacampa)
+* Add `onRestoreStarted` (#907) via Toni Rico (@tonidero)
+* Add `onPurchaseStarted` event (#911) via Cesar de la Vega (@vegaro)
+* [AUTOMATIC] Release/7.21.1 (#910)
+
 ### Dependency Updates
 * Bump ip from 1.1.8 to 1.1.9 (#909) via dependabot[bot] (@dependabot[bot])
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 9.7.2 (#908) via RevenueCat Git Bot (@RCGitBot)
