@@ -741,6 +741,8 @@ export default class Purchases {
   }
 
   /**
+   * iOS only. Always returns an error on iOS < 15.
+   *
    * Use this method only if you already have your own IAP implementation using StoreKit 2 and want to use
    * RevenueCat's backend. If you are using StoreKit 1 for your implementation, you do not need this method.
    *
