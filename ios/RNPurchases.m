@@ -262,8 +262,11 @@ RCT_EXPORT_METHOD(handleObserverModeTransactionForProductID:(nonnull NSString *)
                                                               completion:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                               reject:reject]];
     } else {
-        NSLog(@"[Purchases] Warning: tried to handle Observer Mode transaction, but it's only available on iOS 15.0 or greater.");
-        resolve(nil);
+        NSString* description = @"Tried to handle Observer Mode transaction, but it's only available on iOS 15.0 or greater.";
+        NSError* error = [[NSError alloc] initWithDomain: RCPurchasesErrorCodeDomain
+                                                    code: RCUnknownError
+                                                userInfo: @{NSLocalizedDescriptionKey : description}];
+        reject([NSString stringWithFormat:@"%ld", (long) error.code], [error localizedDescription], error);
     }
 }
 
