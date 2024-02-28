@@ -40,7 +40,7 @@ API_AVAILABLE(ios(15.0))
 
 - (void)reactSetFrame:(CGRect)frame
 {
-    NSLog(@"reactSetFrame: %@", NSStringFromCGRect(frame));
+    NSLog(@"RNPaywalls - reactSetFrame: %@", NSStringFromCGRect(frame));
 
     [super reactSetFrame: frame];
 }
@@ -49,7 +49,7 @@ API_AVAILABLE(ios(15.0))
     [super layoutSubviews];
 
     CGSize size = self.bounds.size;
-    NSLog(@"Size on layoutSubviews: %@", NSStringFromCGSize(size));
+    NSLog(@"RNPaywalls - Size on layoutSubviews: %@", NSStringFromCGSize(size));
 
     // Need to wait for this view to be in the hierarchy to look for the parent UIVC.
     // This is required to add a SwiftUI `UIHostingController` to the hierarchy in a way that allows
@@ -62,7 +62,7 @@ API_AVAILABLE(ios(15.0))
             [self addSubview:self.paywallViewController.view];
             [self.paywallViewController didMoveToParentViewController:parentController];
 
-            NSLog(@"Activating constraints");
+            NSLog(@"RNPaywalls - Activating constraints");
             [NSLayoutConstraint activateConstraints:@[
                 [self.paywallViewController.view.topAnchor constraintEqualToAnchor:self.topAnchor],
                 [self.paywallViewController.view.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
@@ -144,7 +144,7 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)) {
-    NSLog(@"Paywall view wrapper did change size to: %@", NSStringFromCGSize(size));
+    NSLog(@"RNPaywalls - Paywall view wrapper did change size to: %@", NSStringFromCGSize(size));
 }
 
 @end
