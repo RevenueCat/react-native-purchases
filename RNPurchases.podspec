@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
   spec.authors      = package['author']
   spec.homepage     = "https://github.com/RevenueCat/react-native-purchases"
   spec.license      = package['license']
-  spec.platform     = :ios, "11.0"
+  spec.platform     = :ios, "13.0"
 
   spec.source       = { :git => "https://github.com/RevenueCat/react-native-purchases.git" }
   spec.source_files = "ios/**/*.{h,m,swift}"
@@ -25,6 +25,6 @@ Pod::Spec.new do |spec|
   ]
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommon", '9.8.0'
+  spec.dependency   "PurchasesHybridCommon", '10.0.0-beta.1'
   spec.swift_version    = '5.7'
 end
