@@ -12,7 +12,7 @@ import {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Paywall'>;
 
-const PaywallScreen: React.FC<Props> = ({route}: Props) => {
+const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
   // Example handlers for the events
   const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
     customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
@@ -46,6 +46,7 @@ const PaywallScreen: React.FC<Props> = ({route}: Props) => {
 
   const onDismiss = () => {
     console.log('Dismissed');
+    navigation.pop();
   };
 
   const styles = StyleSheet.create({
@@ -60,6 +61,7 @@ const PaywallScreen: React.FC<Props> = ({route}: Props) => {
         options={{
           offering: route.params.offering,
           fontFamily: route.params.fontFamily,
+          displayCloseButton: true,
         }}
         onPurchaseStarted={onPurchaseStarted}
         onPurchaseCompleted={onPurchaseCompleted}

@@ -89,6 +89,12 @@ API_AVAILABLE(ios(15.0))
         if (fontFamily && [fontFamily isKindOfClass:[NSString class]] && fontFamily.length > 0) {
             [self.paywallViewController updateFontWithFontName:fontFamily];
         }
+
+        NSNumber *displayCloseButtonValue = options[@"displayCloseButton"];
+        BOOL displayCloseButton = [displayCloseButtonValue isKindOfClass:[NSNumber class]] ? [displayCloseButtonValue boolValue] : NO;
+        if (displayCloseButton) {
+            [self.paywallViewController updateWithDisplayCloseButton:displayCloseButton];
+        }
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     }
@@ -139,7 +145,7 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
     });
 }
 
-- (void)paywallViewControllerWasDismissed:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+- (void)paywallViewControllerRequestedDismissal:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
     self.onDismiss(nil);
 }
 

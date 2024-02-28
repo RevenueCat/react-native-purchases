@@ -34,4 +34,9 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
     override fun setFontFamily(view: PaywallView, customFontProvider: CustomFontProvider) {
         view.setFontProvider(customFontProvider)
     }
+
+    override fun setDisplayDismissButton(view: PaywallView, display: Boolean) {
+        view.setDisplayDismissButton(display)
+    }
+
 }
