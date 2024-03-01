@@ -357,6 +357,11 @@ export default class Purchases {
     return RNPurchases.getCurrentOfferingForPlacement(placementIdentifier);
   }
 
+  public static async syncAttributesAndOfferingsIfNeeded(): Promise<PurchasesOfferings> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.syncAttributesAndOfferingsIfNeeded();
+  }
+
   /**
    * Fetch the product info
    * @param {String[]} productIdentifiers Array of product identifiers

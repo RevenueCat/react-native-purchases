@@ -76,6 +76,13 @@ RCT_REMAP_METHOD(getOfferings,
                                                                                                 reject:reject]];
 }
 
+RCT_REMAP_METHOD(syncAttributesAndOfferingsIfNeeded,
+                 syncAttributesAndOfferingsIfNeededWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality syncAttributesAndOfferingsIfNeededWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                reject:reject]];
+}
+
 RCT_EXPORT_METHOD(getCurrentOfferingForPlacement:(NSString *)placementIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
@@ -84,6 +91,8 @@ RCT_EXPORT_METHOD(getCurrentOfferingForPlacement:(NSString *)placementIdentifier
         resolve(offeringObject);
     }];
 }
+
+//syncAttributesAndOfferingsIfNeeded
 
 RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
                   type:(NSString *)type

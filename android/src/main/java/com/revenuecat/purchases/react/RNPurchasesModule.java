@@ -121,6 +121,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void syncAttributesAndOfferingsIfNeeded(final Promise promise) {
+        CommonKt.syncAttributesAndOfferingsIfNeeded(getOnResult(promise));
+    }
+
+    @ReactMethod
     public void getProductInfo(ReadableArray productIDs, String type, final Promise promise) {
         ArrayList<String> productIDList = new ArrayList<>();
         for (int i = 0; i < productIDs.size(); i++) {

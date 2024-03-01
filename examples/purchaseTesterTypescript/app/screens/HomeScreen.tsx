@@ -117,6 +117,16 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     setPromptPlacementVisible(true);
   };
 
+  const syncAttributesAndOfferings = async () => {
+    try {
+      const offerings = await Purchases.syncAttributesAndOfferingsIfNeeded();
+      console.log('offerings after sync', offerings);
+      setState({...state, offerings: offerings});
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
   const makePurchase = async () => {
     Alert.prompt('Purchase Product', 'Enter Product ID for purchasing', [
       {
@@ -206,6 +216,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         <View>
           <TouchableOpacity onPress={getByPlacement}>
             <Text style={styles.otherActions}>Offering by Placement</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={syncAttributesAndOfferings}>
+            <Text style={styles.otherActions}>
+              Sync attributes and offerings
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={makePurchase}>
