@@ -20,6 +20,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList';
+import PromptWithTextInput from '../components/InputModal';
 
 interface State {
   appUserID: String | null;
@@ -113,27 +114,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   };
 
   const getByPlacement = async () => {
-    Alert.prompt('Get by placement', 'Enter Placement ID', [
-      {
-        text: 'Cancel',
-        onPress: () => {
-          console.log('Cancel');
-        },
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: async text => {
-          if (text && text.length > 0) {
-            let offering = await Purchases.getCurrentOfferingForPlacement(text);
-            console.log('Offering in RN: ', offering);
-            if (offering) {
-              navigation.navigate('OfferingDetail', {offering: offering});
-            }
-          }
-        },
-      },
-    ]);
+    setPromptPlacementVisible(true);
   };
 
   const makePurchase = async () => {
@@ -173,6 +154,24 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
+  const [promptPlacementVisible, setPromptPlacementVisible] = useState(false);
+  const handlePromptPlacementCancel = () => {
+    setPromptPlacementVisible(false);
+    console.log('User canceled input');
+  };
+  const handlePromptPlacementSubmit = async inputValue => {
+    setPromptPlacementVisible(false);
+    console.log('User submitted:', inputValue);
+
+    if (inputValue && inputValue.length > 0) {
+      let offering = await Purchases.getCurrentOfferingForPlacement(inputValue);
+      console.log('Offering in RN: ', offering);
+      if (offering) {
+        navigation.navigate('OfferingDetail', {offering: offering});
+      }
+    }
+  };
+
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -196,6 +195,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         <Divider />
 
         <View>{displayOfferings()}</View>
+
+        <PromptWithTextInput
+          isVisible={promptPlacementVisible}
+          onCancel={handlePromptPlacementCancel}
+          onSubmit={handlePromptPlacementSubmit}
+        />
 
         <Divider />
         <View>

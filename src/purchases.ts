@@ -395,6 +395,7 @@ export default class Purchases {
       type,
       null,
       null,
+      null,
       null
     ).catch((error: PurchasesError) => {
       error.userCancelled =
@@ -431,7 +432,8 @@ export default class Purchases {
       googleIsPersonalizedPrice == null
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
-      product.presentedOfferingIdentifier
+      product.presentedOfferingIdentifier,
+      product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
         error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
@@ -466,7 +468,8 @@ export default class Purchases {
       null,
       discount.timestamp.toString(),
       null,
-      product.presentedOfferingIdentifier
+      product.presentedOfferingIdentifier,
+      product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
         error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
@@ -541,7 +544,8 @@ export default class Purchases {
       googleIsPersonalizedPrice == null
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
-      subscriptionOption.presentedOfferingIdentifier
+      subscriptionOption.presentedOfferingIdentifier,
+      subscriptionOption.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
         error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
