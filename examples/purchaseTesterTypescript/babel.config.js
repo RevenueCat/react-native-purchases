@@ -11,7 +11,7 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js', '.json'],
         alias: {
           [pak.name]: path.join(__dirname, '../..', pak.source),
-          // [pak_ui.name]: path.join(__dirname, '../../react-native-purchases-ui', pak_ui.source),
+          [pak_ui.name]: path.join(__dirname, '../../react-native-purchases-ui', pak_ui.source),
         },
       },
     ],
