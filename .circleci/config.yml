@@ -130,6 +130,7 @@ jobs:
         -XX:+HeapDumpOnOutOfMemoryError"
       java_options: '-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport'
       resource_class: medium
+      build_image_version: latest
     steps:
       - checkout
       - install-dependencies:

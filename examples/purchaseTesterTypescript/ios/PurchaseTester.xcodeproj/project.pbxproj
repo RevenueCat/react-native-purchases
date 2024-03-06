@@ -13,12 +13,12 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2CE2DEAA276A10B500A69CF0 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE2DEA9276A10B500A69CF0 /* StoreKit.framework */; };
+		7563D19D59AC4E289E8C5514 /* Ubuntu.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-PurchaseTester-PurchaseTesterTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-PurchaseTester-PurchaseTesterTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A8B80DA7C45D49CB8DC8B3F1 /* Ubuntu_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B9A261A2D1B4257B086700E /* Ubuntu_bold.ttf */; };
-		BB6B3C91156F4D1CBB67A11F /* Ubuntu_bold_italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 385A42A43334474AB2B111C1 /* Ubuntu_bold_italic.ttf */; };
 		AA0D2F9F35D34524BAC7B267 /* Ubuntu_italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */; };
-		7563D19D59AC4E289E8C5514 /* Ubuntu.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */; };
+		BB6B3C91156F4D1CBB67A11F /* Ubuntu_bold_italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 385A42A43334474AB2B111C1 /* Ubuntu_bold_italic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +35,7 @@
 		00E356EE1AD99517003FC87E /* PurchaseTesterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PurchaseTesterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* PurchaseTesterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PurchaseTesterTests.m; sourceTree = "<group>"; };
+		0B9A261A2D1B4257B086700E /* Ubuntu_bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu_bold.ttf; path = ../assets/fonts/Ubuntu_bold.ttf; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* PurchaseTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PurchaseTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = PurchaseTester/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = PurchaseTester/AppDelegate.mm; sourceTree = "<group>"; };
@@ -44,17 +45,16 @@
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-PurchaseTester-PurchaseTesterTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PurchaseTester-PurchaseTesterTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE2DEA9276A10B500A69CF0 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2CE2DEAB276A1A9C00A69CF0 /* RevenueCast_PurchaseTesterTypescriptConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = RevenueCast_PurchaseTesterTypescriptConfiguration.storekit; sourceTree = "<group>"; };
+		385A42A43334474AB2B111C1 /* Ubuntu_bold_italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu_bold_italic.ttf; path = ../assets/fonts/Ubuntu_bold_italic.ttf; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-PurchaseTester.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester.debug.xcconfig"; path = "Target Support Files/Pods-PurchaseTester/Pods-PurchaseTester.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-PurchaseTester.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester.release.xcconfig"; path = "Target Support Files/Pods-PurchaseTester/Pods-PurchaseTester.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig"; path = "Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-PurchaseTester.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PurchaseTester.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PurchaseTester/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig"; path = "Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig"; sourceTree = "<group>"; };
+		A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu_italic.ttf; path = ../assets/fonts/Ubuntu_italic.ttf; sourceTree = "<group>"; };
+		AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu.ttf; path = ../assets/fonts/Ubuntu.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		0B9A261A2D1B4257B086700E /* Ubuntu_bold.ttf */ = {isa = PBXFileReference; name = "Ubuntu_bold.ttf"; path = "../assets/fonts/Ubuntu_bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		385A42A43334474AB2B111C1 /* Ubuntu_bold_italic.ttf */ = {isa = PBXFileReference; name = "Ubuntu_bold_italic.ttf"; path = "../assets/fonts/Ubuntu_bold_italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */ = {isa = PBXFileReference; name = "Ubuntu_italic.ttf"; path = "../assets/fonts/Ubuntu_italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */ = {isa = PBXFileReference; name = "Ubuntu.ttf"; path = "../assets/fonts/Ubuntu.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +119,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		316EE9C11F6F4C3384391529 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0B9A261A2D1B4257B086700E /* Ubuntu_bold.ttf */,
+				385A42A43334474AB2B111C1 /* Ubuntu_bold_italic.ttf */,
+				A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */,
+				AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,18 +174,6 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
-		};
-		316EE9C11F6F4C3384391529 /* Resources */ = {
-			isa = "PBXGroup";
-			children = (
-				0B9A261A2D1B4257B086700E /* Ubuntu_bold.ttf */,
-				385A42A43334474AB2B111C1 /* Ubuntu_bold_italic.ttf */,
-				A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */,
-				AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -571,7 +571,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -641,6 +641,7 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 			};
 			name = Debug;
 		};
@@ -649,7 +650,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -714,6 +715,7 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

@@ -8,7 +8,7 @@
  * @format
  */
 
- import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { Platform, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
