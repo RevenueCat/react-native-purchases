@@ -149,6 +149,7 @@ jobs:
       - install-dependencies-ios-build
       - rn/pod_install:
           pod_install_directory: examples/purchaseTesterTypescript/ios
+          pod_install_command:: pod install --repo-update
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 14
