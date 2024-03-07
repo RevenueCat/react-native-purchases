@@ -155,7 +155,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 final String type,
                                 @Nullable final String discountTimestamp,
                                 @Nullable final ReadableMap googleInfo,
-                                @Nullable final String presentedOfferingIdentifier,
                                 @Nullable final ReadableMap presentedOfferingContext,
                                 final Promise promise) {
         GoogleUpgradeInfo googleUpgradeInfo = getUpgradeInfo(googleProductChangeInfo);
@@ -175,15 +174,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             googleUpgradeInfo.getOldProductIdentifier(),
             googleUpgradeInfo.getProrationMode(),
             googleIsPersonalized,
-            presentedOfferingIdentifier,
             mapPresentedOfferingContext,
             getOnResult(promise));
     }
 
     @ReactMethod
     public void purchasePackage(final String packageIdentifier,
-                                final String offeringIdentifier,
-                                @Nullable final ReadableMap presentedOfferingContext,
+                                final ReadableMap presentedOfferingContext,
                                 @Nullable final ReadableMap googleProductChangeInfo,
                                 @Nullable final String discountTimestamp,
                                 @Nullable final ReadableMap googleInfo,
@@ -192,15 +189,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
-        Map<String, Object> mapPresentedOfferingContext = null;
-        if (presentedOfferingContext != null) {
-            mapPresentedOfferingContext = presentedOfferingContext.toHashMap();
-        }
+        Map<String, Object> mapPresentedOfferingContext = presentedOfferingContext.toHashMap();
 
         CommonKt.purchasePackage(
             getCurrentActivity(),
             packageIdentifier,
-            offeringIdentifier,
             mapPresentedOfferingContext,
             googleUpgradeInfo.getOldProductIdentifier(),
             googleUpgradeInfo.getProrationMode(),
@@ -214,7 +207,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                            @Nullable final ReadableMap upgradeInfo,
                                            @Nullable final String discountTimestamp,
                                            @Nullable final ReadableMap googleInfo,
-                                           @Nullable final String presentedOfferingIdentifier,
                                            @Nullable final ReadableMap presentedOfferingContext,
                                            final Promise promise) {
         GoogleUpgradeInfo googleUpgradeInfo = getUpgradeInfo(upgradeInfo);
@@ -230,11 +222,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             getCurrentActivity(),
             productIdentifer,
             optionIdentifier,
-            mapPresentedOfferingContext,
             googleUpgradeInfo.getOldProductIdentifier(),
             googleUpgradeInfo.getProrationMode(),
             googleIsPersonalized,
-            presentedOfferingIdentifier,
+            mapPresentedOfferingContext,
             getOnResult(promise));
     }
 

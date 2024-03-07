@@ -400,7 +400,6 @@ export default class Purchases {
       type,
       null,
       null,
-      null,
       null
     ).catch((error: PurchasesError) => {
       error.userCancelled =
@@ -437,7 +436,6 @@ export default class Purchases {
       googleIsPersonalizedPrice == null
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
-      product.presentedOfferingIdentifier,
       product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
@@ -473,7 +471,6 @@ export default class Purchases {
       null,
       discount.timestamp.toString(),
       null,
-      product.presentedOfferingIdentifier,
       product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
@@ -506,7 +503,6 @@ export default class Purchases {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchasePackage(
       aPackage.identifier,
-      aPackage.offeringIdentifier,
       aPackage.presentedOfferingContext,
       googleProductChangeInfo || upgradeInfo,
       null,
@@ -549,7 +545,6 @@ export default class Purchases {
       googleIsPersonalizedPrice == null
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
-      subscriptionOption.presentedOfferingIdentifier,
       subscriptionOption.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =

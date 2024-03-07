@@ -87,7 +87,7 @@ RCT_EXPORT_METHOD(getCurrentOfferingForPlacement:(NSString *)placementIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
 
-    [RCCommonFunctionality getCurrentOfferingForPlacement:placementIdentifier completionBlock:^(NSDictionary *offeringObject, NSError *error) {
+    [RCCommonFunctionality getCurrentOfferingForPlacement:placementIdentifier completionBlock:^(NSDictionary *offeringObject, RCErrorContainer *error) {
         resolve(offeringObject);
     }];
 }
@@ -121,7 +121,6 @@ RCT_REMAP_METHOD(purchaseProduct,
 
 RCT_REMAP_METHOD(purchasePackage,
                  purchasePackage:(NSString *)packageIdentifier
-                 offeringIdentifier:(NSString *)offeringIdentifier
                  presentedOfferingContext:(NSDictionary *)presentedOfferingContext
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
@@ -129,7 +128,6 @@ RCT_REMAP_METHOD(purchasePackage,
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchasePackage:packageIdentifier
-                                  offering:offeringIdentifier
                   presentedOfferingContext:presentedOfferingContext
                    signedDiscountTimestamp:signedDiscountTimestamp
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
