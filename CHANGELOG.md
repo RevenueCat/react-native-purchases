@@ -319,6 +319,11 @@ InApp Messages are shown by default in both platforms. If you want to disable th
   * [iOS 4.26.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.26.2)
 * Bump cocoapods from 1.12.1 to 1.13.0 (#740) via dependabot[bot] (@dependabot[bot])
 
+## 6.7.2
+### Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 6.3.2 (#933) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 6.9.7](https://github.com/RevenueCat/purchases-android/releases/tag/6.9.7)
+
 ## 6.7.1
 ### Dependency Updates
 * Updates purchases-hybrid-common to 6.3.1 (#965)
