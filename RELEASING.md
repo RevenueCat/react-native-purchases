@@ -26,4 +26,3 @@ Sometimes you might need to release a patch on a version that's not the latest. 
 1. Merge the PR after the release has been completed and delete both `release/3.9.0` and `release/3.9.1` branches.
 1. Do `npm dist-tag add react-native-purchases@x.x.x latest`. Being x.x.x the latest version of react-native-purchases. When doing the publish to npm, the latest version is overriden with the hotfix, so we need to set it back to the latest version.
 1. Remember to edit the CHANGELOG.md in `main` to include the version that has been just released
-
