@@ -1,3 +1,7 @@
+## 6.7.2
+### Dependency Updates
+* Bump PHC 6.3.2
+
 ## 6.7.1
 ### Dependency Updates
 * Bump PHC 6.3.1 (#892) via Toni Rico (@tonidero)
