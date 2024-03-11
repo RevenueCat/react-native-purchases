@@ -20,6 +20,7 @@ import {
   PRODUCT_CATEGORY,
   RECURRENCE_MODE,
   PresentedOfferingContext,
+  PresentedOfferingTargetingContext,
 } from "../dist";
 
 function checkProduct(product: PurchasesStoreProduct) {
@@ -186,4 +187,22 @@ function checkOfferProductCategory(productCategory: PRODUCT_CATEGORY) {
       break;
     }
   }
+}
+
+function checkPresentedOfferingcontext(
+  presentedOfferingContext: PresentedOfferingContext
+) {
+  const offeringIdentifier: string =
+    presentedOfferingContext.offeringIdentifier;
+  const placementIdentifier: string | null =
+    presentedOfferingContext.placementIdentifier;
+  const targetingContext: PresentedOfferingTargetingContext | null =
+    presentedOfferingContext.targetingContext;
+}
+
+function checkPresentedOfferingTargetingContext(
+  targetingContext: PresentedOfferingTargetingContext
+) {
+  const revision: number = targetingContext.revision;
+  const ruleId: string = targetingContext.ruleId;
 }
