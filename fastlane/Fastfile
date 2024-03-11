@@ -96,10 +96,10 @@ desc "Creates GitHub release and publishes react-native-purchases and react-nati
 lane :release do |options|
   version_number = current_version_number
   is_prerelease = Gem::Version.new(version_number).prerelease?
-  is_hotfix = hotfix?(package_name)
+  is_hotfix = !is_prerelease ? hotfix?(package_name) : false
 
   if is_hotfix
-    UI.important("ℹ️ Hotfix detected, publishing to hotfix tag")
+    UI.important("ℹ️  Hotfix detected, publishing to hotfix tag")
   end
 
   args = [
@@ -167,7 +167,10 @@ end
 desc "Generate docs"
 lane :generate_docs do
   version_number = current_version_number
-  is_hotfix = hotfix?(package_name)
+  should_update_index = !(prerelease? || hotfix?(package_name))
+  unless should_update_index
+    UI.important("ℹ️  Prerelease or hotfix detected, skipping index update")
+  end
   docs_repo_base_url = "https://github.com/RevenueCat/"
   docs_repo_name = "react-native-purchases-docs"
   docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
@@ -219,6 +222,10 @@ end
 ###############################################################################
 # Helper functions 🤜🤛                                                      #
 ###############################################################################
+
+def prerelease?
+  Gem::Version.new(current_version_number).prerelease?
+end
 
 def hotfix?(package_name)
   last_published_version = sh("npm", "view", package_name, "version")
