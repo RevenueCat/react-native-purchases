@@ -95,7 +95,7 @@ end
 desc "Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui"
 lane :release do |options|
   version_number = current_version_number
-  is_prerelease = Gem::Version.new(version_number).prerelease?
+  is_prerelease = prerelease?
   is_hotfix = !is_prerelease ? hotfix?(package_name) : false
 
   if is_hotfix
