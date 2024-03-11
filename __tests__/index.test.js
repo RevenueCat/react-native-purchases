@@ -215,14 +215,14 @@ describe("Purchases", () => {
           currency_code: "USD",
           introPrice: null
         },
-        offeringIdentifier: "offering",
+        presentedOfferingContext: {offeringIdentifier: "offering"},
       },
       {
         oldSKU: "viejo",
         prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
       },
     );
-    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth",{offeringIdentifier: "offering"}, {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, null, null);
@@ -237,12 +237,12 @@ describe("Purchases", () => {
 
     const aProduct = {
       ...productStub,
-      presentedOfferingIdentifier: "the-offerings"
+      presentedOfferingContext: {offeringIdentifier: "the-offerings"}
     }
 
     await Purchases.purchaseStoreProduct(aProduct)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, undefined, Purchases.PRODUCT_CATEGORY.SUBSCRIPTION, null, null, "the-offerings");
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, undefined, Purchases.PRODUCT_CATEGORY.SUBSCRIPTION, null, null, {offeringIdentifier: "the-offerings"});
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
@@ -267,10 +267,10 @@ describe("Purchases", () => {
           currencyCode: "USD",
           introPrice: null
         },
-        offeringIdentifier: "offering",
+        presentedOfferingContext: {offeringIdentifier: "offering"},
       });
 
-    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", undefined, null, null);
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", {offeringIdentifier: "offering"}, undefined, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 
     await Purchases.purchasePackage(
@@ -286,7 +286,7 @@ describe("Purchases", () => {
           currency_code: "USD",
           introPrice: null
         },
-        offeringIdentifier: "offering",
+        presentedOfferingContext: {offeringIdentifier: "offering"},
       },
       {
         oldSKU: "viejo",
@@ -294,7 +294,7 @@ describe("Purchases", () => {
       },
     );
 
-    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", {offeringIdentifier: "offering"}, {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, null, null);
@@ -312,14 +312,14 @@ describe("Purchases", () => {
           currency_code: "USD",
           introPrice: null
         },
-        offeringIdentifier: "offering",
+        presentedOfferingContext: {offeringIdentifier: "offering"},
       },
       {
         oldProductIdentifier: "viejo",
         prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
       },
     );
-    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", "offering", {
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", {offeringIdentifier: "offering"}, {
       oldProductIdentifier: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, null, null);
@@ -367,7 +367,7 @@ describe("Purchases", () => {
         presentedOfferingIdentifier: null
       });
 
-    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", undefined, null, null, null);
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", undefined, null, null, undefined);
     expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
 
     await Purchases.purchaseSubscriptionOption(
@@ -383,7 +383,7 @@ describe("Purchases", () => {
         fullPricePhase: phase,
         freePhase: null,
         introPhase: null,
-        presentedOfferingIdentifier: "offering"
+        presentedOfferingContext: {offeringIdentifier: "offering"},
       },
       {
         oldProductIdentifier: "viejo",
@@ -395,7 +395,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith("gold", "monthly", {
       oldProductIdentifier: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
-    }, null, {isPersonalizedPrice: true}, "offering");
+    }, null, {isPersonalizedPrice: true}, {offeringIdentifier: "offering"});
     expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(2);
   });
 
@@ -794,7 +794,7 @@ describe("Purchases", () => {
 
     await Purchases.purchaseDiscountedProduct(aProduct, promotionalOfferStub)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, promotionalOfferStub.timestamp.toString(), null, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, promotionalOfferStub.timestamp.toString(), null, undefined);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
