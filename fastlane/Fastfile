@@ -167,6 +167,7 @@ end
 desc "Generate docs"
 lane :generate_docs do
   version_number = current_version_number
+  is_hotfix = hotfix?(package_name)
   docs_repo_base_url = "https://github.com/RevenueCat/"
   docs_repo_name = "react-native-purchases-docs"
   docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
@@ -192,11 +193,11 @@ lane :generate_docs do
             docs_destination_folder = "docs/#{version_number}"
             index_destination_path = "docs/index.html"
             FileUtils.cp_r docs_generation_folder, docs_destination_folder
-            FileUtils.cp docs_index_path, index_destination_path
+            FileUtils.cp docs_index_path, index_destination_path unless is_hotfix
 
             # using sh instead of fastlane commands because fastlane would run from the repo root
             sh("git", "add", docs_destination_folder)
-            sh("git", "add", index_destination_path)
+            sh("git", "add", index_destination_path) unless is_hotfix
             sh("git", "commit", "-m", "Update documentation for #{version_number}")
             sh("git", "push")
           end
