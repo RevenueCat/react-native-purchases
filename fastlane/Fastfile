@@ -17,6 +17,7 @@ files_to_update_phc_version = {
     'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
 }
 repo_name = 'react-native-purchases'
+package_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
 changelog_path = './CHANGELOG.md'
 versions_path = './VERSIONS.md'
@@ -94,12 +95,18 @@ end
 desc "Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui"
 lane :release do |options|
   version_number = current_version_number
-  is_prerelease = Gem::Version.new(version_number).prerelease?
+  is_prerelease = prerelease?
+  is_hotfix = !is_prerelease ? hotfix?(package_name) : false
+
+  if is_hotfix
+    UI.important("ℹ️  Hotfix detected, publishing to hotfix tag")
+  end
 
   args = [
     'npm',
     'publish',
-    is_prerelease ? '--tag next' : nil
+    is_prerelease ? '--tag next' : nil,
+    is_hotfix ? '--tag hotfix' : nil,
   ].compact
 
   Dir.chdir(get_root_folder) do
@@ -160,6 +167,10 @@ end
 desc "Generate docs"
 lane :generate_docs do
   version_number = current_version_number
+  should_update_index = !(prerelease? || hotfix?(package_name))
+  unless should_update_index
+    UI.important("ℹ️  Prerelease or hotfix detected, skipping index update")
+  end
   docs_repo_base_url = "https://github.com/RevenueCat/"
   docs_repo_name = "react-native-purchases-docs"
   docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
@@ -185,11 +196,11 @@ lane :generate_docs do
             docs_destination_folder = "docs/#{version_number}"
             index_destination_path = "docs/index.html"
             FileUtils.cp_r docs_generation_folder, docs_destination_folder
-            FileUtils.cp docs_index_path, index_destination_path
+            FileUtils.cp docs_index_path, index_destination_path unless is_hotfix
 
             # using sh instead of fastlane commands because fastlane would run from the repo root
             sh("git", "add", docs_destination_folder)
-            sh("git", "add", index_destination_path)
+            sh("git", "add", index_destination_path) unless is_hotfix
             sh("git", "commit", "-m", "Update documentation for #{version_number}")
             sh("git", "push")
           end
@@ -211,6 +222,15 @@ end
 ###############################################################################
 # Helper functions 🤜🤛                                                      #
 ###############################################################################
+
+def prerelease?
+  Gem::Version.new(current_version_number).prerelease?
+end
+
+def hotfix?(package_name)
+  last_published_version = sh("npm", "view", package_name, "version")
+  Gem::Version.new(current_version_number) < Gem::Version.new(last_published_version)
+end
 
 def get_phc_version
   Dir.chdir(get_root_folder) do
