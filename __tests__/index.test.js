@@ -146,6 +146,24 @@ describe("Purchases", () => {
     expect(offerings).toEqual(offeringsStub);
   })
 
+  it("get current offerings for placement works", async () => {
+    NativeModules.RNPurchases.getCurrentOfferingForPlacement.mockResolvedValueOnce(currentOfferingForPlacementStub);
+
+    const offering = await Purchases.getCurrentOfferingForPlacement("onboarding")
+
+    expect(NativeModules.RNPurchases.getCurrentOfferingForPlacement).toBeCalledWith("onboarding")
+    expect(offering).toEqual(currentOfferingForPlacementStub);
+  })
+
+  it("sync attributes and offerings if needed works", async () => {
+    NativeModules.RNPurchases.syncAttributesAndOfferingsIfNeeded.mockResolvedValueOnce(offeringsStub);
+
+    const offerings = await Purchases.syncAttributesAndOfferingsIfNeeded()
+
+    expect(NativeModules.RNPurchases.syncAttributesAndOfferingsIfNeeded).toBeCalledTimes(1);
+    expect(offerings).toEqual(offeringsStub);
+  })
+
   it("getProducts works and gets subs by default", async () => {
     NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce(productsStub);
 
