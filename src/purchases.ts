@@ -350,6 +350,13 @@ export default class Purchases {
     return RNPurchases.getOfferings();
   }
 
+  /**
+   * Retrieves a current offering for a placement identifier, use this to access offerings defined by targeting
+   * placements configured in the RevenueCat dashboard.
+   * @param {String} placementIdentifier The placement identifier to fetch a current offeringn for
+   * @returns {Promise<PurchasesOffering | null>} Promise of an optional offering. The promise will be rejected if configure
+   * has not been called yet.
+   */
   public static async getCurrentOfferingForPlacement(
     placementIdentifier: string
   ): Promise<PurchasesOffering | null> {
@@ -357,6 +364,13 @@ export default class Purchases {
     return RNPurchases.getCurrentOfferingForPlacement(placementIdentifier);
   }
 
+  /**
+   * Syncs subscriber attributes and then fetches the configured offerings for this user. This method is intended to
+   * be called when using Targeting Rules with Custom Attributes. Any subscriber attributes should be set before
+   * calling this method to ensure the returned offerings are applied with the latest subscriber attributes.
+   * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure. The promise will be rejected if configure
+   * has not been called yet.
+   */
   public static async syncAttributesAndOfferingsIfNeeded(): Promise<PurchasesOfferings> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.syncAttributesAndOfferingsIfNeeded();
