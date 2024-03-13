@@ -1,4 +1,4 @@
-import {NativeEventEmitter, NativeModules} from "react-native";
+import { NativeEventEmitter, NativeModules } from "react-native";
 import {
   PurchasesError,
   PURCHASES_ERROR_CODE,
@@ -31,8 +31,9 @@ import {
   LogInResult,
   IN_APP_MESSAGE_TYPE,
   ENTITLEMENT_VERIFICATION_MODE,
-  VERIFICATION_RESULT
-} from '@revenuecat/purchases-typescript-internal';
+  VERIFICATION_RESULT,
+  PurchasesOffering,
+} from "@revenuecat/purchases-typescript-internal";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
@@ -45,29 +46,30 @@ export {
   ShouldPurchasePromoProductListener,
   MakePurchaseResult,
   LogHandler,
-  LogInResult
-} from '@revenuecat/purchases-typescript-internal';
+  LogInResult,
+} from "@revenuecat/purchases-typescript-internal";
 
-import {Platform} from "react-native";
+import { Platform } from "react-native";
 
-const {RNPurchases} = NativeModules;
+const { RNPurchases } = NativeModules;
 const eventEmitter = new NativeEventEmitter(RNPurchases);
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
-let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] = [];
+let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
+  [];
 let customLogHandler: LogHandler;
 
 eventEmitter.addListener(
   "Purchases-CustomerInfoUpdated",
   (customerInfo: CustomerInfo) => {
-    customerInfoUpdateListeners.forEach(listener => listener(customerInfo));
+    customerInfoUpdateListeners.forEach((listener) => listener(customerInfo));
   }
 );
 
 eventEmitter.addListener(
   "Purchases-ShouldPurchasePromoProduct",
-  ({callbackID}: { callbackID: number }) => {
-    shouldPurchasePromoProductListeners.forEach(listener =>
+  ({ callbackID }: { callbackID: number }) => {
+    shouldPurchasePromoProductListeners.forEach((listener) =>
       listener(() => RNPurchases.makeDeferredPurchase(callbackID))
     );
   }
@@ -75,7 +77,7 @@ eventEmitter.addListener(
 
 eventEmitter.addListener(
   "Purchases-LogHandlerEvent",
-  ({logLevel, message}: { logLevel: LOG_LEVEL, message: string }) => {
+  ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
     const logLevelEnum = LOG_LEVEL[logLevel];
     customLogHandler(logLevelEnum, message);
   }
@@ -193,20 +195,26 @@ export default class Purchases {
    * Default is null, which will make the SDK use standardUserDefaults.
    */
   public static configure({
-                            apiKey,
-                            appUserID = null,
-                            observerMode = false,
-                            userDefaultsSuiteName,
-                            usesStoreKit2IfAvailable = false,
-                            useAmazon = false,
-                            shouldShowInAppMessagesAutomatically = true,
-                            entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED
-                          }: PurchasesConfiguration): void {
+    apiKey,
+    appUserID = null,
+    observerMode = false,
+    userDefaultsSuiteName,
+    usesStoreKit2IfAvailable = false,
+    useAmazon = false,
+    shouldShowInAppMessagesAutomatically = true,
+    entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
+  }: PurchasesConfiguration): void {
     if (apiKey === undefined || typeof apiKey !== "string") {
-      throw new Error("Invalid API key. It must be called with an Object: configure({apiKey: \"key\"})");
+      throw new Error(
+        'Invalid API key. It must be called with an Object: configure({apiKey: "key"})'
+      );
     }
 
-    if (appUserID !== null && typeof appUserID !== "undefined" && typeof appUserID !== "string") {
+    if (
+      appUserID !== null &&
+      typeof appUserID !== "undefined" &&
+      typeof appUserID !== "string"
+    ) {
       throw new Error("appUserID needs to be a string");
     }
 
@@ -230,7 +238,9 @@ export default class Purchases {
    * this is true by default if you didn't pass an appUserID
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
    */
-  public static async setAllowSharingStoreAccount(allowSharing: boolean): Promise<void> {
+  public static async setAllowSharingStoreAccount(
+    allowSharing: boolean
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
   }
@@ -240,7 +250,9 @@ export default class Purchases {
    * make the purchase
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
    */
-  public static async setFinishTransactions(finishTransactions: boolean): Promise<void> {
+  public static async setFinishTransactions(
+    finishTransactions: boolean
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setFinishTransactions(finishTransactions);
   }
@@ -251,7 +263,9 @@ export default class Purchases {
    * purchases flow. More information: http://errors.rev.cat/ask-to-buy
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
    */
-  public static async setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox: boolean): Promise<void> {
+  public static async setSimulatesAskToBuyInSandbox(
+    simulatesAskToBuyInSandbox: boolean
+  ): Promise<void> {
     if (Platform.OS === "ios") {
       RNPurchases.setSimulatesAskToBuyInSandbox(simulatesAskToBuyInSandbox);
     }
@@ -280,7 +294,7 @@ export default class Purchases {
   ): boolean {
     if (customerInfoUpdateListeners.includes(listenerToRemove)) {
       customerInfoUpdateListeners = customerInfoUpdateListeners.filter(
-        listener => listenerToRemove !== listener
+        (listener) => listenerToRemove !== listener
       );
       return true;
     }
@@ -302,7 +316,9 @@ export default class Purchases {
     if (typeof shouldPurchasePromoProductListener !== "function") {
       throw new Error("addShouldPurchasePromoProductListener needs a function");
     }
-    shouldPurchasePromoProductListeners.push(shouldPurchasePromoProductListener);
+    shouldPurchasePromoProductListeners.push(
+      shouldPurchasePromoProductListener
+    );
   }
 
   /**
@@ -315,9 +331,10 @@ export default class Purchases {
     listenerToRemove: ShouldPurchasePromoProductListener
   ): boolean {
     if (shouldPurchasePromoProductListeners.includes(listenerToRemove)) {
-      shouldPurchasePromoProductListeners = shouldPurchasePromoProductListeners.filter(
-        listener => listenerToRemove !== listener
-      );
+      shouldPurchasePromoProductListeners =
+        shouldPurchasePromoProductListeners.filter(
+          (listener) => listenerToRemove !== listener
+        );
       return true;
     }
     return false;
@@ -331,6 +348,32 @@ export default class Purchases {
   public static async getOfferings(): Promise<PurchasesOfferings> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.getOfferings();
+  }
+
+  /**
+   * Retrieves a current offering for a placement identifier, use this to access offerings defined by targeting
+   * placements configured in the RevenueCat dashboard.
+   * @param {String} placementIdentifier The placement identifier to fetch a current offeringn for
+   * @returns {Promise<PurchasesOffering | null>} Promise of an optional offering. The promise will be rejected if configure
+   * has not been called yet.
+   */
+  public static async getCurrentOfferingForPlacement(
+    placementIdentifier: string
+  ): Promise<PurchasesOffering | null> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.getCurrentOfferingForPlacement(placementIdentifier);
+  }
+
+  /**
+   * Syncs subscriber attributes and then fetches the configured offerings for this user. This method is intended to
+   * be called when using Targeting Rules with Custom Attributes. Any subscriber attributes should be set before
+   * calling this method to ensure the returned offerings are applied with the latest subscriber attributes.
+   * @returns {Promise<PurchasesOfferings>} Promise of entitlements structure. The promise will be rejected if configure
+   * has not been called yet.
+   */
+  public static async syncAttributesAndOfferingsIfNeeded(): Promise<PurchasesOfferings> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.syncAttributesAndOfferingsIfNeeded();
   }
 
   /**
@@ -362,7 +405,7 @@ export default class Purchases {
   public static async purchaseProduct(
     productIdentifier: string,
     upgradeInfo?: UpgradeInfo | null,
-    type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS,
+    type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
@@ -373,7 +416,8 @@ export default class Purchases {
       null,
       null
     ).catch((error: PurchasesError) => {
-      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -395,7 +439,7 @@ export default class Purchases {
   public static async purchaseStoreProduct(
     product: PurchasesStoreProduct,
     googleProductChangeInfo?: GoogleProductChangeInfo | null,
-    googleIsPersonalizedPrice?: boolean | null,
+    googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
@@ -403,10 +447,13 @@ export default class Purchases {
       googleProductChangeInfo,
       product.productCategory,
       null,
-      googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
-      product.presentedOfferingIdentifier
+      googleIsPersonalizedPrice == null
+        ? null
+        : { isPersonalizedPrice: googleIsPersonalizedPrice },
+      product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
-      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -426,7 +473,7 @@ export default class Purchases {
    */
   public static async purchaseDiscountedProduct(
     product: PurchasesStoreProduct,
-    discount: PurchasesPromotionalOffer,
+    discount: PurchasesPromotionalOffer
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     if (typeof discount === "undefined" || discount == null) {
@@ -438,9 +485,10 @@ export default class Purchases {
       null,
       discount.timestamp.toString(),
       null,
-      product.presentedOfferingIdentifier
+      product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
-      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -464,17 +512,20 @@ export default class Purchases {
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
     googleProductChangeInfo?: GoogleProductChangeInfo | null,
-    googleIsPersonalizedPrice?: boolean | null,
+    googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchasePackage(
       aPackage.identifier,
-      aPackage.offeringIdentifier,
+      aPackage.presentedOfferingContext,
       googleProductChangeInfo || upgradeInfo,
       null,
-      googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
+      googleIsPersonalizedPrice == null
+        ? null
+        : { isPersonalizedPrice: googleIsPersonalizedPrice }
     ).catch((error: PurchasesError) => {
-      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -496,7 +547,7 @@ export default class Purchases {
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
     googleProductChangeInfo?: GoogleProductChangeInfo,
-    googleIsPersonalizedPrice?: boolean,
+    googleIsPersonalizedPrice?: boolean
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     await Purchases.throwIfIOSPlatform();
@@ -505,10 +556,13 @@ export default class Purchases {
       subscriptionOption.id,
       googleProductChangeInfo,
       null,
-      googleIsPersonalizedPrice == null ? null : {isPersonalizedPrice: googleIsPersonalizedPrice},
-      subscriptionOption.presentedOfferingIdentifier
+      googleIsPersonalizedPrice == null
+        ? null
+        : { isPersonalizedPrice: googleIsPersonalizedPrice },
+      subscriptionOption.presentedOfferingContext
     ).catch((error: PurchasesError) => {
-      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -536,9 +590,10 @@ export default class Purchases {
       aPackage.offeringIdentifier,
       null,
       discount.timestamp.toString(),
-      null,
+      null
     ).catch((error: PurchasesError) => {
-      error.userCancelled = error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -658,12 +713,22 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * syncing purchases.
    */
-  public static async syncObserverModeAmazonPurchase(productID: string, receiptID: string,
-                                                     amazonUserID: string, isoCurrencyCode?: string | null,
-                                                     price?: number | null): Promise<void> {
+  public static async syncObserverModeAmazonPurchase(
+    productID: string,
+    receiptID: string,
+    amazonUserID: string,
+    isoCurrencyCode?: string | null,
+    price?: number | null
+  ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
     await Purchases.throwIfNotConfigured();
-    RNPurchases.syncObserverModeAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price);
+    RNPurchases.syncObserverModeAmazonPurchase(
+      productID,
+      receiptID,
+      amazonUserID,
+      isoCurrencyCode,
+      price
+    );
   }
 
   /**
@@ -792,7 +857,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
    * setting the subscriber attributes.
    */
-  public static async setAttributes(attributes: { [key: string]: string | null }): Promise<void> {
+  public static async setAttributes(attributes: {
+    [key: string]: string | null;
+  }): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setAttributes(attributes);
   }
@@ -816,7 +883,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the phone number.
    */
-  public static async setPhoneNumber(phoneNumber: string | null): Promise<void> {
+  public static async setPhoneNumber(
+    phoneNumber: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setPhoneNumber(phoneNumber);
   }
@@ -828,7 +897,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the display name.
    */
-  public static async setDisplayName(displayName: string | null): Promise<void> {
+  public static async setDisplayName(
+    displayName: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setDisplayName(displayName);
   }
@@ -841,7 +912,7 @@ export default class Purchases {
    * setting the push token.
    */
   public static async setPushToken(pushToken: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured()
+    await Purchases.throwIfNotConfigured();
     RNPurchases.setPushToken(pushToken);
   }
 
@@ -888,7 +959,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the Appsflyer ID.
    */
-  public static async setAppsflyerID(appsflyerID: string | null): Promise<void> {
+  public static async setAppsflyerID(
+    appsflyerID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setAppsflyerID(appsflyerID);
   }
@@ -901,7 +974,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the Facebook Anonymous ID.
    */
-  public static async setFBAnonymousID(fbAnonymousID: string | null): Promise<void> {
+  public static async setFBAnonymousID(
+    fbAnonymousID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setFBAnonymousID(fbAnonymousID);
   }
@@ -914,7 +989,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the Mparticle ID.
    */
-  public static async setMparticleID(mparticleID: string | null): Promise<void> {
+  public static async setMparticleID(
+    mparticleID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setMparticleID(mparticleID);
   }
@@ -927,7 +1004,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the CleverTap ID.
    */
-  public static async setCleverTapID(cleverTapID: string | null): Promise<void> {
+  public static async setCleverTapID(
+    cleverTapID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setCleverTapID(cleverTapID);
   }
@@ -940,7 +1019,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the Mixpanel Distinct ID.
    */
-  public static async setMixpanelDistinctID(mixpanelDistinctID: string | null): Promise<void> {
+  public static async setMixpanelDistinctID(
+    mixpanelDistinctID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setMixpanelDistinctID(mixpanelDistinctID);
   }
@@ -953,7 +1034,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the Firebase App Instance ID.
    */
-  public static async setFirebaseAppInstanceID(firebaseAppInstanceID: string | null): Promise<void> {
+  public static async setFirebaseAppInstanceID(
+    firebaseAppInstanceID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setFirebaseAppInstanceID(firebaseAppInstanceID);
   }
@@ -966,7 +1049,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the OneSignal ID.
    */
-  public static async setOnesignalID(onesignalID: string | null): Promise<void> {
+  public static async setOnesignalID(
+    onesignalID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setOnesignalID(onesignalID);
   }
@@ -979,7 +1064,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the Airship Channel ID.
    */
-  public static async setAirshipChannelID(airshipChannelID: string | null): Promise<void> {
+  public static async setAirshipChannelID(
+    airshipChannelID: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setAirshipChannelID(airshipChannelID);
   }
@@ -991,7 +1078,9 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * setting the media source.
    */
-  public static async setMediaSource(mediaSource: string | null): Promise<void> {
+  public static async setMediaSource(
+    mediaSource: string | null
+  ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setMediaSource(mediaSource);
   }
@@ -1067,7 +1156,9 @@ export default class Purchases {
    *       [BILLING_FEATURE]. By default, is an empty list and no specific feature support will be checked.
    * @returns {Promise<boolean>} promise with boolean response. True if billing is supported, false otherwise.
    */
-  public static canMakePayments(features: BILLING_FEATURE[] = []): Promise<boolean> {
+  public static canMakePayments(
+    features: BILLING_FEATURE[] = []
+  ): Promise<boolean> {
     return RNPurchases.canMakePayments(features);
   }
 
@@ -1089,9 +1180,10 @@ export default class Purchases {
   public static async beginRefundRequestForActiveEntitlement(): Promise<REFUND_REQUEST_STATUS> {
     await Purchases.throwIfNotConfigured();
     await Purchases.throwIfAndroidPlatform();
-    const refundRequestStatusInt = await RNPurchases.beginRefundRequestForActiveEntitlement();
+    const refundRequestStatusInt =
+      await RNPurchases.beginRefundRequestForActiveEntitlement();
     if (refundRequestStatusInt == null) {
-      throw new UnsupportedPlatformError()
+      throw new UnsupportedPlatformError();
     }
     return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
   }
@@ -1107,12 +1199,17 @@ export default class Purchases {
    * @returns {Promise<REFUND_REQUEST_STATUS>} Returns REFUND_REQUEST_STATUS: The status of the
    *  refund request. Keep in mind the status could be REFUND_REQUEST_STATUS.USER_CANCELLED
    */
-  public static async beginRefundRequestForEntitlement(entitlementInfo: PurchasesEntitlementInfo): Promise<REFUND_REQUEST_STATUS> {
+  public static async beginRefundRequestForEntitlement(
+    entitlementInfo: PurchasesEntitlementInfo
+  ): Promise<REFUND_REQUEST_STATUS> {
     await Purchases.throwIfNotConfigured();
     await Purchases.throwIfAndroidPlatform();
-    const refundRequestStatusInt = await RNPurchases.beginRefundRequestForEntitlementId(entitlementInfo.identifier);
+    const refundRequestStatusInt =
+      await RNPurchases.beginRefundRequestForEntitlementId(
+        entitlementInfo.identifier
+      );
     if (refundRequestStatusInt == null) {
-      throw new UnsupportedPlatformError()
+      throw new UnsupportedPlatformError();
     }
     return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
   }
@@ -1128,12 +1225,15 @@ export default class Purchases {
    * @returns {Promise<REFUND_REQUEST_STATUS>} Returns a REFUND_REQUEST_STATUS: The status of the
    *  refund request. Keep in mind the status could be REFUND_REQUEST_STATUS.USER_CANCELLED
    */
-  public static async beginRefundRequestForProduct(storeProduct: PurchasesStoreProduct): Promise<REFUND_REQUEST_STATUS> {
+  public static async beginRefundRequestForProduct(
+    storeProduct: PurchasesStoreProduct
+  ): Promise<REFUND_REQUEST_STATUS> {
     await Purchases.throwIfNotConfigured();
     await Purchases.throwIfAndroidPlatform();
-    const refundRequestStatusInt = await RNPurchases.beginRefundRequestForProductId(storeProduct.identifier);
+    const refundRequestStatusInt =
+      await RNPurchases.beginRefundRequestForProductId(storeProduct.identifier);
     if (refundRequestStatusInt == null) {
-      throw new UnsupportedPlatformError()
+      throw new UnsupportedPlatformError();
     }
     return Purchases.convertIntToRefundRequestStatus(refundRequestStatusInt);
   }
@@ -1149,10 +1249,12 @@ export default class Purchases {
    *       [IN_APP_MESSAGE_TYPE]. By default, is undefined and all message types will be shown.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
    */
-    public static async showInAppMessages(messageTypes?: IN_APP_MESSAGE_TYPE[]): Promise<void> {
-      await Purchases.throwIfNotConfigured();
-      return RNPurchases.showInAppMessages(messageTypes);
-    }
+  public static async showInAppMessages(
+    messageTypes?: IN_APP_MESSAGE_TYPE[]
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.showInAppMessages(messageTypes);
+  }
 
   /**
    * Check if configure has finished and Purchases has been configured.
@@ -1172,17 +1274,19 @@ export default class Purchases {
 
   private static async throwIfAndroidPlatform() {
     if (Platform.OS === "android") {
-      throw new UnsupportedPlatformError()
+      throw new UnsupportedPlatformError();
     }
   }
 
   private static async throwIfIOSPlatform() {
     if (Platform.OS === "ios") {
-      throw new UnsupportedPlatformError()
+      throw new UnsupportedPlatformError();
     }
   }
 
-  private static convertIntToRefundRequestStatus(refundRequestStatusInt: number): REFUND_REQUEST_STATUS {
+  private static convertIntToRefundRequestStatus(
+    refundRequestStatusInt: number
+  ): REFUND_REQUEST_STATUS {
     switch (refundRequestStatusInt) {
       case 0:
         return REFUND_REQUEST_STATUS.SUCCESS;
