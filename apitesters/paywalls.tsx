@@ -1,17 +1,20 @@
-import React from 'react';
+import React from "react";
 
 import RevenueCatUI, {
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
-  PAYWALL_RESULT, PaywallViewOptions,
+  PAYWALL_RESULT,
+  PaywallViewOptions,
   PresentPaywallIfNeededParams,
-  PresentPaywallParams
+  PresentPaywallParams,
 } from "../react-native-purchases-ui";
 import {
-  CustomerInfo, PurchasesError,
+  CustomerInfo,
+  PurchasesError,
   PurchasesOffering,
-  PurchasesOfferings, PurchasesPackage,
-  PurchasesStoreTransaction
+  PurchasesOfferings,
+  PurchasesPackage,
+  PurchasesStoreTransaction,
 } from "@revenuecat/purchases-typescript-internal";
 
 async function checkPresentPaywall(offering: PurchasesOffering) {
@@ -30,9 +33,11 @@ async function checkPresentPaywall(offering: PurchasesOffering) {
 }
 
 async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
-  let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywallIfNeeded({
-    requiredEntitlementIdentifier: "entitlement"
-  });
+  let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywallIfNeeded(
+    {
+      requiredEntitlementIdentifier: "entitlement",
+    }
+  );
   paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
     requiredEntitlementIdentifier: "entitlement",
     offering: offering,
@@ -49,7 +54,8 @@ async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
 }
 
 function checkPresentPaywallParams(params: PresentPaywallIfNeededParams) {
-  const requiredEntitlementIdentifier: string = params.requiredEntitlementIdentifier;
+  const requiredEntitlementIdentifier: string =
+    params.requiredEntitlementIdentifier;
   const offeringIdentifier: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
 }
@@ -59,7 +65,9 @@ function checkPresentPaywallIfNeededParams(params: PresentPaywallParams) {
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
 }
 
-function checkFullScreenPaywallViewOptions(options: FullScreenPaywallViewOptions) {
+function checkFullScreenPaywallViewOptions(
+  options: FullScreenPaywallViewOptions
+) {
   const offering: PurchasesOffering | undefined | null = options.offering;
   const fontFamily: string | undefined | null = options.fontFamily;
 }
@@ -69,61 +77,76 @@ function checkFooterPaywallViewOptions(options: FooterPaywallViewOptions) {
   const fontFamily: string | undefined | null = options.fontFamily;
 }
 
-const onPurchaseStarted = ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => {
-};
+const onPurchaseStarted = ({
+  packageBeingPurchased,
+}: {
+  packageBeingPurchased: PurchasesPackage;
+}) => {};
 
-const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
-  customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
-}) => {
-};
+const onPurchaseCompleted = ({
+  customerInfo,
+  storeTransaction,
+}: {
+  customerInfo: CustomerInfo;
+  storeTransaction: PurchasesStoreTransaction;
+}) => {};
 
-const onPurchaseError = ({error}: { error: PurchasesError }) => {
-};
+const onPurchaseError = ({ error }: { error: PurchasesError }) => {};
 
-const onPurchaseCancelled = () => {
-};
+const onPurchaseCancelled = () => {};
 
-const onRestoreStarted = () => {
-};
+const onRestoreStarted = () => {};
 
-const onRestoreCompleted = ({customerInfo}: { customerInfo: CustomerInfo }) => {
-};
+const onRestoreCompleted = ({
+  customerInfo,
+}: {
+  customerInfo: CustomerInfo;
+}) => {};
 
-const onRestoreError = ({error}: { error: PurchasesError }) => {
-};
+const onRestoreError = ({ error }: { error: PurchasesError }) => {};
 
-const onDismiss = () => {
-};
-
+const onDismiss = () => {};
 
 const PaywallScreen = () => {
   return (
-    <RevenueCatUI.Paywall style={{marginBottom: 10}} options={{
-      offering: null
-    }}/>
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      options={{
+        offering: null,
+      }}
+    />
   );
 };
 
 const PaywallScreenWithOffering = (offering: PurchasesOffering) => {
   return (
-    <RevenueCatUI.Paywall style={{marginBottom: 10}} options={{
-      offering: offering
-    }}/>
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      options={{
+        offering: offering,
+      }}
+    />
   );
 };
 
 const PaywallScreenWithFontFamily = (fontFamily: string | undefined | null) => {
   return (
-    <RevenueCatUI.Paywall style={{marginBottom: 10}} options={{
-      fontFamily: fontFamily
-    }}/>
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      options={{
+        fontFamily: fontFamily,
+      }}
+    />
   );
 };
 
-const PaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, fontFamily: string | undefined | null) => {
+const PaywallScreenWithOfferingAndEvents = (
+  offering: PurchasesOffering,
+  fontFamily: string | undefined | null
+) => {
   return (
     <RevenueCatUI.Paywall
-      style={{marginBottom: 10}}
+      style={{ marginBottom: 10 }}
       options={{
         offering: offering,
         fontFamily: fontFamily,
@@ -135,45 +158,51 @@ const PaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, fontFam
       onRestoreStarted={onRestoreStarted}
       onRestoreCompleted={onRestoreCompleted}
       onRestoreError={onRestoreError}
-      onDismiss={onDismiss}/>
+      onDismiss={onDismiss}
+    />
   );
 };
 
 const PaywallScreenNoOptions = () => {
-  return (
-    <RevenueCatUI.Paywall style={{marginBottom: 10}}/>
-  );
+  return <RevenueCatUI.Paywall style={{ marginBottom: 10 }} />;
 };
 
 const FooterPaywallScreen = () => {
   return (
-    <RevenueCatUI.PaywallFooterContainerView options={{
-      offering: null,
-    }}>
-    </RevenueCatUI.PaywallFooterContainerView>
+    <RevenueCatUI.PaywallFooterContainerView
+      options={{
+        offering: null,
+      }}
+    ></RevenueCatUI.PaywallFooterContainerView>
   );
 };
 
 const FooterPaywallScreenWithOffering = (offering: PurchasesOffering) => {
   return (
-    <RevenueCatUI.PaywallFooterContainerView options={{
-      offering: offering,
-    }}>
-    </RevenueCatUI.PaywallFooterContainerView>
+    <RevenueCatUI.PaywallFooterContainerView
+      options={{
+        offering: offering,
+      }}
+    ></RevenueCatUI.PaywallFooterContainerView>
   );
 };
 
-const FooterPaywallScreenWithFontFamily = (fontFamily: string | null | undefined) => {
+const FooterPaywallScreenWithFontFamily = (
+  fontFamily: string | null | undefined
+) => {
   return (
-    <RevenueCatUI.PaywallFooterContainerView options={{
-      fontFamily: fontFamily,
-    }}>
-    </RevenueCatUI.PaywallFooterContainerView>
+    <RevenueCatUI.PaywallFooterContainerView
+      options={{
+        fontFamily: fontFamily,
+      }}
+    ></RevenueCatUI.PaywallFooterContainerView>
   );
 };
 
-
-const FooterPaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, fontFamily: string | undefined | null) => {
+const FooterPaywallScreenWithOfferingAndEvents = (
+  offering: PurchasesOffering,
+  fontFamily: string | undefined | null
+) => {
   return (
     <RevenueCatUI.PaywallFooterContainerView
       options={{
@@ -186,15 +215,13 @@ const FooterPaywallScreenWithOfferingAndEvents = (offering: PurchasesOffering, f
       onPurchaseCancelled={onPurchaseCancelled}
       onRestoreStarted={onRestoreStarted}
       onRestoreCompleted={onRestoreCompleted}
-      onDismiss={onDismiss}>
-    </RevenueCatUI.PaywallFooterContainerView>
+      onDismiss={onDismiss}
+    ></RevenueCatUI.PaywallFooterContainerView>
   );
 };
 
 const FooterPaywallScreenNoOptions = () => {
   return (
-    <RevenueCatUI.PaywallFooterContainerView>
-    </RevenueCatUI.PaywallFooterContainerView>
+    <RevenueCatUI.PaywallFooterContainerView></RevenueCatUI.PaywallFooterContainerView>
   );
 };
-

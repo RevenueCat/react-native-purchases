@@ -687,6 +687,21 @@ global.offeringsStub = {
   }
 };
 
+global.currentOfferingForPlacementStub = {
+  offeringIdentifier: 'default',
+  product: {
+    introPrice: null,
+    description: 'Product with intro price',
+    currencyCode: 'USD',
+    priceString: '$9.99',
+    price: 9.99,
+    title: 'Introductory Price (PurchasesSample)',
+    identifier: 'introductory_price'
+  },
+  packageType: 'WEEKLY',
+  identifier: '$rc_weekly'
+}
+
 global.productStub = {
   currencyCode: "USD",
   introPrice: null,
@@ -748,6 +763,8 @@ NativeModules.RNPurchases = {
   setAllowSharingStoreAccount: jest.fn(),
   addAttributionData: jest.fn(),
   getOfferings: jest.fn(),
+  getCurrentOfferingForPlacement: jest.fn(),
+  syncAttributesAndOfferingsIfNeeded: jest.fn(),
   getProductInfo: jest.fn(),
   makePurchase: jest.fn(),
   restorePurchases: jest.fn(),

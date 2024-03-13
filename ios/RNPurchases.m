@@ -76,6 +76,24 @@ RCT_REMAP_METHOD(getOfferings,
                                                                                                 reject:reject]];
 }
 
+RCT_REMAP_METHOD(syncAttributesAndOfferingsIfNeeded,
+                 syncAttributesAndOfferingsIfNeededWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality syncAttributesAndOfferingsIfNeededWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                reject:reject]];
+}
+
+RCT_EXPORT_METHOD(getCurrentOfferingForPlacement:(NSString *)placementIdentifier
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+
+    [RCCommonFunctionality getCurrentOfferingForPlacement:placementIdentifier completionBlock:^(NSDictionary *offeringObject, RCErrorContainer *error) {
+        resolve(offeringObject);
+    }];
+}
+
+//syncAttributesAndOfferingsIfNeeded
+
 RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
                   type:(NSString *)type
                   resolve:(RCTPromiseResolveBlock)resolve
@@ -92,6 +110,7 @@ RCT_REMAP_METHOD(purchaseProduct,
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  googleInfo:(NSDictionary *)googleInfo
                  presentedOfferingIdentifier:(NSString *)presentedOfferingIdentifier
+                 presentedOfferingContext:(NSDictionary *)presentedOfferingDictionary
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchaseProduct:productIdentifier
@@ -102,14 +121,14 @@ RCT_REMAP_METHOD(purchaseProduct,
 
 RCT_REMAP_METHOD(purchasePackage,
                  purchasePackage:(NSString *)packageIdentifier
-                 offeringIdentifier:(NSString *)offeringIdentifier
+                 presentedOfferingContext:(NSDictionary *)presentedOfferingContext
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  googleInfo:(NSDictionary *)googleInfo
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchasePackage:packageIdentifier
-                                  offering:offeringIdentifier
+                  presentedOfferingContext:presentedOfferingContext
                    signedDiscountTimestamp:signedDiscountTimestamp
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }

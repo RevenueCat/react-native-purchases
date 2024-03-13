@@ -1,14 +1,26 @@
 import {
   INTRO_ELIGIBILITY_STATUS,
   IntroEligibility,
-  PACKAGE_TYPE, PRORATION_MODE,
+  PACKAGE_TYPE,
+  PRORATION_MODE,
   PurchasesStoreProductDiscount,
   PurchasesIntroPrice,
-  PurchasesOffering, PurchasesOfferings,
-  PurchasesPackage, PurchasesPromotionalOffer,
-  PurchasesStoreProduct, UpgradeInfo,
-  SubscriptionOption, PricingPhase,
-  Price, Period, OFFER_PAYMENT_MODE, PERIOD_UNIT, PRODUCT_CATEGORY, RECURRENCE_MODE
+  PurchasesOffering,
+  PurchasesOfferings,
+  PurchasesPackage,
+  PurchasesPromotionalOffer,
+  PurchasesStoreProduct,
+  UpgradeInfo,
+  SubscriptionOption,
+  PricingPhase,
+  Price,
+  Period,
+  OFFER_PAYMENT_MODE,
+  PERIOD_UNIT,
+  PRODUCT_CATEGORY,
+  RECURRENCE_MODE,
+  PresentedOfferingContext,
+  PresentedOfferingTargetingContext,
 } from "../dist";
 
 function checkProduct(product: PurchasesStoreProduct) {
@@ -23,8 +35,12 @@ function checkProduct(product: PurchasesStoreProduct) {
   const subscriptionPeriod: string | null = product.subscriptionPeriod;
   const productCategory: PRODUCT_CATEGORY | null = product.productCategory;
   const defaultOption: SubscriptionOption | null = product.defaultOption;
-  const subscriptionOptions: SubscriptionOption[] | null =  product.subscriptionOptions;
-  const presentedOfferingIdentifier: string | null = product.presentedOfferingIdentifier;
+  const subscriptionOptions: SubscriptionOption[] | null =
+    product.subscriptionOptions;
+  const presentedOfferingIdentifier: string | null =
+    product.presentedOfferingIdentifier;
+  const presentedOfferingContext: PresentedOfferingContext | null =
+    product.presentedOfferingContext;
 }
 
 function checkDiscount(discount: PurchasesStoreProductDiscount) {
@@ -51,6 +67,8 @@ function checkPackage(pack: PurchasesPackage) {
   const packageType: PACKAGE_TYPE = pack.packageType;
   const product: PurchasesStoreProduct = pack.product;
   const offeringIdentifier: string = pack.offeringIdentifier;
+  const presentedOfferingContext: PresentedOfferingContext =
+    pack.presentedOfferingContext;
 }
 
 function checkOffering(offering: PurchasesOffering) {
@@ -102,7 +120,10 @@ function checkSubscriptionOption(option: SubscriptionOption) {
   const fullPricePhase: PricingPhase | null = option.fullPricePhase;
   const freePhase: PricingPhase | null = option.freePhase;
   const introPhase: PricingPhase | null = option.introPhase;
-  const presentedOfferingIdentifier: string | null = option.presentedOfferingIdentifier;
+  const presentedOfferingIdentifier: string | null =
+    option.presentedOfferingIdentifier;
+  const presentedOfferingContext: PresentedOfferingContext | null =
+    option.presentedOfferingContext;
 }
 
 function checkPricingPhase(pricePhase: PricingPhase) {
@@ -110,7 +131,8 @@ function checkPricingPhase(pricePhase: PricingPhase) {
   const recurrenceMode: RECURRENCE_MODE | null = pricePhase.recurrenceMode;
   const billingCycleCount: number | null = pricePhase.billingCycleCount;
   const price: Price = pricePhase.price;
-  const offerPaymentMode: OFFER_PAYMENT_MODE | null = pricePhase.offerPaymentMode;
+  const offerPaymentMode: OFFER_PAYMENT_MODE | null =
+    pricePhase.offerPaymentMode;
 }
 
 function checkPeriod(period: Period) {
@@ -126,43 +148,61 @@ function checkPrice(price: Price) {
 }
 
 function checkRecurrenceMode(mode: RECURRENCE_MODE) {
-  switch(mode) { 
-    case RECURRENCE_MODE.INFINITE_RECURRING, 
-    RECURRENCE_MODE.FINITE_RECURRING, 
-    RECURRENCE_MODE.NON_RECURRING: { 
-       break; 
-    } 
-  };
+  switch (mode) {
+    case (RECURRENCE_MODE.INFINITE_RECURRING,
+    RECURRENCE_MODE.FINITE_RECURRING,
+    RECURRENCE_MODE.NON_RECURRING): {
+      break;
+    }
+  }
 }
 
 function checkPeriodUnit(periodUnit: PERIOD_UNIT) {
-  switch(periodUnit) { 
-    case PERIOD_UNIT.DAY, 
-    PERIOD_UNIT.WEEK, 
+  switch (periodUnit) {
+    case (PERIOD_UNIT.DAY,
+    PERIOD_UNIT.WEEK,
     PERIOD_UNIT.MONTH,
     PERIOD_UNIT.YEAR,
-    PERIOD_UNIT.UNKNOWN: { 
-       break; 
-    } 
-  };
+    PERIOD_UNIT.UNKNOWN): {
+      break;
+    }
+  }
 }
 
 function checkOfferPaymentMode(offerPaymentMode: OFFER_PAYMENT_MODE) {
-  switch(offerPaymentMode) { 
-    case OFFER_PAYMENT_MODE.FREE_TRIAL, 
-    OFFER_PAYMENT_MODE.SINGLE_PAYMENT, 
-    OFFER_PAYMENT_MODE.DISCOUNTED_RECURRING_PAYMENT: { 
-       break; 
-    } 
-  };
+  switch (offerPaymentMode) {
+    case (OFFER_PAYMENT_MODE.FREE_TRIAL,
+    OFFER_PAYMENT_MODE.SINGLE_PAYMENT,
+    OFFER_PAYMENT_MODE.DISCOUNTED_RECURRING_PAYMENT): {
+      break;
+    }
+  }
 }
 
 function checkOfferProductCategory(productCategory: PRODUCT_CATEGORY) {
-  switch(productCategory) { 
-    case PRODUCT_CATEGORY.NON_SUBSCRIPTION, 
-    PRODUCT_CATEGORY.SUBSCRIPTION, 
-    PRODUCT_CATEGORY.UNKNOWN: { 
-       break; 
-    } 
-  };
+  switch (productCategory) {
+    case (PRODUCT_CATEGORY.NON_SUBSCRIPTION,
+    PRODUCT_CATEGORY.SUBSCRIPTION,
+    PRODUCT_CATEGORY.UNKNOWN): {
+      break;
+    }
+  }
+}
+
+function checkPresentedOfferingcontext(
+  presentedOfferingContext: PresentedOfferingContext
+) {
+  const offeringIdentifier: string =
+    presentedOfferingContext.offeringIdentifier;
+  const placementIdentifier: string | null =
+    presentedOfferingContext.placementIdentifier;
+  const targetingContext: PresentedOfferingTargetingContext | null =
+    presentedOfferingContext.targetingContext;
+}
+
+function checkPresentedOfferingTargetingContext(
+  targetingContext: PresentedOfferingTargetingContext
+) {
+  const revision: number = targetingContext.revision;
+  const ruleId: string = targetingContext.ruleId;
 }
