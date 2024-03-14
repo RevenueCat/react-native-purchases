@@ -85,7 +85,7 @@ export interface PaywallViewOptions {
 }
 
 export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
-  // Additional properties for FullScreenPaywallViewOptions can be added here if needed in the future
+  displayCloseButton?: boolean | false;
 }
 
 // Currently the same as the base type, but can be extended later if needed

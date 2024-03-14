@@ -68,4 +68,9 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
     override fun setFontFamily(view: PaywallFooterView, customFontProvider: CustomFontProvider) {
         view.setFontProvider(customFontProvider)
     }
+
+    override fun setDisplayDismissButton(view: PaywallFooterView, display: Boolean) {
+        // No-op since PaywallFooterView doesn't have a dismiss button
+    }
+
 }

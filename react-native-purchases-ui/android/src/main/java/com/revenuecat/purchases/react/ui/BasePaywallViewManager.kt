@@ -23,6 +23,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     abstract fun setOfferingId(view: T, identifier: String)
 
+    abstract fun setDisplayDismissButton(view: T, display: Boolean)
+
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
             .putEvent(PaywallEvent.ON_PURCHASE_STARTED)
@@ -44,6 +46,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         options?.let { props ->
             setOfferingIdProp(view, props)
             setFontFamilyProp(view, props)
+            setDisplayCloseButton(view, props)
         }
     }
 
@@ -60,7 +63,12 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             FontAssetManager.getFontFamily(fontFamilyName = it, view.resources.assets)?.let {
                 setFontFamily(view, CustomFontProvider(it))
             }
+        }
+    }
 
+    private fun setDisplayCloseButton(view: T, options: ReadableMap) {
+        options.takeIf { it.hasKey("displayCloseButton") }?.let {
+            setDisplayDismissButton(view, it.getBoolean("displayCloseButton"))
         }
     }
 

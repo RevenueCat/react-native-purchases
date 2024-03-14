@@ -70,6 +70,7 @@ function checkFullScreenPaywallViewOptions(
 ) {
   const offering: PurchasesOffering | undefined | null = options.offering;
   const fontFamily: string | undefined | null = options.fontFamily;
+  const displayCloseButton: boolean | undefined = options.displayCloseButton;
 }
 
 function checkFooterPaywallViewOptions(options: FooterPaywallViewOptions) {
