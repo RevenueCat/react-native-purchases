@@ -12,7 +12,7 @@ import {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FooterPaywall'>;
 
-const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
+const FooterPaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
   // Example handlers for the events
   const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
     customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
@@ -46,6 +46,7 @@ const FooterPaywallScreen: React.FC<Props> = ({route}: Props) => {
 
   const onDismiss = () => {
     console.log('Dismissed');
+    navigation.pop();
   };
 
   return (
