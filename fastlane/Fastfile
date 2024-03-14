@@ -196,11 +196,11 @@ lane :generate_docs do
             docs_destination_folder = "docs/#{version_number}"
             index_destination_path = "docs/index.html"
             FileUtils.cp_r docs_generation_folder, docs_destination_folder
-            FileUtils.cp docs_index_path, index_destination_path unless is_hotfix
+            FileUtils.cp docs_index_path, index_destination_path if should_update_index
 
             # using sh instead of fastlane commands because fastlane would run from the repo root
             sh("git", "add", docs_destination_folder)
-            sh("git", "add", index_destination_path) unless is_hotfix
+            sh("git", "add", index_destination_path) if should_update_index
             sh("git", "commit", "-m", "Update documentation for #{version_number}")
             sh("git", "push")
           end
