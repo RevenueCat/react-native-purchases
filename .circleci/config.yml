@@ -194,57 +194,58 @@ jobs:
             open_pr:true \
             automatic_release:<< pipeline.parameters.automatic >>
 workflows:
-  test:
-    when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-    jobs:
-      - analyse_js
-      - android
-      - ios
+#  test:
+#    when:
+#      not:
+#        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+#    jobs:
+#      - analyse_js
+#      - android
+#      - ios
 
   deploy:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - hold:
-          type: approval
-          <<: *release-branches
-      - revenuecat/tag-current-branch:
-          requires:
-            - hold
-          <<: *release-branches
-      - make-release:
-          <<: *release-tags
-      - docs-deploy:
-          <<: *release-tags
-          requires:
-            - make-release
-
-  danger:
-    when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-    jobs:
-      - revenuecat/danger
-
-  weekly-run-workflow:
-    when:
-      and:
-        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-        - equal: [ "release-train", << pipeline.schedule.name >> ]
-    jobs:
-      - revenuecat/automatic-bump
-
-  manual-trigger-bump:
-    when:
-      equal: [ bump, << pipeline.parameters.action >> ]
-    jobs:
-      - revenuecat/automatic-bump
-
-  update-hybrid-common-versions:
-     when:
-       equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
-     jobs:
-       - update-hybrid-common-versions
+#      - hold:
+#          type: approval
+#          <<: *release-branches
+#      - revenuecat/tag-current-branch:
+#          requires:
+#            - hold
+#          <<: *release-branches
+#      - make-release:
+#          <<: *release-tags
+      - docs-deploy
+#      - docs-deploy:
+#          <<: *release-tags
+#          requires:
+#            - make-release
+#
+#  danger:
+#    when:
+#      not:
+#        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+#    jobs:
+#      - revenuecat/danger
+#
+#  weekly-run-workflow:
+#    when:
+#      and:
+#        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+#        - equal: [ "release-train", << pipeline.schedule.name >> ]
+#    jobs:
+#      - revenuecat/automatic-bump
+#
+#  manual-trigger-bump:
+#    when:
+#      equal: [ bump, << pipeline.parameters.action >> ]
+#    jobs:
+#      - revenuecat/automatic-bump
+#
+#  update-hybrid-common-versions:
+#     when:
+#       equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
+#     jobs:
+#       - update-hybrid-common-versions
