@@ -85,6 +85,14 @@ Generate docs
 
 Tag current branch with current version number
 
+### trigger_bump
+
+```sh
+[bundle exec] fastlane trigger_bump
+```
+
+Trigger bump
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
