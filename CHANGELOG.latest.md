@@ -1,8 +1,17 @@
+### New Features
+* Add `displayCloseButton` option to `PaywallView` (#913) via Cesar de la Vega (@vegaro)
 ### Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 9.9.0 (#930) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 7.7.1](https://github.com/RevenueCat/purchases-android/releases/tag/7.7.1)
-  * [Android 7.7.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.7.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 10.2.0 (#940) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 7.7.2](https://github.com/RevenueCat/purchases-android/releases/tag/7.7.2)
+  * [iOS 4.39.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.39.0)
+  * [iOS 4.38.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.38.1)
+  * [iOS 4.38.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.38.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 10.1.0 (#938) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 7.7.2](https://github.com/RevenueCat/purchases-android/releases/tag/7.7.2)
+  * [iOS 4.39.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.39.0)
+  * [iOS 4.38.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.38.1)
+  * [iOS 4.38.0](https://github.com/RevenueCat/purchases-ios/releases/tag/4.38.0)
 ### Other Changes
-* Update react native version in purchase tester (#929) via Cesar de la Vega (@vegaro)
-* Increase react-native dev dependency version (#928) via Cesar de la Vega (@vegaro)
-* Upgrade jest to fix yargs-parser to fix vulnerabilities (#927) via Cesar de la Vega (@vegaro)
+* Make hotfixes not deploy with the latest tag nor update latest docs (#937) via Toni Rico (@tonidero)
+* Update RELEASING.md (#936) via Cesar de la Vega (@vegaro)
+* Add 6.7.2 to changelog (#935) via Cesar de la Vega (@vegaro)
