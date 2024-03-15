@@ -21,6 +21,7 @@ package_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
 changelog_path = './CHANGELOG.md'
 versions_path = './VERSIONS.md'
+sample_path = 'examples/purchaseTesterTypescript'
 
 before_all do
   setup_circle_ci
@@ -123,7 +124,7 @@ lane :build_example do |options|
   Dir.chdir(get_root_folder) do
     sh("yarn")
   end
-  Dir.chdir(File.expand_path('examples/purchaseTesterTypescript', get_root_folder)) do
+  Dir.chdir(File.expand_path(sample_path, get_root_folder)) do
     sh("npx pod-install")
   end
 end
@@ -161,6 +162,10 @@ lane :update_hybrid_common do |options|
   # Update `yarn.lock` too
   sh('yarn install --no-immutable')
   commit_current_changes(commit_message: 'Update yarn.lock')
+
+  # This will update both PurchasesHybridCommonUI and PurchasesHybridCommon
+  update_sample_podfile_lock_with_retry('PurchasesHybridCommonUI')
+
   push_to_git_remote(set_upstream: true)
 end
 
@@ -245,7 +250,7 @@ end
 
 def parse_pod_version
   Dir.chdir(get_root_folder) do
-    return sh("cat examples/purchaseTesterTypescript/ios/Podfile.lock | grep \' Purchases (=\' | awk \'{print($4)}\' | sed \"s/)//g\"").strip
+    return sh("cat #{sample_path}/ios/Podfile.lock | grep \' Purchases (=\' | awk \'{print($4)}\' | sed \"s/)//g\"").strip
   end
 end
 
@@ -260,5 +265,26 @@ end
 def check_no_git_tag_exists(version_number)
   if git_tag_exists(tag: version_number, remote: true, remote_name: 'origin')
     raise "git tag with version #{version_number} already exists!"
+  end
+end
+
+def update_sample_podfile_lock_with_retry(pod_name)
+  retry_attempts = 4 # Total of 4 retries, with the first attempt considered, equals 5 attempts over 20 minutes
+  Dir.chdir(File.expand_path("#{sample_path}/ios", get_root_folder)) do
+    begin
+      UI.message("ℹ️  Updating Podfile.lock with new version for #{pod_name}")
+      sh("pod update #{pod_name}")
+      commit_current_changes(commit_message: "Update Podfile.lock for #{pod_name}")
+    rescue => e
+      if retry_attempts > 0
+        UI.message("⚠️  Failed to update Podfile.lock for #{pod_name}: #{e.message}")
+        UI.message("⚠️  Retrying in 5 minutes...")
+        sleep(300) # wait for 5 minutes
+        retry_attempts -= 1
+        retry
+      else
+        UI.message("⚠️  Final attempt to update Podfile.lock for #{pod_name} failed. It's possible the pod has not been distributed yet. Proceeding without update.")
+      end
+    end
   end
 end
