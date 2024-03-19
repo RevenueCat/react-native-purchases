@@ -10,6 +10,9 @@ import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
 import com.revenuecat.purchases.hybridcommon.ui.PaywallSource
 import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
 import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
+import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
+import com.revenuecat.purchases.ui.revenuecatui.fonts.PaywallFont
+import com.revenuecat.purchases.ui.revenuecatui.fonts.PaywallFontFamily
 
 internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
@@ -36,12 +39,14 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
     fun presentPaywall(
         offeringIdentifier: String?,
         displayCloseButton: Boolean?,
+        fontFamily: String?,
         promise: Promise
     ) {
         presentPaywall(
             null,
             offeringIdentifier,
             displayCloseButton,
+            fontFamily,
             promise
         )
     }
@@ -51,12 +56,14 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
         requiredEntitlementIdentifier: String,
         offeringIdentifier: String?,
         displayCloseButton: Boolean,
+        fontFamily: String?,
         promise: Promise
     ) {
         presentPaywall(
             requiredEntitlementIdentifier,
             offeringIdentifier,
             displayCloseButton,
+            fontFamily,
             promise
         )
     }
@@ -71,14 +78,18 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
         // Keep: Required for RN built in Event Emitter Calls.
     }
 
+    @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
     private fun presentPaywall(
         requiredEntitlementIdentifier: String?,
         offeringIdentifier: String?,
         displayCloseButton: Boolean?,
+        fontFamilyName: String?,
         promise: Promise
     ) {
         val fragment = currentActivityFragment ?: return
-
+        val fontFamily = fontFamilyName?.let {
+            FontAssetManager.getPaywallFontFamily(fontFamilyName = it, fragment.resources.assets)
+        }
         presentPaywallFromFragment(
             fragment = fragment,
             PresentPaywallOptions(
@@ -91,7 +102,8 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
                     override fun onPaywallResult(paywallResult: String) {
                         promise.resolve(paywallResult)
                     }
-                }
+                },
+                fontFamily = fontFamily
             )
         )
     }
