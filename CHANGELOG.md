@@ -1,3 +1,11 @@
+## 7.24.1
+### Other Changes
+* Remove flipper from tester (#950) via Cesar de la Vega (@vegaro)
+* Update Podfile.lock when upgrading phc (#946) via Cesar de la Vega (@vegaro)
+* Update changelog to include behavior change (#945) via Cesar de la Vega (@vegaro)
+* Fix `generate_docs` (#943) via Cesar de la Vega (@vegaro)
+* Add trigger_bump lane (#942) via Cesar de la Vega (@vegaro)
+
 ## 7.24.0
 ### New Features
 * Add `displayCloseButton` option to `PaywallView` (#913) via Cesar de la Vega (@vegaro)
