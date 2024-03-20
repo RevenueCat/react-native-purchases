@@ -55,6 +55,11 @@ async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
     requiredEntitlementIdentifier: "entitlement",
     offering: offering,
     displayCloseButton: false,
+  });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement",
+    offering: offering,
+    displayCloseButton: false,
     fontFamily: 'Ubuntu',
   });
 }
