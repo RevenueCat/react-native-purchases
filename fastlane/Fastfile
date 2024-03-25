@@ -144,11 +144,6 @@ lane :update_hybrid_common do |options|
   UI.message("ℹ️  Current Purchases Hybrid Common version: #{current_phc_version}")
   UI.message("ℹ️  Setting Purchases Hybrid Common version: #{new_version_number}")
 
-  if dry_run
-    UI.message("ℹ️  Nothing more to do, dry_run: true")
-    next
-  end
-
   # Update `yarn.lock` too
   sh('yarn install --no-immutable')
   commit_current_changes(commit_message: 'Update yarn.lock')
