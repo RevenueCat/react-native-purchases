@@ -131,11 +131,10 @@ end
 
 desc "Update purchases-hybrid-common version, pushes changes to a new branch if open_pr option is true"
 lane :update_hybrid_common do |options|
-  if options[:dry_run]
-    dry_run = true
-  end
+  sh('node --version')
+
   if options[:version]
-    new_version_number = options[:version]
+    new_version_number = '10.3.0'
   else
     UI.user_error!("Missing `version` argument")
   end
@@ -150,26 +149,12 @@ lane :update_hybrid_common do |options|
     next
   end
 
-  bump_phc_version(
-    repo_name: 'react-native-purchases',
-    files_to_update: files_to_update_phc_version,
-    current_version: current_phc_version,
-    next_version: new_version_number,
-    open_pr: options[:open_pr] || false,
-    automatic_release: options[:automatic_release] || false
-  )
-
   # Update `yarn.lock` too
   sh('yarn install --no-immutable')
   commit_current_changes(commit_message: 'Update yarn.lock')
 
-  # Pushing now in case updating podfile fails and needs to retry
-  push_to_git_remote(set_upstream: true)
-
   # This will update both PurchasesHybridCommonUI and PurchasesHybridCommon
   update_sample_podfile_lock_with_retry(pod_name: 'PurchasesHybridCommonUI')
-
-  push_to_git_remote(set_upstream: true)
 end
 
 desc "Generate docs"
