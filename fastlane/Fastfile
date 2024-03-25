@@ -163,6 +163,8 @@ lane :update_hybrid_common do |options|
   sh('yarn install --no-immutable')
   commit_current_changes(commit_message: 'Update yarn.lock')
 
+  push_to_git_remote(set_upstream: true)
+
   # This will update both PurchasesHybridCommonUI and PurchasesHybridCommon
   update_sample_podfile_lock_with_retry('PurchasesHybridCommonUI', sample_path)
 
