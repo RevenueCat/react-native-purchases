@@ -163,10 +163,11 @@ lane :update_hybrid_common do |options|
   sh('yarn install --no-immutable')
   commit_current_changes(commit_message: 'Update yarn.lock')
 
+  # Pushing now in case updating podfile fails and needs to retry
   push_to_git_remote(set_upstream: true)
 
   # This will update both PurchasesHybridCommonUI and PurchasesHybridCommon
-  update_sample_podfile_lock_with_retry('PurchasesHybridCommonUI', sample_path)
+  update_sample_podfile_lock_with_retry(pod_name: 'PurchasesHybridCommonUI')
 
   push_to_git_remote(set_upstream: true)
 end
@@ -250,12 +251,6 @@ def get_phc_version
   end
 end
 
-def parse_pod_version
-  Dir.chdir(get_root_folder) do
-    return sh("cat #{sample_path}/ios/Podfile.lock | grep \' Purchases (=\' | awk \'{print($4)}\' | sed \"s/)//g\"").strip
-  end
-end
-
 def get_root_folder
   return File.expand_path('../../', __FILE__)
 end
@@ -270,7 +265,9 @@ def check_no_git_tag_exists(version_number)
   end
 end
 
-def update_sample_podfile_lock_with_retry(pod_name, sample_path)
+private_lane :update_sample_podfile_lock_with_retry do |options|
+  pod_name = options[:pod_name]
+
   retry_attempts = 4 # Total of 4 retries, with the first attempt considered, equals 5 attempts over 20 minutes
   Dir.chdir(File.expand_path("#{sample_path}/ios", get_root_folder)) do
     begin
