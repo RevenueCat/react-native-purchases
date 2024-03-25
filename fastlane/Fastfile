@@ -164,7 +164,7 @@ lane :update_hybrid_common do |options|
   commit_current_changes(commit_message: 'Update yarn.lock')
 
   # This will update both PurchasesHybridCommonUI and PurchasesHybridCommon
-  update_sample_podfile_lock_with_retry('PurchasesHybridCommonUI')
+  update_sample_podfile_lock_with_retry('PurchasesHybridCommonUI', sample_path)
 
   push_to_git_remote(set_upstream: true)
 end
@@ -268,7 +268,7 @@ def check_no_git_tag_exists(version_number)
   end
 end
 
-def update_sample_podfile_lock_with_retry(pod_name)
+def update_sample_podfile_lock_with_retry(pod_name, sample_path)
   retry_attempts = 4 # Total of 4 retries, with the first attempt considered, equals 5 attempts over 20 minutes
   Dir.chdir(File.expand_path("#{sample_path}/ios", get_root_folder)) do
     begin
