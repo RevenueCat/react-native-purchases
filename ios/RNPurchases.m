@@ -109,7 +109,6 @@ RCT_REMAP_METHOD(purchaseProduct,
                  type:(NSString *)type
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  googleInfo:(NSDictionary *)googleInfo
-                 presentedOfferingIdentifier:(NSString *)presentedOfferingIdentifier
                  presentedOfferingContext:(NSDictionary *)presentedOfferingDictionary
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
