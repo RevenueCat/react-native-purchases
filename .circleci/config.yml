@@ -178,11 +178,13 @@ jobs:
 
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
-    docker:
-      - image: cimg/ruby:3.3.0-node
+    executor:
+      name: rn/macos
+      resource_class: macos.x86.medium.gen2
+      xcode_version: 14.3.1
     steps:
       - checkout
-      - revenuecat/install-gem-unix-dependencies:
+      - revenuecat/install-gem-mac-dependencies:
           cache-version: v1
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
