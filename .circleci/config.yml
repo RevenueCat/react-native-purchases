@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@7.4.0
   revenuecat: revenuecat/sdks-common-config@2.2.0
+  node: circleci/node@5.2.0
 
 aliases:
   release-tags: &release-tags
@@ -179,9 +180,13 @@ jobs:
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
     docker:
-      - image: cimg/ruby:3.3.0-node
+      - image: cimg/ruby:3.3.0
     steps:
       - checkout
+      - node/install:
+          install-yarn: true
+          node-version: '20.5.0'
+      - run: node --version
       - revenuecat/install-gem-unix-dependencies:
           cache-version: v1
       - revenuecat/trust-github-key
