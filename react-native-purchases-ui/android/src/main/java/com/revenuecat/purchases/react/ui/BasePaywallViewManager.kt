@@ -86,15 +86,13 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         themedReactContext: ThemedReactContext,
         view: View
     ) = object : PaywallListenerWrapper() {
-        private val surfaceId = view.surfaceId
-        private val viewId = view.id
-
         override fun onPurchaseStarted(rcPackage: Map<String, Any?>) {
             val event = OnPurchaseStartedEvent(
-                surfaceId = surfaceId,
-                viewTag = viewId, rcPackage
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+                rcPackage
             )
-            emitEvent(themedReactContext, viewId, event)
+            emitEvent(themedReactContext, view.id, event)
         }
 
         override fun onPurchaseCompleted(
@@ -102,55 +100,55 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             storeTransaction: Map<String, Any?>
         ) {
             val event = OnPurchaseCompletedEvent(
-                surfaceId = surfaceId,
-                viewTag = viewId,
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
                 customerInfo,
                 storeTransaction
             )
-            emitEvent(themedReactContext, viewId, event)
+            emitEvent(themedReactContext, view.id, event)
         }
 
         override fun onPurchaseError(error: Map<String, Any?>) {
             val event = OnPurchaseErrorEvent(
-                surfaceId = surfaceId,
-                viewTag = viewId,
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
                 error
             )
-            emitEvent(themedReactContext, viewId, event)
+            emitEvent(themedReactContext, view.id, event)
         }
 
         override fun onPurchaseCancelled() {
             val event = OnPurchaseCancelledEvent(
-                surfaceId = surfaceId,
-                viewTag = viewId,
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
             )
-            emitEvent(themedReactContext, viewId, event)
+            emitEvent(themedReactContext, view.id, event)
         }
 
         override fun onRestoreStarted() {
             val event = OnRestoreStartedEvent(
-                surfaceId = surfaceId,
-                viewTag = viewId,
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
             )
-            emitEvent(themedReactContext, viewId, event)
+            emitEvent(themedReactContext, view.id, event)
         }
 
         override fun onRestoreCompleted(customerInfo: Map<String, Any?>) {
             val event = OnRestoreCompletedEvent(
-                surfaceId = surfaceId,
-                viewTag = viewId,
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
                 customerInfo,
             )
-            emitEvent(themedReactContext, viewId, event)
+            emitEvent(themedReactContext, view.id, event)
         }
 
         override fun onRestoreError(error: Map<String, Any?>) {
             val event = OnRestoreErrorEvent(
-                surfaceId = surfaceId,
-                viewTag = viewId,
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
                 error,
             )
-            emitEvent(themedReactContext, viewId, event)
+            emitEvent(themedReactContext, view.id, event)
         }
 
     }
