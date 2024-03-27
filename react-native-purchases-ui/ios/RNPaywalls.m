@@ -63,19 +63,21 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
+                  withFontFamily:(nullable NSString *)fontFamily
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
-            [self.paywalls presentPaywallWithOfferingIdentifier:offeringIdentifier
-                                             displayCloseButton:displayCloseButton
-                                           paywallResultHandler:^(NSString *result) {
-                resolve(result);
-            }];
-            return;
+            options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
         }
-        [self.paywalls presentPaywallWithDisplayCloseButton:displayCloseButton
-                                       paywallResultHandler:^(NSString *result) {
+        options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
+        if (fontFamily) {
+            options[PaywallOptionsKeys.fontName] = fontFamily;
+        }
+
+        [self.paywalls presentPaywallWithOptions:options
+                            paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
     } else {
@@ -86,21 +88,22 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
 RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier
                   withOfferingIdentifier:(nullable NSString *)offeringIdentifier
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
+                  withFontFamily:(nullable NSString *)fontFamily
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
-            [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
-                                                                offeringIdentifier:offeringIdentifier
-                                                                displayCloseButton:displayCloseButton
-                                                              paywallResultHandler:^(NSString *result) {
-                resolve(result);
-            }];
-            return;
+            options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
         }
-        [self.paywalls presentPaywallIfNeededWithRequiredEntitlementIdentifier:requiredEntitlementIdentifier
-                                                            displayCloseButton:displayCloseButton
-                                                          paywallResultHandler:^(NSString *result) {
+        options[PaywallOptionsKeys.requiredEntitlementIdentifier] = requiredEntitlementIdentifier;
+        options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
+        if (fontFamily) {
+            options[PaywallOptionsKeys.fontName] = fontFamily;
+        }
+
+        [self.paywalls presentPaywallIfNeededWithOptions:options
+                                    paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
     } else {
