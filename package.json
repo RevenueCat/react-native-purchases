@@ -63,8 +63,8 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
+    "react": ">= 16.6.3",
+    "react-native": ">= 0.58.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
