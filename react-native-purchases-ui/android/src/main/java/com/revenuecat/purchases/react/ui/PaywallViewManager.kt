@@ -5,6 +5,7 @@ import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIP
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
+
 @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
 internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
 
@@ -17,9 +18,9 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
     }
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallView {
-        return PaywallView(themedReactContext).also {
-            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
-            it.setDismissHandler(getDismissHandler(themedReactContext, it))
+        return PaywallView(themedReactContext).also { view ->
+            view.setPaywallListener(createPaywallListenerWrapper(themedReactContext, view))
+            view.setDismissHandler(getDismissHandler(themedReactContext, view))
         }
     }
 

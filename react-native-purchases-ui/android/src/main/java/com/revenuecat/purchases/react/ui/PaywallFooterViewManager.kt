@@ -55,9 +55,9 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
                     }
                 }
             }
-        }.also {
-            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
-            it.setDismissHandler(getDismissHandler(themedReactContext, it))
+        }.also { view ->
+            view.setPaywallListener(createPaywallListenerWrapper(themedReactContext, view))
+            view.setDismissHandler(getDismissHandler(themedReactContext, view))
         }
     }
 
