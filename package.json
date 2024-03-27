@@ -64,7 +64,7 @@
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": ">= 16.6.3",
-    "react-native": ">= 0.58.2"
+    "react-native": "*"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
