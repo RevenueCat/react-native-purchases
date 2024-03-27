@@ -81,8 +81,6 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         }
     }
 
-    // TODO: RCTEventEmitter is deprecated, and RCTModernEventEmitter should be used instead
-    // but documentation is not clear on how to use it so keeping this for now
     internal fun createPaywallListenerWrapper(
         themedReactContext: ThemedReactContext,
         view: View
@@ -125,10 +123,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     internal fun getDismissHandler(
         themedReactContext: ThemedReactContext,
         view: T
-    ): (() -> Unit) {
-        return {
-            emitEvent(themedReactContext, view.id, OnDismissEvent())
-        }
+    ): (() -> Unit) = {
+        emitEvent(themedReactContext, view.id, OnDismissEvent())
     }
 
     private fun MapBuilder.Builder<String, Any>.putEvent(
