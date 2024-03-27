@@ -4,8 +4,10 @@ import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 
 class OnRestoreErrorEvent(
+    surfaceId: Int,
+    viewTag: Int,
     private val error: Map<String, Any?>
-) : PaywallEvent<OnRestoreErrorEvent>() {
+) : PaywallEvent<OnRestoreErrorEvent>(surfaceId, viewTag) {
     override fun getPaywallEventName() = PaywallEventName.ON_RESTORE_ERROR
 
     override fun getPayload() = mapOf(PaywallEventKey.ERROR to error)

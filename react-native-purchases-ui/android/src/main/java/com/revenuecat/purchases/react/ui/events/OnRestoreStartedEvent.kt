@@ -1,9 +1,13 @@
 package com.revenuecat.purchases.react.ui.events
 
+import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 
-class OnRestoreStartedEvent : PaywallEvent<OnRestoreStartedEvent>() {
+class OnRestoreStartedEvent(
+    surfaceId: Int,
+    viewTag: Int,
+) : PaywallEvent<OnRestoreStartedEvent>(surfaceId, viewTag) {
     override fun getPaywallEventName() = PaywallEventName.ON_RESTORE_STARTED
 
-    override fun getPayload() = null
+    override fun getPayload(): Map<PaywallEventKey, Map<String, Any?>> = emptyMap()
 }

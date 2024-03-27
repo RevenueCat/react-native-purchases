@@ -4,8 +4,10 @@ import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 
 class OnPurchaseStartedEvent(
+    surfaceId: Int,
+    viewTag: Int,
     private val packageMap: Map<String, Any?>
-) : PaywallEvent<OnPurchaseStartedEvent>() {
+) : PaywallEvent<OnPurchaseStartedEvent>(surfaceId, viewTag) {
     override fun getPaywallEventName() = PaywallEventName.ON_PURCHASE_STARTED
 
     override fun getPayload() = mapOf(

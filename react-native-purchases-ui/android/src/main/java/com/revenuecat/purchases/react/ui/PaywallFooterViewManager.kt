@@ -2,6 +2,7 @@ package com.revenuecat.purchases.react.ui
 
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.UIManagerModule
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
@@ -55,9 +56,9 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
                     }
                 }
             }
-        }.also {
-            it.setPaywallListener(createPaywallListenerWrapper(themedReactContext, it))
-            it.setDismissHandler(getDismissHandler(themedReactContext, it))
+        }.also { view ->
+            view.setPaywallListener(createPaywallListenerWrapper(themedReactContext, view))
+            view.setDismissHandler(getDismissHandler(themedReactContext, view))
         }
     }
 

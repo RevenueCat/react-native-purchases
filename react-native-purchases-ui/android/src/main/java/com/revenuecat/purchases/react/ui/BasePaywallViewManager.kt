@@ -60,7 +60,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     }
 
     private fun setOfferingIdProp(view: T, props: ReadableMap?) {
-        val offeringIdentifier = props?.getDynamic(OPTION_OFFERING)?.asMap()?.getString(OFFERING_IDENTIFIER)
+        val offeringIdentifier =
+            props?.getDynamic(OPTION_OFFERING)?.asMap()?.getString(OFFERING_IDENTIFIER)
         offeringIdentifier?.let {
             setOfferingId(view, it)
         }
@@ -85,46 +86,81 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         themedReactContext: ThemedReactContext,
         view: View
     ) = object : PaywallListenerWrapper() {
+        private val surfaceId = view.surfaceId
+        private val viewId = view.id
 
         override fun onPurchaseStarted(rcPackage: Map<String, Any?>) {
-            emitEvent(themedReactContext, view.id, OnPurchaseStartedEvent(rcPackage))
+            val event = OnPurchaseStartedEvent(
+                surfaceId = surfaceId,
+                viewTag = viewId, rcPackage
+            )
+            emitEvent(themedReactContext, viewId, event)
         }
 
         override fun onPurchaseCompleted(
             customerInfo: Map<String, Any?>,
             storeTransaction: Map<String, Any?>
         ) {
-            val event = OnPurchaseCompletedEvent(customerInfo, storeTransaction)
-            emitEvent(themedReactContext, view.id, event)
+            val event = OnPurchaseCompletedEvent(
+                surfaceId = surfaceId,
+                viewTag = viewId,
+                customerInfo,
+                storeTransaction
+            )
+            emitEvent(themedReactContext, viewId, event)
         }
 
         override fun onPurchaseError(error: Map<String, Any?>) {
-            emitEvent(themedReactContext, view.id, OnPurchaseErrorEvent(error))
+            val event = OnPurchaseErrorEvent(
+                surfaceId = surfaceId,
+                viewTag = viewId,
+                error
+            )
+            emitEvent(themedReactContext, viewId, event)
         }
 
         override fun onPurchaseCancelled() {
-            emitEvent(themedReactContext, view.id, OnPurchaseCancelledEvent())
+            val event = OnPurchaseCancelledEvent(
+                surfaceId = surfaceId,
+                viewTag = viewId,
+            )
+            emitEvent(themedReactContext, viewId, event)
         }
 
         override fun onRestoreStarted() {
-            emitEvent(themedReactContext, view.id, OnRestoreStartedEvent())
+            val event = OnRestoreStartedEvent(
+                surfaceId = surfaceId,
+                viewTag = viewId,
+            )
+            emitEvent(themedReactContext, viewId, event)
         }
 
         override fun onRestoreCompleted(customerInfo: Map<String, Any?>) {
-            emitEvent(themedReactContext, view.id, OnRestoreCompletedEvent(customerInfo))
+            val event = OnRestoreCompletedEvent(
+                surfaceId = surfaceId,
+                viewTag = viewId,
+                customerInfo,
+            )
+            emitEvent(themedReactContext, viewId, event)
         }
 
         override fun onRestoreError(error: Map<String, Any?>) {
-            emitEvent(themedReactContext, view.id, OnRestoreErrorEvent(error))
+            val event = OnRestoreErrorEvent(
+                surfaceId = surfaceId,
+                viewTag = viewId,
+                error,
+            )
+            emitEvent(themedReactContext, viewId, event)
         }
 
     }
 
     internal fun getDismissHandler(
         themedReactContext: ThemedReactContext,
-        view: T
+        view: View,
     ): (() -> Unit) = {
-        emitEvent(themedReactContext, view.id, OnDismissEvent())
+        val event = OnDismissEvent(view.surfaceId, view.id)
+        emitEvent(themedReactContext, view.id, event)
     }
 
     private fun MapBuilder.Builder<String, Any>.putEvent(
@@ -146,7 +182,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         viewId: Int,
         event: Event<*>,
     ) {
-        UIManagerHelper.getEventDispatcherForReactTag(context, viewId)?.dispatchEvent(event)
+        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context, viewId)
+        eventDispatcher?.dispatchEvent(event)
     }
-
 }
