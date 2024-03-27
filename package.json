@@ -63,7 +63,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": ">= 16.6.3",
+    "react": "*",
     "react-native": "*"
   },
   "devDependencies": {
