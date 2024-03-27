@@ -3,7 +3,7 @@ package com.revenuecat.purchases.react.ui.events
 import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 
-class OnRestoreStartedEvent(
+internal class OnRestoreStartedEvent(
     surfaceId: Int,
     viewTag: Int,
 ) : PaywallEvent<OnRestoreStartedEvent>(surfaceId, viewTag) {

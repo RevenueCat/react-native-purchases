@@ -3,7 +3,7 @@ package com.revenuecat.purchases.react.ui.events
 import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 
-class OnPurchaseStartedEvent(
+internal class OnPurchaseStartedEvent(
     surfaceId: Int,
     viewTag: Int,
     private val packageMap: Map<String, Any?>

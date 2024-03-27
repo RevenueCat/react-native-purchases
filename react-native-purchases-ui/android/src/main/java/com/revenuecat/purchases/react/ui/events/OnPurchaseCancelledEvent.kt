@@ -3,7 +3,7 @@ package com.revenuecat.purchases.react.ui.events
 import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 
-class OnPurchaseCancelledEvent(
+internal class OnPurchaseCancelledEvent(
     surfaceId: Int,
     viewTag: Int,
 ) : PaywallEvent<OnPurchaseCancelledEvent>(surfaceId, viewTag) {

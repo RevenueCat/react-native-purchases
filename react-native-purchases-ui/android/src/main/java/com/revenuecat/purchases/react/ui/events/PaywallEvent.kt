@@ -7,7 +7,7 @@ import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 import com.revenuecat.purchases.react.ui.RNPurchasesConverters
 
-abstract class PaywallEvent<T>(
+internal abstract class PaywallEvent<T>(
     surfaceId: Int,
     viewTag: Int,
 ) : Event<PaywallEvent<T>>(surfaceId, viewTag) {

@@ -3,7 +3,7 @@ package com.revenuecat.purchases.react.ui.events
 import com.revenuecat.purchases.react.ui.PaywallEventKey
 import com.revenuecat.purchases.react.ui.PaywallEventName
 
-class OnRestoreErrorEvent(
+internal class OnRestoreErrorEvent(
     surfaceId: Int,
     viewTag: Int,
     private val error: Map<String, Any?>
