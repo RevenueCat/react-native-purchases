@@ -52,8 +52,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
                                      usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
-                                            dangerousSettings:nil 
-                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically 
+                                            dangerousSettings:nil
+                         shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode];
     purchases.delegate = self;
 }
@@ -190,11 +190,15 @@ RCT_EXPORT_METHOD(setAutomaticAppleSearchAdsAttributionCollection:(BOOL)automati
 
 RCT_EXPORT_METHOD(enableAdServicesAttributionTokenCollection)
 {
+    #if !TARGET_OS_TV
     if (@available(iOS 14.3, macOS 11.1, macCatalyst 14.3, *)) {
         [RCCommonFunctionality enableAdServicesAttributionTokenCollection];
     } else {
         NSLog(@"[Purchases] Warning: tried to enable AdServices attribution token collection, but it's only available on iOS 14.3 or greater or macOS 11.1 or greater.");
     }
+    #else
+    NSLog(@"[Purchases] Warning: AdServices attribution token collection is not available on tvOS.");
+    #endif
 }
 
 RCT_REMAP_METHOD(isAnonymous,
@@ -235,14 +239,14 @@ RCT_REMAP_METHOD(getPromotionalOffer,
 }
 
 RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
-    #if TARGET_OS_MACCATALYST
-    logUnavailablePresentCodeRedemptionSheet();
-    #else
+    #if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
     if (@available(iOS 14.0, *)) {
         [RCCommonFunctionality presentCodeRedemptionSheet];
     } else {
         logUnavailablePresentCodeRedemptionSheet();
     }
+    #else
+    logUnavailablePresentCodeRedemptionSheet();
     #endif
 }
 
@@ -353,7 +357,7 @@ RCT_REMAP_METHOD(canMakePayments,
 
 RCT_EXPORT_METHOD(beginRefundRequestForActiveEntitlement:(RCTPromiseResolveBlock)resolve
                                                   reject:(RCTPromiseRejectBlock)reject) {
-    #if TARGET_OS_IPHONE
+    #if TARGET_OS_IPHONE && !TARGET_OS_TV
     if (@available(iOS 15.0, *)) {
         [RCCommonFunctionality beginRefundRequestForActiveEntitlementCompletion:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
                                                                                                                                 reject:reject]];
@@ -368,7 +372,7 @@ RCT_EXPORT_METHOD(beginRefundRequestForActiveEntitlement:(RCTPromiseResolveBlock
 RCT_EXPORT_METHOD(beginRefundRequestForEntitlementId:(NSString *)entitlementIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    #if TARGET_OS_IPHONE
+    #if TARGET_OS_IPHONE && !TARGET_OS_TV
     if (@available(iOS 15.0, *)) {
         [RCCommonFunctionality beginRefundRequestEntitlementId:entitlementIdentifier
                                                completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
@@ -384,7 +388,7 @@ RCT_EXPORT_METHOD(beginRefundRequestForEntitlementId:(NSString *)entitlementIden
 RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    #if TARGET_OS_IPHONE
+    #if TARGET_OS_IPHONE && !TARGET_OS_TV
     if (@available(iOS 15.0, *)) {
         [RCCommonFunctionality beginRefundRequestProductId:productIdentifier
                                            completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
@@ -400,7 +404,7 @@ RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
 RCT_EXPORT_METHOD(showInAppMessages:(NSArray<NSNumber *> *)messageTypes
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    #if TARGET_OS_IPHONE
+    #if TARGET_OS_IPHONE && !TARGET_OS_TV
     if (@available(iOS 16.0, *)) {
         if (messageTypes == nil) {
             [RCCommonFunctionality showStoreMessagesCompletion:^{
