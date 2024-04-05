@@ -240,7 +240,7 @@ RCT_REMAP_METHOD(getPromotionalOffer,
 }
 
 RCT_EXPORT_METHOD(presentCodeRedemptionSheet) {
-    #if TARGET_OS_IOS
+    #if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
     if (@available(iOS 14.0, *)) {
         [RCCommonFunctionality presentCodeRedemptionSheet];
     } else {
