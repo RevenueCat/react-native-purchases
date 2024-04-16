@@ -1,6 +1,7 @@
 package com.revenuecat.purchases.react.ui
 
 import androidx.core.view.children
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerModule
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
@@ -48,8 +49,8 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
                 val finalWidth = maxWidth.coerceAtLeast(suggestedMinimumWidth)
                 val finalHeight = maxHeight.coerceAtLeast(suggestedMinimumHeight)
                 setMeasuredDimension(finalWidth, finalHeight)
-                (context as? ThemedReactContext)?.let { themedReactContext ->
-                    themedReactContext.runOnNativeModulesQueueThread {
+                (context.applicationContext as? ReactContext)?.let { context ->
+                    context.runOnNativeModulesQueueThread {
                         themedReactContext.getNativeModule(UIManagerModule::class.java)
                             ?.updateNodeSize(id, finalWidth, finalHeight)
                     }
