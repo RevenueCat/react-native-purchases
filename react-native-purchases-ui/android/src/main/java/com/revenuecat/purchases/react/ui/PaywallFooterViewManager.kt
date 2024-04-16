@@ -48,7 +48,7 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
                 val finalWidth = maxWidth.coerceAtLeast(suggestedMinimumWidth)
                 val finalHeight = maxHeight.coerceAtLeast(suggestedMinimumHeight)
                 setMeasuredDimension(finalWidth, finalHeight)
-                (context as? ThemedReactContext)?.let { themedReactContext ->
+                (context as? ThemedReactContext)?.reactApplicationContext?.let { themedReactContext ->
                     themedReactContext.runOnNativeModulesQueueThread {
                         themedReactContext.getNativeModule(UIManagerModule::class.java)
                             ?.updateNodeSize(id, finalWidth, finalHeight)
