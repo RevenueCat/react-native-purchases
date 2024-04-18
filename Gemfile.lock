@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/RevenueCat/fastlane-plugin-revenuecat_internal
-  revision: 8d4d9b171b3d960556b00e21b334c53af9a64751
+  revision: 1e624200ff2ddf0d398ce072171db35d017c408b
   specs:
     fastlane-plugin-revenuecat_internal (0.1.0)
       rest-client
@@ -30,17 +30,17 @@ GEM
     artifactory (3.0.17)
     atomos (0.1.3)
     aws-eventstream (1.3.0)
-    aws-partitions (1.907.0)
-    aws-sdk-core (3.191.6)
+    aws-partitions (1.914.0)
+    aws-sdk-core (3.192.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.8)
       jmespath (~> 1, >= 1.6.1)
-    aws-sdk-kms (1.78.0)
+    aws-sdk-kms (1.79.0)
       aws-sdk-core (~> 3, >= 3.191.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.146.1)
-      aws-sdk-core (~> 3, >= 3.191.0)
+    aws-sdk-s3 (1.147.0)
+      aws-sdk-core (~> 3, >= 3.192.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.8)
     aws-sigv4 (1.8.0)
@@ -273,11 +273,11 @@ GEM
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
     open4 (1.3.4)
-    optparse (0.4.0)
+    optparse (0.5.0)
     os (1.1.4)
     plist (3.7.1)
     public_suffix (4.0.7)
-    rake (13.2.0)
+    rake (13.2.1)
     rchardet (1.8.0)
     representable (3.2.0)
       declarative (< 0.1.0)
