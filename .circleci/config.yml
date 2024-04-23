@@ -140,15 +140,19 @@ jobs:
   ios:
     executor:
       name: rn/macos
+      resource_class: macos.m1.medium.gen1
       xcode_version: '15.2'
     steps:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 14
       - install-dependencies-ios-build
-      - rn/pod_install:
-          pod_install_directory: examples/purchaseTesterTypescript/ios
-          pod_install_command: pod install --repo-update
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v1
+      - run:
+          name: 'Pod install'
+          working_directory: Tests/InstallationTests/CocoapodsInstallation/
+          command: pod install --repo-update
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 14
