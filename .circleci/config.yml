@@ -152,7 +152,7 @@ jobs:
       - run:
           name: 'Pod install'
           working_directory: examples/purchaseTesterTypescript/ios
-          command: pod install --repo-update
+          command: bundle exec pod install --repo-update
       - rn/ios_build:
           build_configuration: Release
           device: iPhone 14
