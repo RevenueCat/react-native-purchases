@@ -2,7 +2,7 @@ package com.revenuecat.purchases.react.ui
 
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.UIManagerModule
+import com.revenuecat.purchases.react.ui.events.OnMeasureEvent
 import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
@@ -48,11 +48,17 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
                 val finalWidth = maxWidth.coerceAtLeast(suggestedMinimumWidth)
                 val finalHeight = maxHeight.coerceAtLeast(suggestedMinimumHeight)
                 setMeasuredDimension(finalWidth, finalHeight)
-                (context as? ThemedReactContext)?.reactApplicationContext?.let { themedReactContext ->
-                    themedReactContext.runOnNativeModulesQueueThread {
-                        themedReactContext.getNativeModule(UIManagerModule::class.java)
-                            ?.updateNodeSize(id, finalWidth, finalHeight)
-                    }
+
+                val density = context.resources.displayMetrics.density
+                val finalHeightInDp = finalHeight / density
+
+                val onMeasureEvent = OnMeasureEvent(
+                    this.surfaceId,
+                    this.id,
+                    finalHeightInDp.toInt()
+                )
+                (context as? ThemedReactContext)?.reactApplicationContext?.let { reactApplicationContext ->
+                    emitEvent(reactApplicationContext, this.id, onMeasureEvent)
                 }
             }
         }.also { view ->

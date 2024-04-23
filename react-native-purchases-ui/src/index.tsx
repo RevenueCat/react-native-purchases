@@ -137,6 +137,7 @@ type FooterPaywallViewProps = {
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
+  onMeasure?: ({height}: {height: number}) => void;
 };
 
 export default class RevenueCatUI {
@@ -245,6 +246,7 @@ export default class RevenueCatUI {
     // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
     // to be hidden behind the rounded corners of the paywall.
     const [paddingBottom, setPaddingBottom] = useState(20);
+    const [height, setHeight] = useState(0);
 
     useEffect(() => {
       interface HandleSafeAreaInsetsChangeParams {
@@ -272,7 +274,7 @@ export default class RevenueCatUI {
         </ScrollView>
         {/*Adding negative margin to the footer view to make it overlap with the extra padding of the scroll*/}
         <InternalPaywallFooterView
-          style={{marginTop: -20}}
+          style={{marginTop: -20, height: height}}
           options={options}
           onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
           onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
@@ -282,6 +284,11 @@ export default class RevenueCatUI {
           onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
           onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
           onDismiss={() => onDismiss && onDismiss()}
+          onMeasure={(event: any) => {
+            console.log('onMeasure', event.nativeEvent);
+            setHeight(event.nativeEvent.measurements.height);
+          }
+          }
         />
       </View>
     );
