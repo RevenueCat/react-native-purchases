@@ -41,7 +41,7 @@ const InternalPaywall =
     };
 
 const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<FooterPaywallViewProps>('RCPaywallFooterView')
+  ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
   : () => {
     throw new Error(LINKING_ERROR);
   };
@@ -137,7 +137,10 @@ type FooterPaywallViewProps = {
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
-  onMeasure?: ({height}: {height: number}) => void;
+};
+
+type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
+  onMeasure?: ({height}: { height: number }) => void;
 };
 
 export default class RevenueCatUI {
@@ -285,7 +288,6 @@ export default class RevenueCatUI {
           onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
           onDismiss={() => onDismiss && onDismiss()}
           onMeasure={(event: any) => {
-            console.log('onMeasure', event.nativeEvent);
             setHeight(event.nativeEvent.measurements.height);
           }
           }
