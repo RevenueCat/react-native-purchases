@@ -151,7 +151,7 @@ jobs:
           cache-version: v1
       - run:
           name: 'Pod install'
-          working_directory: Tests/InstallationTests/CocoapodsInstallation/
+          working_directory: examples/purchaseTesterTypescript/ios
           command: pod install --repo-update
       - rn/ios_build:
           build_configuration: Release
