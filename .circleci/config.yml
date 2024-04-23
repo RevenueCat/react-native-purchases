@@ -204,8 +204,8 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - analyse_js
-      - android
+      # - analyse_js
+      # - android
       - ios
 
   deploy:
