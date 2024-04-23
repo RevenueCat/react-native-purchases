@@ -277,7 +277,10 @@ export default class RevenueCatUI {
         </ScrollView>
         {/*Adding negative margin to the footer view to make it overlap with the extra padding of the scroll*/}
         <InternalPaywallFooterView
-          style={{marginTop: -20, height: height}}
+          style={Platform.select({
+            ios: {marginTop: -20},
+            android: {marginTop: -20, height}
+          })}
           options={options}
           onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
           onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
@@ -287,10 +290,7 @@ export default class RevenueCatUI {
           onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
           onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
           onDismiss={() => onDismiss && onDismiss()}
-          onMeasure={(event: any) => {
-            setHeight(event.nativeEvent.measurements.height);
-          }
-          }
+          onMeasure={(event: any) => setHeight(event.nativeEvent.measurements.height)}
         />
       </View>
     );
