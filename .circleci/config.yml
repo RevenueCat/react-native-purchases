@@ -169,6 +169,8 @@ jobs:
           device: iPhone 14
       - install-dependencies-ios-build
       - install-bundle-dependencies
+      - install-bundle-dependencies:
+          directory: examples/purchaseTesterTypescript/ios
       - run:
           name: 'Pod install'
           working_directory: examples/purchaseTesterTypescript/ios
