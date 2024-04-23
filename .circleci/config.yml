@@ -140,7 +140,6 @@ jobs:
   ios:
     executor:
       name: rn/macos
-      resource_class: macos.m1.medium.gen1
       xcode_version: '15.2'
     steps:
       - checkout
