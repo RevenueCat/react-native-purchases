@@ -107,8 +107,8 @@ jobs:
   docs-deploy:
     executor:
       name: rn/macos
-      resource_class: macos.x86.medium.gen2
-      xcode_version: 14.3.1
+      resource_class: macos.m1.medium.gen1
+      xcode_version: '15.2'
     steps:
       - checkout
       - install-dependencies:
@@ -140,8 +140,8 @@ jobs:
   ios:
     executor:
       name: rn/macos
-      resource_class: macos.x86.medium.gen2
-      xcode_version: 14.3.1
+      resource_class: macos.m1.medium.gen1
+      xcode_version: '15.2'
     steps:
       - checkout
       - rn/ios_simulator_start:
@@ -162,8 +162,8 @@ jobs:
     description: "Publishes the new version and creates a github release"
     executor:
       name: rn/macos
-      resource_class: macos.x86.medium.gen2
-      xcode_version: 14.3.1
+      resource_class: macos.m1.medium.gen1
+      xcode_version: '15.2'
     steps:
       - checkout
       - install-dependencies:
