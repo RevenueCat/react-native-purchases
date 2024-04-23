@@ -57,6 +57,27 @@ commands:
           paths:
             - .yarn/cache
 
+  install-bundle-dependencies:
+    parameters:
+      directory:
+        type: string
+        default: .
+    steps:
+      - restore_cache:
+          keys:
+            - v2-gem-cache-{{ checksum "Gemfile.lock" }}-{{ arch }}
+      - run:
+          name: Bundle install
+          working_directory: << parameters.directory >>
+          command: |
+              bundle config set --local clean 'true'
+              bundle config set --local path 'vendor/bundle'
+              bundle install
+      - save_cache:
+          key: v2-gem-cache-{{ checksum "Gemfile.lock" }}-{{ arch }}
+          paths:
+            - vendor/bundle
+
   install-dependencies:
     parameters:
       machine:
@@ -147,8 +168,7 @@ jobs:
       - rn/ios_simulator_start:
           device: iPhone 14
       - install-dependencies-ios-build
-      - revenuecat/install-gem-mac-dependencies:
-          cache-version: v1
+      - install-bundle-dependencies
       - run:
           name: 'Pod install'
           working_directory: examples/purchaseTesterTypescript/ios
