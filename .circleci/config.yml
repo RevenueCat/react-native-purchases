@@ -232,6 +232,8 @@ workflows:
       - rn/ios_build:
           project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
           project_type: workspace
+          xcode_version: "15.2"
+          resource_class: macos.m1.medium.gen1
           scheme: PurchaseTester
           build_configuration: Release
           pod_install_directory: examples/purchaseTesterTypescript/ios
