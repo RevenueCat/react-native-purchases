@@ -158,30 +158,30 @@ jobs:
           machine: "unix"
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
-  ios:
-    executor:
-      name: rn/macos
-      resource_class: macos.m1.medium.gen1
-      xcode_version: '15.2'
-    steps:
-      - checkout
-      - rn/ios_simulator_start:
-          device: iPhone 14
-      - install-dependencies-ios-build
-      - install-bundle-dependencies
-      - install-bundle-dependencies:
-          directory: examples/purchaseTesterTypescript/ios
-      - run:
-          name: 'Pod install'
-          working_directory: examples/purchaseTesterTypescript/ios
-          command: bundle exec pod install --repo-update
-      - rn/ios_build:
-          build_configuration: Release
-          device: iPhone 14
-          derived_data_path: ~/DerivedData
-          project_type: workspace
-          project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
-          scheme: PurchaseTester
+  # ios:
+  #   executor:
+  #     name: rn/macos
+  #     resource_class: macos.m1.medium.gen1
+  #     xcode_version: '15.2'
+  #   steps:
+  #     - checkout
+  #     - rn/ios_simulator_start:
+  #         device: iPhone 14
+  #     - install-dependencies-ios-build
+  #     - install-bundle-dependencies
+  #     - install-bundle-dependencies:
+  #         directory: examples/purchaseTesterTypescript/ios
+  #     - run:
+  #         name: 'Pod install'
+  #         working_directory: examples/purchaseTesterTypescript/ios
+  #         command: bundle exec pod install --repo-update
+  #     - rn/ios_build:
+  #         build_configuration: Release
+  #         device: iPhone 14
+  #         derived_data_path: ~/DerivedData
+  #         project_type: workspace
+  #         project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
+  #         scheme: PurchaseTester
 
   make-release:
     description: "Publishes the new version and creates a github release"
@@ -228,7 +228,14 @@ workflows:
     jobs:
       # - analyse_js
       # - android
-      - ios
+      # - ios
+      - rn/ios_build:
+          project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
+          project_type: workspace
+          xcode_version: "15.2"
+          scheme: PurchaseTester
+          build_configuration: Release
+          pod_install_directory: examples/purchaseTesterTypescript/ios
 
   deploy:
     when:
