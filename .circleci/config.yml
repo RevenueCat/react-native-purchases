@@ -22,6 +22,11 @@ aliases:
         ignore: /.*/
       branches:
         only: main
+  base-mac-job: &base-mac-job
+    executor:
+      name: rn/macos
+      resource_class: macos.m1.medium.gen1
+      xcode_version: '15.2'
 
 parameters:
   action:
@@ -105,16 +110,13 @@ jobs:
           name: Linter
           command: yarn run tslint
   docs-deploy:
-    executor:
-      name: rn/macos
-      resource_class: macos.x86.medium.gen2
-      xcode_version: 14.3.1
+    <<: *base-mac-job
     steps:
       - checkout
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: v1
+          cache-version: v2
       - revenuecat/setup-git-credentials
       - run:
           name: Build docs
@@ -138,21 +140,21 @@ jobs:
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
-    executor:
-      name: rn/macos
-      resource_class: macos.x86.medium.gen2
-      xcode_version: 14.3.1
+    <<: *base-mac-job
     steps:
       - checkout
       - rn/ios_simulator_start:
-          device: iPhone 14
+          device: iPhone 15
       - install-dependencies-ios-build
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+          working_directory: examples/purchaseTesterTypescript
       - rn/pod_install:
           pod_install_directory: examples/purchaseTesterTypescript/ios
-          pod_install_command: pod install --repo-update
+          pod_install_command: bundle exec pod install --repo-update
       - rn/ios_build:
           build_configuration: Release
-          device: iPhone 14
+          device: iPhone 15
           derived_data_path: ~/DerivedData
           project_type: workspace
           project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
@@ -160,16 +162,13 @@ jobs:
 
   make-release:
     description: "Publishes the new version and creates a github release"
-    executor:
-      name: rn/macos
-      resource_class: macos.x86.medium.gen2
-      xcode_version: 14.3.1
+    <<: *base-mac-job
     steps:
       - checkout
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: v1
+          cache-version: v2
       - revenuecat/trust-github-key
       - copy-npm-rc
       - run:
@@ -178,14 +177,11 @@ jobs:
 
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
-    executor:
-      name: rn/macos
-      resource_class: macos.x86.medium.gen2
-      xcode_version: 14.3.1
+    <<: *base-mac-job
     steps:
       - checkout
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: v1
+          cache-version: v2
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
       - run:
