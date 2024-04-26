@@ -1,3 +1,10 @@
+## 7.27.0
+
+This release fixes support of react-native-purchases-ui for React Native 0.74 with any architecture.
+
+### Bugfixes
+* Fix Footer Paywall in new arch (#980) via Cesar de la Vega (@vegaro)
+
 ## 7.26.3
 ### Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 10.5.0 (#977) via RevenueCat Git Bot (@RCGitBot)
