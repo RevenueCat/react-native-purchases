@@ -1,6 +1,7 @@
 package com.revenuecat.purchases.react.ui
 
 import android.view.View
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.common.MapBuilder
@@ -44,6 +45,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .putEvent(PaywallEventName.ON_RESTORE_COMPLETED)
             .putEvent(PaywallEventName.ON_RESTORE_ERROR)
             .putEvent(PaywallEventName.ON_DISMISS)
+            .putEvent(PaywallEventName.ON_MEASURE)
             .build()
     }
 
@@ -175,8 +177,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         )
     }
 
-    private fun emitEvent(
-        context: ThemedReactContext,
+    protected fun emitEvent(
+        context: ReactContext,
         viewId: Int,
         event: Event<*>,
     ) {
