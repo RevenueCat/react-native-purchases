@@ -22,7 +22,7 @@ const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
         navigation.goBack();
       }
     } catch (e) {
-      if (!e.userCancelled) {
+      if (e.code === Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) {
         Alert.alert('Error purchasing package', e.message);
       }
     } finally {
