@@ -32,7 +32,7 @@ const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
 
   return (
     <Pressable onPress={onSelection} style={styles.container}>
-      <View style={styles.left}>
+      <View>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.terms}>{description}</Text>
       </View>
