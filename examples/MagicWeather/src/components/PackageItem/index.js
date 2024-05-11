@@ -16,9 +16,9 @@ const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
     setIsPurchasing(true);
 
     try {
-      const { purchaserInfo } = await Purchases.purchasePackage(purchasePackage);
+      const { customerInfo } = await Purchases.purchasePackage(purchasePackage);
 
-      if (typeof purchaserInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
+      if (typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
         navigation.goBack();
       }
     } catch (e) {
