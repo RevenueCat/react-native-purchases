@@ -15,10 +15,10 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.5)
   - hermes-engine/Pre-built (0.73.5)
   - libevent (2.1.12)
-  - PurchasesHybridCommon (10.6.2):
+  - PurchasesHybridCommon (10.7.0):
     - RevenueCat (= 4.41.2)
-  - PurchasesHybridCommonUI (10.6.2):
-    - PurchasesHybridCommon (= 10.6.2)
+  - PurchasesHybridCommonUI (10.7.0):
+    - PurchasesHybridCommon (= 10.7.0)
     - RevenueCatUI (= 4.41.2)
   - RCT-Folly (2022.05.16.00):
     - boost
@@ -1064,10 +1064,10 @@ PODS:
   - RevenueCatUI (4.41.2):
     - RevenueCat (= 4.41.2)
   - RNPaywalls (7.27.1):
-    - PurchasesHybridCommonUI (= 10.6.2)
+    - PurchasesHybridCommonUI (= 10.7.0)
     - React-Core
   - RNPurchases (7.27.1):
-    - PurchasesHybridCommon (= 10.6.2)
+    - PurchasesHybridCommon (= 10.7.0)
     - React-Core
   - RNScreens (3.29.0):
     - glog
@@ -1259,8 +1259,8 @@ SPEC CHECKSUMS:
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   hermes-engine: 1d1835b2cc54c381909d94d1b3c8e0a2f1a94a0e
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  PurchasesHybridCommon: 120cdca2b40fb5947a51b75e121da4f2cde0a137
-  PurchasesHybridCommonUI: 2b1cb1f82f39264ed09c55bf3bc1b019f9eb25d0
+  PurchasesHybridCommon: 01b102a271605eb5857a6cbf27e3fde31dae0f61
+  PurchasesHybridCommonUI: f3a7ef56aa41a7fd602b4f450393cc7897fe5815
   RCT-Folly: 7169b2b1c44399c76a47b5deaaba715eeeb476c0
   RCTRequired: 2544c0f1081a5fa12e108bb8cb40e5f4581ccd87
   RCTTypeSafety: 50efabe2b115c11ed03fbf3fd79e2f163ddb5d7c
@@ -1305,8 +1305,8 @@ SPEC CHECKSUMS:
   ReactCommon: 2947b0bffd82ea0e58ca7928881152d4c6dae9af
   RevenueCat: 0250867579677899de94f96ad9be342be865560f
   RevenueCatUI: e3bac7e40db387f53e7b3579175cca749656bee7
-  RNPaywalls: 2c8c88aed98c89cf0623924f3acc35cd0337e42c
-  RNPurchases: 82dff805c1a56d23f3e84bdfee9b2e7fda87e5f7
+  RNPaywalls: b5782dc908870b18a736166151982caf6d97b816
+  RNPurchases: 9853089b9d6ce7eb19f2f25844b1c86eec44c200
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
