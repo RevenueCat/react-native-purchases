@@ -1,17 +1,8 @@
+### Bugfixes
+* Fix `purchaseDiscountedPackage` (#1007) via Cesar de la Vega (@vegaro)
 ### Dependency Updates
-* BillingClient has been updated to version 6.2.1
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 10.6.1 (#992) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 7.10.1](https://github.com/RevenueCat/purchases-android/releases/tag/7.10.1)
-  * [Android 7.10.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.10.0)
-  * [iOS 4.41.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.41.2)
-  * [iOS 4.41.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.41.1)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 10.6.0 (#990) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 7.10.1](https://github.com/RevenueCat/purchases-android/releases/tag/7.10.1)
-  * [Android 7.10.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.10.0)
-  * [iOS 4.41.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.41.2)
-  * [iOS 4.41.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.41.1)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 10.5.1 (#988) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 7.10.1](https://github.com/RevenueCat/purchases-android/releases/tag/7.10.1)
-  * [Android 7.10.0](https://github.com/RevenueCat/purchases-android/releases/tag/7.10.0)
-  * [iOS 4.41.2](https://github.com/RevenueCat/purchases-ios/releases/tag/4.41.2)
-  * [iOS 4.41.1](https://github.com/RevenueCat/purchases-ios/releases/tag/4.41.1)
+* Bump rexml from 3.2.6 to 3.2.8 (#1004) via dependabot[bot] (@dependabot[bot])
+* Bump rexml from 3.2.5 to 3.2.8 in /examples/MagicWeather (#1003) via dependabot[bot] (@dependabot[bot])
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 10.6.2 (#996) via RevenueCat Git Bot (@RCGitBot)
+### Other Changes
+* Update fastlane plugin (#995) via Toni Rico (@tonidero)
