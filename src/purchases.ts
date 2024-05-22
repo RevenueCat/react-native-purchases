@@ -587,7 +587,7 @@ export default class Purchases {
     }
     return RNPurchases.purchasePackage(
       aPackage.identifier,
-      aPackage.offeringIdentifier,
+      aPackage.presentedOfferingContext,
       null,
       discount.timestamp.toString(),
       null
