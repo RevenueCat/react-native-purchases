@@ -16,13 +16,13 @@ const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
     setIsPurchasing(true);
 
     try {
-      const { purchaserInfo } = await Purchases.purchasePackage(purchasePackage);
+      const { customerInfo } = await Purchases.purchasePackage(purchasePackage);
 
-      if (typeof purchaserInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
+      if (typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
         navigation.goBack();
       }
     } catch (e) {
-      if (!e.userCancelled) {
+      if (e.code === Purchases.PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) {
         Alert.alert('Error purchasing package', e.message);
       }
     } finally {
@@ -32,7 +32,7 @@ const PackageItem = ({ purchasePackage, setIsPurchasing }) => {
 
   return (
     <Pressable onPress={onSelection} style={styles.container}>
-      <View style={styles.left}>
+      <View>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.terms}>{description}</Text>
       </View>
