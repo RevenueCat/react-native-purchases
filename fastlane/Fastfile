@@ -251,7 +251,33 @@ end
 
 def get_phc_version
   Dir.chdir(get_root_folder) do
-    return (sh "cat RNPurchases.podspec | grep \'\"PurchasesHybridCommon\", \' | awk \'{print($3)}\' | sed \"s/\'//g\"").strip
+    android_phc_version = File.read("android/build.gradle")
+      .match("[\"']com.revenuecat.purchases:purchases-hybrid-common:(.*)[\"']")
+      .captures[0]
+    UI.user_error!("Android PHC version not found.") if android_phc_version.nil?
+
+    android_phc_ui_version = File.read("react-native-purchases-ui/android/build.gradle")
+      .match("[\"']com.revenuecat.purchases:purchases-hybrid-common-ui:(.*)[\"']")
+      .captures[0]
+    UI.user_error!("Android PHC UI version not found.") if android_phc_ui_version.nil?
+
+    ios_phc_version = File.read("RNPurchases.podspec")
+      .match("\"PurchasesHybridCommon\", '(.*)'")
+      .captures[0]
+    UI.user_error!("iOS PHC version not found.") if ios_phc_version.nil?
+
+    ios_phc_ui_version = File.read("react-native-purchases-ui/RNPaywalls.podspec")
+      .match("\"PurchasesHybridCommonUI\", '(.*)'")
+      .captures[0]
+    UI.user_error!("iOS PHC UI version not found.") if ios_phc_ui_version.nil?
+
+    versions_match =
+      android_phc_version == ios_phc_version &&
+      android_phc_version == android_phc_ui_version &&
+      ios_phc_version == ios_phc_ui_version
+    UI.user_error!("Android and iOS PHC (UI) versions don't match. Please make sure they match.") unless versions_match
+
+    return android_phc_version
   end
 end
 
