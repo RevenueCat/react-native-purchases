@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
                                                     appUserID:appUserID
-                                                 observerMode:observerMode
+                                      purchasesAreCompletedBy:(observerMode ? RCPurchasesAreCompletedByMyApp : RCPurchasesAreCompletedByRevenueCat)
                                         userDefaultsSuiteName:userDefaultsSuiteName
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
@@ -66,7 +66,11 @@ RCT_EXPORT_METHOD(setAllowSharingStoreAccount:(BOOL)allowSharingStoreAccount) {
 }
 
 RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions) {
-    [RCCommonFunctionality setFinishTransactions:finishTransactions];
+    if (finishTransactions) {
+        [RCCommonFunctionality setPurchasesAreCompletedBy:RCPurchasesAreCompletedByRevenueCat];
+    } else {
+        [RCCommonFunctionality setPurchasesAreCompletedBy:RCPurchasesAreCompletedByMyApp];
+    }
 }
 
 RCT_REMAP_METHOD(getOfferings,
