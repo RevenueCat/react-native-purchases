@@ -19,6 +19,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.CustomerInfo;
 import com.revenuecat.purchases.DangerousSettings;
 import com.revenuecat.purchases.Purchases;
+import com.revenuecat.purchases.PurchasesAreCompletedBy;
 import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
@@ -95,7 +96,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             reactContext,
             apiKey,
             appUserID,
-            observerMode,
+            observerMode ? PurchasesAreCompletedBy.MY_APP : PurchasesAreCompletedBy.REVENUECAT,
             platformInfo,
             store,
             new DangerousSettings(),
@@ -276,7 +277,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setFinishTransactions(boolean enabled) {
-        CommonKt.setFinishTransactions(enabled);
+        CommonKt.setPurchasesAreCompletedBy(enabled ?
+          PurchasesAreCompletedBy.REVENUECAT : PurchasesAreCompletedBy.MY_APP);
     }
 
     @ReactMethod
