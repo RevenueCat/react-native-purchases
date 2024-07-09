@@ -1035,6 +1035,7 @@ describe("Purchases", () => {
       "throwIfIOSPlatform",
       "convertIntToRefundRequestStatus",
       "isConfigured",
+      "setProxyURL"
     ];
     const functionsThatRequireAndroidAndInstance = [
       "syncObserverModeAmazonPurchase",
