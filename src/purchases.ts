@@ -919,11 +919,9 @@ export default class Purchases {
   /**
    * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value
    * from your RevenueCat contact.
-   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
-   * setting the proxy url.
+   * @returns {Promise<void>} The promise will be rejected if there's an error setting the proxy url.
    */
   public static async setProxyURL(url: string): Promise<void> {
-    await Purchases.throwIfNotConfigured();
     RNPurchases.setProxyURLString(url);
   }
 
