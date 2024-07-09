@@ -313,8 +313,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void setProxyURLString(String proxyURLString) {
-        CommonKt.setProxyURLString(proxyURLString);
+    public void setProxyURLString(String proxyURLString, Promise promise) {
+        try {
+            CommonKt.setProxyURLString(proxyURLString);
+            promise.resolve(null); // Resolve the promise with no value
+        } catch (Exception e) {
+            promise.reject("SET_PROXY_URL_ERROR", e); // Reject the promise with an error
+        }
     }
 
     @ReactMethod

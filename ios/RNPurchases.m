@@ -260,8 +260,16 @@ static void logUnavailablePresentCodeRedemptionSheet() {
 
 #pragma mark - Subscriber Attributes
 
-RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString) {
-    [RCCommonFunctionality setProxyURLString:proxyURLString];
+RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    @try {
+        [RCCommonFunctionality setProxyURLString:proxyURLString];
+        resolve(nil); // Resolve the promise with no value
+    } @catch (NSException *exception) {
+        NSError *error = [NSError errorWithDomain:@"SET_PROXY_URL_ERROR" code:0 userInfo:@{NSLocalizedDescriptionKey: exception.reason}];
+        reject(@"SET_PROXY_URL_ERROR", exception.reason, error); // Reject the promise with an error
+    }
 }
 
 RCT_EXPORT_METHOD(setAttributes:(NSDictionary *)attributes) {

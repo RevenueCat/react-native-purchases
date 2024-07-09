@@ -922,7 +922,7 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if there's an error setting the proxy url.
    */
   public static async setProxyURL(url: string): Promise<void> {
-    RNPurchases.setProxyURLString(url);
+    return RNPurchases.setProxyURLString(url);
   }
 
   /**
