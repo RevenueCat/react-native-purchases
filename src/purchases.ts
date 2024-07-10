@@ -193,6 +193,7 @@ export default class Purchases {
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
    * Default is null, which will make the SDK use standardUserDefaults.
+   * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to TRUE to enable pending transactions for prepaid subscriptions in Google Play.
    */
   public static configure({
     apiKey,
@@ -203,6 +204,7 @@ export default class Purchases {
     useAmazon = false,
     shouldShowInAppMessagesAutomatically = true,
     entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
+    pendingTransactionsForPrepaidPlansEnabled = false,
   }: PurchasesConfiguration): void {
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error(
@@ -226,7 +228,8 @@ export default class Purchases {
       usesStoreKit2IfAvailable,
       useAmazon,
       shouldShowInAppMessagesAutomatically,
-      entitlementVerificationMode
+      entitlementVerificationMode,
+      pendingTransactionsForPrepaidPlansEnabled
     );
   }
 

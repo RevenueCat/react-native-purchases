@@ -44,7 +44,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   usesStoreKit2IfAvailable:(BOOL)usesStoreKit2IfAvailable
                   useAmazon:(BOOL)useAmazon
                   shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
-                  entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode) {
+                  entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode,
+                  pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
                                                     appUserID:appUserID
                                       purchasesAreCompletedBy:(observerMode ? RCPurchasesAreCompletedByMyApp : RCPurchasesAreCompletedByRevenueCat)
