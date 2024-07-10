@@ -1,3 +1,7 @@
+## 7.28.1
+### Bugfixes
+* Setting `proxyURL` should not require configure (#1032) via Cesar de la Vega (@vegaro)
+
 ## 7.28.0
 ### New Features
 * Add support for `DEFERRED` upgrades and updates purchases-hybrid-common to 11.1.1 (#1029) via RevenueCat Git Bot (@RCGitBot)
