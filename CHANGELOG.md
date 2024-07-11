@@ -1,3 +1,7 @@
+## 7.28.2
+### Bugfixes
+* [EXTERNAL] Make the setProxyURL a promise to wait for the native code to set the proxy URL (#1033) contributed by @dangilbert (#1035) via Toni Rico (@tonidero)
+
 ## 7.28.0
 ### New Features
 * Add support for `DEFERRED` upgrades and updates purchases-hybrid-common to 11.1.1 (#1029) via RevenueCat Git Bot (@RCGitBot)

@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases-ui",
   "title": "React Native Purchases UI",
-  "version": "7.28.0",
+  "version": "7.28.2",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -115,6 +115,6 @@
   },
   "dependencies": {
     "@revenuecat/purchases-typescript-internal": "10.1.0",
-    "react-native-purchases": "7.28.0"
+    "react-native-purchases": "7.28.2"
   }
 }
