@@ -53,61 +53,11 @@ Our full SDK reference [can be found here](https://revenuecat.github.io/react-na
 
 ## Installation
 
-ExpoKit projects of version 33 or higher can successfully use react-native-purchases. If you haven't upgraded, you can follow [the instructions here to upgrade](https://docs.expo.io/versions/latest/expokit/expokit/#upgrading-expokit). 
-
-> ❗️ If you're planning on ejecting from Expo, upgrade your expo version _first_, THEN eject. It'll save you a whole lot of hassle. ❗️
-
-### 1. Add the library to the project
+Expo supports in-app payments and is compatible with react-native-purchases. To use the library, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). A development build helps iterate quickly and provides a complete development environment. After you've created the project, install the library:
 
 ```
-$ npm install react-native-purchases --save
+$ npx expo install react-native-purchases
 ```
 
-or
-
-```
-$ yarn add react-native-purchases
-```
-
-### 2. Link library to the project
-
-```
-$ react-native link react-native-purchases
-```
-
-### Additional iOS Setup
-
-#### If your project uses Cocoapods
-If your project already uses Cocoapods to install iOS dependencies, common in ExpoKit projects, linking the library should have added it to the podfile. If it hasn't, add the following to your project's podfile to reference the library from your node_modules folder:
-
-```ruby
-pod 'RNPurchases', :path => '../node_modules/react-native-purchases'
-    :inhibit_warnings => true
-```
-
-In your `ios` folder, run `pod install`. If you've just upgraded ExpoKit, you might need to upgrade cocoapods to the newest version: `sudo gem install cocoapods`. 
-
-#### Migrating from manual installation (if your project doesn't use CocoapodsCreate)
-
-##### Remove the Framework Reference from your project
-
-1. Remove `Purchases.framework` and `PurchasesHybridCommon.framework` from the libraries section of the project. 
-
-##### Remove iOS Frameworks to Embedded Binaries
-1. In Xcode, in project manager, select your app target.
-1. Select the general tab
-1. Look for `Purchases.framework` and `PurchasesHybridCommon.framework` in the Embedded Binaries section and remove them.
-
-Remove `$(PROJECT_DIR)/../node_modules/react-native-purchases/ios` from Framework Search paths in build settings
-
-##### Remove Strip Frameworks Phase
-During the old manual installation instructions, now deprecated, we indicated to add a build phase to strip fat frameworks. 
-1. In Xcode, in project manager, select your app target.
-2. Open the `Build Phases` tab
-3. Remove the added `Strip Frameworks` phase
-4. Clean `Derived Data` 
-
-##### Link static library
-The `react-native link` command should have added the `libRNPurchases.a` library to the _Linked Frameworks and Libraries_ section of your app target. If it hasn't add it like this:
-
-![](https://media.giphy.com/media/U2MMgrdYlkRhEcy80J/giphy.gif)
+### Bare workflow
+If you are using [bare workflow](https://docs.expo.dev/bare/overview/) (that is, your project is created using `react-native init`), [install `expo`](https://docs.expo.dev/bare/installing-expo-modules/) into your project and [leverage Expo CLI](https://docs.expo.dev/bare/using-expo-cli/) to use Expo tooling and services.
