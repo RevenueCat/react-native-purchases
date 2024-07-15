@@ -53,7 +53,7 @@ Our full SDK reference [can be found here](https://revenuecat.github.io/react-na
 
 ## Installation
 
-Expo supports in-app payments and is compatible with react-native-purchases. To use the library, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). A development build helps iterate quickly and provides a complete development environment. After you've created the project, install the library:
+Expo supports in-app payments and is compatible with react-native-purchases. To use the library, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). A development build helps you iterate quickly and provides a complete development environment. After you've created the project, install the library:
 
 ```
 $ npx expo install react-native-purchases
