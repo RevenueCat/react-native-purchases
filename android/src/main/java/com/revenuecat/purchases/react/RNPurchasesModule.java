@@ -96,7 +96,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             reactContext,
             apiKey,
             appUserID,
-            observerMode ? PurchasesAreCompletedBy.MY_APP : PurchasesAreCompletedBy.REVENUECAT,
+            observerMode ? PurchasesAreCompletedBy.MY_APP.name() : PurchasesAreCompletedBy.REVENUECAT.name(),
             platformInfo,
             store,
             new DangerousSettings(),
@@ -278,7 +278,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setFinishTransactions(boolean enabled) {
         CommonKt.setPurchasesAreCompletedBy(enabled ?
-          PurchasesAreCompletedBy.REVENUECAT : PurchasesAreCompletedBy.MY_APP);
+          PurchasesAreCompletedBy.REVENUECAT.name() : PurchasesAreCompletedBy.MY_APP.name());
     }
 
     @ReactMethod
