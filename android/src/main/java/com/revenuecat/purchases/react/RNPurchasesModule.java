@@ -84,7 +84,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
                                boolean observerMode, @Nullable String userDefaultsSuiteName,
-                               @Nullable Boolean usesStoreKit2IfAvailable, boolean useAmazon,
+                               @Nullable String storeKitVersion, boolean useAmazon,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled) {

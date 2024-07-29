@@ -1,5 +1,6 @@
 import {
   ENTITLEMENT_VERIFICATION_MODE,
+  STOREKIT_VERSION,
   IN_APP_MESSAGE_TYPE,
   PurchasesOffering,
 } from "@revenuecat/purchases-typescript-internal";

@@ -41,7 +41,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
                   observerMode:(BOOL)observerMode
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
-                  usesStoreKit2IfAvailable:(BOOL)usesStoreKit2IfAvailable
+                  stoCreKitVersion:(nullable NSString *)storeKitVersion
                   useAmazon:(BOOL)useAmazon
                   shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode,
@@ -52,26 +52,11 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                         userDefaultsSuiteName:userDefaultsSuiteName
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
-                                     usesStoreKit2IfAvailable:usesStoreKit2IfAvailable
+                                              storeKitVersion:storeKitVersion
                                             dangerousSettings:nil
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode];
     purchases.delegate = self;
-}
-
-RCT_EXPORT_METHOD(setAllowSharingStoreAccount:(BOOL)allowSharingStoreAccount) {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    [RCCommonFunctionality setAllowSharingStoreAccount:allowSharingStoreAccount];
-#pragma GCC diagnostic pop
-}
-
-RCT_EXPORT_METHOD(setFinishTransactions:(BOOL)finishTransactions) {
-    if (finishTransactions) {
-        [RCCommonFunctionality setPurchasesAreCompletedBy:RCPurchasesAreCompletedByRevenueCat];
-    } else {
-        [RCCommonFunctionality setPurchasesAreCompletedBy:RCPurchasesAreCompletedByMyApp];
-    }
 }
 
 RCT_REMAP_METHOD(getOfferings,
@@ -441,6 +426,24 @@ RCT_EXPORT_METHOD(setLogHandler) {
     [RCCommonFunctionality setLogHanderOnLogReceived:^(NSDictionary<NSString *,NSString *> * _Nonnull logDetails) {
         [self sendEventWithName:RNPurchasesLogHandlerEvent body:logDetails];
     }];
+}
+
+#pragma mark -
+#pragma mark PurchasesAreCompletedBy Helper Functions
+RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 15.0, *)) {
+        [RCCommonFunctionality recordPurchaseForProductID:productID
+                                               completion:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                               reject:reject]];
+    } else {
+        NSString* description = @"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater.";
+        NSError* error = [[NSError alloc] initWithDomain: RCPurchasesErrorCodeDomain
+                                                    code: RCUnsupportedError
+                                                userInfo: @{NSLocalizedDescriptionKey : description}];
+        reject([NSString stringWithFormat:@"%ld", (long) error.code], [error localizedDescription], error);
+    }
 }
 
 #pragma mark -

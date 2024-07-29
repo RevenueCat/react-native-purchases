@@ -32,6 +32,8 @@ import {
   IN_APP_MESSAGE_TYPE,
   ENTITLEMENT_VERIFICATION_MODE,
   VERIFICATION_RESULT,
+  STOREKIT_VERSION,
+  PurchasesStoreTransaction,
   PurchasesOffering,
 } from "@revenuecat/purchases-typescript-internal";
 
@@ -172,6 +174,13 @@ export default class Purchases {
   public static VERIFICATION_RESULT = VERIFICATION_RESULT;
 
   /**
+   * Enum of StoreKit version.
+   * @readonly
+   * @enum {string}
+   */
+  public static STOREKIT_VERSION = STOREKIT_VERSION;
+
+  /**
    * @internal
    */
   public static UninitializedPurchasesError = UninitializedPurchasesError;
@@ -186,8 +195,7 @@ export default class Purchases {
    * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
    * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
-   * @param {boolean} [usesStoreKit2IfAvailable=false] DEPRECATED. An optional boolean. iOS-only. Defaults to FALSE. Setting this to TRUE will enable StoreKit2 on compatible devices.
-   * We recommend not using this parameter, letting RevenueCat decide for you which StoreKit implementation to use.
+   * @param {STOREKIT_VERSION} [storeKitVersion=DEFAULT] iOS-only. Defaults to STOREKIT_2. StoreKit 2 is only available on iOS 16+. StoreKit 1 will be used for previous iOS versions regardless of this setting.
    * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode=ENTITLEMENT_VERIFICATION_MODE.DISABLED] Sets the entitlement verifciation mode to use. For more details, check https://rev.cat/trusted-entitlements
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
@@ -200,7 +208,7 @@ export default class Purchases {
     appUserID = null,
     observerMode = false,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable = false,
+    storeKitVersion = STOREKIT_VERSION.DEFAULT,
     useAmazon = false,
     shouldShowInAppMessagesAutomatically = true,
     entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
@@ -225,7 +233,7 @@ export default class Purchases {
       appUserID,
       observerMode,
       userDefaultsSuiteName,
-      usesStoreKit2IfAvailable,
+      storeKitVersion,
       useAmazon,
       shouldShowInAppMessagesAutomatically,
       entitlementVerificationMode,
@@ -735,6 +743,29 @@ export default class Purchases {
   }
 
   /**
+   * iOS only. Always returns an error on iOS < 15.
+   *
+   * Use this method only if you already have your own IAP implementation using StoreKit 2 and want to use
+   * RevenueCat's backend. If you are using StoreKit 1 for your implementation, you do not need this method.
+   *
+   * You only need to use this method with *new* purchases. Subscription updates are observed automatically.
+   *
+   * Important: This should only be used if you have set PurchasesAreCompletedBy to MY_APP during SDK configuration.
+   *
+   * @warning You need to finish the transaction yourself after calling this method.
+   *
+   * @param {string} productID Product ID that was just purchased
+   * @returns {Promise<PurchasesStoreTransaction>} If there was a transacton found and handled for the provided product ID.
+   */
+  public static async recordPurchase(
+    productID: string
+  ): Promise<PurchasesStoreTransaction> {
+    await Purchases.throwIfAndroidPlatform();
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.recordPurchaseForProductID(productID);
+  }
+
+  /**
    * @deprecated, use enableAdServicesAttributionTokenCollection instead.
    * Enable automatic collection of Apple Search Ad attribution. Disabled by default
    * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
@@ -743,8 +774,8 @@ export default class Purchases {
   public static async setAutomaticAppleSearchAdsAttributionCollection(
     enabled: boolean
   ): Promise<void> {
-    if (Platform.OS === "ios") {
-      RNPurchases.setAutomaticAppleSearchAdsAttributionCollection(enabled);
+    if (Platform.OS === "ios" && enabled) {
+      RNPurchases.enableAdServicesAttributionTokenCollection();
     }
   }
 
