@@ -83,7 +83,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
-                               boolean observerMode, @Nullable String userDefaultsSuiteName,
+                               @Nullable String purchasesAreCompletedBy, @Nullable String userDefaultsSuiteName,
                                @Nullable String storeKitVersion, boolean useAmazon,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
@@ -97,7 +97,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             reactContext,
             apiKey,
             appUserID,
-            observerMode ? PurchasesAreCompletedBy.MY_APP : PurchasesAreCompletedBy.REVENUECAT,
+            purchasesAreCompletedBy,
             platformInfo,
             store,
             new DangerousSettings(),

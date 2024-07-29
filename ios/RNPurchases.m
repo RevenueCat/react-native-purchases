@@ -173,11 +173,6 @@ RCT_REMAP_METHOD(getCustomerInfo,
     [RCCommonFunctionality getCustomerInfoWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
-RCT_EXPORT_METHOD(setAutomaticAppleSearchAdsAttributionCollection:(BOOL)automaticAppleSearchAdsAttributionCollection)
-{
-    [RCCommonFunctionality setAutomaticAppleSearchAdsAttributionCollection:automaticAppleSearchAdsAttributionCollection];
-}
-
 RCT_EXPORT_METHOD(enableAdServicesAttributionTokenCollection)
 {
     #if !TARGET_OS_TV
