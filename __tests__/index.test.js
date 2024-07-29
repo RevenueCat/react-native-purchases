@@ -587,7 +587,7 @@ describe("Purchases", () => {
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: false,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT
     });
@@ -596,7 +596,7 @@ describe("Purchases", () => {
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: true,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
@@ -610,11 +610,11 @@ describe("Purchases", () => {
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: true,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
-      shouldShowInAppMessagesAutomatically: false
+      shouldShowInAppMessagesAutomatically: false,
     });
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false);
 
