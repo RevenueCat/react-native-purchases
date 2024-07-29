@@ -591,7 +591,7 @@ describe("Purchases", () => {
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "DEFAULT", "suite name", true, false, true, defaultVerificationMode, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", true, false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
@@ -605,7 +605,7 @@ describe("Purchases", () => {
         Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
       pendingTransactionsForPrepaidPlansEnabled: true,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "DEFAULT", "suite name", "DEFAULT", true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true);
 
     Purchases.configure({
       apiKey: "key",
@@ -616,7 +616,7 @@ describe("Purchases", () => {
       useAmazon: true,
       shouldShowInAppMessagesAutomatically: false
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "DEFAULT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(5);
   })
