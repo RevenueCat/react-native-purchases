@@ -47,7 +47,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "7.28.0";
+    public static final String PLUGIN_VERSION = "7.28.1";
 
     private final ReactApplicationContext reactContext;
 
@@ -316,8 +316,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void setProxyURLString(String proxyURLString) {
+    public void setProxyURLString(String proxyURLString, Promise promise) {
         CommonKt.setProxyURLString(proxyURLString);
+        promise.resolve(null); // Resolve the promise with no value
     }
 
     @ReactMethod

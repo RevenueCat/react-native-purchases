@@ -955,10 +955,10 @@ export default class Purchases {
   /**
    * Set this property to your proxy URL before configuring Purchases *only* if you've received a proxy key value
    * from your RevenueCat contact.
-   * @returns {Promise<void>} The promise will be rejected if there's an error setting the proxy url.
+   * @returns {Promise<void>} The promise to be returned after setting the proxy has been completed.
    */
   public static async setProxyURL(url: string): Promise<void> {
-    RNPurchases.setProxyURLString(url);
+    return RNPurchases.setProxyURLString(url);
   }
 
   /**
