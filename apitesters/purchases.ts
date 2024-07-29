@@ -1,5 +1,6 @@
 import {
   ENTITLEMENT_VERIFICATION_MODE,
+  STOREKIT_VERSION,
   IN_APP_MESSAGE_TYPE,
   PurchasesOffering,
 } from "@revenuecat/purchases-typescript-internal";
@@ -141,7 +142,7 @@ async function checkConfigure() {
   const apiKey: string = "";
   const appUserID: string | null = "";
   const observerMode: boolean = false;
-  const usesStoreKit2IfAvailable: boolean = true;
+  const storeKitVersion: STOREKIT_VERSION = STOREKIT_VERSION.DEFAULT;
   const useAmazon: boolean = true;
   const entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE =
     Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
@@ -164,14 +165,14 @@ async function checkConfigure() {
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
   });
   Purchases.configure({
     apiKey,
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     entitlementVerificationMode,
   });
   Purchases.configure({
@@ -179,7 +180,7 @@ async function checkConfigure() {
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     entitlementVerificationMode,
     useAmazon,
   });
@@ -188,7 +189,7 @@ async function checkConfigure() {
     appUserID,
     observerMode,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     useAmazon,
     shouldShowInAppMessagesAutomatically,
   });

@@ -83,8 +83,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
-                               boolean observerMode, @Nullable String userDefaultsSuiteName,
-                               @Nullable Boolean usesStoreKit2IfAvailable, boolean useAmazon,
+                               @Nullable String purchasesAreCompletedBy, @Nullable String userDefaultsSuiteName,
+                               @Nullable String storeKitVersion, boolean useAmazon,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled) {
@@ -97,7 +97,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             reactContext,
             apiKey,
             appUserID,
-            observerMode ? PurchasesAreCompletedBy.MY_APP : PurchasesAreCompletedBy.REVENUECAT,
+            purchasesAreCompletedBy,
             platformInfo,
             store,
             new DangerousSettings(),
@@ -278,9 +278,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    @Deprecated // Use setPurchasesAreCompletedBy instead
     public void setFinishTransactions(boolean enabled) {
         CommonKt.setPurchasesAreCompletedBy(enabled ?
-          PurchasesAreCompletedBy.REVENUECAT : PurchasesAreCompletedBy.MY_APP);
+          PurchasesAreCompletedBy.REVENUECAT.name() : PurchasesAreCompletedBy.MY_APP.name());
     }
 
     @ReactMethod

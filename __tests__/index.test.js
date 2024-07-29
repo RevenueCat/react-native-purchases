@@ -1,6 +1,7 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
 const {REFUND_REQUEST_STATUS} = require("../dist/purchases");
+const { PURCHASES_ARE_COMPLETED_BY, STOREKIT_VERSION } = require("@revenuecat/purchases-typescript-internal");
 
 const nativeEmitter = new NativeEventEmitter();
 
@@ -578,43 +579,44 @@ describe("Purchases", () => {
     const defaultVerificationMode = "DISABLED"
 
     Purchases.configure({apiKey: "key", appUserID: "user"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false, true, defaultVerificationMode, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, true, defaultVerificationMode, false);
 
-    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false, true, defaultVerificationMode, false);
+    Purchases.configure({apiKey: "key", appUserID: "user", purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.MY_APP});
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "DEFAULT", false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: false,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true
+      storeKitVersion: STOREKIT_VERSION.DEFAULT
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false, true, defaultVerificationMode, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: true,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true,
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
       shouldShowInAppMessagesAutomatically: true,
-      entitlementVerificationMode: Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
-      pendingTransactionsForPrepaidPlansEnabled: true
+      entitlementVerificationMode:
+        Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
+      pendingTransactionsForPrepaidPlansEnabled: true,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: true,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true,
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
-      shouldShowInAppMessagesAutomatically: false
+      shouldShowInAppMessagesAutomatically: false,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, false, defaultVerificationMode, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(5);
   })
