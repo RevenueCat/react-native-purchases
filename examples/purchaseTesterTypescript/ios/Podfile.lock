@@ -891,7 +891,7 @@ PODS:
   - React-Mapbuffer (0.73.5):
     - glog
     - React-debug
-  - react-native-safe-area-context (4.9.0):
+  - react-native-safe-area-context (4.10.8):
     - React-Core
   - React-nativeconfig (0.73.5)
   - React-NativeModulesApple (0.73.5):
@@ -1063,11 +1063,12 @@ PODS:
   - RevenueCat (4.43.2)
   - RevenueCatUI (4.43.2):
     - RevenueCat (= 4.43.2)
-  - RNPaywalls (7.27.4):
+  - RNPaywalls (7.28.1):
     - PurchasesHybridCommonUI (= 11.1.1)
     - React-Core
-  - RNPurchases (7.27.4):
-    - PurchasesHybridCommon (= 11.1.1)
+  - RNPurchases (7.28.1):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - RNScreens (3.29.0):
     - glog
@@ -1282,7 +1283,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 32db5e364bcae8fca8cdf8891830636275add0c5
   React-logger: 0331362115f0f5b392bd7ed14636d1a3ea612479
   React-Mapbuffer: 7c35cd53a22d0be04d3f26f7881c7fb7dd230216
-  react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
+  react-native-safe-area-context: b7daa1a8df36095a032dff095a1ea8963cb48371
   React-nativeconfig: 1166714a4f7ea57a0df5c2cb44fbc70f98d580f9
   React-NativeModulesApple: 726664e9829eb5eed8170241000e46ead269a05f
   React-perflogger: 0dd9f1725d55f8264b81efadd373fe1d9cca7dc2
@@ -1305,12 +1306,12 @@ SPEC CHECKSUMS:
   ReactCommon: 2947b0bffd82ea0e58ca7928881152d4c6dae9af
   RevenueCat: 3d934653b7e8b09af88fd47e9e84cfaf5d0a89ba
   RevenueCatUI: 1417f375baf005eaf3afa8bc99724f567abfd6da
-  RNPaywalls: 5e8ff35832872a9ea11aec01d9c600f509484123
-  RNPurchases: f366ac976c6e5822e60ff383e201ce6a8cdef684
+  RNPaywalls: 3b1f151f7bbd00dea0aeb4ecb3bd60d243ec5d9e
+  RNPurchases: b9a864b9d8062452430c6631f674bb8acca47783
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
 
-PODFILE CHECKSUM: ef31637b966dabf84533f91f817cd6515b22cbe8
+PODFILE CHECKSUM: fcb9b7974bbdc5d1b0021b552dedfa37d0ae9d00
 
 COCOAPODS: 1.15.2
