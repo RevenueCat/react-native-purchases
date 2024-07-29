@@ -39,7 +39,7 @@ RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
-                  observerMode:(BOOL)observerMode
+                  purchasesAreCompletedBy:(nullable NSString *)purchasesAreCompletedBy
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
                   stoCreKitVersion:(nullable NSString *)storeKitVersion
                   useAmazon:(BOOL)useAmazon
@@ -48,7 +48,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
                                                     appUserID:appUserID
-                                      purchasesAreCompletedBy:(observerMode ? RCPurchasesAreCompletedByMyApp : RCPurchasesAreCompletedByRevenueCat)
+                                      purchasesAreCompletedBy:purchasesAreCompletedBy
                                         userDefaultsSuiteName:userDefaultsSuiteName
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion

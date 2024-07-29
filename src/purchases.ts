@@ -35,6 +35,7 @@ import {
   STOREKIT_VERSION,
   PurchasesStoreTransaction,
   PurchasesOffering,
+  PURCHASES_ARE_COMPLETED_BY,
 } from "@revenuecat/purchases-typescript-internal";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
@@ -194,7 +195,7 @@ export default class Purchases {
    * Sets up Purchases with your API key and an app user id.
    * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
-   * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
+   * @param {PURCHASES_ARE_COMPLETED_BY} [purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY.REVENUECAT] Set this to PURCHASES_ARE_COMPLETED_BY.MY_APP if you have your own IAP implementation and want to use only RevenueCat's backend. Default is PURCHASES_ARE_COMPLETED_BY.REVENUECAT.
    * @param {STOREKIT_VERSION} [storeKitVersion=DEFAULT] iOS-only. Defaults to STOREKIT_2. StoreKit 2 is only available on iOS 16+. StoreKit 1 will be used for previous iOS versions regardless of this setting.
    * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode=ENTITLEMENT_VERIFICATION_MODE.DISABLED] Sets the entitlement verifciation mode to use. For more details, check https://rev.cat/trusted-entitlements
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
@@ -206,7 +207,7 @@ export default class Purchases {
   public static configure({
     apiKey,
     appUserID = null,
-    observerMode = false,
+    purchasesAreCompletedBy = PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
     userDefaultsSuiteName,
     storeKitVersion = STOREKIT_VERSION.DEFAULT,
     useAmazon = false,
@@ -231,7 +232,7 @@ export default class Purchases {
     RNPurchases.setupPurchases(
       apiKey,
       appUserID,
-      observerMode,
+      purchasesAreCompletedBy,
       userDefaultsSuiteName,
       storeKitVersion,
       useAmazon,
