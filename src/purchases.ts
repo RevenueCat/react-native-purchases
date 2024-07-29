@@ -258,6 +258,7 @@ export default class Purchases {
   }
 
   /**
+   * @deprecated, set purchasesAreConfiguredBy when configuring the SDK instead.
    * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to
    * make the purchase
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.

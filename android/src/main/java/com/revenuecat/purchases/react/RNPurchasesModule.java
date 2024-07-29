@@ -278,9 +278,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    @Deprecated // Use setPurchasesAreCompletedBy instead
     public void setFinishTransactions(boolean enabled) {
         CommonKt.setPurchasesAreCompletedBy(enabled ?
-          PurchasesAreCompletedBy.REVENUECAT : PurchasesAreCompletedBy.MY_APP);
+          PurchasesAreCompletedBy.REVENUECAT.name() : PurchasesAreCompletedBy.MY_APP.name());
     }
 
     @ReactMethod
