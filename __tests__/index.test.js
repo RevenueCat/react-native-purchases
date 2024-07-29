@@ -1,6 +1,7 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
 const {REFUND_REQUEST_STATUS} = require("../dist/purchases");
+const { PURCHASES_ARE_COMPLETED_BY } = require("@revenuecat/purchases-typescript-internal");
 
 const nativeEmitter = new NativeEventEmitter();
 
@@ -580,8 +581,8 @@ describe("Purchases", () => {
     Purchases.configure({apiKey: "key", appUserID: "user"});
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, true, defaultVerificationMode, false);
 
-    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false, true, defaultVerificationMode, false);
+    Purchases.configure({apiKey: "key", appUserID: "user", purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.MY_APP});
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "DEFAULT", false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
