@@ -59,6 +59,13 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
     purchases.delegate = self;
 }
 
+RCT_EXPORT_METHOD(setAllowSharingStoreAccount:(BOOL)allowSharingStoreAccount) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    [RCCommonFunctionality setAllowSharingStoreAccount:allowSharingStoreAccount];
+#pragma GCC diagnostic pop
+}
+
 RCT_REMAP_METHOD(getOfferings,
                  getOfferingsWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
