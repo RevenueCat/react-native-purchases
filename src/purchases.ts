@@ -269,19 +269,6 @@ export default class Purchases {
   }
 
   /**
-   * @deprecated, set purchasesAreConfiguredBy when configuring the SDK instead.
-   * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to
-   * make the purchase
-   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
-   */
-  public static async setFinishTransactions(
-    finishTransactions: boolean
-  ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
-    RNPurchases.setFinishTransactions(finishTransactions);
-  }
-
-  /**
    * iOS only.
    * @param {boolean} simulatesAskToBuyInSandbox Set this property to true *only* when testing the ask-to-buy / SCA
    * purchases flow. More information: http://errors.rev.cat/ask-to-buy
