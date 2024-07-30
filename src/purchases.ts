@@ -212,6 +212,8 @@ export default class Purchases {
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
    * Default is null, which will make the SDK use standardUserDefaults.
    * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to TRUE to enable pending transactions for prepaid subscriptions in Google Play.
+   *
+   * @warning If you use purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY.MY_APP, you must also provide a value for storeKitVersion.
    */
   public static configure({
     apiKey,
