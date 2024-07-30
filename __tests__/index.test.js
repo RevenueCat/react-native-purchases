@@ -749,16 +749,6 @@ describe("Purchases", () => {
     }
   })
 
-  it("finishTransactions works", async () => {
-    await Purchases.setFinishTransactions(true);
-    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(true);
-
-    await Purchases.setFinishTransactions(false);
-    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(false);
-
-    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledTimes(2);
-  })
-
   it("checkTrialOrIntroductoryPriceEligibility works", async () => {
     await Purchases.checkTrialOrIntroductoryPriceEligibility(["monthly"])
 
