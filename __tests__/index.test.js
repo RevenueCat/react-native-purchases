@@ -1,7 +1,8 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
-const {REFUND_REQUEST_STATUS} = require("../dist/purchases");
-const { PURCHASES_ARE_COMPLETED_BY, STOREKIT_VERSION } = require("@revenuecat/purchases-typescript-internal");
+const {
+  PURCHASES_ARE_COMPLETED_BY, REFUND_REQUEST_STATUS, STOREKIT_VERSION
+} = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
 

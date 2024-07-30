@@ -41,9 +41,11 @@ import {
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
   PURCHASE_TYPE,
+  PURCHASES_ARE_COMPLETED_BY,
   BILLING_FEATURE,
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
+  STOREKIT_VERSION,
   PurchasesConfiguration,
   CustomerInfoUpdateListener,
   ShouldPurchasePromoProductListener,
@@ -180,6 +182,13 @@ export default class Purchases {
    * @enum {string}
    */
   public static STOREKIT_VERSION = STOREKIT_VERSION;
+
+  /**
+   * Enum of PurchasesAreCompletedBy.
+   * @readonly
+   * @enum {string}
+   */
+  public static PURCHASES_ARE_COMPLETED_BY = PURCHASES_ARE_COMPLETED_BY;
 
   /**
    * @internal
