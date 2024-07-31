@@ -1,7 +1,7 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
 const {
-  PURCHASES_ARE_COMPLETED_BY, REFUND_REQUEST_STATUS, STOREKIT_VERSION
+  PURCHASES_ARE_COMPLETED_BY_TYPE, REFUND_REQUEST_STATUS, STOREKIT_VERSION
 } = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
@@ -582,22 +582,30 @@ describe("Purchases", () => {
     Purchases.configure({apiKey: "key", appUserID: "user"});
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, true, defaultVerificationMode, false);
 
-    Purchases.configure({apiKey: "key", appUserID: "user", purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.MY_APP});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "DEFAULT", false, true, defaultVerificationMode, false);
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      purchasesAreCompletedBy: {
+        type: PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+        storeKitVersion: STOREKIT_VERSION.STOREKIT_1,
+      },
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
+    });
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "STOREKIT_1", false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
       userDefaultsSuiteName: "suite name",
-      storeKitVersion: STOREKIT_VERSION.DEFAULT
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
     });
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
@@ -611,7 +619,7 @@ describe("Purchases", () => {
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
@@ -1029,7 +1037,8 @@ describe("Purchases", () => {
       "throwIfIOSPlatform",
       "convertIntToRefundRequestStatus",
       "isConfigured",
-      "setProxyURL"
+      "setProxyURL",
+      "isPurchasesAreCompletedByMyApp",
     ];
     const functionsThatRequireAndroidAndInstance = [
       "syncObserverModeAmazonPurchase",

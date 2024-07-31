@@ -35,13 +35,16 @@ import {
   STOREKIT_VERSION,
   PurchasesStoreTransaction,
   PurchasesOffering,
-  PURCHASES_ARE_COMPLETED_BY,
+  PURCHASES_ARE_COMPLETED_BY_TYPE,
+  PurchasesAreCompletedBy,
+  PurchasesAreCompletedByMyApp,
 } from "@revenuecat/purchases-typescript-internal";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
   PURCHASE_TYPE,
-  PURCHASES_ARE_COMPLETED_BY,
+  PurchasesAreCompletedBy,
+  PURCHASES_ARE_COMPLETED_BY_TYPE,
   BILLING_FEATURE,
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
@@ -184,11 +187,12 @@ export default class Purchases {
   public static STOREKIT_VERSION = STOREKIT_VERSION;
 
   /**
-   * Enum of PurchasesAreCompletedBy.
+   * Enum of PurchasesAreCompletedByType.
    * @readonly
    * @enum {string}
    */
-  public static PURCHASES_ARE_COMPLETED_BY = PURCHASES_ARE_COMPLETED_BY;
+  public static PURCHASES_ARE_COMPLETED_BY_TYPE =
+    PURCHASES_ARE_COMPLETED_BY_TYPE;
 
   /**
    * @internal
@@ -204,7 +208,7 @@ export default class Purchases {
    * Sets up Purchases with your API key and an app user id.
    * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
-   * @param {PURCHASES_ARE_COMPLETED_BY} [purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY.REVENUECAT] Set this to PURCHASES_ARE_COMPLETED_BY.MY_APP if you have your own IAP implementation and want to use only RevenueCat's backend. Default is PURCHASES_ARE_COMPLETED_BY.REVENUECAT.
+   * @param {PurchasesAreCompletedBy} [purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT] Set this to an instance of PurchasesAreCompletedByMyApp if you have your own IAP implementation and want to use only RevenueCat's backend. Default is PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT.
    * @param {STOREKIT_VERSION} [storeKitVersion=DEFAULT] iOS-only. Defaults to STOREKIT_2. StoreKit 2 is only available on iOS 16+. StoreKit 1 will be used for previous iOS versions regardless of this setting.
    * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode=ENTITLEMENT_VERIFICATION_MODE.DISABLED] Sets the entitlement verifciation mode to use. For more details, check https://rev.cat/trusted-entitlements
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
@@ -218,7 +222,7 @@ export default class Purchases {
   public static configure({
     apiKey,
     appUserID = null,
-    purchasesAreCompletedBy = PURCHASES_ARE_COMPLETED_BY.REVENUECAT,
+    purchasesAreCompletedBy = PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
     userDefaultsSuiteName,
     storeKitVersion = STOREKIT_VERSION.DEFAULT,
     useAmazon = false,
@@ -240,12 +244,31 @@ export default class Purchases {
       throw new Error("appUserID needs to be a string");
     }
 
+    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE;
+    let storeKitVersionToUse = storeKitVersion;
+
+    if (Purchases.isPurchasesAreCompletedByMyApp(purchasesAreCompletedBy)) {
+      purchasesCompletedByToUse = PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP;
+      storeKitVersionToUse = (
+        purchasesAreCompletedBy as PurchasesAreCompletedByMyApp
+      ).storeKitVersion;
+
+      if (storeKitVersionToUse !== storeKitVersion) {
+        console.warn(
+          "Warning: The storeKitVersion in purchasesAreCompletedBy does not match the function's storeKitVersion parameter. We will use the value found in purchasesAreCompletedBy."
+        );
+      }
+    } else {
+      purchasesCompletedByToUse =
+        purchasesAreCompletedBy as PURCHASES_ARE_COMPLETED_BY_TYPE;
+    }
+
     RNPurchases.setupPurchases(
       apiKey,
       appUserID,
-      purchasesAreCompletedBy,
+      purchasesCompletedByToUse,
       userDefaultsSuiteName,
-      storeKitVersion,
+      storeKitVersionToUse,
       useAmazon,
       shouldShowInAppMessagesAutomatically,
       entitlementVerificationMode,
@@ -1300,6 +1323,17 @@ export default class Purchases {
     if (Platform.OS === "ios") {
       throw new UnsupportedPlatformError();
     }
+  }
+
+  private static isPurchasesAreCompletedByMyApp(
+    obj: PurchasesAreCompletedBy
+  ): obj is PurchasesAreCompletedByMyApp {
+    return (
+      typeof obj === "object" &&
+      obj !== null &&
+      (obj as PurchasesAreCompletedByMyApp).type ===
+        PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP
+    );
   }
 
   private static convertIntToRefundRequestStatus(
