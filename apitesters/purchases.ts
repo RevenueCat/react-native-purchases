@@ -197,7 +197,6 @@ async function checkConfigure() {
   await Purchases.setProxyURL("");
   await Purchases.setDebugLogsEnabled(true);
   await Purchases.setSimulatesAskToBuyInSandbox(true);
-  await Purchases.setFinishTransactions(true);
   await Purchases.setAllowSharingStoreAccount(true);
 
   const configured: boolean = await Purchases.isConfigured();
