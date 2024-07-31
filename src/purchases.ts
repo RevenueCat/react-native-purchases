@@ -44,6 +44,7 @@ import {
 export {
   PURCHASE_TYPE,
   PurchasesAreCompletedBy,
+  PurchasesAreCompletedByMyApp,
   PURCHASES_ARE_COMPLETED_BY_TYPE,
   BILLING_FEATURE,
   REFUND_REQUEST_STATUS,

@@ -1,6 +1,5 @@
 import {
   ENTITLEMENT_VERIFICATION_MODE,
-  STOREKIT_VERSION,
   IN_APP_MESSAGE_TYPE,
   PurchasesOffering,
 } from "@revenuecat/purchases-typescript-internal";
@@ -22,6 +21,10 @@ import {
   LogInResult,
   ShouldPurchasePromoProductListener,
   CustomerInfoUpdateListener,
+  PurchasesAreCompletedBy,
+  PurchasesAreCompletedByMyApp,
+  PURCHASES_ARE_COMPLETED_BY_TYPE,
+  STOREKIT_VERSION,
 } from "../dist";
 
 import Purchases from "../dist/purchases";
@@ -141,7 +144,8 @@ async function checkPurchasing(
 async function checkConfigure() {
   const apiKey: string = "";
   const appUserID: string | null = "";
-  const observerMode: boolean = false;
+  var purchasesAreCompletedBy: PurchasesAreCompletedBy =
+    PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
   const storeKitVersion: STOREKIT_VERSION = STOREKIT_VERSION.DEFAULT;
   const useAmazon: boolean = true;
   const entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE =
@@ -149,28 +153,29 @@ async function checkConfigure() {
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
 
+  // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
     storeKitVersion,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
     storeKitVersion,
     entitlementVerificationMode,
@@ -178,7 +183,7 @@ async function checkConfigure() {
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
     storeKitVersion,
     entitlementVerificationMode,
@@ -187,7 +192,57 @@ async function checkConfigure() {
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+  });
+
+  // PurchasesAreCompletedBy == MY_APP
+  purchasesAreCompletedBy = {
+    type: PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+    storeKitVersion: STOREKIT_VERSION.STOREKIT_1,
+  };
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    entitlementVerificationMode,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    entitlementVerificationMode,
+    useAmazon,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
     storeKitVersion,
     useAmazon,
