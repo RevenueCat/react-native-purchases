@@ -2557,6 +2557,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@revenuecat/purchases-typescript-internal@npm:13.0.0":
+  version: 13.0.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:13.0.0"
+  checksum: 31c24bd829ffcd8858046da5aeeb6d43a8ab321e0839b82f939bdc3102c7387a29a6fa5a64717edc1f5ba53736b75c695748f53181083ea945c674e9301d0c40
+  languageName: node
+  linkType: hard
+
 "@sideway/address@npm:^4.1.5":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
