@@ -1,3 +1,5 @@
-### Bugfixes
-* [EXTERNAL] Make the setProxyURL a promise to wait for the native code to set the proxy URL (#1033) contributed by @dangilbert (#1035) via Toni Rico (@tonidero)
-* Setting `proxyURL` should not require configure (#1032) via Cesar de la Vega (@vegaro)
+### Dependency Updates
+* Bump fastlane from 2.221.1 to 2.222.0 (#1046) via dependabot[bot] (@dependabot[bot])
+* Fix ws affected by a DoS (#1043) via Cesar de la Vega (@vegaro)
+### Other Changes
+* docs: Update installation instructions for Expo (#1041) via Aman Mittal (@amandeepmittal)
