@@ -255,7 +255,7 @@ export default class Purchases {
       ).storeKitVersion;
 
       if (storeKitVersionToUse !== storeKitVersion) {
-        console.log(
+        console.warn(
           "Warning: The storeKitVersion in purchasesAreCompletedBy does not match the function's storeKitVersion parameter. We will use the value found in purchasesAreCompletedBy."
         );
       }
