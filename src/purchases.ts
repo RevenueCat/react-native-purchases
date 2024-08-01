@@ -245,7 +245,7 @@ export default class Purchases {
       throw new Error("appUserID needs to be a string");
     }
 
-    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE;
+    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE = PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
     let storeKitVersionToUse = storeKitVersion;
 
     if (Purchases.isPurchasesAreCompletedByMyApp(purchasesAreCompletedBy)) {
@@ -263,9 +263,6 @@ export default class Purchases {
           "Warning: The storeKitVersion in purchasesAreCompletedBy does not match the function's storeKitVersion parameter. We will use the value found in purchasesAreCompletedBy."
         );
       }
-    } else {
-      purchasesCompletedByToUse =
-        purchasesAreCompletedBy as PURCHASES_ARE_COMPLETED_BY_TYPE;
     }
 
     RNPurchases.setupPurchases(
