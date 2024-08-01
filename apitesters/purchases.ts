@@ -257,6 +257,10 @@ async function checkConfigure() {
   const configured: boolean = await Purchases.isConfigured();
 }
 
+async function checkRecordPurchase() {
+  await Purchases.recordPurchase("productID");
+}
+
 async function checkLogLevel() {
   await Purchases.setLogLevel(LOG_LEVEL.DEBUG);
 }
