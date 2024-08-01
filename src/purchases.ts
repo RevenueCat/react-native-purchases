@@ -250,9 +250,7 @@ export default class Purchases {
 
     if (Purchases.isPurchasesAreCompletedByMyApp(purchasesAreCompletedBy)) {
       purchasesCompletedByToUse = PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP;
-      storeKitVersionToUse = (
-        purchasesAreCompletedBy as PurchasesAreCompletedByMyApp
-      ).storeKitVersion;
+      storeKitVersionToUse = purchasesAreCompletedBy.storeKitVersion;
 
       if (storeKitVersionToUse !== storeKitVersion) {
         // Typically, console messages aren't used in TS libraries, but in this case it's worth calling out the difference in
