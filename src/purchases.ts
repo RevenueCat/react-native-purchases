@@ -253,6 +253,12 @@ export default class Purchases {
       storeKitVersionToUse = (
         purchasesAreCompletedBy as PurchasesAreCompletedByMyApp
       ).storeKitVersion;
+
+      if (storeKitVersionToUse !== storeKitVersion) {
+        console.log(
+          "Warning: The storeKitVersion in purchasesAreCompletedBy does not match the function's storeKitVersion parameter. We will use the value found in purchasesAreCompletedBy."
+        );
+      }
     } else {
       purchasesCompletedByToUse =
         purchasesAreCompletedBy as PURCHASES_ARE_COMPLETED_BY_TYPE;
