@@ -218,7 +218,7 @@ export default class Purchases {
    * Default is null, which will make the SDK use standardUserDefaults.
    * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to TRUE to enable pending transactions for prepaid subscriptions in Google Play.
    *
-   * @warning If you use purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY.MY_APP, you must also provide a value for storeKitVersion.
+   * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
   public static configure({
     apiKey,
