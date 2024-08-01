@@ -477,6 +477,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    @Deprecated // Use syncAmazonPurchase instead
+    public void syncObserverModeAmazonPurchase(String productID, String receiptID,
+                                               String amazonUserID, String isoCurrencyCode,
+                                               Double price, final Promise promise) {
+      syncAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price, promise);
+    }
+
+    @ReactMethod
     public void showInAppMessages(ReadableArray messageTypes, final Promise promise) {
         if (messageTypes == null) {
             CommonKt.showInAppMessagesIfNeeded(getCurrentActivity());
