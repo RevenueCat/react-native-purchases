@@ -776,6 +776,7 @@ NativeModules.RNPurchases = {
   logIn: jest.fn(),
   logOut: jest.fn(),
   syncPurchases: jest.fn(),
+  syncAmazonPurchase: jest.fn(),
   syncObserverModeAmazonPurchase: jest.fn(),
   purchaseProduct: jest.fn(),
   purchasePackage: jest.fn(),

@@ -1064,6 +1064,7 @@ describe("Purchases", () => {
     ];
     const functionsThatRequireAndroidAndInstance = [
       "syncObserverModeAmazonPurchase",
+      "syncAmazonPurchase",
     ];
     const expected = new Purchases.UninitializedPurchasesError();
     for (let i = 0; i < allPropertyNames.length; i++) {
