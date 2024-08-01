@@ -245,7 +245,8 @@ export default class Purchases {
       throw new Error("appUserID needs to be a string");
     }
 
-    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE = PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
+    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE =
+      PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
     let storeKitVersionToUse = storeKitVersion;
 
     if (Purchases.isPurchasesAreCompletedByMyApp(purchasesAreCompletedBy)) {
@@ -767,6 +768,7 @@ export default class Purchases {
 
   /**
    * @deprecated, use syncAmazonPurchase instead.
+   *
    * This method will send a purchase to the RevenueCat backend. This function should only be called if you are
    * in Amazon observer mode or performing a client side migration of your current users to RevenueCat.
    *
@@ -787,7 +789,15 @@ export default class Purchases {
     isoCurrencyCode?: string | null,
     price?: number | null
   ): Promise<void> {
-    await Purchases.syncAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price);
+    await Purchases.throwIfIOSPlatform();
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.syncObserverModeAmazonPurchase(
+      productID,
+      receiptID,
+      amazonUserID,
+      isoCurrencyCode,
+      price
+    );
   }
 
   /**
