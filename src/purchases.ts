@@ -245,7 +245,8 @@ export default class Purchases {
       throw new Error("appUserID needs to be a string");
     }
 
-    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE = PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
+    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE =
+      PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
     let storeKitVersionToUse = storeKitVersion;
 
     if (Purchases.isPurchasesAreCompletedByMyApp(purchasesAreCompletedBy)) {
@@ -734,6 +735,40 @@ export default class Purchases {
   }
 
   /**
+   * This method will send a purchase to the RevenueCat backend. This function should only be called if you are
+   * in Amazon observer mode or performing a client side migration of your current users to RevenueCat.
+   *
+   * The receipt IDs are cached if successfully posted so they are not posted more than once.
+   *
+   * @param {string} productID Product ID associated to the purchase.
+   * @param {string} receiptID ReceiptId that represents the Amazon purchase.
+   * @param {string} amazonUserID Amazon's userID. This parameter will be ignored when syncing a Google purchase.
+   * @param {(string|null|undefined)} isoCurrencyCode Product's currency code in ISO 4217 format.
+   * @param {(number|null|undefined)} price Product's price.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * syncing purchases.
+   */
+  public static async syncAmazonPurchase(
+    productID: string,
+    receiptID: string,
+    amazonUserID: string,
+    isoCurrencyCode?: string | null,
+    price?: number | null
+  ): Promise<void> {
+    await Purchases.throwIfIOSPlatform();
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.syncAmazonPurchase(
+      productID,
+      receiptID,
+      amazonUserID,
+      isoCurrencyCode,
+      price
+    );
+  }
+
+  /**
+   * @deprecated, use syncAmazonPurchase instead.
+   *
    * This method will send a purchase to the RevenueCat backend. This function should only be called if you are
    * in Amazon observer mode or performing a client side migration of your current users to RevenueCat.
    *

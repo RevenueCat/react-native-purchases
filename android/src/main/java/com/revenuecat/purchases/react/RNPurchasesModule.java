@@ -459,12 +459,21 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void syncAmazonPurchase(String productID, String receiptID,
+                                               String amazonUserID, String isoCurrencyCode,
+                                               Double price, final Promise promise) {
+      Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
+        amazonUserID, isoCurrencyCode, price);
+      promise.resolve(null);
+    }
+
+    @Deprecated // Use syncAmazonPurchase instead
+    @ReactMethod
     public void syncObserverModeAmazonPurchase(String productID, String receiptID,
                                                String amazonUserID, String isoCurrencyCode,
                                                Double price, final Promise promise) {
-      Purchases.getSharedInstance().syncObserverModeAmazonPurchase(productID, receiptID,
-        amazonUserID, isoCurrencyCode, price);
-      promise.resolve(null);
+    
+      syncAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price, promise);
     }
 
     @ReactMethod
