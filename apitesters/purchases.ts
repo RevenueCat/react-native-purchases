@@ -309,6 +309,22 @@ async function checkBeginRefundRequest(
     await Purchases.beginRefundRequestForProduct(storeProduct);
 }
 
+async function checkSyncAmazonPurchase(
+  productID: string,
+  receiptID: string,
+  amazonUserID: string,
+  isoCurrencyCode?: string | null,
+  price?: number | null
+): Promise<void> {
+  return Purchases.syncAmazonPurchase(
+    productID,
+    receiptID,
+    amazonUserID,
+    isoCurrencyCode,
+    price
+  );
+}
+
 async function checkSyncObserverModeAmazonPurchase(
   productID: string,
   receiptID: string,
