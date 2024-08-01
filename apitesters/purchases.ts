@@ -21,6 +21,10 @@ import {
   LogInResult,
   ShouldPurchasePromoProductListener,
   CustomerInfoUpdateListener,
+  PurchasesAreCompletedBy,
+  PurchasesAreCompletedByMyApp,
+  PURCHASES_ARE_COMPLETED_BY_TYPE,
+  STOREKIT_VERSION,
 } from "../dist";
 
 import Purchases from "../dist/purchases";
@@ -140,55 +144,107 @@ async function checkPurchasing(
 async function checkConfigure() {
   const apiKey: string = "";
   const appUserID: string | null = "";
-  const observerMode: boolean = false;
-  const usesStoreKit2IfAvailable: boolean = true;
+  var purchasesAreCompletedBy: PurchasesAreCompletedBy =
+    PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
+  const storeKitVersion: STOREKIT_VERSION = STOREKIT_VERSION.DEFAULT;
   const useAmazon: boolean = true;
   const entitlementVerificationMode: ENTITLEMENT_VERIFICATION_MODE =
     Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
 
+  // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     entitlementVerificationMode,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
     entitlementVerificationMode,
     useAmazon,
   });
   Purchases.configure({
     apiKey,
     appUserID,
-    observerMode,
+    purchasesAreCompletedBy,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+  });
+
+  // PurchasesAreCompletedBy == MY_APP
+  purchasesAreCompletedBy = {
+    type: PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+    storeKitVersion: STOREKIT_VERSION.STOREKIT_1,
+  };
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    entitlementVerificationMode,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    entitlementVerificationMode,
+    useAmazon,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
     useAmazon,
     shouldShowInAppMessagesAutomatically,
   });
@@ -196,10 +252,13 @@ async function checkConfigure() {
   await Purchases.setProxyURL("");
   await Purchases.setDebugLogsEnabled(true);
   await Purchases.setSimulatesAskToBuyInSandbox(true);
-  await Purchases.setFinishTransactions(true);
   await Purchases.setAllowSharingStoreAccount(true);
 
   const configured: boolean = await Purchases.isConfigured();
+}
+
+async function checkRecordPurchase() {
+  await Purchases.recordPurchase("productID");
 }
 
 async function checkLogLevel() {
@@ -252,6 +311,22 @@ async function checkBeginRefundRequest(
     await Purchases.beginRefundRequestForEntitlement(entitlementInfo);
   const refundStatus3: REFUND_REQUEST_STATUS =
     await Purchases.beginRefundRequestForProduct(storeProduct);
+}
+
+async function checkSyncAmazonPurchase(
+  productID: string,
+  receiptID: string,
+  amazonUserID: string,
+  isoCurrencyCode?: string | null,
+  price?: number | null
+): Promise<void> {
+  return Purchases.syncAmazonPurchase(
+    productID,
+    receiptID,
+    amazonUserID,
+    isoCurrencyCode,
+    price
+  );
 }
 
 async function checkSyncObserverModeAmazonPurchase(

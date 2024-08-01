@@ -21,6 +21,7 @@ import {
   RECURRENCE_MODE,
   PresentedOfferingContext,
   PresentedOfferingTargetingContext,
+  InstallmentsInfo,
 } from "../dist";
 
 function checkProduct(product: PurchasesStoreProduct) {
@@ -124,6 +125,15 @@ function checkSubscriptionOption(option: SubscriptionOption) {
     option.presentedOfferingIdentifier;
   const presentedOfferingContext: PresentedOfferingContext | null =
     option.presentedOfferingContext;
+  const installmentsInfo: InstallmentsInfo | null =
+    option.installmentsInfo;
+}
+
+function checkInstallmentsInfo(installmentsInfo: InstallmentsInfo) {
+  const commitmentPaymentsCount: number =
+    installmentsInfo.commitmentPaymentsCount;
+  const renewalCommitmentPaymentsCount: number =
+    installmentsInfo.renewalCommitmentPaymentsCount;
 }
 
 function checkPricingPhase(pricePhase: PricingPhase) {

@@ -42,9 +42,18 @@ const App = () => {
     if (Platform.OS == "android") {
       const useAmazon = false;
       if (useAmazon) {
-        Purchases.configure({apiKey: APIKeys.amazon, useAmazon: true, entitlementVerificationMode: verificationMode});
+        Purchases.configure({
+          apiKey: APIKeys.amazon,
+          useAmazon: true,
+          entitlementVerificationMode: verificationMode,
+          pendingTransactionsForPrepaidPlansEnabled: true
+        });
       } else {
-        Purchases.configure({apiKey: APIKeys.google, entitlementVerificationMode: verificationMode});
+        Purchases.configure({
+          apiKey: APIKeys.google,
+          entitlementVerificationMode: verificationMode,
+          pendingTransactionsForPrepaidPlansEnabled: true
+        });
       }
     } else {
       Purchases.configure({apiKey: APIKeys.apple, entitlementVerificationMode: verificationMode});
