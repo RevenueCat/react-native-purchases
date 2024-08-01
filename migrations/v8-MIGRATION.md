@@ -17,9 +17,24 @@ This release raises the minumum required OS versions to the following:
 - macOS 10.15
 - Android: SDK 21 (Android 5.0)
 
+### In-App Purchase Key Required for StoreKit 2
+
+In order to use StoreKit 2, you must configure your In-App Purchase Key in the RevenueCat dashboard. You can find instructions describing how to do this [here](https://www.revenuecat.com/docs/in-app-purchase-key-configuration).
+
+### `usesStoreKit2IfAvailable` is now `storeKitVersion`
+
+When configuring the SDK, the `usesStoreKit2IfAvailable` parameter has been replaced by an optional `storeKitVersion: STOREKIT_VERSION` parameter. It defaults to letting the iOS SDK determine the most appropriate version of StoreKit at runtime. If you'd like to use a specific version of StoreKit, you may provide a value for `storeKitVersion` like so:
+
+```typescript
+Purchases.configure({
+    apiKey,
+    STOREKIT_VERSION.STOREKIT_1,
+});
+```
+
 ### Observer Mode is now PurchasesAreCompletedBy
 
-Version 8.0 of the SDK deprecates the term "Observer Mode" (and the APIs where this term was used), and replaces it with PurchasesAreCompletedBy (either RevenueCat or your app). When specifying that your app will complete purchases, you must provide the StoreKit version that your app is using to make purchases on iOS. If your app is only available on Android, you may provide any value since the native Android SDK ignores this value.
+Version 8.0 of the SDK deprecates the term "Observer Mode" (and the APIs where this term was used), and replaces it with `PurchasesAreCompletedBy` (either RevenueCat or your app). When specifying that your app will complete purchases, you must provide the StoreKit version that your app is using to make purchases on iOS. If your app is only available on Android, you may provide any value since the native Android SDK ignores this value.
 
 You can enable it when configuring the SDK:
 
@@ -52,7 +67,7 @@ Purchases.configure({
     appUserID,
     {
         type: PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
-        storeKitVersion: STOREKIT_VERSION.STOREKIT_2,
+        storeKitVersion: STOREKIT_VERSION.STOREKIT_1,
     },
 });
 ```
