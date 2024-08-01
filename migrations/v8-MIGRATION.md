@@ -54,7 +54,7 @@ Purchases.configure({
 By default, when purchases are completed by your app using StoreKit 2 on macOS, the SDK does not detect a user's purchase until after the user foregrounds the app after the purchase has been made. If you'd like RevenueCat to immediately detect the user's purchase, call `Purchases.recordPurchase(productID)` for any new purchases, like so:
 
 ```typescript
-Purchases.recordPurchase(productID);
+await Purchases.recordPurchase(productID);
 ```
 
 #### Observing Purchases Completed by Your App with StoreKit 1
