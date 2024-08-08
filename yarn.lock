@@ -2557,6 +2557,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@revenuecat/purchases-typescript-internal@npm:13.0.1":
+  version: 13.0.1
+  resolution: "@revenuecat/purchases-typescript-internal@npm:13.0.1"
+  checksum: 958babf246925e76c9398454455a17c7c98cbbb38d9d2657d4abde1b9bd9d135758127507b5e91c9b9379dc062f3897a79abcf514f262e48649844353d6be506
+  languageName: node
+  linkType: hard
+
 "@sideway/address@npm:^4.1.5":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
@@ -7074,7 +7081,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.0.0
+    "@revenuecat/purchases-typescript-internal": 13.0.1
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
