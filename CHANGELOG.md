@@ -1,3 +1,11 @@
+## 8.0.1
+### Dependency Updates
+* Updates purchases-hybrid-common to 13.0.1 (#1063) via Mark Villacampa (@MarkVillacampa)
+  * [Android 8.4.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.4.0)
+  * [iOS 5.2.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.2.3)
+* Bump danger from 9.4.3 to 9.5.0 (#1058) via dependabot[bot] (@dependabot[bot])
+* Bump fast-xml-parser from 4.4.0 to 4.4.1 (#1051) via dependabot[bot] (@dependabot[bot])
+
 ## 8.0.0
 Welcome to version 8.0 of the React Native RevenueCat SDK! A full migration guide can be found [here](https://github.com/RevenueCat/react-native-purchases/blob/66d77607d1ce2f11dcb4954eac8cd5756d0ec211/migrations/v8-MIGRATION.md).
 
