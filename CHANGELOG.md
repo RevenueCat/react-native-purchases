@@ -1,3 +1,8 @@
+## 8.0.2
+### Dependency Updates
+* Bump rexml from 3.2.8 to 3.3.3 in /examples/purchaseTesterTypescript (#1066) via dependabot[bot] (@dependabot[bot])
+* Bump rexml from 3.2.9 to 3.3.3 (#1065) via dependabot[bot] (@dependabot[bot])
+
 ## 8.0.1
 ### Dependency Updates
 * Updates purchases-hybrid-common to 13.0.1 (#1063) via Mark Villacampa (@MarkVillacampa)
