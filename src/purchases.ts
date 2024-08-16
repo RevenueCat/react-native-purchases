@@ -269,7 +269,7 @@ export default class Purchases {
       if (storeKitVersionToUse === STOREKIT_VERSION.DEFAULT) {
         // tslint:disable-next-line:no-console
         console.warn(
-          "Warning: You should provide the specific StoreKit version you're using in your implementation when configuring PurchasesAreCompletedByMyApp, and not rely on the DEFAULT."
+          "Warning: You should provide the specific StoreKit version you're using in your implementation when configuring PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP, and not rely on the DEFAULT."
         );
       }
     }
