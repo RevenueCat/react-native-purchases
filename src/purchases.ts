@@ -253,13 +253,23 @@ export default class Purchases {
       purchasesCompletedByToUse = PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP;
       storeKitVersionToUse = purchasesAreCompletedBy.storeKitVersion;
 
-      if (storeKitVersionToUse !== storeKitVersion) {
+      if (
+        storeKitVersion !== STOREKIT_VERSION.DEFAULT &&
+        storeKitVersionToUse !== storeKitVersion
+      ) {
         // Typically, console messages aren't used in TS libraries, but in this case it's worth calling out the difference in
         // StoreKit versions, and since the difference isn't possible farther down the call chain, we should go ahead
         // and log it here.
         // tslint:disable-next-line:no-console
         console.warn(
           "Warning: The storeKitVersion in purchasesAreCompletedBy does not match the function's storeKitVersion parameter. We will use the value found in purchasesAreCompletedBy."
+        );
+      }
+
+      if (storeKitVersionToUse === STOREKIT_VERSION.DEFAULT) {
+        // tslint:disable-next-line:no-console
+        console.warn(
+          "Warning: You should provide the specific StoreKit version you're using in your implementation when configuring PurchasesAreCompletedByMyApp, and not rely on the DEFAULT."
         );
       }
     }
