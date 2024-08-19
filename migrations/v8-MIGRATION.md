@@ -9,7 +9,7 @@ This latest release updates the Android SDK dependency from v7 to [v8](https://g
 
 ### New Minimum OS Versions
 
-This release raises the minumum required OS versions to the following:
+This release raises the minimum required OS versions to the following:
 
 - iOS 13.0
 - tvOS 13.0
