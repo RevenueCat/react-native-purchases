@@ -32,15 +32,24 @@ import {
   IN_APP_MESSAGE_TYPE,
   ENTITLEMENT_VERIFICATION_MODE,
   VERIFICATION_RESULT,
+  STOREKIT_VERSION,
+  PurchasesStoreTransaction,
   PurchasesOffering,
+  PURCHASES_ARE_COMPLETED_BY_TYPE,
+  PurchasesAreCompletedBy,
+  PurchasesAreCompletedByMyApp,
 } from "@revenuecat/purchases-typescript-internal";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
   PURCHASE_TYPE,
+  PurchasesAreCompletedBy,
+  PurchasesAreCompletedByMyApp,
+  PURCHASES_ARE_COMPLETED_BY_TYPE,
   BILLING_FEATURE,
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
+  STOREKIT_VERSION,
   PurchasesConfiguration,
   CustomerInfoUpdateListener,
   ShouldPurchasePromoProductListener,
@@ -172,6 +181,21 @@ export default class Purchases {
   public static VERIFICATION_RESULT = VERIFICATION_RESULT;
 
   /**
+   * Enum of StoreKit version.
+   * @readonly
+   * @enum {string}
+   */
+  public static STOREKIT_VERSION = STOREKIT_VERSION;
+
+  /**
+   * Enum of PurchasesAreCompletedByType.
+   * @readonly
+   * @enum {string}
+   */
+  public static PURCHASES_ARE_COMPLETED_BY_TYPE =
+    PURCHASES_ARE_COMPLETED_BY_TYPE;
+
+  /**
    * @internal
    */
   public static UninitializedPurchasesError = UninitializedPurchasesError;
@@ -185,24 +209,27 @@ export default class Purchases {
    * Sets up Purchases with your API key and an app user id.
    * @param {String} apiKey RevenueCat API Key. Needs to be a String
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
-   * @param {boolean} [observerMode=false] An optional boolean. Set this to TRUE if you have your own IAP implementation and want to use only RevenueCat's backend. Default is FALSE.
-   * @param {boolean} [usesStoreKit2IfAvailable=false] DEPRECATED. An optional boolean. iOS-only. Defaults to FALSE. Setting this to TRUE will enable StoreKit2 on compatible devices.
-   * We recommend not using this parameter, letting RevenueCat decide for you which StoreKit implementation to use.
+   * @param {PurchasesAreCompletedBy} [purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT] Set this to an instance of PurchasesAreCompletedByMyApp if you have your own IAP implementation and want to use only RevenueCat's backend. Default is PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT.
+   * @param {STOREKIT_VERSION} [storeKitVersion=DEFAULT] iOS-only. Defaults to STOREKIT_2. StoreKit 2 is only available on iOS 16+. StoreKit 1 will be used for previous iOS versions regardless of this setting.
    * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode=ENTITLEMENT_VERIFICATION_MODE.DISABLED] Sets the entitlement verifciation mode to use. For more details, check https://rev.cat/trusted-entitlements
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
    * Default is null, which will make the SDK use standardUserDefaults.
+   * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to TRUE to enable pending transactions for prepaid subscriptions in Google Play.
+   *
+   * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
   public static configure({
     apiKey,
     appUserID = null,
-    observerMode = false,
+    purchasesAreCompletedBy = PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
     userDefaultsSuiteName,
-    usesStoreKit2IfAvailable = false,
+    storeKitVersion = STOREKIT_VERSION.DEFAULT,
     useAmazon = false,
     shouldShowInAppMessagesAutomatically = true,
     entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
+    pendingTransactionsForPrepaidPlansEnabled = false,
   }: PurchasesConfiguration): void {
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error(
@@ -218,15 +245,45 @@ export default class Purchases {
       throw new Error("appUserID needs to be a string");
     }
 
+    let purchasesCompletedByToUse: PURCHASES_ARE_COMPLETED_BY_TYPE =
+      PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
+    let storeKitVersionToUse = storeKitVersion;
+
+    if (Purchases.isPurchasesAreCompletedByMyApp(purchasesAreCompletedBy)) {
+      purchasesCompletedByToUse = PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP;
+      storeKitVersionToUse = purchasesAreCompletedBy.storeKitVersion;
+
+      if (
+        storeKitVersion !== STOREKIT_VERSION.DEFAULT &&
+        storeKitVersionToUse !== storeKitVersion
+      ) {
+        // Typically, console messages aren't used in TS libraries, but in this case it's worth calling out the difference in
+        // StoreKit versions, and since the difference isn't possible farther down the call chain, we should go ahead
+        // and log it here.
+        // tslint:disable-next-line:no-console
+        console.warn(
+          "Warning: The storeKitVersion in purchasesAreCompletedBy does not match the function's storeKitVersion parameter. We will use the value found in purchasesAreCompletedBy."
+        );
+      }
+
+      if (storeKitVersionToUse === STOREKIT_VERSION.DEFAULT) {
+        // tslint:disable-next-line:no-console
+        console.warn(
+          "Warning: You should provide the specific StoreKit version you're using in your implementation when configuring PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP, and not rely on the DEFAULT."
+        );
+      }
+    }
+
     RNPurchases.setupPurchases(
       apiKey,
       appUserID,
-      observerMode,
+      purchasesCompletedByToUse,
       userDefaultsSuiteName,
-      usesStoreKit2IfAvailable,
+      storeKitVersionToUse,
       useAmazon,
       shouldShowInAppMessagesAutomatically,
-      entitlementVerificationMode
+      entitlementVerificationMode,
+      pendingTransactionsForPrepaidPlansEnabled
     );
   }
 
@@ -243,18 +300,6 @@ export default class Purchases {
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
-  }
-
-  /**
-   * @param {boolean} finishTransactions Set finishTransactions to false if you aren't using Purchases SDK to
-   * make the purchase
-   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
-   */
-  public static async setFinishTransactions(
-    finishTransactions: boolean
-  ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
-    RNPurchases.setFinishTransactions(finishTransactions);
   }
 
   /**
@@ -713,6 +758,40 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * syncing purchases.
    */
+  public static async syncAmazonPurchase(
+    productID: string,
+    receiptID: string,
+    amazonUserID: string,
+    isoCurrencyCode?: string | null,
+    price?: number | null
+  ): Promise<void> {
+    await Purchases.throwIfIOSPlatform();
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.syncAmazonPurchase(
+      productID,
+      receiptID,
+      amazonUserID,
+      isoCurrencyCode,
+      price
+    );
+  }
+
+  /**
+   * @deprecated, use syncAmazonPurchase instead.
+   *
+   * This method will send a purchase to the RevenueCat backend. This function should only be called if you are
+   * in Amazon observer mode or performing a client side migration of your current users to RevenueCat.
+   *
+   * The receipt IDs are cached if successfully posted so they are not posted more than once.
+   *
+   * @param {string} productID Product ID associated to the purchase.
+   * @param {string} receiptID ReceiptId that represents the Amazon purchase.
+   * @param {string} amazonUserID Amazon's userID. This parameter will be ignored when syncing a Google purchase.
+   * @param {(string|null|undefined)} isoCurrencyCode Product's currency code in ISO 4217 format.
+   * @param {(number|null|undefined)} price Product's price.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * syncing purchases.
+   */
   public static async syncObserverModeAmazonPurchase(
     productID: string,
     receiptID: string,
@@ -732,17 +811,26 @@ export default class Purchases {
   }
 
   /**
-   * @deprecated, use enableAdServicesAttributionTokenCollection instead.
-   * Enable automatic collection of Apple Search Ad attribution. Disabled by default
-   * @param {boolean} enabled Enable or not automatic apple search ads attribution collection
-   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
+   * iOS only. Always returns an error on iOS < 15.
+   *
+   * Use this method only if you already have your own IAP implementation using StoreKit 2 and want to use
+   * RevenueCat's backend. If you are using StoreKit 1 for your implementation, you do not need this method.
+   *
+   * You only need to use this method with *new* purchases. Subscription updates are observed automatically.
+   *
+   * Important: This should only be used if you have set PurchasesAreCompletedBy to MY_APP during SDK configuration.
+   *
+   * @warning You need to finish the transaction yourself after calling this method.
+   *
+   * @param {string} productID Product ID that was just purchased
+   * @returns {Promise<PurchasesStoreTransaction>} If there was a transacton found and handled for the provided product ID.
    */
-  public static async setAutomaticAppleSearchAdsAttributionCollection(
-    enabled: boolean
-  ): Promise<void> {
-    if (Platform.OS === "ios") {
-      RNPurchases.setAutomaticAppleSearchAdsAttributionCollection(enabled);
-    }
+  public static async recordPurchase(
+    productID: string
+  ): Promise<PurchasesStoreTransaction> {
+    await Purchases.throwIfAndroidPlatform();
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.recordPurchaseForProductID(productID);
   }
 
   /**
@@ -1280,6 +1368,17 @@ export default class Purchases {
     if (Platform.OS === "ios") {
       throw new UnsupportedPlatformError();
     }
+  }
+
+  private static isPurchasesAreCompletedByMyApp(
+    obj: PurchasesAreCompletedBy
+  ): obj is PurchasesAreCompletedByMyApp {
+    return (
+      typeof obj === "object" &&
+      obj !== null &&
+      (obj as PurchasesAreCompletedByMyApp).type ===
+        PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP
+    );
   }
 
   private static convertIntToRefundRequestStatus(

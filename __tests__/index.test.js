@@ -1,6 +1,8 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
-const {REFUND_REQUEST_STATUS} = require("../dist/purchases");
+const {
+  PURCHASES_ARE_COMPLETED_BY_TYPE, REFUND_REQUEST_STATUS, STOREKIT_VERSION
+} = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
 
@@ -578,42 +580,52 @@ describe("Purchases", () => {
     const defaultVerificationMode = "DISABLED"
 
     Purchases.configure({apiKey: "key", appUserID: "user"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, undefined, false, false, true, defaultVerificationMode);
-
-    Purchases.configure({apiKey: "key", appUserID: "user", observerMode: true});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, undefined, false, false, true, defaultVerificationMode);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: false,
-      userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true
+      purchasesAreCompletedBy: {
+        type: PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+        storeKitVersion: STOREKIT_VERSION.STOREKIT_1,
+      },
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", false, "suite name", true, false, true, defaultVerificationMode);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "STOREKIT_1", false, true, defaultVerificationMode, false);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: true,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true,
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
+    });
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", false, true, defaultVerificationMode, false);
+
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
+      userDefaultsSuiteName: "suite name",
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
       shouldShowInAppMessagesAutomatically: true,
-      entitlementVerificationMode: Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL
+      entitlementVerificationMode:
+        Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
+      pendingTransactionsForPrepaidPlansEnabled: true,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true);
 
     Purchases.configure({
       apiKey: "key",
       appUserID: "user",
-      observerMode: true,
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
       userDefaultsSuiteName: "suite name",
-      usesStoreKit2IfAvailable: true,
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
       useAmazon: true,
-      shouldShowInAppMessagesAutomatically: false
+      shouldShowInAppMessagesAutomatically: false,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", true, "suite name", true, true, false, defaultVerificationMode);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(5);
   })
@@ -686,22 +698,22 @@ describe("Purchases", () => {
     Platform.OS = "android";
 
     await Purchases.syncObserverModeAmazonPurchase(
-      'productID_test',
-      'receiptID_test',
-      'amazonUserID_test',
-      'isoCurrencyCode_test',
-      3.4,
+      "productID_test",
+      "receiptID_test",
+      "amazonUserID_test",
+      "isoCurrencyCode_test",
+      3.4
     );
 
     expect(NativeModules.RNPurchases.syncObserverModeAmazonPurchase).toBeCalledTimes(1);
     expect(NativeModules.RNPurchases.syncObserverModeAmazonPurchase).toBeCalledWith(
-      'productID_test',
-      'receiptID_test',
-      'amazonUserID_test',
-      'isoCurrencyCode_test',
+      "productID_test",
+      "receiptID_test",
+      "amazonUserID_test",
+      "isoCurrencyCode_test",
       3.4
     );
-  })
+  });
 
   it("syncObserverModeAmazonPurchase throws UninitializedError if called before configuring", async () => {
     Platform.OS = "android";
@@ -710,32 +722,32 @@ describe("Purchases", () => {
 
     const expected = new Purchases.UninitializedPurchasesError();
 
-
     await Purchases.syncObserverModeAmazonPurchase(
-      'productID_test',
-      'receiptID_test',
-      'amazonUserID_test',
-      'isoCurrencyCode_test',
-      3.4,
-    ).then(() => {
-      fail(`${allPropertyNames[i]} should have failed`);
-    }).catch(error => {
-      expect(error.name).toEqual(expected.name);
-      expect(error.message).toEqual(expected.message);
-    });
+      "productID_test",
+      "receiptID_test",
+      "amazonUserID_test",
+      "isoCurrencyCode_test",
+      3.4
+    )
+      .then(() => {
+        fail(`${allPropertyNames[i]} should have failed`);
+      })
+      .catch((error) => {
+        expect(error.name).toEqual(expected.name);
+        expect(error.message).toEqual(expected.message);
+      });
   });
-
 
   it("syncObserverModeAmazonPurchase throws UnsupportedPlatformError for ios", async () => {
     Platform.OS = "ios";
 
     try {
       await Purchases.syncObserverModeAmazonPurchase(
-        'productID_test',
-        'receiptID_test',
-        'amazonUserID_test',
-        'isoCurrencyCode_test',
-        3.4,
+        "productID_test",
+        "receiptID_test",
+        "amazonUserID_test",
+        "isoCurrencyCode_test",
+        3.4
       );
       fail("expected error");
     } catch (error) {
@@ -743,17 +755,70 @@ describe("Purchases", () => {
         fail("expected UnsupportedPlatformException");
       }
     }
+  });
+
+  it("syncAmazonPurchase works for android", async () => {
+    Platform.OS = "android";
+
+    await Purchases.syncAmazonPurchase(
+      "productID_test",
+      "receiptID_test",
+      "amazonUserID_test",
+      "isoCurrencyCode_test",
+      3.4
+    );
+
+    expect(NativeModules.RNPurchases.syncAmazonPurchase).toBeCalledTimes(1);
+    expect(NativeModules.RNPurchases.syncAmazonPurchase).toBeCalledWith(
+      "productID_test",
+      "receiptID_test",
+      "amazonUserID_test",
+      "isoCurrencyCode_test",
+      3.4
+    );
   })
 
-  it("finishTransactions works", async () => {
-    await Purchases.setFinishTransactions(true);
-    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(true);
+  it("syncAmazonPurchase throws UninitializedError if called before configuring", async () => {
+    Platform.OS = "android";
 
-    await Purchases.setFinishTransactions(false);
-    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledWith(false);
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
 
-    expect(NativeModules.RNPurchases.setFinishTransactions).toBeCalledTimes(2);
-  })
+    const expected = new Purchases.UninitializedPurchasesError();
+
+    await Purchases.syncAmazonPurchase(
+      "productID_test",
+      "receiptID_test",
+      "amazonUserID_test",
+      "isoCurrencyCode_test",
+      3.4
+    )
+      .then(() => {
+        fail(`${allPropertyNames[i]} should have failed`);
+      })
+      .catch((error) => {
+        expect(error.name).toEqual(expected.name);
+        expect(error.message).toEqual(expected.message);
+      });
+  });
+
+  it("syncAmazonPurchase throws UnsupportedPlatformError for ios", async () => {
+    Platform.OS = "ios";
+
+    try {
+      await Purchases.syncAmazonPurchase(
+        "productID_test",
+        "receiptID_test",
+        "amazonUserID_test",
+        "isoCurrencyCode_test",
+        3.4
+      );
+      fail("expected error");
+    } catch (error) {
+      if (!(error instanceof UnsupportedPlatformError)) {
+        fail("expected UnsupportedPlatformException");
+      }
+    }
+  });
 
   it("checkTrialOrIntroductoryPriceEligibility works", async () => {
     await Purchases.checkTrialOrIntroductoryPriceEligibility(["monthly"])
@@ -1035,9 +1100,11 @@ describe("Purchases", () => {
       "throwIfIOSPlatform",
       "convertIntToRefundRequestStatus",
       "isConfigured",
-      "setProxyURL"
+      "setProxyURL",
+      "isPurchasesAreCompletedByMyApp",
     ];
     const functionsThatRequireAndroidAndInstance = [
+      "syncAmazonPurchase",
       "syncObserverModeAmazonPurchase",
     ];
     const expected = new Purchases.UninitializedPurchasesError();

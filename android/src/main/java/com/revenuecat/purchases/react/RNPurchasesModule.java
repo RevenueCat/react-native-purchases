@@ -47,7 +47,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "7.28.1";
+    public static final String PLUGIN_VERSION = "8.0.1";
 
     private final ReactApplicationContext reactContext;
 
@@ -83,10 +83,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setupPurchases(String apiKey, @Nullable String appUserID,
-                               boolean observerMode, @Nullable String userDefaultsSuiteName,
-                               @Nullable Boolean usesStoreKit2IfAvailable, boolean useAmazon,
+                               @Nullable String purchasesAreCompletedBy, @Nullable String userDefaultsSuiteName,
+                               @Nullable String storeKitVersion, boolean useAmazon,
                                boolean shouldShowInAppMessagesAutomatically,
-                               @Nullable String entitlementVerificationMode) {
+                               @Nullable String entitlementVerificationMode,
+                               boolean pendingTransactionsForPrepaidPlansEnabled) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
@@ -96,12 +97,13 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             reactContext,
             apiKey,
             appUserID,
-            observerMode ? PurchasesAreCompletedBy.MY_APP : PurchasesAreCompletedBy.REVENUECAT,
+            purchasesAreCompletedBy,
             platformInfo,
             store,
             new DangerousSettings(),
             shouldShowInAppMessagesAutomatically,
-            entitlementVerificationMode
+            entitlementVerificationMode,
+            pendingTransactionsForPrepaidPlansEnabled
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }
@@ -273,12 +275,6 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void getCustomerInfo(final Promise promise) {
         CommonKt.getCustomerInfo(getOnResult(promise));
-    }
-
-    @ReactMethod
-    public void setFinishTransactions(boolean enabled) {
-        CommonKt.setPurchasesAreCompletedBy(enabled ?
-          PurchasesAreCompletedBy.REVENUECAT : PurchasesAreCompletedBy.MY_APP);
     }
 
     @ReactMethod
@@ -463,13 +459,22 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void syncObserverModeAmazonPurchase(String productID, String receiptID,
+    public void syncAmazonPurchase(String productID, String receiptID,
                                                String amazonUserID, String isoCurrencyCode,
                                                Double price, final Promise promise) {
-      Purchases.getSharedInstance().syncObserverModeAmazonPurchase(productID, receiptID,
+      Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
         amazonUserID, isoCurrencyCode, price);
       promise.resolve(null);
     }
+
+    @ReactMethod
+    @Deprecated // Use syncAmazonPurchase instead
+    public void syncObserverModeAmazonPurchase(String productID, String receiptID,
+                                            String amazonUserID, String isoCurrencyCode,
+                                            Double price, final Promise promise) {
+        syncAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price, promise);
+    }
+
 
     @ReactMethod
     public void showInAppMessages(ReadableArray messageTypes, final Promise promise) {
