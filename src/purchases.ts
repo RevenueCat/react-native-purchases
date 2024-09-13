@@ -288,9 +288,11 @@ export default class Purchases {
   }
 
   /**
-   * @deprecated, configure behavior through the RevenueCat dashboard instead.
+   * @deprecated, configure behavior through the RevenueCat dashboard (app.revenuecat.com) instead.
    * If an user tries to purchase a product that is active on the current app store account,
    * we will treat it as a restore and alias the new ID with the previous id.
+   * If you have configured the Legacy restore behavior in the RevenueCat dashboard
+   * and are currently setting this to true, keep this setting active.
    * @param {boolean} allowSharing Set this to true if you are passing in an appUserID but it is anonymous,
    * this is true by default if you didn't pass an appUserID
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
