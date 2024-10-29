@@ -455,6 +455,10 @@ export default class Purchases {
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
+    console.log("Calling purchaseProduct");
+    console.log("ProductIdentifier: ", productIdentifier);
+    console.log("UpgradeInfo: ", upgradeInfo);
+    console.log("Type: ", type);
     return RNPurchases.purchaseProduct(
       productIdentifier,
       upgradeInfo,
@@ -489,6 +493,10 @@ export default class Purchases {
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
+    console.log("Calling purchaseStoreProduct");
+    console.log("Product: ", product);
+    console.log("GoogleProductChangeInfo: ", googleProductChangeInfo);
+    console.log("GoogleIsPersonalizedPrice: ", googleIsPersonalizedPrice);
     return RNPurchases.purchaseProduct(
       product.identifier,
       googleProductChangeInfo,

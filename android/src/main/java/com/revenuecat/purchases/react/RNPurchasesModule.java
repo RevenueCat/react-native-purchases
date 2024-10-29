@@ -19,7 +19,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.CustomerInfo;
 import com.revenuecat.purchases.DangerousSettings;
 import com.revenuecat.purchases.Purchases;
-import com.revenuecat.purchases.PurchasesAreCompletedBy;
 import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
@@ -160,15 +159,23 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final ReadableMap googleInfo,
                                 @Nullable final ReadableMap presentedOfferingContext,
                                 final Promise promise) {
+        Log.w("PURCHASES", "purchaseProduct called with:");
+        Log.w("PURCHASES", "ProductIdentifier: " + productIdentifier);
+        Log.w("PURCHASES", "GoogleProductChangeInfo: " + googleProductChangeInfo);
+        Log.w("PURCHASES", "Type: " + type);
+        Log.w("PURCHASES", "DiscountTimestamp: " + discountTimestamp);
+        Log.w("PURCHASES", "GoogleInfo: " + googleInfo);
+        Log.w("PURCHASES", "PresentedOfferingContext: " + presentedOfferingContext);
         GoogleUpgradeInfo googleUpgradeInfo = getUpgradeInfo(googleProductChangeInfo);
-
+        Log.w("PURCHASES", "GoogleUpgradeInfo: " + googleUpgradeInfo);
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
+        Log.w("PURCHASES", "GoogleIsPersonalized: " + googleIsPersonalized);
 
         Map<String, Object> mapPresentedOfferingContext = null;
         if (presentedOfferingContext != null) {
             mapPresentedOfferingContext = presentedOfferingContext.toHashMap();
         }
-
+        Log.w("PURCHASES", "MapPresentedOfferingContext: " + mapPresentedOfferingContext);
         CommonKt.purchaseProduct(
             getCurrentActivity(),
             productIdentifier,
@@ -179,6 +186,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             googleIsPersonalized,
             mapPresentedOfferingContext,
             getOnResult(promise));
+        Log.w("PURCHASES", "purchaseProduct finished");
     }
 
     @ReactMethod
