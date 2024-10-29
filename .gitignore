@@ -73,7 +73,7 @@ report.xml
 fastlane/.env
 
 # TypeScript
-dist/
+# dist/
 
 # CircleCI folders
 vendor/
