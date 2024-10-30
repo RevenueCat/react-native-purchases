@@ -25,11 +25,16 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
             }
 
             private val measureAndLayout = Runnable {
-                measure(
-                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-                )
-                layout(left, top, right, bottom)
+                // It's possible the view has been detached at this point which can cause issues
+                // since the viewModel is not available anymore. We don't really need to remeasure
+                // in this case.
+                if (isAttachedToWindow) {
+                    measure(
+                        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+                    )
+                    layout(left, top, right, bottom)
+                }
             }
 
             // This is needed so it measures correctly the size of the children and react native can
