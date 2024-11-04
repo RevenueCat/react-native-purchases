@@ -2550,10 +2550,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:13.7.0":
-  version: 13.7.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:13.7.0"
-  checksum: fdcdd0872abd3faf6e6acf481a040ce9f61d76cc99cf16052ab794fb832e6afd64d40076deeee969dc99b6c5b829a026033ea69b1b651fad0af936bb9d0b90d2
+"@revenuecat/purchases-typescript-internal@npm:13.8.0":
+  version: 13.8.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:13.8.0"
+  checksum: f5f390eb0508bba9657a874ac45d160f01355b95b98159373cfe117a31003467b35a6e30615ffb7465ae45ffa6b9f407eeb5aca7527c391e4d6f1597adf1a1fa
   languageName: node
   linkType: hard
 
@@ -7054,7 +7054,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.7.0
+    "@revenuecat/purchases-typescript-internal": 13.8.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -7081,7 +7081,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.7.0
+    "@revenuecat/purchases-typescript-internal": 13.8.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
