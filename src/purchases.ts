@@ -907,7 +907,8 @@ export default class Purchases {
   }
 
   /**
-   * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
+   * iOS only. Use this function to retrieve the eligible `PurchasesWinBackOffer`s that a subscriber
+   * is eligible for for a given `PurchasesProduct`.
    *
    * @param product The `PurchasesStoreProduct` the user intends to purchase.
    * @returns { Promise<[PurchasesWinBackOffer]> } Returns an array of win-back offers that the subscriber is eligible for.
@@ -928,7 +929,8 @@ export default class Purchases {
   }
 
   /**
-   * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
+   * iOS only. Use this function to retrieve the eligible `PurchasesWinBackOffer`s that a subscriber
+   * is eligible for for a given `PurchasesPackage`.
    *
    * @param aPackage The `PurchasesPackage` the user intends to purchase.
    * @returns { Promise<[PurchasesWinBackOffer]> } Returns an array of win-back offers that the subscriber is eligible for.
