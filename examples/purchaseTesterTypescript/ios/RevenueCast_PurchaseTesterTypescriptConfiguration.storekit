@@ -1,4 +1,14 @@
 {
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
   "identifier" : "3B56BC8C",
   "nonRenewingSubscriptions" : [
 
@@ -51,7 +61,60 @@
     }
   ],
   "settings" : {
-
+    "_compatibilityTimeRate" : {
+      "3" : 6
+    },
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ],
+    "_timeRate" : 1002
   },
   "subscriptionGroups" : [
     {
@@ -63,6 +126,9 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
 
           ],
           "displayPrice" : "",
@@ -81,10 +147,16 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Test Increase 29.99 -> 49.99",
           "subscriptionGroupID" : "D833F705",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
 
           ],
           "displayPrice" : "",
@@ -103,13 +175,19 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly $10.99",
           "subscriptionGroupID" : "D833F705",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
 
           ],
-          "displayPrice" : "",
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "9D3DBCD0",
@@ -125,10 +203,23 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly $4.99, 1-week free",
           "subscriptionGroupID" : "D833F705",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+            {
+              "internalID" : "36CBE933",
+              "isEligible" : true,
+              "offerID" : "winback.1w0",
+              "paymentMode" : "free",
+              "referenceName" : "1w0",
+              "subscriptionPeriod" : "P1W"
+            }
+          ]
         },
         {
           "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
 
           ],
           "displayPrice" : "",
@@ -147,7 +238,45 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Annual $39.99, 2-weeks free",
           "subscriptionGroupID" : "D833F705",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "20B5D81E",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Testing winback offers",
+              "displayName" : "Winback Test Product",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "winbackTesting",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Winback Testing Product",
+          "subscriptionGroupID" : "D833F705",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+            {
+              "internalID" : "D324A8BC",
+              "isEligible" : true,
+              "offerID" : "winback.1m0",
+              "paymentMode" : "free",
+              "referenceName" : "1m0 Winback",
+              "subscriptionPeriod" : "P1M"
+            }
+          ]
         }
       ]
     },
@@ -160,6 +289,9 @@
       "subscriptions" : [
         {
           "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
 
           ],
           "displayPrice" : "",
@@ -178,13 +310,16 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Annual $39.99, 1-week free",
           "subscriptionGroupID" : "CAB34497",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         }
       ]
     }
   ],
   "version" : {
-    "major" : 1,
-    "minor" : 1
+    "major" : 4,
+    "minor" : 0
   }
 }

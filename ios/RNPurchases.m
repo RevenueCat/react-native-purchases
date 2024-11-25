@@ -246,6 +246,69 @@ static void logUnavailablePresentCodeRedemptionSheet() {
     NSLog(@"[Purchases] Warning: tried to present codeRedemptionSheet, but it's only available on iOS 14.0 or greater.");
 }
 
+#pragma mark - Win-Back getOfferings
+RCT_EXPORT_METHOD(eligibleWinBackOffersForProductIdentifier:(nonnull NSString *)productID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
+        [RCCommonFunctionality eligibleWinBackOffersForProductIdentifier:productID
+                                                         completionBlock:^(NSArray<NSDictionary *> * _Nullable offers, RCErrorContainer * _Nullable errorContainer) {
+            if (errorContainer) {
+                reject(
+                    [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
+                    errorContainer.message,
+                    errorContainer.error
+                );
+            } else {
+                resolve(offers ?: @[]);
+            }
+        }];
+    } else {
+        NSString *description = @"iOS win-back offers are only available on iOS 18.0 or greater.";
+        NSError *error = [[NSError alloc] initWithDomain:@"RCPurchasesErrorCodeDomain"
+                                                    code:RCUnsupportedError
+                                                userInfo:@{NSLocalizedDescriptionKey: description}];
+        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    }
+}
+
+RCT_EXPORT_METHOD(purchaseProductWithWinBackOffer:(nonnull NSString *)productID
+                                   winBackOfferID:(nonnull NSString *)winBackOfferID
+                                          resolve:(RCTPromiseResolveBlock)resolve
+                                           reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
+        [RCCommonFunctionality purchaseProduct:productID
+                                winBackOfferID:winBackOfferID
+                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    } else {
+        NSString *description = @"iOS win-back offers are only available on iOS 18.0 or greater.";
+        NSError *error = [[NSError alloc] initWithDomain:@"RCPurchasesErrorCodeDomain"
+                                                    code:RCUnsupportedError
+                                                userInfo:@{NSLocalizedDescriptionKey: description}];
+        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    }
+}
+
+RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
+                         presentedOfferingContext:(NSDictionary *)presentedOfferingContext
+                                   winBackOfferID:(nonnull NSString *)winBackOfferID
+                                          resolve:(RCTPromiseResolveBlock)resolve
+                                           reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
+        [RCCommonFunctionality purchasePackage:packageID
+                      presentedOfferingContext:presentedOfferingContext
+                                winBackOfferID:winBackOfferID
+                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    } else {
+        NSString *description = @"iOS win-back offers are only available on iOS 18.0 or greater.";
+        NSError *error = [[NSError alloc] initWithDomain:@"RCPurchasesErrorCodeDomain"
+                                                    code:RCUnsupportedError
+                                                userInfo:@{NSLocalizedDescriptionKey: description}];
+        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    }
+}
+
+
 #pragma mark - Subscriber Attributes
 
 RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString

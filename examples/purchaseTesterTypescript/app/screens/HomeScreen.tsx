@@ -292,6 +292,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.otherActions}>Present paywall</Text>
           </TouchableOpacity>
         </View>
+
+        <Divider />
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('WinBackTesting', {})}>
+            <Text style={styles.otherActions}>Win-Back Offer Testing</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

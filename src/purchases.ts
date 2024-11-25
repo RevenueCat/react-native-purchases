@@ -38,6 +38,7 @@ import {
   PURCHASES_ARE_COMPLETED_BY_TYPE,
   PurchasesAreCompletedBy,
   PurchasesAreCompletedByMyApp,
+  PurchasesWinBackOffer,
 } from "@revenuecat/purchases-typescript-internal";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
@@ -903,6 +904,117 @@ export default class Purchases {
       product.identifier,
       discount.identifier
     );
+  }
+
+  /**
+   * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
+   *
+   * @param product The `PurchasesStoreProduct` the user intends to purchase.
+   * @param discount The `PurchasesStoreProductDiscount` to apply to the product.
+   * @returns { Promise<PurchasesPromotionalOffer> } Returns when the `PurchasesPaymentDiscount` is returned.
+   * Null is returned for Android and incompatible iOS versions. The promise will be rejected if configure has not been
+   * called yet or if there's an error getting the payment discount.
+   */
+  public static async getEligibleWinBackOffersForProduct(
+    product: PurchasesStoreProduct
+  ): Promise<PurchasesWinBackOffer | undefined> {
+    await Purchases.throwIfNotConfigured();
+    if (Platform.OS === "android") {
+      return Promise.resolve(undefined);
+    }
+
+    return RNPurchases.eligibleWinBackOffersForProductIdentifier(
+      product.identifier
+    );
+  }
+
+  /**
+   * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
+   *
+   * @param product The `PurchasesStoreProduct` the user intends to purchase.
+   * @param discount The `PurchasesStoreProductDiscount` to apply to the product.
+   * @returns { Promise<PurchasesPromotionalOffer> } Returns when the `PurchasesPaymentDiscount` is returned.
+   * Null is returned for Android and incompatible iOS versions. The promise will be rejected if configure has not been
+   * called yet or if there's an error getting the payment discount.
+   */
+  public static async getEligibleWinBackOffersForPackage(
+    aPackage: PurchasesPackage
+  ): Promise<PurchasesWinBackOffer | undefined> {
+    await Purchases.throwIfNotConfigured();
+    if (Platform.OS === "android") {
+      return Promise.resolve(undefined);
+    }
+
+    return RNPurchases.eligibleWinBackOffersForProductIdentifier(
+      aPackage.product.identifier
+    );
+  }
+
+  /**
+   * iOS only. Purchase a product applying a given win-back offer.
+   *
+   * Only available on iOS 18.0+ when StoreKit 2 is enabled.
+   *
+   * @param {PurchasesStoreProduct} product The product you want to purchase
+   * @param {PurchasesWinBackOffer} winBackOffer Win-back offer to apply to this package. Retrieve this offer using getEligibleWinBackOffers.
+   * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
+   * a customer info object and a product identifier. Rejections return an error code,
+   * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will be
+   * rejected if configure has not been called yet.
+   */
+  public static async purchaseProductWithWinBackOffer(
+    product: PurchasesStoreProduct,
+    winBackOffer: PurchasesWinBackOffer
+  ): Promise<MakePurchaseResult> {
+    await Purchases.throwIfNotConfigured();
+    if (typeof winBackOffer === "undefined" || winBackOffer == null) {
+      throw new Error("A win-back offer is required");
+    }
+    if (Platform.OS === "android") {
+      throw new UnsupportedPlatformError();
+    }
+    return RNPurchases.purchaseProductWithWinBackOffer(
+      product.identifier,
+      winBackOffer.identifier
+    ).catch((error: PurchasesError) => {
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      throw error;
+    });
+  }
+
+  /**
+   * iOS only. Purchase a package applying a given win-back offer.
+   *
+   * Only available on iOS 18.0+ when StoreKit 2 is enabled.
+   *
+   * @param {PurchasesStoreProduct} product The product you want to purchase
+   * @param {PurchasesWinBackOffer} winBackOffer Win-back offer to apply to this package. Retrieve this offer using getEligibleWinBackOffers.
+   * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
+   * a customer info object and a product identifier. Rejections return an error code,
+   * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will be
+   * rejected if configure has not been called yet.
+   */
+  public static async purchasePackageWithWinBackOffer(
+    aPackage: PurchasesPackage,
+    winBackOffer: PurchasesWinBackOffer
+  ): Promise<MakePurchaseResult> {
+    await Purchases.throwIfNotConfigured();
+    if (typeof winBackOffer === "undefined" || winBackOffer == null) {
+      throw new Error("A win-back offer is required");
+    }
+    if (Platform.OS === "android") {
+      throw new UnsupportedPlatformError();
+    }
+    return RNPurchases.purchasePackageWithWinBackOffer(
+      aPackage.identifier,
+      aPackage.presentedOfferingContext,
+      winBackOffer.identifier
+    ).catch((error: PurchasesError) => {
+      error.userCancelled =
+        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+      throw error;
+    });
   }
 
   /**
