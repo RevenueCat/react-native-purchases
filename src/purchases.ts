@@ -910,14 +910,13 @@ export default class Purchases {
    * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
    *
    * @param product The `PurchasesStoreProduct` the user intends to purchase.
-   * @param discount The `PurchasesStoreProductDiscount` to apply to the product.
-   * @returns { Promise<PurchasesPromotionalOffer> } Returns when the `PurchasesPaymentDiscount` is returned.
+   * @returns { Promise<[PurchasesWinBackOffer]> } Returns an array of win-back offers that the subscriber is eligible for.
    * Null is returned for Android and incompatible iOS versions. The promise will be rejected if configure has not been
    * called yet or if there's an error getting the payment discount.
    */
   public static async getEligibleWinBackOffersForProduct(
     product: PurchasesStoreProduct
-  ): Promise<PurchasesWinBackOffer | undefined> {
+  ): Promise<[PurchasesWinBackOffer] | undefined> {
     await Purchases.throwIfNotConfigured();
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
@@ -931,15 +930,14 @@ export default class Purchases {
   /**
    * iOS only. Use this function to retrieve the `PurchasesPromotionalOffer` for a given `PurchasesPackage`.
    *
-   * @param product The `PurchasesStoreProduct` the user intends to purchase.
-   * @param discount The `PurchasesStoreProductDiscount` to apply to the product.
-   * @returns { Promise<PurchasesPromotionalOffer> } Returns when the `PurchasesPaymentDiscount` is returned.
+   * @param aPackage The `PurchasesPackage` the user intends to purchase.
+   * @returns { Promise<[PurchasesWinBackOffer]> } Returns an array of win-back offers that the subscriber is eligible for.
    * Null is returned for Android and incompatible iOS versions. The promise will be rejected if configure has not been
    * called yet or if there's an error getting the payment discount.
    */
   public static async getEligibleWinBackOffersForPackage(
     aPackage: PurchasesPackage
-  ): Promise<PurchasesWinBackOffer | undefined> {
+  ): Promise<[PurchasesWinBackOffer] | undefined> {
     await Purchases.throwIfNotConfigured();
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
