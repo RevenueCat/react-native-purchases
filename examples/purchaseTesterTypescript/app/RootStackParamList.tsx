@@ -1,4 +1,4 @@
-import {CustomerInfo, PurchasesOffering} from 'react-native-purchases';
+import { CustomerInfo, PurchasesOffering } from 'react-native-purchases';
 
 type RootStackParamList = {
   Home: undefined;
