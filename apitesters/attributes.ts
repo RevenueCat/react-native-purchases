@@ -16,6 +16,8 @@ async function checkAttributes(purchases: Purchases) {
   await Purchases.setCleverTapID(stringOrNull);
   await Purchases.setMixpanelDistinctID(stringOrNull);
   await Purchases.setFirebaseAppInstanceID(stringOrNull);
+  await Purchases.setTenjinAnalyticsInstallationID(stringOrNull);
+  await Purchases.setKochavaDeviceID(stringOrNull);
   await Purchases.setOnesignalID(stringOrNull);
   await Purchases.setAirshipChannelID(stringOrNull);
   await Purchases.setMediaSource(stringOrNull);

@@ -309,6 +309,14 @@ RCT_EXPORT_METHOD(setFirebaseAppInstanceID:(NSString *)firebaseAppInstanceId) {
     [RCCommonFunctionality setFirebaseAppInstanceID:firebaseAppInstanceId];
 }
 
+RCT_EXPORT_METHOD(setTenjinAnalyticsInstallationID:(NSString *)tenjinAnalyticsInstallationID) {
+    [RCCommonFunctionality setTenjinAnalyticsInstallationID:tenjinAnalyticsInstallationID];
+}
+
+RCT_EXPORT_METHOD(setKochavaDeviceID:(NSString *)kochavaDeviceID) {
+    [RCCommonFunctionality setKochavaDeviceID:kochavaDeviceID];
+}
+
 RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID) {
     [RCCommonFunctionality setOnesignalID:onesignalID];
 }

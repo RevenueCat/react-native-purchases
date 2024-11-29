@@ -1130,6 +1130,36 @@ export default class Purchases {
   }
 
   /**
+   * Subscriber attribute associated with the Tenjin Analytics Installation ID for the user
+   * Required for the RevenueCat Tenjin integration
+   *
+   * @param tenjinAnalyticsInstallationID Tenjin analytics installation ID to use in the Tenjin integration. Empty String or null will delete the subscriber attribute.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * setting the Tenjin Analytics Installation ID.
+   */
+  public static async setTenjinAnalyticsInstallationID(
+    tenjinAnalyticsInstallationID: string | null
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.setTenjinAnalyticsInstallationID(tenjinAnalyticsInstallationID);
+  }
+
+  /**
+   * Subscriber attribute associated with the Kochava Device ID for the user
+   * Required for the RevenueCat Kochava integration
+   *
+   * @param kochavaDeviceID Kochava device ID to use in the Kochava integration. Empty String or null will delete the subscriber attribute.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * setting the Kochava Device ID.
+   */
+  public static async setKochavaDeviceID(
+    kochavaDeviceID: string | null
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.setKochavaDeviceID(kochavaDeviceID);
+  }
+
+  /**
    * Subscriber attribute associated with the OneSignal Player Id for the user
    * Required for the RevenueCat OneSignal integration
    *
