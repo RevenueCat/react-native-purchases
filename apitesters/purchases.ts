@@ -344,3 +344,17 @@ async function checkSyncObserverModeAmazonPurchase(
     price
   );
 }
+
+async function checkFetchAndPurchaseWinBackOffersForProduct(
+  product: PurchasesStoreProduct
+): Promise<MakePurchaseResult> {
+  const offers = await Purchases.getEligibleWinBackOffersForProduct(product);
+  return await Purchases.purchaseProductWithWinBackOffer(product, offers[0]);
+}
+
+async function checkFetchAndPurchaseWinBackOffersForPackage(
+  aPackage: PurchasesPackage
+): Promise<MakePurchaseResult> {
+  const offers = await Purchases.getEligibleWinBackOffersForPackage(aPackage);
+  return await Purchases.purchasePackageWithWinBackOffer(aPackage, offers[0]);
+}
