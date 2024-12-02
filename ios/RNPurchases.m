@@ -246,6 +246,60 @@ static void logUnavailablePresentCodeRedemptionSheet() {
     NSLog(@"[Purchases] Warning: tried to present codeRedemptionSheet, but it's only available on iOS 14.0 or greater.");
 }
 
+#pragma mark - Win-Back getOfferings
+RCT_EXPORT_METHOD(eligibleWinBackOffersForProductIdentifier:(nonnull NSString *)productID
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
+        [RCCommonFunctionality eligibleWinBackOffersForProductIdentifier:productID
+                                                         completionBlock:^(NSArray<NSDictionary *> * _Nullable offers, RCErrorContainer * _Nullable errorContainer) {
+            if (errorContainer) {
+                reject(
+                    [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
+                    errorContainer.message,
+                    errorContainer.error
+                );
+            } else {
+                resolve(offers ?: @[]);
+            }
+        }];
+    } else {
+        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
+        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    }
+}
+
+RCT_EXPORT_METHOD(purchaseProductWithWinBackOffer:(nonnull NSString *)productID
+                                   winBackOfferID:(nonnull NSString *)winBackOfferID
+                                          resolve:(RCTPromiseResolveBlock)resolve
+                                           reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
+        [RCCommonFunctionality purchaseProduct:productID
+                                winBackOfferID:winBackOfferID
+                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    } else {
+        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
+        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    }
+}
+
+RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
+                         presentedOfferingContext:(NSDictionary *)presentedOfferingContext
+                                   winBackOfferID:(nonnull NSString *)winBackOfferID
+                                          resolve:(RCTPromiseResolveBlock)resolve
+                                           reject:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
+        [RCCommonFunctionality purchasePackage:packageID
+                      presentedOfferingContext:presentedOfferingContext
+                                winBackOfferID:winBackOfferID
+                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+    } else {
+        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
+        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    }
+}
+
+
 #pragma mark - Subscriber Attributes
 
 RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString
@@ -443,10 +497,7 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
                                                completion:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                reject:reject]];
     } else {
-        NSString* description = @"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater.";
-        NSError* error = [[NSError alloc] initWithDomain: RCPurchasesErrorCodeDomain
-                                                    code: RCUnsupportedError
-                                                userInfo: @{NSLocalizedDescriptionKey : description}];
+        NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater."];
         reject([NSString stringWithFormat:@"%ld", (long) error.code], [error localizedDescription], error);
     }
 }
@@ -500,6 +551,12 @@ readyForPromotedProduct:(RCStoreProduct *)product
             [self rejectPromiseWithBlock:reject error:error];
         }
     };
+}
+
+- (NSError *)createUnsupportedErrorWithDescription:(NSString *)description {
+    return [[NSError alloc] initWithDomain:RCPurchasesErrorCodeDomain
+                                      code:RCUnsupportedError
+                                  userInfo:@{NSLocalizedDescriptionKey : description}];
 }
 
 - (NSString *)platformFlavor {

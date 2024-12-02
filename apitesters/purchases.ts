@@ -344,3 +344,25 @@ async function checkSyncObserverModeAmazonPurchase(
     price
   );
 }
+
+async function checkFetchAndPurchaseWinBackOffersForProduct(
+  product: PurchasesStoreProduct
+): Promise<MakePurchaseResult> {
+  const offers = await Purchases.getEligibleWinBackOffersForProduct(product);
+
+  if (!offers || offers.length < 1) {
+    throw new Error("No eligible win-back offers available for the product.");
+  }
+  return await Purchases.purchaseProductWithWinBackOffer(product, offers[0]);
+}
+
+async function checkFetchAndPurchaseWinBackOffersForPackage(
+  aPackage: PurchasesPackage
+): Promise<MakePurchaseResult> {
+  const offers = await Purchases.getEligibleWinBackOffersForPackage(aPackage);
+
+  if (!offers || offers.length < 1) {
+    throw new Error("No eligible win-back offers available for the package.");
+  }
+  return await Purchases.purchasePackageWithWinBackOffer(aPackage, offers[0]);
+}
