@@ -264,10 +264,7 @@ RCT_EXPORT_METHOD(eligibleWinBackOffersForProductIdentifier:(nonnull NSString *)
             }
         }];
     } else {
-        NSString *description = @"iOS win-back offers are only available on iOS 18.0 or greater.";
-        NSError *error = [[NSError alloc] initWithDomain:@"RCPurchasesErrorCodeDomain"
-                                                    code:RCUnsupportedError
-                                                userInfo:@{NSLocalizedDescriptionKey: description}];
+        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
         reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
     }
 }
@@ -281,10 +278,7 @@ RCT_EXPORT_METHOD(purchaseProductWithWinBackOffer:(nonnull NSString *)productID
                                 winBackOfferID:winBackOfferID
                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
     } else {
-        NSString *description = @"iOS win-back offers are only available on iOS 18.0 or greater.";
-        NSError *error = [[NSError alloc] initWithDomain:@"RCPurchasesErrorCodeDomain"
-                                                    code:RCUnsupportedError
-                                                userInfo:@{NSLocalizedDescriptionKey: description}];
+        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
         reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
     }
 }
@@ -300,10 +294,7 @@ RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
                                 winBackOfferID:winBackOfferID
                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
     } else {
-        NSString *description = @"iOS win-back offers are only available on iOS 18.0 or greater.";
-        NSError *error = [[NSError alloc] initWithDomain:@"RCPurchasesErrorCodeDomain"
-                                                    code:RCUnsupportedError
-                                                userInfo:@{NSLocalizedDescriptionKey: description}];
+        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
         reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
     }
 }
@@ -506,10 +497,7 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
                                                completion:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                reject:reject]];
     } else {
-        NSString* description = @"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater.";
-        NSError* error = [[NSError alloc] initWithDomain: RCPurchasesErrorCodeDomain
-                                                    code: RCUnsupportedError
-                                                userInfo: @{NSLocalizedDescriptionKey : description}];
+        NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater."];
         reject([NSString stringWithFormat:@"%ld", (long) error.code], [error localizedDescription], error);
     }
 }
@@ -563,6 +551,12 @@ readyForPromotedProduct:(RCStoreProduct *)product
             [self rejectPromiseWithBlock:reject error:error];
         }
     };
+}
+
+- (NSError *)createUnsupportedErrorWithDescription:(NSString *)description {
+    return [[NSError alloc] initWithDomain:RCPurchasesErrorCodeDomain
+                                      code:RCUnsupportedError
+                                  userInfo:@{NSLocalizedDescriptionKey : description}];
 }
 
 - (NSString *)platformFlavor {
