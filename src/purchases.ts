@@ -1130,8 +1130,8 @@ export default class Purchases {
   }
 
   /**
-   * Subscriber attribute associated with the Tenjin Analytics Installation ID for the user
-   * Required for the RevenueCat Tenjin integration
+   * Subscriber attribute associated with the Tenjin Analytics Installation ID for the user.
+   * Required for the RevenueCat Tenjin integration.
    *
    * @param tenjinAnalyticsInstallationID Tenjin analytics installation ID to use in the Tenjin integration. Empty String or null will delete the subscriber attribute.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
