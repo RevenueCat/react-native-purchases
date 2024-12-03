@@ -1175,6 +1175,32 @@ describe("Purchases", () => {
     });
   });
 
+  describe("setTenjinAnalyticsInstallationID", () => {
+    describe("when setTenjinAnalyticsInstallationID is called", () => {
+      it("makes the right call to Purchases", async () => {
+        const attributionID = "65a1ds56adsgh6954asd";
+
+        await Purchases.setTenjinAnalyticsInstallationID(attributionID);
+
+        expect(NativeModules.RNPurchases.setTenjinAnalyticsInstallationID).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setTenjinAnalyticsInstallationID).toBeCalledWith(attributionID);
+      });
+    });
+  });
+
+  describe("setKochavaDeviceID", () => {
+    describe("when setKochavaDeviceID is called", () => {
+      it("makes the right call to Purchases", async () => {
+        const attributionID = "65a1ds56adsgh6954asd";
+
+        await Purchases.setKochavaDeviceID(attributionID);
+
+        expect(NativeModules.RNPurchases.setKochavaDeviceID).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setKochavaDeviceID).toBeCalledWith(attributionID);
+      });
+    });
+  });
+
   describe("showInAppMessages", () => {
     beforeEach(() => {
       Platform.OS = "ios";

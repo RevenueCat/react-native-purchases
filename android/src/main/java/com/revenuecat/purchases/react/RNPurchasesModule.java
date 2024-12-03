@@ -392,6 +392,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void setTenjinAnalyticsInstallationID(String tenjinAnalyticsInstallationID) {
+        SubscriberAttributesKt.setTenjinAnalyticsInstallationID(tenjinAnalyticsInstallationID);
+    }
+
+    @ReactMethod
+    public void setKochavaDeviceID(String kochavaDeviceID) {
+        SubscriberAttributesKt.setKochavaDeviceID(kochavaDeviceID);
+    }
+
+    @ReactMethod
     public void setOnesignalID(String onesignalID) {
         SubscriberAttributesKt.setOnesignalID(onesignalID);
     }

@@ -796,6 +796,8 @@ NativeModules.RNPurchases = {
   setCleverTapID: jest.fn(),
   setMixpanelDistinctID: jest.fn(),
   setFirebaseAppInstanceID: jest.fn(),
+  setTenjinAnalyticsInstallationID: jest.fn(),
+  setKochavaDeviceID: jest.fn(),
   canMakePayments: jest.fn(),
   beginRefundRequestForActiveEntitlement: jest.fn(),
   beginRefundRequestForEntitlementId: jest.fn(),
