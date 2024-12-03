@@ -1145,8 +1145,8 @@ export default class Purchases {
   }
 
   /**
-   * Subscriber attribute associated with the Kochava Device ID for the user
-   * Required for the RevenueCat Kochava integration
+   * Subscriber attribute associated with the Kochava Device ID for the user.
+   * Required for the RevenueCat Kochava integration.
    *
    * @param kochavaDeviceID Kochava device ID to use in the Kochava integration. Empty String or null will delete the subscriber attribute.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
