@@ -39,6 +39,8 @@ import {
   PurchasesAreCompletedBy,
   PurchasesAreCompletedByMyApp,
   PurchasesWinBackOffer,
+  WebPurchaseRedemption,
+  WebPurchaseRedemptionResult,
 } from "@revenuecat/purchases-typescript-internal";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
@@ -1484,6 +1486,22 @@ export default class Purchases {
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.showInAppMessages(messageTypes);
+  }
+
+  public static async parseAsWebPurchaseRedemption(
+    urlString: string
+  ): Promise<WebPurchaseRedemption | null> {
+    if (RNPurchases.isWebPurchaseRedemptionURL(urlString)) {
+      return { redemptionLink: urlString };
+    }
+    return null;
+  }
+
+  public static async redeemWebPurchase(
+    webPurchaseRedemption: WebPurchaseRedemption
+  ): Promise<WebPurchaseRedemptionResult> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.redeemWebPurchase(webPurchaseRedemption);
   }
 
   /**

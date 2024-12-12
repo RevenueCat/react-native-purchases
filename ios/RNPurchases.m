@@ -495,6 +495,18 @@ RCT_EXPORT_METHOD(setLogHandler) {
     }];
 }
 
+RCT_EXPORT_METHOD(isWebPurchaseRedemptionURL:(NSString *)urlString
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    resolve(true);
+}
+
+RCT_EXPORT_METHOD(redeemWebPurchase:(NSString *)urlString
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  resolve(nil);
+}
+
 #pragma mark -
 #pragma mark PurchasesAreCompletedBy Helper Functions
 RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
