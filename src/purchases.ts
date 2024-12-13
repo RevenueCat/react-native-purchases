@@ -1488,6 +1488,11 @@ export default class Purchases {
     return RNPurchases.showInAppMessages(messageTypes);
   }
 
+  /**
+   * Parses the given URL into a [WebPurchaseRedemption] object that can be used to redeem web purchases
+   * @param urlString The Redemption Link URL as a string
+   * @returns {Promise<WebPurchaseRedemption>} A WebPurchaseRedemption object that can be used to redeem the link using [redeemWebPurchase].
+   */
   public static async parseAsWebPurchaseRedemption(
     urlString: string
   ): Promise<WebPurchaseRedemption | null> {
@@ -1497,11 +1502,17 @@ export default class Purchases {
     return null;
   }
 
+  /**
+   * Redeems the web purchase associated with the Redemption Link obtained with [parseAsWebPurchaseRedemption].
+   * @param webPurchaseRedemption The WebPurchaseRedemption object obtained from [parseAsWebPurchaseRedemption].
+   * @returns {Promise<WebPurchaseRedemptionResult>} The result of the redemption process. Can throw if an invalid
+   * WebPurchaseRedemption parameter is passed or Purchases is not configured.
+   */
   public static async redeemWebPurchase(
     webPurchaseRedemption: WebPurchaseRedemption
   ): Promise<WebPurchaseRedemptionResult> {
     await Purchases.throwIfNotConfigured();
-    return RNPurchases.redeemWebPurchase(webPurchaseRedemption);
+    return RNPurchases.redeemWebPurchase(webPurchaseRedemption.redemptionLink);
   }
 
   /**
