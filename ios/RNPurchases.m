@@ -498,13 +498,15 @@ RCT_EXPORT_METHOD(setLogHandler) {
 RCT_EXPORT_METHOD(isWebPurchaseRedemptionURL:(NSString *)urlString
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    resolve(true);
+    resolve(@([RCCommonFunctionality isWebPurchaseRedemptionURL:urlString]));
 }
 
 RCT_EXPORT_METHOD(redeemWebPurchase:(NSString *)urlString
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-  resolve(nil);
+    [RCCommonFunctionality redeemWebPurchaseWithUrlString:urlString
+                                               completion:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                               reject:reject]];
 }
 
 #pragma mark -
