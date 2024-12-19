@@ -1102,6 +1102,7 @@ describe("Purchases", () => {
       "isConfigured",
       "setProxyURL",
       "isPurchasesAreCompletedByMyApp",
+      "parseAsWebPurchaseRedemption",
     ];
     const functionsThatRequireAndroidAndInstance = [
       "syncAmazonPurchase",

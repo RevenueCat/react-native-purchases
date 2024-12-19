@@ -8,9 +8,9 @@
  * @format
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Platform, Text } from 'react-native';
+import { Alert, Linking, Platform, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -33,8 +33,34 @@ const App = () => {
     return APIKeys.apple.length > 0 || APIKeys.google.length > 0 || APIKeys.amazon.length > 0;
   }
 
+  const [url, setUrl] = useState<string | null>(null);
+
+  const fetchUrlAsync = async () => {
+    // Get the deep link used to open the app
+    const initialUrl = await Linking.getInitialURL();
+    Linking.addEventListener('url', ({ url }) => {
+      setUrl(url);
+    });
+    setUrl(initialUrl);
+  };
+
+  const redeemWebPurchaseIfAny = async () => {
+    if (url) {
+      const webPurchaseRedemption = await Purchases.parseAsWebPurchaseRedemption(url);
+      setUrl(null);
+      if (webPurchaseRedemption) {
+        const result = await Purchases.redeemWebPurchase(webPurchaseRedemption);
+        Alert.alert('Redemption result', JSON.stringify(result, null, 2));
+      } else {
+        Alert.alert('URL is not a valid web purchase redemption URL');
+      }
+    }
+  }
+
   useEffect(() => {
     if (!hasKeys()) { return }
+
+    fetchUrlAsync();
 
     Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
 
@@ -62,6 +88,10 @@ const App = () => {
 
     Purchases.enableAdServicesAttributionTokenCollection();
   }, []);
+
+  useEffect(() => {
+    redeemWebPurchaseIfAny();
+  }, [url]);
 
   return !hasKeys() ? (
       <SafeAreaView>

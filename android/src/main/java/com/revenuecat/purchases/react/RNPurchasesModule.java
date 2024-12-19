@@ -510,6 +510,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         promise.resolve(null);
     }
 
+    @ReactMethod
+    public void isWebPurchaseRedemptionURL(String urlString, final Promise promise) {
+      promise.resolve(CommonKt.isWebPurchaseRedemptionURL(urlString));
+    }
+
+    @ReactMethod
+    public void redeemWebPurchase(String urlString, final Promise promise) {
+      CommonKt.redeemWebPurchase(urlString, getOnResult(promise));
+    }
+
     // endregion
 
     //================================================================================

@@ -1,7 +1,11 @@
 import {
   ENTITLEMENT_VERIFICATION_MODE,
   IN_APP_MESSAGE_TYPE,
+  PurchasesError,
   PurchasesOffering,
+  WebPurchaseRedemption,
+  WebPurchaseRedemptionResult,
+  WebPurchaseRedemptionResultType,
 } from "@revenuecat/purchases-typescript-internal";
 import {
   CustomerInfo,
@@ -365,4 +369,24 @@ async function checkFetchAndPurchaseWinBackOffersForPackage(
     throw new Error("No eligible win-back offers available for the package.");
   }
   return await Purchases.purchasePackageWithWinBackOffer(aPackage, offers[0]);
+}
+
+async function checkWebRedemption() {
+  const webPurchaseRedemption: WebPurchaseRedemption | null = await Purchases.parseAsWebPurchaseRedemption("");
+  const result: WebPurchaseRedemptionResult = await Purchases.redeemWebPurchase(webPurchaseRedemption!);
+  const webPurchaseRedemptionResultType: WebPurchaseRedemptionResultType = result.result;
+  switch (result.result) {
+    case WebPurchaseRedemptionResultType.SUCCESS:
+      const customerInfo: CustomerInfo = result.customerInfo;
+      break;
+    case WebPurchaseRedemptionResultType.ERROR:
+      const error: PurchasesError = result.error;
+      break;
+    case WebPurchaseRedemptionResultType.PURCHASE_BELONGS_TO_OTHER_USER:
+    case WebPurchaseRedemptionResultType.INVALID_TOKEN:
+      break;
+    case WebPurchaseRedemptionResultType.EXPIRED:
+      const obfuscatedEmail: string = result.obfuscatedEmail;
+      break;
+  }
 }
