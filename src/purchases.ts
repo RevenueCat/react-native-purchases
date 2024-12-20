@@ -215,11 +215,12 @@ export default class Purchases {
    * @param {PurchasesAreCompletedBy} [purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT] Set this to an instance of PurchasesAreCompletedByMyApp if you have your own IAP implementation and want to use only RevenueCat's backend. Default is PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT.
    * @param {STOREKIT_VERSION} [storeKitVersion=DEFAULT] iOS-only. Defaults to STOREKIT_2. StoreKit 2 is only available on iOS 16+. StoreKit 1 will be used for previous iOS versions regardless of this setting.
    * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode=ENTITLEMENT_VERIFICATION_MODE.DISABLED] Sets the entitlement verifciation mode to use. For more details, check https://rev.cat/trusted-entitlements
-   * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to TRUE to enable Amazon on compatible devices.
+   * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to true to enable Amazon on compatible devices.
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
    * Default is null, which will make the SDK use standardUserDefaults.
-   * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to TRUE to enable pending transactions for prepaid subscriptions in Google Play.
+   * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to true to enable pending transactions for prepaid subscriptions in Google Play.
+   * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -233,6 +234,7 @@ export default class Purchases {
     shouldShowInAppMessagesAutomatically = true,
     entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
     pendingTransactionsForPrepaidPlansEnabled = false,
+    diagnosticsEnabled = false,
   }: PurchasesConfiguration): void {
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error(
@@ -286,7 +288,8 @@ export default class Purchases {
       useAmazon,
       shouldShowInAppMessagesAutomatically,
       entitlementVerificationMode,
-      pendingTransactionsForPrepaidPlansEnabled
+      pendingTransactionsForPrepaidPlansEnabled,
+      diagnosticsEnabled
     );
   }
 

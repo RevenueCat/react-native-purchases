@@ -202,6 +202,16 @@ async function checkConfigure() {
     useAmazon,
     shouldShowInAppMessagesAutomatically,
   });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+    diagnosticsEnabled,
+  });
 
   // PurchasesAreCompletedBy == MY_APP
   purchasesAreCompletedBy = {

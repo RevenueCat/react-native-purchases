@@ -45,7 +45,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   useAmazon:(BOOL)useAmazon
                   shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
-                  pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled) {
+                  pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
+                  diagnosticsEnabled:(BOOL)diagnosticsEnabled) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
                                                     appUserID:appUserID
                                       purchasesAreCompletedBy:purchasesAreCompletedBy
@@ -55,7 +56,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                               storeKitVersion:storeKitVersion
                                             dangerousSettings:nil
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
-                                             verificationMode:entitlementVerificationMode];
+                                             verificationMode:entitlementVerificationMode 
+                                           diagnosticsEnabled:diagnosticsEnabled];
     purchases.delegate = self;
 }
 
