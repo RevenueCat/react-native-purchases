@@ -803,7 +803,9 @@ NativeModules.RNPurchases = {
   beginRefundRequestForEntitlementId: jest.fn(),
   beginRefundRequestForProductId: jest.fn(),
   showInAppMessages: jest.fn(),
-  isConfigured: jest.fn()
+  isConfigured: jest.fn(),
+  parseAsWebPurchaseRedemption: jest.fn(),
+  redeemWebPurchase: jest.fn()
 };
 
 jest.mock(
