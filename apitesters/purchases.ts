@@ -156,6 +156,7 @@ async function checkConfigure() {
     Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
+  const diagnosticsEnabled: boolean = true;
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
