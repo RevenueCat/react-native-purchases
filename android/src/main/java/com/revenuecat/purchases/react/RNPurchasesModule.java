@@ -87,7 +87,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                @Nullable String storeKitVersion, boolean useAmazon,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
-                               boolean pendingTransactionsForPrepaidPlansEnabled) {
+                               boolean pendingTransactionsForPrepaidPlansEnabled, 
+                               boolean diagnosticsEnabled) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
@@ -103,7 +104,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             new DangerousSettings(),
             shouldShowInAppMessagesAutomatically,
             entitlementVerificationMode,
-            pendingTransactionsForPrepaidPlansEnabled
+            pendingTransactionsForPrepaidPlansEnabled,
+            diagnosticsEnabled
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }

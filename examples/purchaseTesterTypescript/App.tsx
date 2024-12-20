@@ -73,17 +73,23 @@ const App = () => {
           apiKey: APIKeys.amazon,
           useAmazon: true,
           entitlementVerificationMode: verificationMode,
-          pendingTransactionsForPrepaidPlansEnabled: true
+          pendingTransactionsForPrepaidPlansEnabled: true,
+          diagnosticsEnabled: true
         });
       } else {
         Purchases.configure({
           apiKey: APIKeys.google,
           entitlementVerificationMode: verificationMode,
-          pendingTransactionsForPrepaidPlansEnabled: true
+          pendingTransactionsForPrepaidPlansEnabled: true,
+          diagnosticsEnabled: true
         });
       }
     } else {
-      Purchases.configure({apiKey: APIKeys.apple, entitlementVerificationMode: verificationMode});
+      Purchases.configure({
+        apiKey: APIKeys.apple, 
+        entitlementVerificationMode: verificationMode,
+        diagnosticsEnabled: true
+      });
     }
 
     Purchases.enableAdServicesAttributionTokenCollection();
