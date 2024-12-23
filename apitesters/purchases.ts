@@ -156,6 +156,7 @@ async function checkConfigure() {
     Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
+  const diagnosticsEnabled: boolean = true;
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -201,6 +202,16 @@ async function checkConfigure() {
     storeKitVersion,
     useAmazon,
     shouldShowInAppMessagesAutomatically,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+    diagnosticsEnabled,
   });
 
   // PurchasesAreCompletedBy == MY_APP
