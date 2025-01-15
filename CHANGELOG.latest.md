@@ -1,4 +1,3 @@
 ## RevenueCat SDK
-### ✨ New Features
-* Add diagnostics support (#1149) via Toni Rico (@tonidero)
-* Support Web Redemption Links (#1145) via Toni Rico (@tonidero)
+### 📦 Dependency Updates
+* Bump fastlane from 2.225.0 to 2.226.0 (#1157) via dependabot[bot] (@dependabot[bot])
