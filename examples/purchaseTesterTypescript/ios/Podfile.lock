@@ -15,10 +15,10 @@ PODS:
     - hermes-engine/Pre-built (= 0.73.5)
   - hermes-engine/Pre-built (0.73.5)
   - libevent (2.1.12)
-  - PurchasesHybridCommon (13.16.0):
+  - PurchasesHybridCommon (13.16.2):
     - RevenueCat (= 5.15.0)
-  - PurchasesHybridCommonUI (13.16.0):
-    - PurchasesHybridCommon (= 13.16.0)
+  - PurchasesHybridCommonUI (13.16.2):
+    - PurchasesHybridCommon (= 13.16.2)
     - RevenueCatUI (= 5.15.0)
   - RCT-Folly (2022.05.16.00):
     - boost
@@ -1064,10 +1064,10 @@ PODS:
   - RevenueCatUI (5.15.0):
     - RevenueCat (= 5.15.0)
   - RNPaywalls (8.5.1):
-    - PurchasesHybridCommonUI (= 13.16.0)
+    - PurchasesHybridCommonUI (= 13.16.2)
     - React-Core
   - RNPurchases (8.5.1):
-    - PurchasesHybridCommon (= 13.16.0)
+    - PurchasesHybridCommon (= 13.16.2)
     - React-Core
   - RNScreens (3.29.0):
     - glog
@@ -1259,8 +1259,8 @@ SPEC CHECKSUMS:
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   hermes-engine: 1d1835b2cc54c381909d94d1b3c8e0a2f1a94a0e
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  PurchasesHybridCommon: 60bc5dedcc77aadcf1ef8fc2e98e9d9906ac6082
-  PurchasesHybridCommonUI: 924d9f160c9b6fe30128f8ef2874aad435abfe18
+  PurchasesHybridCommon: 9fbb4c76f20b8e9b74f13b9045c6ed90727f935b
+  PurchasesHybridCommonUI: 9cbd1c8a7077e20726fdf0a61749dad11e9b1451
   RCT-Folly: cd21f1661364f975ae76b3308167ad66b09f53f5
   RCTRequired: 2544c0f1081a5fa12e108bb8cb40e5f4581ccd87
   RCTTypeSafety: 50efabe2b115c11ed03fbf3fd79e2f163ddb5d7c
@@ -1305,8 +1305,8 @@ SPEC CHECKSUMS:
   ReactCommon: 878d3e9687f81294648a1d025b91ecde7e22179e
   RevenueCat: 90e7642834cabc3e04e396117776bfb3f50debbf
   RevenueCatUI: 8b7f4635f5c1de202b4395eca2b5efc33583c0ce
-  RNPaywalls: 662f7bddc467b909254f47c07bc109baf5f383ef
-  RNPurchases: 3b6aaef4b824104a7dd4cc304bf52bc03fc732a3
+  RNPaywalls: f7c56ba2c2b87e04d8627513355ffc4ab7f2fb76
+  RNPurchases: e2ba084d85b17bf5f8feb79518e25b0ab509f51c
   RNScreens: 59f615aa0782077560c8eea46c2daec3a716dba9
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: a716eea57d0d3430219c0a5a233e1e93ee931eb7
