@@ -49,6 +49,7 @@ const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != n
 export interface PresentPaywallParams {
   /**
    * Whether to display the close button or not.
+   * Only available for original template paywalls. Ignored for V2 Paywalls.
    */
   displayCloseButton?: boolean;
 
@@ -66,6 +67,7 @@ export interface PresentPaywallParams {
    * - Bold: MyFont_bold.ttf/MyFont_bold.otf
    * - Italic: MyFont_italic.ttf/MyFont_italic.otf
    * - Bold and Italic: MyFont_bold_italic.ttf/MyFont_bold_italic.otf
+   * Only available for original template paywalls. Ignored for V2 Paywalls.
    */
   fontFamily?: string | null;
 }
@@ -92,11 +94,16 @@ export interface PaywallViewOptions {
    * - Bold: MyFont_bold.ttf/MyFont_bold.otf
    * - Italic: MyFont_italic.ttf/MyFont_italic.otf
    * - Bold and Italic: MyFont_bold_italic.ttf/MyFont_bold_italic.otf
+   * Only available for original template paywalls. Ignored for V2 Paywalls.
    */
   fontFamily?: string | null;
 }
 
 export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
+  /**
+   * Whether to display the close button or not.
+   * Only available for original template paywalls. Ignored for V2 Paywalls.
+   */
   displayCloseButton?: boolean | false;
 }
 
@@ -231,19 +238,19 @@ export default class RevenueCatUI {
                      style={[{flex: 1}, style]}/>
   );
 
-  public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
-                                                                                  style,
-                                                                                  children,
-                                                                                  options,
-                                                                                  onPurchaseStarted,
-                                                                                  onPurchaseCompleted,
-                                                                                  onPurchaseError,
-                                                                                  onPurchaseCancelled,
-                                                                                  onRestoreStarted,
-                                                                                  onRestoreCompleted,
-                                                                                  onRestoreError,
-                                                                                  onDismiss,
-                                                                                }) => {
+  public static OriginalTemplatePaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
+                                                                                                  style,
+                                                                                                  children,
+                                                                                                  options,
+                                                                                                  onPurchaseStarted,
+                                                                                                  onPurchaseCompleted,
+                                                                                                  onPurchaseError,
+                                                                                                  onPurchaseCancelled,
+                                                                                                  onRestoreStarted,
+                                                                                                  onRestoreCompleted,
+                                                                                                  onRestoreError,
+                                                                                                  onDismiss,
+                                                                                                }) => {
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
     // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
@@ -295,4 +302,10 @@ export default class RevenueCatUI {
       </View>
     );
   };
+
+  /**
+   * @deprecated, Use {@link OriginalTemplatePaywallFooterContainerView} instead
+   */
+  public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> =
+    RevenueCatUI.OriginalTemplatePaywallFooterContainerView;
 }
