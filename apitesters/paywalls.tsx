@@ -179,6 +179,16 @@ const PaywallScreenNoOptions = () => {
   return <RevenueCatUI.Paywall style={{ marginBottom: 10 }} />;
 };
 
+const OriginalTemplatePaywallFooterPaywallScreen = () => {
+  return (
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView
+      options={{
+        offering: null,
+      }}
+    ></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
+  );
+};
+
 const FooterPaywallScreen = () => {
   return (
     <RevenueCatUI.PaywallFooterContainerView
@@ -186,6 +196,16 @@ const FooterPaywallScreen = () => {
         offering: null,
       }}
     ></RevenueCatUI.PaywallFooterContainerView>
+  );
+};
+
+const OriginalTemplateFooterPaywallScreenWithOffering = (offering: PurchasesOffering) => {
+  return (
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView
+      options={{
+        offering: offering,
+      }}
+    ></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
   );
 };
 
@@ -199,6 +219,18 @@ const FooterPaywallScreenWithOffering = (offering: PurchasesOffering) => {
   );
 };
 
+const OriginalTemplateFooterPaywallScreenWithFontFamily = (
+  fontFamily: string | null | undefined
+) => {
+  return (
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView
+      options={{
+        fontFamily: fontFamily,
+      }}
+    ></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
+  );
+};
+
 const FooterPaywallScreenWithFontFamily = (
   fontFamily: string | null | undefined
 ) => {
@@ -208,6 +240,27 @@ const FooterPaywallScreenWithFontFamily = (
         fontFamily: fontFamily,
       }}
     ></RevenueCatUI.PaywallFooterContainerView>
+  );
+};
+
+const OriginalTemplateFooterPaywallScreenWithOfferingAndEvents = (
+  offering: PurchasesOffering,
+  fontFamily: string | undefined | null
+) => {
+  return (
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView
+      options={{
+        offering: offering,
+        fontFamily: fontFamily,
+      }}
+      onPurchaseStarted={onPurchaseStarted}
+      onPurchaseCompleted={onPurchaseCompleted}
+      onPurchaseError={onPurchaseError}
+      onPurchaseCancelled={onPurchaseCancelled}
+      onRestoreStarted={onRestoreStarted}
+      onRestoreCompleted={onRestoreCompleted}
+      onDismiss={onDismiss}
+    ></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
   );
 };
 
@@ -229,6 +282,12 @@ const FooterPaywallScreenWithOfferingAndEvents = (
       onRestoreCompleted={onRestoreCompleted}
       onDismiss={onDismiss}
     ></RevenueCatUI.PaywallFooterContainerView>
+  );
+};
+
+const OriginalTemplateFooterPaywallScreenNoOptions = () => {
+  return (
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
   );
 };
 

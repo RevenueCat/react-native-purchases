@@ -50,19 +50,19 @@ const FooterPaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
   };
 
   return (
-    <RevenueCatUI.PaywallFooterContainerView style={{backgroundColor: '#f8f8f8'}}
-                                             options={{
-                                               offering: route.params.offering,
-                                               fontFamily: route.params.fontFamily,
-                                             }}
-                                             onPurchaseStarted={onPurchaseStarted}
-                                             onPurchaseCompleted={onPurchaseCompleted}
-                                             onPurchaseError={onPurchaseError}
-                                             onPurchaseCancelled={onPurchaseCancelled}
-                                             onRestoreStarted={onRestoreStarted}
-                                             onRestoreCompleted={onRestoreCompleted}
-                                             onRestoreError={onRestoreError}
-                                             onDismiss={onDismiss}>
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView style={{backgroundColor: '#f8f8f8'}}
+                                                             options={{
+                                                               offering: route.params.offering,
+                                                               fontFamily: route.params.fontFamily,
+                                                             }}
+                                                             onPurchaseStarted={onPurchaseStarted}
+                                                             onPurchaseCompleted={onPurchaseCompleted}
+                                                             onPurchaseError={onPurchaseError}
+                                                             onPurchaseCancelled={onPurchaseCancelled}
+                                                             onRestoreStarted={onRestoreStarted}
+                                                             onRestoreCompleted={onRestoreCompleted}
+                                                             onRestoreError={onRestoreError}
+                                                             onDismiss={onDismiss}>
       <Text>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nec
         ligula in dolor efficitur accumsan nec vel nisl. Sed vitae lectus eget
@@ -107,7 +107,7 @@ const FooterPaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
         augue et tincidunt fringilla, dui elit vulputate mauris, vel fermentum
         justo neque nec felis.
       </Text>
-    </RevenueCatUI.PaywallFooterContainerView>
+    </RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
   );
 };
 
