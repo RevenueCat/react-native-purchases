@@ -2550,10 +2550,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:13.17.0":
-  version: 13.17.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:13.17.0"
-  checksum: 2cc0116ebbb4ac2a679917883d10e9f2c14c5c6ef87114cb495849663a2a416649437aac751281c924f26ddbfbefd3eb12b197db4c15cb09d37513013618910f
+"@revenuecat/purchases-typescript-internal@npm:13.18.0":
+  version: 13.18.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:13.18.0"
+  checksum: fb784cd4f20809498bb5b0cb3cbf3a68c0bb16e1495eddeee7b48a07cd052664630f1785eab1d89ad8bc67749f0d62ab7a04983fc7decbe9320a8f1e97105b4a
   languageName: node
   linkType: hard
 
@@ -6362,11 +6362,11 @@ __metadata:
   linkType: hard
 
 "nanoid@npm:^3.1.23":
-  version: 3.3.7
-  resolution: "nanoid@npm:3.3.7"
+  version: 3.3.8
+  resolution: "nanoid@npm:3.3.8"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: d36c427e530713e4ac6567d488b489a36582ef89da1d6d4e3b87eded11eb10d7042a877958c6f104929809b2ab0bafa17652b076cdf84324aa75b30b722204f2
+  checksum: dfe0adbc0c77e9655b550c333075f51bb28cfc7568afbf3237249904f9c86c9aaaed1f113f0fddddba75673ee31c758c30c43d4414f014a52a7a626efc5958c9
   languageName: node
   linkType: hard
 
@@ -7054,7 +7054,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.17.0
+    "@revenuecat/purchases-typescript-internal": 13.18.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -7065,7 +7065,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.73.5
     react-native-builder-bob: ^0.20.0
-    react-native-purchases: 8.5.1
+    react-native-purchases: 8.5.4
     ts-jest: ^29.1.2
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
@@ -7077,11 +7077,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-native-purchases@8.5.1, react-native-purchases@workspace:.":
+"react-native-purchases@8.5.4, react-native-purchases@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.17.0
+    "@revenuecat/purchases-typescript-internal": 13.18.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
