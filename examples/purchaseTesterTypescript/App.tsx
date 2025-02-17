@@ -117,11 +117,11 @@ const App = () => {
             />
             <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
             <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
-            <Stack.Screen name="Paywall" component={PaywallScreen} />
-            <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
             <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
+            <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
            </Stack.Group>
            <Stack.Group screenOptions={{ headerShown: false, presentation: 'modal' }}>
+            <Stack.Screen name="Paywall" component={PaywallScreen} />
             <Stack.Screen name="CustomerCenter" component={CustomerCenterScreen} />
           </Stack.Group>
         </Stack.Navigator>
