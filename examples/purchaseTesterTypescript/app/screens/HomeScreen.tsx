@@ -300,6 +300,15 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.otherActions}>Win-Back Offer Testing</Text>
           </TouchableOpacity>
         </View>
+
+        <Divider />
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomerCenter', {})}
+            style={styles.bottomButton}>
+            <Text style={styles.otherActions}>Customer Center</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -336,6 +345,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'dodgerblue',
     marginVertical: 5,
+  },
+  bottomButton: {
+    marginBottom: 20,
   },
 });
 

@@ -4,11 +4,10 @@ import {
   Platform,
   requireNativeComponent,
   ScrollView,
-  type StyleProp,
   UIManager,
   View,
-  type ViewStyle,
 } from "react-native";
+import type { StyleProp, ViewStyle } from "react-native";
 import {
   type CustomerInfo,
   PAYWALL_RESULT, type PurchasesError,
@@ -45,6 +44,12 @@ const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != n
   : () => {
     throw new Error(LINKING_ERROR);
   };
+
+const NativeCustomerCenterView = UIManager.getViewManagerConfig('CustomerCenter') != null
+    ? requireNativeComponent<NativeCustomerCenterViewProps>('CustomerCenter')
+    : () => {
+      throw new Error("The native component 'CustomerCenter' is not linked properly.");
+    };
 
 export interface PresentPaywallParams {
   /**
@@ -104,6 +109,11 @@ export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
 export interface FooterPaywallViewOptions extends PaywallViewOptions {
   // Additional properties for FooterPaywallViewOptions can be added here if needed in the future
 }
+
+type NativeCustomerCenterViewProps = {
+  style?: StyleProp<ViewStyle>;
+  onDismiss?: () => void;
+};
 
 type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
@@ -204,6 +214,16 @@ export default class RevenueCatUI {
       fontFamily,
     )
   }
+
+  public static CustomerCenter: React.FC<NativeCustomerCenterViewProps> = ({
+    onDismiss,
+    style,
+  }) => (
+    <NativeCustomerCenterView
+      style={[{ flex: 1 }, style]}
+      onDismiss={onDismiss}
+    />
+  );
 
   public static Paywall: React.FC<FullScreenPaywallViewProps> = ({
                                                                    style,

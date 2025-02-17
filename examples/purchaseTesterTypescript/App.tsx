@@ -25,6 +25,7 @@ import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomerCenterScreen from './app/screens/CustomerCenterScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -107,17 +108,22 @@ const App = () => {
       </SafeAreaView>
     ) : (
       <NavigationContainer>
-        <Stack.Navigator  initialRouteName="Home">
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ title: 'PurchaseTester' }}
-          />
-          <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
-          <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
-          <Stack.Screen name="Paywall" component={PaywallScreen} />
-          <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
-          <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Group>
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ title: 'PurchaseTester' }}
+            />
+            <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
+            <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
+            <Stack.Screen name="Paywall" component={PaywallScreen} />
+            <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
+            <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
+           </Stack.Group>
+           <Stack.Group screenOptions={{ headerShown: false, presentation: 'modal' }}>
+            <Stack.Screen name="CustomerCenter" component={CustomerCenterScreen} />
+          </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
     );
