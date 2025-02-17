@@ -15,6 +15,7 @@ import {
   type PurchasesStoreTransaction
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
+import { CustomerCenter } from './CustomerCenter';
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
@@ -45,11 +46,6 @@ const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != n
     throw new Error(LINKING_ERROR);
   };
 
-const NativeCustomerCenterView = UIManager.getViewManagerConfig('CustomerCenter') != null
-    ? requireNativeComponent<NativeCustomerCenterViewProps>('CustomerCenter')
-    : () => {
-      throw new Error("The native component 'CustomerCenter' is not linked properly.");
-    };
 
 export interface PresentPaywallParams {
   /**
@@ -110,11 +106,6 @@ export interface FooterPaywallViewOptions extends PaywallViewOptions {
   // Additional properties for FooterPaywallViewOptions can be added here if needed in the future
 }
 
-type NativeCustomerCenterViewProps = {
-  style?: StyleProp<ViewStyle>;
-  onDismiss?: () => void;
-};
-
 type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
@@ -166,6 +157,8 @@ export default class RevenueCatUI {
    */
   public static PAYWALL_RESULT = PAYWALL_RESULT;
 
+  public static CustomerCenter = CustomerCenter;
+
   /**
    * Presents a paywall to the user with optional customization.
    *
@@ -214,16 +207,6 @@ export default class RevenueCatUI {
       fontFamily,
     )
   }
-
-  public static CustomerCenter: React.FC<NativeCustomerCenterViewProps> = ({
-    onDismiss,
-    style,
-  }) => (
-    <NativeCustomerCenterView
-      style={[{ flex: 1 }, style]}
-      onDismiss={onDismiss}
-    />
-  );
 
   public static Paywall: React.FC<FullScreenPaywallViewProps> = ({
                                                                    style,
