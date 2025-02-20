@@ -291,6 +291,17 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             }}>
             <Text style={styles.otherActions}>Present paywall</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () => {
+              try {
+                await RevenueCatUI.presentCustomerCenter();
+                console.log("Customer Center presented successfully");
+              } catch (error) {
+                console.error("Error presenting Customer Center:", error);
+              }
+            }}>
+            <Text style={styles.otherActions}>Present customer center</Text>
+          </TouchableOpacity>
         </View>
 
         <Divider />
