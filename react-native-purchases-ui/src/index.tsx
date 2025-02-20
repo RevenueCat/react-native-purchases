@@ -310,8 +310,6 @@ export default class RevenueCatUI {
 
     /**
    * Presents the customer center to the user.
-   *
-   * This method allows for presenting the customer center to the user without any parameters.
    * 
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
