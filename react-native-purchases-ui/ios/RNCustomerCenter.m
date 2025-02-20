@@ -72,12 +72,12 @@ RCT_EXPORT_METHOD(presentCustomerCenter:(RCTPromiseResolveBlock)resolve
             reject(@"CUSTOMER_CENTER_ERROR", @"Failed to initialize Customer Center Proxy", nil);
         }
     } else {
-        [self rejectPaywallsUnsupportedError:reject];
+        [self rejectCustomerCenterUnsupportedError:reject];
     }
 }
 
-- (void)rejectPaywallsUnsupportedError:(RCTPromiseRejectBlock)reject {
-    NSLog(@"Error: attempted to present customer center on unsupported iOS version.");
+- (void)rejectCustomerCenterUnsupportedError:(RCTPromiseRejectBlock)reject {
+    NSLog(@"Error: attempted to present Customer Center on unsupported iOS version.");
     reject(@"CustomerCenterUnsupportedCode", @"CustomerCenter is not supported prior to iOS 15.", nil);
 }
 
