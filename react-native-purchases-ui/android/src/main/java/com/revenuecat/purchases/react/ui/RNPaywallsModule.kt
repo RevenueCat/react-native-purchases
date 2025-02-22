@@ -26,6 +26,7 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
                 is FragmentActivity -> currentActivity
                 else -> {
                     Log.e(NAME, "RevenueCat paywalls require application to use a FragmentActivity")
+                    promise.reject("E_ACTIVITY_NOT_FRAGMENT", "Current activity is not a FragmentActivity")
                     null
                 }
             }
