@@ -18,9 +18,12 @@ internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
     }
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallView {
-        return PaywallView(themedReactContext).also { view ->
-            view.setPaywallListener(createPaywallListenerWrapper(themedReactContext, view))
-            view.setDismissHandler(getDismissHandler(themedReactContext, view))
+    return PaywallView(themedReactContext).apply {
+        // Ensure the view is properly initialized before setting listeners
+        post {
+            setPaywallListener(createPaywallListenerWrapper(themedReactContext, this))
+            setDismissHandler(getDismissHandler(themedReactContext, this))
+            }
         }
     }
 
