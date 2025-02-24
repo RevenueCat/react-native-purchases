@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 
 import {
   Alert,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -183,7 +182,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView>
+    <View>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
           <TouchableOpacity
@@ -301,7 +300,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

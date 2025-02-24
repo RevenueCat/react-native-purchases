@@ -13,8 +13,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2CE2DEAA276A10B500A69CF0 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE2DEA9276A10B500A69CF0 /* StoreKit.framework */; };
+		364042DC7BFB0F0C92BDAB04 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 77A59F14EECB98153060CFE4 /* PrivacyInfo.xcprivacy */; };
 		7563D19D59AC4E289E8C5514 /* Ubuntu.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */; };
-		7699B88040F8A987B510C191 /* libPods-PurchaseTester-PurchaseTesterTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-PurchaseTester-PurchaseTesterTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A8B80DA7C45D49CB8DC8B3F1 /* Ubuntu_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B9A261A2D1B4257B086700E /* Ubuntu_bold.ttf */; };
 		AA0D2F9F35D34524BAC7B267 /* Ubuntu_italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */; };
@@ -42,16 +42,14 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PurchaseTester/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = PurchaseTester/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PurchaseTester/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-PurchaseTester-PurchaseTesterTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PurchaseTester-PurchaseTesterTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CE2DEA9276A10B500A69CF0 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2CE2DEAB276A1A9C00A69CF0 /* RevenueCast_PurchaseTesterTypescriptConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = RevenueCast_PurchaseTesterTypescriptConfiguration.storekit; sourceTree = "<group>"; };
 		385A42A43334474AB2B111C1 /* Ubuntu_bold_italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu_bold_italic.ttf; path = ../assets/fonts/Ubuntu_bold_italic.ttf; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-PurchaseTester.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester.debug.xcconfig"; path = "Target Support Files/Pods-PurchaseTester/Pods-PurchaseTester.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-PurchaseTester.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester.release.xcconfig"; path = "Target Support Files/Pods-PurchaseTester/Pods-PurchaseTester.release.xcconfig"; sourceTree = "<group>"; };
-		5B7EB9410499542E8C5724F5 /* Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig"; path = "Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-PurchaseTester.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PurchaseTester.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		77A59F14EECB98153060CFE4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = PurchaseTester/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PurchaseTester/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		89C6BE57DB24E9ADA2F236DE /* Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig"; path = "Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig"; sourceTree = "<group>"; };
 		A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu_italic.ttf; path = ../assets/fonts/Ubuntu_italic.ttf; sourceTree = "<group>"; };
 		AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu.ttf; path = ../assets/fonts/Ubuntu.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -62,7 +60,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-PurchaseTester-PurchaseTesterTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +101,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				77A59F14EECB98153060CFE4 /* PrivacyInfo.xcprivacy */,
 			);
 			name = PurchaseTester;
 			sourceTree = "<group>";
@@ -114,7 +112,6 @@
 				2CE2DEA9276A10B500A69CF0 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-PurchaseTester.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-PurchaseTester-PurchaseTesterTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -168,8 +165,6 @@
 			children = (
 				3B4392A12AC88292D35C810B /* Pods-PurchaseTester.debug.xcconfig */,
 				5709B34CF0A7D63546082F79 /* Pods-PurchaseTester.release.xcconfig */,
-				5B7EB9410499542E8C5724F5 /* Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig */,
-				89C6BE57DB24E9ADA2F236DE /* Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -181,12 +176,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "PurchaseTesterTests" */;
 			buildPhases = (
-				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
-				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -274,6 +266,7 @@
 				BB6B3C91156F4D1CBB67A11F /* Ubuntu_bold_italic.ttf in Resources */,
 				AA0D2F9F35D34524BAC7B267 /* Ubuntu_italic.ttf in Resources */,
 				7563D19D59AC4E289E8C5514 /* Ubuntu.ttf in Resources */,
+				364042DC7BFB0F0C92BDAB04 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,28 +306,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester/Pods-PurchaseTester-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PurchaseTester-PurchaseTesterTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -357,23 +328,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -389,23 +343,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester/Pods-PurchaseTester-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PurchaseTester-PurchaseTesterTests/Pods-PurchaseTester-PurchaseTesterTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -460,7 +397,6 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-PurchaseTester-PurchaseTesterTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 8SXR2327BM;
@@ -488,7 +424,6 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-PurchaseTester-PurchaseTesterTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -642,6 +577,7 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				USE_HERMES = true;
 			};
 			name = Debug;

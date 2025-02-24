@@ -24,7 +24,6 @@ import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
 
 import APIKeys from './app/APIKeys';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
@@ -100,11 +99,11 @@ const App = () => {
   }, [url]);
 
   return !hasKeys() ? (
-      <SafeAreaView>
+      <View>
         <Text style={{margin: 20, textAlign: 'center'}}>
           Update RevenueCat API Keys in APIKeys.tsx
         </Text>
-      </SafeAreaView>
+      </View>
     ) : (
       <NavigationContainer>
         <Stack.Navigator  initialRouteName="Home">

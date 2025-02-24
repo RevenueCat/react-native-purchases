@@ -29,12 +29,6 @@ target 'PurchaseTester' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-
-  target 'PurchaseTesterTests' do
-    inherit! :complete
-    # Pods for testing
-  end
-
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
@@ -43,11 +37,6 @@ target 'PurchaseTester' do
       :mac_catalyst_enabled => false
     )
 
-    # See https://github.com/facebook/react-native/issues/37748
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', '_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION']
-      end
-    end
+    
   end
 end

@@ -14,21 +14,37 @@
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.0",
-    "react": "18.2.0",
-    "react-native": "0.73.5",
+    "react": "19.0.0",
+    "react-native": "0.78.0",
     "react-native-safe-area-context": "^4.7.4",
     "react-native-screens": "3.29.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@babel/preset-env": "^7.20.0",
-    "@babel/runtime": "^7.20.0",
-    "@react-native/babel-preset": "0.73.21",
-    "@react-native/metro-config": "0.73.5",
-    "@react-native/typescript-config": "0.73.1",
-    "babel-plugin-module-resolver": "^5.0.0"
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "15.0.1",
+    "@react-native-community/cli-platform-android": "15.0.1",
+    "@react-native-community/cli-platform-ios": "15.0.1",
+    "@react-native/babel-preset": "0.78.0",
+    "@react-native/eslint-config": "0.78.0",
+    "@react-native/metro-config": "0.78.0",
+    "@react-native/typescript-config": "0.78.0",
+    "@types/jest": "^29.5.13",
+    "@types/react": "^19.0.0",
+    "@types/react-test-renderer": "^19.0.0",
+    "react-test-renderer": "19.0.0"
   },
   "engines": {
     "node": ">=18"
+  },
+  "rnx-kit": {
+    "kitType": "app",
+    "alignDeps": {
+      "requirements": [
+        "react-native@0.78"
+      ],
+      "capabilities": []
+    }
   }
 }
