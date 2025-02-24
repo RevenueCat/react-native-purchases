@@ -19,7 +19,6 @@ import com.revenuecat.purchases.react.ui.events.OnPurchaseStartedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
-import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
@@ -49,7 +48,6 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .build()
     }
 
-    @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
     abstract fun setFontFamily(view: T, customFontProvider: CustomFontProvider)
 
     @ReactProp(name = PROP_OPTIONS)
@@ -69,7 +67,6 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         }
     }
 
-    @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
     private fun setFontFamilyProp(view: T, props: ReadableMap?) {
         props?.getString(OPTION_FONT_FAMILY)?.let {
             FontAssetManager.getFontFamily(fontFamilyName = it, view.resources.assets)?.let {
