@@ -10,12 +10,12 @@ import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
 import com.revenuecat.purchases.hybridcommon.ui.PaywallSource
 import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
 import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
-import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
-import com.revenuecat.purchases.ui.revenuecatui.fonts.PaywallFont
-import com.revenuecat.purchases.ui.revenuecatui.fonts.PaywallFontFamily
 
-internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
-    ReactContextBaseJavaModule(reactContext) {
+
+internal class RNPaywallsModule(
+    reactContext: ReactApplicationContext
+) : ReactContextBaseJavaModule(reactContext) {
+
     companion object {
         const val NAME = "RNPaywalls"
     }
@@ -78,7 +78,6 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
         // Keep: Required for RN built in Event Emitter Calls.
     }
 
-    @OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
     private fun presentPaywall(
         requiredEntitlementIdentifier: String?,
         offeringIdentifier: String?,
