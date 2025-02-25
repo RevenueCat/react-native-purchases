@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  rn: react-native-community/react-native@7.4.0
+  rn: react-native-community/react-native@8.0.1
   revenuecat: revenuecat/sdks-common-config@2.2.0
 
 aliases:
@@ -130,7 +130,7 @@ jobs:
         -Xmx4096m -Dorg.gradle.daemon=false
         -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
         -XX:+HeapDumpOnOutOfMemoryError"
-      java_options: '-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport'
+        -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
       resource_class: medium
       build_image_version: latest
     steps:
@@ -149,7 +149,7 @@ jobs:
           name: Set Ruby 3.2.0
           command: |
             eval "$(rbenv init -)"
-            rbenv install --verbose -s 3.2.0
+            rbenv install -s 3.2.0
             rbenv global 3.2.0
             rbenv rehash
       - install-dependencies-ios-build
@@ -161,6 +161,7 @@ jobs:
           pod_install_directory: examples/purchaseTesterTypescript/ios
           pod_install_command: bundle exec pod install --repo-update
       - rn/ios_build:
+          cache: false
           build_configuration: Release
           device: iPhone 15
           derived_data_path: ~/DerivedData
