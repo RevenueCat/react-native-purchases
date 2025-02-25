@@ -146,11 +146,11 @@ jobs:
       - rn/ios_simulator_start:
           device: iPhone 15
       - run:
-          name: Set Ruby 3.1.2
+          name: Set Ruby 3.2.0
           command: |
             eval "$(rbenv init -)"
-            rbenv install --verbose -s 3.1.2
-            rbenv global 3.1.2
+            rbenv install --verbose -s 3.2.0
+            rbenv global 3.2.0
             rbenv rehash
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:

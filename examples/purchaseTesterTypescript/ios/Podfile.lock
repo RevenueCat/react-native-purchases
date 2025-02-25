@@ -1605,7 +1605,7 @@ PODS:
   - RNPurchases (8.6.2):
     - PurchasesHybridCommon (= 13.19.0)
     - React-Core
-  - RNScreens (4.9.0):
+  - RNScreens (4.9.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1626,9 +1626,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.9.0)
+    - RNScreens/common (= 4.9.1)
     - Yoga
-  - RNScreens/common (4.9.0):
+  - RNScreens/common (4.9.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1951,7 +1951,7 @@ SPEC CHECKSUMS:
   RevenueCatUI: f52648672be46e692955aab397a4a491f8aa196f
   RNPaywalls: 2f131c6249c268ae3fdc16204e9fdae4e8e8c1d5
   RNPurchases: b08443bfe25d3a7e3a99eb8ed9933c7a9a1f51e6
-  RNScreens: 2faba2591006e59fa14b9b665599ce29435a749a
+  RNScreens: 991214b4e69016c1ae32830d9cea31c9c9422367
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
