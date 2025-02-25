@@ -1,3 +1,10 @@
+## 8.6.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* Updates purchases-hybrid-common to 13.19.0 (#1189) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.18.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.18.0)
+  * [iOS 5.17.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.17.0)
+
 ## 8.6.1
 ## RevenueCat SDK
 ### 📦 Dependency Updates
@@ -28,6 +35,18 @@
   * [Android 8.11.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.11.0)
   * [iOS 5.16.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.16.0)
   * [iOS 5.15.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.15.1)
+  * [iOS 5.15.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.15.0)
+  * [iOS 5.14.6](https://github.com/RevenueCat/purchases-ios/releases/tag/5.14.6)
+
+## 8.5.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* Updates purchases-hybrid-common to 13.16.2 (#1168) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.11.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.11.0)
+  * [iOS 5.15.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.15.0)
+  * [iOS 5.14.6](https://github.com/RevenueCat/purchases-ios/releases/tag/5.14.6)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.16.0 (#1165) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.11.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.11.0)
   * [iOS 5.15.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.15.0)
   * [iOS 5.14.6](https://github.com/RevenueCat/purchases-ios/releases/tag/5.14.6)
 
