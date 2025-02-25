@@ -145,9 +145,16 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
+      - run:
+          name: Set Ruby 3.1.2
+          command: |
+            eval "$(rbenv init -)"
+            rbenv install -s 3.1.2
+            rbenv global 3.1.2
+            rbenv rehash
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: v3
+          cache-version: v2
           working_directory: examples/purchaseTesterTypescript
       - rn/pod_install:
           pod_install_directory: examples/purchaseTesterTypescript/ios
