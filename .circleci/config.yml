@@ -130,7 +130,7 @@ jobs:
         -Xmx4096m -Dorg.gradle.daemon=false
         -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
         -XX:+HeapDumpOnOutOfMemoryError"
-      java_options: '-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport'
+      java_options: '-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport'
       resource_class: medium
       build_image_version: latest
     steps:
@@ -154,7 +154,7 @@ jobs:
             rbenv rehash
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: v2
+          cache-version: v2.1
           working_directory: examples/purchaseTesterTypescript
       - rn/pod_install:
           pod_install_directory: examples/purchaseTesterTypescript/ios
