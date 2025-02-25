@@ -163,15 +163,8 @@ jobs:
       - run:
           name: Build iOS
           command: |
-            export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
-      # - rn/ios_build:
-      #     cache: false
-      #     build_configuration: Release
-      #     device: iPhone 15
-      #     derived_data_path: ~/DerivedData
-      #     project_type: workspace
-      #     project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
-      #     scheme: PurchaseTester
+            export RCT_NO_LAUNCH_PACKAGER=true \
+            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
   make-release:
     description: "Publishes the new version and creates a github release"
