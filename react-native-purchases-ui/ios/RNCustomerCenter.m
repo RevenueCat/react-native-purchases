@@ -66,8 +66,9 @@ RCT_EXPORT_METHOD(presentCustomerCenter:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
         if (self.customerCenterProxy) {
-            [self.customerCenterProxy present];
-            resolve(nil);
+            [_customerCenterProxy presentWithResultHandler:^{
+                resolve(nil);
+            }];
         } else {
             reject(@"CUSTOMER_CENTER_ERROR", @"Failed to initialize Customer Center Proxy", nil);
         }
