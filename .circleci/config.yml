@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  rn: react-native-community/react-native@7.4.0
+  rn: react-native-community/react-native@8.0.1
   revenuecat: revenuecat/sdks-common-config@2.2.0
 
 aliases:
@@ -130,8 +130,8 @@ jobs:
         -Xmx4096m -Dorg.gradle.daemon=false
         -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
         -XX:+HeapDumpOnOutOfMemoryError"
-      java_options: '-Xmx2048m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport'
-      resource_class: medium
+        -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
+      resource_class: large
       build_image_version: latest
     steps:
       - checkout
@@ -145,20 +145,27 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
+      - run:
+          name: Set Ruby 3.2.0
+          command: |
+            eval "$(rbenv init -)"
+            rbenv install -s 3.2.0
+            rbenv global 3.2.0
+            rbenv rehash
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
           working_directory: examples/purchaseTesterTypescript
       - rn/pod_install:
+          cache: false
           pod_install_directory: examples/purchaseTesterTypescript/ios
           pod_install_command: bundle exec pod install --repo-update
-      - rn/ios_build:
-          build_configuration: Release
-          device: iPhone 15
-          derived_data_path: ~/DerivedData
-          project_type: workspace
-          project_path: examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace
-          scheme: PurchaseTester
+      - run:
+          name: Build iOS
+          # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
+          command: |
+            export RCT_NO_LAUNCH_PACKAGER=true \
+            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
   make-release:
     description: "Publishes the new version and creates a github release"
