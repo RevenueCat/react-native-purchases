@@ -147,7 +147,7 @@ jobs:
           device: iPhone 15
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: v2
+          cache-version: v3
           working_directory: examples/purchaseTesterTypescript
       - rn/pod_install:
           pod_install_directory: examples/purchaseTesterTypescript/ios
