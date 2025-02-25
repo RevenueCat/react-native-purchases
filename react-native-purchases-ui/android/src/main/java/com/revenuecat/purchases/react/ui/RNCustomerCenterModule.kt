@@ -60,8 +60,8 @@ internal class RNCustomerCenterModule(
         promise: Promise
     ) {
         currentActivity?.let {
-            presentCustomerCenterFromActivity(it)
             customerCenterPromise = promise
+            presentCustomerCenterFromActivity(it)
         } ?: run {
             promise.reject(
                 "CUSTOMER_CENTER_MISSING_ACTIVITY",
