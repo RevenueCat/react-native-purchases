@@ -154,9 +154,10 @@ jobs:
             rbenv rehash
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: v2.1
+          cache-version: v2
           working_directory: examples/purchaseTesterTypescript
       - rn/pod_install:
+          cache: false
           pod_install_directory: examples/purchaseTesterTypescript/ios
           pod_install_command: bundle exec pod install --repo-update
       - rn/ios_build:
