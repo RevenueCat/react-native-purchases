@@ -9,7 +9,6 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.revenuecat.purchases.PurchasesErrorCode
 import com.revenuecat.purchases.ui.revenuecatui.customercenter.ShowCustomerCenter
 
 internal class RNCustomerCenterModule(
@@ -38,7 +37,7 @@ internal class RNCustomerCenterModule(
                     } else {
                         Log.d(NAME, "Customer Center closed with result $resultCode")
                         customerCenterPromise?.reject(
-                            PurchasesErrorCode.UnknownError.code.toString(),
+                            "CUSTOMER_CENTER_ERROR",
                             "Customer Center closed with result code: $resultCode",
                             null
                         )
@@ -65,7 +64,7 @@ internal class RNCustomerCenterModule(
             customerCenterPromise = promise
         } ?: run {
             promise.reject(
-                PurchasesErrorCode.UnknownError.code.toString(),
+                "CUSTOMER_CENTER_MISSING_ACTIVITY",
                 "Could not present Customer Center. There's no activity",
                 null
             )
