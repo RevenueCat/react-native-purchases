@@ -26,7 +26,6 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
                 is FragmentActivity -> currentActivity
                 else -> {
                     Log.e(NAME, "RevenueCat paywalls require application to use a FragmentActivity")
-                    promise.reject("E_ACTIVITY_NOT_FRAGMENT", "Current activity is not a FragmentActivity")
                     null
                 }
             }
@@ -87,7 +86,11 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
         fontFamilyName: String?,
         promise: Promise
     ) {
-        val fragment = currentActivityFragment ?: return
+        val fragment = currentActivityFragment
+        if (fragment == null) {
+            promise.reject("E_ACTIVITY_NOT_FRAGMENT", "Current activity is not a FragmentActivity")
+            return
+        }
         val fontFamily = fontFamilyName?.let {
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, fragment.resources.assets)
         }
