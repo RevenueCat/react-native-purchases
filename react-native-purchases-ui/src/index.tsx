@@ -26,8 +26,13 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 const RNPaywalls = NativeModules.RNPaywalls;
+const RNCustomerCenter = NativeModules.RNCustomerCenter;
 
 if (!RNPaywalls) {
+  throw new Error(LINKING_ERROR);
+}
+
+if (!RNCustomerCenter) {
   throw new Error(LINKING_ERROR);
 }
 
@@ -302,6 +307,15 @@ export default class RevenueCatUI {
       </View>
     );
   };
+
+    /**
+   * Presents the customer center to the user.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the customer center is presented.
+   */
+    public static presentCustomerCenter(): Promise<void> {
+      return RNCustomerCenter.presentCustomerCenter();
+    }
 
   /**
    * @deprecated, Use {@link OriginalTemplatePaywallFooterContainerView} instead

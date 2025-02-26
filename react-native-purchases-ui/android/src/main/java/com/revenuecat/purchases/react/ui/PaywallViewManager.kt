@@ -1,12 +1,10 @@
 package com.revenuecat.purchases.react.ui
 
 import com.facebook.react.uimanager.ThemedReactContext
-import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
 
-@OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
 internal class PaywallViewManager : BasePaywallViewManager<PaywallView>() {
 
     companion object {

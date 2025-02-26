@@ -17,6 +17,13 @@ typedef void (^StartPurchaseBlock)(PurchaseCompletedBlock);
 
 @end
 
+@interface NSObject (NSNullMapping)
+
+- (id)mappingNSNullToNil;
+
+@end
+
+
 
 NSString *RNPurchasesCustomerInfoUpdatedEvent = @"Purchases-CustomerInfoUpdated";
 NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchasePromoProduct";
@@ -47,16 +54,16 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled) {
-    RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey
-                                                    appUserID:appUserID
-                                      purchasesAreCompletedBy:purchasesAreCompletedBy
-                                        userDefaultsSuiteName:userDefaultsSuiteName
+    RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
+                                                    appUserID:appUserID.mappingNSNullToNil
+                                      purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
+                                        userDefaultsSuiteName:userDefaultsSuiteName.mappingNSNullToNil
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
-                                              storeKitVersion:storeKitVersion
+                                              storeKitVersion:storeKitVersion.mappingNSNullToNil
                                             dangerousSettings:nil
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
-                                             verificationMode:entitlementVerificationMode 
+                                             verificationMode:entitlementVerificationMode.mappingNSNullToNil
                                            diagnosticsEnabled:diagnosticsEnabled];
     purchases.delegate = self;
 }
@@ -86,7 +93,7 @@ RCT_EXPORT_METHOD(getCurrentOfferingForPlacement:(NSString *)placementIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
 
-    [RCCommonFunctionality getCurrentOfferingForPlacement:placementIdentifier completionBlock:^(NSDictionary *offeringObject, RCErrorContainer *error) {
+    [RCCommonFunctionality getCurrentOfferingForPlacement:placementIdentifier.mappingNSNullToNil completionBlock:^(NSDictionary *offeringObject, RCErrorContainer *error) {
         resolve(offeringObject);
     }];
 }
@@ -97,7 +104,7 @@ RCT_EXPORT_METHOD(getProductInfo:(NSArray *)products
                   type:(NSString *)type
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality getProductInfo:products completionBlock:^(NSArray<NSDictionary *> *productObjects) {
+    [RCCommonFunctionality getProductInfo:products.mappingNSNullToNil completionBlock:^(NSArray<NSDictionary *> *productObjects) {
         resolve(productObjects);
     }];
 }
@@ -111,8 +118,8 @@ RCT_REMAP_METHOD(purchaseProduct,
                  presentedOfferingContext:(NSDictionary *)presentedOfferingDictionary
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality purchaseProduct:productIdentifier
-                   signedDiscountTimestamp:signedDiscountTimestamp
+    [RCCommonFunctionality purchaseProduct:productIdentifier.mappingNSNullToNil
+                   signedDiscountTimestamp:signedDiscountTimestamp.mappingNSNullToNil
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
@@ -125,9 +132,9 @@ RCT_REMAP_METHOD(purchasePackage,
                  googleInfo:(NSDictionary *)googleInfo
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality purchasePackage:packageIdentifier
-                  presentedOfferingContext:presentedOfferingContext
-                   signedDiscountTimestamp:signedDiscountTimestamp
+    [RCCommonFunctionality purchasePackage:packageIdentifier.mappingNSNullToNil
+                  presentedOfferingContext:presentedOfferingContext.mappingNSNullToNil
+                   signedDiscountTimestamp:signedDiscountTimestamp.mappingNSNullToNil
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
@@ -151,7 +158,7 @@ RCT_REMAP_METHOD(getAppUserID,
 RCT_EXPORT_METHOD(logIn:(nonnull NSString *)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality logInWithAppUserID:appUserID
+    [RCCommonFunctionality logInWithAppUserID:appUserID.mappingNSNullToNil
                               completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
@@ -168,7 +175,7 @@ RCT_REMAP_METHOD(setDebugLogsEnabled,
 
 RCT_EXPORT_METHOD(setLogLevel:(NSString *)level)
 {
-    [RCCommonFunctionality setLogLevel:level];
+    [RCCommonFunctionality setLogLevel:level.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setSimulatesAskToBuyInSandbox:(BOOL)simulatesAskToBuyInSandbox)
@@ -212,7 +219,7 @@ RCT_EXPORT_METHOD(makeDeferredPurchase:(nonnull NSNumber *)callbackID
 RCT_EXPORT_METHOD(checkTrialOrIntroductoryPriceEligibility:(NSArray *)products
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality checkTrialOrIntroductoryPriceEligibility:products
+    [RCCommonFunctionality checkTrialOrIntroductoryPriceEligibility:products.mappingNSNullToNil
                                                     completionBlock:^(NSDictionary<NSString *,RCIntroEligibility *> * _Nonnull responseDictionary) {
         resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
     }];
@@ -227,8 +234,8 @@ RCT_REMAP_METHOD(getPromotionalOffer,
                  discount:(NSString *)discount
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality promotionalOfferForProductIdentifier:productIdentifier
-                                                       discount:discount
+    [RCCommonFunctionality promotionalOfferForProductIdentifier:productIdentifier.mappingNSNullToNil
+                                                       discount:discount.mappingNSNullToNil
                                                 completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
@@ -292,7 +299,7 @@ RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
                                            reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
         [RCCommonFunctionality purchasePackage:packageID
-                      presentedOfferingContext:presentedOfferingContext
+                      presentedOfferingContext:presentedOfferingContext.mappingNSNullToNil
                                 winBackOfferID:winBackOfferID
                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
     } else {
@@ -307,28 +314,28 @@ RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
 RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality setProxyURLString:proxyURLString];
+    [RCCommonFunctionality setProxyURLString:proxyURLString.mappingNSNullToNil];
     resolve(nil); // Resolve the promise with no value
 }
 
 RCT_EXPORT_METHOD(setAttributes:(NSDictionary *)attributes) {
-    [RCCommonFunctionality setAttributes:attributes];
+    [RCCommonFunctionality setAttributes:attributes.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setEmail:(NSString *)email) {
-    [RCCommonFunctionality setEmail:email];
+    [RCCommonFunctionality setEmail:email.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setPhoneNumber:(NSString *)phoneNumber) {
-    [RCCommonFunctionality setPhoneNumber:phoneNumber];
+    [RCCommonFunctionality setPhoneNumber:phoneNumber.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setDisplayName:(NSString *)displayName) {
-    [RCCommonFunctionality setDisplayName:displayName];
+    [RCCommonFunctionality setDisplayName:displayName.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setPushToken:(NSString *)pushToken) {
-    [RCCommonFunctionality setPushToken:pushToken];
+    [RCCommonFunctionality setPushToken:pushToken.mappingNSNullToNil];
 }
 
 # pragma mark Attribution IDs
@@ -338,80 +345,80 @@ RCT_EXPORT_METHOD(collectDeviceIdentifiers) {
 }
 
 RCT_EXPORT_METHOD(setAdjustID:(NSString *)adjustID) {
-    [RCCommonFunctionality setAdjustID:adjustID];
+    [RCCommonFunctionality setAdjustID:adjustID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setAppsflyerID:(NSString *)appsflyerID) {
-    [RCCommonFunctionality setAppsflyerID:appsflyerID];
+    [RCCommonFunctionality setAppsflyerID:appsflyerID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setFBAnonymousID:(NSString *)fbAnonymousID) {
-    [RCCommonFunctionality setFBAnonymousID:fbAnonymousID];
+    [RCCommonFunctionality setFBAnonymousID:fbAnonymousID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setMparticleID:(NSString *)mparticleID) {
-    [RCCommonFunctionality setMparticleID:mparticleID];
+    [RCCommonFunctionality setMparticleID:mparticleID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setCleverTapID:(NSString *)cleverTapID) {
-    [RCCommonFunctionality setCleverTapID:cleverTapID];
+    [RCCommonFunctionality setCleverTapID:cleverTapID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setMixpanelDistinctID:(NSString *)mixpanelDistinctID) {
-    [RCCommonFunctionality setMixpanelDistinctID:mixpanelDistinctID];
+    [RCCommonFunctionality setMixpanelDistinctID:mixpanelDistinctID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setFirebaseAppInstanceID:(NSString *)firebaseAppInstanceId) {
-    [RCCommonFunctionality setFirebaseAppInstanceID:firebaseAppInstanceId];
+    [RCCommonFunctionality setFirebaseAppInstanceID:firebaseAppInstanceId.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setTenjinAnalyticsInstallationID:(NSString *)tenjinAnalyticsInstallationID) {
-    [RCCommonFunctionality setTenjinAnalyticsInstallationID:tenjinAnalyticsInstallationID];
+    [RCCommonFunctionality setTenjinAnalyticsInstallationID:tenjinAnalyticsInstallationID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setKochavaDeviceID:(NSString *)kochavaDeviceID) {
-    [RCCommonFunctionality setKochavaDeviceID:kochavaDeviceID];
+    [RCCommonFunctionality setKochavaDeviceID:kochavaDeviceID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID) {
-    [RCCommonFunctionality setOnesignalID:onesignalID];
+    [RCCommonFunctionality setOnesignalID:onesignalID.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setAirshipChannelID:(NSString *)airshipChannelID) {
-    [RCCommonFunctionality setAirshipChannelID:airshipChannelID];
+    [RCCommonFunctionality setAirshipChannelID:airshipChannelID.mappingNSNullToNil];
 }
 
 # pragma mark Campaign parameters
 
 RCT_EXPORT_METHOD(setMediaSource:(NSString *)mediaSource) {
-    [RCCommonFunctionality setMediaSource:mediaSource];
+    [RCCommonFunctionality setMediaSource:mediaSource.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setCampaign:(NSString *)campaign) {
-    [RCCommonFunctionality setCampaign:campaign];
+    [RCCommonFunctionality setCampaign:campaign.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setAdGroup:(NSString *)adGroup) {
-    [RCCommonFunctionality setAdGroup:adGroup];
+    [RCCommonFunctionality setAdGroup:adGroup.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setAd:(NSString *)ad) {
-    [RCCommonFunctionality setAd:ad];
+    [RCCommonFunctionality setAd:ad.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setKeyword:(NSString *)keyword) {
-    [RCCommonFunctionality setKeyword:keyword];
+    [RCCommonFunctionality setKeyword:keyword.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(setCreative:(NSString *)creative) {
-    [RCCommonFunctionality setCreative:creative];
+    [RCCommonFunctionality setCreative:creative.mappingNSNullToNil];
 }
 
 RCT_REMAP_METHOD(canMakePayments,
                  canMakePaymentsWithFeatures:(NSArray<NSNumber *> *)features
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
-      resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features]));
+      resolve(@([RCCommonFunctionality canMakePaymentsWithFeatures:features.mappingNSNullToNil]));
 }
 
 RCT_EXPORT_METHOD(beginRefundRequestForActiveEntitlement:(RCTPromiseResolveBlock)resolve
@@ -433,7 +440,7 @@ RCT_EXPORT_METHOD(beginRefundRequestForEntitlementId:(NSString *)entitlementIden
                   reject:(RCTPromiseRejectBlock)reject) {
     #if TARGET_OS_IPHONE && !TARGET_OS_TV
     if (@available(iOS 15.0, *)) {
-        [RCCommonFunctionality beginRefundRequestEntitlementId:entitlementIdentifier
+        [RCCommonFunctionality beginRefundRequestEntitlementId:entitlementIdentifier.mappingNSNullToNil
                                                completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
                                                                                                                reject:reject]];
     } else {
@@ -449,7 +456,7 @@ RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
                   reject:(RCTPromiseRejectBlock)reject) {
     #if TARGET_OS_IPHONE && !TARGET_OS_TV
     if (@available(iOS 15.0, *)) {
-        [RCCommonFunctionality beginRefundRequestProductId:productIdentifier
+        [RCCommonFunctionality beginRefundRequestProductId:productIdentifier.mappingNSNullToNil
                                            completionBlock:[self getBeginRefundResponseCompletionBlockWithResolve:resolve
                                                                                                            reject:reject]];
     } else {
@@ -470,7 +477,7 @@ RCT_EXPORT_METHOD(showInAppMessages:(NSArray<NSNumber *> *)messageTypes
                 resolve(nil);
             }];
         } else {
-            NSSet *types = [[NSSet alloc] initWithArray:messageTypes];
+            NSSet *types = [[NSSet alloc] initWithArray:messageTypes.mappingNSNullToNil];
             [RCCommonFunctionality showStoreMessagesForTypes:types completion:^{
                 resolve(nil);
             }];
@@ -500,13 +507,13 @@ RCT_EXPORT_METHOD(setLogHandler) {
 RCT_EXPORT_METHOD(isWebPurchaseRedemptionURL:(NSString *)urlString
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    resolve(@([RCCommonFunctionality isWebPurchaseRedemptionURL:urlString]));
+    resolve(@([RCCommonFunctionality isWebPurchaseRedemptionURL:urlString.mappingNSNullToNil]));
 }
 
 RCT_EXPORT_METHOD(redeemWebPurchase:(NSString *)urlString
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    [RCCommonFunctionality redeemWebPurchaseWithUrlString:urlString
+    [RCCommonFunctionality redeemWebPurchaseWithUrlString:urlString.mappingNSNullToNil
                                                completion:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                reject:reject]];
 }
@@ -588,7 +595,47 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"8.6.1";
+    return @"8.7.0";
+}
+
+@end
+
+@implementation NSObject (NSNullMapping)
+
+- (id)mappingNSNullToNil {
+    if ([self isKindOfClass:[NSNull class]]) {
+        return nil;
+    } else if ([self isKindOfClass:NSDictionary.class]) {
+        NSMutableDictionary *filteredDict = [NSMutableDictionary dictionary];
+        NSDictionary *originalDict = (NSDictionary *)self;
+
+        for (id key in originalDict) {
+            id value = [originalDict[key] mappingNSNullToNil];
+            if (value) {
+                // Only add non-nil values to the dictionary
+                filteredDict[key] = value;
+            }
+        }
+
+      return [NSDictionary dictionaryWithDictionary:filteredDict];
+
+    } else if ([self isKindOfClass:NSArray.class]) {
+        NSMutableArray *filteredArray = [NSMutableArray array];
+        NSArray *originalArray = (NSArray *)self;
+
+        for (id value in originalArray) {
+            id newValue = [value mappingNSNullToNil];
+            if (newValue) {
+                // Only add non-nil values to the array
+                [filteredArray addObject:newValue];
+            }
+
+            return [NSArray arrayWithArray:filteredArray];
+
+        }
+    }
+
+    return self;
 }
 
 @end
