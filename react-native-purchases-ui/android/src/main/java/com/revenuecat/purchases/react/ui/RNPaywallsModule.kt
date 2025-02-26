@@ -87,7 +87,7 @@ internal class RNPaywallsModule(reactContext: ReactApplicationContext) :
         promise: Promise
     ) {
         val fragment = currentActivityFragment
-        if (fragment == null) {
+        if (!fragment) {
             promise.reject("E_ACTIVITY_NOT_FRAGMENT", "Current activity is not a FragmentActivity")
             return
         }
