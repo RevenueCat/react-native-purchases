@@ -467,6 +467,29 @@ RCT_EXPORT_METHOD(beginRefundRequestForProductId:(NSString *)productIdentifier
     #endif
 }
 
+RCT_EXPORT_METHOD(showManageSubscriptions:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    #if TARGET_OS_IPHONE && !TARGET_OS_TV
+    if (@available(iOS 13.0, macOS 10.15, visionOS 1.0, *)) {
+        [RCCommonFunctionality showManageSubscriptions:^(RCErrorContainer * _Nullable errorContainer) {
+            if (errorContainer) {
+                reject(
+                    [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
+                    errorContainer.message,
+                    errorContainer.error
+                );
+            } else {
+                resolve(nil);
+            }
+        }];
+    } else {
+        NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS 13.0 or greater."];
+        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    }
+    #endif
+}
+
 RCT_EXPORT_METHOD(showInAppMessages:(NSArray<NSNumber *> *)messageTypes
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
