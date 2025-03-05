@@ -143,6 +143,8 @@ async function checkPurchasing(
 
   await Purchases.showInAppMessages();
   await Purchases.showInAppMessages(messageTypes);
+
+  const manageSubscriptions: void = await Purchases.showManageSubscriptions();
 }
 
 async function checkConfigure() {

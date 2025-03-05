@@ -484,9 +484,14 @@ RCT_EXPORT_METHOD(showManageSubscriptions:
             }
         }];
     } else {
+        NSLog(@"[Purchases] Warning: tried to showManageSubscriptions in non supported ios devices. Only available on iOS 13.0 or greater.");
         NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS 13.0 or greater."];
         reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
     }
+    #else
+    NSLog(@"[Purchases] Warning: tried to showManageSubscriptions in non-ios devices. That's not supported.");
+    NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS devices."];
+    reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
     #endif
 }
 

@@ -1474,7 +1474,7 @@ export default class Purchases {
   }
 
   /**
-   * Presents the App Store sheet for managing subscriptions.
+   * Presents the App Store sheet for managing subscriptions. Only available in iOS 13+ devices.
    */
   public static async showManageSubscriptions(): Promise<void> {
     await Purchases.throwIfNotConfigured();
