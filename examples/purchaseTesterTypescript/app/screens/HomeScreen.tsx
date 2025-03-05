@@ -155,6 +155,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
+  const showManageSubscriptions = async () => {
+    try {
+      await Purchases.showManageSubscriptions();
+    } catch (error) {
+      console.log(`Error showing sheet for managing subscriptions: ${error}`);
+    }
+  };
+
   const showInAppMessages = async () => {
     try {
       await Purchases.showInAppMessages();
@@ -232,6 +240,10 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.otherActions}>Redeem Code</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={showManageSubscriptions}>
+            <Text style={styles.otherActions}>Manage Subscriptions</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={showInAppMessages}>
             <Text style={styles.otherActions}>Show In-App messages</Text>
           </TouchableOpacity>
@@ -295,9 +307,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             onPress={async () => {
               try {
                 await RevenueCatUI.presentCustomerCenter();
-                console.log("Customer Center presented successfully");
+                console.log('Customer Center presented successfully');
               } catch (error) {
-                console.error("Error presenting Customer Center:", error);
+                console.error('Error presenting Customer Center:', error);
               }
             }}>
             <Text style={styles.otherActions}>Present customer center</Text>

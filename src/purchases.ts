@@ -1474,6 +1474,15 @@ export default class Purchases {
   }
 
   /**
+   * Presents the App Store sheet for managing subscriptions. Only available in iOS 13+ devices.
+   */
+  public static async showManageSubscriptions(): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    await Purchases.throwIfAndroidPlatform();
+    return RNPurchases.showManageSubscriptions();
+  }
+
+  /**
    * Shows in-app messages available from the App Store or Google Play. You need to disable messages from showing
    * automatically using [PurchasesConfiguration.shouldShowInAppMessagesAutomatically].
    *
