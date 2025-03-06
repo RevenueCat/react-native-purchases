@@ -9,10 +9,17 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesError
+import com.revenuecat.purchases.customercenter.CustomerCenterListener
 import com.revenuecat.purchases.ui.revenuecatui.customercenter.ShowCustomerCenter
 
 internal class RNCustomerCenterModule(
-    reactContext: ReactApplicationContext
+    private val reactContext: ReactApplicationContext
 ) : ReactContextBaseJavaModule(reactContext) {
 
     companion object {
@@ -84,9 +91,57 @@ internal class RNCustomerCenterModule(
     private fun presentCustomerCenterFromActivity(
         activity: Activity
     ) {
+        val customerCenterListener = createCustomerCenterListener()
+        Purchases.sharedInstance.customerCenterListener = customerCenterListener
         val intent = ShowCustomerCenter()
             .createIntent(activity, Unit)
         activity.startActivityForResult(intent, REQUEST_CODE_CUSTOMER_CENTER)
     }
 
+    private fun createCustomerCenterListener(): CustomerCenterListener {
+        return object : CustomerCenterListener {
+            override fun onFeedbackSurveyCompleted(feedbackSurveyOptionId: String) {
+                val params = WritableNativeMap().apply {
+                    putString("feedbackSurveyOptionId", feedbackSurveyOptionId)
+                }
+                sendEvent("onFeedbackSurveyCompleted", params)
+            }
+
+            override fun onShowingManageSubscriptions() {
+                sendEvent("onShowingManageSubscriptions", null)
+            }
+
+            override fun onRestoreCompleted(customerInfo: CustomerInfo) {
+                val params = WritableNativeMap().apply {
+                    // TODO
+//                    putMap("customerInfo", RNPurchasesConverters.convertCustomerInfoToMap(customerInfo))
+                }
+                sendEvent("onRestoreCompleted", params)
+            }
+
+            override fun onRestoreFailed(error: PurchasesError) {
+                val params = WritableNativeMap().apply {
+                    // TODO
+//                    putMap("error", RNPurchasesConverters.convertErrorToMap(error))
+                }
+                sendEvent("onRestoreFailed", params)
+            }
+
+            override fun onRestoreStarted() {
+                sendEvent("onRestoreStarted", null)
+            }
+        }
+    }
+
+    private fun sendEvent(eventName: String, params: WritableMap?) {
+        reactContext.runOnUiQueueThread {
+            try {
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit(eventName, params)
+            } catch (e: Exception) {
+                Log.e(NAME, "Error sending event $eventName", e)
+            }
+        }
+    }
 }

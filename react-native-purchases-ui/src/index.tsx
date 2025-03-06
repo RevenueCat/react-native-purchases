@@ -37,6 +37,7 @@ if (!RNCustomerCenter) {
 }
 
 const eventEmitter = new NativeEventEmitter(RNPaywalls);
+const customerCenterEventEmitter = new NativeEventEmitter(RNCustomerCenter);
 
 const InternalPaywall =
   UIManager.getViewManagerConfig('Paywall') != null
@@ -154,6 +155,33 @@ type FooterPaywallViewProps = {
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
+
+export interface CustomerCenterCallbacks {
+  /**
+   * Called when a feedback survey is completed with the selected option ID.
+   */
+  onFeedbackSurveyCompleted?: ({feedbackSurveyOptionId}: { feedbackSurveyOptionId: string }) => void;
+  
+  /**
+   * Called when the manage subscriptions section is being shown.
+   */
+  onShowingManageSubscriptions?: () => void;
+  
+  /**
+   * Called when a restore operation is completed successfully.
+   */
+  onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  
+  /**
+   * Called when a restore operation fails.
+   */
+  onRestoreFailed?: ({error}: { error: PurchasesError }) => void;
+  
+  /**
+   * Called when a restore operation starts.
+   */
+  onRestoreStarted?: () => void;
+}
 
 export default class RevenueCatUI {
 
@@ -308,14 +336,68 @@ export default class RevenueCatUI {
     );
   };
 
-    /**
+  /**
    * Presents the customer center to the user.
    * 
+   * @param {CustomerCenterCallbacks} callbacks - Optional callbacks for customer center events.
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
-    public static presentCustomerCenter(): Promise<void> {
-      return RNCustomerCenter.presentCustomerCenter();
+  public static presentCustomerCenter(callbacks?: CustomerCenterCallbacks): Promise<void> {
+    if (callbacks) {
+      const subscriptions: { remove: () => void }[] = [];
+
+      if (callbacks.onFeedbackSurveyCompleted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onFeedbackSurveyCompleted',
+          (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted && 
+            callbacks.onFeedbackSurveyCompleted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onShowingManageSubscriptions) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onShowingManageSubscriptions',
+          () => callbacks.onShowingManageSubscriptions && callbacks.onShowingManageSubscriptions()
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRestoreCompleted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRestoreCompleted',
+          (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted && 
+            callbacks.onRestoreCompleted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRestoreFailed) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRestoreFailed',
+          (event: { error: PurchasesError }) => callbacks.onRestoreFailed && 
+            callbacks.onRestoreFailed(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRestoreStarted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRestoreStarted',
+          () => callbacks.onRestoreStarted && callbacks.onRestoreStarted()
+        );
+        subscriptions.push(subscription);
+      }
+
+      // Return a promise that resolves when the customer center is presented
+      return RNCustomerCenter.presentCustomerCenter().finally(() => {
+        // Clean up all event listeners when the customer center is dismissed
+        subscriptions.forEach(subscription => subscription.remove());
+      });
     }
+
+    return RNCustomerCenter.presentCustomerCenter();
+  }
 
   /**
    * @deprecated, Use {@link OriginalTemplatePaywallFooterContainerView} instead
