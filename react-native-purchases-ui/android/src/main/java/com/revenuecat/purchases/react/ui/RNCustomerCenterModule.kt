@@ -16,6 +16,7 @@ import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.customercenter.CustomerCenterListener
+import com.revenuecat.purchases.hybridcommon.ui.CustomerCenterListenerWrapper
 import com.revenuecat.purchases.ui.revenuecatui.customercenter.ShowCustomerCenter
 
 internal class RNCustomerCenterModule(
@@ -99,35 +100,33 @@ internal class RNCustomerCenterModule(
     }
 
     private fun createCustomerCenterListener(): CustomerCenterListener {
-        return object : CustomerCenterListener {
-            override fun onFeedbackSurveyCompleted(feedbackSurveyOptionId: String) {
+        return object : CustomerCenterListenerWrapper() {
+            override fun onFeedbackSurveyCompletedWrapper(feedbackSurveyOptionId: String) {
                 val params = WritableNativeMap().apply {
                     putString("feedbackSurveyOptionId", feedbackSurveyOptionId)
                 }
                 sendEvent("onFeedbackSurveyCompleted", params)
             }
 
-            override fun onShowingManageSubscriptions() {
+            override fun onShowingManageSubscriptionsWrapper() {
                 sendEvent("onShowingManageSubscriptions", null)
             }
 
-            override fun onRestoreCompleted(customerInfo: CustomerInfo) {
+            override fun onRestoreCompletedWrapper(customerInfo: Map<String, Any?>) {
                 val params = WritableNativeMap().apply {
-                    // TODO
-//                    putMap("customerInfo", RNPurchasesConverters.convertCustomerInfoToMap(customerInfo))
+                    putMap("customerInfo", RNPurchasesConverters.convertMapToWriteableMap(customerInfo))
                 }
                 sendEvent("onRestoreCompleted", params)
             }
 
-            override fun onRestoreFailed(error: PurchasesError) {
+            override fun onRestoreFailedWrapper(error: Map<String, Any?>) {
                 val params = WritableNativeMap().apply {
-                    // TODO
-//                    putMap("error", RNPurchasesConverters.convertErrorToMap(error))
+                    putMap("error", RNPurchasesConverters.convertMapToWriteableMap(error))
                 }
                 sendEvent("onRestoreFailed", params)
             }
 
-            override fun onRestoreStarted() {
+            override fun onRestoreStartedWrapper() {
                 sendEvent("onRestoreStarted", null)
             }
         }
