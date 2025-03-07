@@ -10,7 +10,7 @@
 @import PurchasesHybridCommonUI;
 @import RevenueCat;
 
-@interface RNCustomerCenter ()
+@interface RNCustomerCenter () <CustomerCenterViewControllerDelegateWrapper>
 
 @property (nonatomic, strong) id customerCenterProxy;
 
@@ -41,6 +41,7 @@ RCT_EXPORT_MODULE();
 - (void)initializeCustomerCenter {
     if (@available(iOS 15.0, *)) {
         self.customerCenterProxy = [CustomerCenterProxy new];
+        [(CustomerCenterProxy *)self.customerCenterProxy setDelegate:self];
     } else {
         self.customerCenterProxy = nil;
     }
@@ -49,7 +50,16 @@ RCT_EXPORT_MODULE();
 // MARK: -
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[];
+    return @[
+        @"onRestoreStarted",
+        @"onRestoreCompleted",
+        @"onRestoreFailed",
+        @"onShowingManageSubscriptions",
+        @"onRefundRequestStarted",
+        @"onRefundRequestCompleted",
+        @"onFeedbackSurveyCompleted",
+        @"onDismiss"
+    ];
 }
 
 - (dispatch_queue_t)methodQueue {
@@ -80,6 +90,45 @@ RCT_EXPORT_METHOD(presentCustomerCenter:(RCTPromiseResolveBlock)resolve
 - (void)rejectCustomerCenterUnsupportedError:(RCTPromiseRejectBlock)reject {
     NSLog(@"Error: attempted to present Customer Center on unsupported iOS version.");
     reject(@"CustomerCenterUnsupportedCode", @"CustomerCenter is not supported prior to iOS 15.", nil);
+}
+
+// MARK: - CustomerCenterViewControllerDelegateWrapper Methods
+
+- (void)customerCenterViewControllerWasDismissed:(CustomerCenterUIViewController *)controller API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onDismiss" body:@{}];
+}
+
+- (void)customerCenterViewControllerDidStartRestore:(CustomerCenterUIViewController *)controller API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onRestoreStarted" body:@{}];
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+         didFinishRestoringWith:(NSDictionary<NSString *, id> *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onRestoreCompleted" body:@{@"customerInfo": customerInfoDictionary}];
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+              didFailRestoringWith:(NSDictionary<NSString *, id> *)errorDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onRestoreFailed" body:@{@"error": errorDictionary}];
+}
+
+- (void)customerCenterViewControllerDidShowManageSubscriptions:(CustomerCenterUIViewController *)controller API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onShowingManageSubscriptions" body:@{}];
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+didStartRefundRequestForProductWithID:(NSString *)productID API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onRefundRequestStarted" body:@{@"productIdentifier": productID}];
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+didCompleteRefundRequestWithStatus:(NSDictionary<NSString *, id> *)statusDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onRefundRequestCompleted" body:statusDictionary];
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+didCompleteFeedbackSurveyWithOptionID:(NSString *)optionID API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onFeedbackSurveyCompleted" body:@{@"feedbackSurveyOptionId": optionID}];
 }
 
 + (BOOL)requiresMainQueueSetup
