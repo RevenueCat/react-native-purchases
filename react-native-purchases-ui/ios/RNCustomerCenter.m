@@ -10,7 +10,7 @@
 @import PurchasesHybridCommonUI;
 @import RevenueCat;
 
-@interface RNCustomerCenter () <CustomerCenterViewControllerDelegateWrapper>
+@interface RNCustomerCenter () <RCCustomerCenterViewControllerDelegateWrapper>
 
 @property (nonatomic, strong) id customerCenterProxy;
 
@@ -103,12 +103,12 @@ RCT_EXPORT_METHOD(presentCustomerCenter:(RCTPromiseResolveBlock)resolve
 }
 
 - (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
-         didFinishRestoringWith:(NSDictionary<NSString *, id> *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
+         didFinishRestoringWithCustomerInfoDictionary:(NSDictionary<NSString *, id> *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
     [self sendEventWithName:@"onRestoreCompleted" body:@{@"customerInfo": customerInfoDictionary}];
 }
 
 - (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
-              didFailRestoringWith:(NSDictionary<NSString *, id> *)errorDictionary API_AVAILABLE(ios(15.0)) {
+              didFailRestoringWithErrorDictionary:(NSDictionary<NSString *, id> *)errorDictionary API_AVAILABLE(ios(15.0)) {
     [self sendEventWithName:@"onRestoreFailed" body:@{@"error": errorDictionary}];
 }
 
@@ -122,7 +122,7 @@ didStartRefundRequestForProductWithID:(NSString *)productID API_AVAILABLE(ios(15
 }
 
 - (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
-didCompleteRefundRequestWithStatus:(NSDictionary<NSString *, id> *)statusDictionary API_AVAILABLE(ios(15.0)) {
+didCompleteRefundRequestWithStatusDictionary:(NSDictionary<NSString *, id> *)statusDictionary API_AVAILABLE(ios(15.0)) {
     [self sendEventWithName:@"onRefundRequestCompleted" body:statusDictionary];
 }
 
