@@ -13,6 +13,8 @@ async function checkWithCallbacks() {
     onShowingManageSubscriptions: () => {},
     onRestoreStarted: () => {},
     onRestoreCompleted: ({ customerInfo }: { customerInfo: CustomerInfo }) => {},
-    onRestoreFailed: ({ error }: { error: PurchasesError }) => {}
+    onRestoreFailed: ({ error }: { error: PurchasesError }) => {},
+    onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {},
+    onRefundRequestCompleted: ({ refundRequestStatus }: { refundRequestStatus: string }) => {}
   });
 } 

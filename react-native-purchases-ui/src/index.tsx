@@ -181,6 +181,16 @@ export interface CustomerCenterCallbacks {
    * Called when a restore operation starts.
    */
   onRestoreStarted?: () => void;
+
+  /**
+   * Called when a refund request starts with the product identifier.
+   */
+  onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
+  
+  /**
+   * Called when a refund request completes with status information.
+   */
+  onRefundRequestCompleted?: ({refundRequestStatus}: { refundRequestStatus: string }) => void;
 }
 
 export default class RevenueCatUI {
@@ -385,6 +395,24 @@ export default class RevenueCatUI {
         const subscription = customerCenterEventEmitter.addListener(
           'onRestoreStarted',
           () => callbacks.onRestoreStarted && callbacks.onRestoreStarted()
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRefundRequestStarted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRefundRequestStarted',
+          (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted && 
+            callbacks.onRefundRequestStarted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRefundRequestCompleted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRefundRequestCompleted',
+          (event: { refundRequestStatus: string }) => callbacks.onRefundRequestCompleted && 
+            callbacks.onRefundRequestCompleted(event)
         );
         subscriptions.push(subscription);
       }

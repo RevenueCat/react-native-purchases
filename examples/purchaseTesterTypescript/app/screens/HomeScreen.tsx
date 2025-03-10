@@ -328,6 +328,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                     console.log('   • Error code:', error.code);
                     console.log('   • Error message:', error.message);
                     console.log('   • Error underlying error:', error.underlyingErrorMessage || 'none');
+                  },
+                  onRefundRequestStarted: ({productIdentifier}: {productIdentifier: string}) => {
+                    console.log('💰 CUSTOMER CENTER - Refund request started for product:', productIdentifier);
+                  },
+                  onRefundRequestCompleted: ({refundRequestStatus}: {refundRequestStatus: string}) => {
+                    console.log('✅ CUSTOMER CENTER - Refund request completed with status:', refundRequestStatus);
                   }
                 });
                 console.log('✨ CUSTOMER CENTER - Presented successfully');
