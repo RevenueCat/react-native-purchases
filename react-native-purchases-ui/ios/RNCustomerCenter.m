@@ -139,7 +139,7 @@ didCompleteFeedbackSurveyWithOptionID:(NSString *)optionID API_AVAILABLE(ios(15.
 - (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
 didSelectCustomerCenterManagementOption:(NSString *)optionID
 withURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
-    [self sendEventWithName:@"onManagementOptionSelected" body:@{@"option": optionID, @"url": url}];
+    [self sendEventWithName:@"onManagementOptionSelected" body:@{@"option": optionID, @"url": url ?: [NSNull null]}];
 }
 
 + (BOOL)requiresMainQueueSetup
