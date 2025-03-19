@@ -658,9 +658,9 @@ readyForPromotedProduct:(RCStoreProduct *)product
                 [filteredArray addObject:newValue];
             }
 
-            return [NSArray arrayWithArray:filteredArray];
-
         }
+
+        return [NSArray arrayWithArray:filteredArray];
     }
 
     return self;
