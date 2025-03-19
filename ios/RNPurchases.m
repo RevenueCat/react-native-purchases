@@ -623,7 +623,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"8.8.1";
+    return @"8.8.2";
 }
 
 @end
@@ -657,10 +657,9 @@ readyForPromotedProduct:(RCStoreProduct *)product
                 // Only add non-nil values to the array
                 [filteredArray addObject:newValue];
             }
-
-            return [NSArray arrayWithArray:filteredArray];
-
         }
+
+        return [NSArray arrayWithArray:filteredArray];
     }
 
     return self;
