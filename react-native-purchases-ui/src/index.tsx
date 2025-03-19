@@ -208,6 +208,13 @@ export interface CustomerCenterCallbacks {
   onManagementOptionSelected?: ({option, url}: { option: CustomerCenterManagementOption; url: string }) => void;
 }
 
+export interface PresentCustomerCenterParams {
+  /**
+   * Optional callbacks for customer center events.
+   */
+  callbacks?: CustomerCenterCallbacks;
+}
+
 export default class RevenueCatUI {
 
   private static Defaults = {
@@ -364,11 +371,10 @@ export default class RevenueCatUI {
   /**
    * Presents the customer center to the user.
    * 
-   * @param {Object} params - Optional parameters for presenting the customer center.
-   * @param {CustomerCenterCallbacks} [params.callbacks] - Optional callbacks for customer center events.
+   * @param {PresentCustomerCenterParams} params - Optional parameters for presenting the customer center.
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
-  public static presentCustomerCenter(params?: { callbacks?: CustomerCenterCallbacks }): Promise<void> {
+  public static presentCustomerCenter(params?: PresentCustomerCenterParams): Promise<void> {
     if (params?.callbacks) {
       const subscriptions: { remove: () => void }[] = [];
       const callbacks = params.callbacks as CustomerCenterCallbacks;
