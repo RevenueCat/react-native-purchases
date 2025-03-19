@@ -657,7 +657,6 @@ readyForPromotedProduct:(RCStoreProduct *)product
                 // Only add non-nil values to the array
                 [filteredArray addObject:newValue];
             }
-
         }
 
         return [NSArray arrayWithArray:filteredArray];
