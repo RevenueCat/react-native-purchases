@@ -193,12 +193,12 @@ export interface CustomerCenterCallbacks {
   onRestoreStarted?: () => void;
 
   /**
-   * Called when a refund request starts with the product identifier.
+   * Called when a refund request starts with the product identifier. iOS-only callback.
    */
   onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
   
   /**
-   * Called when a refund request completes with status information.
+   * Called when a refund request completes with status information. iOS-only callback.
    */
   onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
 
