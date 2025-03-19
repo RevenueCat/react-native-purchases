@@ -449,7 +449,7 @@ export default class RevenueCatUI {
         subscriptions.push(subscription);
       }
 
-      // Return a promise that resolves when the customer center is presented
+      // Return a promise that resolves when the customer center is dismissed
       return RNCustomerCenter.presentCustomerCenter().finally(() => {
         // Clean up all event listeners when the customer center is dismissed
         subscriptions.forEach(subscription => subscription.remove());
