@@ -166,7 +166,7 @@ export type CustomerCenterManagementOption =
   | 'unknown'
   | string; // This is to prevent breaking changes when the native SDK adds new options
 
-  export interface CustomerCenterCallbacks {
+export interface CustomerCenterCallbacks {
   /**
    * Called when a feedback survey is completed with the selected option ID.
    */
@@ -364,12 +364,14 @@ export default class RevenueCatUI {
   /**
    * Presents the customer center to the user.
    * 
-   * @param {CustomerCenterCallbacks} callbacks - Optional callbacks for customer center events.
+   * @param {Object} params - Optional parameters for presenting the customer center.
+   * @param {CustomerCenterCallbacks} [params.callbacks] - Optional callbacks for customer center events.
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
-  public static presentCustomerCenter(callbacks?: CustomerCenterCallbacks): Promise<void> {
-    if (callbacks) {
+  public static presentCustomerCenter(params?: { callbacks?: CustomerCenterCallbacks }): Promise<void> {
+    if (params?.callbacks) {
       const subscriptions: { remove: () => void }[] = [];
+      const callbacks = params.callbacks as CustomerCenterCallbacks;
 
       if (callbacks.onFeedbackSurveyCompleted) {
         const subscription = customerCenterEventEmitter.addListener(

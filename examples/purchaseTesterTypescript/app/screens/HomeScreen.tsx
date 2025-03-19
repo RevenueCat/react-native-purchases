@@ -14,14 +14,14 @@ import Purchases, {
   CustomerInfo,
   PurchasesOfferings,
 } from 'react-native-purchases';
-import RevenueCatUI from 'react-native-purchases-ui';
+import RevenueCatUI, { CustomerCenterManagementOption } from 'react-native-purchases-ui';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList';
 import PromptWithTextInput from '../components/InputModal';
-import { PurchasesError } from '@revenuecat/purchases-typescript-internal';
+import { PurchasesError, REFUND_REQUEST_STATUS } from '@revenuecat/purchases-typescript-internal';
 
 interface State {
   appUserID: String | null;
@@ -308,32 +308,37 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             onPress={async () => {
               try {
                 await RevenueCatUI.presentCustomerCenter({
-                  onFeedbackSurveyCompleted: ({feedbackSurveyOptionId}: {feedbackSurveyOptionId: string}) => {
-                    console.log('📊 CUSTOMER CENTER - Feedback survey completed with option ID:', feedbackSurveyOptionId);
-                  },
-                  onShowingManageSubscriptions: () => {
-                    console.log('📲 CUSTOMER CENTER - Showing manage subscriptions');
-                  },
-                  onRestoreStarted: () => {
-                    console.log('🔄 CUSTOMER CENTER - Restore started');
-                  },
-                  onRestoreCompleted: ({customerInfo}: {customerInfo: CustomerInfo}) => {
-                    console.log('✅ CUSTOMER CENTER - Restore completed successfully');
-                    console.log('   • Active entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
-                    console.log('   • Original app user ID:', customerInfo.originalAppUserId);
-                    console.log('   • Latest expiration date:', customerInfo.latestExpirationDate || 'none');
-                  },
-                  onRestoreFailed: ({error}: {error: PurchasesError}) => {
-                    console.log('❌ CUSTOMER CENTER - Restore failed', error);
-                    console.log('   • Error code:', error.code);
-                    console.log('   • Error message:', error.message);
-                    console.log('   • Error underlying error:', error.underlyingErrorMessage || 'none');
-                  },
-                  onRefundRequestStarted: ({productIdentifier}: {productIdentifier: string}) => {
-                    console.log('💰 CUSTOMER CENTER - Refund request started for product:', productIdentifier);
-                  },
-                  onRefundRequestCompleted: ({refundRequestStatus}: {refundRequestStatus: string}) => {
-                    console.log('✅ CUSTOMER CENTER - Refund request completed with status:', refundRequestStatus);
+                  callbacks: {
+                    onFeedbackSurveyCompleted: ({feedbackSurveyOptionId}: {feedbackSurveyOptionId: string}) => {
+                      console.log('📊 CUSTOMER CENTER - Feedback survey completed with option ID:', feedbackSurveyOptionId);
+                    },
+                    onShowingManageSubscriptions: () => {
+                      console.log('📲 CUSTOMER CENTER - Showing manage subscriptions');
+                    },
+                    onRestoreStarted: () => {
+                      console.log('🔄 CUSTOMER CENTER - Restore started');
+                    },
+                    onRestoreCompleted: ({customerInfo}: {customerInfo: CustomerInfo}) => {
+                      console.log('✅ CUSTOMER CENTER - Restore completed successfully');
+                      console.log('   • Active entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
+                      console.log('   • Original app user ID:', customerInfo.originalAppUserId);
+                      console.log('   • Latest expiration date:', customerInfo.latestExpirationDate || 'none');
+                    },
+                    onRestoreFailed: ({error}: {error: PurchasesError}) => {
+                      console.log('❌ CUSTOMER CENTER - Restore failed', error);
+                      console.log('   • Error code:', error.code);
+                      console.log('   • Error message:', error.message);
+                      console.log('   • Error underlying error:', error.underlyingErrorMessage || 'none');
+                    },
+                    onRefundRequestStarted: ({productIdentifier}: {productIdentifier: string}) => {
+                      console.log('💰 CUSTOMER CENTER - Refund request started for product:', productIdentifier);
+                    },
+                    onRefundRequestCompleted: ({productIdentifier, refundRequestStatus}: {productIdentifier: string, refundRequestStatus: REFUND_REQUEST_STATUS}) => {
+                      console.log('✅ CUSTOMER CENTER - Refund request completed for product:', productIdentifier, 'with status:', refundRequestStatus);
+                    },
+                    onManagementOptionSelected: ({option, url}: {option: CustomerCenterManagementOption, url: string}) => {
+                      console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with URL:', url);
+                    }
                   }
                 });
                 console.log('✨ CUSTOMER CENTER - Presented successfully');
