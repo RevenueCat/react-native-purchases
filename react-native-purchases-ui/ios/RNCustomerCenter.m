@@ -58,6 +58,7 @@ RCT_EXPORT_MODULE();
         @"onRefundRequestStarted",
         @"onRefundRequestCompleted",
         @"onFeedbackSurveyCompleted",
+        @"onManagementOptionSelected",
         @"onDismiss"
     ];
 }
@@ -122,13 +123,23 @@ didStartRefundRequestForProductWithID:(NSString *)productID API_AVAILABLE(ios(15
 }
 
 - (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
-didCompleteRefundRequestWithStatusDictionary:(NSDictionary<NSString *, id> *)statusDictionary API_AVAILABLE(ios(15.0)) {
-    [self sendEventWithName:@"onRefundRequestCompleted" body:statusDictionary];
+didCompleteRefundRequestForProductWithID:(NSString *)productID
+                          withStatus:(NSString *)status API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onRefundRequestCompleted" body:@{
+        @"productIdentifier": productID,
+        @"refundRequestStatus": status
+    }];
 }
 
 - (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
 didCompleteFeedbackSurveyWithOptionID:(NSString *)optionID API_AVAILABLE(ios(15.0)) {
     [self sendEventWithName:@"onFeedbackSurveyCompleted" body:@{@"feedbackSurveyOptionId": optionID}];
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+didSelectCustomerCenterManagementOption:(NSString *)optionID
+withURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onManagementOptionSelected" body:@{@"option": optionID, @"url": url}];
 }
 
 + (BOOL)requiresMainQueueSetup

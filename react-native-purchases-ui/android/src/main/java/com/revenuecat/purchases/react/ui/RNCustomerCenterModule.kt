@@ -12,9 +12,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
-import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
-import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.customercenter.CustomerCenterListener
 import com.revenuecat.purchases.hybridcommon.ui.CustomerCenterListenerWrapper
 import com.revenuecat.purchases.ui.revenuecatui.customercenter.ShowCustomerCenter
@@ -106,6 +104,14 @@ internal class RNCustomerCenterModule(
                     putString("feedbackSurveyOptionId", feedbackSurveyOptionId)
                 }
                 sendEvent("onFeedbackSurveyCompleted", params)
+            }
+
+            override fun onManagementOptionSelectedWrapper(action: String, url: String?) {
+                val params = WritableNativeMap().apply {
+                    putString("option", action)
+                    putString("url", url)
+                }
+                sendEvent("onManagementOptionSelected", params)
             }
 
             override fun onShowingManageSubscriptionsWrapper() {

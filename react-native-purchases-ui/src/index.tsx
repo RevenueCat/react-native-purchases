@@ -13,7 +13,8 @@ import {
   type CustomerInfo,
   PAYWALL_RESULT, type PurchasesError,
   type PurchasesOffering, type PurchasesPackage,
-  type PurchasesStoreTransaction
+  type PurchasesStoreTransaction,
+  REFUND_REQUEST_STATUS
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 
@@ -156,7 +157,16 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
 
-export interface CustomerCenterCallbacks {
+export type CustomerCenterManagementOption = 
+  | 'cancel'
+  | 'custom_url'
+  | 'missing_purchase'
+  | 'refund_request'
+  | 'change_plans'
+  | 'unknown'
+  | string; // This is to prevent breaking changes when the native SDK adds new options
+
+  export interface CustomerCenterCallbacks {
   /**
    * Called when a feedback survey is completed with the selected option ID.
    */
@@ -190,7 +200,12 @@ export interface CustomerCenterCallbacks {
   /**
    * Called when a refund request completes with status information.
    */
-  onRefundRequestCompleted?: ({refundRequestStatus}: { refundRequestStatus: string }) => void;
+  onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
+
+  /**
+   * Called when a customer center management option is selected with the option ID and URL.
+   */
+  onManagementOptionSelected?: ({option, url}: { option: CustomerCenterManagementOption; url: string }) => void;
 }
 
 export default class RevenueCatUI {
@@ -411,8 +426,17 @@ export default class RevenueCatUI {
       if (callbacks.onRefundRequestCompleted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRefundRequestCompleted',
-          (event: { refundRequestStatus: string }) => callbacks.onRefundRequestCompleted && 
+          (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted && 
             callbacks.onRefundRequestCompleted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onManagementOptionSelected) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onManagementOptionSelected',
+          (event: { option: CustomerCenterManagementOption; url: string }) => callbacks.onManagementOptionSelected && 
+            callbacks.onManagementOptionSelected(event)
         );
         subscriptions.push(subscription);
       }
