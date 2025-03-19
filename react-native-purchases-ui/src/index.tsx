@@ -226,6 +226,18 @@ export interface PresentCustomerCenterParams {
   callbacks?: CustomerCenterCallbacks;
 }
 
+const InternalCustomerCenterView =
+  UIManager.getViewManagerConfig('CustomerCenterView') != null
+    ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
+    : () => {
+      throw new Error(LINKING_ERROR);
+    };
+
+export interface CustomerCenterViewProps {
+    style?: StyleProp<ViewStyle>;
+    onDismiss?: () => void;
+  }
+
 export default class RevenueCatUI {
 
   private static Defaults = {
@@ -380,6 +392,21 @@ export default class RevenueCatUI {
       </View>
     );
   };
+
+  /**
+   * Presents the customer center to the user.
+   * 
+   * A React component for embedding the Customer Center in the UI.
+   */
+  public static CustomerCenterView: React.FC<CustomerCenterViewProps> = ({
+    style,
+    onDismiss,
+  }) => (
+    <InternalCustomerCenterView
+      onDismiss={() => onDismiss && onDismiss()}
+      style={[{ flex: 1 }, style]}
+    />
+  );
 
   /**
    * Presents the customer center to the user.
