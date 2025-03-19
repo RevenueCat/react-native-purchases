@@ -2674,10 +2674,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:13.22.0":
-  version: 13.22.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:13.22.0"
-  checksum: 9672e4cd715fe1fad02aac2d32d142fffe13dcb84fc0c87bf67dd5d4adbaea910c3f73863b02853aa2daa9f716505df3d221df297ee358c6e6a0d2a69dd58339
+"@revenuecat/purchases-typescript-internal@npm:13.25.0":
+  version: 13.25.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:13.25.0"
+  checksum: 5c113fdb9413424ca11cb5ef5c5192663f9f83f3f85d025df6a9fb258688d7cc46dd50c625df0684abc16dc61f4b35c294f9c204b53f91f9c5e03307e94e62e1
   languageName: node
   linkType: hard
 
@@ -7562,7 +7562,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.22.0
+    "@revenuecat/purchases-typescript-internal": 13.25.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -7573,7 +7573,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.73.5
     react-native-builder-bob: ^0.20.0
-    react-native-purchases: 8.7.0
+    react-native-purchases: 8.8.1
     ts-jest: ^29.1.2
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
@@ -7585,11 +7585,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-native-purchases@8.7.0, react-native-purchases@workspace:.":
+"react-native-purchases@8.8.1, react-native-purchases@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.22.0
+    "@revenuecat/purchases-typescript-internal": 13.25.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
