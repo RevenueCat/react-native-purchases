@@ -10,7 +10,7 @@ type RootStackParamList = {
     offering: PurchasesOffering | null;
     fontFamily?: string | null;
   };
-  CustomerCenterModal: undefined;
+  CustomerCenterScreen: undefined;
 };
 
 export default RootStackParamList;

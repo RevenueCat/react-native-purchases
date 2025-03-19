@@ -155,6 +155,18 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
 
+const InternalCustomerCenterView =
+  UIManager.getViewManagerConfig('CustomerCenterView') != null
+    ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
+    : () => {
+      throw new Error(LINKING_ERROR);
+    };
+
+export interface CustomerCenterViewProps {
+    style?: StyleProp<ViewStyle>;
+    onDismiss?: () => void;
+  }
+
 export default class RevenueCatUI {
 
   private static Defaults = {
@@ -308,14 +320,28 @@ export default class RevenueCatUI {
     );
   };
 
+  /**
+   * A React component for embedding the Customer Center in the UI.
+   */
+  public static CustomerCenterView: React.FC<CustomerCenterViewProps> = ({
+    style,
+    onDismiss,
+  }) => (
+    <InternalCustomerCenterView
+      onDismiss={() => onDismiss && onDismiss()}
+      style={[{ flex: 1 }, style]}
+    />
+  );
+
     /**
    * Presents the customer center to the user.
-   * 
+   *
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
     public static presentCustomerCenter(): Promise<void> {
       return RNCustomerCenter.presentCustomerCenter();
     }
+
 
   /**
    * @deprecated, Use {@link OriginalTemplatePaywallFooterContainerView} instead
