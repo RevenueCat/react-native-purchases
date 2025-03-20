@@ -349,7 +349,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.otherActions}>Present customer center</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('CustomerCenterScreen')}>
-            <Text style={styles.otherActions}>Open Customer Center Custom Modal</Text>
+            <Text style={styles.otherActions}>Navigate to CustomerCenter</Text>
           </TouchableOpacity>
         </View>
 

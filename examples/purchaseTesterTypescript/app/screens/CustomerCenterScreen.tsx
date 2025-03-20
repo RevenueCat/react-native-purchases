@@ -1,32 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useLayoutEffect, useEffect } from 'react';
 import RevenueCatUI from 'react-native-purchases-ui';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View, StatusBar, Platform } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+// Required for Android navigation hiding
+import { useNavigation } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomerCenter'>;
 
-const CustomerCenterScreen: React.FC<Props> = ({route, navigation}: Props) => {
+const CustomerCenterScreen: React.FC<Props> = ({ navigation }) => {
     const onDismiss = () => {
-      console.log('CustomerCenter dismissed');
-      navigation.pop();
+        console.log('CustomerCenter dismissed');
+        navigation.goBack();
     };
 
     return (
-    <View style={styles.container}>
-        <RevenueCatUI.CustomerCenterView style={styles.customerCenter} onDismiss={onDismiss}/>
-      </View>
+        <View style={styles.fullscreen}>
+            <RevenueCatUI.CustomerCenterView
+                style={styles.customerCenter}
+                onDismiss={onDismiss}
+            />
+        </View>
     );
-  };
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  customerCenter: {
-    width: '100%',
-    height: '100%',
-   },
+    fullscreen: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'white',
+    },
+    customerCenter: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
 });
 
 export default CustomerCenterScreen;

@@ -2,6 +2,7 @@ package com.revenuecat.purchases.react.ui
 
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
@@ -33,12 +34,13 @@ internal class CustomerCenterViewManager :
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): ViewWrapperFrameLayout<CustomerCenterView> {
         val wrapper = ViewWrapperFrameLayout(themedReactContext) {
-            CustomerCenterView(themedReactContext).also { view ->
-                view.id = View.generateViewId()
-                view.setDismissHandler {
-                    emitDismissEvent(themedReactContext)
+            CustomerCenterView(themedReactContext)
+                .also { view ->
+                    view.id = View.generateViewId()
+                    view.setDismissHandler {
+                        emitDismissEvent(themedReactContext)
+                    }
                 }
-            }
         }
 
         this.wrapper = wrapper
