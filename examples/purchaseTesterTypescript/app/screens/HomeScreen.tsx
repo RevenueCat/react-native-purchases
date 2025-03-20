@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {
+  Modal,
   Alert,
   SafeAreaView,
   ScrollView,
@@ -56,6 +57,8 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     // from a non-asyn function
     setTimeout(fetchData, 1);
   }, []);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Gets customer info, app user id, if user is anonymous, and offerings
   const fetchData = async () => {
@@ -191,8 +194,25 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
+const onDismissCustomerCenter = () => {
+  setIsModalVisible(false)
+}
+
   return (
     <SafeAreaView>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={isModalVisible}
+              onRequestClose={() => setIsModalVisible(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <RevenueCatUI.CustomerCenterView
+                  style={styles.modalContent}
+                  onDismiss={onDismissCustomerCenter}
+                />
+              </View>
+            </Modal>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
           <TouchableOpacity
@@ -349,8 +369,11 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.otherActions}>Present customer center</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('CustomerCenterScreen')}>
-            <Text style={styles.otherActions}>Navigate to CustomerCenter</Text>
+            <Text style={styles.otherActions}>Push CustomerCenter</Text>
           </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                      <Text style={styles.otherActions}>Show CustomerCenter as Modal</Text>
+                    </TouchableOpacity>
         </View>
 
         <Divider />
@@ -396,6 +419,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'dodgerblue',
     marginVertical: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: 300,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
   },
 });
 
