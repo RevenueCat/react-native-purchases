@@ -13,7 +13,8 @@ import {
   type CustomerInfo,
   PAYWALL_RESULT, type PurchasesError,
   type PurchasesOffering, type PurchasesPackage,
-  type PurchasesStoreTransaction
+  type PurchasesStoreTransaction,
+  REFUND_REQUEST_STATUS
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 
@@ -37,6 +38,7 @@ if (!RNCustomerCenter) {
 }
 
 const eventEmitter = new NativeEventEmitter(RNPaywalls);
+const customerCenterEventEmitter = new NativeEventEmitter(RNCustomerCenter);
 
 const InternalPaywall =
   UIManager.getViewManagerConfig('Paywall') != null
@@ -155,17 +157,63 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
 
-const InternalCustomerCenterView =
-  UIManager.getViewManagerConfig('CustomerCenterView') != null
-    ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
-    : () => {
-      throw new Error(LINKING_ERROR);
-    };
+export type CustomerCenterManagementOption =
+  | 'cancel'
+  | 'custom_url'
+  | 'missing_purchase'
+  | 'refund_request'
+  | 'change_plans'
+  | 'unknown'
+  | string; // This is to prevent breaking changes when the native SDK adds new options
 
-export interface CustomerCenterViewProps {
-    style?: StyleProp<ViewStyle>;
-    onDismiss?: () => void;
-  }
+export interface CustomerCenterCallbacks {
+  /**
+   * Called when a feedback survey is completed with the selected option ID.
+   */
+  onFeedbackSurveyCompleted?: ({feedbackSurveyOptionId}: { feedbackSurveyOptionId: string }) => void;
+
+  /**
+   * Called when the manage subscriptions section is being shown.
+   */
+  onShowingManageSubscriptions?: () => void;
+
+  /**
+   * Called when a restore operation is completed successfully.
+   */
+  onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+
+  /**
+   * Called when a restore operation fails.
+   */
+  onRestoreFailed?: ({error}: { error: PurchasesError }) => void;
+
+  /**
+   * Called when a restore operation starts.
+   */
+  onRestoreStarted?: () => void;
+
+  /**
+   * Called when a refund request starts with the product identifier. iOS-only callback.
+   */
+  onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
+
+  /**
+   * Called when a refund request completes with status information. iOS-only callback.
+   */
+  onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
+
+  /**
+   * Called when a customer center management option is selected with the option ID and URL.
+   */
+  onManagementOptionSelected?: ({option, url}: { option: CustomerCenterManagementOption; url: string }) => void;
+}
+
+export interface PresentCustomerCenterParams {
+  /**
+   * Optional callbacks for customer center events.
+   */
+  callbacks?: CustomerCenterCallbacks;
+}
 
 export default class RevenueCatUI {
 
@@ -321,27 +369,95 @@ export default class RevenueCatUI {
   };
 
   /**
-   * A React component for embedding the Customer Center in the UI.
-   */
-  public static CustomerCenterView: React.FC<CustomerCenterViewProps> = ({
-    style,
-    onDismiss,
-  }) => (
-    <InternalCustomerCenterView
-      onDismiss={() => onDismiss && onDismiss()}
-      style={[{ flex: 1 }, style]}
-    />
-  );
-
-    /**
    * Presents the customer center to the user.
    *
+   * @param {PresentCustomerCenterParams} params - Optional parameters for presenting the customer center.
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
-    public static presentCustomerCenter(): Promise<void> {
-      return RNCustomerCenter.presentCustomerCenter();
+  public static presentCustomerCenter(params?: PresentCustomerCenterParams): Promise<void> {
+    if (params?.callbacks) {
+      const subscriptions: { remove: () => void }[] = [];
+      const callbacks = params.callbacks as CustomerCenterCallbacks;
+
+      if (callbacks.onFeedbackSurveyCompleted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onFeedbackSurveyCompleted',
+          (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted &&
+            callbacks.onFeedbackSurveyCompleted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onShowingManageSubscriptions) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onShowingManageSubscriptions',
+          () => callbacks.onShowingManageSubscriptions && callbacks.onShowingManageSubscriptions()
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRestoreCompleted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRestoreCompleted',
+          (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted &&
+            callbacks.onRestoreCompleted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRestoreFailed) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRestoreFailed',
+          (event: { error: PurchasesError }) => callbacks.onRestoreFailed &&
+            callbacks.onRestoreFailed(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRestoreStarted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRestoreStarted',
+          () => callbacks.onRestoreStarted && callbacks.onRestoreStarted()
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRefundRequestStarted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRefundRequestStarted',
+          (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted &&
+            callbacks.onRefundRequestStarted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onRefundRequestCompleted) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onRefundRequestCompleted',
+          (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted &&
+            callbacks.onRefundRequestCompleted(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      if (callbacks.onManagementOptionSelected) {
+        const subscription = customerCenterEventEmitter.addListener(
+          'onManagementOptionSelected',
+          (event: { option: CustomerCenterManagementOption; url: string }) => callbacks.onManagementOptionSelected &&
+            callbacks.onManagementOptionSelected(event)
+        );
+        subscriptions.push(subscription);
+      }
+
+      // Return a promise that resolves when the customer center is dismissed
+      return RNCustomerCenter.presentCustomerCenter().finally(() => {
+        // Clean up all event listeners when the customer center is dismissed
+        subscriptions.forEach(subscription => subscription.remove());
+      });
     }
 
+    return RNCustomerCenter.presentCustomerCenter();
+  }
 
   /**
    * @deprecated, Use {@link OriginalTemplatePaywallFooterContainerView} instead

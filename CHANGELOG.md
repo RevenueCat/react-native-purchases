@@ -1,3 +1,38 @@
+## 8.9.0
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.26.0 (#1217) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.15.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.15.0)
+  * [Android 8.14.3](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.3)
+  * [Android 8.14.2](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.2)
+  * [iOS 5.20.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.0)
+
+## RevenueCatUI SDK
+### Customer Center
+#### ✨ New Features
+* Add `callbacks` to `presentCustomerCenter` (#1211) via Cesar de la Vega (@vegaro)
+
+## 8.8.2
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix get products in iOS (#1216) via Antonio Pallares (@ajpallares)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.226.0 to 2.227.0 (#1215) via dependabot[bot] (@dependabot[bot])
+* Update fastlane plugin (#1214) via Toni Rico (@tonidero)
+
+## 8.8.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.25.0 (#1210) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.1)
+  * [Android 8.14.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.0)
+  * [iOS 5.19.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.19.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.24.0 (#1207) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.1)
+  * [Android 8.14.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.0)
+  * [iOS 5.19.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.19.0)
+
 ## 8.8.0
 ## RevenueCat SDK
 ### ✨ New Features

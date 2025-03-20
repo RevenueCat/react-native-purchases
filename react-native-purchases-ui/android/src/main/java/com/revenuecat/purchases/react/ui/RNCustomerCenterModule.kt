@@ -9,10 +9,16 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.customercenter.CustomerCenterListener
+import com.revenuecat.purchases.hybridcommon.ui.CustomerCenterListenerWrapper
 import com.revenuecat.purchases.ui.revenuecatui.customercenter.ShowCustomerCenter
 
 internal class RNCustomerCenterModule(
-    reactContext: ReactApplicationContext
+    private val reactContext: ReactApplicationContext
 ) : ReactContextBaseJavaModule(reactContext) {
 
     companion object {
@@ -84,9 +90,63 @@ internal class RNCustomerCenterModule(
     private fun presentCustomerCenterFromActivity(
         activity: Activity
     ) {
+        val customerCenterListener = createCustomerCenterListener()
+        Purchases.sharedInstance.customerCenterListener = customerCenterListener
         val intent = ShowCustomerCenter()
             .createIntent(activity, Unit)
         activity.startActivityForResult(intent, REQUEST_CODE_CUSTOMER_CENTER)
     }
 
+    private fun createCustomerCenterListener(): CustomerCenterListener {
+        return object : CustomerCenterListenerWrapper() {
+            override fun onFeedbackSurveyCompletedWrapper(feedbackSurveyOptionId: String) {
+                val params = WritableNativeMap().apply {
+                    putString("feedbackSurveyOptionId", feedbackSurveyOptionId)
+                }
+                sendEvent("onFeedbackSurveyCompleted", params)
+            }
+
+            override fun onManagementOptionSelectedWrapper(action: String, url: String?) {
+                val params = WritableNativeMap().apply {
+                    putString("option", action)
+                    putString("url", url)
+                }
+                sendEvent("onManagementOptionSelected", params)
+            }
+
+            override fun onShowingManageSubscriptionsWrapper() {
+                sendEvent("onShowingManageSubscriptions", null)
+            }
+
+            override fun onRestoreCompletedWrapper(customerInfo: Map<String, Any?>) {
+                val params = WritableNativeMap().apply {
+                    putMap("customerInfo", RNPurchasesConverters.convertMapToWriteableMap(customerInfo))
+                }
+                sendEvent("onRestoreCompleted", params)
+            }
+
+            override fun onRestoreFailedWrapper(error: Map<String, Any?>) {
+                val params = WritableNativeMap().apply {
+                    putMap("error", RNPurchasesConverters.convertMapToWriteableMap(error))
+                }
+                sendEvent("onRestoreFailed", params)
+            }
+
+            override fun onRestoreStartedWrapper() {
+                sendEvent("onRestoreStarted", null)
+            }
+        }
+    }
+
+    private fun sendEvent(eventName: String, params: WritableMap?) {
+        reactContext.runOnUiQueueThread {
+            try {
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit(eventName, params)
+            } catch (e: Exception) {
+                Log.e(NAME, "Error sending event $eventName", e)
+            }
+        }
+    }
 }
