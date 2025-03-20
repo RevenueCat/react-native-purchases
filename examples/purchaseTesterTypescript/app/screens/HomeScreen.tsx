@@ -14,7 +14,7 @@ import Purchases, {
   CustomerInfo,
   PurchasesOfferings,
 } from 'react-native-purchases';
-import RevenueCatUI, { CustomerCenterManagementOption } from 'react-native-purchases-ui';
+import RevenueCatUI, { CustomerCenterManagementOption, CustomerCenterManagementOptionEvent } from 'react-native-purchases-ui';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
@@ -336,8 +336,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                     onRefundRequestCompleted: ({productIdentifier, refundRequestStatus}: {productIdentifier: string, refundRequestStatus: REFUND_REQUEST_STATUS}) => {
                       console.log('✅ CUSTOMER CENTER - Refund request completed for product:', productIdentifier, 'with status:', refundRequestStatus);
                     },
-                    onManagementOptionSelected: ({option, url}: {option: CustomerCenterManagementOption, url: string}) => {
-                      console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with URL:', url);
+                    onManagementOptionSelected: ({option, url}: CustomerCenterManagementOptionEvent) => {
+                      if (option === 'custom_url') {
+                        console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with URL:', url);
+                      } else {
+                        console.log('🔍 CUSTOMER CENTER - Management option selected:', option);
+                      }
                     }
                   }
                 });

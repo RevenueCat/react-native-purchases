@@ -166,6 +166,10 @@ export type CustomerCenterManagementOption =
   | 'unknown'
   | string; // This is to prevent breaking changes when the native SDK adds new options
 
+export type CustomerCenterManagementOptionEvent = 
+  | { option: 'custom_url'; url: string }
+  | { option: Exclude<CustomerCenterManagementOption, 'custom_url'>; url: null };
+
 export interface CustomerCenterCallbacks {
   /**
    * Called when a feedback survey is completed with the selected option ID.
@@ -203,9 +207,11 @@ export interface CustomerCenterCallbacks {
   onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
 
   /**
-   * Called when a customer center management option is selected with the option ID and URL.
+   * Called when a customer center management option is selected.
+   * For 'custom_url' options, the url parameter will contain the URL.
+   * For all other options, the url parameter will be null.
    */
-  onManagementOptionSelected?: ({option, url}: { option: CustomerCenterManagementOption; url: string }) => void;
+  onManagementOptionSelected?: (event: CustomerCenterManagementOptionEvent) => void;
 }
 
 export interface PresentCustomerCenterParams {
@@ -443,7 +449,7 @@ export default class RevenueCatUI {
       if (callbacks.onManagementOptionSelected) {
         const subscription = customerCenterEventEmitter.addListener(
           'onManagementOptionSelected',
-          (event: { option: CustomerCenterManagementOption; url: string }) => callbacks.onManagementOptionSelected && 
+          (event: CustomerCenterManagementOptionEvent) => callbacks.onManagementOptionSelected && 
             callbacks.onManagementOptionSelected(event)
         );
         subscriptions.push(subscription);
