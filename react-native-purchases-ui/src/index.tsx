@@ -157,7 +157,19 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
 
-export type CustomerCenterManagementOption = 
+const InternalCustomerCenterView =
+   UIManager.getViewManagerConfig('CustomerCenterView') != null
+     ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
+     : () => {
+       throw new Error(LINKING_ERROR);
+     };
+
+ export interface CustomerCenterViewProps {
+     style?: StyleProp<ViewStyle>;
+     onDismiss?: () => void;
+   }
+
+export type CustomerCenterManagementOption =
   | 'cancel'
   | 'custom_url'
   | 'missing_purchase'
@@ -171,22 +183,22 @@ export interface CustomerCenterCallbacks {
    * Called when a feedback survey is completed with the selected option ID.
    */
   onFeedbackSurveyCompleted?: ({feedbackSurveyOptionId}: { feedbackSurveyOptionId: string }) => void;
-  
+
   /**
    * Called when the manage subscriptions section is being shown.
    */
   onShowingManageSubscriptions?: () => void;
-  
+
   /**
    * Called when a restore operation is completed successfully.
    */
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
-  
+
   /**
    * Called when a restore operation fails.
    */
   onRestoreFailed?: ({error}: { error: PurchasesError }) => void;
-  
+
   /**
    * Called when a restore operation starts.
    */
@@ -196,7 +208,7 @@ export interface CustomerCenterCallbacks {
    * Called when a refund request starts with the product identifier. iOS-only callback.
    */
   onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
-  
+
   /**
    * Called when a refund request completes with status information. iOS-only callback.
    */
@@ -369,8 +381,21 @@ export default class RevenueCatUI {
   };
 
   /**
+    * A React component for embedding the Customer Center in the UI.
+    */
+   public static CustomerCenterView: React.FC<CustomerCenterViewProps> = ({
+     style,
+     onDismiss,
+   }) => (
+     <InternalCustomerCenterView
+       onDismiss={() => onDismiss && onDismiss()}
+       style={[{ flex: 1 }, style]}
+     />
+   );
+
+  /**
    * Presents the customer center to the user.
-   * 
+   *
    * @param {PresentCustomerCenterParams} params - Optional parameters for presenting the customer center.
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
@@ -382,7 +407,7 @@ export default class RevenueCatUI {
       if (callbacks.onFeedbackSurveyCompleted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onFeedbackSurveyCompleted',
-          (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted && 
+          (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted &&
             callbacks.onFeedbackSurveyCompleted(event)
         );
         subscriptions.push(subscription);
@@ -399,7 +424,7 @@ export default class RevenueCatUI {
       if (callbacks.onRestoreCompleted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRestoreCompleted',
-          (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted && 
+          (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted &&
             callbacks.onRestoreCompleted(event)
         );
         subscriptions.push(subscription);
@@ -408,7 +433,7 @@ export default class RevenueCatUI {
       if (callbacks.onRestoreFailed) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRestoreFailed',
-          (event: { error: PurchasesError }) => callbacks.onRestoreFailed && 
+          (event: { error: PurchasesError }) => callbacks.onRestoreFailed &&
             callbacks.onRestoreFailed(event)
         );
         subscriptions.push(subscription);
@@ -425,7 +450,7 @@ export default class RevenueCatUI {
       if (callbacks.onRefundRequestStarted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRefundRequestStarted',
-          (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted && 
+          (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted &&
             callbacks.onRefundRequestStarted(event)
         );
         subscriptions.push(subscription);
@@ -434,7 +459,7 @@ export default class RevenueCatUI {
       if (callbacks.onRefundRequestCompleted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRefundRequestCompleted',
-          (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted && 
+          (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted &&
             callbacks.onRefundRequestCompleted(event)
         );
         subscriptions.push(subscription);
@@ -443,7 +468,7 @@ export default class RevenueCatUI {
       if (callbacks.onManagementOptionSelected) {
         const subscription = customerCenterEventEmitter.addListener(
           'onManagementOptionSelected',
-          (event: { option: CustomerCenterManagementOption; url: string }) => callbacks.onManagementOptionSelected && 
+          (event: { option: CustomerCenterManagementOption; url: string }) => callbacks.onManagementOptionSelected &&
             callbacks.onManagementOptionSelected(event)
         );
         subscriptions.push(subscription);
