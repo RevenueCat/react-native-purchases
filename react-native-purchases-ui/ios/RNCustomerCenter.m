@@ -10,7 +10,7 @@
 @import PurchasesHybridCommonUI;
 @import RevenueCat;
 
-@interface RNCustomerCenter () <RCCustomerCenterViewControllerDelegateWrapper>
+@interface RNCustomerCenter ()
 
 @property (nonatomic, strong) id customerCenterProxy;
 
