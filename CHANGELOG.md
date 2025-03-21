@@ -1,3 +1,9 @@
+## 8.9.1
+## RevenueCatUI SDK
+### Customer Center
+#### 🐞 Bugfixes
+* Fix Typescript definition of onManagementOptionSelected (#1220) via Cesar de la Vega (@vegaro)
+
 ## 8.9.0
 ## RevenueCat SDK
 ### 📦 Dependency Updates
