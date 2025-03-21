@@ -195,6 +195,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   };
 
 const onDismissCustomerCenter = () => {
+
   setIsModalVisible(false)
 }
 
@@ -204,7 +205,7 @@ const onDismissCustomerCenter = () => {
               animationType="slide"
               transparent={true}
               visible={isModalVisible}
-              onRequestClose={() => setIsModalVisible(false)}
+              onRequestClose={onDismissCustomerCenter}
             >
               <View style={styles.modalOverlay}>
                 <RevenueCatUI.CustomerCenterView
@@ -427,11 +428,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    width: 300,
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white'
   },
 });
 

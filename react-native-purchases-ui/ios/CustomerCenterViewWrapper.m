@@ -56,4 +56,10 @@ API_AVAILABLE(ios(15.0))
         }
     }
 }
+- (void)customerCenterViewControllerRequestedDismissal:(CustomerCenterUIViewController *)controller {
+    if (self.onDismiss) {
+        self.onDismiss(nil);
+    }
+}
+
 @end

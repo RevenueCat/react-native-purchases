@@ -10,7 +10,9 @@
 @import RevenueCatUI;
 @import PurchasesHybridCommonUI;
 
-@interface CustomerCenterViewWrapper : UIView
+@interface CustomerCenterViewWrapper : UIView<RCCustomerCenterViewControllerDelegateWrapper>
+
+@property (nonatomic, copy) RCTDirectEventBlock onDismiss;
 
 - (instancetype)initWithCustomerCenterViewController:(CustomerCenterUIViewController *)viewController;
 
