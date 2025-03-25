@@ -122,7 +122,8 @@ const App = () => {
           <Stack.Screen
               name="CustomerCenterScreen"
               component={CustomerCenterScreen}
-            />
+              options={{ headerShown: false }}
+           />
         </Stack.Navigator>
       </NavigationContainer>
     );
