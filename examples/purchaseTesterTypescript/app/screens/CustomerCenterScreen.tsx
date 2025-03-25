@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect } from 'react';
+import React, { useLayoutEffect, useEffect, useState } from 'react';
 import RevenueCatUI from 'react-native-purchases-ui';
 import { StyleSheet, View, StatusBar, Platform } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -14,12 +14,18 @@ const CustomerCenterScreen: React.FC<Props> = ({ navigation }) => {
         navigation.goBack();
     };
 
+      const [isMounted, setIsMounted] = useState(false);
+
+      useEffect(() => {
+        setIsMounted(true);
+      }, []);
+
     return (
         <View style={styles.fullscreen}>
-            <RevenueCatUI.CustomerCenterView
+            {isMounted &&  <RevenueCatUI.CustomerCenterView
                 style={styles.customerCenter}
                 onDismiss={onDismiss}
-            />
+            /> }
         </View>
     );
 };

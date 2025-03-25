@@ -1,16 +1,18 @@
 package com.revenuecat.purchases.react.ui
 
-import android.util.Log
+import CustomerCenterWrapperView
+import ViewWrapperFrameLayout
 import android.view.View
-import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.Modifier
+
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.events.Event
 import com.revenuecat.purchases.react.ui.customercenter.events.CustomerCenterEventName
-import com.revenuecat.purchases.react.ui.customercenter.events.CustomerCenterOnDismissEvent
 import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
 
 internal class CustomerCenterViewManager :
@@ -30,11 +32,11 @@ internal class CustomerCenterViewManager :
             .build()
     }
 
-    private var wrapper: ViewWrapperFrameLayout<CustomerCenterView>? = null
+//    private var wrapper: FabricDeclarativeView? = null
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): ViewWrapperFrameLayout<CustomerCenterView> {
-        val wrapper = ViewWrapperFrameLayout(themedReactContext) {
-            CustomerCenterView(themedReactContext)
+        val wrapper = ViewWrapperFrameLayout(themedReactContext) { wrapperContext ->
+            CustomerCenterView(wrapperContext)
                 .also { view ->
                     view.id = View.generateViewId()
                     view.setDismissHandler {
@@ -42,9 +44,15 @@ internal class CustomerCenterViewManager :
                     }
                 }
         }
-
-        this.wrapper = wrapper
-
+//        wrapper.setComposableContent {
+//            CustomerCenter(
+//                Modifier
+//                    .fillMaxWidth()
+//                    .fillMaxHeight()
+//            ) {
+//
+//            }
+//        }
         return wrapper
     }
 
@@ -58,12 +66,12 @@ internal class CustomerCenterViewManager :
     protected fun emitDismissEvent(
         context: ReactContext
     ) {
-        wrapper?.let {
-            val surfaceId = UIManagerHelper.getSurfaceId(it)
-
-            val event = CustomerCenterOnDismissEvent(surfaceId, it.id)
-            emitEvent(context, it.id, event)
-        }
+//        wrapper?.let {
+//            val surfaceId = UIManagerHelper.getSurfaceId(it)
+//
+//            val event = CustomerCenterOnDismissEvent(surfaceId, it.id)
+//            emitEvent(context, it.id, event)
+//        }
     }
 
     protected fun emitEvent(
@@ -71,9 +79,9 @@ internal class CustomerCenterViewManager :
         viewId: Int,
         event: Event<*>,
     ) {
-        Log.d(REACT_CLASS, "Dispatching OnDismissEvent for viewId=${viewId}")
-
-        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context, viewId)
-        eventDispatcher?.dispatchEvent(event)
+//        Log.d(REACT_CLASS, "Dispatching OnDismissEvent for viewId=${viewId}")
+//
+//        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context, viewId)
+//        eventDispatcher?.dispatchEvent(event)
     }
 }
