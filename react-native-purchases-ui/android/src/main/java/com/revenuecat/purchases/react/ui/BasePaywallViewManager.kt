@@ -60,9 +60,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     }
 
     private fun setOfferingIdProp(view: T, props: ReadableMap?) {
-        val offeringIdentifier =
-            props?.getDynamic(OPTION_OFFERING)?.asMap()?.getString(OFFERING_IDENTIFIER)
-        offeringIdentifier?.let {
+        props?.getString(OFFERING_IDENTIFIER)?.let {
             setOfferingId(view, it)
         }
     }
