@@ -4,7 +4,10 @@ import {ScrollView, StyleSheet, Text, useColorScheme, View,} from 'react-native'
 
 import {Colors,} from 'react-native/Libraries/NewAppScreen';
 
-import {CustomerInfo} from 'react-native-purchases';
+import {
+  CustomerInfo,
+  PurchasesVirtualCurrencyInfo,
+} from 'react-native-purchases';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -51,6 +54,17 @@ const InfoTab: React.FC<{
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const formatVirtualCurrencies = (
+    virtualCurrencies: {[key: string]: PurchasesVirtualCurrencyInfo}
+  ) => {
+    if (!virtualCurrencies || Object.keys(virtualCurrencies).length === 0) {
+      return 'N/A';
+    }
+    return Object.entries(virtualCurrencies)
+      .map(([code, info]) => `${code}: ${info.balance}`)
+      .join('\n');
+  };
+
   return (
     <ScrollView
         contentInsetAdjustmentBehavior="automatic"
@@ -62,6 +76,7 @@ const InfoTab: React.FC<{
         <Section title='Original Purchase Date' value={customerInfo?.originalPurchaseDate} />
         <Section title='Latest Expiration Date' value={customerInfo?.latestExpirationDate} />
         <Section title='Request Date' value={customerInfo?.requestDate} />
+        <Section title='Virtual Currencies' value={formatVirtualCurrencies(customerInfo?.virtualCurrencies)} />
     </ScrollView>
   );
 };
