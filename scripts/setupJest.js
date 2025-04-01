@@ -59,7 +59,12 @@ global.customerInfoStub = {
   originalAppUserId: "9AE22FE1-D0A3-4341-85B6-D1D6C24C404A",
   originalApplicationVersion: null,
   requestDate: "2019-12-03T00:47:58.000Z",
-  managementURL: "https://url.com"
+  managementURL: "https://url.com",
+  virtualCurrencies: {
+    RC_COIN: {
+      balance: 100,
+    }
+  },
 };
 global.transactionStub = {
     productIdentifier: "com.revenuecat.purchases_hybrid_common.monthly_19.99_.1_week_intro",
