@@ -1415,7 +1415,7 @@ describe("Purchases", () => {
         const customerInfo = await Purchases.getCustomerInfo();
 
         expect(NativeModules.RNPurchases.getCustomerInfo).toBeCalledTimes(1);
-        expect(customerInfo.virtualCurrencies.length).toEqual(1);
+        expect(Object.keys(customerInfo.virtualCurrencies).length).toEqual(1);
         expect(customerInfo.virtualCurrencies["RC_COIN"].balance).toEqual(100);
       });
     });
