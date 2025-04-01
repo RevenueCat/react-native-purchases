@@ -28,6 +28,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         private const val OPTION_OFFERING = "offering"
         private const val OFFERING_IDENTIFIER = "identifier"
         private const val OPTION_FONT_FAMILY = "fontFamily"
+        private const val OPTION_DISPLAY_CLOSE_BUTTON = "displayCloseButton"
     }
 
     abstract fun setOfferingId(view: T, identifier: String)
@@ -52,23 +53,32 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     @ReactProp(name = PROP_OPTIONS)
     fun setOptions(view: T, options: ReadableMap?) {
-        options?.let { props ->
-            setOfferingIdProp(view, props)
-            setFontFamilyProp(view, props)
-            setDisplayCloseButton(view, props)
+        if (options != null) {
+            setOfferingIdProp(view, options)
+            setFontFamilyProp(view, options)
+            setDisplayCloseButton(view, options)
         }
     }
 
-    private fun setOfferingIdProp(view: T, props: ReadableMap?) {
+    private fun setOfferingIdProp(view: T, options: ReadableMap?) {
+        val optionsMap = options?.toHashMap()
+        if (optionsMap == null || !optionsMap.containsKey(OPTION_OFFERING)) {
+            return
+        }
+        if (optionsMap[OPTION_OFFERING] == null) {
+            // getDynamic crashes if the value is null, that's why we use props?.toHashMap
+            return
+        }
+        // this is a workaround for the fact that getDynamic doesn't work with null values
         val offeringIdentifier =
-            props?.getDynamic(OPTION_OFFERING)?.asMap()?.getString(OFFERING_IDENTIFIER)
+            options.getDynamic(OPTION_OFFERING)?.asMap()?.getString(OFFERING_IDENTIFIER)
         offeringIdentifier?.let {
             setOfferingId(view, it)
         }
     }
 
-    private fun setFontFamilyProp(view: T, props: ReadableMap?) {
-        props?.getString(OPTION_FONT_FAMILY)?.let {
+    private fun setFontFamilyProp(view: T, options: ReadableMap?) {
+        options?.getString(OPTION_FONT_FAMILY)?.let {
             FontAssetManager.getFontFamily(fontFamilyName = it, view.resources.assets)?.let {
                 setFontFamily(view, CustomFontProvider(it))
             }
@@ -76,8 +86,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     }
 
     private fun setDisplayCloseButton(view: T, options: ReadableMap) {
-        options.takeIf { it.hasKey("displayCloseButton") }?.let {
-            setDisplayDismissButton(view, it.getBoolean("displayCloseButton"))
+        options.takeIf { it.hasKey(OPTION_DISPLAY_CLOSE_BUTTON) }?.let {
+            setDisplayDismissButton(view, it.getBoolean(OPTION_DISPLAY_CLOSE_BUTTON))
         }
     }
 
