@@ -1406,6 +1406,18 @@ describe("Purchases", () => {
         expect(NativeModules.RNPurchases.beginRefundRequestForProductId).toBeCalledTimes(1);
         expect(NativeModules.RNPurchases.beginRefundRequestForProductId).toBeCalledWith("onemonth_freetrial");
       });
+
+      it("correctly parses virtual currency info", async () => {
+        NativeModules.RNPurchases.getCustomerInfo.mockResolvedValueOnce(
+          customerInfoStub
+        );
+
+        const customerInfo = await Purchases.getCustomerInfo();
+
+        expect(NativeModules.RNPurchases.getCustomerInfo).toBeCalledTimes(1);
+        expect(Object.keys(customerInfo.virtualCurrencies).length).toEqual(1);
+        expect(customerInfo.virtualCurrencies["RC_COIN"].balance).toEqual(100);
+      });
     });
   });
 });

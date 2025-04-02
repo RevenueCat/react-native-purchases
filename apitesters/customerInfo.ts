@@ -3,7 +3,8 @@ import {
   CustomerInfo,
   PurchasesEntitlementInfo,
   PurchasesEntitlementInfos,
-  PurchasesStoreTransaction
+  PurchasesStoreTransaction,
+  PurchasesVirtualCurrencyInfo
 } from "../src";
 
 function checkLoginResult(result: LogInResult) {
@@ -25,6 +26,7 @@ function checkCustomerInfo(info: CustomerInfo) {
   const originalPurchaseDate: string | null = info.originalPurchaseDate;
   const managementURL: string | null = info.managementURL;
   const nonSubscriptionTransactions: PurchasesStoreTransaction[] = info.nonSubscriptionTransactions;
+  const virtualCurrencies: { [virtualCurrencyCode: string]: PurchasesVirtualCurrencyInfo } = info.virtualCurrencies;
 }
 
 function checkEntitlementInfos(infos: PurchasesEntitlementInfos) {
