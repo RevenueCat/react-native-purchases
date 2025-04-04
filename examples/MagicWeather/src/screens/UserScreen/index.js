@@ -3,11 +3,15 @@
  * @author Vadim Savin
  */
 
-import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, Alert} from 'react-native';
 import Purchases from 'react-native-purchases';
-import { ENTITLEMENT_ID } from '../../constants';
-import { LoginForm, LogoutButton, RestorePurchasesButton } from '../../components';
+import {ENTITLEMENT_ID} from '../../constants';
+import {
+  LoginForm,
+  LogoutButton,
+  RestorePurchasesButton,
+} from '../../components';
 import styles from './styles.js';
 
 /*
@@ -24,7 +28,9 @@ const UserScreen = () => {
     setUserId(await Purchases.getAppUserID());
 
     const customerInfo = await Purchases.getCustomerInfo();
-    setSubscriptionActive(typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined');
+    setSubscriptionActive(
+      typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined',
+    );
   };
 
   useEffect(() => {
@@ -47,12 +53,16 @@ const UserScreen = () => {
       <Text style={styles.userIdentifier}>{userId}</Text>
 
       <Text style={styles.headline}>Subscription Status</Text>
-      <Text style={{ color: subscriptionActive ? 'green' : 'red' }}>
+      <Text style={{color: subscriptionActive ? 'green' : 'red'}}>
         {subscriptionActive ? 'Active' : 'Not Active'}
       </Text>
 
       {/* Authentication UI */}
-      {isAnonymous ? <LoginForm onLogin={getUserDetails} /> : <LogoutButton onLogout={getUserDetails} />}
+      {isAnonymous ? (
+        <LoginForm onLogin={getUserDetails} />
+      ) : (
+        <LogoutButton onLogout={getUserDetails} />
+      )}
 
       {/* You should always give users the option to restore purchases to connect their purchase to their current app user ID */}
       <RestorePurchasesButton />

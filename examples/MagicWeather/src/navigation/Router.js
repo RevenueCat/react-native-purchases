@@ -4,35 +4,34 @@
  */
 
 import React from 'react';
-import { NavigationContainer, DarkTheme } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {DarkTheme, createStaticNavigation} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import 'react-native-gesture-handler';
 
 import TabNavigator from './TabNavigator';
 import PaywallScreen from '../screens/PaywallScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator({
+  screens: {
+    Home: {
+      screen: TabNavigator,
+      options: {
+        headerShown: false,
+      },
+    },
+    Paywall: {
+      screen: PaywallScreen,
+      options: {
+        title: '✨ Magic Weather Premium',
+      },
+    },
+  },
+});
+
+const Navigation = createStaticNavigation(Stack);
 
 const Router = () => {
-  return (
-    <NavigationContainer theme={DarkTheme}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={TabNavigator}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Paywall"
-          component={PaywallScreen}
-          options={{
-            title: '✨ Magic Weather Premium',
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  return <Navigation theme={DarkTheme} />;
 };
 
 export default Router;

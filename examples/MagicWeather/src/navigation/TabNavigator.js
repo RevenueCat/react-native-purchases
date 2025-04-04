@@ -4,38 +4,39 @@
  */
 
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import WeatherRouter from './WeatherRouter';
-import UserRouter from './UserRouter';
+import UserScreen from '../screens/UserScreen';
+import WeatherScreen from '../screens/WeatherScreen';
 
-const Tab = createBottomTabNavigator();
-
-const TabNavigator = () => {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Weather"
-        component={WeatherRouter}
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons name={focused ? 'sunny' : 'sunny-outline'} color={color} size={size} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="User"
-        component={UserRouter}
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons name={focused ? 'ios-person-circle' : 'ios-person-circle-outline'} color={color} size={size} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
-  );
-};
+const TabNavigator = createBottomTabNavigator({
+  screens: {
+    Weather: {
+      screen: WeatherScreen,
+      options: {
+        tabBarIcon: ({focused, color, size}) => (
+          <Ionicons
+            name={focused ? 'sunny' : 'sunny-outline'}
+            color={color}
+            size={size}
+          />
+        ),
+      },
+    },
+    User: {
+      screen: UserScreen,
+      options: {
+        tabBarIcon: ({focused, color, size}) => (
+          <Ionicons
+            name={focused ? 'person' : 'person-outline'}
+            color={color}
+            size={size}
+          />
+        ),
+      },
+    },
+  },
+});
 
 export default TabNavigator;
