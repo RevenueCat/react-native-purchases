@@ -1,4 +1,4 @@
-package com.magicweatherreactnative
+package com.revenuecat.sampleapp.reactnative
 
 import android.app.Application
 import com.facebook.react.PackageList

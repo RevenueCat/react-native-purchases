@@ -1,4 +1,4 @@
-package com.magicweatherreactnative
+package com.revenuecat.sampleapp.reactnative
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
