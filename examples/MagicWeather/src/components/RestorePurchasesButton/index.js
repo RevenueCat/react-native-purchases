@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Pressable, Text, Alert } from 'react-native';
+import {Pressable, Text, Alert} from 'react-native';
 import Purchases from 'react-native-purchases';
 import styles from './styles';
 
