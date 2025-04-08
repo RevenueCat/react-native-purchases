@@ -8,8 +8,8 @@ Sign up for a free RevenueCat account [here](https://www.revenuecat.com).
 
 This sample uses:
 
-- React Native 0.78.2
-- [react-native-purchases: ^8.9.2](https://www.npmjs.com/package/react-native-purchases)
+- React Native 0.79.0
+- [react-native-purchases: ^8.9.4](https://www.npmjs.com/package/react-native-purchases)
 
 See minimum react-native version requirements for RevenueCat's _Purchases_ SDK [here](https://github.com/RevenueCat/react-native-purchases#requirements).
 
@@ -106,4 +106,4 @@ Looking for RevenueCat Support? Visit our [Help Center](https://support.revenuec
 
 ## Credits
 
-This React Native sample was built by Vadim Savin from notjust.dev, and updated to React Native 0.78 by RevenueCat
+This React Native sample was built by Vadim Savin from notjust.dev, and updated to React Native 0.79 by RevenueCat
