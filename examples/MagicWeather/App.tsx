@@ -1,11 +1,12 @@
-import React, {useEffect} from 'react';
-import {StatusBar} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, Text } from 'react-native';
 
 import Purchases from 'react-native-purchases';
-import {API_KEY} from './src/constants';
+import { API_KEY } from './src/constants';
 import Router from './src/navigation/Router';
 
 function App(): React.JSX.Element {
+  const [isReady, setIsReady] = useState(false);
   useEffect(() => {
     /* Enable debug logs before calling `setup`. */
     Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
@@ -17,13 +18,14 @@ function App(): React.JSX.Element {
 
       - useAmazon is false, so it will use the Play Store in Android and App Store in iOS by default.
       */
-    Purchases.configure({apiKey: API_KEY, appUserID: null, useAmazon: false});
+    Purchases.configure({ apiKey: API_KEY, appUserID: null, useAmazon: false });
+    setIsReady(true);
   }, []);
 
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <Router />
+      {isReady ? <Router /> : <Text>Loading...</Text>}
     </>
   );
 }
