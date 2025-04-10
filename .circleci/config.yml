@@ -270,6 +270,9 @@ jobs:
             rbenv install -s 3.2.0
             rbenv global 3.2.0
             rbenv rehash
+            # Make sure subsequent steps load rbenv settings
+            echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> $BASH_ENV
+            echo 'eval "$(rbenv init -)"' >> $BASH_ENV
       - run:
           name: yarn setup
           command: |
