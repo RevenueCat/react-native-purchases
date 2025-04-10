@@ -239,7 +239,7 @@ jobs:
           name: npx react-native run-ios
           command: |
             cd examples/purchaseTesterTypescript
-            npx react-native run-ios
+            npx react-native run-ios --no-packager
       - install-maestro-cli
       - run:
           name: Run Maestro Tests
