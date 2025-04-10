@@ -261,6 +261,11 @@ jobs:
       - install-dependencies:
           machine: "unix"
       - run:
+          name: Install rbenv and ruby-build
+          command: |
+            brew update
+            brew install rbenv
+      - run:
           name: Set Ruby 3.2.0
           command: |
             eval "$(rbenv init -)"
