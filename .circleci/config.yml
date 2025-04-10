@@ -1,4 +1,5 @@
 version: 2.1
+
 orbs:
   rn: react-native-community/react-native@8.0.1
   revenuecat: revenuecat/sdks-common-config@2.2.0
@@ -260,7 +261,6 @@ jobs:
       - install-dependencies:
           machine: "unix"
       - rn/android_emulator_start:
-            # device: iPhone 15
       - run:
           name: yarn setup
           command: |
