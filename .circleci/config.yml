@@ -261,6 +261,7 @@ jobs:
       - install-dependencies:
           machine: "unix"
       - rn/android_emulator_start:
+            device_name: emulator-5554
       - run:
           name: yarn setup
           command: |
