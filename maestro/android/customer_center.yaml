@@ -1,0 +1,4 @@
+appId: com.revenuecat.purchases_sample
+---
+- launchApp
+- tapOn: Present Customer Center

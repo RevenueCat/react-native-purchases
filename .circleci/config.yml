@@ -31,7 +31,7 @@ aliases:
 parameters:
   action:
     type: enum
-    enum: [build, upgrade-hybrid-common, bump]
+    enum: [build, upgrade-hybrid-common, bump, run-maestro]
     default: build
   version:
     type: string
@@ -41,6 +41,15 @@ parameters:
     default: false
 
 commands:
+
+  install-maestro-cli:
+    description: "Install Maestro CLI"
+    steps:
+      - run:
+          name: Install Maestro CLI
+          command: |
+            curl -Ls "https://get.maestro.mobile.dev" | bash
+            echo 'export PATH="$HOME/.maestro/bin:$PATH"' >> $BASH_ENV
   # rn/ios_build depends on a specific cache key, so we need to create a custom step to install dependencies
   # we could use rn/yarn_install but that's not compatible with yarn 2
   install-dependencies-ios-build:
@@ -198,6 +207,39 @@ jobs:
             version:<< pipeline.parameters.version >> \
             open_pr:true \
             automatic_release:<< pipeline.parameters.automatic >>
+
+  maestro_ios:
+    <<: *base-mac-job
+    steps:
+      - checkout
+      - rn/ios_simulator_start:
+          device: iPhone 15
+      - run:
+          name: Set Ruby 3.2.0
+          command: |
+            eval "$(rbenv init -)"
+            rbenv install -s 3.2.0
+            rbenv global 3.2.0
+            rbenv rehash
+      - install-dependencies-ios-build
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+          working_directory: examples/purchaseTesterTypescript
+      - rn/pod_install:
+          cache: false
+          pod_install_directory: examples/purchaseTesterTypescript/ios
+          pod_install_command: bundle exec pod install --repo-update
+      - run:
+          name: Build iOS
+          # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
+          command: |
+            export RCT_NO_LAUNCH_PACKAGER=true \
+            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
+      - install-maestro-cli
+      - run:
+          name: Run Maestro Tests
+          command: maestro test maestro/ios
+
 workflows:
   test:
     when:
@@ -253,3 +295,10 @@ workflows:
        equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
      jobs:
        - update-hybrid-common-versions
+
+  manual-trigger-maestro:
+    when:
+      equal: [ run-maestro, << pipeline.parameters.action >> ]
+    jobs:
+      # - maestro_ios
+      # - maestro_android
