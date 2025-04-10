@@ -214,8 +214,7 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
-      - rn/metro_start:
-          background: true
+      - rn/metro_start
       - run:
           name: Set Ruby 3.2.0
           command: |
