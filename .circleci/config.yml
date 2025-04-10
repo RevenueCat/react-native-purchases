@@ -263,17 +263,10 @@ jobs:
       - run:
           name: "Set Ruby 3.2.0"
           command: |
-            git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
             eval "$(rbenv init -)"
             rbenv install -s 3.2.0
             rbenv global 3.2.0
             rbenv rehash
-            # Make sure subsequent steps load rbenv settings
-            echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> $BASH_ENV
-            echo 'eval "$(rbenv init -)"' >> $BASH_ENV
-      - revenuecat/install-gem-mac-dependencies:
-          cache-version: v2
-          working_directory: examples/purchaseTesterTypescript
       - run:
           name: yarn setup
           command: |
@@ -352,5 +345,5 @@ workflows:
     when:
       equal: [ run-maestro, << pipeline.parameters.action >> ]
     jobs:
-      # - maestro_ios
-      - maestro_android
+      - maestro_ios
+      # - maestro_android
