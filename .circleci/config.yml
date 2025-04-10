@@ -244,6 +244,39 @@ jobs:
           name: Run Maestro Tests
           command: maestro test maestro/ios
 
+  maestro_android:
+    executor:
+      name: rn/linux_android
+      # These are the default options in the orb, but with more memory because we were getting out of memory errors
+      gradle_options: >-
+        -Xmx4096m -Dorg.gradle.daemon=false
+        -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
+        -XX:+HeapDumpOnOutOfMemoryError"
+        -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
+      resource_class: large
+      build_image_version: latest
+    steps:
+      - checkout
+      - install-dependencies:
+          machine: "unix"
+      - rn/android_emulator_start:
+            # device: iPhone 15
+      - run:
+          name: yarn setup
+          command: |
+            yarn install
+            yarn bootstrap
+      - run:
+          name: npx react-native run-android
+          command: |
+            cd examples/purchaseTesterTypescript
+            npx react-native run-android --no-packager
+      - install-maestro-cli
+      - run:
+          name: Run Maestro Tests
+          command: maestro test maestro/ios
+
+
 workflows:
   test:
     when:
@@ -304,5 +337,5 @@ workflows:
     when:
       equal: [ run-maestro, << pipeline.parameters.action >> ]
     jobs:
-      - maestro_ios
-      # - maestro_android
+      # - maestro_ios
+      - maestro_android
