@@ -261,12 +261,12 @@ jobs:
       - install-dependencies:
           machine: "unix"
       - run:
-        name: Set Ruby 3.2.0
-        command: |
-          eval "$(rbenv init -)"
-          rbenv install -s 3.2.0
-          rbenv global 3.2.0
-          rbenv rehash
+          name: "Set Ruby 3.2.0"
+          command: |
+            eval "$(rbenv init -)"
+            rbenv install -s 3.2.0
+            rbenv global 3.2.0
+            rbenv rehash
       - run:
           name: yarn setup
           command: |
