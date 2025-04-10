@@ -234,7 +234,6 @@ jobs:
           cache: false
           pod_install_directory: examples/purchaseTesterTypescript/ios
           pod_install_command: bundle exec pod install --repo-update
-      - rn/metro_start
       - run:
           name: npx react-native run-ios
           command: |
