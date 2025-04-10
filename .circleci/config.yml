@@ -260,6 +260,9 @@ jobs:
       - checkout
       - install-dependencies:
           machine: "unix"
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+          working_directory: examples/purchaseTesterTypescript
       - run:
           name: "Set Ruby 3.2.0"
           command: |
