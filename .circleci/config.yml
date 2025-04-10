@@ -260,13 +260,13 @@ jobs:
       - checkout
       - install-dependencies:
           machine: "unix"
-      - rn/android_emulator_start:
-            device_name: emulator-5554
       - run:
           name: yarn setup
           command: |
             yarn install
             yarn bootstrap
+      - rn/android_emulator_start:
+            device_name: emulator-5554
       - run:
           name: npx react-native run-android
           command: |
@@ -275,7 +275,7 @@ jobs:
       - install-maestro-cli
       - run:
           name: Run Maestro Tests
-          command: maestro test maestro/ios
+          command: maestro test maestro/android
 
 
 workflows:
