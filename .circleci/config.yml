@@ -260,9 +260,6 @@ jobs:
       - checkout
       - install-dependencies:
           machine: "unix"
-      - revenuecat/install-gem-mac-dependencies:
-          cache-version: v2
-          working_directory: examples/purchaseTesterTypescript
       - run:
           name: "Set Ruby 3.2.0"
           command: |
@@ -273,6 +270,9 @@ jobs:
             # Make sure subsequent steps load rbenv settings
             echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> $BASH_ENV
             echo 'eval "$(rbenv init -)"' >> $BASH_ENV
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+          working_directory: examples/purchaseTesterTypescript
       - run:
           name: yarn setup
           command: |
