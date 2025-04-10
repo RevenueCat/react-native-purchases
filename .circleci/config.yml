@@ -214,6 +214,8 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
+      - rn/metro_start
+          background: true
       - run:
           name: Set Ruby 3.2.0
           command: |
@@ -221,6 +223,11 @@ jobs:
             rbenv install -s 3.2.0
             rbenv global 3.2.0
             rbenv rehash
+      - run:
+          name: yarn setup
+          command: |
+            yarn install
+            yarn bootstrap
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
@@ -230,11 +237,10 @@ jobs:
           pod_install_directory: examples/purchaseTesterTypescript/ios
           pod_install_command: bundle exec pod install --repo-update
       - run:
-          name: Build iOS
-          # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
+          name: npx react-native run-ios
           command: |
-            export RCT_NO_LAUNCH_PACKAGER=true \
-            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
+            cd examples/purchaseTesterTypescript
+            npx react-native run-ios
       - install-maestro-cli
       - run:
           name: Run Maestro Tests
