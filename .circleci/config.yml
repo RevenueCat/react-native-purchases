@@ -259,18 +259,6 @@ jobs:
       build_image_version: latest
     steps:
       - checkout
-      - run:
-          name: Set RUBY_BUILD_SKIP_GPG Environment Variable
-          command: echo 'export RUBY_BUILD_SKIP_GPG=1' >> $BASH_ENV
-      - ruby/install:
-          version: '3.0.2'
-      - install-dependencies:
-          machine: "unix"
-      - run:
-          name: yarn setup
-          command: |
-            yarn install
-            yarn bootstrap
       - rn/android_emulator_start:
             device_name: emulator-5554
       - run:
