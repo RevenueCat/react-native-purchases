@@ -4,6 +4,7 @@ orbs:
   rn: react-native-community/react-native@8.0.1
   revenuecat: revenuecat/sdks-common-config@2.2.0
   ruby: circleci/ruby@1.1.2
+  android: circleci/android@2.5.0
 
 aliases:
 
