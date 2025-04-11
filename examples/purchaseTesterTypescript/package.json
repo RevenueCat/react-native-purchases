@@ -20,10 +20,10 @@
     "react-native-screens": "^4.5.0"
   },
   "devDependencies": {
-    "@react-native-community/cli": "latest",
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@react-native-community/cli": "latest",
     "@react-native/babel-preset": "^0.78.0",
     "@react-native/metro-config": "^0.78.0",
     "@react-native/typescript-config": "0.78.0",
