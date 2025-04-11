@@ -259,6 +259,9 @@ jobs:
       build_image_version: latest
     steps:
       - checkout
+      - run:
+          name: Set RUBY_BUILD_SKIP_GPG Environment Variable
+          command: echo 'export RUBY_BUILD_SKIP_GPG=1' >> $BASH_ENV
       - ruby/install:
           version: '3.0.2'
       - install-dependencies:
