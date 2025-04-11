@@ -267,7 +267,7 @@ jobs:
           name: npx react-native run-android
           command: |
             cd examples/purchaseTesterTypescript
-            npx react-native run-android --no-packager
+            yarn react-native run-android --no-packager
       - install-maestro-cli
       - run:
           name: Run Maestro Tests
