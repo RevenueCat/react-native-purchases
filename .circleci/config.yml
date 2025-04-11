@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@8.0.1
   revenuecat: revenuecat/sdks-common-config@2.2.0
+  ruby: circleci/ruby@1.1.2
 
 aliases:
   release-tags: &release-tags
@@ -258,15 +259,10 @@ jobs:
       build_image_version: latest
     steps:
       - checkout
+      - ruby/install:
+          version: '3.0.2'
       - install-dependencies:
           machine: "unix"
-      - run:
-          name: "Set Ruby 3.2.0"
-          command: |
-            eval "$(rbenv init -)"
-            rbenv install -s 3.2.0
-            rbenv global 3.2.0
-            rbenv rehash
       - run:
           name: yarn setup
           command: |
@@ -345,5 +341,5 @@ workflows:
     when:
       equal: [ run-maestro, << pipeline.parameters.action >> ]
     jobs:
-      - maestro_ios
-      # - maestro_android
+      # - maestro_ios
+      - maestro_android
