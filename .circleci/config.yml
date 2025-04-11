@@ -6,29 +6,39 @@ orbs:
   ruby: circleci/ruby@1.1.2
 
 aliases:
+
   release-tags: &release-tags
     filters:
       tags:
         ignore: /^.*-SNAPSHOT/
       branches:
         ignore: /.*/
+
   release-branches: &release-branches
     filters:
       tags:
         ignore: /.*/
       branches:
         only: /^release\/.*/
+
   only-main-branch: &only-main-branch
     filters:
       tags:
         ignore: /.*/
       branches:
         only: main
+
   base-mac-job: &base-mac-job
     executor:
       name: rn/macos
       resource_class: macos.m1.medium.gen1
       xcode_version: '15.2'
+
+  android-machine-emulator: &android-machine-emulator
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2024.04.1
 
 parameters:
   action:
@@ -247,16 +257,7 @@ jobs:
           command: maestro test maestro/ios
 
   maestro_android:
-    executor:
-      name: rn/linux_android
-      # These are the default options in the orb, but with more memory because we were getting out of memory errors
-      gradle_options: >-
-        -Xmx4096m -Dorg.gradle.daemon=false
-        -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
-        -XX:+HeapDumpOnOutOfMemoryError"
-        -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
-      resource_class: large
-      build_image_version: latest
+    <<: *android-machine-emulator
     steps:
       - checkout
       - rn/android_emulator_start:
