@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
   spec.authors      = package['author']
   spec.homepage     = "https://github.com/RevenueCat/react-native-purchases"
   spec.license      = package['license']
-  spec.platform     = :ios, "11.0"
+  spec.platform     = :ios, "13.4"
 
   spec.source       = { :git => "https://github.com/RevenueCat/react-native-purchases.git" }
   spec.source_files = "ios/**/*.{h,m,swift}"
