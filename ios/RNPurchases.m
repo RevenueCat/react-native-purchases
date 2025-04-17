@@ -623,7 +623,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"8.9.4";
+    return @"8.9.5";
 }
 
 @end
