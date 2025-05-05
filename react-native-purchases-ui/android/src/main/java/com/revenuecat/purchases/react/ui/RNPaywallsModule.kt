@@ -85,7 +85,11 @@ internal class RNPaywallsModule(
         fontFamilyName: String?,
         promise: Promise
     ) {
-        val fragment = currentActivityFragment ?: return
+        val fragment = currentActivityFragment
+        if (!fragment) {
+            promise.reject("E_ACTIVITY_NOT_FRAGMENT", "Current activity is not a FragmentActivity")
+            return
+        }
         val fontFamily = fontFamilyName?.let {
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, fragment.resources.assets)
         }
