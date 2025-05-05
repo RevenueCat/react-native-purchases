@@ -41,6 +41,7 @@ import {
   PurchasesWinBackOffer,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
+  Storefront,
 } from "@revenuecat/purchases-typescript-internal";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
@@ -669,6 +670,15 @@ export default class Purchases {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.getAppUserID();
   }
+
+  /**
+   * Gets the storefront for the current store account.
+   * @returns {Promise<Storefront | null>} The storefront for the current store account, or null if the storefront is not available.
+   */
+    public static async getStorefront(): Promise<Storefront | null> {
+      await Purchases.throwIfNotConfigured();
+      return RNPurchases.getStorefront();
+    }
 
   /**
    * This function will logIn the current user with an appUserID. Typically this would be used after a log in

@@ -87,7 +87,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                @Nullable String storeKitVersion, boolean useAmazon,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
-                               boolean pendingTransactionsForPrepaidPlansEnabled, 
+                               boolean pendingTransactionsForPrepaidPlansEnabled,
                                boolean diagnosticsEnabled) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
@@ -237,6 +237,18 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void getAppUserID(final Promise promise) {
         promise.resolve(CommonKt.getAppUserID());
+    }
+
+    @ReactMethod
+    public void getStorefront(final Promise promise) {
+        CommonKt.getStorefront(storefrontMap -> {
+            if (storefrontMap == null) {
+                promise.resolve(null);
+            } else {
+                promise.resolve(convertMapToWriteableMap(storefrontMap));
+            }
+            return null;
+        });
     }
 
     @ReactMethod

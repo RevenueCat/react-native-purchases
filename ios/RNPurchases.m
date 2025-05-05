@@ -155,6 +155,14 @@ RCT_REMAP_METHOD(getAppUserID,
     resolve([RCCommonFunctionality appUserID]);
 }
 
+RCT_REMAP_METHOD(getStorefront,
+                 getStorefrontWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+  [RCCommonFunctionality getStorefrontWithCompletion:^(NSDictionary<NSString *,id> * _Nullable storefront) {
+    resolve(storefront);
+  }];
+}
+
 RCT_EXPORT_METHOD(logIn:(nonnull NSString *)appUserID
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {

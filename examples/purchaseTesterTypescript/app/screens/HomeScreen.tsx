@@ -62,8 +62,11 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     try {
       const customerInfo = await Purchases.getCustomerInfo();
       const appUserID = await Purchases.getAppUserID();
+      const storefront = await Purchases.getStorefront();
       const isAnonymous = await Purchases.isAnonymous();
       const offerings = await Purchases.getOfferings();
+
+      console.log('Storefront: ', storefront);
 
       setState(prevState => ({
         appUserID,

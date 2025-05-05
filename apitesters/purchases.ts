@@ -3,6 +3,7 @@ import {
   IN_APP_MESSAGE_TYPE,
   PurchasesError,
   PurchasesOffering,
+  Storefront,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   WebPurchaseRedemptionResultType,
@@ -56,6 +57,7 @@ async function checkPurchases(purchases: Purchases) {
 
 async function checkUsers(purchases: Purchases) {
   const userId: string = await Purchases.getAppUserID();
+  const storefront: Storefront | null = await Purchases.getStorefront();
 
   const result: LogInResult = await Purchases.logIn(userId);
   const info1: CustomerInfo = await Purchases.logOut();
