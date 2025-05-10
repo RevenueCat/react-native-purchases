@@ -1,12 +1,10 @@
 ## RevenueCat SDK
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.29.1 (#1251) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 8.17.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.17.1)
-  * [Android 8.17.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.17.0)
-  * [iOS 5.22.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.2)
-  * [iOS 5.22.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.1)
-  * [iOS 5.22.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.31.0 (#1260) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.23.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.23.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.30.0 (#1257) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.23.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.23.0)
 
-## RevenueCatUI SDK
-### 🐞 Bugfixes
-* [EXTERNAL] Correctly sets RevenueCatUI podspec platform to `13.0` to fix compatibility issue (#1246) via @rgomezp (#1249) via JayShortway (@JayShortway)
+### 🔄 Other Changes
+* Bump fastlane from 2.227.0 to 2.227.2 (#1259) via dependabot[bot] (@dependabot[bot])
+* Bump nokogiri from 1.18.4 to 1.18.8 (#1247) via dependabot[bot] (@dependabot[bot])
