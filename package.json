@@ -100,6 +100,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "13.32.0"
+    "@revenuecat/purchases-typescript-internal": "13.32.0",
+    "expo-constants": "~16.0.2"
   }
 }

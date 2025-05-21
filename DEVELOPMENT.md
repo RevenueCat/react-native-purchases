@@ -49,3 +49,37 @@ Make sure the Android device doesn't have any app with the same package name you
 ---
 
 Make sure your Android emulator has play services and you're logged in
+
+---
+
+### Expo Go Mock Mode
+
+For a streamlined development experience in JavaScript-only environments, particularly **Expo Go**, the RevenueCat SDK includes a mock mode.
+
+**Automatic Activation in Expo Go:**
+This mock mode is **enabled automatically** when the SDK detects it is running within the Expo Go client environment. This means no manual setup is required to use the mock SDK when you are developing and testing your app with Expo Go.
+
+**Manual Activation with Global Flag:**
+You can also manually enable the mock mode in other JavaScript-only environments (or for specific testing scenarios outside of Expo Go detection) by setting a global variable *before* the RevenueCat SDK is imported:
+
+```javascript
+global.__EXPO_GO_MOCK_REVENUECAT__ = true;
+```
+
+If this flag is set to `true`, mock mode will be enabled even if an Expo Go environment is not detected. Note that if Expo Go *is* detected, mock mode will be active regardless of this flag's value (due to the automatic activation).
+
+**Behavior in Mock Mode:**
+When mock mode is active (either automatically via Expo Go detection or manually via the global flag):
+
+*   **Core SDK (`react-native-purchases`):**
+    *   All API calls will return sensible mock data (e.g., mock CustomerInfo, Offerings).
+    *   No actual native purchasing modules will be called, preventing errors in environments where native code is not available or fully built.
+*   **UI SDK (`react-native-purchases-ui`):**
+    *   The `Paywall` component will render a placeholder UI instead of the native paywall.
+    *   This placeholder allows you to simulate:
+        *   A successful purchase.
+        *   A cancelled purchase or an error.
+        *   A restore operation.
+    *   Methods like `presentPaywall()` will log their invocation but will not display a separate modal in mock mode; testing the visual paywall flow should be done using the `<Paywall />` component.
+
+This setup allows you to test your RevenueCat integration's logic, API calls, and purchase/restore flows within Expo Go without needing to create a custom development build immediately.

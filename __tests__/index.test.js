@@ -1,19 +1,208 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
-const {UnsupportedPlatformError} = require("../dist/errors");
+const {UnsupportedPlatformError} = require("../src/errors"); // Changed dist to src
 const {
-  PURCHASES_ARE_COMPLETED_BY_TYPE, REFUND_REQUEST_STATUS, STOREKIT_VERSION
-} = require("../dist/purchases");
+  PURCHASES_ARE_COMPLETED_BY_TYPE, REFUND_REQUEST_STATUS, STOREKIT_VERSION, ENTITLEMENT_VERIFICATION_MODE
+} = require("../src/purchases"); // Changed dist to src
 
 const nativeEmitter = new NativeEventEmitter();
+
+// Define stubs used by original Purchases tests
+const customerInfoStub = {
+  activeSubscriptions: ["annual_sub"],
+  allPurchasedProductIdentifiers: ["annual_sub", "consumable"],
+  entitlements: {
+    all: { "pro_cat": { identifier: "pro_cat", isActive: true } },
+    active: { "pro_cat": { identifier: "pro_cat", isActive: true } },
+  },
+  // Add other necessary fields for customerInfoStub based on its usage in tests
+  originalAppUserId: "testUser",
+  requestDate: "2024-01-01T00:00:00Z",
+  firstSeen: "2023-01-01T00:00:00Z",
+  managementURL: "https://management.url",
+  latestExpirationDate: "2025-01-01T00:00:00Z",
+  nonSubscriptionTransactions: [],
+  verificationResult: "NOT_REQUESTED",
+};
+const offeringsStub = { all: {"offering_1": {}}, current: {"offering_1": {}} };
+const currentOfferingForPlacementStub = { identifier: "placement_offering" };
+const productsStub = [{ identifier: "product_1" }];
+const productStub = { identifier: "onemonth_freetrial", productCategory: "SUBSCRIPTION" };
+const discountStub = { identifier: "discount_id" };
+const promotionalOfferStub = { timestamp: Date.now() };
+const packagestub = { identifier: "package_id", product: productStub, presentedOfferingContext: { offeringIdentifier: "offering_id" } };
+const transactionStub = { transactionIdentifier: "txn_id", productIdentifier: "prod_id", purchaseDate: "date" };
+const entitlementInfoStub = { identifier: "entitlement_id" };
+
+
+describe("Purchases SDK Mocking", () => {
+  let originalExpoGoMockFlag;
+  let MockPurchases;
+  let OriginalPurchases;
+  let consoleLogSpy;
+  let consoleErrorSpy;
+
+  beforeAll(() => {
+    originalExpoGoMockFlag = (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__;
+    MockPurchases = require("../src/PurchasesMock").default;
+    OriginalPurchases = require("../src/purchases").default;
+  });
+
+  beforeEach(() => {
+    // Reset global flag and modules before each test in this suite
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = undefined;
+    jest.resetModules();
+    jest.clearAllMocks(); // Clear all mock function calls
+    // Spy on console.log and console.error to suppress or verify messages
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    // Restore original global flag and spies
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = originalExpoGoMockFlag;
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+  });
+
+  it("should use MockPurchases when in Expo Go (storeClient), global flag undefined", async () => {
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { executionEnvironment: 'storeClient' },
+    }));
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(MockPurchases);
+    await expect(PurchasesInTest.getAppUserID()).resolves.toBe("mock_user_id");
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Expo Go environment detected. Mock mode automatically enabled."));
+  });
+
+  it("should use MockPurchases when not in Expo Go (bare), global flag true", async () => {
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { executionEnvironment: 'bare' },
+    }));
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = true;
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(MockPurchases);
+    await expect(PurchasesInTest.getAppUserID()).resolves.toBe("mock_user_id");
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Global flag __EXPO_GO_MOCK_REVENUECAT__ is true. Mock mode enabled."));
+  });
+  
+  it("should use MockPurchases when in Expo Go (storeClient) AND global flag true", async () => {
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { executionEnvironment: 'storeClient' },
+    }));
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = true;
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(MockPurchases);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Expo Go environment detected. Mock mode automatically enabled."));
+  });
+
+  it("should use MockPurchases when in Expo Go (storeClient) AND global flag false (Expo Go takes precedence)", async () => {
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { executionEnvironment: 'storeClient' },
+    }));
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = false;
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(MockPurchases);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Expo Go environment detected. Mock mode automatically enabled."));
+  });
+
+  const originalSdkExpectedArgs = [
+      expect.any(String), // apiKey
+      null, // appUserID
+      PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
+      undefined, // userDefaultsSuiteName
+      STOREKIT_VERSION.DEFAULT,
+      false, // useAmazon
+      true, // shouldShowInAppMessagesAutomatically
+      ENTITLEMENT_VERIFICATION_MODE.DISABLED,
+      false, // pendingTransactionsForPrepaidPlansEnabled
+      false // diagnosticsEnabled
+  ];
+
+  it("should use OriginalPurchases when not in Expo Go (bare) AND global flag false", () => {
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { executionEnvironment: 'bare' },
+    }));
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = false;
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(OriginalPurchases);
+    PurchasesInTest.configure({ apiKey: "test_key_original_bare_flag_false" });
+    expect(NativeModules.RNPurchases.setupPurchases).toHaveBeenCalledWith("test_key_original_bare_flag_false", ...originalSdkExpectedArgs.slice(1));
+  });
+
+  it("should use OriginalPurchases when not in Expo Go (bare) AND global flag undefined", () => {
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { executionEnvironment: 'bare' },
+    }));
+    // global flag is already undefined from beforeEach
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(OriginalPurchases);
+    PurchasesInTest.configure({ apiKey: "test_key_original_bare_flag_undefined" });
+    expect(NativeModules.RNPurchases.setupPurchases).toHaveBeenCalledWith("test_key_original_bare_flag_undefined", ...originalSdkExpectedArgs.slice(1));
+  });
+  
+  it("should use MockPurchases if expo-constants fails to import AND global flag is true", async () => {
+    jest.doMock('expo-constants', () => {
+      throw new Error("Cannot find module 'expo-constants'");
+    });
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = true;
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(MockPurchases);
+    await expect(PurchasesInTest.getAppUserID()).resolves.toBe("mock_user_id");
+    // Optional: check console.log for the error message if your src/index.ts logs it.
+    // expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Could not determine Expo Go environment"));
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Global flag __EXPO_GO_MOCK_REVENUECAT__ is true. Mock mode enabled."));
+  });
+
+  it("should use OriginalPurchases if expo-constants fails to import AND global flag is false", () => {
+    jest.doMock('expo-constants', () => {
+      throw new Error("Cannot find module 'expo-constants'");
+    });
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = false;
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(OriginalPurchases);
+    PurchasesInTest.configure({ apiKey: "test_key_original_no_expo_flag_false" });
+    expect(NativeModules.RNPurchases.setupPurchases).toHaveBeenCalledWith("test_key_original_no_expo_flag_false", ...originalSdkExpectedArgs.slice(1));
+  });
+  
+  it("should use OriginalPurchases if expo-constants fails to import AND global flag is undefined", () => {
+    jest.doMock('expo-constants', () => {
+      throw new Error("Cannot find module 'expo-constants'");
+    });
+    // global flag is already undefined
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(false);
+    const PurchasesInTest = require("../src/index").default;
+    expect(PurchasesInTest).toBe(OriginalPurchases);
+    PurchasesInTest.configure({ apiKey: "test_key_original_no_expo_flag_undefined" });
+    expect(NativeModules.RNPurchases.setupPurchases).toHaveBeenCalledWith("test_key_original_no_expo_flag_undefined", ...originalSdkExpectedArgs.slice(1));
+  });
+});
+
 
 describe("Purchases", () => {
   var Purchases;
 
   beforeEach(() => {
+    // Ensure original SDK is tested for this block by default
+    (global).valueOf().__EXPO_GO_MOCK_REVENUECAT__ = false; 
+    // Simulate non-Expo Go environment for these tests
+    jest.doMock('expo-constants', () => ({
+      __esModule: true,
+      default: { executionEnvironment: 'bare' },
+    }));
     jest.resetAllMocks();
+    jest.resetModules(); // ensure conditional logic in index is re-evaluated
     NativeModules.RNPurchases.isConfigured.mockResolvedValue(true);
 
-    Purchases = require("../dist/index").default;
+    Purchases = require("../src/index").default; 
   });
 
   it("addCustomerInfoUpdateListener correctly saves listeners", () => {

@@ -52,6 +52,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
+    "@testing-library/react-native": "^13.2.0",
     "@types/jest": "^29.5.12",
     "@types/react": "^18.2.44",
     "@types/react-dom": "~18.2.0",
@@ -115,6 +116,7 @@
   },
   "dependencies": {
     "@revenuecat/purchases-typescript-internal": "13.32.0",
-    "react-native-purchases": "8.10.1"
+    "react-native-purchases": "8.10.1",
+    "expo-constants": "~16.0.2"
   }
 }
