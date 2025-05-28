@@ -27,7 +27,7 @@ const mockCustomerInfo: CustomerInfo = {
  */
 export const mockNativeModuleRNPurchases = {
   setupPurchases: async () => {
-    console.warn('RevenueCat: Running in mock mode - native module not available');
+    console.warn('RevenueCat: Running in mock mode');
     return null;
   },
   setAllowSharingStoreAccount: async () => null,
@@ -40,10 +40,10 @@ export const mockNativeModuleRNPurchases = {
   syncAttributesAndOfferingsIfNeeded: async () => null,
   getProductInfo: async () => [],
   makePurchase: async () => {
-    throw new Error('Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   restorePurchases: async () => {
-    throw new Error('Restore purchases is not available in mock mode');
+    console.warn('RevenueCat: Restore purchases is not available in mock mode');
   },
   getAppUserID: async () => 'mock-user-id',
   setDebugLogsEnabled: async () => null,
@@ -59,24 +59,24 @@ export const mockNativeModuleRNPurchases = {
   syncAmazonPurchase: async () => null,
   syncObserverModeAmazonPurchase: async () => null,
   purchaseProduct: async () => {
-    throw new Error('Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   purchasePackage: async () => {
-    throw new Error('Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   purchaseSubscriptionOption: async () => {
-    throw new Error('Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   isAnonymous: async () => true,
   makeDeferredPurchase: async () => {
-    throw new Error('Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   checkTrialOrIntroductoryPriceEligibility: async () => ({}),
   purchaseDiscountedPackage: async () => {
-    throw new Error('Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   purchaseDiscountedProduct: async () => {
-    throw new Error('Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   getPromotionalOffer: async () => null,
   invalidateCustomerInfoCache: async () => null,
@@ -92,13 +92,13 @@ export const mockNativeModuleRNPurchases = {
   setKochavaDeviceID: async () => null,
   canMakePayments: async () => false,
   beginRefundRequestForActiveEntitlement: async () => {
-    throw new Error('Refunds are not available in mock mode');
+    console.warn('RevenueCat: Refunds are not available in mock mode'); 
   },
   beginRefundRequestForEntitlementId: async () => {
-    throw new Error('Refunds are not available in mock mode');
+    console.warn('RevenueCat: Refunds are not available in mock mode');
   },
   beginRefundRequestForProductId: async () => {
-    throw new Error('Refunds are not available in mock mode');
+    console.warn('RevenueCat: Refunds are not available in mock mode');
   },
   showInAppMessages: async () => null,
   isConfigured: async () => true,
