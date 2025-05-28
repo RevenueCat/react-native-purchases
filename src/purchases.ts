@@ -67,23 +67,23 @@ export {
 import { Platform } from "react-native";
 
 // Get the native module or use the mock implementation
-const RNPurchases = shouldUseCompatibilityAPIMode() ? mockNativeModuleRNPurchases : NativeModules.RNPurchases;
-
-const eventEmitter = new NativeEventEmitter(RNPurchases);
+const usingCompatibilityAPIMode = shouldUseCompatibilityAPIMode();
+const RNPurchases = usingCompatibilityAPIMode ? mockNativeModuleRNPurchases : NativeModules.RNPurchases;
+const eventEmitter = usingCompatibilityAPIMode ? null : new NativeEventEmitter(RNPurchases);
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
   [];
 let customLogHandler: LogHandler;
 
-eventEmitter.addListener(
+eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
   (customerInfo: CustomerInfo) => {
     customerInfoUpdateListeners.forEach((listener) => listener(customerInfo));
   }
 );
 
-eventEmitter.addListener(
+eventEmitter?.addListener(
   "Purchases-ShouldPurchasePromoProduct",
   ({ callbackID }: { callbackID: number }) => {
     shouldPurchasePromoProductListeners.forEach((listener) =>
@@ -92,7 +92,7 @@ eventEmitter.addListener(
   }
 );
 
-eventEmitter.addListener(
+eventEmitter?.addListener(
   "Purchases-LogHandlerEvent",
   ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
     const logLevelEnum = LOG_LEVEL[logLevel];

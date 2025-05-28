@@ -1,5 +1,4 @@
-// import { NativeModules, Platform } from 'react-native';
-// import DeviceInfo from 'react-native-device-info';
+import { NativeModules } from "react-native";
 
 /**
  * Detects if the app is running in an environment where native modules are not available
@@ -9,20 +8,26 @@
  * (like Expo Go) or if the required native modules are missing.
  */
 export function shouldUseCompatibilityAPIMode(): boolean {
-  return isExpoGo();
+  let useCompatibilityMode = isExpoGo();
+  if (useCompatibilityMode) {
+    console.log('Expo Go app detected. Using RevenueCat in Compatibility API Mode.');
+  }
+  return useCompatibilityMode;
 }
-
-// const EXPO_GO_BUNDLE_ID_IOS = 'host.exp.Exponent';
-// const EXPO_GO_PACKAGE_ID_ANDROID = 'host.exp.Exponent';
 
 /**
  * Detects if the app is running in Expo Go
  */
 function isExpoGo(): boolean {
-  // if (Platform.OS === 'ios') {
-  //   return DeviceInfo.getBundleId() === EXPO_GO_BUNDLE_ID_IOS;
-  // } else if (Platform.OS === 'android') {
-  //   return DeviceInfo.getPackageName() === EXPO_GO_PACKAGE_ID_ANDROID;
-  // }
-  return true; // TODO: Remove this once we have a way to detect Expo Go
+  if (!!NativeModules.RNPurchases) {
+    return false;
+  }
+
+  try {
+    const Constants = require('expo-constants').default;
+    return Constants.executionEnvironment === 'storeClient';
+  } catch (error) {
+    // No expo-constants module found, so we're not running in Expo Go
+    return false;
+  }
 }
