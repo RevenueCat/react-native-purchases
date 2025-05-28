@@ -8,11 +8,6 @@ import { NativeModules } from 'react-native';
  * (like Expo Go) or if the required native modules are missing.
  */
 export function shouldUseCompatibilityAPIMode(): boolean {
-  // Check if RNPurchases native module exists
-  if (!NativeModules.RNPurchases) {
-    return false;
-  }
-
   return isExpoGo();
 }
 
@@ -20,5 +15,6 @@ export function shouldUseCompatibilityAPIMode(): boolean {
  * Detects if the app is running in Expo Go
  */
 function isExpoGo(): boolean {
+  // Taken from https://docs.expo.dev/versions/latest/sdk/constants/#executionenvironment
   return NativeModules.ExpoConstants?.executionEnvironment === 'storeClient';
 }
