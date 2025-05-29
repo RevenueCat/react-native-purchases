@@ -15,6 +15,14 @@ export function shouldUseCompatibilityAPIMode(): boolean {
   return useCompatibilityMode;
 }
 
+declare global {
+  var expo: {
+    modules?: {
+      ExpoGo?: boolean;
+    };
+  };
+}
+
 /**
  * Detects if the app is running in Expo Go
  */
@@ -23,11 +31,5 @@ function isExpoGo(): boolean {
     return false;
   }
 
-  try {
-    const Constants = require('expo-constants').default;
-    return Constants.executionEnvironment === 'storeClient';
-  } catch (error) {
-    // No expo-constants module found, so we're not running in Expo Go
-    return false;
-  }
+  return !!globalThis.expo?.modules?.ExpoGo;
 }
