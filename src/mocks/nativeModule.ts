@@ -177,6 +177,7 @@ export const mockNativeModuleRNPurchases = {
   },
   recordPurchaseForProductID: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
+    return mockPurchaseStoreTransaction
   },
   enableAdServicesAttributionTokenCollection: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
@@ -286,6 +287,12 @@ export const mockNativeModuleRNPurchases = {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
   },
   setMediaCampaign: async () => {
+    console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
+  },
+  setCampaign: async () => {
+    console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
+  },
+  setAdGroup: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
   },
   setAd: async () => {
