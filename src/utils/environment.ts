@@ -7,12 +7,12 @@ import { NativeModules } from "react-native";
  * @returns {boolean} True if the app is running in an environment where native modules are not available
  * (like Expo Go) or if the required native modules are missing.
  */
-export function shouldUseCompatibilityAPIMode(): boolean {
-  let useCompatibilityMode = isExpoGo();
-  if (useCompatibilityMode) {
-    console.log('Expo Go app detected. Using RevenueCat in Compatibility API Mode.');
+export function shouldUsePreviewAPIMode(): boolean {
+  let usePreviewAPIMode = isExpoGo();
+  if (usePreviewAPIMode) {
+    console.log('Expo Go app detected. Using RevenueCat in Preview API Mode.');
   }
-  return useCompatibilityMode;
+  return usePreviewAPIMode;
 }
 
 declare global {
