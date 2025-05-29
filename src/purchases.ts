@@ -44,7 +44,7 @@ import {
   Storefront,
 } from "@revenuecat/purchases-typescript-internal";
 import { shouldUseCompatibilityAPIMode } from "./utils/environment";
-import { mockNativeModuleRNPurchases } from "./mocks/nativeModule";
+import { previewNativeModuleRNPurchases } from "./preview/nativeModule";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
@@ -66,9 +66,9 @@ export {
 
 import { Platform } from "react-native";
 
-// Get the native module or use the mock implementation
+// Get the native module or use the preview implementation
 const usingCompatibilityAPIMode = shouldUseCompatibilityAPIMode();
-const RNPurchases = usingCompatibilityAPIMode ? mockNativeModuleRNPurchases : NativeModules.RNPurchases;
+const RNPurchases = usingCompatibilityAPIMode ? previewNativeModuleRNPurchases : NativeModules.RNPurchases;
 const eventEmitter = usingCompatibilityAPIMode ? null : new NativeEventEmitter(RNPurchases);
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];

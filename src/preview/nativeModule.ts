@@ -1,6 +1,6 @@
 import { CustomerInfo, INTRO_ELIGIBILITY_STATUS, MakePurchaseResult, PurchasesStoreTransaction, VERIFICATION_RESULT, WebPurchaseRedemptionResultType, PurchasesPackage, PurchasesStoreProduct, PACKAGE_TYPE, PRODUCT_CATEGORY, PRODUCT_TYPE, PurchasesOffering, PurchasesOfferings } from '@revenuecat/purchases-typescript-internal';
 
-const mockCustomerInfo: CustomerInfo = {
+const previewCustomerInfo: CustomerInfo = {
   activeSubscriptions: [],
   allExpirationDates: {},
   allPurchaseDates: {},
@@ -12,7 +12,7 @@ const mockCustomerInfo: CustomerInfo = {
   },
   firstSeen: new Date().toISOString(),
   latestExpirationDate: null,
-  originalAppUserId: 'mock-user-id',
+  originalAppUserId: 'preview-user-id',
   originalApplicationVersion: null,
   requestDate: new Date().toISOString(),
   managementURL: null,
@@ -21,22 +21,22 @@ const mockCustomerInfo: CustomerInfo = {
   subscriptionsByProductIdentifier: {}
 };
 
-const mockPurchaseStoreTransaction: PurchasesStoreTransaction = {
-  transactionIdentifier: 'mock-transaction-id',
-  productIdentifier: 'mock-product-id',
+const previewPurchaseStoreTransaction: PurchasesStoreTransaction = {
+  transactionIdentifier: 'preview-transaction-id',
+  productIdentifier: 'preview-product-id',
   purchaseDate: new Date().toISOString()
 };
 
-const mockMakePurchaseResult: MakePurchaseResult = {
-  productIdentifier: 'mock-product-id',
-  customerInfo: mockCustomerInfo,
-  transaction: mockPurchaseStoreTransaction
+const previewMakePurchaseResult: MakePurchaseResult = {
+  productIdentifier: 'preview-product-id',
+  customerInfo: previewCustomerInfo,
+  transaction: previewPurchaseStoreTransaction
 };
 
-const mockStoreProduct: PurchasesStoreProduct = {
-  identifier: 'mock-product-id',
-  description: 'Mock product description',
-  title: 'Mock Product',
+const previewStoreProduct: PurchasesStoreProduct = {
+  identifier: 'preview-product-id',
+  description: 'Preview product description',
+  title: 'Preview Product',
   price: 9.99,
   priceString: '$9.99',
   pricePerWeek: 2.50,
@@ -53,54 +53,54 @@ const mockStoreProduct: PurchasesStoreProduct = {
   productType: PRODUCT_TYPE.AUTO_RENEWABLE_SUBSCRIPTION,
   defaultOption: null,
   subscriptionOptions: null,
-  presentedOfferingIdentifier: 'mock-offering',
+  presentedOfferingIdentifier: 'preview-offering',
   presentedOfferingContext: {
-    offeringIdentifier: 'mock-offering',
-    placementIdentifier: 'mock-placement',
+    offeringIdentifier: 'preview-offering',
+    placementIdentifier: 'preview-placement',
     targetingContext: null
   }
 };
 
-const mockPackage: PurchasesPackage = {
-  identifier: 'mock-package-id',
+const previewPackage: PurchasesPackage = {
+  identifier: 'preview-package-id',
   packageType: PACKAGE_TYPE.MONTHLY,
-  product: mockStoreProduct,
-  offeringIdentifier: 'mock-offering',
+  product: previewStoreProduct,
+  offeringIdentifier: 'preview-offering',
   presentedOfferingContext: {
-    offeringIdentifier: 'mock-offering',
-    placementIdentifier: 'mock-placement',
+    offeringIdentifier: 'preview-offering',
+    placementIdentifier: 'preview-placement',
     targetingContext: null
   }
 };
 
-const mockOffering: PurchasesOffering = {
-  identifier: 'mock-offering',
-  serverDescription: 'Mock offering for testing',
+const previewOffering: PurchasesOffering = {
+  identifier: 'preview-offering',
+  serverDescription: 'Preview offering for testing',
   metadata: {},
-  availablePackages: [mockPackage],
+  availablePackages: [previewPackage],
   lifetime: null,
   annual: null,
   sixMonth: null,
   threeMonth: null,
   twoMonth: null,
-  monthly: mockPackage,
+  monthly: previewPackage,
   weekly: null
 };
 
-const mockOfferings: PurchasesOfferings = {
+const previewOfferings: PurchasesOfferings = {
   all: {
-    'mock-offering': mockOffering
+    'preview-offering': previewOffering
   },
-  current: mockOffering
+  current: previewOffering
 };
 
 /**
- * Mock implementation of the native module for Compatibility API mode, i.e. for environments where native modules are not available
+ * Preview implementation of the native module for Compatibility API mode, i.e. for environments where native modules are not available
  * (like Expo Go).
  */
-export const mockNativeModuleRNPurchases = {
+export const previewNativeModuleRNPurchases = {
   setupPurchases: async () => {
-    console.warn('RevenueCat: Running in mock mode');
+    console.warn('RevenueCat: Running in preview mode');
     return null;
   },
   setAllowSharingStoreAccount: async () => {
@@ -113,31 +113,31 @@ export const mockNativeModuleRNPurchases = {
   },
   getOfferings: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockOfferings;
+    return previewOfferings;
   },
   getCurrentOfferingForPlacement: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockOffering;
+    return previewOffering;
   },
   syncAttributesAndOfferingsIfNeeded: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockOfferings;
+    return previewOfferings;
   },
   getProductInfo: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return [mockStoreProduct];
+    return [previewStoreProduct];
   },
   restorePurchases: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockCustomerInfo;
+    return previewCustomerInfo;
   },
   getAppUserID: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return 'mock-user-id';
+    return 'preview-user-id';
   },
   getStorefront: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return 'mock-storefront';
+    return 'preview-storefront';
   },
   setDebugLogsEnabled: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
@@ -153,18 +153,18 @@ export const mockNativeModuleRNPurchases = {
   },
   getCustomerInfo: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockCustomerInfo;
+    return previewCustomerInfo;
   },
   logIn: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
     return {
-      customerInfo: mockCustomerInfo,
+      customerInfo: previewCustomerInfo,
       created: false
     };
   },
   logOut: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockCustomerInfo;
+    return previewCustomerInfo;
   },
   syncPurchases: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
@@ -177,21 +177,21 @@ export const mockNativeModuleRNPurchases = {
   },
   recordPurchaseForProductID: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockPurchaseStoreTransaction
+    return previewPurchaseStoreTransaction
   },
   enableAdServicesAttributionTokenCollection: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
   },
   purchaseProduct: async () => {
-    console.warn('RevenueCat: Purchases are not available in mock mode');
-    return mockMakePurchaseResult;
+    console.warn('RevenueCat: Purchases are not available in preview mode');
+    return previewMakePurchaseResult;
   },
   purchasePackage: async () => {
-    console.warn('RevenueCat: Purchases are not available in mock mode');
-    return mockMakePurchaseResult;
+    console.warn('RevenueCat: Purchases are not available in preview mode');
+    return previewMakePurchaseResult;
   },
   purchaseSubscriptionOption: async () => {
-    console.warn('RevenueCat: Purchases are not available in mock mode');
+    console.warn('RevenueCat: Purchases are not available in preview mode');
   },
   isAnonymous: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
@@ -204,7 +204,7 @@ export const mockNativeModuleRNPurchases = {
   checkTrialOrIntroductoryPriceEligibility: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
     return ({
-      'mock-product-id': INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
+      'preview-product-id': INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
     });
   },
   getPromotionalOffer: async () => {
@@ -217,11 +217,11 @@ export const mockNativeModuleRNPurchases = {
   },
   purchaseProductWithWinBackOffer: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockMakePurchaseResult;
+    return previewMakePurchaseResult;
   },
   purchasePackageWithWinBackOffer: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
-    return mockMakePurchaseResult;
+    return previewMakePurchaseResult;
   },
   invalidateCustomerInfoCache: async () => {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
@@ -338,7 +338,7 @@ export const mockNativeModuleRNPurchases = {
     console.warn('RevenueCat: In Compatibility API Mode, this method is available but has no effect');
     return {
       result: WebPurchaseRedemptionResultType.SUCCESS,
-      customerInfo: mockCustomerInfo
+      customerInfo: previewCustomerInfo
     };
   },
 }; 
