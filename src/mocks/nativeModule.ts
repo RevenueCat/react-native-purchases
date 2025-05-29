@@ -1,4 +1,4 @@
-import { CustomerInfo, VERIFICATION_RESULT } from '@revenuecat/purchases-typescript-internal';
+import { CustomerInfo, MakePurchaseResult, PurchasesStoreTransaction, VERIFICATION_RESULT, WebPurchaseRedemptionResultType } from '@revenuecat/purchases-typescript-internal';
 
 const mockCustomerInfo: CustomerInfo = {
   activeSubscriptions: [],
@@ -21,6 +21,18 @@ const mockCustomerInfo: CustomerInfo = {
   subscriptionsByProductIdentifier: {}
 };
 
+const mockPurchaseStoreTransaction: PurchasesStoreTransaction = {
+  transactionIdentifier: 'mock-transaction-id',
+  productIdentifier: 'mock-product-id',
+  purchaseDate: new Date().toISOString()
+};
+
+const mockMakePurchaseResult: MakePurchaseResult = {
+  productIdentifier: 'mock-product-id',
+  customerInfo: mockCustomerInfo,
+  transaction: mockPurchaseStoreTransaction
+};
+
 /**
  * Mock implementation of the native module for Compatibility API mode, i.e. for environments where native modules are not available
  * (like Expo Go).
@@ -31,7 +43,7 @@ export const mockNativeModuleRNPurchases = {
     return null;
   },
   setAllowSharingStoreAccount: async () => null,
-  addAttributionData: async () => null,
+  setSimulatesAskToBuyInSandbox: async () => null,
   getOfferings: async () => ({
     all: {},
     current: null
@@ -39,13 +51,9 @@ export const mockNativeModuleRNPurchases = {
   getCurrentOfferingForPlacement: async () => null,
   syncAttributesAndOfferingsIfNeeded: async () => null,
   getProductInfo: async () => [],
-  makePurchase: async () => {
-    console.warn('RevenueCat: Purchases are not available in mock mode');
-  },
-  restorePurchases: async () => {
-    console.warn('RevenueCat: Restore purchases is not available in mock mode');
-  },
+  restorePurchases: async () => mockCustomerInfo,
   getAppUserID: async () => 'mock-user-id',
+  getStorefront: async () => 'mock-storefront',
   setDebugLogsEnabled: async () => null,
   setLogLevel: async () => null,
   setLogHandler: async () => null,
@@ -58,6 +66,8 @@ export const mockNativeModuleRNPurchases = {
   syncPurchases: async () => null,
   syncAmazonPurchase: async () => null,
   syncObserverModeAmazonPurchase: async () => null,
+  recordPurchaseForProductID: async () => null,
+  enableAdServicesAttributionTokenCollection: async () => null,
   purchaseProduct: async () => {
     console.warn('RevenueCat: Purchases are not available in mock mode');
   },
@@ -68,40 +78,47 @@ export const mockNativeModuleRNPurchases = {
     console.warn('RevenueCat: Purchases are not available in mock mode');
   },
   isAnonymous: async () => true,
-  makeDeferredPurchase: async () => {
-    console.warn('RevenueCat: Purchases are not available in mock mode');
-  },
+  makeDeferredPurchase: async () => null,
   checkTrialOrIntroductoryPriceEligibility: async () => ({}),
-  purchaseDiscountedPackage: async () => {
-    console.warn('RevenueCat: Purchases are not available in mock mode');
-  },
-  purchaseDiscountedProduct: async () => {
-    console.warn('RevenueCat: Purchases are not available in mock mode');
-  },
   getPromotionalOffer: async () => null,
+  eligibleWinBackOffersForProductIdentifier: async () => [],
+  purchaseProductWithWinBackOffer: async () => mockMakePurchaseResult,
+  purchasePackageWithWinBackOffer: async () => mockMakePurchaseResult,
   invalidateCustomerInfoCache: async () => null,
-  setAttributes: async () => null,
+  presentCodeRedemptionSheet: async () => null,
+  setAttributes: async () => null, 
   setEmail: async () => null,
   setPhoneNumber: async () => null,
   setDisplayName: async () => null,
   setPushToken: async () => null,
+  setProxyURLString: async () => null,
+  collectDeviceIdentifiers: async () => null,
+  setAdjustID: async () => null,
+  setAppsflyerID: async () => null,
+  setFBAnonymousID: async () => null,
+  setMparticleID: async () => null,
   setCleverTapID: async () => null,
   setMixpanelDistinctID: async () => null,
   setFirebaseAppInstanceID: async () => null,
   setTenjinAnalyticsInstallationID: async () => null,
   setKochavaDeviceID: async () => null,
+  setOnesignalID: async () => null,
+  setAirshipChannelID: async () => null,
+  setMediaSource: async () => null,
+  setMediaCampaign: async () => null,
+  setAd: async () => null,
+  setKeyword: async () => null,
+  setCreative: async () => null,
   canMakePayments: async () => false,
-  beginRefundRequestForActiveEntitlement: async () => {
-    console.warn('RevenueCat: Refunds are not available in mock mode'); 
-  },
-  beginRefundRequestForEntitlementId: async () => {
-    console.warn('RevenueCat: Refunds are not available in mock mode');
-  },
-  beginRefundRequestForProductId: async () => {
-    console.warn('RevenueCat: Refunds are not available in mock mode');
-  },
+  beginRefundRequestForActiveEntitlement: async () => 0,
+  beginRefundRequestForEntitlementId: async () => 0,
+  beginRefundRequestForProductId: async () => 0,
+  showManageSubscriptions: async () => null,
   showInAppMessages: async () => null,
+  isWebPurchaseRedemptionURL: async () => null,
   isConfigured: async () => true,
-  parseAsWebPurchaseRedemption: async () => null,
-  redeemWebPurchase: async () => null
+  redeemWebPurchase: async () => ({
+    result: WebPurchaseRedemptionResultType.SUCCESS,
+    customerInfo: mockCustomerInfo
+  }),
 }; 
