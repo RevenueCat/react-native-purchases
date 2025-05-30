@@ -17,17 +17,22 @@ import {
   REFUND_REQUEST_STATUS
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
+import { shouldUsePreviewAPIMode } from "./utils/environment";
+import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-ui' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ios: "- You have run 'pod install'\n", default: ''}) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
+  '- You rebuilt the app after installing the package\n';
 
-const RNPaywalls = NativeModules.RNPaywalls;
-const RNCustomerCenter = NativeModules.RNCustomerCenter;
+
+// Get the native module or use the preview implementation
+const usingPreviewAPIMode = shouldUsePreviewAPIMode();
+
+const RNPaywalls = usingPreviewAPIMode ? previewNativeModuleRNPaywalls : NativeModules.RNPaywalls;
+const RNCustomerCenter = usingPreviewAPIMode ? previewNativeModuleRNCustomerCenter : NativeModules.RNCustomerCenter;
 
 if (!RNPaywalls) {
   throw new Error(LINKING_ERROR);
@@ -249,6 +254,7 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");                                
     return RNPaywalls.presentPaywall(
       offering?.identifier ?? null,
       displayCloseButton,
@@ -275,6 +281,7 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");                                
     return RNPaywalls.presentPaywallIfNeeded(
       requiredEntitlementIdentifier,
       offering?.identifier ?? null,
@@ -462,6 +469,7 @@ export default class RevenueCatUI {
       });
     }
 
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentCustomerCenter");
     return RNCustomerCenter.presentCustomerCenter();
   }
 
@@ -470,4 +478,11 @@ export default class RevenueCatUI {
    */
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> =
     RevenueCatUI.OriginalTemplatePaywallFooterContainerView;
+    
+  private static logWarningIfPreviewAPIMode(methodName: string) {
+    if (usingPreviewAPIMode) {
+      // tslint:disable-next-line:no-console
+      console.warn(`[RevenueCatUI] [${methodName}] This method is available but has no effect in Preview API mode.`);
+    }
+  }
 }
