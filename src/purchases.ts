@@ -70,7 +70,26 @@ const eventEmitter = new NativeEventEmitter(RNPurchases);
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
   [];
-let customLogHandler: LogHandler;
+let customLogHandler: LogHandler = (logLevel: LOG_LEVEL, message: string) => {
+  switch (logLevel) {
+    case LOG_LEVEL.DEBUG:
+      console.debug(`[RevenueCat] ${message}`);
+      break;
+    case LOG_LEVEL.INFO:
+      console.info(`[RevenueCat] ${message}`);
+      break;
+    case LOG_LEVEL.WARN:
+      console.warn(`[RevenueCat] ${message}`);
+      break;
+    case LOG_LEVEL.ERROR:
+      console.error(`[RevenueCat] ${message}`);
+      break;
+    default:
+      console.log(`[RevenueCat] ${message}`);
+  }
+};
+
+RNPurchases.setLogHandler(customLogHandler);
 
 eventEmitter.addListener(
   "Purchases-CustomerInfoUpdated",
