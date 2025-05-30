@@ -75,28 +75,7 @@ let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
   [];
 
-console.log("Purchases -> Will set LogHandler to default one");
-let customLogHandler: LogHandler = (logLevel: LOG_LEVEL, message: string) => {
-  switch (logLevel) {
-    case LOG_LEVEL.DEBUG:
-      console.debug(`[RevenueCat] ${message}`);
-      break;
-    case LOG_LEVEL.INFO:
-      console.info(`[RevenueCat] ${message}`);
-      break;
-    case LOG_LEVEL.WARN:
-      console.warn(`[RevenueCat] ${message}`);
-      break;
-    case LOG_LEVEL.ERROR:
-      console.error(`[RevenueCat] ${message}`);
-      break;
-    default:
-      console.log(`[RevenueCat] ${message}`);
-  }
-};
-
-RNPurchases.setLogHandler(customLogHandler);
-console.log("Purchases -> did set LogHandler  to default one");
+let customLogHandler: LogHandler;
 
 eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
@@ -118,7 +97,6 @@ eventEmitter?.addListener(
   "Purchases-LogHandlerEvent",
   ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
     const logLevelEnum = LOG_LEVEL[logLevel];
-    console.log(`Purchases-LogHandlerEvent received: ${message}`);
     customLogHandler(logLevelEnum, message);
   }
 );
@@ -264,6 +242,28 @@ export default class Purchases {
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
   }: PurchasesConfiguration): void {
+
+    if (!customLogHandler) {
+      this.setLogHandler((logLevel: LOG_LEVEL, message: string) => {
+        switch (logLevel) {
+          case LOG_LEVEL.DEBUG:
+            console.debug(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.INFO:
+            console.info(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.WARN:
+            console.warn(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.ERROR:
+            console.error(`[RevenueCat] ${message}`);
+            break;
+          default:
+            console.log(`[RevenueCat] ${message}`);
+        }
+      });
+    }
+
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error(
         'Invalid API key. It must be called with an Object: configure({apiKey: "key"})'
