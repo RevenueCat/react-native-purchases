@@ -70,6 +70,8 @@ const eventEmitter = new NativeEventEmitter(RNPurchases);
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
   [];
+
+console.log("Purchases -> Will set LogHandler to default one");
 let customLogHandler: LogHandler = (logLevel: LOG_LEVEL, message: string) => {
   switch (logLevel) {
     case LOG_LEVEL.DEBUG:
@@ -90,6 +92,7 @@ let customLogHandler: LogHandler = (logLevel: LOG_LEVEL, message: string) => {
 };
 
 RNPurchases.setLogHandler(customLogHandler);
+console.log("Purchases -> did set LogHandler  to default one");
 
 eventEmitter.addListener(
   "Purchases-CustomerInfoUpdated",
@@ -111,6 +114,7 @@ eventEmitter.addListener(
   "Purchases-LogHandlerEvent",
   ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
     const logLevelEnum = LOG_LEVEL[logLevel];
+    console.log(`Purchases-LogHandlerEvent received: ${message}`);
     customLogHandler(logLevelEnum, message);
   }
 );
