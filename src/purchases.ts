@@ -74,6 +74,7 @@ const eventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNPurch
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
   [];
+
 let customLogHandler: LogHandler;
 
 eventEmitter?.addListener(
@@ -241,6 +242,33 @@ export default class Purchases {
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
   }: PurchasesConfiguration): void {
+
+    if (!customLogHandler) {
+      this.setLogHandler((logLevel: LOG_LEVEL, message: string) => {
+        switch (logLevel) {
+          case LOG_LEVEL.DEBUG:
+            // tslint:disable-next-line:no-console
+            console.debug(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.INFO:
+            // tslint:disable-next-line:no-console
+            console.info(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.WARN:
+            // tslint:disable-next-line:no-console
+            console.warn(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.ERROR:
+            // tslint:disable-next-line:no-console
+            console.error(`[RevenueCat] ${message}`);
+            break;
+          default:
+            // tslint:disable-next-line:no-console
+            console.log(`[RevenueCat] ${message}`);
+        }
+      });
+    }
+
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error(
         'Invalid API key. It must be called with an Object: configure({apiKey: "key"})'
