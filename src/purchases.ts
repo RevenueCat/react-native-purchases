@@ -285,6 +285,7 @@ export default class Purchases {
     }
 
     if (usingPreviewAPIMode) {
+      // tslint:disable-next-line:no-console
       console.warn("[RevenueCat] [configure], You successfully installed the RevenueCat SDK. However, it's currently running in Preview API mode because it requires some native modules that are not available in Expo Go. All the APIs are available but have no effect. Please, use a development build to test the real behavior of the RevenueCat SDK.");
     }
 
@@ -1623,6 +1624,7 @@ export default class Purchases {
 
   private static logWarningIfPreviewAPIMode(methodName: string) {
     if (usingPreviewAPIMode) {
+      // tslint:disable-next-line:no-console
       console.warn(`[RevenueCat] [${methodName}] This method is available but has no effect in Preview API mode.`);
     }
   }
