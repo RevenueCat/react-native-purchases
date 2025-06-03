@@ -2,8 +2,7 @@ package com.revenuecat.purchases.react.ui
 
 import com.facebook.react.uimanager.ThemedReactContext
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
-import com.revenuecat.purchases.ui.revenuecatui.views.FrameLayoutPaywallView
-import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
+import com.revenuecat.purchases.react.ui.views.FrameLayoutPaywallView
 
 
 internal class PaywallViewManager : BasePaywallViewManager<FrameLayoutPaywallView>() {
