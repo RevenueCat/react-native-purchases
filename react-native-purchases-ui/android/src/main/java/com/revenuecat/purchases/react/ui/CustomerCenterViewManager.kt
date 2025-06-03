@@ -1,11 +1,6 @@
 package com.revenuecat.purchases.react.ui
 
-import CustomerCenterWrapperView
-import ViewWrapperFrameLayout
 import android.view.View
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.Modifier
 
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.MapBuilder
@@ -13,6 +8,8 @@ import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.Event
 import com.revenuecat.purchases.react.ui.customercenter.events.CustomerCenterEventName
+import com.revenuecat.purchases.react.ui.views.FrameLayoutCustomerCenterView
+import com.revenuecat.purchases.react.ui.views.ViewWrapperFrameLayout
 import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
 
 internal class CustomerCenterViewManager :
@@ -35,24 +32,12 @@ internal class CustomerCenterViewManager :
 //    private var wrapper: FabricDeclarativeView? = null
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): ViewWrapperFrameLayout<CustomerCenterView> {
-        val wrapper = ViewWrapperFrameLayout(themedReactContext) { wrapperContext ->
-            CustomerCenterView(wrapperContext)
-                .also { view ->
+        val wrapper = FrameLayoutCustomerCenterView(themedReactContext).also { view ->
                     view.id = View.generateViewId()
                     view.setDismissHandler {
                         emitDismissEvent(themedReactContext)
                     }
                 }
-        }
-//        wrapper.setComposableContent {
-//            CustomerCenter(
-//                Modifier
-//                    .fillMaxWidth()
-//                    .fillMaxHeight()
-//            ) {
-//
-//            }
-//        }
         return wrapper
     }
 

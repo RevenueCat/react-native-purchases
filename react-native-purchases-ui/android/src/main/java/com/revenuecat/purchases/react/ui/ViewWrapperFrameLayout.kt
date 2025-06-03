@@ -7,32 +7,6 @@ import android.widget.LinearLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 
-internal class ViewWrapperFrameLayout<T : View> @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    private val viewFactory: ((Context) -> T)? = null
-) : FrameLayout(context, attrs, defStyleAttr) {
-
-    private var initialized = false
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-
-        if (!initialized) {
-            viewFactory?.invoke(context)?.let { customView ->
-                addView(
-                    customView, LayoutParams(
-                        LayoutParams.MATCH_PARENT,
-                        LayoutParams.MATCH_PARENT
-                    )
-                )
-                initialized = true
-            }
-        }
-    }
-}
-
 internal class CustomerCenterWrapperView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
