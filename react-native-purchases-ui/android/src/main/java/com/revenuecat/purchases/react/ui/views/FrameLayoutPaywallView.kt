@@ -15,19 +15,8 @@ class FrameLayoutPaywallView : ViewWrapperFrameLayout<PaywallView> {
     @JvmOverloads
     constructor(
         context: Context,
-        offering: Offering? = null,
-        listener: PaywallListener? = null,
-        fontProvider: FontProvider? = null,
-        shouldDisplayDismissButton: Boolean? = null,
-        dismissHandler: (() -> Unit)? = null,
     ) : super(context) {
-        wrappedView?.let { view ->
-            listener?.let { view.setPaywallListener(it) }
-            dismissHandler?.let { view.setDismissHandler(it) }
-            offering?.let { view.setOfferingId(it.identifier) }
-            fontProvider?.let { view.setFontProvider(it) }
-            shouldDisplayDismissButton?.let { view.setDisplayDismissButton(it) }
-        }
+        wrappedView
     }
 
     override fun createWrappedView(context: Context, attrs: AttributeSet?): PaywallView {
