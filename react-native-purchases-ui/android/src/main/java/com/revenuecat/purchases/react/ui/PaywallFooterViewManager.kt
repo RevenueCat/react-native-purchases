@@ -3,18 +3,17 @@ package com.revenuecat.purchases.react.ui
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
 import com.revenuecat.purchases.react.ui.events.OnMeasureEvent
-import com.revenuecat.purchases.react.ui.views.FrameLayoutPaywallFooterView
-import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
+import com.revenuecat.purchases.react.ui.views.WrappedPaywallFooterComposeView
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 
-internal class PaywallFooterViewManager : BasePaywallViewManager<FrameLayoutPaywallFooterView>() {
+internal class PaywallFooterViewManager : BasePaywallViewManager<WrappedPaywallFooterComposeView>() {
 
     override fun getName(): String {
         return "RCPaywallFooterView"
     }
 
-    override fun createViewInstance(themedReactContext: ThemedReactContext): FrameLayoutPaywallFooterView {
-        return object : FrameLayoutPaywallFooterView(themedReactContext) {
+    override fun createViewInstance(themedReactContext: ThemedReactContext): WrappedPaywallFooterComposeView {
+        return object : WrappedPaywallFooterComposeView(themedReactContext) {
 
             // This is required so the change from Loading to Loaded resizes the view
             // https://github.com/facebook/react-native/issues/17968#issuecomment-1672111483
@@ -73,15 +72,15 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<FrameLayoutPayw
         }
     }
 
-    override fun setOfferingId(view: FrameLayoutPaywallFooterView, identifier: String) {
+    override fun setOfferingId(view: WrappedPaywallFooterComposeView, identifier: String) {
         view.setOfferingId(identifier)
     }
 
-    override fun setFontFamily(view: FrameLayoutPaywallFooterView, customFontProvider: CustomFontProvider) {
+    override fun setFontFamily(view: WrappedPaywallFooterComposeView, customFontProvider: CustomFontProvider) {
         view.setFontProvider(customFontProvider)
     }
 
-    override fun setDisplayDismissButton(view: FrameLayoutPaywallFooterView, display: Boolean) {
+    override fun setDisplayDismissButton(view: WrappedPaywallFooterComposeView, display: Boolean) {
         // No-op since PaywallFooterView doesn't have a dismiss button
     }
 

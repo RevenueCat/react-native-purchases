@@ -6,7 +6,7 @@ import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 import com.revenuecat.purchases.ui.revenuecatui.fonts.FontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
-class FrameLayoutPaywallView : ViewWrapperFrameLayout<PaywallView> {
+class WrappedPaywallComposeView : ComposeViewWrapper<PaywallView> {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)

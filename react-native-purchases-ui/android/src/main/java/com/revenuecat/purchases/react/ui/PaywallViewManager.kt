@@ -1,11 +1,11 @@
 package com.revenuecat.purchases.react.ui
 
 import com.facebook.react.uimanager.ThemedReactContext
+import com.revenuecat.purchases.react.ui.views.WrappedPaywallComposeView
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
-import com.revenuecat.purchases.react.ui.views.FrameLayoutPaywallView
 
 
-internal class PaywallViewManager : BasePaywallViewManager<FrameLayoutPaywallView>() {
+internal class PaywallViewManager : BasePaywallViewManager<WrappedPaywallComposeView>() {
 
     companion object {
         const val REACT_CLASS = "Paywall"
@@ -15,8 +15,8 @@ internal class PaywallViewManager : BasePaywallViewManager<FrameLayoutPaywallVie
         return REACT_CLASS
     }
 
-    override fun createViewInstance(themedReactContext: ThemedReactContext): FrameLayoutPaywallView {
-        return FrameLayoutPaywallView(themedReactContext).also { view ->
+    override fun createViewInstance(themedReactContext: ThemedReactContext): WrappedPaywallComposeView {
+        return WrappedPaywallComposeView(themedReactContext).also { view ->
             view.setPaywallListener(createPaywallListenerWrapper(themedReactContext, view))
             view.setDismissHandler(getDismissHandler(themedReactContext, view))
         }
@@ -26,15 +26,15 @@ internal class PaywallViewManager : BasePaywallViewManager<FrameLayoutPaywallVie
         return PaywallViewShadowNode()
     }
 
-    override fun setOfferingId(view: FrameLayoutPaywallView, identifier: String) {
+    override fun setOfferingId(view: WrappedPaywallComposeView, identifier: String) {
         view.setOfferingId(identifier)
     }
 
-    override fun setFontFamily(view: FrameLayoutPaywallView, customFontProvider: CustomFontProvider) {
+    override fun setFontFamily(view: WrappedPaywallComposeView, customFontProvider: CustomFontProvider) {
         view.setFontProvider(customFontProvider)
     }
 
-    override fun setDisplayDismissButton(view: FrameLayoutPaywallView, display: Boolean) {
+    override fun setDisplayDismissButton(view: WrappedPaywallComposeView, display: Boolean) {
         view.setDisplayDismissButton(display)
     }
 

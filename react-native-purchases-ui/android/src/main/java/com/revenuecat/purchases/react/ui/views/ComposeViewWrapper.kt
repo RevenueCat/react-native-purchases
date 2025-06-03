@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 
-abstract class ViewWrapperFrameLayout<T : View> : FrameLayout {
+abstract class ComposeViewWrapper<T : View> : FrameLayout {
     protected var wrappedView: T? = null
     protected var isAttached = false
 
@@ -62,4 +62,4 @@ abstract class ViewWrapperFrameLayout<T : View> : FrameLayout {
             wrappedView?.requestLayout()
         }
     }
-} 
+}
