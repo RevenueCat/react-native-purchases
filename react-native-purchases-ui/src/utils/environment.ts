@@ -27,7 +27,7 @@ declare global {
  * Detects if the app is running in Expo Go
  */
 function isExpoGo(): boolean {
-  if (!!NativeModules.RNPurchases) {
+  if (!!NativeModules.RNPaywalls && !!NativeModules.RNCustomerCenter) {
     return false;
   }
 
