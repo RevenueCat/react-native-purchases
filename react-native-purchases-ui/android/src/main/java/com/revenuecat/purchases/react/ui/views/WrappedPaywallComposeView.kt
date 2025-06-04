@@ -6,17 +6,7 @@ import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 import com.revenuecat.purchases.ui.revenuecatui.fonts.FontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
-class WrappedPaywallComposeView : ComposeViewWrapper<PaywallView> {
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-    @JvmOverloads
-    constructor(
-        context: Context,
-    ) : super(context) {
-        wrappedView
-    }
+class WrappedPaywallComposeView(context: Context) : ComposeViewWrapper<PaywallView>(context) {
 
     override fun createWrappedView(context: Context, attrs: AttributeSet?): PaywallView {
         return PaywallView(context, attrs)
