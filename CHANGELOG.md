@@ -1,3 +1,8 @@
+## 8.11.2
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix `WindowRecomposer` issue in paywall views (#1274) via Cesar de la Vega (@vegaro)
+
 ## 8.11.1
 ## RevenueCat SDK
 ### 📦 Dependency Updates
