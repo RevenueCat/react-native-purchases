@@ -23,7 +23,7 @@ React Native Purchases UI are the UI components for the [RevenueCat](https://www
 
 ## Installation
 
-Expo supports in-app payments and is compatible with react-native-purchases-ui. You can install this package in an non-development build using the Expo Go app. In this case, `react-native-purchases-ui` will run in a Preview API mode, as it requires some native modules that are not available in Expo Go. All the listed APIs below are available but have no effect. 
+Expo supports in-app payments and is compatible with `react-native-purchases-ui`. You can install this package in an non-development build using the Expo Go app. In this case, `react-native-purchases-ui` will run in a Preview API mode, as it requires some native modules that are not available in Expo Go. All the listed APIs below are available but have no effect. 
 
 [Creating a development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build) of the app will allow you to test the real behavior of RevenueCat SDK.
 
