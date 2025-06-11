@@ -37,7 +37,9 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         isAttached = true
-        requestLayout()
+        post {
+            requestLayout()
+        }
     }
 
     override fun onDetachedFromWindow() {
