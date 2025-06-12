@@ -6,7 +6,7 @@
 import React from 'react';
 import {DarkTheme, createStaticNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import 'react-native-gesture-handler';
+// import 'react-native-gesture-handler';
 
 import TabNavigator from './TabNavigator';
 import PaywallScreen from '../screens/PaywallScreen';
