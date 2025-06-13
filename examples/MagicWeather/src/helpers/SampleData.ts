@@ -24,7 +24,7 @@ export const Environment = {
   PLUTO: 'PLUTO',
 };
 
-const getEmoji = (temperature) => {
+const getEmoji = (temperature: number) => {
   if (temperature < 0) {
     return '🥶';
   }
@@ -43,7 +43,7 @@ const getEmoji = (temperature) => {
   return '☄️';
 };
 
-const getWeatherColor = (temperature) => {
+const getWeatherColor = (temperature: number) => {
   if (temperature < 0) {
     return '#034B84';
   }
@@ -65,8 +65,8 @@ const getWeatherColor = (temperature) => {
 /*
  Generate Sample data for Magic Weather.
  */
-export const generateSampleData = (environment, temperature) => {
-  temperature = temperature || Math.floor(Math.random() * 140 - 20);
+export const generateSampleData = (environment: string, temperature?: number) => {
+  temperature = temperature ?? Math.floor(Math.random() * 140 - 20);
 
   return {
     temperature,

@@ -1,18 +1,12 @@
-/**
- * @file Restore Purchases Button.
- * @author Vadim Savin
- */
-
 import React from 'react';
-import {Pressable, Text, Alert} from 'react-native';
+import {Pressable, Text, Alert, StyleSheet} from 'react-native';
 import Purchases from 'react-native-purchases';
-import styles from './styles';
 
-const RestorePurchasesButton = () => {
+const RestorePurchasesButton: React.FC = () => {
   const restorePurchases = async () => {
     try {
       await Purchases.restorePurchases();
-    } catch (e) {
+    } catch (e: any) {
       Alert.alert('Error restoring purchases', e.message);
     }
   };
@@ -23,5 +17,17 @@ const RestorePurchasesButton = () => {
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    marginTop: 'auto',
+  },
+  text: {
+    color: 'dodgerblue',
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 18,
+    paddingVertical: 16,
+  },
+});
 
 export default RestorePurchasesButton;

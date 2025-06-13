@@ -1,12 +1,6 @@
-/**
- * @file Login Form.
- * @author Vadim Savin
- */
-
-import React, { useState } from 'react';
-import { Text, TextInput, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {Text, TextInput, Alert, StyleSheet} from 'react-native';
 import Purchases from 'react-native-purchases';
-import styles from './styles';
 
 /*
  How to login and identify your users with the Purchases SDK.
@@ -15,7 +9,7 @@ import styles from './styles';
 
  Read more about Identifying Users here: https://docs.revenuecat.com/docs/user-ids
  */
-const LoginForm = ({ onLogin }) => {
+const LoginForm: React.FC<{onLogin: () => void}> = ({onLogin}) => {
   const [newUserId, setNewUserId] = useState('');
 
   console.warn(
@@ -29,12 +23,12 @@ const LoginForm = ({ onLogin }) => {
 
     try {
       await Purchases.logIn(newUserId);
-    } catch (e) {
+    } catch (e: any) {
       Alert.alert('Error identifying user', e.message);
     }
 
     setNewUserId('');
-    await onLogin();
+    onLogin();
   };
 
   return (
@@ -51,5 +45,19 @@ const LoginForm = ({ onLogin }) => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  headline: {
+    color: 'white',
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 18,
+    paddingTop: 24,
+    paddingBottom: 8,
+  },
+  input: {
+    paddingTop: 8,
+    color: 'white',
+  },
+});
 
 export default LoginForm;
