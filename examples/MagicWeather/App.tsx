@@ -3,7 +3,7 @@ import {StatusBar, Text} from 'react-native';
 
 import Purchases from 'react-native-purchases';
 import {API_KEY} from './src/constants';
-import TabScreen from './src/navigation/Navigation';
+import Navigation from './src/navigation/Navigation';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 function App(): React.JSX.Element {
@@ -30,7 +30,7 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
-      {isReady ? <TabScreen /> : <Text>Loading...</Text>}
+      {isReady ? <Navigation /> : <Text>Loading...</Text>}
     </SafeAreaProvider>
   );
 }
