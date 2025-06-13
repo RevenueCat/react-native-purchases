@@ -12,7 +12,7 @@ const tabs: Record<string, React.ReactNode> = {
 };
 
 const modals: Record<string, React.ReactNode> = {
-  paywall: <PaywallScreen />,
+  Paywall: <PaywallScreen />,
 };
 
 export const NavigationContext = createContext<{

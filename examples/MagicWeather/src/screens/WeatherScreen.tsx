@@ -31,7 +31,7 @@ const WeatherScreen = () => {
       if (typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
         setWeatherData(generateSampleData(Environment.EARTH));
       } else {
-        navigation.openModal('paywall');
+        navigation.openModal('Paywall');
       }
     } catch (e: any) {
       Alert.alert('Error fetching customer info', e.message);
