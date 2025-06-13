@@ -1,16 +1,9 @@
-/**
- * @file Magic Weather screen.
- * @author Vadim Savin
- */
-
-import React, { useState } from 'react';
-import { View, Text, Pressable, Alert } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import { testCold, generateSampleData, Environment } from '../../helpers/SampleData';
-import styles from './styles.js';
+import React, {useState, useContext} from 'react';
+import {View, Text, Pressable, Alert, StyleSheet} from 'react-native';
+import {testCold, generateSampleData, Environment} from '../helpers/SampleData';
 import Purchases from 'react-native-purchases';
-import { ENTITLEMENT_ID } from '../../constants';
+import {ENTITLEMENT_ID} from '../constants';
+import {NavigationContext} from '../navigation/Navigation';
 
 /*
  The app's weather tab that displays our pretend weather data.
@@ -19,7 +12,7 @@ import { ENTITLEMENT_ID } from '../../constants';
 const WeatherScreen = () => {
   const [weatherData, setWeatherData] = useState(testCold);
 
-  const navigation = useNavigation();
+  const navigation = useContext(NavigationContext);
 
   const changeEnvironment = () => {
     // we'll change the environment in a future update
@@ -38,35 +31,65 @@ const WeatherScreen = () => {
       if (typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined') {
         setWeatherData(generateSampleData(Environment.EARTH));
       } else {
-        navigation.navigate('Paywall');
+        navigation.openModal('paywall');
       }
-    } catch (e) {
+    } catch (e: any) {
       Alert.alert('Error fetching customer info', e.message);
     }
   };
 
   return (
-    <View style={[styles.page, { backgroundColor: weatherData.weatherColor }]}>
+    <View style={[styles.page, {backgroundColor: weatherData.weatherColor}]}>
       {/* Sample weather details */}
       <Text style={styles.emoji}>{weatherData.emoji}</Text>
       <Text style={styles.temperature}>
         {weatherData.temperature}°{weatherData.unit.toUpperCase()}️
       </Text>
 
-      {/* Environment button */}
       <Pressable onPress={changeEnvironment}>
-        <Text style={styles.environment}>
-          <Ionicons name="navigate" color="white" size={24} /> {weatherData.environment}
-        </Text>
+        <Text style={styles.environment}>📍 {weatherData.environment}</Text>
       </Pressable>
 
       {/* The magic button that is disabled behind our paywall */}
       <Pressable onPress={performMagic} style={styles.changeWeatherButton}>
         <Text style={styles.changeWeatherTitle}>✨ Change the Weather</Text>
       </Pressable>
-
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  page: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 36,
+  },
+  emoji: {
+    fontSize: 76,
+    paddingTop: 32,
+  },
+  temperature: {
+    color: 'white',
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 96,
+    paddingTop: 8,
+  },
+  environment: {
+    color: 'white',
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 20,
+    paddingTop: 16,
+  },
+  changeWeatherButton: {
+    marginTop: 'auto',
+  },
+  changeWeatherTitle: {
+    color: 'white',
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 20,
+    paddingVertical: 16,
+  },
+});
 
 export default WeatherScreen;

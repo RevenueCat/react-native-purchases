@@ -1,14 +1,8 @@
-/**
- * @file Logout Button.
- * @author Vadim Savin
- */
-
 import React from 'react';
-import { Pressable, Text, Alert } from 'react-native';
+import {Pressable, Text, Alert, StyleSheet} from 'react-native';
 import Purchases from 'react-native-purchases';
-import styles from './styles';
 
-const LogoutButton = ({ onLogout }) => {
+const LogoutButton: React.FC<{onLogout: () => void}> = ({onLogout}) => {
   const logout = async () => {
     /*
      The current user ID is no longer valid for your instance of *Purchases* since the user is logging out, and is no longer authorized to access purchaserInfo for that user ID.
@@ -19,11 +13,11 @@ const LogoutButton = ({ onLogout }) => {
      */
     try {
       await Purchases.logOut();
-    } catch (e) {
+    } catch (e: any) {
       Alert.alert('Error resetting purchases', e.message);
     }
 
-    await onLogout();
+    onLogout();
   };
 
   return (
@@ -32,5 +26,16 @@ const LogoutButton = ({ onLogout }) => {
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    marginTop: 'auto',
+  },
+  text: {
+    color: 'red',
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 18,
+  },
+});
 
 export default LogoutButton;
