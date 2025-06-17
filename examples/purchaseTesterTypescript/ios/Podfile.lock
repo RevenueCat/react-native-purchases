@@ -8,10 +8,10 @@ PODS:
   - hermes-engine (0.78.0):
     - hermes-engine/Pre-built (= 0.78.0)
   - hermes-engine/Pre-built (0.78.0)
-  - PurchasesHybridCommon (13.36.0):
+  - PurchasesHybridCommon (13.36.1):
     - RevenueCat (= 5.28.1)
-  - PurchasesHybridCommonUI (13.36.0):
-    - PurchasesHybridCommon (= 13.36.0)
+  - PurchasesHybridCommonUI (13.36.1):
+    - PurchasesHybridCommon (= 13.36.1)
     - RevenueCatUI (= 5.28.1)
   - RCT-Folly (2024.11.18.00):
     - boost
@@ -1599,11 +1599,11 @@ PODS:
   - RevenueCat (5.28.1)
   - RevenueCatUI (5.28.1):
     - RevenueCat (= 5.28.1)
-  - RNPaywalls (8.11.3):
-    - PurchasesHybridCommonUI (= 13.36.0)
+  - RNPaywalls (8.11.4):
+    - PurchasesHybridCommonUI (= 13.36.1)
     - React-Core
-  - RNPurchases (8.11.3):
-    - PurchasesHybridCommon (= 13.36.0)
+  - RNPurchases (8.11.4):
+    - PurchasesHybridCommon (= 13.36.1)
     - React-Core
   - RNScreens (4.9.1):
     - DoubleConversion
@@ -1886,8 +1886,8 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: b417d2b2aee3b89b58e63e23a51e02be91dc876d
-  PurchasesHybridCommon: 27d71a65d486bbfd6822a58c9802f7191e438c05
-  PurchasesHybridCommonUI: 6de29ae215c0e129d4b02f6fd07231f13c6f2b05
+  PurchasesHybridCommon: 44f75a0815ef477ae0b6a6945fd476a5cf62fb51
+  PurchasesHybridCommonUI: b3270336775dcc9d2117192e11f34b5066918eea
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: b2eecf2d60216df56bc5e6be5f063826d3c1ee35
   RCTRequired: 78522de7dc73b81f3ed7890d145fa341f5bb32ea
@@ -1949,8 +1949,8 @@ SPEC CHECKSUMS:
   ReactCommon: 0c097b53f03d6bf166edbcd0915da32f3015dd90
   RevenueCat: 3fafcf295834118ed6e6ec9388a20a4c9092b1e6
   RevenueCatUI: 619b44cf5caee3ad771722e22cc75481ca7f6441
-  RNPaywalls: 3d324d40ae293a7fecf0a2981b8dbb28820458ee
-  RNPurchases: 3d01e178a9c040fda4ffbbcba0e9b0287693442f
+  RNPaywalls: cf1acb18a5358b2f49182c8bea871f5245119a76
+  RNPurchases: 8b1493a0799e91aab7eee2ab7d7d024831341de3
   RNScreens: 0d4cb9afe052607ad0aa71f645a88bb7c7f2e64c
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
