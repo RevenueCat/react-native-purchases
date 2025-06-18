@@ -20,12 +20,12 @@ internal class RNPaywallsModule(
         const val NAME = "RNPaywalls"
     }
 
-    private val currentActivityFragment: FragmentActivity?
+    private val currentFragmentActivity: FragmentActivity?
         get() {
             return when (val currentActivity = currentActivity) {
                 is FragmentActivity -> currentActivity
                 else -> {
-                    Log.e(NAME, "RevenueCat paywalls require application to use a FragmentActivity")
+                    Log.e(NAME, "RevenueCat paywalls require applications to use a FragmentActivity")
                     null
                 }
             }
@@ -85,12 +85,12 @@ internal class RNPaywallsModule(
         fontFamilyName: String?,
         promise: Promise
     ) {
-        val fragment = currentActivityFragment ?: return
+        val activity = currentFragmentActivity ?: return
         val fontFamily = fontFamilyName?.let {
-            FontAssetManager.getPaywallFontFamily(fontFamilyName = it, fragment.resources.assets)
+            FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
         }
         presentPaywallFromFragment(
-            fragment = fragment,
+            activity = activity,
             PresentPaywallOptions(
                 requiredEntitlementIdentifier = requiredEntitlementIdentifier,
                 shouldDisplayDismissButton = displayCloseButton,
