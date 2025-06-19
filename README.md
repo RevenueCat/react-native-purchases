@@ -53,11 +53,14 @@ Our full SDK reference [can be found here](https://revenuecat.github.io/react-na
 
 ## Installation
 
-Expo supports in-app payments and is compatible with react-native-purchases. To use the library, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). A development build helps you iterate quickly and provides a complete development environment. After you've created the project, install the library:
+Expo supports in-app payments and is compatible with `react-native-purchases`. To use the SDK, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). Development builds enable native code and provide a complete environment for testing purchases.
 
 ```
 $ npx expo install react-native-purchases
 ```
 
-### Bare workflow
-If you are using [bare workflow](https://docs.expo.dev/bare/overview/) (that is, your project is created using `react-native init`), [install `expo`](https://docs.expo.dev/bare/installing-expo-modules/) into your project and [leverage Expo CLI](https://docs.expo.dev/bare/using-expo-cli/) to use Expo tooling and services.
+In Expo Go, the SDK automatically runs in **Preview API Mode**, replacing native calls with JavaScript mocks so your app loads without errors. Real purchases, however, require a development build.
+
+### Using development builds
+
+To fully test in-app purchases, you’ll need to create a [custom development build](https://docs.expo.dev/develop/development-builds/introduction/) with EAS. This ensures that all native dependencies, including `react-native-purchases`, are properly included.
