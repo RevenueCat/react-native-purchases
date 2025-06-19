@@ -19,7 +19,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.CustomerInfo;
 import com.revenuecat.purchases.DangerousSettings;
 import com.revenuecat.purchases.Purchases;
-import com.revenuecat.purchases.PurchasesAreCompletedBy;
 import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
@@ -41,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import kotlin.UninitializedPropertyAccessException;
+import kotlin.Unit;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedCustomerInfoListener {
 
@@ -312,9 +312,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @Override
     public void onReceived(@NonNull CustomerInfo customerInfo) {
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            .emit(RNPurchasesModule.CUSTOMER_INFO_UPDATED,
-                convertMapToWriteableMap(CustomerInfoMapperKt.map(customerInfo)));
+        CustomerInfoMapperKt.mapAsync(
+            customerInfo,
+            map -> {
+                reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(RNPurchasesModule.CUSTOMER_INFO_UPDATED, convertMapToWriteableMap(map));
+                return Unit.INSTANCE;
+            }
+        );
     }
 
     @ReactMethod
