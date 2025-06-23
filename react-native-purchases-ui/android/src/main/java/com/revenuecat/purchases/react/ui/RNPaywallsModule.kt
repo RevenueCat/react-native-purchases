@@ -79,16 +79,19 @@ internal class RNPaywallsModule(
     }
 
     private fun presentPaywall(
-        requiredEntitlementIdentifier: String?,
-        offeringIdentifier: String?,
-        displayCloseButton: Boolean?,
-        fontFamilyName: String?,
-        promise: Promise
+      requiredEntitlementIdentifier: String?,
+      offeringIdentifier: String?,
+      displayCloseButton: Boolean?,
+      fontFamilyName: String?,
+      promise: Promise
     ) {
-        val activity = currentFragmentActivity ?: return
-        val fontFamily = fontFamilyName?.let {
-            FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
-        }
+    val activity = currentFragmentActivity ?: return
+    val fontFamily = fontFamilyName?.let {
+        FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
+    }
+
+    // Ensure the paywall presentation runs on the main thread
+    activity.runOnUiThread {
         presentPaywallFromFragment(
             activity = activity,
             PresentPaywallOptions(
@@ -106,4 +109,5 @@ internal class RNPaywallsModule(
             )
         )
     }
+  }
 }
