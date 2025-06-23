@@ -1,25 +1,15 @@
-/**
- * @file User Screen.
- * @author Vadim Savin
- */
-
 import React, {useState, useEffect} from 'react';
-import {View, Text, Alert} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Purchases from 'react-native-purchases';
-import {ENTITLEMENT_ID} from '../../constants';
-import {
-  LoginForm,
-  LogoutButton,
-  RestorePurchasesButton,
-} from '../../components';
-import styles from './styles.js';
+import {ENTITLEMENT_ID} from '../constants';
+import {LoginForm, LogoutButton, RestorePurchasesButton} from '../components';
 
 /*
  The app's user tab to display user's details like subscription status and ID's.
  */
 const UserScreen = () => {
   const [isAnonymous, setIsAnonymous] = useState(true);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [subscriptionActive, setSubscriptionActive] = useState(false);
 
   // get the latest details about the user (is anonymous, user id, has active subscription)
@@ -28,9 +18,7 @@ const UserScreen = () => {
     setUserId(await Purchases.getAppUserID());
 
     const customerInfo = await Purchases.getCustomerInfo();
-    setSubscriptionActive(
-      typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined',
-    );
+    setSubscriptionActive(typeof customerInfo.entitlements.active[ENTITLEMENT_ID] !== 'undefined');
   };
 
   useEffect(() => {
@@ -53,21 +41,33 @@ const UserScreen = () => {
       <Text style={styles.userIdentifier}>{userId}</Text>
 
       <Text style={styles.headline}>Subscription Status</Text>
-      <Text style={{color: subscriptionActive ? 'green' : 'red'}}>
-        {subscriptionActive ? 'Active' : 'Not Active'}
-      </Text>
+      <Text style={{color: subscriptionActive ? 'green' : 'red'}}>{subscriptionActive ? 'Active' : 'Not Active'}</Text>
 
       {/* Authentication UI */}
-      {isAnonymous ? (
-        <LoginForm onLogin={getUserDetails} />
-      ) : (
-        <LogoutButton onLogout={getUserDetails} />
-      )}
+      {isAnonymous ? <LoginForm onLogin={getUserDetails} /> : <LogoutButton onLogout={getUserDetails} />}
 
       {/* You should always give users the option to restore purchases to connect their purchase to their current app user ID */}
       <RestorePurchasesButton />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  page: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 36,
+  },
+  headline: {
+    color: 'white',
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 18,
+    paddingVertical: 8,
+  },
+  userIdentifier: {
+    color: 'white',
+  },
+});
 
 export default UserScreen;

@@ -8,21 +8,21 @@ Sign up for a free RevenueCat account [here](https://www.revenuecat.com).
 
 This sample uses:
 
-- React Native 0.79.0
-- [react-native-purchases: ^8.9.4](https://www.npmjs.com/package/react-native-purchases)
+- React Native 0.80.0
+- [react-native-purchases: ^8.11.4](https://www.npmjs.com/package/react-native-purchases)
 
 See minimum react-native version requirements for RevenueCat's _Purchases_ SDK [here](https://github.com/RevenueCat/react-native-purchases#requirements).
 
 ## Features
 
-| Feature                           | Sample Project Location                                                                          |
-| --------------------------------- | ------------------------------------------------------------------------------------------------ |
-| 🕹 Configuring the _Purchases_ SDK | [App.tsx](App.tsx#L20)                                                                           |
-| 💰 Building a basic paywall       | [src/screens/PaywallScreen/index.js](src/screens/PaywallScreen/index.js)                         |
-| 🔐 Checking subscription status   | [src/screens/WeatherScreen/index.js](src/screens/WeatherScreen/index.js)                         |
-| 🤑 Restoring transactions         | [src/components/RestorePurchasesButton/index.js](src/components/RestorePurchasesButton/index.js) |
-| 👥 Identifying the user           | [src/components/LoginForm/index.js](src/components/LoginForm/index.js)                           |
-| 🚪 Logging out the user           | [src/components/LogoutButton/index.js](src/components/LogoutButton/index.js)                     |
+| Feature                           | Sample Project Location                                                                |
+| --------------------------------- | -------------------------------------------------------------------------------------- |
+| 🕹 Configuring the _Purchases_ SDK | [App.tsx](App.tsx#L20)                                                                 |
+| 💰 Building a basic paywall       | [src/screens/PaywallScreen.tsx](src/screens/PaywallScreen.tsx)                         |
+| 🔐 Checking subscription status   | [src/screens/WeatherScreen.tsx](src/screens/WeatherScreen.tsx)                         |
+| 🤑 Restoring transactions         | [src/components/RestorePurchasesButton.tsx](src/components/RestorePurchasesButton.tsx) |
+| 👥 Identifying the user           | [src/components/LoginForm.tsx](src/components/LoginForm.tsx)                           |
+| 🚪 Logging out the user           | [src/components/LogoutButton.tsx](src/components/LogoutButton.tsx)                     |
 
 ## Setup & Run
 
@@ -65,13 +65,11 @@ See minimum react-native version requirements for RevenueCat's _Purchases_ SDK [
 
 <img src="https://i.imgur.com/oZIAvOc.png" alt="Build Gradle with applicationId" width="250px" />
 
-7. Open `Constants/index.js` (src/constants/index.js):
+7. Open `constants/index.ts` (src/constants/index.ts):
 
-   - Replace the value for `API_KEY` with the API key from your RevenueCat project.
+   - Replace the values for `API_KEY` with the API keys from your RevenueCat project (for your App Store and Play Store app).
    - Replace the value for `entitlementID` with the entitlement ID of your product in RevenueCat's dashboard.
    - Comment out the error directives.
-
-   <img src="https://i.imgur.com/x1bvUTJ.png" alt="Constants/index.js file" width="250px" />
 
 8. Run the app on a simulator or physical device.
 
@@ -94,10 +92,6 @@ npm run android
 5. On the next modal, select **Ok**.
 6. Return to the home page and select **Change the Weather** to see the weather change!
 
-#### Purchase Flow Demo (`iOS` version)
-
-<img src="https://i.imgur.com/SSbRLhr.gif" width="220px" />
-
 ## Support
 
 For more technical resources, check out our [documentation](https://docs.revenuecat.com).
@@ -106,4 +100,4 @@ Looking for RevenueCat Support? Visit our [Help Center](https://support.revenuec
 
 ## Credits
 
-This React Native sample was built by Vadim Savin from notjust.dev, and updated to React Native 0.79 by RevenueCat
+This React Native sample was created by RevenueCat, based on an initial version built by Vadim Savin from notjust.dev.

@@ -1,6 +1,7 @@
 ## RevenueCat SDK
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.35.0 (#1281) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 8.19.2](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.2)
-  * [Android 8.19.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.1)
-  * [iOS 5.27.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.27.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.37.0 (#1293) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.29.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.29.0)
+
+### 🔄 Other Changes
+* Update MagicWeather to RN 0.80, remove external dependencies (#1291) via Jens-Fabian Goetzmann (@jefago)
