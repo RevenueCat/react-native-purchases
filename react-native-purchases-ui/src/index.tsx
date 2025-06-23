@@ -19,6 +19,7 @@ import {
 import React, { type ReactNode, useEffect, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
+import { WebPaywall } from "./preview/webComponents";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
@@ -30,15 +31,16 @@ const LINKING_ERROR =
 
 // Get the native module or use the preview implementation
 const usingPreviewAPIMode = shouldUsePreviewAPIMode();
+const isWebPlatform = Platform.OS === 'web';
 
 const RNPaywalls = usingPreviewAPIMode ? previewNativeModuleRNPaywalls : NativeModules.RNPaywalls;
 const RNCustomerCenter = usingPreviewAPIMode ? previewNativeModuleRNCustomerCenter : NativeModules.RNCustomerCenter;
 
-if (!RNPaywalls) {
+if (!RNPaywalls && !isWebPlatform) {
   throw new Error(LINKING_ERROR);
 }
 
-if (!RNCustomerCenter) {
+if (!RNCustomerCenter && !isWebPlatform) {
   throw new Error(LINKING_ERROR);
 }
 
@@ -302,19 +304,39 @@ export default class RevenueCatUI {
                                                                    onRestoreCompleted,
                                                                    onRestoreError,
                                                                    onDismiss,
-                                                                 }) => (
-    <InternalPaywall options={options}
-                     children={children}
-                     onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
-                     onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-                     onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
-                     onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
-                     onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
-                     onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-                     onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
-                     onDismiss={() => onDismiss && onDismiss()}
-                     style={[{flex: 1}, style]}/>
-  );
+                                                                 }) => {
+    if (isWebPlatform) {
+      return (
+        <WebPaywall
+          offering={options?.offering}
+          displayCloseButton={options?.displayCloseButton}
+          fontFamily={options?.fontFamily}
+          onPurchaseStarted={onPurchaseStarted}
+          onPurchaseCompleted={onPurchaseCompleted}
+          onPurchaseError={onPurchaseError}
+          onPurchaseCancelled={onPurchaseCancelled}
+          onRestoreStarted={onRestoreStarted}
+          onRestoreCompleted={onRestoreCompleted}
+          onRestoreError={onRestoreError}
+          onDismiss={onDismiss}
+        />
+      );
+    }
+
+    return (
+      <InternalPaywall options={options}
+                       children={children}
+                       onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+                       onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+                       onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+                       onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+                       onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+                       onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+                       onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+                       onDismiss={() => onDismiss && onDismiss()}
+                       style={[{flex: 1}, style]}/>
+    );
+  };
 
   public static OriginalTemplatePaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
                                                                                                   style,
@@ -388,6 +410,13 @@ export default class RevenueCatUI {
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
   public static presentCustomerCenter(params?: PresentCustomerCenterParams): Promise<void> {
+    if (isWebPlatform) {
+      // For web platform, we'll return a resolved promise since customer center is not fully implemented
+      // In a real implementation, you might want to use a proper modal library or React component
+      console.log('Customer center presented on web platform (preview mode)');
+      return Promise.resolve();
+    }
+
     if (params?.callbacks) {
       const subscriptions: { remove: () => void }[] = [];
       const callbacks = params.callbacks as CustomerCenterCallbacks;

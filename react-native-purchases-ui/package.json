@@ -2,12 +2,26 @@
   "name": "react-native-purchases-ui",
   "title": "React Native Purchases UI",
   "version": "8.11.5",
-  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android.",
+  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS, Android, and Web.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
+  "exports": {
+    ".": {
+      "types": "./lib/typescript/src/index.d.ts",
+      "import": "./lib/module/index.js",
+      "require": "./lib/commonjs/index.js",
+      "react-native": "./src/index.tsx"
+    },
+    "./web": {
+      "types": "./lib/typescript/src/web.d.ts",
+      "import": "./lib/module/web.js",
+      "require": "./lib/commonjs/web.js",
+      "react-native": "./src/web.ts"
+    }
+  },
   "files": [
     "src",
     "lib",
@@ -46,7 +60,8 @@
     "iap",
     "iOS",
     "Apple",
-    "Android"
+    "Android",
+    "web"
   ],
   "author": "RevenueCat, Inc.",
   "license": "MIT",
@@ -55,6 +70,7 @@
     "@types/jest": "^29.5.12",
     "@types/react": "^18.2.44",
     "@types/react-dom": "~18.2.0",
+    "babel-plugin-react-native-web": "^0.20.0",
     "jest": "^29.7.0",
     "jest-react-native": "^18.0.0",
     "pod-install": "^0.1.0",
@@ -75,7 +91,8 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-web": ">= 0.20.0"
   },
   "packageManager": "yarn@3.6.1",
   "jest": {
