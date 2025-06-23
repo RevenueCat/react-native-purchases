@@ -17,7 +17,8 @@
     "react": "19.0.0",
     "react-native": "^0.78.0",
     "react-native-safe-area-context": "^5.1.0",
-    "react-native-screens": "^4.5.0"
+    "react-native-screens": "^4.5.0",
+    "react-native-web": "^0.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

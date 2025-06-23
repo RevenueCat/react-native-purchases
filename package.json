@@ -64,12 +64,14 @@
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": ">= 16.6.3",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-web": ">= 0.20.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/react": "^18.2.44",
     "@types/react-dom": "~18.2.0",
+    "babel-plugin-react-native-web": "^0.20.0",
     "jest": "^29.7.0",
     "jest-react-native": "^18.0.0",
     "pod-install": "^0.1.0",
@@ -97,7 +99,10 @@
     "cacheDirectory": ".jest/cache",
     "setupFiles": [
       "./scripts/setupJest.js"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    }
   },
   "dependencies": {
     "@revenuecat/purchases-typescript-internal": "13.37.0"
