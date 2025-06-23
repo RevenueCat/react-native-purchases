@@ -13,7 +13,7 @@
       "types": "./lib/typescript/src/index.d.ts",
       "import": "./lib/module/index.js",
       "require": "./lib/commonjs/index.js",
-      "react-native": "./src/index.tsx"
+      "react-native": "./src/index.ts"
     },
     "./web": {
       "types": "./lib/typescript/src/web.d.ts",
@@ -70,6 +70,7 @@
     "@types/jest": "^29.5.12",
     "@types/react": "^18.2.44",
     "@types/react-dom": "~18.2.0",
+    "@types/react-native-web": "^0.19.1",
     "babel-plugin-react-native-web": "^0.20.0",
     "jest": "^29.7.0",
     "jest-react-native": "^18.0.0",

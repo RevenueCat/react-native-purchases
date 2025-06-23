@@ -30,7 +30,7 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   const hasKeys = () => {
-    return APIKeys.apple.length > 0 || APIKeys.google.length > 0 || APIKeys.amazon.length > 0;
+    return APIKeys.apple.length > 0 || APIKeys.google.length > 0 || APIKeys.amazon.length > 0 || APIKeys.web.length > 0;
   }
 
   const [url, setUrl] = useState<string | null>(null);
@@ -66,7 +66,13 @@ const App = () => {
 
     const verificationMode = Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
 
-    if (Platform.OS == "android") {
+    if (Platform.OS === "web") {
+      Purchases.configure({
+        apiKey: APIKeys.web,
+        entitlementVerificationMode: verificationMode,
+        diagnosticsEnabled: true
+      });
+    } else if (Platform.OS === "android") {
       const useAmazon = false;
       if (useAmazon) {
         Purchases.configure({
