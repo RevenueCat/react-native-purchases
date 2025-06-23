@@ -9844,7 +9844,7 @@ __metadata:
     babel-plugin-react-native-web: ^0.20.0
     file-loader: ^6.2.0
     html-webpack-plugin: ^5.5.0
-    react: ^18.2.0
+    react: 19.0.0
     react-dom: ^18.2.0
     react-native: ^0.78.0
     react-native-safe-area-context: ^5.1.0
@@ -10314,12 +10314,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
-  version: 18.3.1
-  resolution: "react@npm:18.3.1"
-  dependencies:
-    loose-envify: ^1.1.0
-  checksum: a27bcfa8ff7c15a1e50244ad0d0c1cb2ad4375eeffefd266a64889beea6f6b64c4966c9b37d14ee32d6c9fcd5aa6ba183b6988167ab4d127d13e7cb5b386a376
+"react@npm:19.0.0":
+  version: 19.0.0
+  resolution: "react@npm:19.0.0"
+  checksum: 86de15d85b2465feb40297a90319c325cb07cf27191a361d47bcfe8c6126c973d660125aa67b8f4cbbe39f15a2f32efd0c814e98196d8e5b68c567ba40a399c6
   languageName: node
   linkType: hard
 
