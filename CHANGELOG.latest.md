@@ -1,7 +1,6 @@
 ## RevenueCat SDK
-### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.37.0 (#1293) via RevenueCat Git Bot (@RCGitBot)
-  * [iOS 5.29.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.29.0)
+### 🐞 Bugfixes
+* Force `presentPaywall` to run on main thread (#1301) via Josh Holtz (@joshdholtz)
 
 ### 🔄 Other Changes
-* Update MagicWeather to RN 0.80, remove external dependencies (#1291) via Jens-Fabian Goetzmann (@jefago)
+* chore: update react-native-purchase-ui documentation (#1284) via Perttu (@plahteenlahti)
