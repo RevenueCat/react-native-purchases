@@ -23,7 +23,6 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
-    "types": ["react-native-web"],
     "verbatimModuleSyntax": true
   }
 }

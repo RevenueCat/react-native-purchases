@@ -24,7 +24,6 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["react-native-web"],
     "resolveJsonModule": true
   },
   "files": ["src/index.ts", "src/web.ts"],
