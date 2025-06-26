@@ -2,7 +2,7 @@
   "name": "react-native-purchases-ui",
   "title": "React Native Purchases UI",
   "version": "8.11.5",
-  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS, Android, and Web.",
+  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -14,12 +14,6 @@
       "import": "./lib/module/index.js",
       "require": "./lib/commonjs/index.js",
       "react-native": "./src/index.ts"
-    },
-    "./web": {
-      "types": "./lib/typescript/src/web.d.ts",
-      "import": "./lib/module/web.js",
-      "require": "./lib/commonjs/web.js",
-      "react-native": "./src/web.ts"
     }
   },
   "files": [
@@ -60,8 +54,7 @@
     "iap",
     "iOS",
     "Apple",
-    "Android",
-    "web"
+    "Android"
   ],
   "author": "RevenueCat, Inc.",
   "license": "MIT",

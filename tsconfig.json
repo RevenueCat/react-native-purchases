@@ -2,8 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "react-native-purchases": ["./src/index"],
-      "react-native-purchases/web": ["./src/web"]
+      "react-native-purchases": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
@@ -26,7 +25,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "files": ["src/index.ts", "src/web.ts"],
+  "files": ["src/index.ts"],
   "exclude": ["node_modules", "dist", "./installPeerdeps.ts"],
   "typedocOptions": {
     "entryPoints": ["src/index.ts"],

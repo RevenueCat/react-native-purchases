@@ -2,7 +2,7 @@
   "name": "react-native-purchases",
   "title": "React Native Purchases",
   "version": "8.11.5",
-  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS, Android, and Web. ",
+  "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,14 +12,9 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./web": {
-      "import": "./dist/web.js",
-      "require": "./dist/web.js",
-      "types": "./dist/web.d.ts"
     }
   },
-  "browser": "dist/web.js",
+  "browser": "dist/index.js",
   "react-native": "dist/index.js",
   "files": [
     "dist",
@@ -46,7 +41,6 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build:web": "tsc --project tsconfig.json",
     "build-watch": "tsc --watch",
     "test": "jest",
     "typecheck": "tsc --noEmit",
@@ -73,8 +67,7 @@
     "iap",
     "iOS",
     "Apple",
-    "Android",
-    "web"
+    "Android"
   ],
   "author": "RevenueCat, Inc.",
   "license": "MIT",
