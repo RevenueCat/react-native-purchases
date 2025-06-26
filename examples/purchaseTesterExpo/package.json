@@ -3,10 +3,12 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start -c",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start",
+    "expo-go-android": "expo start --android",
+    "expo-go-ios": "expo start --ios",
     "web": "expo start --web",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "test": "jest --watchAll"
   },
   "jest": {
@@ -26,6 +28,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "^0.79.4",
+    "react-native-purchases": "file:../..",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
@@ -39,6 +42,12 @@
     "jest-expo": "~53.0.7",
     "react-test-renderer": "19.0.0",
     "typescript": "~5.8.3"
+  },
+  "overrides": {
+    "react-native-appwrite": {
+      "expo-file-system": "18.*.*",
+      "react-native": ">=0.76.7 <1.0.0"
+    }
   },
   "private": true
 }

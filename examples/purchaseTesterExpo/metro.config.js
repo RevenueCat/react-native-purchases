@@ -23,6 +23,7 @@ config.resolver = {
   // Map react-native-purchases to the source in the monorepo
   extraNodeModules: {
     ...(config.resolver.extraNodeModules || {}),
+    'react-native': require.resolve('react-native'),
     'react-native-purchases': path.resolve(workspaceRoot, 'react-native-purchases'),
   },
   // Ensure Metro knows where to look for node_modules
@@ -30,9 +31,9 @@ config.resolver = {
     projectNodeModules,
     workspaceNodeModules,
   ],
-  sourceExt: [
+  sourceExts: [
     ...(config.resolver.sourceExts || []),
-    'cjs','ts','tsx',
+    'cjs','ts','tsx','mjs'
   ]
 };
 
