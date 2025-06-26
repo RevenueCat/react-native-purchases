@@ -85,7 +85,12 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-web": ">= 0.20.0"
+    "react-native-web": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-native-web": {
+      "optional": true
+    }
   },
   "packageManager": "yarn@3.6.1",
   "jest": {

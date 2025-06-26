@@ -75,7 +75,12 @@
   "peerDependencies": {
     "react": ">= 16.6.3",
     "react-native": "*",
-    "react-native-web": ">= 0.20.0"
+    "react-native-web": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-native-web": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
