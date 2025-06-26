@@ -35,3 +35,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# mobile generated folders (can be regenerated with npx expo prebuild)
+ios/
+android/
