@@ -61,28 +61,3 @@ $ npx expo install react-native-purchases
 
 ### Bare workflow
 If you are using [bare workflow](https://docs.expo.dev/bare/overview/) (that is, your project is created using `react-native init`), [install `expo`](https://docs.expo.dev/bare/installing-expo-modules/) into your project and [leverage Expo CLI](https://docs.expo.dev/bare/using-expo-cli/) to use Expo tooling and services.
-
-### Web Support
-React Native Purchases now supports web platforms! When running on web, the library automatically switches to Preview API Mode, which provides a mock implementation for development and testing purposes.
-
-To use React Native Purchases on web:
-
-```javascript
-// Standard import (works on all platforms)
-import Purchases from 'react-native-purchases';
-
-// Or web-specific import
-import Purchases from 'react-native-purchases/web';
-```
-
-**Note**: On web platforms, the library runs in Preview API Mode, which means:
-- All API calls return mock data for development purposes
-- No actual purchases can be made
-- This is perfect for testing your UI and integration logic
-- For production web apps, consider using RevenueCat's [JavaScript SDK](https://docs.revenuecat.com/docs/javascript) instead
-
-## Platform Support
-- ✅ iOS
-- ✅ Android  
-- ✅ Web (Preview API Mode)
-- ✅ Expo (with development builds)
