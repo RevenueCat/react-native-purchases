@@ -36,11 +36,11 @@ const isWebPlatform = Platform.OS === 'web';
 const RNPaywalls = usingPreviewAPIMode ? previewNativeModuleRNPaywalls : NativeModules.RNPaywalls;
 const RNCustomerCenter = usingPreviewAPIMode ? previewNativeModuleRNCustomerCenter : NativeModules.RNCustomerCenter;
 
-if (!RNPaywalls && !isWebPlatform) {
+if (!RNPaywalls) {
   throw new Error(LINKING_ERROR);
 }
 
-if (!RNCustomerCenter && !isWebPlatform) {
+if (!RNCustomerCenter) {
   throw new Error(LINKING_ERROR);
 }
 
@@ -410,13 +410,6 @@ export default class RevenueCatUI {
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
   public static presentCustomerCenter(params?: PresentCustomerCenterParams): Promise<void> {
-    if (isWebPlatform) {
-      // For web platform, we'll return a resolved promise since customer center is not fully implemented
-      // In a real implementation, you might want to use a proper modal library or React component
-      console.log('Customer center presented on web platform (preview mode)');
-      return Promise.resolve();
-    }
-
     if (params?.callbacks) {
       const subscriptions: { remove: () => void }[] = [];
       const callbacks = params.callbacks as CustomerCenterCallbacks;
