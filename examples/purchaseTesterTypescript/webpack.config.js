@@ -35,9 +35,18 @@ module.exports = {
     ],
   },
   resolve: {
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
     alias: {
       'react-native$': 'react-native-web',
+      'react-native-purchases': path.resolve(__dirname, '../../dist'),
+      'react-native-purchases-ui': path.resolve(__dirname, '../../react-native-purchases-ui/lib/module'),
     },
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+      path.resolve(__dirname, '../../node_modules'),
+      path.resolve(__dirname, '../../'),
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
