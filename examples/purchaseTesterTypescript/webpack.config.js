@@ -11,12 +11,18 @@ module.exports = {
   module: {
     rules: [
       {
+        // for .js and .mjs modules
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
         test: /\.(ts|tsx|js|jsx)$/,
         exclude: /node_modules[\/\\](?!(react-native|react-native-web|@react-navigation|react-native-safe-area-context|react-native-screens|react-native-gesture-handler)\/).*/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['module:metro-react-native-babel-preset'], 
             configFile: path.resolve(__dirname, 'babel.config.js'),
           },
         },
@@ -37,6 +43,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+    mainFields: ['react-native','browser','module','main'],  // ← pick src/index.tsx first
     alias: {
       'react-native$': 'react-native-web',
       'react-native-purchases': path.resolve(__dirname, '../../dist'),
@@ -63,4 +70,4 @@ module.exports = {
     hot: true,
     historyApiFallback: true,
   },
-}; 
+};
