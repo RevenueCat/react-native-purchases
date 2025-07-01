@@ -12,10 +12,11 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|tsx|js|jsx)$/,
-        exclude: /node_modules/,
+        exclude: /node_modules[\/\\](?!(react-native|react-native-web|@react-navigation|react-native-safe-area-context|react-native-screens|react-native-gesture-handler)\/).*/,
         use: {
           loader: 'babel-loader',
           options: {
+            presets: ['module:metro-react-native-babel-preset'], 
             configFile: path.resolve(__dirname, 'babel.config.js'),
           },
         },

@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Alert, Linking, Platform, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import Purchases from 'react-native-purchases';
 
@@ -25,7 +25,7 @@ import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
 
 import APIKeys from './app/APIKeys';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const App = () => {
   const hasKeys = () => {
