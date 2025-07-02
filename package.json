@@ -53,6 +53,7 @@
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
+    "examples/purchaseTesterExpo",
     "react-native-purchases-ui"
   ],
   "packageManager": "yarn@3.6.1",
