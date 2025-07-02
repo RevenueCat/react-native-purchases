@@ -47,6 +47,7 @@
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepare": "tsc",
     "example": "yarn workspace purchasetester",
+    "example-expo": "yarn workspace purchasetesterexpo",
     "react-native-purchases-ui": "yarn workspace react-native-purchases-ui",
     "ui": "yarn workspace react-native-purchases-ui",
     "bootstrap": "yarn && yarn build && yarn react-native-purchases-ui prepare && yarn example pods"

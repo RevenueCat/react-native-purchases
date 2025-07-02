@@ -3,10 +3,13 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
+import { Platform } from 'react-native';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import Purchases from 'react-native-purchases';
+import APIKeys from '@/constants/APIKeys';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -27,18 +30,58 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  const [purchasesConfigured, setPurchasesConfigured] = useState(false);
+
+  // Configure Purchases on app startup
+  useEffect(() => {
+    const configurePurchases = async () => {
+      try {
+        // Enable debug logs before calling `configure`
+        Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
+
+        // Get the appropriate API key based on platform
+        let apiKey = '';
+        if (Platform.OS === 'ios') {
+          apiKey = APIKeys.apple;
+        } else if (Platform.OS === 'android') {
+          apiKey = APIKeys.google;
+        } else if (Platform.OS === 'web') {
+          apiKey = APIKeys.web;
+        }
+
+        if (apiKey) {
+          // Initialize the RevenueCat Purchases SDK
+          // appUserID is null, so an anonymous ID will be generated automatically
+          await Purchases.configure({
+            apiKey: apiKey,
+            appUserID: null,
+            useAmazon: false
+          });
+          setPurchasesConfigured(true);
+          console.log('Purchases configured successfully');
+        } else {
+          console.warn('No API key found for platform:', Platform.OS);
+        }
+      } catch (e) {
+        console.error('Failed to configure Purchases:', e);
+      }
+    };
+
+    configurePurchases();
+  }, []);
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && purchasesConfigured) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, purchasesConfigured]);
 
-  if (!loaded) {
+  if (!loaded || !purchasesConfigured) {
     return null;
   }
 

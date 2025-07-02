@@ -4992,7 +4992,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-module-resolver@npm:^5.0.0":
+"babel-plugin-module-resolver@npm:^5.0.0, babel-plugin-module-resolver@npm:^5.0.2":
   version: 5.0.2
   resolution: "babel-plugin-module-resolver@npm:5.0.2"
   dependencies:
@@ -11795,6 +11795,7 @@ __metadata:
     "@expo/vector-icons": ^14.1.0
     "@react-navigation/native": ^7.1.6
     "@types/react": ~19.0.10
+    babel-plugin-module-resolver: ^5.0.2
     expo: ~53.0.15
     expo-font: ~13.3.2
     expo-linking: ~7.1.6
@@ -11808,6 +11809,8 @@ __metadata:
     react: 19.0.0
     react-dom: 19.0.0
     react-native: 0.79.4
+    react-native-purchases: "workspace:*"
+    react-native-purchases-ui: "workspace:*"
     react-native-reanimated: ~3.17.4
     react-native-safe-area-context: 5.4.0
     react-native-screens: ~4.11.1
