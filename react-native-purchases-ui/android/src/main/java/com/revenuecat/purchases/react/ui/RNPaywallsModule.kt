@@ -89,21 +89,25 @@ internal class RNPaywallsModule(
         val fontFamily = fontFamilyName?.let {
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
         }
-        presentPaywallFromFragment(
-            activity = activity,
-            PresentPaywallOptions(
-                requiredEntitlementIdentifier = requiredEntitlementIdentifier,
-                shouldDisplayDismissButton = displayCloseButton,
-                paywallSource = offeringIdentifier?.let {
-                    PaywallSource.OfferingIdentifier(it)
-                } ?: PaywallSource.DefaultOffering,
-                paywallResultListener = object : PaywallResultListener {
-                    override fun onPaywallResult(paywallResult: String) {
-                        promise.resolve(paywallResult)
-                    }
-                },
-                fontFamily = fontFamily
+
+        // @ReactMethod is not guaranteed to run on the main thread
+        activity.runOnUiThread {
+            presentPaywallFromFragment(
+                activity = activity,
+                PresentPaywallOptions(
+                    requiredEntitlementIdentifier = requiredEntitlementIdentifier,
+                    shouldDisplayDismissButton = displayCloseButton,
+                    paywallSource = offeringIdentifier?.let {
+                        PaywallSource.OfferingIdentifier(it)
+                    } ?: PaywallSource.DefaultOffering,
+                    paywallResultListener = object : PaywallResultListener {
+                        override fun onPaywallResult(paywallResult: String) {
+                            promise.resolve(paywallResult)
+                        }
+                    },
+                    fontFamily = fontFamily
+                )
             )
-        )
+        }
     }
 }

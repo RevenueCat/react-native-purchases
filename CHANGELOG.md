@@ -1,3 +1,17 @@
+## 8.11.7
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.38.1 (#1303) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.20.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.20.0)
+
+## 8.11.6
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Force `presentPaywall` to run on main thread (#1301) via Josh Holtz (@joshdholtz)
+
+### 🔄 Other Changes
+* chore: update react-native-purchase-ui documentation (#1284) via Perttu (@plahteenlahti)
+
 ## 8.11.5
 ## RevenueCat SDK
 ### 📦 Dependency Updates
