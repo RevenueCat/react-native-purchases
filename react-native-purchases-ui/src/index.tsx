@@ -31,7 +31,6 @@ const LINKING_ERROR =
 
 // Get the native module or use the preview implementation
 const usingPreviewAPIMode = shouldUsePreviewAPIMode();
-const isWebPlatform = Platform.OS === 'web';
 
 const RNPaywalls = usingPreviewAPIMode ? previewNativeModuleRNPaywalls : NativeModules.RNPaywalls;
 const RNCustomerCenter = usingPreviewAPIMode ? previewNativeModuleRNCustomerCenter : NativeModules.RNCustomerCenter;
@@ -47,18 +46,113 @@ if (!RNCustomerCenter) {
 const eventEmitter = new NativeEventEmitter(RNPaywalls);
 const customerCenterEventEmitter = new NativeEventEmitter(RNCustomerCenter);
 
-const InternalPaywall =
-  UIManager.getViewManagerConfig('Paywall') != null
-    ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
-    : () => {
-      throw new Error(LINKING_ERROR);
-    };
+const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
+  style,
+  children,
+  options,
+  onPurchaseStarted,
+  onPurchaseCompleted,
+  onPurchaseError,
+  onPurchaseCancelled,
+  onRestoreStarted,
+  onRestoreCompleted,
+  onRestoreError,
+  onDismiss,
+}) => {
+  if (usingPreviewAPIMode) {
+    return (
+      <WebPaywall
+        offering={options?.offering}
+        displayCloseButton={options?.displayCloseButton}
+        fontFamily={options?.fontFamily}
+        onPurchaseStarted={onPurchaseStarted}
+        onPurchaseCompleted={onPurchaseCompleted}
+        onPurchaseError={onPurchaseError}
+        onPurchaseCancelled={onPurchaseCancelled}
+        onRestoreStarted={onRestoreStarted}
+        onRestoreCompleted={onRestoreCompleted}
+        onRestoreError={onRestoreError}
+        onDismiss={onDismiss}
+      />
+    );
+  }
 
-const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
-  : () => {
-    throw new Error(LINKING_ERROR);
-  };
+  if (UIManager.getViewManagerConfig('Paywall') != null) {
+    const NativePaywall = requireNativeComponent<FullScreenPaywallViewProps>('Paywall');
+    return (
+      <NativePaywall
+        style={style}
+        children={children}
+        options={options}
+        onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+        onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+        onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+        onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+        onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+        onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        onDismiss={() => onDismiss && onDismiss()}
+      />
+    );
+  }
+
+  throw new Error(LINKING_ERROR);
+};
+
+const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
+  style,
+  children,
+  options,
+  onPurchaseStarted,
+  onPurchaseCompleted,
+  onPurchaseError,
+  onPurchaseCancelled,
+  onRestoreStarted,
+  onRestoreCompleted,
+  onRestoreError,
+  onDismiss,
+  onMeasure,
+}) => {
+  if (usingPreviewAPIMode) {
+    return (
+      <WebPaywall
+        offering={options?.offering}
+        displayCloseButton={true}
+        fontFamily={options?.fontFamily}
+        onPurchaseStarted={onPurchaseStarted}
+        onPurchaseCompleted={onPurchaseCompleted}
+        onPurchaseError={onPurchaseError}
+        onPurchaseCancelled={onPurchaseCancelled}
+        onRestoreStarted={onRestoreStarted}
+        onRestoreCompleted={onRestoreCompleted}
+        onRestoreError={onRestoreError}
+        onDismiss={onDismiss}
+      />
+    );
+  }
+
+  if (UIManager.getViewManagerConfig('Paywall') != null) {
+    const NativePaywallFooter = requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView');
+    return (
+      <NativePaywallFooter
+        style={style}
+        children={children}
+        options={options}
+        onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+        onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+        onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+        onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+        onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+        onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        onDismiss={() => onDismiss && onDismiss()}
+        onMeasure={onMeasure}
+      />
+    );
+  }
+
+  throw new Error(LINKING_ERROR);
+};
 
 export interface PresentPaywallParams {
   /**
@@ -305,36 +399,20 @@ export default class RevenueCatUI {
                                                                    onRestoreError,
                                                                    onDismiss,
                                                                  }) => {
-    if (isWebPlatform) {
-      return (
-        <WebPaywall
-          offering={options?.offering}
-          displayCloseButton={options?.displayCloseButton}
-          fontFamily={options?.fontFamily}
-          onPurchaseStarted={onPurchaseStarted}
-          onPurchaseCompleted={onPurchaseCompleted}
-          onPurchaseError={onPurchaseError}
-          onPurchaseCancelled={onPurchaseCancelled}
-          onRestoreStarted={onRestoreStarted}
-          onRestoreCompleted={onRestoreCompleted}
-          onRestoreError={onRestoreError}
-          onDismiss={onDismiss}
-        />
-      );
-    }
-
     return (
-      <InternalPaywall options={options}
-                       children={children}
-                       onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
-                       onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-                       onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
-                       onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
-                       onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
-                       onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-                       onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
-                       onDismiss={() => onDismiss && onDismiss()}
-                       style={[{flex: 1}, style]}/>
+      <InternalPaywall 
+        options={options}
+        children={children}
+        onPurchaseStarted={onPurchaseStarted}
+        onPurchaseCompleted={onPurchaseCompleted}
+        onPurchaseError={onPurchaseError}
+        onPurchaseCancelled={onPurchaseCancelled}
+        onRestoreStarted={onRestoreStarted}
+        onRestoreCompleted={onRestoreCompleted}
+        onRestoreError={onRestoreError}
+        onDismiss={onDismiss}
+        style={[{flex: 1}, style]}
+      />
     );
   };
 
@@ -389,14 +467,14 @@ export default class RevenueCatUI {
             android: {marginTop: -20, height}
           })}
           options={options}
-          onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
-          onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-          onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
-          onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
-          onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
-          onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-          onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
-          onDismiss={() => onDismiss && onDismiss()}
+          onPurchaseStarted={onPurchaseStarted}
+          onPurchaseCompleted={onPurchaseCompleted}
+          onPurchaseError={onPurchaseError}
+          onPurchaseCancelled={onPurchaseCancelled}
+          onRestoreStarted={onRestoreStarted}
+          onRestoreCompleted={onRestoreCompleted}
+          onRestoreError={onRestoreError}
+          onDismiss={onDismiss}
           onMeasure={(event: any) => setHeight(event.nativeEvent.measurements.height)}
         />
       </View>

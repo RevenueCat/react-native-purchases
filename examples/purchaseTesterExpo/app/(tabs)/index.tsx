@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, Alert, Platform } from 'react-native';
+import { StyleSheet, ScrollView, Alert, Platform, Modal } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Purchases from 'react-native-purchases';
+import RevenueCatUI from 'react-native-purchases-ui';
 
 export default function TabOneScreen() {
   const [lastResult, setLastResult] = useState<string>('No method called yet');
+  const [showModalPaywall, setShowModalPaywall] = useState(false);
 
   const formatResult = (methodName: string, result: any, error?: any) => {
     const timestamp = new Date().toLocaleTimeString();
@@ -280,8 +282,128 @@ export default function TabOneScreen() {
           )} 
         />
 
+        {/* RevenueCat UI - Paywall Methods */}
+        <SectionHeader title="RevenueCat UI - Paywall Methods" />
+        <MethodButton 
+          title="presentPaywall (default)" 
+          onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall())} 
+        />
+        <MethodButton 
+          title="presentPaywall (no close button)" 
+          onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall({ displayCloseButton: false }))} 
+        />
+        <MethodButton 
+          title="presentPaywall (with custom font)" 
+          onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall({ 
+            displayCloseButton: true, 
+            fontFamily: 'System' 
+          }))} 
+        />
+        <MethodButton 
+          title="presentPaywallIfNeeded (premium)" 
+          onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({ 
+            requiredEntitlementIdentifier: 'premium' 
+          }))} 
+        />
+        <MethodButton 
+          title="presentPaywallIfNeeded (pro)" 
+          onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({ 
+            requiredEntitlementIdentifier: 'pro',
+            displayCloseButton: false
+          }))} 
+        />
+        <MethodButton 
+          title="Show Modal Paywall (Fullscreen)" 
+          onPress={() => {
+            setLastResult('[' + new Date().toLocaleTimeString() + '] Opening modal paywall...');
+            setShowModalPaywall(true);
+          }} 
+        />
+
+        {/* RevenueCat UI - Customer Center */}
+        <SectionHeader title="RevenueCat UI - Customer Center" />
+        <MethodButton 
+          title="presentCustomerCenter" 
+          onPress={() => callMethod('presentCustomerCenter', () => RevenueCatUI.presentCustomerCenter())} 
+        />
+        <MethodButton 
+          title="presentCustomerCenter (with callbacks)" 
+          onPress={() => callMethod('presentCustomerCenter', () => RevenueCatUI.presentCustomerCenter({
+            callbacks: {
+              onFeedbackSurveyCompleted: ({ feedbackSurveyOptionId }) => {
+                console.log('Feedback survey completed:', feedbackSurveyOptionId);
+              },
+              onShowingManageSubscriptions: () => {
+                console.log('Showing manage subscriptions');
+              },
+              onRestoreCompleted: ({ customerInfo }) => {
+                console.log('Restore completed:', customerInfo);
+              },
+              onRestoreFailed: ({ error }) => {
+                console.log('Restore failed:', error);
+              },
+              onRestoreStarted: () => {
+                console.log('Restore started');
+              },
+              onRefundRequestStarted: ({ productIdentifier }) => {
+                console.log('Refund request started:', productIdentifier);
+              },
+              onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }) => {
+                console.log('Refund request completed:', productIdentifier, refundRequestStatus);
+              },
+              onManagementOptionSelected: (event) => {
+                console.log('Management option selected:', event);
+              }
+            }
+          }))} 
+        />
+
         <View style={styles.bottomPadding} />
       </ScrollView>
+
+      {/* Modal Paywall */}
+      <Modal
+        visible={showModalPaywall}
+        animationType="slide"
+        presentationStyle="fullScreen"
+        onRequestClose={() => setShowModalPaywall(false)}
+      >
+        <View style={styles.modalContainer}>
+          <RevenueCatUI.Paywall
+            options={{
+              displayCloseButton: true,
+              offering: null,
+              fontFamily: null
+            }}
+            onPurchaseStarted={({ packageBeingPurchased }) => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Purchase started for: ${packageBeingPurchased.identifier}`);
+            }}
+            onPurchaseCompleted={({ customerInfo, storeTransaction }) => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Purchase completed! Transaction: ${storeTransaction.transactionIdentifier}`);
+              setShowModalPaywall(false);
+            }}
+            onPurchaseError={({ error }) => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Purchase error: ${error.message}`);
+            }}
+            onPurchaseCancelled={() => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Purchase cancelled`);
+            }}
+            onRestoreStarted={() => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Restore started`);
+            }}
+            onRestoreCompleted={({ customerInfo }) => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Restore completed`);
+            }}
+            onRestoreError={({ error }) => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Restore error: ${error.message}`);
+            }}
+            onDismiss={() => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Modal paywall dismissed`);
+              setShowModalPaywall(false);
+            }}
+          />
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -351,5 +473,9 @@ const styles = StyleSheet.create({
   },
   bottomPadding: {
     height: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
 });
