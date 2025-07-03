@@ -19,7 +19,7 @@ import {
 import React, { type ReactNode, useEffect, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
-import { WebPaywall } from "./preview/webComponents";
+import { PreviewPaywall } from "./preview/previewComponents";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
@@ -61,7 +61,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
 }) => {
   if (usingPreviewAPIMode) {
     return (
-      <WebPaywall
+      <PreviewPaywall
         offering={options?.offering}
         displayCloseButton={options?.displayCloseButton}
         fontFamily={options?.fontFamily}
@@ -115,7 +115,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
 }) => {
   if (usingPreviewAPIMode) {
     return (
-      <WebPaywall
+      <PreviewPaywall
         offering={options?.offering}
         displayCloseButton={true}
         fontFamily={options?.fontFamily}

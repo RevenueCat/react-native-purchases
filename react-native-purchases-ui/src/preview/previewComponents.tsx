@@ -10,7 +10,7 @@ import {
   PURCHASES_ERROR_CODE
 } from "@revenuecat/purchases-typescript-internal";
 
-export interface WebPaywallProps {
+export interface PreviewPaywallProps {
   offering?: PurchasesOffering | null;
   displayCloseButton?: boolean;
   fontFamily?: string | null;
@@ -27,7 +27,7 @@ export interface WebPaywallProps {
   onDismiss?: () => void;
 }
 
-export interface WebCustomerCenterProps {
+export interface PreviewCustomerCenterProps {
   callbacks?: {
     onFeedbackSurveyCompleted?: ({feedbackSurveyOptionId}: { feedbackSurveyOptionId: string }) => void;
     onShowingManageSubscriptions?: () => void;
@@ -40,40 +40,11 @@ export interface WebCustomerCenterProps {
   };
 }
 
-export const WebPaywall: React.FC<WebPaywallProps> = ({
-  offering,
+export const PreviewPaywall: React.FC<PreviewPaywallProps> = ({
   displayCloseButton = true,
   fontFamily,
-  onPurchaseStarted,
-  onPurchaseCancelled,
-  onRestoreStarted,
-  onRestoreError,
   onDismiss,
 }) => {
-  const handlePurchase = (pkg: PurchasesPackage) => {
-    onPurchaseStarted?.({ packageBeingPurchased: pkg });
-    // Simulate purchase flow for web
-    setTimeout(() => {
-      onPurchaseCancelled?.();
-    }, 1000);
-  };
-
-  const handleRestore = () => {
-    onRestoreStarted?.();
-    // Simulate restore flow for web
-    setTimeout(() => {
-      const error: PurchasesError = {
-        code: PURCHASES_ERROR_CODE.UNSUPPORTED_ERROR,
-        message: 'Restore purchases is not supported on web platform',
-        userCancelled: false,
-        underlyingErrorMessage: 'Web platform does not support restore purchases',
-        readableErrorCode: PURCHASES_ERROR_CODE.UNSUPPORTED_ERROR,
-        userInfo: { readableErrorCode: PURCHASES_ERROR_CODE.UNSUPPORTED_ERROR }
-      };
-      onRestoreError?.({ error });
-    }, 1000);
-  };
-
   const handleClose = () => {
     onDismiss?.();
   };
@@ -84,7 +55,7 @@ export const WebPaywall: React.FC<WebPaywallProps> = ({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={[styles.title, textStyle]}>
-          {offering?.serverDescription || 'Premium Subscription'}
+          Preview Paywall
         </Text>
         {displayCloseButton && (
           <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
@@ -93,43 +64,28 @@ export const WebPaywall: React.FC<WebPaywallProps> = ({
         )}
       </View>
       
-      <ScrollView style={styles.content}>
-        <Text style={[styles.description, textStyle]}>
-          {offering?.serverDescription || 'Unlock premium features with a subscription'}
+      <View style={styles.content}>
+        <Text style={[styles.notSupportedMessage, textStyle]}>
+          Web paywalls are not supported yet.
+        </Text>
+        <Text style={[styles.fakeMessage, textStyle]}>
+          This is a fake preview implementation.
+        </Text>
+        <Text style={[styles.previewMode, textStyle]}>
+          Currently in preview mode
         </Text>
         
-        {offering?.availablePackages.map((pkg, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.packageButton}
-            onPress={() => handlePurchase(pkg)}
-          >
-            <Text style={[styles.packageTitle, textStyle]}>
-              {pkg.product.title}
-            </Text>
-            <Text style={[styles.packagePrice, textStyle]}>
-              {pkg.product.priceString}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        
-        <TouchableOpacity style={styles.restoreButton} onPress={handleRestore}>
-          <Text style={[styles.restoreButtonText, textStyle]}>
-            Restore Purchases
+        <TouchableOpacity style={styles.closePaywallButton} onPress={handleClose}>
+          <Text style={[styles.closePaywallButtonText, textStyle]}>
+            Close Paywall
           </Text>
         </TouchableOpacity>
-      </ScrollView>
-      
-      <View style={styles.footer}>
-        <Text style={[styles.disclaimer, textStyle]}>
-          Web platform - Preview mode. Purchases are not processed.
-        </Text>
       </View>
     </View>
   );
 };
 
-export const WebCustomerCenter: React.FC<WebCustomerCenterProps> = ({
+export const PreviewCustomerCenter: React.FC<PreviewCustomerCenterProps> = ({
   callbacks
 }) => {
   const handleManageSubscriptions = () => {
@@ -156,7 +112,7 @@ export const WebCustomerCenter: React.FC<WebCustomerCenterProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Customer Center</Text>
+        <Text style={styles.title}>Preview Customer Center</Text>
       </View>
       
       <ScrollView style={styles.content}>
@@ -219,42 +175,45 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notSupportedMessage: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333333',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  fakeMessage: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  previewMode: {
+    fontSize: 14,
+    color: '#999999',
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+  closePaywallButton: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 8,
+    minWidth: 120,
+    alignItems: 'center',
+  },
+  closePaywallButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ffffff',
   },
   description: {
     fontSize: 16,
     color: '#666666',
     marginBottom: 20,
     textAlign: 'center',
-  },
-  packageButton: {
-    backgroundColor: '#007AFF',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  packageTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 4,
-  },
-  packagePrice: {
-    fontSize: 16,
-    color: '#ffffff',
-  },
-  restoreButton: {
-    backgroundColor: 'transparent',
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#007AFF',
-    marginTop: 12,
-    alignItems: 'center',
-  },
-  restoreButtonText: {
-    fontSize: 16,
-    color: '#007AFF',
   },
   optionButton: {
     backgroundColor: '#f8f9fa',
