@@ -10,9 +10,9 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { Alert, Linking, Platform, Text, View } from 'react-native';
+import { Alert, Linking, Platform, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Purchases from 'react-native-purchases';
 
@@ -24,12 +24,13 @@ import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
 
 import APIKeys from './app/APIKeys';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   const hasKeys = () => {
-    return APIKeys.apple.length > 0 || APIKeys.google.length > 0 || APIKeys.amazon.length > 0 || APIKeys.web.length > 0;
+    return APIKeys.apple.length > 0 || APIKeys.google.length > 0 || APIKeys.amazon.length > 0;
   }
 
   const [url, setUrl] = useState<string | null>(null);
@@ -65,13 +66,7 @@ const App = () => {
 
     const verificationMode = Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
 
-    if (Platform.OS === "web") {
-      Purchases.configure({
-        apiKey: APIKeys.web,
-        entitlementVerificationMode: verificationMode,
-        diagnosticsEnabled: true
-      });
-    } else if (Platform.OS === "android") {
+    if (Platform.OS == "android") {
       const useAmazon = false;
       if (useAmazon) {
         Purchases.configure({
@@ -105,31 +100,26 @@ const App = () => {
   }, [url]);
 
   return !hasKeys() ? (
-      <View>
+      <SafeAreaView>
         <Text style={{margin: 20, textAlign: 'center'}}>
           Update RevenueCat API Keys in APIKeys.tsx
         </Text>
-      </View>
+      </SafeAreaView>
     ) : (
-      <View>
-        <Text style={{margin: 20, textAlign: 'center'}}>
-          has keys
-        </Text>
-      </View>
-      // <NavigationContainer>
-      //   <Stack.Navigator  initialRouteName="Home">
-      //     <Stack.Screen
-      //       name="Home"
-      //       component={HomeScreen}
-      //       options={{ title: 'PurchaseTester' }}
-      //     />
-      //     <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
-      //     <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
-      //     <Stack.Screen name="Paywall" component={PaywallScreen} />
-      //     <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
-      //     <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
-      //   </Stack.Navigator>
-      // </NavigationContainer>
+      <NavigationContainer>
+        <Stack.Navigator  initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ title: 'PurchaseTester' }}
+          />
+          <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
+          <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
+          <Stack.Screen name="Paywall" component={PaywallScreen} />
+          <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
+          <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     );
 };
 

@@ -1,4 +1,6 @@
 const path = require('path');
+const pak = require('../../package.json');
+const pak_ui = require('../../react-native-purchases-ui/package.json');
 
 module.exports = {
   presets: ['module:@react-native/babel-preset'],
@@ -8,15 +10,9 @@ module.exports = {
       {
         extensions: ['.tsx', '.ts', '.js', '.json'],
         alias: {
-          'react-native$': 'react-native-web',
-          'react-native-purchases': path.resolve(__dirname, '../../dist'),
-          'react-native-purchases-ui': path.resolve(__dirname, '../../react-native-purchases-ui/lib/module'),
+          [pak.name]: path.join(__dirname, '../..', pak.source),
+          [pak_ui.name]: path.join(__dirname, '../../react-native-purchases-ui', pak_ui.source),
         },
-        modules: [
-          'node_modules',
-          path.resolve(__dirname, '../../node_modules'),
-          path.resolve(__dirname, '../../'),
-        ],
       },
     ],
   ],

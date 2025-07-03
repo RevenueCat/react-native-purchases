@@ -1,9 +1,9 @@
+
 // REPLACE THESE WITH YOUR OWN
 const APIKeys = {
   apple: "",
   google: "",
-  amazon: "",
-  web: ""
+  amazon: ""
 };
 
 export default APIKeys;
