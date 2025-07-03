@@ -8,15 +8,15 @@ import { NativeModules, Platform } from "react-native";
  * (like Expo Go or Web) or if the required native modules are missing.
  */
 export function shouldUsePreviewAPIMode(): boolean {
-  let usePreviewAPIMode = isExpoGo() || isWebPlatform();
-  if (usePreviewAPIMode) {
-    if (isWebPlatform()) {
-      console.log('Web platform detected. Using RevenueCat in Preview API Mode.');
-    } else {
-      console.log('Expo Go app detected. Using RevenueCat in Preview API Mode.');
-    }
+  if (isExpoGo()) {
+    console.log('Expo Go app detected. Using RevenueCat in Preview API Mode.');
+    return true;
+  } else if (isWebPlatform()) {
+    console.log('Web platform detected. Using RevenueCat in Preview API Mode.');
+    return true;
+  } else {
+    return false;
   }
-  return usePreviewAPIMode;
 }
 
 declare global {
