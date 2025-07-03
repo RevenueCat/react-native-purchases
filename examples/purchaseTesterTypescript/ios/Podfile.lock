@@ -1243,7 +1243,7 @@ PODS:
     - React-jsiexecutor
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
-  - react-native-safe-area-context (5.2.0):
+  - react-native-safe-area-context (5.5.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1256,8 +1256,8 @@ PODS:
     - React-featureflags
     - React-graphics
     - React-ImageManager
-    - react-native-safe-area-context/common (= 5.2.0)
-    - react-native-safe-area-context/fabric (= 5.2.0)
+    - react-native-safe-area-context/common (= 5.5.0)
+    - react-native-safe-area-context/fabric (= 5.5.0)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-rendererdebug
@@ -1266,7 +1266,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/common (5.2.0):
+  - react-native-safe-area-context/common (5.5.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1287,7 +1287,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/fabric (5.2.0):
+  - react-native-safe-area-context/fabric (5.5.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1599,13 +1599,13 @@ PODS:
   - RevenueCat (5.30.0)
   - RevenueCatUI (5.30.0):
     - RevenueCat (= 5.30.0)
-  - RNPaywalls (8.11.7):
+  - RNPaywalls (8.11.8):
     - PurchasesHybridCommonUI (= 14.0.2)
     - React-Core
-  - RNPurchases (8.11.7):
+  - RNPurchases (8.11.8):
     - PurchasesHybridCommon (= 14.0.2)
     - React-Core
-  - RNScreens (4.9.1):
+  - RNScreens (4.11.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1626,9 +1626,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.9.1)
+    - RNScreens/common (= 4.11.1)
     - Yoga
-  - RNScreens/common (4.9.1):
+  - RNScreens/common (4.11.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1888,7 +1888,7 @@ SPEC CHECKSUMS:
   hermes-engine: b417d2b2aee3b89b58e63e23a51e02be91dc876d
   PurchasesHybridCommon: e1dbc7e7105c0845444cf82cf9d7c85eb9dbf918
   PurchasesHybridCommonUI: e53fcdae687abb7ea9814bd2dac6aa85c19af54a
-  RCT-Folly: 36fe2295e44b10d831836cc0d1daec5f8abcf809
+  RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: b2eecf2d60216df56bc5e6be5f063826d3c1ee35
   RCTRequired: 78522de7dc73b81f3ed7890d145fa341f5bb32ea
   RCTTypeSafety: c135dd2bf50402d87fd12884cbad5d5e64850edd
@@ -1918,7 +1918,7 @@ SPEC CHECKSUMS:
   React-logger: 018826bfd51b9f18e87f67db1590bc510ad20664
   React-Mapbuffer: 3c11cee7737609275c7b66bd0b1de475f094cedf
   React-microtasksnativemodule: 843f352b32aacbe13a9c750190d34df44c3e6c2c
-  react-native-safe-area-context: 7e513d737b0b5c1d10bbe0e5fcc9f925a7be144c
+  react-native-safe-area-context: 282d691f28d41c192e078d36a3212b1159536cc1
   React-NativeModulesApple: 88433b6946778bea9c153e27b671de15411bf225
   React-perflogger: 9e8d3c0dc0194eb932162812a168aa5dc662f418
   React-performancetimeline: 5a2d6efef52bdcefac079c7baa30934978acd023
@@ -1949,12 +1949,12 @@ SPEC CHECKSUMS:
   ReactCommon: 0c097b53f03d6bf166edbcd0915da32f3015dd90
   RevenueCat: 16058ecaa0b868e04cc7cf53a5de3fe0b96ca7d1
   RevenueCatUI: 4fc22b69bc9fcec8bf37fb71396e7b31e819921b
-  RNPaywalls: 85eb60f8322b9918bf138a2c2af6677e9b1f25a9
-  RNPurchases: 026f2aae31a550123f5218a36ee6c86be7685204
-  RNScreens: 0d4cb9afe052607ad0aa71f645a88bb7c7f2e64c
+  RNPaywalls: 4b82616514664691e81277165b30d4b9394b3963
+  RNPurchases: 80c31f21e93b2a9b26b553fb09592de405e830b3
+  RNScreens: 8aec64fb213fd52a64445e2e470f7a9b546c5df3
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
 PODFILE CHECKSUM: 4617e020c3377e490615189fec092e697e74aa9f
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2

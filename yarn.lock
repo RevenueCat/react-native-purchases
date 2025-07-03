@@ -3907,6 +3907,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@revenuecat/purchases-typescript-internal@npm:14.0.2":
+  version: 14.0.2
+  resolution: "@revenuecat/purchases-typescript-internal@npm:14.0.2"
+  checksum: 7e49b4b600295e73ed1381132d468ad1d146c149ccee18882899dc476da991ef13cbc29a6e37d9d5c66b727d005db5545ee77690608b24f92fbd9be134d35655
+  languageName: node
+  linkType: hard
+
 "@rnx-kit/align-deps@npm:^3.0.3":
   version: 3.0.3
   resolution: "@rnx-kit/align-deps@npm:3.0.3"
@@ -10661,7 +10668,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.38.1
+    "@revenuecat/purchases-typescript-internal": 14.0.2
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -10673,7 +10680,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.73.5
     react-native-builder-bob: ^0.20.0
-    react-native-purchases: 8.11.7
+    react-native-purchases: 8.11.8
     ts-jest: ^29.1.2
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
@@ -10689,11 +10696,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-native-purchases@8.11.7, react-native-purchases@workspace:.":
+"react-native-purchases@8.11.8, react-native-purchases@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 13.38.1
+    "@revenuecat/purchases-typescript-internal": 14.0.2
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -10732,6 +10739,18 @@ __metadata:
     react-native-web:
       optional: true
   checksum: 31ce3abc5032f924b13267146ab34ac00813d0c0932596ec2875248939f7ebd46fcb12abbeeba0f7b84a0cc814f7c777aa083eb8fd30aac22196d356294395af
+  languageName: node
+  linkType: hard
+
+"react-native-purchases@npm:8.11.7":
+  version: 8.11.7
+  resolution: "react-native-purchases@npm:8.11.7"
+  dependencies:
+    "@revenuecat/purchases-typescript-internal": 13.38.1
+  peerDependencies:
+    react: ">= 16.6.3"
+    react-native: "*"
+  checksum: ab86d2ccf6f4ac388390de54f77912964c97e034f32d0c5a9df0637c85471420c09ed519ceec67dedf20a05259525ba7eadc544e7610278769e067f157aceb58
   languageName: node
   linkType: hard
 
