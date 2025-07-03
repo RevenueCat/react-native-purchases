@@ -289,24 +289,7 @@ export default function TabOneScreen() {
           onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall())} 
         />
         <MethodButton 
-          title="presentPaywall (no close button)" 
-          onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall({ displayCloseButton: false }))} 
-        />
-        <MethodButton 
-          title="presentPaywall (with custom font)" 
-          onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall({ 
-            displayCloseButton: true, 
-            fontFamily: 'System' 
-          }))} 
-        />
-        <MethodButton 
-          title="presentPaywallIfNeeded (premium)" 
-          onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({ 
-            requiredEntitlementIdentifier: 'premium' 
-          }))} 
-        />
-        <MethodButton 
-          title="presentPaywallIfNeeded (pro)" 
+          title="presentPaywallIfNeeded (requiredEntitlementIdentifier: pro)" 
           onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({ 
             requiredEntitlementIdentifier: 'pro',
             displayCloseButton: false
