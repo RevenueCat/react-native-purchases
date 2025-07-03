@@ -13,6 +13,7 @@ config.watchFolders = [
 config.resolver = {
   ...config.resolver,
   alias: {
+    'react-native$': 'react-native-web',
     'react-native-purchases': path.resolve(__dirname, '../../dist'),
     'react-native-purchases-ui': path.resolve(__dirname, '../../react-native-purchases-ui/lib/module'),
   },
