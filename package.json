@@ -50,7 +50,13 @@
     "example-expo": "yarn workspace purchasetesterexpo",
     "react-native-purchases-ui": "yarn workspace react-native-purchases-ui",
     "ui": "yarn workspace react-native-purchases-ui",
-    "bootstrap": "yarn && yarn build && yarn react-native-purchases-ui prepare && yarn example pods"
+    "bootstrap": "yarn && yarn build && yarn react-native-purchases-ui prepare && yarn example pods",
+    "prepare-expo": "yarn build && yarn react-native-purchases-ui prepare && yarn pack && yarn react-native-purchases-ui pack && yarn example-expo install",
+    "run-expo:web": "yarn prepare-expo && yarn example-expo web",
+    "run-expo:android": "yarn prepare-expo && yarn example-expo run:android",
+    "run-expo:ios": "yarn prepare-expo && yarn example-expo run:ios",
+    "run-expo:expo-go-android": "yarn prepare-expo && yarn example-expo android",
+    "run-expo:expo-go-ios": "yarn prepare-expo && yarn example-expo ios"
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
