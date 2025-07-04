@@ -53,15 +53,15 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "@types/react": "~19.0.10",
-    "@types/react-dom": "~19.0.0",
+    "@types/react": "^18.2.44",
+    "@types/react-dom": "~18.2.0",
     "babel-plugin-react-native-web": "^0.20.0",
     "jest": "^29.7.0",
     "jest-react-native": "^18.0.0",
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
-    "react": "19.0.0",
-    "react-native": "0.79.5",
+    "react": "18.2.0",
+    "react-native": "0.73.5",
     "react-native-builder-bob": "^0.20.0",
     "ts-jest": "^29.1.2",
     "tslint": "^5.20.0",
@@ -70,14 +70,13 @@
     "typescript": "^5.2.2"
   },
   "resolutions": {
-    "@types/react": "~19.0.10",
-    "@types/react-native": "0.79.5",
-    "@types/react-dom": "~19.0.0"
+    "@types/react": "^18.2.44",
+    "@types/react-native": "0.73.5",
+    "@types/react-dom": "18.2.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-purchases": "*",
     "react-native-web": "*"
   },
   "peerDependenciesMeta": {
@@ -122,6 +121,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "14.0.2"
+    "@revenuecat/purchases-typescript-internal": "14.0.2",
+    "react-native-purchases": "8.11.8"
   }
 }
