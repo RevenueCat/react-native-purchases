@@ -1,13 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   type CustomerInfo,
   type PurchasesError,
   type PurchasesOffering,
   type PurchasesPackage,
   type PurchasesStoreTransaction,
-  REFUND_REQUEST_STATUS,
-  PURCHASES_ERROR_CODE
 } from "@revenuecat/purchases-typescript-internal";
 
 export interface PreviewPaywallProps {
@@ -25,19 +23,6 @@ export interface PreviewPaywallProps {
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
-}
-
-export interface PreviewCustomerCenterProps {
-  callbacks?: {
-    onFeedbackSurveyCompleted?: ({feedbackSurveyOptionId}: { feedbackSurveyOptionId: string }) => void;
-    onShowingManageSubscriptions?: () => void;
-    onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
-    onRestoreFailed?: ({error}: { error: PurchasesError }) => void;
-    onRestoreStarted?: () => void;
-    onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
-    onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
-    onManagementOptionSelected?: (event: any) => void;
-  };
 }
 
 export const PreviewPaywall: React.FC<PreviewPaywallProps> = ({
@@ -80,59 +65,6 @@ export const PreviewPaywall: React.FC<PreviewPaywallProps> = ({
             Close Paywall
           </Text>
         </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-export const PreviewCustomerCenter: React.FC<PreviewCustomerCenterProps> = ({
-  callbacks
-}) => {
-  const handleManageSubscriptions = () => {
-    callbacks?.onShowingManageSubscriptions?.();
-    callbacks?.onManagementOptionSelected?.({ option: 'change_plans', url: null });
-  };
-
-  const handleRestore = () => {
-    callbacks?.onRestoreStarted?.();
-    // Simulate restore flow for web
-    setTimeout(() => {
-      const error: PurchasesError = {
-        code: PURCHASES_ERROR_CODE.UNSUPPORTED_ERROR,
-        message: 'Restore purchases is not supported on web platform',
-        userCancelled: false,
-        underlyingErrorMessage: 'Web platform does not support restore purchases',
-        readableErrorCode: PURCHASES_ERROR_CODE.UNSUPPORTED_ERROR,
-        userInfo: { readableErrorCode: PURCHASES_ERROR_CODE.UNSUPPORTED_ERROR }
-      };
-      callbacks?.onRestoreFailed?.({ error });
-    }, 1000);
-  };
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Preview Customer Center</Text>
-      </View>
-      
-      <ScrollView style={styles.content}>
-        <Text style={styles.description}>
-          Manage your subscription and account settings
-        </Text>
-        
-        <TouchableOpacity style={styles.optionButton} onPress={handleManageSubscriptions}>
-          <Text style={styles.optionButtonText}>Manage Subscriptions</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.optionButton} onPress={handleRestore}>
-          <Text style={styles.optionButtonText}>Restore Purchases</Text>
-        </TouchableOpacity>
-      </ScrollView>
-      
-      <View style={styles.footer}>
-        <Text style={styles.disclaimer}>
-          Web platform - Preview mode. Some features may not be available.
-        </Text>
       </View>
     </View>
   );
