@@ -40,20 +40,13 @@
     "tslint": "tslint -c tslint.json 'src/*.ts'",
     "prepare": "tsc",
     "example": "yarn workspace purchasetester",
-    "example-expo": "yarn workspace purchasetesterexpo",
     "react-native-purchases-ui": "yarn workspace react-native-purchases-ui",
     "ui": "yarn workspace react-native-purchases-ui",
     "bootstrap": "yarn && yarn prepare-expo && yarn example pods",
-    "prepare-expo": "yarn build && yarn react-native-purchases-ui prepare && yarn pack && yarn react-native-purchases-ui pack && yarn example-expo install",
-    "run-expo:web": "yarn prepare-expo && yarn example-expo web",
-    "run-expo:android": "yarn prepare-expo && yarn example-expo android",
-    "run-expo:ios": "yarn prepare-expo && yarn example-expo ios",
-    "run-expo:expo-go-android": "yarn prepare-expo && yarn example-expo expo-go:android",
-    "run-expo:expo-go-ios": "yarn prepare-expo && yarn example-expo expo-go:ios"
+    "prepare-expo": "yarn build && yarn react-native-purchases-ui prepare && yarn pack && yarn react-native-purchases-ui pack"
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
-    "examples/purchaseTesterExpo",
     "react-native-purchases-ui"
   ],
   "packageManager": "yarn@3.6.1",

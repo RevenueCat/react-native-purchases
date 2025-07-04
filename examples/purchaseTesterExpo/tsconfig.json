@@ -5,9 +5,7 @@
     "paths": {
       "@/*": [
         "./*"
-      ],
-      "react-native-purchases": ["../../dist/index"],
-      "react-native-purchases-ui": ["../../react-native-purchases-ui/lib/module/index"]
+      ]
     }
   },
   "include": [
