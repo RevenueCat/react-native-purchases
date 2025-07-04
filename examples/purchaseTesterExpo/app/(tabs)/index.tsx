@@ -122,10 +122,19 @@ export default function TabOneScreen() {
         {/* Purchasing */}
         <SectionHeader title="Purchasing" />
         <MethodButton 
-          title="purchaseProduct (example)" 
-          onPress={() => {
-            Alert.alert('Note', 'This will attempt a real purchase with example_product_1');
-            callMethod('purchaseProduct', () => Purchases.purchaseProduct('example_product_1'));
+          title="purchasePackage (first package for current offering)" 
+          onPress={async () => {
+            try {
+              const offerings = await Purchases.getOfferings();
+              const currentOffering = offerings.current;
+              if (!currentOffering) {
+                Alert.alert('Note', 'No current offering found. Skipping purchase.');
+                return
+              }
+              callMethod('purchasePackage', () => Purchases.purchasePackage(currentOffering.availablePackages[0]));
+            } catch (error) {
+              Alert.alert('Error', 'Error getting offerings: ' + error);
+            }
           }} 
         />
         <MethodButton 

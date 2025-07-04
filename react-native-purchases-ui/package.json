@@ -8,14 +8,6 @@
   "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
-  "exports": {
-    ".": {
-      "types": "./lib/typescript/src/index.d.ts",
-      "import": "./lib/module/index.js",
-      "require": "./lib/commonjs/index.js",
-      "react-native": "./src/index.ts"
-    }
-  },
   "files": [
     "src",
     "lib",
@@ -85,6 +77,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
+    "react-native-purchases": "*",
     "react-native-web": "*"
   },
   "peerDependenciesMeta": {
@@ -129,7 +122,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "14.0.2",
-    "react-native-purchases": "8.11.8"
+    "@revenuecat/purchases-typescript-internal": "14.0.2"
   }
 }

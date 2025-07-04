@@ -9453,7 +9453,6 @@ __metadata:
     react: 19.0.0
     react-native: 0.79.5
     react-native-builder-bob: ^0.20.0
-    react-native-purchases: 8.11.8
     ts-jest: ^29.1.2
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
@@ -9462,6 +9461,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: "*"
+    react-native-purchases: "*"
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:

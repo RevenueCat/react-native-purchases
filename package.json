@@ -7,13 +7,6 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "source": "src/index",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "browser": "dist/index.js",
   "react-native": "dist/index.js",
   "files": [
