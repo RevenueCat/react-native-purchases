@@ -25,7 +25,7 @@ export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-ui' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ios: "- You have run 'pod install'\n", default: ''}) +
+  '- You have run \'pod install\'\n' +
   '- You rebuilt the app after installing the package\n';
 
 
@@ -43,8 +43,8 @@ if (!RNCustomerCenter) {
   throw new Error(LINKING_ERROR);
 }
 
-const eventEmitter = new NativeEventEmitter(RNPaywalls);
-const customerCenterEventEmitter = new NativeEventEmitter(RNCustomerCenter);
+const eventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNPaywalls);
+const customerCenterEventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNCustomerCenter);
 
 const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   style,
@@ -445,13 +445,13 @@ export default class RevenueCatUI {
         setPaddingBottom(20 + bottom);
       };
 
-      const subscription = eventEmitter.addListener(
+      const subscription = eventEmitter?.addListener(
         'safeAreaInsetsDidChange',
         handleSafeAreaInsetsChange
       );
 
       return () => {
-        subscription.remove();
+        subscription?.remove();
       };
     }, []);
 
@@ -493,73 +493,89 @@ export default class RevenueCatUI {
       const callbacks = params.callbacks as CustomerCenterCallbacks;
 
       if (callbacks.onFeedbackSurveyCompleted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onFeedbackSurveyCompleted',
           (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted && 
             callbacks.onFeedbackSurveyCompleted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onShowingManageSubscriptions) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onShowingManageSubscriptions',
           () => callbacks.onShowingManageSubscriptions && callbacks.onShowingManageSubscriptions()
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRestoreCompleted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRestoreCompleted',
           (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted && 
             callbacks.onRestoreCompleted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRestoreFailed) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRestoreFailed',
           (event: { error: PurchasesError }) => callbacks.onRestoreFailed && 
             callbacks.onRestoreFailed(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRestoreStarted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRestoreStarted',
           () => callbacks.onRestoreStarted && callbacks.onRestoreStarted()
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRefundRequestStarted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRefundRequestStarted',
           (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted && 
             callbacks.onRefundRequestStarted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRefundRequestCompleted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRefundRequestCompleted',
           (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted && 
             callbacks.onRefundRequestCompleted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onManagementOptionSelected) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onManagementOptionSelected',
           (event: CustomerCenterManagementOptionEvent) => callbacks.onManagementOptionSelected && 
             callbacks.onManagementOptionSelected(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       // Return a promise that resolves when the customer center is dismissed

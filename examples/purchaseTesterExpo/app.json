@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "purchasetesterexpo",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
