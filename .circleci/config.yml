@@ -179,7 +179,7 @@ jobs:
   expo_web:
     executor:
       name: rn/linux_js
-      node_version: '18.2'
+      node_version: '22.14.0'
     steps:
       - checkout
       - install-dependencies:
