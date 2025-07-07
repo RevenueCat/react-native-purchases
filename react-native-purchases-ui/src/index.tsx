@@ -43,6 +43,14 @@ if (!RNCustomerCenter) {
   throw new Error(LINKING_ERROR);
 }
 
+const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
+  ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
+  : null;
+
+const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('RCPaywallFooterView') != null 
+  ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
+  : null;
+
 const eventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNPaywalls);
 const customerCenterEventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNCustomerCenter);
 
@@ -75,10 +83,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         onDismiss={onDismiss}
       />
     );
-  }
-
-  if (UIManager.getViewManagerConfig('Paywall') != null) {
-    const NativePaywall = requireNativeComponent<FullScreenPaywallViewProps>('Paywall');
+  } else if (!!NativePaywall) {
     return (
       <NativePaywall
         style={style}
@@ -129,10 +134,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
         onDismiss={onDismiss}
       />
     );
-  }
-
-  if (UIManager.getViewManagerConfig('Paywall') != null) {
-    const NativePaywallFooter = requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView');
+  } else if (!!NativePaywallFooter) {
     return (
       <NativePaywallFooter
         style={style}
