@@ -196,7 +196,7 @@ jobs:
           name: Build Web Expo app
           working_directory: examples/purchaseTesterExpo
           command: |
-            npx expo export:web
+            npx expo export --platform web
   docs-deploy:
     <<: *base-mac-job
     steps:
