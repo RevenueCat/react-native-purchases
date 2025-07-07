@@ -134,6 +134,13 @@ jobs:
           name: Install dependencies for Expo app
           working_directory: examples/purchaseTesterExpo
           command: yarn install
+      - run:
+          name: Generate iOS project
+          working_directory: examples/purchaseTesterExpo
+          command: npx expo prebuild --platform ios --no-install
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: expo-v2
+          working_directory: examples/purchaseTesterExpo
       - rn/pod_install:
           cache: false
           pod_install_directory: examples/purchaseTesterExpo/ios
@@ -148,11 +155,6 @@ jobs:
   expo_android:
     executor:
       name: rn/linux_android
-      gradle_options: >-
-        -Xmx4096m -Dorg.gradle.daemon=false
-        -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
-        -XX:+HeapDumpOnOutOfMemoryError"
-        -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
       resource_class: large
       build_image_version: latest
     steps:
@@ -170,11 +172,16 @@ jobs:
           working_directory: examples/purchaseTesterExpo
           command: yarn install
       - run:
-          name: Build Android Expo app
+          name: Prebuild Android Expo app
           working_directory: examples/purchaseTesterExpo
           command: |
-            npx expo prebuild --platform android --no-install
-            cd android && ./gradlew assembleDebug
+            npx expo prebuild --platform android --no-install  
+      - run:
+          name: Build Android Expo app
+          working_directory: examples/purchaseTesterExpo/android
+          command: |
+            export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.jvmargs=\"-Xmx4096m\""
+            ./gradlew assembleDebug
 
   expo_web:
     executor:
