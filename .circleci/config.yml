@@ -116,13 +116,6 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
-      - run:
-          name: Set Ruby 3.2.0
-          command: |
-            eval "$(rbenv init -)"
-            rbenv install -s 3.2.0
-            rbenv global 3.2.0
-            rbenv rehash
       - install-dependencies-ios-build
       - run:
           name: Install Expo CLI
@@ -155,7 +148,7 @@ jobs:
   expo_android:
     executor:
       name: rn/linux_android
-      resource_class: large
+      resource_class: xlarge
       build_image_version: latest
     steps:
       - checkout
@@ -180,7 +173,7 @@ jobs:
           name: Build Android Expo app
           working_directory: examples/purchaseTesterExpo/android
           command: |
-            export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.jvmargs=\"-Xmx4096m\""
+            export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
             ./gradlew assembleDebug
 
   expo_web:
@@ -228,7 +221,7 @@ jobs:
         -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
         -XX:+HeapDumpOnOutOfMemoryError"
         -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
-      resource_class: large
+      resource_class: xlarge
       build_image_version: latest
     steps:
       - checkout
