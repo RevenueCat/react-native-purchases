@@ -2,6 +2,7 @@
 
 # dependencies
 .yarn/
+yarn.lock
 node_modules/
 
 # Expo
