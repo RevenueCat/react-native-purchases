@@ -3,10 +3,27 @@ import { StyleSheet, ScrollView, Alert, Platform, Modal } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Purchases from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
+import Constants from 'expo-constants';
 
 export default function TabOneScreen() {
   const [lastResult, setLastResult] = useState<string>('No method called yet');
   const [showModalPaywall, setShowModalPaywall] = useState(false);
+
+  const getPlatformInfo = (): string => {
+    if (Platform.OS === 'web') {
+      return 'Browser';
+    } else if (Constants.appOwnership === 'expo') {
+      return Platform.OS === 'ios' ? 'Expo Go iOS' : 'Expo Go Android';
+    } else {
+      return Platform.OS === 'ios' ? 'Native iOS' : 'Native Android';
+    }
+  };
+
+  const PlatformBanner = () => (
+    <View style={styles.platformBanner}>
+      <Text style={styles.platformBannerText}>Running on: {getPlatformInfo()}</Text>
+    </View>
+  );
 
   const formatResult = (methodName: string, result: any, error?: any) => {
     const timestamp = new Date().toLocaleTimeString();
@@ -43,6 +60,9 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Platform Banner */}
+      <PlatformBanner />
+      
       {/* Results Area */}
       <View style={styles.resultsContainer}>
         <Text style={styles.resultsTitle}>Last Method Result:</Text>
@@ -404,6 +424,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  platformBanner: {
+    backgroundColor: '#28A745',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  platformBannerText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '600',
   },
   resultsContainer: {
     height: 200,
