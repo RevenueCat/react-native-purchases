@@ -135,6 +135,7 @@ jobs:
           working_directory: examples/purchaseTesterExpo
           command: yarn install
       - rn/pod_install:
+          cache: false
           pod_install_directory: examples/purchaseTesterExpo/ios
           pod_install_command: pod install --repo-update
       - run:
@@ -172,7 +173,8 @@ jobs:
           name: Build Android Expo app
           working_directory: examples/purchaseTesterExpo
           command: |
-            npx expo run:android --no-install --no-bundler
+            npx expo prebuild --platform android --no-install
+            cd android && ./gradlew assembleDebug
 
   expo_web:
     executor:
