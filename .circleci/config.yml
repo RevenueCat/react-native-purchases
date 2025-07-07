@@ -109,6 +109,94 @@ jobs:
       - run:
           name: Linter
           command: yarn run tslint
+
+  expo_ios:
+    <<: *base-mac-job
+    steps:
+      - checkout
+      - rn/ios_simulator_start:
+          device: iPhone 15
+      - run:
+          name: Set Ruby 3.2.0
+          command: |
+            eval "$(rbenv init -)"
+            rbenv install -s 3.2.0
+            rbenv global 3.2.0
+            rbenv rehash
+      - install-dependencies-ios-build
+      - run:
+          name: Install Expo CLI
+          command: npm install -g expo-cli
+      - run:
+          name: Prepare packages for Expo
+          command: yarn prepare-expo
+      - run:
+          name: Install dependencies for Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: yarn install
+      - rn/pod_install:
+          pod_install_directory: examples/purchaseTesterExpo/ios
+          pod_install_command: pod install --repo-update
+      - run:
+          name: Build iOS Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            export RCT_NO_LAUNCH_PACKAGER=true
+            npx expo run:ios --configuration Release --no-install --no-bundler
+
+  expo_android:
+    executor:
+      name: rn/linux_android
+      gradle_options: >-
+        -Xmx4096m -Dorg.gradle.daemon=false
+        -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
+        -XX:+HeapDumpOnOutOfMemoryError"
+        -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
+      resource_class: large
+      build_image_version: latest
+    steps:
+      - checkout
+      - install-dependencies:
+          machine: "unix"
+      - run:
+          name: Install Expo CLI
+          command: npm install -g expo-cli
+      - run:
+          name: Prepare packages for Expo
+          command: yarn prepare-expo
+      - run:
+          name: Install dependencies for Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: yarn install
+      - run:
+          name: Build Android Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            npx expo run:android --no-install --no-bundler
+
+  expo_web:
+    executor:
+      name: rn/linux_js
+      node_version: '18.2'
+    steps:
+      - checkout
+      - install-dependencies:
+          machine: "unix"
+      - run:
+          name: Install Expo CLI
+          command: npm install -g expo-cli
+      - run:
+          name: Prepare packages for Expo
+          command: yarn prepare-expo
+      - run:
+          name: Install dependencies for Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: yarn install
+      - run:
+          name: Build Web Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            npx expo export:web
   docs-deploy:
     <<: *base-mac-job
     steps:
@@ -207,6 +295,9 @@ workflows:
       - analyse_js
       - android
       - ios
+      - expo_android
+      - expo_ios
+      - expo_web
 
   deploy:
     when:
