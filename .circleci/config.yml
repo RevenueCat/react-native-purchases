@@ -147,8 +147,7 @@ jobs:
           name: Build iOS Expo app
           working_directory: examples/purchaseTesterExpo
           command: |
-            export RCT_NO_LAUNCH_PACKAGER=true
-            npx expo run:ios --configuration Release --no-install --no-bundler
+            xcodebuild -workspace ios/purchaseTesterExpo.xcworkspace -scheme purchaseTesterExpo -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16' -derivedDataPath ~/DerivedData -UseModernBuildSystem=YES
 
   expo_android:
     executor:
