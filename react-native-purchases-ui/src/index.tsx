@@ -47,7 +47,7 @@ const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Pa
   ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
   : null;
 
-const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('RCPaywallFooterView') != null 
+const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
   ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
