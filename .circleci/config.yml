@@ -120,7 +120,7 @@ jobs:
     steps:
       - checkout
       - rn/ios_simulator_start:
-          device: iPhone 15
+          device: iPhone 16
       - install-dependencies-ios-build
       - run:
           name: Install Expo CLI
