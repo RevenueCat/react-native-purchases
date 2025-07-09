@@ -1,6 +1,8 @@
 import {
+  findNodeHandle,
   NativeEventEmitter,
   NativeModules,
+  PixelRatio,
   Platform,
   requireNativeComponent,
   ScrollView,
@@ -16,9 +18,10 @@ import {
   type PurchasesStoreTransaction,
   REFUND_REQUEST_STATUS
 } from "@revenuecat/purchases-typescript-internal";
-import React, { type ReactNode, useEffect, useState } from "react";
+import React, { type ReactNode, useEffect, useRef, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
+import { MyViewManager } from "./MyViewManager";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
@@ -162,7 +165,7 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
 
-export type CustomerCenterManagementOption = 
+export type CustomerCenterManagementOption =
   | 'cancel'
   | 'custom_url'
   | 'missing_purchase'
@@ -171,7 +174,7 @@ export type CustomerCenterManagementOption =
   | 'unknown'
   | string; // This is to prevent breaking changes when the native SDK adds new options
 
-export type CustomerCenterManagementOptionEvent = 
+export type CustomerCenterManagementOptionEvent =
   | { option: 'custom_url'; url: string }
   | { option: Exclude<CustomerCenterManagementOption, 'custom_url'>; url: null };
 
@@ -180,22 +183,22 @@ export interface CustomerCenterCallbacks {
    * Called when a feedback survey is completed with the selected option ID.
    */
   onFeedbackSurveyCompleted?: ({feedbackSurveyOptionId}: { feedbackSurveyOptionId: string }) => void;
-  
+
   /**
    * Called when the manage subscriptions section is being shown.
    */
   onShowingManageSubscriptions?: () => void;
-  
+
   /**
    * Called when a restore operation is completed successfully.
    */
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
-  
+
   /**
    * Called when a restore operation fails.
    */
   onRestoreFailed?: ({error}: { error: PurchasesError }) => void;
-  
+
   /**
    * Called when a restore operation starts.
    */
@@ -205,7 +208,7 @@ export interface CustomerCenterCallbacks {
    * Called when a refund request starts with the product identifier. iOS-only callback.
    */
   onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
-  
+
   /**
    * Called when a refund request completes with status information. iOS-only callback.
    */
@@ -227,6 +230,26 @@ export interface PresentCustomerCenterParams {
 }
 
 export default class RevenueCatUI {
+  public static MyView = () => {
+    const ref = useRef<any>(null);
+
+    useEffect(() => {
+      const viewId = findNodeHandle(ref.current);
+      createFragment(viewId);
+    }, []);
+
+    return (
+      <MyViewManager
+        style={{
+          // converts dpi to px, provide desired height
+          height: PixelRatio.getPixelSizeForLayoutSize(200),
+          // converts dpi to px, provide desired width
+          width: PixelRatio.getPixelSizeForLayoutSize(200),
+        }}
+        ref={ref}
+      />
+    );
+  };
 
   private static Defaults = {
     PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON: true
@@ -254,7 +277,7 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
-    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");                                
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
     return RNPaywalls.presentPaywall(
       offering?.identifier ?? null,
       displayCloseButton,
@@ -281,7 +304,7 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
-    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");                                
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
     return RNPaywalls.presentPaywallIfNeeded(
       requiredEntitlementIdentifier,
       offering?.identifier ?? null,
@@ -383,7 +406,7 @@ export default class RevenueCatUI {
 
   /**
    * Presents the customer center to the user.
-   * 
+   *
    * @param {PresentCustomerCenterParams} params - Optional parameters for presenting the customer center.
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
@@ -395,7 +418,7 @@ export default class RevenueCatUI {
       if (callbacks.onFeedbackSurveyCompleted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onFeedbackSurveyCompleted',
-          (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted && 
+          (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted &&
             callbacks.onFeedbackSurveyCompleted(event)
         );
         subscriptions.push(subscription);
@@ -412,7 +435,7 @@ export default class RevenueCatUI {
       if (callbacks.onRestoreCompleted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRestoreCompleted',
-          (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted && 
+          (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted &&
             callbacks.onRestoreCompleted(event)
         );
         subscriptions.push(subscription);
@@ -421,7 +444,7 @@ export default class RevenueCatUI {
       if (callbacks.onRestoreFailed) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRestoreFailed',
-          (event: { error: PurchasesError }) => callbacks.onRestoreFailed && 
+          (event: { error: PurchasesError }) => callbacks.onRestoreFailed &&
             callbacks.onRestoreFailed(event)
         );
         subscriptions.push(subscription);
@@ -438,7 +461,7 @@ export default class RevenueCatUI {
       if (callbacks.onRefundRequestStarted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRefundRequestStarted',
-          (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted && 
+          (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted &&
             callbacks.onRefundRequestStarted(event)
         );
         subscriptions.push(subscription);
@@ -447,7 +470,7 @@ export default class RevenueCatUI {
       if (callbacks.onRefundRequestCompleted) {
         const subscription = customerCenterEventEmitter.addListener(
           'onRefundRequestCompleted',
-          (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted && 
+          (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted &&
             callbacks.onRefundRequestCompleted(event)
         );
         subscriptions.push(subscription);
@@ -456,7 +479,7 @@ export default class RevenueCatUI {
       if (callbacks.onManagementOptionSelected) {
         const subscription = customerCenterEventEmitter.addListener(
           'onManagementOptionSelected',
-          (event: CustomerCenterManagementOptionEvent) => callbacks.onManagementOptionSelected && 
+          (event: CustomerCenterManagementOptionEvent) => callbacks.onManagementOptionSelected &&
             callbacks.onManagementOptionSelected(event)
         );
         subscriptions.push(subscription);
@@ -478,7 +501,7 @@ export default class RevenueCatUI {
    */
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> =
     RevenueCatUI.OriginalTemplatePaywallFooterContainerView;
-    
+
   private static logWarningIfPreviewAPIMode(methodName: string) {
     if (usingPreviewAPIMode) {
       // tslint:disable-next-line:no-console
@@ -486,3 +509,16 @@ export default class RevenueCatUI {
     }
   }
 }
+function createFragment(viewId: number | null) {
+  console.log('=========== createFragment ============');
+  const viewManagerConfig = UIManager.getViewManagerConfig('MyViewManager');
+  console.log(viewManagerConfig?.Commands?.create);
+  console.log(viewManagerConfig?.Commands?.create || 1);
+  UIManager.dispatchViewManagerCommand(
+    viewId,
+    // we are calling the 'create' command
+    (viewManagerConfig?.Commands?.create || 1).toString(),
+    [viewId],
+  );
+}
+

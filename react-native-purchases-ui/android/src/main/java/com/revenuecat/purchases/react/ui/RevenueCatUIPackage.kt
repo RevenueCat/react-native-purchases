@@ -12,6 +12,6 @@ class RevenueCatUIPackage : ReactPackage {
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-        return listOf(PaywallViewManager(), PaywallFooterViewManager())
+        return listOf(MyViewManager(reactContext), PaywallFooterViewManager())
     }
 }

@@ -387,12 +387,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         visible={paywallModalVisible}
         presentationStyle="pageSheet"
         onRequestClose={closePaywallModal}>
-        <RevenueCatUI.Paywall
-          options={{
-            displayCloseButton: true,
-          }}
-          onDismiss={closePaywallModal}
-        />
+        <RevenueCatUI.MyView />
       </Modal>
     </SafeAreaView>
   );

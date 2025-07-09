@@ -100,11 +100,10 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
 
     private fun setComposeOwnersOnFrameLayoutContainerIfNeeded() {
         var parent = this.parent
-        var firstFrameLayoutFound = false
+//        var firstFrameLayoutFound = false
 
-        while (!firstFrameLayoutFound && parent != null) {
+        while (parent != null) {
             if (parent is FrameLayout) {
-                firstFrameLayoutFound = true
                 setComposeOwnersOnView(parent)
             }
             parent = parent.parent
