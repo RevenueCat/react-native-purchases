@@ -35,9 +35,6 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
     protected var wrappedView: T? = null
     protected var isAttached = false
 
-    private val savedStateRegistryOwner: SavedStateRegistryOwner? by lazy { findSavedStateRegistryOwner() }
-    private val viewModelStoreOwner: ViewModelStoreOwner? by lazy { findViewModelStoreOwner() }
-
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(context, attrs)
     }
@@ -67,7 +64,7 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
         // This fixes the issue where Compose views crash in React Native modals
         // because it looks like modals create isolated view hierarchies without
         // the required owners and it will crash with:
-        // See: https://github.com/RevenueCat/react-native-purchases/issues/1315
+        // https://github.com/RevenueCat/react-native-purchases/issues/1315
         setComposeOwnersOnFrameLayoutContainerIfNeeded()
 
         super.onAttachedToWindow()
@@ -103,14 +100,14 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
 
     private fun setComposeOwnersOnFrameLayoutContainerIfNeeded() {
         var parent = this.parent
-        var level = 0
+        var firstFrameLayoutFound = false
 
-        while (parent != null && level < 10) { // Limit search depth
+        while (!firstFrameLayoutFound && parent != null) {
             if (parent is FrameLayout) {
+                firstFrameLayoutFound = true
                 setComposeOwnersOnView(parent)
             }
             parent = parent.parent
-            level++
         }
     }
 
@@ -121,13 +118,13 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
             }
 
             if (view.findViewTreeSavedStateRegistryOwner() == null) {
-                savedStateRegistryOwner?.let { owner ->
+                findSavedStateRegistryOwner()?.let { owner ->
                     view.setViewTreeSavedStateRegistryOwner(owner)
                 }
             }
 
             if (view.findViewTreeViewModelStoreOwner() == null) {
-                viewModelStoreOwner?.let { owner ->
+                findViewModelStoreOwner()?.let { owner ->
                     view.setViewTreeViewModelStoreOwner(owner)
                 }
             }
