@@ -312,11 +312,6 @@ export default class Purchases {
       }
     }
 
-    if (usingPreviewAPIMode) {
-      // tslint:disable-next-line:no-console
-      console.warn("[RevenueCat] [configure], You successfully installed the RevenueCat SDK. However, it's currently running in Preview API mode because it requires some native modules that are not available in Expo Go. All the APIs are available but have no effect. Please, use a development build to test the real behavior of the RevenueCat SDK.");
-    }
-
     RNPurchases.setupPurchases(
       apiKey,
       appUserID,
@@ -345,7 +340,6 @@ export default class Purchases {
     allowSharing: boolean
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setAllowSharingStoreAccount');
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
   }
 
@@ -439,7 +433,6 @@ export default class Purchases {
    */
   public static async getOfferings(): Promise<PurchasesOfferings> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getOfferings');
     return RNPurchases.getOfferings();
   }
 
@@ -454,7 +447,6 @@ export default class Purchases {
     placementIdentifier: string
   ): Promise<PurchasesOffering | null> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getCurrentOfferingForPlacement');
     return RNPurchases.getCurrentOfferingForPlacement(placementIdentifier);
   }
 
@@ -467,7 +459,6 @@ export default class Purchases {
    */
   public static async syncAttributesAndOfferingsIfNeeded(): Promise<PurchasesOfferings> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('syncAttributesAndOfferingsIfNeeded');
     return RNPurchases.syncAttributesAndOfferingsIfNeeded();
   }
 
@@ -485,7 +476,6 @@ export default class Purchases {
     type: PURCHASE_TYPE | PRODUCT_CATEGORY = PRODUCT_CATEGORY.SUBSCRIPTION
   ): Promise<PurchasesStoreProduct[]> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getProducts');
     return RNPurchases.getProductInfo(productIdentifiers, type);
   }
 
@@ -504,7 +494,6 @@ export default class Purchases {
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchaseProduct');
     return RNPurchases.purchaseProduct(
       productIdentifier,
       upgradeInfo,
@@ -539,7 +528,6 @@ export default class Purchases {
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchaseStoreProduct');
     return RNPurchases.purchaseProduct(
       product.identifier,
       googleProductChangeInfo,
@@ -574,7 +562,6 @@ export default class Purchases {
     discount: PurchasesPromotionalOffer
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchaseDiscountedProduct');
     if (typeof discount === "undefined" || discount == null) {
       throw new Error("A discount is required");
     }
@@ -614,7 +601,6 @@ export default class Purchases {
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchasePackage');
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.presentedOfferingContext,
@@ -650,7 +636,6 @@ export default class Purchases {
     googleIsPersonalizedPrice?: boolean
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchaseSubscriptionOption');
     await Purchases.throwIfIOSPlatform();
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
@@ -683,7 +668,6 @@ export default class Purchases {
     discount: PurchasesPromotionalOffer
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchaseDiscountedPackage');
     if (typeof discount === "undefined" || discount == null) {
       throw new Error("A discount is required");
     }
@@ -707,7 +691,6 @@ export default class Purchases {
    */
   public static async restorePurchases(): Promise<CustomerInfo> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('restorePurchases');
     return RNPurchases.restorePurchases();
   }
 
@@ -717,7 +700,6 @@ export default class Purchases {
    */
   public static async getAppUserID(): Promise<string> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getAppUserID');
     return RNPurchases.getAppUserID();
   }
 
@@ -727,7 +709,6 @@ export default class Purchases {
    */
     public static async getStorefront(): Promise<Storefront | null> {
       await Purchases.throwIfNotConfigured();
-      Purchases.logWarningIfPreviewAPIMode('getStorefront');
       return RNPurchases.getStorefront();
     }
 
@@ -741,7 +722,6 @@ export default class Purchases {
    */
   public static async logIn(appUserID: string): Promise<LogInResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('logIn');
     // noinspection SuspiciousTypeOfGuard
     if (typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
@@ -757,7 +737,6 @@ export default class Purchases {
    */
   public static async logOut(): Promise<CustomerInfo> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('logOut');
     return RNPurchases.logOut();
   }
 
@@ -799,7 +778,6 @@ export default class Purchases {
    */
   public static async getCustomerInfo(): Promise<CustomerInfo> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getCustomerInfo');
     return RNPurchases.getCustomerInfo();
   }
 
@@ -813,7 +791,6 @@ export default class Purchases {
    */
   public static async syncPurchases(): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('syncPurchases');
     RNPurchases.syncPurchases();
   }
 
@@ -840,7 +817,6 @@ export default class Purchases {
   ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('syncAmazonPurchase');
     RNPurchases.syncAmazonPurchase(
       productID,
       receiptID,
@@ -875,7 +851,6 @@ export default class Purchases {
   ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('syncObserverModeAmazonPurchase');
     RNPurchases.syncObserverModeAmazonPurchase(
       productID,
       receiptID,
@@ -904,8 +879,7 @@ export default class Purchases {
     productID: string
   ): Promise<PurchasesStoreTransaction> {
     await Purchases.throwIfAndroidPlatform();
-    await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('recordPurchase');
+    await Purchases.throwIfNotConfigured(); 
     return RNPurchases.recordPurchaseForProductID(productID);
   }
 
@@ -916,7 +890,6 @@ export default class Purchases {
   public static async enableAdServicesAttributionTokenCollection(): Promise<void> {
     if (Platform.OS === "ios") {
       await Purchases.throwIfNotConfigured();
-      Purchases.logWarningIfPreviewAPIMode('enableAdServicesAttributionTokenCollection');
       RNPurchases.enableAdServicesAttributionTokenCollection();
     }
   }
@@ -927,7 +900,6 @@ export default class Purchases {
    */
   public static async isAnonymous(): Promise<boolean> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('isAnonymous');
     return RNPurchases.isAnonymous();
   }
 
@@ -950,7 +922,6 @@ export default class Purchases {
     productIdentifiers: string[]
   ): Promise<{ [productId: string]: IntroEligibility }> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('checkTrialOrIntroductoryPriceEligibility');
     return RNPurchases.checkTrialOrIntroductoryPriceEligibility(
       productIdentifiers
     );
@@ -970,7 +941,6 @@ export default class Purchases {
     discount: PurchasesStoreProductDiscount
   ): Promise<PurchasesPromotionalOffer | undefined> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getPromotionalOffer');
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
     }
@@ -996,7 +966,6 @@ export default class Purchases {
     product: PurchasesStoreProduct
   ): Promise<[PurchasesWinBackOffer] | undefined> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getEligibleWinBackOffersForProduct');
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
     }
@@ -1019,7 +988,6 @@ export default class Purchases {
     aPackage: PurchasesPackage
   ): Promise<[PurchasesWinBackOffer] | undefined> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('getEligibleWinBackOffersForPackage');
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
     }
@@ -1046,7 +1014,6 @@ export default class Purchases {
     winBackOffer: PurchasesWinBackOffer
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchaseProductWithWinBackOffer');
     if (typeof winBackOffer === "undefined" || winBackOffer == null) {
       throw new Error("A win-back offer is required");
     }
@@ -1080,7 +1047,6 @@ export default class Purchases {
     winBackOffer: PurchasesWinBackOffer
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('purchasePackageWithWinBackOffer');
     if (typeof winBackOffer === "undefined" || winBackOffer == null) {
       throw new Error("A win-back offer is required");
     }
@@ -1112,7 +1078,6 @@ export default class Purchases {
    */
   public static async invalidateCustomerInfoCache(): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('invalidateCustomerInfoCache');
     RNPurchases.invalidateCustomerInfoCache();
   }
 
@@ -1125,7 +1090,6 @@ export default class Purchases {
   public static async presentCodeRedemptionSheet(): Promise<void> {
     if (Platform.OS === "ios") {
       await Purchases.throwIfNotConfigured();
-      Purchases.logWarningIfPreviewAPIMode('presentCodeRedemptionSheet');
       RNPurchases.presentCodeRedemptionSheet();
     }
   }
@@ -1146,7 +1110,6 @@ export default class Purchases {
     [key: string]: string | null;
   }): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setAttributes');
     RNPurchases.setAttributes(attributes);
   }
 
@@ -1159,7 +1122,6 @@ export default class Purchases {
    */
   public static async setEmail(email: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setEmail');
     RNPurchases.setEmail(email);
   }
 
@@ -1174,7 +1136,6 @@ export default class Purchases {
     phoneNumber: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setPhoneNumber');
     RNPurchases.setPhoneNumber(phoneNumber);
   }
 
@@ -1189,7 +1150,6 @@ export default class Purchases {
     displayName: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setDisplayName');
     RNPurchases.setDisplayName(displayName);
   }
 
@@ -1202,7 +1162,6 @@ export default class Purchases {
    */
   public static async setPushToken(pushToken: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setPushToken');
     RNPurchases.setPushToken(pushToken);
   }
 
@@ -1224,7 +1183,6 @@ export default class Purchases {
    */
   public static async collectDeviceIdentifiers(): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('collectDeviceIdentifiers');
     RNPurchases.collectDeviceIdentifiers();
   }
 
@@ -1238,7 +1196,6 @@ export default class Purchases {
    */
   public static async setAdjustID(adjustID: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setAdjustID');
     RNPurchases.setAdjustID(adjustID);
   }
 
@@ -1253,7 +1210,6 @@ export default class Purchases {
     appsflyerID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setAppsflyerID');
     RNPurchases.setAppsflyerID(appsflyerID);
   }
 
@@ -1269,7 +1225,6 @@ export default class Purchases {
     fbAnonymousID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setFBAnonymousID');
     RNPurchases.setFBAnonymousID(fbAnonymousID);
   }
 
@@ -1285,7 +1240,6 @@ export default class Purchases {
     mparticleID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setMparticleID');
     RNPurchases.setMparticleID(mparticleID);
   }
 
@@ -1301,7 +1255,6 @@ export default class Purchases {
     cleverTapID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setCleverTapID');
     RNPurchases.setCleverTapID(cleverTapID);
   }
 
@@ -1317,7 +1270,6 @@ export default class Purchases {
     mixpanelDistinctID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setMixpanelDistinctID');
     RNPurchases.setMixpanelDistinctID(mixpanelDistinctID);
   }
 
@@ -1333,7 +1285,6 @@ export default class Purchases {
     firebaseAppInstanceID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setFirebaseAppInstanceID');
     RNPurchases.setFirebaseAppInstanceID(firebaseAppInstanceID);
   }
 
@@ -1349,7 +1300,6 @@ export default class Purchases {
     tenjinAnalyticsInstallationID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setTenjinAnalyticsInstallationID');
     RNPurchases.setTenjinAnalyticsInstallationID(tenjinAnalyticsInstallationID);
   }
 
@@ -1365,7 +1315,6 @@ export default class Purchases {
     kochavaDeviceID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setKochavaDeviceID');
     RNPurchases.setKochavaDeviceID(kochavaDeviceID);
   }
 
@@ -1381,7 +1330,6 @@ export default class Purchases {
     onesignalID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setOnesignalID');
     RNPurchases.setOnesignalID(onesignalID);
   }
 
@@ -1397,7 +1345,6 @@ export default class Purchases {
     airshipChannelID: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setAirshipChannelID');
     RNPurchases.setAirshipChannelID(airshipChannelID);
   }
 
@@ -1412,7 +1359,6 @@ export default class Purchases {
     mediaSource: string | null
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setMediaSource');
     RNPurchases.setMediaSource(mediaSource);
   }
 
@@ -1425,7 +1371,6 @@ export default class Purchases {
    */
   public static async setCampaign(campaign: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setCampaign');
     RNPurchases.setCampaign(campaign);
   }
 
@@ -1438,7 +1383,6 @@ export default class Purchases {
    */
   public static async setAdGroup(adGroup: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setAdGroup');
     RNPurchases.setAdGroup(adGroup);
   }
 
@@ -1451,7 +1395,6 @@ export default class Purchases {
    */
   public static async setAd(ad: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setAd');
     RNPurchases.setAd(ad);
   }
 
@@ -1464,7 +1407,6 @@ export default class Purchases {
    */
   public static async setKeyword(keyword: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setKeyword');
     RNPurchases.setKeyword(keyword);
   }
 
@@ -1477,7 +1419,6 @@ export default class Purchases {
    */
   public static async setCreative(creative: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('setCreative');
     RNPurchases.setCreative(creative);
   }
 
@@ -1515,7 +1456,6 @@ export default class Purchases {
    */
   public static async beginRefundRequestForActiveEntitlement(): Promise<REFUND_REQUEST_STATUS> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('beginRefundRequestForActiveEntitlement');
     await Purchases.throwIfAndroidPlatform();
     const refundRequestStatusInt =
       await RNPurchases.beginRefundRequestForActiveEntitlement();
@@ -1540,7 +1480,6 @@ export default class Purchases {
     entitlementInfo: PurchasesEntitlementInfo
   ): Promise<REFUND_REQUEST_STATUS> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('beginRefundRequestForEntitlement');
     await Purchases.throwIfAndroidPlatform();
     const refundRequestStatusInt =
       await RNPurchases.beginRefundRequestForEntitlementId(
@@ -1567,7 +1506,6 @@ export default class Purchases {
     storeProduct: PurchasesStoreProduct
   ): Promise<REFUND_REQUEST_STATUS> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('beginRefundRequestForProduct');
     await Purchases.throwIfAndroidPlatform();
     const refundRequestStatusInt =
       await RNPurchases.beginRefundRequestForProductId(storeProduct.identifier);
@@ -1582,7 +1520,6 @@ export default class Purchases {
    */
   public static async showManageSubscriptions(): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('showManageSubscriptions');
     await Purchases.throwIfAndroidPlatform();
     return RNPurchases.showManageSubscriptions();
   }
@@ -1602,7 +1539,6 @@ export default class Purchases {
     messageTypes?: IN_APP_MESSAGE_TYPE[]
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('showInAppMessages');
     return RNPurchases.showInAppMessages(messageTypes);
   }
 
@@ -1630,7 +1566,6 @@ export default class Purchases {
     webPurchaseRedemption: WebPurchaseRedemption
   ): Promise<WebPurchaseRedemptionResult> {
     await Purchases.throwIfNotConfigured();
-    Purchases.logWarningIfPreviewAPIMode('redeemWebPurchase');
     return RNPurchases.redeemWebPurchase(webPurchaseRedemption.redemptionLink);
   }
 
@@ -1647,13 +1582,6 @@ export default class Purchases {
     const isConfigured = await Purchases.isConfigured();
     if (!isConfigured) {
       throw new UninitializedPurchasesError();
-    }
-  }
-
-  private static logWarningIfPreviewAPIMode(methodName: string) {
-    if (usingPreviewAPIMode) {
-      // tslint:disable-next-line:no-console
-      console.warn(`[RevenueCat] [${methodName}] This method is available but has no effect in Preview API mode.`);
     }
   }
 

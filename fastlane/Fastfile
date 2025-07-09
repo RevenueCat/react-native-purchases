@@ -6,7 +6,8 @@ files_with_version_number = {
     './ios/RNPurchases.m' => ['return @"{x}"'],
     './android/build.gradle' => ['versionName \'{x}\''],
     './react-native-purchases-ui/android/build.gradle' => ['versionName \'{x}\''],
-    './android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java' => ['PLUGIN_VERSION = "{x}"']
+    './android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java' => ['PLUGIN_VERSION = "{x}"'],
+    './src/preview/nativeModule.ts' => ['packageVersion = "{x}"']
 }
 files_to_update_phc_version = {
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],

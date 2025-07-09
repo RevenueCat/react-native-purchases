@@ -1,98 +1,22 @@
-import { CustomerInfo, INTRO_ELIGIBILITY_STATUS, MakePurchaseResult, PurchasesStoreTransaction, VERIFICATION_RESULT, WebPurchaseRedemptionResultType, PurchasesPackage, PurchasesStoreProduct, PACKAGE_TYPE, PRODUCT_CATEGORY, PRODUCT_TYPE, PurchasesOffering, PurchasesOfferings } from '@revenuecat/purchases-typescript-internal';
+import 'react-native-get-random-values'; // needed to generate random Ids in purchases-js in RN apps.
+import { CustomerInfo, INTRO_ELIGIBILITY_STATUS, MakePurchaseResult, PurchasesOffering, PurchasesOfferings } from '@revenuecat/purchases-typescript-internal';
+import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 
-const previewCustomerInfo: CustomerInfo = {
-  activeSubscriptions: [],
-  allExpirationDates: {},
-  allPurchaseDates: {},
-  allPurchasedProductIdentifiers: [],
-  entitlements: {
-    active: {},
-    all: {},
-    verification: VERIFICATION_RESULT.NOT_REQUESTED
-  },
-  firstSeen: new Date().toISOString(),
-  latestExpirationDate: null,
-  originalAppUserId: 'preview-user-id',
-  originalApplicationVersion: null,
-  requestDate: new Date().toISOString(),
-  managementURL: null,
-  originalPurchaseDate: new Date().toISOString(),
-  nonSubscriptionTransactions: [],
-  subscriptionsByProductIdentifier: {}
-};
-
-const previewPurchaseStoreTransaction: PurchasesStoreTransaction = {
-  transactionIdentifier: 'preview-transaction-id',
-  productIdentifier: 'preview-product-id',
-  purchaseDate: new Date().toISOString()
-};
-
-const previewMakePurchaseResult: MakePurchaseResult = {
-  productIdentifier: 'preview-product-id',
-  customerInfo: previewCustomerInfo,
-  transaction: previewPurchaseStoreTransaction
-};
-
-const previewStoreProduct: PurchasesStoreProduct = {
-  identifier: 'preview-product-id',
-  description: 'Preview product description',
-  title: 'Preview Product',
-  price: 9.99,
-  priceString: '$9.99',
-  pricePerWeek: 2.50,
-  pricePerMonth: 9.99,
-  pricePerYear: 99.99,
-  pricePerWeekString: '$2.50',
-  pricePerMonthString: '$9.99',
-  pricePerYearString: '$99.99',
-  currencyCode: 'USD',
-  introPrice: null,
-  discounts: null,
-  subscriptionPeriod: 'P1M',
-  productCategory: PRODUCT_CATEGORY.SUBSCRIPTION,
-  productType: PRODUCT_TYPE.AUTO_RENEWABLE_SUBSCRIPTION,
-  defaultOption: null,
-  subscriptionOptions: null,
-  presentedOfferingIdentifier: 'preview-offering',
-  presentedOfferingContext: {
-    offeringIdentifier: 'preview-offering',
-    placementIdentifier: 'preview-placement',
-    targetingContext: null
+/**
+ * Helper function to ensure PurchasesCommon is configured before making API calls
+ * @throws {Error} If PurchasesCommon is not configured
+ */
+function ensurePurchasesConfigured(): void {
+  if (!PurchasesCommon.isConfigured()) {
+    throw new Error('PurchasesCommon is not configured. Call setupPurchases first.');
   }
-};
+}
 
-const previewPackage: PurchasesPackage = {
-  identifier: 'preview-package-id',
-  packageType: PACKAGE_TYPE.MONTHLY,
-  product: previewStoreProduct,
-  offeringIdentifier: 'preview-offering',
-  presentedOfferingContext: {
-    offeringIdentifier: 'preview-offering',
-    placementIdentifier: 'preview-placement',
-    targetingContext: null
-  }
-};
+function methodNotSupportedOnWeb(methodName: string): void {
+  throw new Error(`${methodName} is not supported on web platform.`);
+}
 
-const previewOffering: PurchasesOffering = {
-  identifier: 'preview-offering',
-  serverDescription: 'Preview offering for testing',
-  metadata: {},
-  availablePackages: [previewPackage],
-  lifetime: null,
-  annual: null,
-  sixMonth: null,
-  threeMonth: null,
-  twoMonth: null,
-  monthly: previewPackage,
-  weekly: null
-};
-
-const previewOfferings: PurchasesOfferings = {
-  all: {
-    'preview-offering': previewOffering
-  },
-  current: previewOffering
-};
+const packageVersion = '8.11.8';
 
 /**
  * Preview implementation of the native module for Preview API mode, i.e. for environments where native modules are not available
@@ -101,7 +25,7 @@ const previewOfferings: PurchasesOfferings = {
 export const previewNativeModuleRNPurchases = {
   setupPurchases: async (
     apiKey: string,
-    _appUserID: string | null,
+    appUserID: string | null,
     _purchasesAreCompletedBy: string | null,
     _userDefaultsSuiteName: string | null,
     _storeKitVersion: string | null,
@@ -111,59 +35,81 @@ export const previewNativeModuleRNPurchases = {
     _pendingTransactionsForPrepaidPlansEnabled: boolean,
     _diagnosticsEnabled: boolean
   ) => {
-    console.log('[RevenueCat] Preview mode: setupPurchases called with apiKey:', apiKey);
-    return null;
+    console.log('setupPurchases called with apiKey:', apiKey);
+    try {
+      PurchasesCommon.configure({
+        apiKey,
+        appUserId: appUserID || undefined,
+        flavor: 'react-native',
+        flavorVersion: packageVersion,
+      });
+    } catch (error) {
+      console.error('Error configuring Purchases:', error);
+    }
   },
   setAllowSharingStoreAccount: async (_allowSharing: boolean) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setAllowSharingStoreAccount');
   },
   setSimulatesAskToBuyInSandbox: async (_simulatesAskToBuyInSandbox: boolean) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setSimulatesAskToBuyInSandbox');
   },
   getOfferings: async () => {
-    return previewOfferings;
+    ensurePurchasesConfigured();
+    const offerings = await PurchasesCommon.getInstance().getOfferings();
+    return offerings as unknown as PurchasesOfferings;
   },
-  getCurrentOfferingForPlacement: async (_placementIdentifier: string) => {
-    return previewOffering;
+  getCurrentOfferingForPlacement: async (placementIdentifier: string) => {
+    ensurePurchasesConfigured();
+    const offering = await PurchasesCommon.getInstance().getCurrentOfferingForPlacement(placementIdentifier);
+    return offering as unknown as PurchasesOffering | null;
   },
   syncAttributesAndOfferingsIfNeeded: async () => {
-    return previewOfferings;
+    ensurePurchasesConfigured();
+    const offerings = await PurchasesCommon.getInstance().getOfferings();
+    return offerings as unknown as PurchasesOfferings;
   },
   getProductInfo: async (_productIdentifiers: string[], _type: string) => {
-    // In preview mode, return the preview product for any requested product identifiers
-    return [previewStoreProduct];
+    methodNotSupportedOnWeb('getProductInfo');
   },
   restorePurchases: async () => {
-    return previewCustomerInfo;
+    ensurePurchasesConfigured();
+    // For web, restoring purchases just returns current customer info
+    const customerInfo = await PurchasesCommon.getInstance().getCustomerInfo();
+    return customerInfo as unknown as CustomerInfo;
   },
   getAppUserID: async () => {
-    return 'preview-user-id';
+    ensurePurchasesConfigured();
+    return PurchasesCommon.getInstance().getAppUserId();
   },
   getStorefront: async () => {
-    return 'preview-storefront';
+    methodNotSupportedOnWeb('getStorefront');
   },
   setDebugLogsEnabled: async (_enabled: boolean) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setDebugLogsEnabled');
   },
-  setLogLevel: async (_level: string) => {
-    // In preview mode, do nothing
+  setLogLevel: async (level: string) => {
+    PurchasesCommon.setLogLevel(level);
   },
-  setLogHandler: async () => {
-    return null;
+  setLogHandler: async (_handler: (message: string) => void) => {
+    // WIP: Implement this
   },
   getCustomerInfo: async () => {
-    return previewCustomerInfo;
+    ensurePurchasesConfigured();
+    const customerInfo = await PurchasesCommon.getInstance().getCustomerInfo();
+    return customerInfo as unknown as CustomerInfo;
   },
-  logIn: async (_appUserID: string) => {
-    return {
-      customerInfo: previewCustomerInfo,
-      created: false
-    };
+  logIn: async (appUserID: string) => {
+    ensurePurchasesConfigured();
+    const result = await PurchasesCommon.getInstance().logIn(appUserID);
+    return result as unknown as { customerInfo: CustomerInfo; created: boolean };
   },
   logOut: async () => {
-    return previewCustomerInfo;
+    ensurePurchasesConfigured();
+    const customerInfo = await PurchasesCommon.getInstance().logOut();
+    return customerInfo as unknown as CustomerInfo;
   },
   syncPurchases: async () => {
+    methodNotSupportedOnWeb('syncPurchases');
   },
   syncAmazonPurchase: async (
     _productID: string,
@@ -172,7 +118,7 @@ export const previewNativeModuleRNPurchases = {
     _isoCurrencyCode: string | null,
     _price: number | null
   ) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('syncAmazonPurchase');
   },
   syncObserverModeAmazonPurchase: async (
     _productID: string,
@@ -181,12 +127,13 @@ export const previewNativeModuleRNPurchases = {
     _isoCurrencyCode: string | null,
     _price: number | null
   ) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('syncObserverModeAmazonPurchase');
   },
   recordPurchaseForProductID: async (_productID: string) => {
-    return previewPurchaseStoreTransaction;
+    methodNotSupportedOnWeb('recordPurchaseForProductID');
   },
   enableAdServicesAttributionTokenCollection: async () => {
+    methodNotSupportedOnWeb('enableAdServicesAttributionTokenCollection');
   },
   purchaseProduct: async (
     _productIdentifier: string,
@@ -196,18 +143,21 @@ export const previewNativeModuleRNPurchases = {
     _googleInfo: any,
     _presentedOfferingContext: any
   ) => {
-    // In preview mode, return a successful purchase result
-    return previewMakePurchaseResult;
+    methodNotSupportedOnWeb('purchaseProduct');
   },
   purchasePackage: async (
-    _packageIdentifier: string,
-    _presentedOfferingContext: any,
+    packageIdentifier: string,
+    presentedOfferingContext: any,
     _googleProductChangeInfo: any,
     _discountTimestamp: string | null,
     _googleInfo: any
   ) => {
-    // In preview mode, return a successful purchase result
-    return previewMakePurchaseResult;
+    ensurePurchasesConfigured();
+    const result = await PurchasesCommon.getInstance().purchasePackage({
+      packageIdentifier,
+      presentedOfferingContext
+    });
+    return result as unknown as MakePurchaseResult;
   },
   purchaseSubscriptionOption: async (
     _productIdentifier: string,
@@ -217,141 +167,140 @@ export const previewNativeModuleRNPurchases = {
     _googleInfo: any,
     _presentedOfferingContext: any
   ) => {
-    // In preview mode, return a successful purchase result
-    return previewMakePurchaseResult;
+    methodNotSupportedOnWeb('purchaseSubscriptionOption');
   },
   isAnonymous: async () => {
-    return true;
+    ensurePurchasesConfigured();
+    return PurchasesCommon.getInstance().isAnonymous();
   },
   makeDeferredPurchase: async (_callbackID: number) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('makeDeferredPurchase');
   },
   checkTrialOrIntroductoryPriceEligibility: async (productIDs: string[]) => {
-    // In preview mode, return eligible for all products
     const result: { [productId: string]: any } = {};
     productIDs.forEach(productId => {
-      result[productId] = INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE;
+      result[productId] = INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_UNKNOWN;
     });
     return result;
   },
   getPromotionalOffer: async (_productIdentifier: string, _discount: any) => {
-    return undefined;
+    methodNotSupportedOnWeb('getPromotionalOffer');
   },
   eligibleWinBackOffersForProductIdentifier: async (_productID: string) => {
-    return [];
+    methodNotSupportedOnWeb('eligibleWinBackOffersForProductIdentifier');
   },
   purchaseProductWithWinBackOffer: async (_productID: string, _winBackOfferID: string) => {
-    return previewMakePurchaseResult;
+    methodNotSupportedOnWeb('purchaseProductWithWinBackOffer');
   },
   purchasePackageWithWinBackOffer: async (_packageID: string, _winBackOfferID: string) => {
-    return previewMakePurchaseResult;
+    methodNotSupportedOnWeb('purchasePackageWithWinBackOffer');
   },
   invalidateCustomerInfoCache: async () => {
+    methodNotSupportedOnWeb('invalidateCustomerInfoCache');
   },
   presentCodeRedemptionSheet: async () => {
+    methodNotSupportedOnWeb('presentCodeRedemptionSheet');
   },
   setAttributes: async (_attributes: any) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setAttributes');
   },
   setEmail: async (_email: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setEmail');
   },
   setPhoneNumber: async (_phoneNumber: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setPhoneNumber');
   },
   setDisplayName: async (_displayName: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setDisplayName');
   },
   setPushToken: async (_pushToken: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setPushToken');
   },
-  setProxyURLString: async (_proxyURLString: string) => {
-    // In preview mode, do nothing
+  setProxyURLString: async (proxyURLString: string) => {
+    PurchasesCommon.setProxyUrl(proxyURLString);
   },
   collectDeviceIdentifiers: async () => {
+    methodNotSupportedOnWeb('collectDeviceIdentifiers');
   },
   setAdjustID: async (_adjustID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setAdjustID');
   },
   setAppsflyerID: async (_appsflyerID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setAppsflyerID');
   },
   setFBAnonymousID: async (_fbAnonymousID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setFBAnonymousID');
   },
   setMparticleID: async (_mparticleID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setMparticleID');
   },
   setCleverTapID: async (_cleverTapID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setCleverTapID');
   },
   setMixpanelDistinctID: async (_mixpanelDistinctID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setMixpanelDistinctID');
   },
   setFirebaseAppInstanceID: async (_firebaseAppInstanceID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setFirebaseAppInstanceID');
   },
   setTenjinAnalyticsInstallationID: async (_tenjinAnalyticsInstallationID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setTenjinAnalyticsInstallationID');
   },
   setKochavaDeviceID: async (_kochavaDeviceID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setKochavaDeviceID');
   },
   setOnesignalID: async (_onesignalID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setOnesignalID');
   },
   setAirshipChannelID: async (_airshipChannelID: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setAirshipChannelID');
   },
   setMediaSource: async (_mediaSource: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setMediaSource');
   },
   setMediaCampaign: async () => {
+    methodNotSupportedOnWeb('setMediaCampaign');
   },
   setCampaign: async (_campaign: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setCampaign');
   },
   setAdGroup: async (_adGroup: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setAdGroup');
   },
   setAd: async (_ad: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setAd');
   },
   setKeyword: async (_keyword: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setKeyword');
   },
   setCreative: async (_creative: string) => {
-    // In preview mode, do nothing
+    methodNotSupportedOnWeb('setCreative');
   },
   canMakePayments: async (_features: any[]) => {
-    // In preview mode, return false (no payments can be made)
-    return false;
-  },
-  beginRefundRequestForActiveEntitlement: async () => {
-    return 0;
-  },
-  beginRefundRequestForEntitlementId: async (_entitlementIdentifier: string) => {
-    return 0;
-  },
-  beginRefundRequestForProductId: async (_productIdentifier: string) => {
-    return 0;
-  },
-  showManageSubscriptions: async () => {
-  },
-  showInAppMessages: async (_messageTypes: any[]) => {
-    // In preview mode, do nothing
-  },
-  isWebPurchaseRedemptionURL: async (_urlString: string) => {
-    // In preview mode, we'll return false for any URL
-    return false;
-  },
-  isConfigured: async () => {
     return true;
   },
+  beginRefundRequestForActiveEntitlement: async () => {
+    methodNotSupportedOnWeb('beginRefundRequestForActiveEntitlement');
+  },
+  beginRefundRequestForEntitlementId: async (_entitlementIdentifier: string) => {
+    methodNotSupportedOnWeb('beginRefundRequestForEntitlementId');
+  },
+  beginRefundRequestForProductId: async (_productIdentifier: string) => {
+    methodNotSupportedOnWeb('beginRefundRequestForProductId');
+  },
+  showManageSubscriptions: async () => {
+    methodNotSupportedOnWeb('showManageSubscriptions');
+  },
+  showInAppMessages: async (_messageTypes: any[]) => {
+    methodNotSupportedOnWeb('showInAppMessages');
+  },
+  isWebPurchaseRedemptionURL: async (_urlString: string) => {
+    methodNotSupportedOnWeb('isWebPurchaseRedemptionURL');
+  },
+  isConfigured: async () => {
+    return PurchasesCommon.isConfigured();
+  },
   redeemWebPurchase: async (_urlString: string) => {
-    return {
-      result: WebPurchaseRedemptionResultType.SUCCESS,
-      customerInfo: previewCustomerInfo
-    };
+    methodNotSupportedOnWeb('redeemWebPurchase');
   },
 }; 
