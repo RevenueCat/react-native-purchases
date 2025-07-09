@@ -12,6 +12,69 @@ function ensurePurchasesConfigured(): void {
   }
 }
 
+/**
+ * Type guard function type - returns true if value matches type T
+ */
+type TypeGuard<T> = (value: any) => value is T;
+
+/**
+ * Type-safe transformation function that validates purchases-js output matches expected type
+ * @param value - The value from purchases-js
+ * @param typeGuard - Runtime type guard function that validates the structure
+ * @param typeName - String description of expected type for logging
+ * @returns The value cast to expected type T
+ * @throws {Error} If type validation fails
+ */
+function validateAndTransform<T>(value: any, typeGuard: TypeGuard<T>, typeName: string): T {
+  if (value === null || value === undefined) {
+    if (typeName.includes('null')) {
+      return value as T;
+    }
+    console.error(`Type validation failed: Expected ${typeName}, got ${value}`);
+    throw new Error(`Type validation failed: Expected ${typeName}, got ${value}`);
+  }
+  
+  if (typeGuard(value)) {
+    return value;
+  }
+  
+  console.error(`Type validation failed: Expected ${typeName}, got:`, value);
+  throw new Error(`Type validation failed: Expected ${typeName}, received invalid structure`);
+}
+
+// Type guards for the interfaces we use
+function isCustomerInfo(value: any): value is CustomerInfo {
+  return value && typeof value === 'object' && 
+         typeof value.originalAppUserId === 'string' &&
+         typeof value.entitlements === 'object';
+}
+
+function isPurchasesOfferings(value: any): value is PurchasesOfferings {
+  return value && typeof value === 'object' && 
+         typeof value.all === 'object' &&
+         (value.current === null || typeof value.current === 'object');
+}
+
+function isPurchasesOffering(value: any): value is PurchasesOffering {
+  return value && typeof value === 'object' && 
+         typeof value.identifier === 'string' &&
+         typeof value.serverDescription === 'string' &&
+         Array.isArray(value.availablePackages);
+}
+
+function isMakePurchaseResult(value: any): value is MakePurchaseResult {
+  return value && typeof value === 'object' && 
+         typeof value.customerInfo === 'object' &&
+         typeof value.userCancelled === 'boolean';
+}
+
+function isLogInResult(value: any): value is { customerInfo: CustomerInfo; created: boolean } {
+  return value && typeof value === 'object' && 
+         typeof value.customerInfo === 'object' &&
+         typeof value.created === 'boolean' &&
+         isCustomerInfo(value.customerInfo);
+}
+
 function methodNotSupportedOnWeb(methodName: string): void {
   throw new Error(`${methodName} is not supported on web platform.`);
 }
@@ -55,17 +118,17 @@ export const browserNativeModuleRNPurchases = {
   getOfferings: async () => {
     ensurePurchasesConfigured();
     const offerings = await PurchasesCommon.getInstance().getOfferings();
-    return offerings as unknown as PurchasesOfferings;
+    return validateAndTransform(offerings, isPurchasesOfferings, 'PurchasesOfferings');
   },
   getCurrentOfferingForPlacement: async (placementIdentifier: string) => {
     ensurePurchasesConfigured();
     const offering = await PurchasesCommon.getInstance().getCurrentOfferingForPlacement(placementIdentifier);
-    return offering as unknown as PurchasesOffering | null;
+    return offering ? validateAndTransform(offering, isPurchasesOffering, 'PurchasesOffering') : null;
   },
   syncAttributesAndOfferingsIfNeeded: async () => {
     ensurePurchasesConfigured();
     const offerings = await PurchasesCommon.getInstance().getOfferings();
-    return offerings as unknown as PurchasesOfferings;
+    return validateAndTransform(offerings, isPurchasesOfferings, 'PurchasesOfferings');
   },
   getProductInfo: async (_productIdentifiers: string[], _type: string) => {
     methodNotSupportedOnWeb('getProductInfo');
@@ -74,7 +137,7 @@ export const browserNativeModuleRNPurchases = {
     ensurePurchasesConfigured();
     // For web, restoring purchases just returns current customer info
     const customerInfo = await PurchasesCommon.getInstance().getCustomerInfo();
-    return customerInfo as unknown as CustomerInfo;
+    return validateAndTransform(customerInfo, isCustomerInfo, 'CustomerInfo');
   },
   getAppUserID: async () => {
     ensurePurchasesConfigured();
@@ -95,17 +158,17 @@ export const browserNativeModuleRNPurchases = {
   getCustomerInfo: async () => {
     ensurePurchasesConfigured();
     const customerInfo = await PurchasesCommon.getInstance().getCustomerInfo();
-    return customerInfo as unknown as CustomerInfo;
+    return validateAndTransform(customerInfo, isCustomerInfo, 'CustomerInfo');
   },
   logIn: async (appUserID: string) => {
     ensurePurchasesConfigured();
     const result = await PurchasesCommon.getInstance().logIn(appUserID);
-    return result as unknown as { customerInfo: CustomerInfo; created: boolean };
+    return validateAndTransform(result, isLogInResult, 'LogInResult');
   },
   logOut: async () => {
     ensurePurchasesConfigured();
     const customerInfo = await PurchasesCommon.getInstance().logOut();
-    return customerInfo as unknown as CustomerInfo;
+    return validateAndTransform(customerInfo, isCustomerInfo, 'CustomerInfo');
   },
   syncPurchases: async () => {
     methodNotSupportedOnWeb('syncPurchases');
@@ -156,7 +219,7 @@ export const browserNativeModuleRNPurchases = {
       packageIdentifier,
       presentedOfferingContext
     });
-    return result as unknown as MakePurchaseResult;
+    return validateAndTransform(result, isMakePurchaseResult, 'MakePurchaseResult');
   },
   purchaseSubscriptionOption: async (
     _productIdentifier: string,
