@@ -42,6 +42,14 @@ NSString *RNPurchasesLogHandlerEvent = @"Purchases-LogHandlerEvent";
              RNPurchasesLogHandlerEvent];
 }
 
+- (void)sendEventWithName:(NSString *)name body:(id)body {
+    /// This prevents a potential crash that can occur when the JS modules are not set up yet.
+    /// See https://github.com/RevenueCat/react-native-purchases/issues/1305
+    if (self.callableJSModules != nil) {
+        [super sendEventWithName:name body:body];
+    }
+}
+
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
