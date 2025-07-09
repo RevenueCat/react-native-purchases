@@ -97,7 +97,6 @@ export const browserNativeModuleRNPurchases = {
     _pendingTransactionsForPrepaidPlansEnabled: boolean,
     _diagnosticsEnabled: boolean
   ) => {
-    console.log('setupPurchases called with apiKey:', apiKey);
     try {
       PurchasesCommon.configure({
         apiKey,
@@ -107,6 +106,7 @@ export const browserNativeModuleRNPurchases = {
       });
     } catch (error) {
       console.error('Error configuring Purchases:', error);
+      throw error;
     }
   },
   setAllowSharingStoreAccount: async (_allowSharing: boolean) => {
