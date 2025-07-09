@@ -75,7 +75,8 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-purchases": "8.11.8"
   },
   "packageManager": "yarn@3.6.1",
   "jest": {
@@ -114,7 +115,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "14.1.0",
-    "react-native-purchases": "8.11.8"
+    "@revenuecat/purchases-typescript-internal": "14.1.0"
   }
 }
