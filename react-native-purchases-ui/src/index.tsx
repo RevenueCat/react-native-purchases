@@ -1,4 +1,5 @@
 import {
+  findNodeHandle,
   NativeEventEmitter,
   NativeModules,
   Platform,
@@ -16,7 +17,7 @@ import {
   type PurchasesStoreTransaction,
   REFUND_REQUEST_STATUS
 } from "@revenuecat/purchases-typescript-internal";
-import React, { type ReactNode, useEffect, useState } from "react";
+import React, { type ReactNode, useEffect, useRef, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
 
@@ -302,19 +303,39 @@ export default class RevenueCatUI {
                                                                    onRestoreCompleted,
                                                                    onRestoreError,
                                                                    onDismiss,
-                                                                 }) => (
-    <InternalPaywall options={options}
-                     children={children}
-                     onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
-                     onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-                     onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
-                     onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
-                     onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
-                     onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-                     onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
-                     onDismiss={() => onDismiss && onDismiss()}
-                     style={[{flex: 1}, style]}/>
-  );
+                                                                 }) => {
+    const ref = useRef<any>(null);
+
+    useEffect(() => {
+      if (Platform.OS === 'android' && ref.current) {
+        const reactNativeViewId = findNodeHandle(ref.current);
+        if (reactNativeViewId) {
+          UIManager.dispatchViewManagerCommand(
+            reactNativeViewId,
+            'create',
+            [reactNativeViewId],
+          );
+        }
+      }
+    }, []);
+
+    return (
+      <InternalPaywall
+        ref={ref}
+        options={options}
+        children={children}
+        onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+        onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+        onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+        onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+        onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+        onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        onDismiss={() => onDismiss && onDismiss()}
+        style={[{flex: 1}, style]}
+      />
+    );
+  };
 
   public static OriginalTemplatePaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
                                                                                                   style,
