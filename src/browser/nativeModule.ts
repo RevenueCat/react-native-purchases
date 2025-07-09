@@ -19,10 +19,9 @@ function methodNotSupportedOnWeb(methodName: string): void {
 const packageVersion = '8.11.8';
 
 /**
- * Preview implementation of the native module for Preview API mode, i.e. for environments where native modules are not available
- * (like Expo Go).
+ * Browser implementation of the native module. This will be used in the browser and Expo Go.
  */
-export const previewNativeModuleRNPurchases = {
+export const browserNativeModuleRNPurchases = {
   setupPurchases: async (
     apiKey: string,
     appUserID: string | null,

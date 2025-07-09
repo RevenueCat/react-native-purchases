@@ -43,8 +43,8 @@ import {
   WebPurchaseRedemptionResult,
   Storefront,
 } from "@revenuecat/purchases-typescript-internal";
-import { shouldUsePreviewAPIMode } from "./utils/environment";
-import { previewNativeModuleRNPurchases } from "./preview/nativeModule";
+import { shouldUseBrowserMode } from "./utils/environment";
+import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
@@ -66,10 +66,10 @@ export {
 
 import { Platform } from "react-native";
 
-// Get the native module or use the preview implementation
-const usingPreviewAPIMode = shouldUsePreviewAPIMode();
-const RNPurchases = usingPreviewAPIMode ? previewNativeModuleRNPurchases : NativeModules.RNPurchases;
-const eventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNPurchases);
+// Get the native module or use the browser implementation
+const usingBrowserMode = shouldUseBrowserMode();
+const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const eventEmitter = usingBrowserMode ? null : new NativeEventEmitter(RNPurchases);
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
