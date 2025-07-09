@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import {
   Alert,
+  Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -21,6 +22,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList';
 import PromptWithTextInput from '../components/InputModal';
+import PaywallScreen from './PaywallScreen';
 import { PurchasesError, REFUND_REQUEST_STATUS } from '@revenuecat/purchases-typescript-internal';
 
 interface State {
@@ -177,6 +179,8 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   };
 
   const [promptPlacementVisible, setPromptPlacementVisible] = useState(false);
+  const [paywallModalVisible, setPaywallModalVisible] = useState(false);
+
   const handlePromptPlacementCancel = () => {
     setPromptPlacementVisible(false);
     console.log('User canceled input');
@@ -192,6 +196,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         navigation.navigate('OfferingDetail', {offering: offering});
       }
     }
+  };
+
+  const openPaywallModal = () => {
+    setPaywallModalVisible(true);
+  };
+
+  const closePaywallModal = () => {
+    setPaywallModalVisible(false);
   };
 
   return (
@@ -255,6 +267,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('Paywall', {offering: null})}>
             <Text style={styles.otherActions}>Go to Paywall Screen</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={openPaywallModal}>
+            <Text style={styles.otherActions}>Go to Paywall Screen as Modal</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
@@ -365,6 +380,20 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={paywallModalVisible}
+        presentationStyle="pageSheet"
+        onRequestClose={closePaywallModal}>
+        <RevenueCatUI.Paywall
+          options={{
+            displayCloseButton: true,
+          }}
+          onDismiss={closePaywallModal}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
