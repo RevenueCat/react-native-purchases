@@ -86,7 +86,7 @@ const App = () => {
       }
     } else {
       Purchases.configure({
-        apiKey: APIKeys.apple, 
+        apiKey: APIKeys.apple,
         entitlementVerificationMode: verificationMode,
         diagnosticsEnabled: true
       });
