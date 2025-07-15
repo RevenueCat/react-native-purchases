@@ -6,6 +6,8 @@ type RootStackParamList = {
   OfferingDetail: {offering: PurchasesOffering | null};
   WinBackTesting: {};
   Paywall: {offering: PurchasesOffering | null; fontFamily?: string | null};
+  PaywallModalNoHeader: {};
+  PaywallModalWithHeader: {};
   FooterPaywall: {
     offering: PurchasesOffering | null;
     fontFamily?: string | null;
