@@ -1,12 +1,16 @@
 package com.revenuecat.purchases.react.ui.views
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
@@ -113,20 +117,21 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
 
     private fun setComposeOwnersOnView(view: View) {
         try {
+            val activity = findActivity()
+
             if (view.findViewTreeLifecycleOwner() == null) {
-                view.setViewTreeLifecycleOwner(ProcessLifecycleOwner.get())
+                val owner = activity ?: ProcessLifecycleOwner.get()
+                view.setViewTreeLifecycleOwner(owner as LifecycleOwner)
             }
 
             if (view.findViewTreeSavedStateRegistryOwner() == null) {
-                findSavedStateRegistryOwner()?.let { owner ->
-                    view.setViewTreeSavedStateRegistryOwner(owner)
-                }
+                val owner = findSavedStateRegistryOwner() ?: (activity as? SavedStateRegistryOwner)
+                owner?.let { view.setViewTreeSavedStateRegistryOwner(it) }
             }
 
             if (view.findViewTreeViewModelStoreOwner() == null) {
-                findViewModelStoreOwner()?.let { owner ->
-                    view.setViewTreeViewModelStoreOwner(owner)
-                }
+                val owner = findViewModelStoreOwner() ?: (activity as? ViewModelStoreOwner)
+                owner?.let { view.setViewTreeViewModelStoreOwner(it) }
             }
         } catch (e: Exception) {
             Log.w("ComposeViewWrapper",
@@ -165,6 +170,23 @@ abstract class ComposeViewWrapper<T : View> : FrameLayout {
                 return currentContext
             }
             currentContext = (currentContext as? android.content.ContextWrapper)?.baseContext
+        }
+        return null
+    }
+
+    private fun findActivity(): Activity? {
+        // Check direct context first (most common case)
+        if (context is Activity) {
+            return context as Activity
+        }
+
+        // Then traverse the context wrapper chain
+        var currentContext = context
+        while (currentContext is ContextWrapper) {
+            if (currentContext is Activity) {
+                return currentContext
+            }
+            currentContext = currentContext.baseContext
         }
         return null
     }
