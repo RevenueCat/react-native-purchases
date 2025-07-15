@@ -16,25 +16,7 @@ internal class PaywallViewManager : BasePaywallViewManager<WrappedPaywallCompose
     }
 
     override fun createViewInstance(themedReactContext: ThemedReactContext): WrappedPaywallComposeView {
-        return object : WrappedPaywallComposeView(themedReactContext) {
-
-            // Ensure the view re-measures properly after loading state changes
-            // Similar logic used in PaywallFooterViewManager
-            override fun requestLayout() {
-                super.requestLayout()
-                post(measureAndLayout)
-            }
-
-            private val measureAndLayout = Runnable {
-                if (isAttachedToWindow) {
-                    measure(
-                        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
-                    )
-                    layout(left, top, right, bottom)
-                }
-            }
-        }.also { view ->
+        return WrappedPaywallComposeView(themedReactContext).also { view ->
             view.setPaywallListener(createPaywallListenerWrapper(themedReactContext, view))
             view.setDismissHandler(getDismissHandler(themedReactContext, view))
         }

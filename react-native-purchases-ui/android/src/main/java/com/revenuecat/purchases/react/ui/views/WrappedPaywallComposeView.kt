@@ -6,7 +6,7 @@ import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 import com.revenuecat.purchases.ui.revenuecatui.fonts.FontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
 
-open class WrappedPaywallComposeView(context: Context) : ComposeViewWrapper<PaywallView>(context) {
+class WrappedPaywallComposeView(context: Context) : ComposeViewWrapper<PaywallView>(context) {
 
     override fun createWrappedView(context: Context, attrs: AttributeSet?): PaywallView {
         return PaywallView(context, attrs)
@@ -30,5 +30,22 @@ open class WrappedPaywallComposeView(context: Context) : ComposeViewWrapper<Payw
 
     fun setDisplayDismissButton(shouldDisplayDismissButton: Boolean) {
         wrappedView?.setDisplayDismissButton(shouldDisplayDismissButton)
+    }
+
+    // Ensure the view re-measures properly after loading state changes
+    // Similar logic used in PaywallFooterViewManager
+    override fun requestLayout() {
+        super.requestLayout()
+        post(measureAndLayout)
+    }
+
+    private val measureAndLayout = Runnable {
+        if (isAttachedToWindow) {
+            measure(
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+            )
+            layout(left, top, right, bottom)
+        }
     }
 }
