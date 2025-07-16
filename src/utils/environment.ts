@@ -30,7 +30,7 @@ declare global {
 /**
  * Detects if the app is running in Expo Go
  */
-function isExpoGo(): boolean {
+export function isExpoGo(): boolean {
   if (!!NativeModules.RNPurchases) {
     return false;
   }
