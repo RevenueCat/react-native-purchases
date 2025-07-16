@@ -177,6 +177,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   };
 
   const [promptPlacementVisible, setPromptPlacementVisible] = useState(false);
+
   const handlePromptPlacementCancel = () => {
     setPromptPlacementVisible(false);
     console.log('User canceled input');
@@ -255,6 +256,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('Paywall', {offering: null})}>
             <Text style={styles.otherActions}>Go to Paywall Screen</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PaywallModalNoHeader', {})}>
+            <Text style={styles.otherActions}>Go to Paywall Modal (no header)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PaywallModalWithHeader', {})}>
+            <Text style={styles.otherActions}>Go to Paywall Modal (with header)</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>

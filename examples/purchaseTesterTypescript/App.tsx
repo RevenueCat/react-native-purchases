@@ -86,7 +86,7 @@ const App = () => {
       }
     } else {
       Purchases.configure({
-        apiKey: APIKeys.apple, 
+        apiKey: APIKeys.apple,
         entitlementVerificationMode: verificationMode,
         diagnosticsEnabled: true
       });
@@ -115,6 +115,12 @@ const App = () => {
           />
           <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
           <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
+          <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
+            <Stack.Screen name="PaywallModalNoHeader" component={PaywallScreen} />
+          </Stack.Group>
+          <Stack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
+            <Stack.Screen name="PaywallModalWithHeader" component={PaywallScreen} />
+          </Stack.Group>
           <Stack.Screen name="Paywall" component={PaywallScreen} />
           <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
           <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
