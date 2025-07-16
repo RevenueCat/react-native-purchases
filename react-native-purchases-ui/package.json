@@ -77,6 +77,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
+    "react-native-purchases": "8.11.9",
     "react-native-web": "*"
   },
   "peerDependenciesMeta": {
@@ -121,7 +122,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "14.2.0",
-    "react-native-purchases": "8.11.9"
+    "@revenuecat/purchases-typescript-internal": "14.2.0"
   }
 }

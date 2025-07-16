@@ -111,6 +111,8 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "14.2.0"
+    "@revenuecat/purchases-js-hybrid-mappings": "14.2.0",
+    "@revenuecat/purchases-typescript-internal": "14.2.0",
+    "react-native-get-random-values": "^1.11.0"
   }
 }
