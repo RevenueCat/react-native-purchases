@@ -7,7 +7,7 @@ Additionally, we've also updated Kotlin to 2.0.21 and our new minimum version is
 #### Play Billing Library 8: No expired subscriptions or consumed one-time products
 Note: the following is only relevant if you recently integrated RevenueCat, and do not (yet) have all your transactions imported.
 
-Play Billing Library 8 removed functionality to query expired subscriptions or consumed one-time products. This means that, for users migrating from a non-RevenueCat implementation of the Play Billing Library, the SDK will not be able to send purchase information from these purchases. We can still ingest historical data from these purchases through a backend historical import. See docs. This doesn't affect developers that have all transactions in RevenueCat, which is true for the vast majority.
+Play Billing Library 8 removed functionality to query expired subscriptions or consumed one-time products. This means that, for users migrating from a non-RevenueCat implementation of the Play Billing Library, the SDK will not be able to send purchase information from these purchases. We can still ingest historical data from these purchases through a backend historical import. See [docs](https://www.revenuecat.com/docs/migrating-to-revenuecat/migrating-existing-subscriptions). This doesn't affect developers that have all transactions in RevenueCat, which is true for the vast majority.
 
 #### Using the SDK with your own IAP code (previously Observer Mode)
 Using the SDK with your own IAP code is still supported in v9. Other than updating the SDK version, there are no changes required. Just make sure the version of the Play Billing Library is also version 8.0.0+.
