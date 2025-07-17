@@ -293,11 +293,12 @@ jobs:
             open_pr:true \
             automatic_release:<< pipeline.parameters.automatic >>
 workflows:
-  test:
+  build-test-hold-deploy:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
+      # Testing phase - runs on all branches
       - analyse_js
       - android
       - ios
@@ -305,13 +306,13 @@ workflows:
       - expo_ios
       - expo_web
 
-  deploy:
-    when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-    jobs:
+      # Hold and deploy phase - only on release branches
       - hold:
           type: approval
+          requires:
+            - analyse_js
+            - android
+            - ios
           <<: *release-branches
       - revenuecat/tag-current-branch:
           requires:
