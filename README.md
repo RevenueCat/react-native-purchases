@@ -44,7 +44,8 @@ Or view our React Native sample app:
 
 ## Requirements
 
-The minimum React Native version this SDK requires is `0.64`.
+The minimum React Native version this SDK requires is `0.73.0`.
+In Android, minimum Kotlin version is `1.8.0`.
 
 ## SDK Reference
 Our full SDK reference [can be found here](https://revenuecat.github.io/react-native-purchases-docs/).
