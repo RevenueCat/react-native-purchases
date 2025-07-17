@@ -68,7 +68,7 @@
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": ">= 16.6.3",
-    "react-native": "*",
+    "react-native": ">= 0.73.0",
     "react-native-web": "*"
   },
   "peerDependenciesMeta": {
