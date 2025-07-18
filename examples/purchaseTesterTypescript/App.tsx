@@ -22,6 +22,7 @@ import OfferingDetailScreen from './app/screens/OfferingDetailScreen';
 import PaywallScreen from './app/screens/PaywallScreen';
 import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
+import CustomerCenterScreen from "./app/screens/CustomerCenterScreen";
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -124,6 +125,11 @@ const App = () => {
           <Stack.Screen name="Paywall" component={PaywallScreen} />
           <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
           <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
+          <Stack.Screen
+              name="CustomerCenterScreen"
+              component={CustomerCenterScreen}
+              options={{ headerShown: false }}
+           />
         </Stack.Navigator>
       </NavigationContainer>
     );
