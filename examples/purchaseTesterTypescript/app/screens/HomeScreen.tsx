@@ -151,6 +151,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     ]);
   };
 
+  const fetchVirtualCurrencies = async () => {
+    console.log('Getting virtual currencies');
+    const virtualCurrencies = await Purchases.getVirtualCurrencies();
+    console.log('Virtual Currencies from JS: ', virtualCurrencies);
+  };
+
   const redeemCode = async () => {
     try {
       const rtn = await Purchases.presentCodeRedemptionSheet();
@@ -243,6 +249,10 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
           <TouchableOpacity onPress={redeemCode}>
             <Text style={styles.otherActions}>Redeem Code</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={fetchVirtualCurrencies}>
+            <Text style={styles.otherActions}>Fetch Virtual Currencies</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={showManageSubscriptions}>

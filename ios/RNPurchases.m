@@ -562,6 +562,13 @@ RCT_EXPORT_METHOD(redeemWebPurchase:(NSString *)urlString
                                                                                                reject:reject]];
 }
 
+RCT_EXPORT_METHOD(getVirtualCurrencies:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  [RCCommonFunctionality getVirtualCurrenciesWithCompletion:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                 reject:reject]];
+}
+
 #pragma mark -
 #pragma mark PurchasesAreCompletedBy Helper Functions
 RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID

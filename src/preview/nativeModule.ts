@@ -354,4 +354,10 @@ export const previewNativeModuleRNPurchases = {
       customerInfo: previewCustomerInfo
     };
   },
+  getVirtualCurrencies: async () => {
+    // In preview mode, return empty virtual currencies
+    return {
+      all: {}
+    };
+  },
 }; 

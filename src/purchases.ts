@@ -38,6 +38,7 @@ import {
   PURCHASES_ARE_COMPLETED_BY_TYPE,
   PurchasesAreCompletedBy,
   PurchasesAreCompletedByMyApp,
+  PurchasesVirtualCurrencies,
   PurchasesWinBackOffer,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
@@ -1632,6 +1633,17 @@ export default class Purchases {
     await Purchases.throwIfNotConfigured();
     Purchases.logWarningIfPreviewAPIMode('redeemWebPurchase');
     return RNPurchases.redeemWebPurchase(webPurchaseRedemption.redemptionLink);
+  }
+
+  /**
+   * Fetches the virtual currencies for the current subscriber.
+   * 
+   * @returns {Promise<PurchasesVirtualCurrencies>} A PurchasesVirtualCurrencies object that containing the subscriber's virtual currencies.
+   */
+  public static async getVirtualCurrencies(): Promise<PurchasesVirtualCurrencies> {
+    await Purchases.throwIfNotConfigured();
+    Purchases.logWarningIfPreviewAPIMode('getVirtualCurrencies');
+    return RNPurchases.getVirtualCurrencies();
   }
 
   /**
