@@ -1647,6 +1647,23 @@ export default class Purchases {
   }
 
   /**
+   * Invalidates the cache for virtual currencies.
+   *
+   *
+   * This is useful for cases where a virtual currency's balance might have been updated
+   * outside of the app, like if you decreased a user's balance from the user spending a virtual currency,
+   * or if you increased the balance from your backend using the server APIs.
+   * 
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
+   * invalidating the virtual currencies cache.
+   */
+  public static async invalidateVirtualCurrenciesCache(): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    Purchases.logWarningIfPreviewAPIMode('invalidateVirtualCurrenciesCache');
+    RNPurchases.invalidateVirtualCurrenciesCache();
+  }
+
+  /**
    * Check if configure has finished and Purchases has been configured.
    *
    * @returns {Promise<Boolean>} promise with boolean response

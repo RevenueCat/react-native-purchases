@@ -22,10 +22,22 @@ const VirtualCurrencyScreen: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('Getting virtual currencies');
       const currencies = await Purchases.getVirtualCurrencies();
-      console.log('Virtual Currencies from JS: ', currencies);
       setVirtualCurrencies(currencies);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Error fetching virtual currencies:', err);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const invalidateVirtualCurrenciesCache = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await Purchases.invalidateVirtualCurrenciesCache();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error('Error fetching virtual currencies:', err);
@@ -71,6 +83,12 @@ const VirtualCurrencyScreen: React.FC = () => {
           <Button
             title={loading ? 'Loading...' : 'Fetch Virtual Currencies'}
             onPress={fetchVirtualCurrencies}
+            disabled={loading}
+          />
+
+          <Button
+            title={'Invalidate Virtual Currencies Cache'}
+            onPress={invalidateVirtualCurrenciesCache}
             disabled={loading}
           />
         </View>

@@ -569,6 +569,10 @@ RCT_EXPORT_METHOD(getVirtualCurrencies:
                                                                                                  reject:reject]];
 }
 
+RCT_EXPORT_METHOD(invalidateVirtualCurrenciesCache) {
+    [RCCommonFunctionality invalidateVirtualCurrenciesCache];
+}
+
 #pragma mark -
 #pragma mark PurchasesAreCompletedBy Helper Functions
 RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
