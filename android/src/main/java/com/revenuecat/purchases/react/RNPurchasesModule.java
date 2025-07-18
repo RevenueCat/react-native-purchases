@@ -339,6 +339,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     //================================================================================
+    // Virtual Currencies 
+    //================================================================================
+    @ReactMethod
+    public void getVirtualCurrencies(final Promise promise) {
+        CommonKt.getVirtualCurrencies(getOnResult(promise));
+    }
+
+    //================================================================================
     // Subscriber Attributes
     //================================================================================
 
