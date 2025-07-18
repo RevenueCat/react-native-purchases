@@ -5,6 +5,7 @@ type RootStackParamList = {
   CustomerInfo: {appUserID: String | null, customerInfo: CustomerInfo | null};
   OfferingDetail: {offering: PurchasesOffering | null};
   WinBackTesting: {};
+  VirtualCurrency: {};
   Paywall: {offering: PurchasesOffering | null; fontFamily?: string | null};
   PaywallModalNoHeader: {};
   PaywallModalWithHeader: {};

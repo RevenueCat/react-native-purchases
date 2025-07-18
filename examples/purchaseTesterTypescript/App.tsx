@@ -22,6 +22,7 @@ import OfferingDetailScreen from './app/screens/OfferingDetailScreen';
 import PaywallScreen from './app/screens/PaywallScreen';
 import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
+import VirtualCurrencyScreen from "./app/screens/VirtualCurrencyScreen";
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -87,6 +88,7 @@ const App = () => {
     } else {
       Purchases.configure({
         apiKey: APIKeys.apple,
+        appUserID: 'wills_test_vc_user',
         entitlementVerificationMode: verificationMode,
         diagnosticsEnabled: true
       });
@@ -124,6 +126,7 @@ const App = () => {
           <Stack.Screen name="Paywall" component={PaywallScreen} />
           <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
           <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
+          <Stack.Screen name="VirtualCurrency" component={VirtualCurrencyScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     );
