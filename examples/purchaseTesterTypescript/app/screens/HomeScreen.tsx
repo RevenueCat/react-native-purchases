@@ -248,7 +248,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
           <TouchableOpacity
             onPress={() => navigation.navigate('VirtualCurrency', {})}>
-            <Text style={styles.otherActions}>Virtual Currency Screen</Text>
+            <Text style={styles.otherActions}>Virtual Currency Testing Screen</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={showManageSubscriptions}>
