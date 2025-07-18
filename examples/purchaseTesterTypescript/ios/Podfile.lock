@@ -1599,10 +1599,10 @@ PODS:
   - RevenueCat (5.33.0)
   - RevenueCatUI (5.33.0):
     - RevenueCat (= 5.33.0)
-  - RNPaywalls (8.11.10):
+  - RNPaywalls (9.0.0):
     - PurchasesHybridCommonUI (= 15.0.0)
     - React-Core
-  - RNPurchases (8.11.10):
+  - RNPurchases (9.0.0):
     - PurchasesHybridCommon (= 15.0.0)
     - React-Core
   - RNScreens (4.11.1):
@@ -1949,9 +1949,9 @@ SPEC CHECKSUMS:
   ReactCommon: 0c097b53f03d6bf166edbcd0915da32f3015dd90
   RevenueCat: 9fd6fc0ea8a22fd9d11242feb298f3bb6f9f86db
   RevenueCatUI: fb0d0e68ad7628835ef3636edb44a273be9d6887
-  RNPaywalls: 8b7a9414bbf6fe629c6f4ad491ffd9ac21d9e138
-  RNPurchases: 54ead379b8a52395909edb1c6bff0060493f6973
-  RNScreens: 0d4cb9afe052607ad0aa71f645a88bb7c7f2e64c
+  RNPaywalls: 20e9a603f423c8875cf0fb6cb97f6765d410909a
+  RNPurchases: d62a081564c6d859ec10702afcb132ce3f75952a
+  RNScreens: 8aec64fb213fd52a64445e2e470f7a9b546c5df3
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
