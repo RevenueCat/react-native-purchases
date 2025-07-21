@@ -1409,22 +1409,22 @@ describe("Purchases", () => {
       });
     });
 
-    describe("invalidate virtual currencies cache", () => {
-      describe("when invalidateVirtualCurrenciesCache is called", () => {
-        it("makes the right call to Purchases", async () => {
-          await Purchases.invalidateVirtualCurrenciesCache();
-
-          expect(NativeModules.RNPurchases.invalidateVirtualCurrenciesCache).toHaveBeenCalledTimes(1);
-        });
-      });
-    });
-
     describe("getting virtual currencies", () => {
       describe("when getVirtualCurrencies is called", () => {
         it("makes the right call to Purchases", async () => {
           await Purchases.getVirtualCurrencies();
 
           expect(NativeModules.RNPurchases.getVirtualCurrencies).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+
+    describe("invalidate virtual currencies cache", () => {
+      describe("when invalidateVirtualCurrenciesCache is called", () => {
+        it("makes the right call to Purchases", async () => {
+          await Purchases.invalidateVirtualCurrenciesCache();
+
+          expect(NativeModules.RNPurchases.invalidateVirtualCurrenciesCache).toHaveBeenCalledTimes(1);
         });
       });
     });
