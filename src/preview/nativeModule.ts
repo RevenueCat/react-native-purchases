@@ -1,4 +1,4 @@
-import { CustomerInfo, INTRO_ELIGIBILITY_STATUS, MakePurchaseResult, PurchasesStoreTransaction, VERIFICATION_RESULT, WebPurchaseRedemptionResultType, PurchasesPackage, PurchasesStoreProduct, PACKAGE_TYPE, PRODUCT_CATEGORY, PRODUCT_TYPE, PurchasesOffering, PurchasesOfferings } from '@revenuecat/purchases-typescript-internal';
+import { CustomerInfo, INTRO_ELIGIBILITY_STATUS, MakePurchaseResult, PurchasesStoreTransaction, VERIFICATION_RESULT, WebPurchaseRedemptionResultType, PurchasesPackage, PurchasesStoreProduct, PACKAGE_TYPE, PRODUCT_CATEGORY, PRODUCT_TYPE, PurchasesOffering, PurchasesOfferings, PurchasesVirtualCurrencies } from '@revenuecat/purchases-typescript-internal';
 
 const previewCustomerInfo: CustomerInfo = {
   activeSubscriptions: [],
@@ -92,6 +92,10 @@ const previewOfferings: PurchasesOfferings = {
     'preview-offering': previewOffering
   },
   current: previewOffering
+};
+
+const previewVirtualCurrencies: PurchasesVirtualCurrencies = {
+  all: {}
 };
 
 /**
@@ -355,9 +359,12 @@ export const previewNativeModuleRNPurchases = {
     };
   },
   getVirtualCurrencies: async () => {
-    // In preview mode, return empty virtual currencies
-    return {
-      all: {}
-    };
+    return previewVirtualCurrencies;
   },
+  invalidateVirtualCurrenciesCache: async () => {
+    // In preview mode, do nothing
+  },
+  getCachedVirtualCurrencies: async () => {
+    return previewVirtualCurrencies;
+  }
 }; 
