@@ -412,7 +412,7 @@ async function checkGetVirtualCurrencies() {
 }
 
 async function checkInvalidateVirtualCurrenciesCache() {
-  Purchases.invalidateVirtualCurrenciesCache();
+  await Purchases.invalidateVirtualCurrenciesCache();
 }
 
 async function checkGetCachedVirtualCurrencies() {
