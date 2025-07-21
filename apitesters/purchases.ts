@@ -3,6 +3,7 @@ import {
   IN_APP_MESSAGE_TYPE,
   PurchasesError,
   PurchasesOffering,
+  PurchasesVirtualCurrencies,
   Storefront,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
@@ -404,4 +405,16 @@ async function checkWebRedemption() {
       const obfuscatedEmail: string = result.obfuscatedEmail;
       break;
   }
+}
+
+async function checkGetVirtualCurrencies() {
+  const virtualCurrencies: PurchasesVirtualCurrencies = await Purchases.getVirtualCurrencies();
+}
+
+async function checkInvalidateVirtualCurrenciesCache() {
+  Purchases.invalidateVirtualCurrenciesCache();
+}
+
+async function checkGetCachedVirtualCurrencies() {
+  const cachedVirtualCurrencies: PurchasesVirtualCurrencies | null = await Purchases.getCachedVirtualCurrencies();
 }
