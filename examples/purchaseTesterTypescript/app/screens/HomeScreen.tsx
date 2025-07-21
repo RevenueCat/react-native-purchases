@@ -151,7 +151,6 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     ]);
   };
 
-
   const redeemCode = async () => {
     try {
       const rtn = await Purchases.presentCodeRedemptionSheet();
