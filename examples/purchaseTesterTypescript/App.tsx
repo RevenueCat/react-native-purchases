@@ -88,7 +88,6 @@ const App = () => {
     } else {
       Purchases.configure({
         apiKey: APIKeys.apple,
-        appUserID: 'wills_test_vc_user',
         entitlementVerificationMode: verificationMode,
         diagnosticsEnabled: true
       });
