@@ -353,7 +353,12 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void getCachedVirtualCurrencies(final Promise promise) {
-        promise.resolve(CommonKt.getCachedVirtualCurrencies());
+        Map<String, ?> cachedVirtualCurrencies = CommonKt.getCachedVirtualCurrencies();
+        if (cachedVirtualCurrencies == null) {
+            promise.resolve(null);
+        } else {
+            promise.resolve(convertMapToWriteableMap(cachedVirtualCurrencies));
+        }
     }
 
     //================================================================================
