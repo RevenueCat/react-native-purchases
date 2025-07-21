@@ -1639,6 +1639,7 @@ export default class Purchases {
    * Fetches the virtual currencies for the current subscriber.
    * 
    * @returns {Promise<PurchasesVirtualCurrencies>} A PurchasesVirtualCurrencies object that containing the subscriber's virtual currencies.
+   * The promise will be rejected if configure has not been called yet or if an error occurs.
    */
   public static async getVirtualCurrencies(): Promise<PurchasesVirtualCurrencies> {
     await Purchases.throwIfNotConfigured();
@@ -1661,6 +1662,21 @@ export default class Purchases {
     await Purchases.throwIfNotConfigured();
     Purchases.logWarningIfPreviewAPIMode('invalidateVirtualCurrenciesCache');
     RNPurchases.invalidateVirtualCurrenciesCache();
+  }
+
+  /**
+   * The currently cached [PurchasesVirtualCurrencies] if one is available.
+   * This value will remain null until virtual currencies have been fetched at 
+   * least once with [Purchases.getVirtualCurrencies] or an equivalent function.
+   * 
+   * @returns {Promise<PurchasesVirtualCurrencies | null>} The currently cached virtual currencies for the current subscriber. 
+   * The promise will be rejected if configure has not been called yet or there's an error.
+   */
+  public static async getCachedVirtualCurrencies(): Promise<PurchasesVirtualCurrencies | null> {
+    await Purchases.throwIfNotConfigured();
+    Purchases.logWarningIfPreviewAPIMode('getCachedVirtualCurrencies');
+    const result = await RNPurchases.getCachedVirtualCurrencies();
+    return result ?? null;
   }
 
   /**

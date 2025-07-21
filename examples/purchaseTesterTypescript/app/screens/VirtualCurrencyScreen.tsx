@@ -20,10 +20,10 @@ const VirtualCurrencyScreen: React.FC = () => {
 
   const fetchVirtualCurrencies = async () => {
     setLoading(true);
-    setError(null);
+    clearVirtualCurrencies();
     try {
-      const currencies = await Purchases.getVirtualCurrencies();
-      setVirtualCurrencies(currencies);
+      const virtualCurrencies = await Purchases.getVirtualCurrencies();
+      setVirtualCurrencies(virtualCurrencies);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error('Error fetching virtual currencies:', err);
@@ -35,12 +35,32 @@ const VirtualCurrencyScreen: React.FC = () => {
 
   const invalidateVirtualCurrenciesCache = async () => {
     setLoading(true);
-    setError(null);
+    clearVirtualCurrencies();
     try {
       await Purchases.invalidateVirtualCurrenciesCache();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error('Error fetching virtual currencies:', err);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCachedVirtualCurrencies = async () => {
+    setLoading(true);
+    clearVirtualCurrencies();
+    try {
+      const cachedVirtualCurrencies = await Purchases.getCachedVirtualCurrencies();
+      if(cachedVirtualCurrencies === null) {
+        setVirtualCurrencies('Cached virtual currencies are null.');
+      } else {
+        setVirtualCurrencies(cachedVirtualCurrencies);
+      }
+      
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Error fetching cached virtual currencies:', err);
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -54,11 +74,15 @@ const VirtualCurrencyScreen: React.FC = () => {
 
   const displayVirtualCurrencies = () => {
     if (!virtualCurrencies) {
-      return <Text>No virtual currencies loaded</Text>;
+      return <Text></Text>;
+    }
+
+    if (typeof virtualCurrencies === 'string') {
+      return <Text>{virtualCurrencies}</Text>;
     }
 
     if (typeof virtualCurrencies === 'object' && Object.keys(virtualCurrencies).length === 0) {
-      return <Text>No virtual currencies available</Text>;
+      return <Text>Virtual currencies are empty.</Text>;
     }
 
     return (
@@ -89,6 +113,12 @@ const VirtualCurrencyScreen: React.FC = () => {
           <Button
             title={'Invalidate Virtual Currencies Cache'}
             onPress={invalidateVirtualCurrenciesCache}
+            disabled={loading}
+          />
+
+          <Button
+            title={'Fetch Cached Virtual Currencies'}
+            onPress={fetchCachedVirtualCurrencies}
             disabled={loading}
           />
         </View>

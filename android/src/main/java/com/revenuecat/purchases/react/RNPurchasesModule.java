@@ -351,6 +351,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         CommonKt.invalidateVirtualCurrenciesCache();
     }
 
+    @ReactMethod
+    public void getCachedVirtualCurrencies(final Promise promise) {
+        promise.resolve(CommonKt.getCachedVirtualCurrencies());
+    }
+
     //================================================================================
     // Subscriber Attributes
     //================================================================================

@@ -562,6 +562,7 @@ RCT_EXPORT_METHOD(redeemWebPurchase:(NSString *)urlString
                                                                                                reject:reject]];
 }
 
+# pragma mark Virtual Currencies
 RCT_EXPORT_METHOD(getVirtualCurrencies:
                   (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
@@ -571,6 +572,12 @@ RCT_EXPORT_METHOD(getVirtualCurrencies:
 
 RCT_EXPORT_METHOD(invalidateVirtualCurrenciesCache) {
     [RCCommonFunctionality invalidateVirtualCurrenciesCache];
+}
+
+RCT_EXPORT_METHOD(getCachedVirtualCurrencies:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    resolve([RCCommonFunctionality getCachedVirtualCurrencies]);
 }
 
 #pragma mark -
