@@ -164,7 +164,7 @@ function showTestPurchaseAlert(packageIdentifier: string, offeringIdentifier: st
       .then((data) => {
         const { packageInfo, offers } = data;
 
-        let message = `⚠️ This is a test purchase and should be tested with real products using an Apple/Google API key from RevenueCat.\n\n`;
+        let message = `⚠️ This is a test purchase and should only be used during development. In production, use an Apple/Google API key from RevenueCat.\n\n`;
         message += `Package ID: ${packageInfo.identifier}\n`;
         message += `Product ID: ${packageInfo.product.identifier}\n`;
         message += `Title: ${packageInfo.product.title}\n`;
@@ -288,7 +288,7 @@ function showTestPurchaseModal(packageIdentifier: string, offeringIdentifier: st
       <div style="background-color: #fff3cd; border-radius: 8px; padding: 16px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
         <div style="font-size: 16px; font-weight: bold; color: #856404; margin-bottom: 8px;">⚠️ Test Mode</div>
         <div style="font-size: 14px; color: #856404; line-height: 1.4;">
-          This is a test purchase and should be tested with proper iOS and Apple RevenueCat API keys before uploading the app to the App Store/Play Store.
+          This is a test purchase and should only be used during development. In production, use an Apple/Google API key from RevenueCat.
         </div>
       </div>
 
