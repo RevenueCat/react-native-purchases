@@ -1638,7 +1638,7 @@ export default class Purchases {
   /**
    * Fetches the virtual currencies for the current subscriber.
    * 
-   * @returns {Promise<PurchasesVirtualCurrencies>} A PurchasesVirtualCurrencies object that containing the subscriber's virtual currencies.
+   * @returns {Promise<PurchasesVirtualCurrencies>} A PurchasesVirtualCurrencies object containing the subscriber's virtual currencies.
    * The promise will be rejected if configure has not been called yet or if an error occurs.
    */
   public static async getVirtualCurrencies(): Promise<PurchasesVirtualCurrencies> {
