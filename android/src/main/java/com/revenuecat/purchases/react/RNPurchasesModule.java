@@ -339,6 +339,29 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     //================================================================================
+    // Virtual Currencies 
+    //================================================================================
+    @ReactMethod
+    public void getVirtualCurrencies(final Promise promise) {
+        CommonKt.getVirtualCurrencies(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void invalidateVirtualCurrenciesCache() {
+        CommonKt.invalidateVirtualCurrenciesCache();
+    }
+
+    @ReactMethod
+    public void getCachedVirtualCurrencies(final Promise promise) {
+        Map<String, ?> cachedVirtualCurrencies = CommonKt.getCachedVirtualCurrencies();
+        if (cachedVirtualCurrencies == null) {
+            promise.resolve(null);
+        } else {
+            promise.resolve(convertMapToWriteableMap(cachedVirtualCurrencies));
+        }
+    }
+
+    //================================================================================
     // Subscriber Attributes
     //================================================================================
 

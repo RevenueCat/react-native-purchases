@@ -38,6 +38,7 @@ import {
   PURCHASES_ARE_COMPLETED_BY_TYPE,
   PurchasesAreCompletedBy,
   PurchasesAreCompletedByMyApp,
+  PurchasesVirtualCurrencies,
   PurchasesWinBackOffer,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
@@ -1632,6 +1633,49 @@ export default class Purchases {
     await Purchases.throwIfNotConfigured();
     Purchases.logWarningIfPreviewAPIMode('redeemWebPurchase');
     return RNPurchases.redeemWebPurchase(webPurchaseRedemption.redemptionLink);
+  }
+
+  /**
+   * Fetches the virtual currencies for the current subscriber.
+   * 
+   * @returns {Promise<PurchasesVirtualCurrencies>} A PurchasesVirtualCurrencies object that containing the subscriber's virtual currencies.
+   * The promise will be rejected if configure has not been called yet or if an error occurs.
+   */
+  public static async getVirtualCurrencies(): Promise<PurchasesVirtualCurrencies> {
+    await Purchases.throwIfNotConfigured();
+    Purchases.logWarningIfPreviewAPIMode('getVirtualCurrencies');
+    return RNPurchases.getVirtualCurrencies();
+  }
+
+  /**
+   * Invalidates the cache for virtual currencies.
+   *
+   * This is useful for cases where a virtual currency's balance might have been updated
+   * outside of the app, like if you decreased a user's balance from the user spending a virtual currency,
+   * or if you increased the balance from your backend using the server APIs.
+   * 
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
+   * invalidating the virtual currencies cache.
+   */
+  public static async invalidateVirtualCurrenciesCache(): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    Purchases.logWarningIfPreviewAPIMode('invalidateVirtualCurrenciesCache');
+    RNPurchases.invalidateVirtualCurrenciesCache();
+  }
+
+  /**
+   * The currently cached [PurchasesVirtualCurrencies] if one is available.
+   * This value will remain null until virtual currencies have been fetched at 
+   * least once with [Purchases.getVirtualCurrencies] or an equivalent function.
+   * 
+   * @returns {Promise<PurchasesVirtualCurrencies | null>} The currently cached virtual currencies for the current subscriber. 
+   * The promise will be rejected if configure has not been called yet or there's an error.
+   */
+  public static async getCachedVirtualCurrencies(): Promise<PurchasesVirtualCurrencies | null> {
+    await Purchases.throwIfNotConfigured();
+    Purchases.logWarningIfPreviewAPIMode('getCachedVirtualCurrencies');
+    const result = await RNPurchases.getCachedVirtualCurrencies();
+    return result ?? null;
   }
 
   /**

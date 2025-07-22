@@ -805,7 +805,10 @@ NativeModules.RNPurchases = {
   showInAppMessages: jest.fn(),
   isConfigured: jest.fn(),
   parseAsWebPurchaseRedemption: jest.fn(),
-  redeemWebPurchase: jest.fn()
+  redeemWebPurchase: jest.fn(),
+  getVirtualCurrencies: jest.fn(),
+  invalidateVirtualCurrenciesCache: jest.fn(),
+  getCachedVirtualCurrencies: jest.fn()
 };
 
 jest.mock(
