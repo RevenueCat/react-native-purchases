@@ -1650,7 +1650,6 @@ export default class Purchases {
   /**
    * Invalidates the cache for virtual currencies.
    *
-   *
    * This is useful for cases where a virtual currency's balance might have been updated
    * outside of the app, like if you decreased a user's balance from the user spending a virtual currency,
    * or if you increased the balance from your backend using the server APIs.
