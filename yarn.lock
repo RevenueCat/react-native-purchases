@@ -3397,12 +3397,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:16.0.0":
-  version: 16.0.0
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:16.0.0"
+"@revenuecat/purchases-js-hybrid-mappings@npm:16.0.2":
+  version: 16.0.2
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:16.0.2"
   dependencies:
     "@revenuecat/purchases-js": 1.11.0
-  checksum: 346d8af9eb22325d735df351ec9788e1298d8b0bfdbc79e014d207d5f1deb23d864aa8720a27a52e37bbf541548966933605cc3e873f3c64207c23c6a46ebed7
+  checksum: c8565ad1727abe3d6a58c31c830a04ff1e58eac48709c40b155de14c0dc408439f4d6e3a86a12a4155a9193c8ead057bfd7a304d8456d7646a3f220781af2caa
   languageName: node
   linkType: hard
 
@@ -3413,10 +3413,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:16.0.0":
-  version: 16.0.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:16.0.0"
-  checksum: 03ba03818f739e1082afe9ea418afd780f6f695207bb460f246ff6a0fa551dd8301d1f93c44158f67a8452de7e7b95e18740594f9cb7422d2692e774bc87ea33
+"@revenuecat/purchases-typescript-internal@npm:16.0.2":
+  version: 16.0.2
+  resolution: "@revenuecat/purchases-typescript-internal@npm:16.0.2"
+  checksum: 2b9fb1fe2f368af9f83b82ab0d2ebe3111b7521f3ce0d276af5ad901990323b8f86abf7a2e2ad76c675f2163de8e8beba829d9b1b62d6ca2dbdd6cf19c25eda3
   languageName: node
   linkType: hard
 
@@ -8429,7 +8429,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 16.0.0
+    "@revenuecat/purchases-typescript-internal": 16.0.2
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -8449,7 +8449,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 9.0.0
+    react-native-purchases: 9.1.0
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
@@ -8461,8 +8461,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 16.0.0
-    "@revenuecat/purchases-typescript-internal": 16.0.0
+    "@revenuecat/purchases-js-hybrid-mappings": 16.0.2
+    "@revenuecat/purchases-typescript-internal": 16.0.2
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0

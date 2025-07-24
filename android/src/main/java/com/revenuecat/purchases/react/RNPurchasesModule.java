@@ -47,7 +47,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "9.0.0";
+    public static final String PLUGIN_VERSION = "9.1.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -336,6 +336,29 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void isConfigured(Promise promise) {
         promise.resolve(Purchases.isConfigured());
+    }
+
+    //================================================================================
+    // Virtual Currencies 
+    //================================================================================
+    @ReactMethod
+    public void getVirtualCurrencies(final Promise promise) {
+        CommonKt.getVirtualCurrencies(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void invalidateVirtualCurrenciesCache() {
+        CommonKt.invalidateVirtualCurrenciesCache();
+    }
+
+    @ReactMethod
+    public void getCachedVirtualCurrencies(final Promise promise) {
+        Map<String, ?> cachedVirtualCurrencies = CommonKt.getCachedVirtualCurrencies();
+        if (cachedVirtualCurrencies == null) {
+            promise.resolve(null);
+        } else {
+            promise.resolve(convertMapToWriteableMap(cachedVirtualCurrencies));
+        }
     }
 
     //================================================================================

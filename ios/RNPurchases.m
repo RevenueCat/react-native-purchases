@@ -562,6 +562,24 @@ RCT_EXPORT_METHOD(redeemWebPurchase:(NSString *)urlString
                                                                                                reject:reject]];
 }
 
+# pragma mark Virtual Currencies
+RCT_EXPORT_METHOD(getVirtualCurrencies:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  [RCCommonFunctionality getVirtualCurrenciesWithCompletion:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                 reject:reject]];
+}
+
+RCT_EXPORT_METHOD(invalidateVirtualCurrenciesCache) {
+    [RCCommonFunctionality invalidateVirtualCurrenciesCache];
+}
+
+RCT_EXPORT_METHOD(getCachedVirtualCurrencies:
+                  (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    resolve([RCCommonFunctionality getCachedVirtualCurrencies]);
+}
+
 #pragma mark -
 #pragma mark PurchasesAreCompletedBy Helper Functions
 RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
@@ -639,7 +657,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"9.0.0";
+    return @"9.1.0";
 }
 
 @end

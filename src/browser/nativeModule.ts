@@ -335,4 +335,13 @@ export const browserNativeModuleRNPurchases = {
   redeemWebPurchase: async (_urlString: string) => {
     methodNotSupportedOnWeb('redeemWebPurchase');
   },
+  getVirtualCurrencies: async () => {
+    methodNotSupportedOnWeb('getVirtualCurrencies');
+  },
+  invalidateVirtualCurrenciesCache: async () => {
+    methodNotSupportedOnWeb('invalidateVirtualCurrenciesCache');
+  },
+  getCachedVirtualCurrencies: async () => {
+    methodNotSupportedOnWeb('getCachedVirtualCurrencies');
+  },
 };
