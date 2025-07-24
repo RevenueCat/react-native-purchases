@@ -108,6 +108,9 @@
     "cacheDirectory": ".jest/cache",
     "setupFiles": [
       "./scripts/setupJest.js"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@revenuecat/purchases-js-hybrid-mappings|@react-native|react-native)/)"
     ]
   },
   "dependencies": {
