@@ -3397,6 +3397,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@revenuecat/purchases-js-hybrid-mappings@npm:16.1.0":
+  version: 16.1.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:16.1.0"
+  dependencies:
+    "@revenuecat/purchases-js": 1.11.0
+  checksum: 346c9eaaa207e4ef641cd23ae455cc9446f37dbf7a65ebf6c12bd3cbc6cb8c36f744ed5da37f1fa6ddae88326d02f27f807eab8dfe9bb89312ad566d09fa786c
+  languageName: node
+  linkType: hard
+
+"@revenuecat/purchases-js@npm:1.11.0":
+  version: 1.11.0
+  resolution: "@revenuecat/purchases-js@npm:1.11.0"
+  checksum: e60810f9f1359552a66be56337aff9779a8386decd7ea4586b2ff193457d58e0387f6485dd7215ada293a5085ca865a04e946c346d448fe6e89f503a17eae87b
+  languageName: node
+  linkType: hard
+
 "@revenuecat/purchases-typescript-internal@npm:16.1.0":
   version: 16.1.0
   resolution: "@revenuecat/purchases-typescript-internal@npm:16.1.0"
@@ -5113,6 +5129,13 @@ __metadata:
   version: 3.1.2
   resolution: "exponential-backoff@npm:3.1.2"
   checksum: 7e191e3dd6edd8c56c88f2c8037c98fbb8034fe48778be53ed8cb30ccef371a061a4e999a469aab939b92f8f12698f3b426d52f4f76b7a20da5f9f98c3cbc862
+  languageName: node
+  linkType: hard
+
+"fast-base64-decode@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "fast-base64-decode@npm:1.0.0"
+  checksum: 4c59eb1775a7f132333f296c5082476fdcc8f58d023c42ed6d378d2e2da4c328c7a71562f271181a725dd17cdaa8f2805346cc330cdbad3b8e4b9751508bd0a3
   languageName: node
   linkType: hard
 
@@ -8381,6 +8404,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-get-random-values@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "react-native-get-random-values@npm:1.11.0"
+  dependencies:
+    fast-base64-decode: ^1.0.0
+  peerDependencies:
+    react-native: ">=0.56"
+  checksum: 07729f70a007f7a3b8f98ebf687c1298ba288b87dd71d8ba385be6b5a377718b27b97547bbe1db6b225b83ee109dfce0b01721e6ed535d53892f3ac81e6bf975
+  languageName: node
+  linkType: hard
+
 "react-native-is-edge-to-edge@npm:^1.1.7":
   version: 1.1.7
   resolution: "react-native-is-edge-to-edge@npm:1.1.7"
@@ -8427,6 +8461,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
+    "@revenuecat/purchases-js-hybrid-mappings": 16.1.0
     "@revenuecat/purchases-typescript-internal": 16.1.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
@@ -8438,6 +8473,7 @@ __metadata:
     prettier: ^2.0.5
     react: 18.2.0
     react-native: 0.73.5
+    react-native-get-random-values: ^1.11.0
     ts-jest: ^29.1.2
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
