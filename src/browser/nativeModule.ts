@@ -8,8 +8,7 @@ import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult } from './typeGuards';
 
 
-
-const packageVersion = '8.11.8';
+const packageVersion = '9.1.0';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
