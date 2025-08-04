@@ -1,5 +1,6 @@
 import {
   CustomerInfo,
+  MakePurchaseResult,
   PurchasesOffering,
   PurchasesOfferings,
 } from '@revenuecat/purchases-typescript-internal';
@@ -59,4 +60,12 @@ export function isLogInResult(value: any): value is { customerInfo: CustomerInfo
          typeof value.customerInfo === 'object' &&
          typeof value.created === 'boolean' &&
          isCustomerInfo(value.customerInfo);
+}
+
+export function isMakePurchaseResult(value: any): value is MakePurchaseResult {
+  return value && typeof value === 'object' &&
+         typeof value.productIdentifier === 'string' &&
+         typeof value.customerInfo === 'object' &&
+         isCustomerInfo(value.customerInfo) &&
+         typeof value.transaction === 'object';
 }

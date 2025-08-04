@@ -5,7 +5,8 @@ import {
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
-import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult } from './typeGuards';
+import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult } from './typeGuards';
+import { isExpoGo } from '../utils/environment';
 
 
 const packageVersion = '9.1.0';
@@ -137,15 +138,25 @@ export const browserNativeModuleRNPurchases = {
     methodNotSupportedOnWeb('purchaseProduct');
   },
   purchasePackage: async (
-    _packageIdentifier: string,
-    _presentedOfferingContext: any,
+    packageIdentifier: string,
+    presentedOfferingContext: any,
     _googleProductChangeInfo: any,
     _discountTimestamp: string | null,
     _googleInfo: any
   ): Promise<MakePurchaseResult> => {
     ensurePurchasesConfigured();
 
-    throw new Error('Purchase is not supported browser mode.');
+    if (isExpoGo()) {
+      throw new Error('Purchasing is not currently supported in Expo Go');
+    }
+
+    const purchaseResult = await PurchasesCommon.getInstance().purchasePackage(
+      {
+        packageIdentifier: packageIdentifier,
+        presentedOfferingContext: presentedOfferingContext,
+      }
+    );
+    return validateAndTransform(purchaseResult, isMakePurchaseResult, 'MakePurchaseResult');
   },
   purchaseSubscriptionOption: async (
     _productIdentifier: string,
