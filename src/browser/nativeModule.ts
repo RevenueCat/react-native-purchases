@@ -2,13 +2,9 @@ import 'react-native-get-random-values'; // needed to generate random Ids in pur
 import {
   INTRO_ELIGIBILITY_STATUS,
   MakePurchaseResult,
-  PurchasesPackage,
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
-import { isExpoGo } from '../utils/environment';
-import { showTestPurchaseModal } from './showTestPurchaseModal';
-import { showTestPurchaseAlert } from './showTestPurchaseAlert';
-import { ensurePurchasesConfigured, methodNotSupportedOnWeb, createMockTransaction } from './utils';
+import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult } from './typeGuards';
 
 
@@ -142,54 +138,15 @@ export const browserNativeModuleRNPurchases = {
     methodNotSupportedOnWeb('purchaseProduct');
   },
   purchasePackage: async (
-    packageIdentifier: string,
-    presentedOfferingContext: any,
+    _packageIdentifier: string,
+    _presentedOfferingContext: any,
     _googleProductChangeInfo: any,
     _discountTimestamp: string | null,
     _googleInfo: any
   ): Promise<MakePurchaseResult> => {
     ensurePurchasesConfigured();
 
-    const offeringIdentifier = presentedOfferingContext?.offeringIdentifier;
-    if (!offeringIdentifier) {
-      throw new Error('No offering identifier provided in presentedOfferingContext');
-    }
-
-    return new Promise((resolve, reject) => {
-      const handlePurchase = async (packageInfo: PurchasesPackage) => {
-        try {
-          // TODO: Actually purchase the package.
-          const customerInfo = validateAndTransform(
-            await PurchasesCommon.getInstance().getCustomerInfo(), 
-            isCustomerInfo, 
-            'CustomerInfo'
-          );
-          resolve({
-            productIdentifier: packageInfo.product.identifier,
-            customerInfo: customerInfo,
-            transaction: createMockTransaction(packageInfo.product.identifier), // TODO: get proper transaction data.
-          });
-        } catch (error) {
-          reject(error);
-        }
-      };
-
-      const handleCancel = () => {
-        reject({
-          code: '1',
-          userCancelled: true,
-          message: 'User cancelled purchase.'
-        });
-      };
-
-      if (isExpoGo()) {
-        showTestPurchaseAlert(packageIdentifier, offeringIdentifier, handlePurchase, handleCancel)
-          .catch(reject);
-      } else {
-        showTestPurchaseModal(packageIdentifier, offeringIdentifier, handlePurchase, handleCancel)
-          .catch(reject);
-      }
-    });
+    throw new Error('Purchase is not supported browser mode.');
   },
   purchaseSubscriptionOption: async (
     _productIdentifier: string,
