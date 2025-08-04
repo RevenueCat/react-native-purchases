@@ -200,17 +200,17 @@ export const browserNativeModuleRNPurchases = {
   presentCodeRedemptionSheet: async () => {
     methodNotSupportedOnWeb('presentCodeRedemptionSheet');
   },
-  setAttributes: async (_attributes: any) => {
-    methodNotSupportedOnWeb('setAttributes');
+  setAttributes: async (attributes: { [key: string]: string | null }) => {
+    await PurchasesCommon.getInstance().setAttributes(attributes);
   },
-  setEmail: async (_email: string) => {
-    methodNotSupportedOnWeb('setEmail');
+  setEmail: async (email: string) => {
+    await PurchasesCommon.getInstance().setEmail(email);
   },
-  setPhoneNumber: async (_phoneNumber: string) => {
-    methodNotSupportedOnWeb('setPhoneNumber');
+  setPhoneNumber: async (phoneNumber: string) => {
+    await PurchasesCommon.getInstance().setPhoneNumber(phoneNumber);
   },
-  setDisplayName: async (_displayName: string) => {
-    methodNotSupportedOnWeb('setDisplayName');
+  setDisplayName: async (displayName: string) => {
+    await PurchasesCommon.getInstance().setDisplayName(displayName);
   },
   setPushToken: async (_pushToken: string) => {
     methodNotSupportedOnWeb('setPushToken');
