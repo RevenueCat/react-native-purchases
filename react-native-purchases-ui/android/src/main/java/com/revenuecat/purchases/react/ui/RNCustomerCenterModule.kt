@@ -106,7 +106,7 @@ internal class RNCustomerCenterModule(
                 sendEvent("onFeedbackSurveyCompleted", params)
             }
 
-            fun onManagementOptionSelectedWrapper(action: String, url: String?) {
+            override fun onManagementOptionSelectedWrapper(action: String, url: String?) {
                 val params = WritableNativeMap().apply {
                     putString("option", action)
                     putString("url", url)

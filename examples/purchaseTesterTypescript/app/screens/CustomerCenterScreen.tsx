@@ -1,47 +1,60 @@
-import React, { useLayoutEffect, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import RevenueCatUI from 'react-native-purchases-ui';
-import { StyleSheet, View, StatusBar, Platform } from 'react-native';
+
+import { StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import RootStackParamList from '../RootStackParamList';
 
-// Required for Android navigation hiding
-import { useNavigation } from '@react-navigation/native';
+type Props = NativeStackScreenProps<RootStackParamList, 'CustomerCenterScreen'>;
 
-type Props = NativeStackScreenProps<RootStackParamList, 'CustomerCenter'>;
-
-const CustomerCenterScreen: React.FC<Props> = ({ navigation }) => {
-    const onDismiss = () => {
-        console.log('CustomerCenter dismissed');
-        navigation.goBack();
+const CustomerCenterScreen: React.FC<Props> = ({navigation}: Props) => {
+  useEffect(() => {
+    const presentCustomerCenter = async () => {
+      try {
+        await RevenueCatUI.presentCustomerCenter({
+          callbacks: {
+            onFeedbackSurveyCompleted: ({feedbackSurveyOptionId}) => {
+              console.log('Feedback survey completed:', feedbackSurveyOptionId);
+            },
+            onShowingManageSubscriptions: () => {
+              console.log('Showing manage subscriptions');
+            },
+            onRestoreStarted: () => {
+              console.log('Restore started');
+            },
+            onRestoreCompleted: ({customerInfo}) => {
+              console.log('Restore completed:', customerInfo);
+            },
+            onRestoreFailed: ({error}) => {
+              console.error('Restore failed:', error);
+            },
+            onManagementOptionSelected: ({option, url}) => {
+              console.log('Management option selected:', option, url);
+            }
+          }
+        });
+        // Navigate back after the modal is dismissed
+        navigation.pop();
+      } catch (error) {
+        console.error('Error presenting customer center:', error);
+        navigation.pop();
+      }
     };
 
-      const [isMounted, setIsMounted] = useState(false);
+    presentCustomerCenter();
+  }, [navigation]);
 
-      useEffect(() => {
-        setIsMounted(true);
-      }, []);
+  const styles = StyleSheet.create({
+    flex1: {
+      flex: 1,
+    },
+  });
 
-    return (
-        <View style={styles.fullscreen}>
-            {isMounted &&  <RevenueCatUI.CustomerCenterView
-                style={styles.customerCenter}
-                onDismiss={onDismiss}
-            /> }
-        </View>
-    );
+  return (
+    <View style={styles.flex1}>
+      {/* This screen will present the native customer center modal */}
+    </View>
+  );
 };
-
-const styles = StyleSheet.create({
-    fullscreen: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'white',
-    },
-    customerCenter: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-    },
-});
 
 export default CustomerCenterScreen;
