@@ -32,9 +32,19 @@ RCT_EXPORT_MODULE(CustomerCenterView)
 
 - (UIView *)view {
     if (@available(iOS 15.0, *)) {
-        CustomerCenterUIViewController *viewController = [self.proxy createCustomerCenterViewController];
-        CustomerCenterViewWrapper *wrapper = [[CustomerCenterViewWrapper alloc] initWithCustomerCenterViewController: viewController];
-        self.proxy.delegate = wrapper;
+        CustomerCenterUIViewController *viewController = [[CustomerCenterUIViewController alloc] init];
+        
+        // Create a placeholder block that we'll update after wrapper creation
+        __block CustomerCenterViewWrapper *wrapper = nil;
+        viewController.onCloseHandler = ^{
+            if (wrapper && wrapper.onDismiss) {
+                wrapper.onDismiss(nil);
+            }
+        };
+        
+        // Now create the wrapper (which triggers viewDidLoad via viewController.view.bounds)
+        wrapper = [[CustomerCenterViewWrapper alloc] initWithCustomerCenterViewController: viewController];
+        viewController.delegate = wrapper;
         
         return wrapper;
     } else {

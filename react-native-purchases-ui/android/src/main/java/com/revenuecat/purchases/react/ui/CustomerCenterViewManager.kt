@@ -1,22 +1,16 @@
 package com.revenuecat.purchases.react.ui
 
-import CustomerCenterWrapperView
-import ViewWrapperFrameLayout
 import android.view.View
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.Modifier
-
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.events.Event
+import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.react.ui.customercenter.events.CustomerCenterEventName
-import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
+import com.revenuecat.purchases.react.ui.views.WrappedCustomerCenterView
 
 internal class CustomerCenterViewManager :
-    SimpleViewManager<ViewWrapperFrameLayout<CustomerCenterView>>() {
+    SimpleViewManager<WrappedCustomerCenterView>() {
 
     companion object {
         const val REACT_CLASS: String = "CustomerCenterView"
@@ -32,28 +26,15 @@ internal class CustomerCenterViewManager :
             .build()
     }
 
-//    private var wrapper: FabricDeclarativeView? = null
+    override fun createViewInstance(themedReactContext: ThemedReactContext): WrappedCustomerCenterView {
+        val wrappedView = WrappedCustomerCenterView(themedReactContext)
+        wrappedView.id = View.generateViewId()
 
-    override fun createViewInstance(themedReactContext: ThemedReactContext): ViewWrapperFrameLayout<CustomerCenterView> {
-        val wrapper = ViewWrapperFrameLayout(themedReactContext) { wrapperContext ->
-            CustomerCenterView(wrapperContext)
-                .also { view ->
-                    view.id = View.generateViewId()
-                    view.setDismissHandler {
-                        emitDismissEvent(themedReactContext)
-                    }
-                }
+        wrappedView.setDismissHandler {
+            emitDismissEvent(themedReactContext, wrappedView)
         }
-//        wrapper.setComposableContent {
-//            CustomerCenter(
-//                Modifier
-//                    .fillMaxWidth()
-//                    .fillMaxHeight()
-//            ) {
-//
-//            }
-//        }
-        return wrapper
+
+        return wrappedView
     }
 
     private fun MapBuilder.Builder<String, Any>.putEvent(
@@ -63,25 +44,15 @@ internal class CustomerCenterViewManager :
         return this.put(event.eventName, registrationName)
     }
 
-    protected fun emitDismissEvent(
-        context: ReactContext
-    ) {
-//        wrapper?.let {
-//            val surfaceId = UIManagerHelper.getSurfaceId(it)
-//
-//            val event = CustomerCenterOnDismissEvent(surfaceId, it.id)
-//            emitEvent(context, it.id, event)
-//        }
-    }
-
-    protected fun emitEvent(
+    private fun emitDismissEvent(
         context: ReactContext,
-        viewId: Int,
-        event: Event<*>,
+        view: WrappedCustomerCenterView
     ) {
-//        Log.d(REACT_CLASS, "Dispatching OnDismissEvent for viewId=${viewId}")
-//
-//        val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(context, viewId)
-//        eventDispatcher?.dispatchEvent(event)
+        android.util.Log.d(REACT_CLASS, "CustomerCenter dismiss event triggered")
+
+        // Emit the onDismiss event to React Native
+        context
+            .getJSModule(RCTEventEmitter::class.java)
+            .receiveEvent(view.id, CustomerCenterEventName.ON_DISMISS.eventName, null)
     }
 }
