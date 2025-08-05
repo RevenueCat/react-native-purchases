@@ -83,7 +83,7 @@ export const browserNativeModuleRNPurchases = {
     PurchasesCommon.setLogLevel(level);
   },
   setLogHandler: async (_handler: (message: string) => void) => {
-    // WIP: Implement this
+    methodNotSupportedOnWeb('setLogHandler');
   },
   getCustomerInfo: async () => {
     ensurePurchasesConfigured();
