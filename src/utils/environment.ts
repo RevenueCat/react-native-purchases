@@ -7,12 +7,12 @@ import { NativeModules, Platform } from "react-native";
  * @returns {boolean} True if the app is running in an environment where native modules are not available
  * (like Expo Go or Web) or if the required native modules are missing.
  */
-export function shouldUsePreviewAPIMode(): boolean {
+export function shouldUseBrowserMode(): boolean {
   if (isExpoGo()) {
-    console.log('Expo Go app detected. Using RevenueCat in Preview API Mode.');
+    console.log('Expo Go app detected. Using RevenueCat in Browser Mode.');
     return true;
   } else if (isWebPlatform()) {
-    console.log('Web platform detected. Using RevenueCat in Preview API Mode.');
+    console.log('Web platform detected. Using RevenueCat in Browser Mode.');
     return true;
   } else {
     return false;
@@ -30,7 +30,7 @@ declare global {
 /**
  * Detects if the app is running in Expo Go
  */
-function isExpoGo(): boolean {
+export function isExpoGo(): boolean {
   if (!!NativeModules.RNPurchases) {
     return false;
   }

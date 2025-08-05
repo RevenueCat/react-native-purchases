@@ -52,7 +52,7 @@ export default function RootLayout() {
         if (apiKey) {
           // Initialize the RevenueCat Purchases SDK
           // appUserID is null, so an anonymous ID will be generated automatically
-          await Purchases.configure({
+          Purchases.configure({
             apiKey: apiKey,
             appUserID: null,
             useAmazon: false

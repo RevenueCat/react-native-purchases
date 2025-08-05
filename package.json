@@ -108,9 +108,14 @@
     "cacheDirectory": ".jest/cache",
     "setupFiles": [
       "./scripts/setupJest.js"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@revenuecat/purchases-js-hybrid-mappings|@react-native|react-native)/)"
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "16.2.0"
+    "@revenuecat/purchases-js-hybrid-mappings": "16.2.1",
+    "@revenuecat/purchases-typescript-internal": "16.2.1",
+    "react-native-get-random-values": "^1.11.0"
   }
 }
