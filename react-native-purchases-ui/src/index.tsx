@@ -17,17 +17,23 @@ import {
   REFUND_REQUEST_STATUS
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
+import { shouldUsePreviewAPIMode } from "./utils/environment";
+import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
+import { PreviewPaywall } from "./preview/previewComponents";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-ui' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ios: "- You have run 'pod install'\n", default: ''}) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
+  '- You have run \'pod install\'\n' +
+  '- You rebuilt the app after installing the package\n';
 
-const RNPaywalls = NativeModules.RNPaywalls;
-const RNCustomerCenter = NativeModules.RNCustomerCenter;
+
+// Get the native module or use the preview implementation
+const usingPreviewAPIMode = shouldUsePreviewAPIMode();
+
+const RNPaywalls = usingPreviewAPIMode ? previewNativeModuleRNPaywalls : NativeModules.RNPaywalls;
+const RNCustomerCenter = usingPreviewAPIMode ? previewNativeModuleRNCustomerCenter : NativeModules.RNCustomerCenter;
 
 if (!RNPaywalls) {
   throw new Error(LINKING_ERROR);
@@ -37,21 +43,118 @@ if (!RNCustomerCenter) {
   throw new Error(LINKING_ERROR);
 }
 
-const eventEmitter = new NativeEventEmitter(RNPaywalls);
-const customerCenterEventEmitter = new NativeEventEmitter(RNCustomerCenter);
+const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
+  ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
+  : null;
 
-const InternalPaywall =
-  UIManager.getViewManagerConfig('Paywall') != null
-    ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
-    : () => {
-      throw new Error(LINKING_ERROR);
-    };
-
-const InternalPaywallFooterView = UIManager.getViewManagerConfig('Paywall') != null
+const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
   ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
-  : () => {
-    throw new Error(LINKING_ERROR);
-  };
+  : null;
+
+const eventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNPaywalls);
+const customerCenterEventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNCustomerCenter);
+
+const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
+  style,
+  children,
+  options,
+  onPurchaseStarted,
+  onPurchaseCompleted,
+  onPurchaseError,
+  onPurchaseCancelled,
+  onRestoreStarted,
+  onRestoreCompleted,
+  onRestoreError,
+  onDismiss,
+}) => {
+  if (usingPreviewAPIMode) {
+    return (
+      <PreviewPaywall
+        offering={options?.offering}
+        displayCloseButton={options?.displayCloseButton}
+        fontFamily={options?.fontFamily}
+        onPurchaseStarted={onPurchaseStarted}
+        onPurchaseCompleted={onPurchaseCompleted}
+        onPurchaseError={onPurchaseError}
+        onPurchaseCancelled={onPurchaseCancelled}
+        onRestoreStarted={onRestoreStarted}
+        onRestoreCompleted={onRestoreCompleted}
+        onRestoreError={onRestoreError}
+        onDismiss={onDismiss}
+      />
+    );
+  } else if (!!NativePaywall) {
+    return (
+      <NativePaywall
+        style={style}
+        children={children}
+        options={options}
+        onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+        onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+        onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+        onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+        onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+        onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        onDismiss={() => onDismiss && onDismiss()}
+      />
+    );
+  }
+
+  throw new Error(LINKING_ERROR);
+};
+
+const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
+  style,
+  children,
+  options,
+  onPurchaseStarted,
+  onPurchaseCompleted,
+  onPurchaseError,
+  onPurchaseCancelled,
+  onRestoreStarted,
+  onRestoreCompleted,
+  onRestoreError,
+  onDismiss,
+  onMeasure,
+}) => {
+  if (usingPreviewAPIMode) {
+    return (
+      <PreviewPaywall
+        offering={options?.offering}
+        displayCloseButton={true}
+        fontFamily={options?.fontFamily}
+        onPurchaseStarted={onPurchaseStarted}
+        onPurchaseCompleted={onPurchaseCompleted}
+        onPurchaseError={onPurchaseError}
+        onPurchaseCancelled={onPurchaseCancelled}
+        onRestoreStarted={onRestoreStarted}
+        onRestoreCompleted={onRestoreCompleted}
+        onRestoreError={onRestoreError}
+        onDismiss={onDismiss}
+      />
+    );
+  } else if (!!NativePaywallFooter) {
+    return (
+      <NativePaywallFooter
+        style={style}
+        children={children}
+        options={options}
+        onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
+        onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
+        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+        onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
+        onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
+        onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
+        onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        onDismiss={() => onDismiss && onDismiss()}
+        onMeasure={onMeasure}
+      />
+    );
+  }
+
+  throw new Error(LINKING_ERROR);
+};
 
 export interface PresentPaywallParams {
   /**
@@ -168,7 +271,6 @@ const InternalCustomerCenterView =
      style?: StyleProp<ViewStyle>;
      onDismiss?: () => void;
    }
-
 export type CustomerCenterManagementOption =
   | 'cancel'
   | 'custom_url'
@@ -177,6 +279,10 @@ export type CustomerCenterManagementOption =
   | 'change_plans'
   | 'unknown'
   | string; // This is to prevent breaking changes when the native SDK adds new options
+
+export type CustomerCenterManagementOptionEvent =
+  | { option: 'custom_url'; url: string }
+  | { option: Exclude<CustomerCenterManagementOption, 'custom_url'>; url: null };
 
 export interface CustomerCenterCallbacks {
   /**
@@ -215,9 +321,11 @@ export interface CustomerCenterCallbacks {
   onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
 
   /**
-   * Called when a customer center management option is selected with the option ID and URL.
+   * Called when a customer center management option is selected.
+   * For 'custom_url' options, the url parameter will contain the URL.
+   * For all other options, the url parameter will be null.
    */
-  onManagementOptionSelected?: ({option, url}: { option: CustomerCenterManagementOption; url: string }) => void;
+  onManagementOptionSelected?: (event: CustomerCenterManagementOptionEvent) => void;
 }
 
 export interface PresentCustomerCenterParams {
@@ -255,6 +363,7 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
     return RNPaywalls.presentPaywall(
       offering?.identifier ?? null,
       displayCloseButton,
@@ -281,6 +390,7 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
     return RNPaywalls.presentPaywallIfNeeded(
       requiredEntitlementIdentifier,
       offering?.identifier ?? null,
@@ -301,19 +411,23 @@ export default class RevenueCatUI {
                                                                    onRestoreCompleted,
                                                                    onRestoreError,
                                                                    onDismiss,
-                                                                 }) => (
-    <InternalPaywall options={options}
-                     children={children}
-                     onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
-                     onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-                     onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
-                     onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
-                     onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
-                     onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-                     onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
-                     onDismiss={() => onDismiss && onDismiss()}
-                     style={[{flex: 1}, style]}/>
-  );
+                                                                 }) => {
+    return (
+      <InternalPaywall 
+        options={options}
+        children={children}
+        onPurchaseStarted={onPurchaseStarted}
+        onPurchaseCompleted={onPurchaseCompleted}
+        onPurchaseError={onPurchaseError}
+        onPurchaseCancelled={onPurchaseCancelled}
+        onRestoreStarted={onRestoreStarted}
+        onRestoreCompleted={onRestoreCompleted}
+        onRestoreError={onRestoreError}
+        onDismiss={onDismiss}
+        style={[{flex: 1}, style]}
+      />
+    );
+  };
 
   public static OriginalTemplatePaywallFooterContainerView: React.FC<FooterPaywallViewProps> = ({
                                                                                                   style,
@@ -344,13 +458,13 @@ export default class RevenueCatUI {
         setPaddingBottom(20 + bottom);
       };
 
-      const subscription = eventEmitter.addListener(
+      const subscription = eventEmitter?.addListener(
         'safeAreaInsetsDidChange',
         handleSafeAreaInsetsChange
       );
 
       return () => {
-        subscription.remove();
+        subscription?.remove();
       };
     }, []);
 
@@ -366,14 +480,14 @@ export default class RevenueCatUI {
             android: {marginTop: -20, height}
           })}
           options={options}
-          onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
-          onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-          onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
-          onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
-          onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
-          onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-          onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
-          onDismiss={() => onDismiss && onDismiss()}
+          onPurchaseStarted={onPurchaseStarted}
+          onPurchaseCompleted={onPurchaseCompleted}
+          onPurchaseError={onPurchaseError}
+          onPurchaseCancelled={onPurchaseCancelled}
+          onRestoreStarted={onRestoreStarted}
+          onRestoreCompleted={onRestoreCompleted}
+          onRestoreError={onRestoreError}
+          onDismiss={onDismiss}
           onMeasure={(event: any) => setHeight(event.nativeEvent.measurements.height)}
         />
       </View>
@@ -405,73 +519,89 @@ export default class RevenueCatUI {
       const callbacks = params.callbacks as CustomerCenterCallbacks;
 
       if (callbacks.onFeedbackSurveyCompleted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onFeedbackSurveyCompleted',
           (event: { feedbackSurveyOptionId: string }) => callbacks.onFeedbackSurveyCompleted &&
             callbacks.onFeedbackSurveyCompleted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onShowingManageSubscriptions) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onShowingManageSubscriptions',
           () => callbacks.onShowingManageSubscriptions && callbacks.onShowingManageSubscriptions()
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRestoreCompleted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRestoreCompleted',
           (event: { customerInfo: CustomerInfo }) => callbacks.onRestoreCompleted &&
             callbacks.onRestoreCompleted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRestoreFailed) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRestoreFailed',
           (event: { error: PurchasesError }) => callbacks.onRestoreFailed &&
             callbacks.onRestoreFailed(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRestoreStarted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRestoreStarted',
           () => callbacks.onRestoreStarted && callbacks.onRestoreStarted()
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRefundRequestStarted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRefundRequestStarted',
           (event: { productIdentifier: string }) => callbacks.onRefundRequestStarted &&
             callbacks.onRefundRequestStarted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onRefundRequestCompleted) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onRefundRequestCompleted',
           (event: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => callbacks.onRefundRequestCompleted &&
             callbacks.onRefundRequestCompleted(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       if (callbacks.onManagementOptionSelected) {
-        const subscription = customerCenterEventEmitter.addListener(
+        const subscription = customerCenterEventEmitter?.addListener(
           'onManagementOptionSelected',
-          (event: { option: CustomerCenterManagementOption; url: string }) => callbacks.onManagementOptionSelected &&
+          (event: CustomerCenterManagementOptionEvent) => callbacks.onManagementOptionSelected &&
             callbacks.onManagementOptionSelected(event)
         );
-        subscriptions.push(subscription);
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
       }
 
       // Return a promise that resolves when the customer center is dismissed
@@ -481,6 +611,7 @@ export default class RevenueCatUI {
       });
     }
 
+    RevenueCatUI.logWarningIfPreviewAPIMode("presentCustomerCenter");
     return RNCustomerCenter.presentCustomerCenter();
   }
 
@@ -489,4 +620,11 @@ export default class RevenueCatUI {
    */
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> =
     RevenueCatUI.OriginalTemplatePaywallFooterContainerView;
+
+  private static logWarningIfPreviewAPIMode(methodName: string) {
+    if (usingPreviewAPIMode) {
+      // tslint:disable-next-line:no-console
+      console.warn(`[RevenueCatUI] [${methodName}] This method is available but has no effect in Preview API mode.`);
+    }
+  }
 }

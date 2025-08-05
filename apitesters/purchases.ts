@@ -3,6 +3,8 @@ import {
   IN_APP_MESSAGE_TYPE,
   PurchasesError,
   PurchasesOffering,
+  PurchasesVirtualCurrencies,
+  Storefront,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   WebPurchaseRedemptionResultType,
@@ -56,6 +58,7 @@ async function checkPurchases(purchases: Purchases) {
 
 async function checkUsers(purchases: Purchases) {
   const userId: string = await Purchases.getAppUserID();
+  const storefront: Storefront | null = await Purchases.getStorefront();
 
   const result: LogInResult = await Purchases.logIn(userId);
   const info1: CustomerInfo = await Purchases.logOut();
@@ -402,4 +405,16 @@ async function checkWebRedemption() {
       const obfuscatedEmail: string = result.obfuscatedEmail;
       break;
   }
+}
+
+async function checkGetVirtualCurrencies() {
+  const virtualCurrencies: PurchasesVirtualCurrencies = await Purchases.getVirtualCurrencies();
+}
+
+async function checkInvalidateVirtualCurrenciesCache() {
+  await Purchases.invalidateVirtualCurrenciesCache();
+}
+
+async function checkGetCachedVirtualCurrencies() {
+  const cachedVirtualCurrencies: PurchasesVirtualCurrencies | null = await Purchases.getCachedVirtualCurrencies();
 }

@@ -38,10 +38,14 @@ import {
   PURCHASES_ARE_COMPLETED_BY_TYPE,
   PurchasesAreCompletedBy,
   PurchasesAreCompletedByMyApp,
+  PurchasesVirtualCurrencies,
   PurchasesWinBackOffer,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
+  Storefront,
 } from "@revenuecat/purchases-typescript-internal";
+import { shouldUseBrowserMode } from "./utils/environment";
+import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
@@ -63,22 +67,25 @@ export {
 
 import { Platform } from "react-native";
 
-const { RNPurchases } = NativeModules;
-const eventEmitter = new NativeEventEmitter(RNPurchases);
+// Get the native module or use the browser implementation
+const usingBrowserMode = shouldUseBrowserMode();
+const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const eventEmitter = usingBrowserMode ? null : new NativeEventEmitter(RNPurchases);
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
   [];
+
 let customLogHandler: LogHandler;
 
-eventEmitter.addListener(
+eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
   (customerInfo: CustomerInfo) => {
     customerInfoUpdateListeners.forEach((listener) => listener(customerInfo));
   }
 );
 
-eventEmitter.addListener(
+eventEmitter?.addListener(
   "Purchases-ShouldPurchasePromoProduct",
   ({ callbackID }: { callbackID: number }) => {
     shouldPurchasePromoProductListeners.forEach((listener) =>
@@ -87,7 +94,7 @@ eventEmitter.addListener(
   }
 );
 
-eventEmitter.addListener(
+eventEmitter?.addListener(
   "Purchases-LogHandlerEvent",
   ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
     const logLevelEnum = LOG_LEVEL[logLevel];
@@ -236,6 +243,33 @@ export default class Purchases {
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
   }: PurchasesConfiguration): void {
+
+    if (!customLogHandler) {
+      this.setLogHandler((logLevel: LOG_LEVEL, message: string) => {
+        switch (logLevel) {
+          case LOG_LEVEL.DEBUG:
+            // tslint:disable-next-line:no-console
+            console.debug(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.INFO:
+            // tslint:disable-next-line:no-console
+            console.info(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.WARN:
+            // tslint:disable-next-line:no-console
+            console.warn(`[RevenueCat] ${message}`);
+            break;
+          case LOG_LEVEL.ERROR:
+            // tslint:disable-next-line:no-console
+            console.error(`[RevenueCat] ${message}`);
+            break;
+          default:
+            // tslint:disable-next-line:no-console
+            console.log(`[RevenueCat] ${message}`);
+        }
+      });
+    }
+
     if (apiKey === undefined || typeof apiKey !== "string") {
       throw new Error(
         'Invalid API key. It must be called with an Object: configure({apiKey: "key"})'
@@ -671,6 +705,15 @@ export default class Purchases {
   }
 
   /**
+   * Gets the storefront for the current store account.
+   * @returns {Promise<Storefront | null>} The storefront for the current store account, or null if the storefront is not available.
+   */
+    public static async getStorefront(): Promise<Storefront | null> {
+      await Purchases.throwIfNotConfigured();
+      return RNPurchases.getStorefront();
+    }
+
+  /**
    * This function will logIn the current user with an appUserID. Typically this would be used after a log in
    * to identify a user without calling configure.
    * @param {String} appUserID The appUserID that should be linked to the currently user
@@ -837,7 +880,7 @@ export default class Purchases {
     productID: string
   ): Promise<PurchasesStoreTransaction> {
     await Purchases.throwIfAndroidPlatform();
-    await Purchases.throwIfNotConfigured();
+    await Purchases.throwIfNotConfigured(); 
     return RNPurchases.recordPurchaseForProductID(productID);
   }
 
@@ -1528,6 +1571,46 @@ export default class Purchases {
   }
 
   /**
+   * Fetches the virtual currencies for the current subscriber.
+   * 
+   * @returns {Promise<PurchasesVirtualCurrencies>} A PurchasesVirtualCurrencies object containing the subscriber's virtual currencies.
+   * The promise will be rejected if configure has not been called yet or if an error occurs.
+   */
+  public static async getVirtualCurrencies(): Promise<PurchasesVirtualCurrencies> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.getVirtualCurrencies();
+  }
+
+  /**
+   * Invalidates the cache for virtual currencies.
+   *
+   * This is useful for cases where a virtual currency's balance might have been updated
+   * outside of the app, like if you decreased a user's balance from the user spending a virtual currency,
+   * or if you increased the balance from your backend using the server APIs.
+   * 
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
+   * invalidating the virtual currencies cache.
+   */
+  public static async invalidateVirtualCurrenciesCache(): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.invalidateVirtualCurrenciesCache();
+  }
+
+  /**
+   * The currently cached [PurchasesVirtualCurrencies] if one is available.
+   * This value will remain null until virtual currencies have been fetched at 
+   * least once with [Purchases.getVirtualCurrencies] or an equivalent function.
+   * 
+   * @returns {Promise<PurchasesVirtualCurrencies | null>} The currently cached virtual currencies for the current subscriber. 
+   * The promise will be rejected if configure has not been called yet or there's an error.
+   */
+  public static async getCachedVirtualCurrencies(): Promise<PurchasesVirtualCurrencies | null> {
+    await Purchases.throwIfNotConfigured();
+    const result = await RNPurchases.getCachedVirtualCurrencies();
+    return result ?? null;
+  }
+
+  /**
    * Check if configure has finished and Purchases has been configured.
    *
    * @returns {Promise<Boolean>} promise with boolean response
@@ -1578,4 +1661,5 @@ export default class Purchases {
         return REFUND_REQUEST_STATUS.ERROR;
     }
   }
+
 }

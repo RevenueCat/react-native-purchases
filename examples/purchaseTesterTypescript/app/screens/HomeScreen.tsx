@@ -15,7 +15,7 @@ import Purchases, {
   CustomerInfo,
   PurchasesOfferings,
 } from 'react-native-purchases';
-import RevenueCatUI, { CustomerCenterManagementOption } from 'react-native-purchases-ui';
+import RevenueCatUI, { CustomerCenterManagementOption, CustomerCenterManagementOptionEvent } from 'react-native-purchases-ui';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
@@ -65,8 +65,11 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     try {
       const customerInfo = await Purchases.getCustomerInfo();
       const appUserID = await Purchases.getAppUserID();
+      const storefront = await Purchases.getStorefront();
       const isAnonymous = await Purchases.isAnonymous();
       const offerings = await Purchases.getOfferings();
+
+      console.log('Storefront: ', storefront);
 
       setState(prevState => ({
         appUserID,
@@ -177,6 +180,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   };
 
   const [promptPlacementVisible, setPromptPlacementVisible] = useState(false);
+
   const handlePromptPlacementCancel = () => {
     setPromptPlacementVisible(false);
     console.log('User canceled input');
@@ -262,6 +266,11 @@ const onDismissCustomerCenter = () => {
             <Text style={styles.otherActions}>Redeem Code</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity
+            onPress={() => navigation.navigate('VirtualCurrency', {})}>
+            <Text style={styles.otherActions}>Virtual Currency Testing Screen</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={showManageSubscriptions}>
             <Text style={styles.otherActions}>Manage Subscriptions</Text>
           </TouchableOpacity>
@@ -273,6 +282,14 @@ const onDismissCustomerCenter = () => {
           <TouchableOpacity
             onPress={() => navigation.navigate('Paywall', {offering: null})}>
             <Text style={styles.otherActions}>Go to Paywall Screen</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PaywallModalNoHeader', {})}>
+            <Text style={styles.otherActions}>Go to Paywall Modal (no header)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PaywallModalWithHeader', {})}>
+            <Text style={styles.otherActions}>Go to Paywall Modal (with header)</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
@@ -357,8 +374,12 @@ const onDismissCustomerCenter = () => {
                     onRefundRequestCompleted: ({productIdentifier, refundRequestStatus}: {productIdentifier: string, refundRequestStatus: REFUND_REQUEST_STATUS}) => {
                       console.log('✅ CUSTOMER CENTER - Refund request completed for product:', productIdentifier, 'with status:', refundRequestStatus);
                     },
-                    onManagementOptionSelected: ({option, url}: {option: CustomerCenterManagementOption, url: string}) => {
-                      console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with URL:', url);
+                    onManagementOptionSelected: ({option, url}: CustomerCenterManagementOptionEvent) => {
+                      if (option === 'custom_url') {
+                        console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with URL:', url);
+                      } else {
+                        console.log('🔍 CUSTOMER CENTER - Management option selected:', option);
+                      }
                     }
                   }
                 });

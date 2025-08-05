@@ -3,19 +3,17 @@ package com.revenuecat.purchases.react.ui
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
 import com.revenuecat.purchases.react.ui.events.OnMeasureEvent
-import com.revenuecat.purchases.ui.revenuecatui.ExperimentalPreviewRevenueCatUIPurchasesAPI
+import com.revenuecat.purchases.react.ui.views.WrappedPaywallFooterComposeView
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
-import com.revenuecat.purchases.ui.revenuecatui.views.PaywallFooterView
 
-@OptIn(ExperimentalPreviewRevenueCatUIPurchasesAPI::class)
-internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterView>() {
+internal class PaywallFooterViewManager : BasePaywallViewManager<WrappedPaywallFooterComposeView>() {
 
     override fun getName(): String {
         return "RCPaywallFooterView"
     }
 
-    override fun createViewInstance(themedReactContext: ThemedReactContext): PaywallFooterView {
-        return object : PaywallFooterView(themedReactContext) {
+    override fun createViewInstance(themedReactContext: ThemedReactContext): WrappedPaywallFooterComposeView {
+        return object : WrappedPaywallFooterComposeView(themedReactContext) {
 
             // This is required so the change from Loading to Loaded resizes the view
             // https://github.com/facebook/react-native/issues/17968#issuecomment-1672111483
@@ -43,27 +41,29 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
             // https://medium.com/traveloka-engineering/react-native-at-traveloka-native-ui-components-c6b66f789f35
             public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-                var maxWidth = 0
-                var maxHeight = 0
-                children.forEach {
-                    it.measure(widthMeasureSpec, MeasureSpec.UNSPECIFIED)
-                    maxWidth = maxWidth.coerceAtLeast(it.measuredWidth)
-                    maxHeight = maxHeight.coerceAtLeast(it.measuredHeight)
-                }
-                val finalWidth = maxWidth.coerceAtLeast(suggestedMinimumWidth)
-                val finalHeight = maxHeight.coerceAtLeast(suggestedMinimumHeight)
-                setMeasuredDimension(finalWidth, finalHeight)
+                if (isAttached) {
+                    var maxWidth = 0
+                    var maxHeight = 0
+                    children.forEach {
+                        it.measure(widthMeasureSpec, MeasureSpec.UNSPECIFIED)
+                        maxWidth = maxWidth.coerceAtLeast(it.measuredWidth)
+                        maxHeight = maxHeight.coerceAtLeast(it.measuredHeight)
+                    }
+                    val finalWidth = maxWidth.coerceAtLeast(suggestedMinimumWidth)
+                    val finalHeight = maxHeight.coerceAtLeast(suggestedMinimumHeight)
+                    setMeasuredDimension(finalWidth, finalHeight)
 
-                val density = context.resources.displayMetrics.density
-                val finalHeightInDp = finalHeight / density
+                    val density = context.resources.displayMetrics.density
+                    val finalHeightInDp = finalHeight / density
 
-                val onMeasureEvent = OnMeasureEvent(
-                    this.surfaceId,
-                    this.id,
-                    finalHeightInDp.toInt()
-                )
-                (context as? ThemedReactContext)?.reactApplicationContext?.let { reactApplicationContext ->
-                    emitEvent(reactApplicationContext, this.id, onMeasureEvent)
+                    val onMeasureEvent = OnMeasureEvent(
+                        this.surfaceId,
+                        this.id,
+                        finalHeightInDp.toInt()
+                    )
+                    (context as? ThemedReactContext)?.reactApplicationContext?.let { reactApplicationContext ->
+                        emitEvent(reactApplicationContext, this.id, onMeasureEvent)
+                    }
                 }
             }
         }.also { view ->
@@ -72,15 +72,15 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<PaywallFooterVi
         }
     }
 
-    override fun setOfferingId(view: PaywallFooterView, identifier: String) {
+    override fun setOfferingId(view: WrappedPaywallFooterComposeView, identifier: String) {
         view.setOfferingId(identifier)
     }
 
-    override fun setFontFamily(view: PaywallFooterView, customFontProvider: CustomFontProvider) {
+    override fun setFontFamily(view: WrappedPaywallFooterComposeView, customFontProvider: CustomFontProvider) {
         view.setFontProvider(customFontProvider)
     }
 
-    override fun setDisplayDismissButton(view: PaywallFooterView, display: Boolean) {
+    override fun setDisplayDismissButton(view: WrappedPaywallFooterComposeView, display: Boolean) {
         // No-op since PaywallFooterView doesn't have a dismiss button
     }
 

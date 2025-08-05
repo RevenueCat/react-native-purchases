@@ -1,12 +1,20 @@
 ## RevenueCat SDK
+### ✨ New Features
+* Support Virtual Currencies (#1336) via Will Taylor (@fire-at-will)
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.26.0 (#1217) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 8.15.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.15.0)
-  * [Android 8.14.3](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.3)
-  * [Android 8.14.2](https://github.com/RevenueCat/purchases-android/releases/tag/8.14.2)
-  * [iOS 5.20.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.0)
+* Updates purchases-hybrid-common to 16.0.2 (#1343) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.1.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.2)
+  * [Android 9.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.1)
+  * [iOS 5.33.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.33.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.0.1 (#1338) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.1.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.2)
+  * [Android 9.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.1)
+  * [iOS 5.33.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.33.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.0.0 (#1335) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.1.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.2)
+  * [Android 9.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.1)
+  * [iOS 5.33.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.33.1)
 
-## RevenueCatUI SDK
-### Customer Center
-#### ✨ New Features
-* Add `callbacks` to `presentCustomerCenter` (#1211) via Cesar de la Vega (@vegaro)
+### 🔄 Other Changes
+* getVirtualCurrencies() JSDoc Typo Fix (#1340) via Will Taylor (@fire-at-will)
+* Bump nokogiri from 1.18.8 to 1.18.9 (#1339) via dependabot[bot] (@dependabot[bot])

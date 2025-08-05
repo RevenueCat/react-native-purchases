@@ -27,6 +27,11 @@ aliases:
       name: rn/macos
       resource_class: macos.m1.medium.gen1
       xcode_version: '15.2'
+  base-mac-job-xcode-16: &base-mac-job-xcode-16
+    executor:
+      name: rn/macos
+      resource_class: macos.m1.medium.gen1
+      xcode_version: '16.3'
 
 parameters:
   action:
@@ -109,6 +114,95 @@ jobs:
       - run:
           name: Linter
           command: yarn run tslint
+
+  expo_ios:
+    <<: *base-mac-job-xcode-16
+    steps:
+      - checkout
+      - rn/ios_simulator_start:
+          device: iPhone 16
+      - install-dependencies-ios-build
+      - run:
+          name: Install Expo CLI
+          command: npm install -g expo-cli
+      - run:
+          name: Prepare packages for Expo
+          command: yarn prepare-expo
+      - run:
+          name: Install dependencies for Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: yarn install
+      - run:
+          name: Generate iOS project
+          working_directory: examples/purchaseTesterExpo
+          command: npx expo prebuild --platform ios --no-install
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: expo-v2
+          working_directory: examples/purchaseTesterExpo
+      - rn/pod_install:
+          cache: false
+          pod_install_directory: examples/purchaseTesterExpo/ios
+          pod_install_command: pod install --repo-update
+      - run:
+          name: Build iOS Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            xcodebuild -workspace ios/purchaseTesterExpo.xcworkspace -scheme purchaseTesterExpo -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16' -derivedDataPath ~/DerivedData -UseModernBuildSystem=YES
+
+  expo_android:
+    executor:
+      name: rn/linux_android
+      resource_class: xlarge
+      build_image_version: latest
+    steps:
+      - checkout
+      - install-dependencies:
+          machine: "unix"
+      - run:
+          name: Install Expo CLI
+          command: npm install -g expo-cli
+      - run:
+          name: Prepare packages for Expo
+          command: yarn prepare-expo
+      - run:
+          name: Install dependencies for Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: yarn install
+      - run:
+          name: Prebuild Android Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            npx expo prebuild --platform android --no-install  
+      - run:
+          name: Build Android Expo app
+          working_directory: examples/purchaseTesterExpo/android
+          command: |
+            export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
+            ./gradlew assembleDebug
+
+  expo_web:
+    executor:
+      name: rn/linux_js
+      node_version: '22.14.0'
+    steps:
+      - checkout
+      - install-dependencies:
+          machine: "unix"
+      - run:
+          name: Install Expo CLI
+          command: npm install -g expo-cli
+      - run:
+          name: Prepare packages for Expo
+          command: yarn prepare-expo
+      - run:
+          name: Install dependencies for Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: yarn install
+      - run:
+          name: Build Web Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            npx expo export --platform web
   docs-deploy:
     <<: *base-mac-job
     steps:
@@ -131,7 +225,7 @@ jobs:
         -Dorg.gradle.jvmargs="-XX:+UnlockExperimentalVMOptions
         -XX:+HeapDumpOnOutOfMemoryError"
         -Dorg.gradle.jvmargs="-Xmx4096m -XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport"
-      resource_class: large
+      resource_class: xlarge
       build_image_version: latest
     steps:
       - checkout
@@ -199,22 +293,26 @@ jobs:
             open_pr:true \
             automatic_release:<< pipeline.parameters.automatic >>
 workflows:
-  test:
+  build-test-hold-deploy:
     when:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
+      # Testing phase - runs on all branches
       - analyse_js
       - android
       - ios
+      - expo_android
+      - expo_ios
+      - expo_web
 
-  deploy:
-    when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-    jobs:
+      # Hold and deploy phase - only on release branches
       - hold:
           type: approval
+          requires:
+            - analyse_js
+            - android
+            - ios
           <<: *release-branches
       - revenuecat/tag-current-branch:
           requires:

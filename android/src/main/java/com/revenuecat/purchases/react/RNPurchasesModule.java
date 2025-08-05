@@ -19,7 +19,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.CustomerInfo;
 import com.revenuecat.purchases.DangerousSettings;
 import com.revenuecat.purchases.Purchases;
-import com.revenuecat.purchases.PurchasesAreCompletedBy;
 import com.revenuecat.purchases.Store;
 import com.revenuecat.purchases.common.PlatformInfo;
 import com.revenuecat.purchases.hybridcommon.CommonKt;
@@ -41,13 +40,14 @@ import java.util.List;
 import java.util.Map;
 
 import kotlin.UninitializedPropertyAccessException;
+import kotlin.Unit;
 
 public class RNPurchasesModule extends ReactContextBaseJavaModule implements UpdatedCustomerInfoListener {
 
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "8.9.0";
+    public static final String PLUGIN_VERSION = "9.1.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -87,7 +87,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                @Nullable String storeKitVersion, boolean useAmazon,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
-                               boolean pendingTransactionsForPrepaidPlansEnabled, 
+                               boolean pendingTransactionsForPrepaidPlansEnabled,
                                boolean diagnosticsEnabled) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
@@ -240,6 +240,18 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void getStorefront(final Promise promise) {
+        CommonKt.getStorefront(storefrontMap -> {
+            if (storefrontMap == null) {
+                promise.resolve(null);
+            } else {
+                promise.resolve(convertMapToWriteableMap(storefrontMap));
+            }
+            return null;
+        });
+    }
+
+    @ReactMethod
     public void restorePurchases(final Promise promise) {
         CommonKt.restorePurchases(getOnResult(promise));
     }
@@ -300,9 +312,14 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @Override
     public void onReceived(@NonNull CustomerInfo customerInfo) {
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            .emit(RNPurchasesModule.CUSTOMER_INFO_UPDATED,
-                convertMapToWriteableMap(CustomerInfoMapperKt.map(customerInfo)));
+        CustomerInfoMapperKt.mapAsync(
+            customerInfo,
+            map -> {
+                reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(RNPurchasesModule.CUSTOMER_INFO_UPDATED, convertMapToWriteableMap(map));
+                return Unit.INSTANCE;
+            }
+        );
     }
 
     @ReactMethod
@@ -319,6 +336,29 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void isConfigured(Promise promise) {
         promise.resolve(Purchases.isConfigured());
+    }
+
+    //================================================================================
+    // Virtual Currencies 
+    //================================================================================
+    @ReactMethod
+    public void getVirtualCurrencies(final Promise promise) {
+        CommonKt.getVirtualCurrencies(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void invalidateVirtualCurrenciesCache() {
+        CommonKt.invalidateVirtualCurrenciesCache();
+    }
+
+    @ReactMethod
+    public void getCachedVirtualCurrencies(final Promise promise) {
+        Map<String, ?> cachedVirtualCurrencies = CommonKt.getCachedVirtualCurrencies();
+        if (cachedVirtualCurrencies == null) {
+            promise.resolve(null);
+        } else {
+            promise.resolve(convertMapToWriteableMap(cachedVirtualCurrencies));
+        }
     }
 
     //================================================================================

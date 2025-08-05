@@ -1,6 +1,6 @@
 import RevenueCatUI from "../react-native-purchases-ui";
 import type { CustomerInfo, PurchasesError, REFUND_REQUEST_STATUS } from "@revenuecat/purchases-typescript-internal";
-import type { CustomerCenterManagementOption } from "../react-native-purchases-ui/src";
+import type { CustomerCenterManagementOption, CustomerCenterManagementOptionEvent } from "../react-native-purchases-ui/src";
 // Basic API validation
 async function checkPresentCustomerCenter() {
   await RevenueCatUI.presentCustomerCenter();
@@ -17,7 +17,7 @@ async function checkWithCallbacks() {
       onRestoreFailed: ({ error }: { error: PurchasesError }) => {},
       onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {},
       onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {},
-      onManagementOptionSelected: ({ option, url }: { option: CustomerCenterManagementOption; url: string }) => {},
+      onManagementOptionSelected: ({option, url}: CustomerCenterManagementOptionEvent) => {},
     }
   });
 }

@@ -1,3 +1,258 @@
+## 9.1.0
+## RevenueCat SDK
+### ✨ New Features
+* Support Virtual Currencies (#1336) via Will Taylor (@fire-at-will)
+### 📦 Dependency Updates
+* Updates purchases-hybrid-common to 16.0.2 (#1343) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.1.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.2)
+  * [Android 9.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.1)
+  * [iOS 5.33.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.33.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.0.1 (#1338) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.1.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.2)
+  * [Android 9.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.1)
+  * [iOS 5.33.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.33.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 16.0.0 (#1335) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.1.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.2)
+  * [Android 9.1.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.1)
+  * [iOS 5.33.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.33.1)
+
+### 🔄 Other Changes
+* getVirtualCurrencies() JSDoc Typo Fix (#1340) via Will Taylor (@fire-at-will)
+* Bump nokogiri from 1.18.8 to 1.18.9 (#1339) via dependabot[bot] (@dependabot[bot])
+
+## 9.0.0
+## RevenueCat SDK
+
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+This release updates the SDK to use Google Play Billing Library 8. This version of the Billing Library removed APIs to query for expired subscriptions and consumed one-time products, aside from other improvements. You can check the full list of changes here: https://developer.android.com/google/play/billing/release-notes#8-0-0
+
+Additionally, we've also updated Kotlin to 2.0.21 and our new minimum version is Kotlin 1.8.0+. If you were using an older version of Kotlin, you will need to update it.
+
+#### Play Billing Library 8: No expired subscriptions or consumed one-time products
+Play Billing Library 8 removed the ability to query for expired subscriptions and consumed one-time products. This means that the RevenueCat SDK will no longer be able to send purchase information from these purchases. There are 2 cases where this can have an impact:
+- If you have consumed one time purchases in Google Play that need to be restored (for example, in order to grant a lifetime entitlement). In these cases, the SDK will not be able to find these purchases and will not be able to restore them and grant the entitlements. This can especially be a problem if you're using anonymous ids and don't have your own account system. Please make sure your products are correctly configured as non-consumables in the RevenueCat dashboard to avoid consuming them in the first place if you intend to make them behave as lifetime purchases.
+- (Only relevant if you recently integrated RevenueCat before upgrading to v9, and do not (yet) have all your transactions imported). The SDK will not be able to send purchase information from these expired subscriptions and consumed one time purchases to our backend, so we might miss this data in our customer profile/targeting. We can still ingest historical data from these purchases through a backend historical import. See [docs](https://www.revenuecat.com/docs/migrating-to-revenuecat/migrating-existing-subscriptions). This case doesn't affect developers that have all transactions in RevenueCat, which is true for the vast majority.
+
+#### Using the SDK with your own IAP code (previously Observer Mode)
+Using the SDK with your own IAP code is still supported in v9. Other than updating the SDK version, there are no changes required. Just make sure the version of the Play Billing Library is also version 8.0.0+.
+
+### ✨ New features
+* Add web target with fake data (#1307) via Toni Rico (@tonidero)
+
+Now, our libraries will work when you try to run your react native app on web. However, they will just respond with hardcoded fakes for now. Full web support will arrive in future releases.
+
+### 💥 Breaking Changes
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 15.0.0 (#1333) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.1.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.1.0)
+  * [Android 9.0.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.0.1)
+  * [Android 9.0.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.0.0)
+  * [iOS 5.33.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.33.0)
+
+### 🔄 Other Changes
+* Make hold job wait for tests to pass (#1332) via Cesar de la Vega (@vegaro)
+
+## 8.11.10
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix blank `PaywallView` when using `react-navigation/stack` (#1328) via Cesar de la Vega (@vegaro)
+### 📦 Dependency Updates
+* [RENOVATE] Update dependency com.android.tools.build:gradle to v8 (#1327) via RevenueCat Git Bot (@RCGitBot)
+* [RENOVATE] Update build-dependencies (#1326) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `05ef095` to `7d97553` (#1299) via dependabot[bot] (@dependabot[bot])
+* Configure Renovate (#1325) via RevenueCat Git Bot (@RCGitBot)
+
+## 8.11.9
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix crash on refresh app on the iOS simulator (#1320) via Antonio Pallares (@ajpallares)
+* Per-period prices are now correctly typed as nullable ([purchases-hybrid-common#1195](https://github.com/RevenueCat/purchases-hybrid-common/pull/1195)) via Jay Shortway (@JayShortway)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 14.2.0 (#1323) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.22.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.22.0)
+  * [Android 8.21.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.21.0)
+  * [iOS 5.32.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.32.0)
+  * [iOS 5.31.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.31.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 14.1.0 (#1316) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.22.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.22.0)
+  * [Android 8.21.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.21.0)
+  * [iOS 5.32.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.32.0)
+  * [iOS 5.31.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.31.0)
+
+### 🔄 Other Changes
+* Bump danger from 9.5.1 to 9.5.3 (#1312) via dependabot[bot] (@dependabot[bot])
+
+## 8.11.8
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 14.0.2 (#1310) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.30.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.30.0)
+
+### 🔄 Other Changes
+* Update workflows/issue-notifications.yml@v2 (#1309) via Josh Holtz (@joshdholtz)
+* Add GitHub Issue Action Ack (#1306) via Josh Holtz (@joshdholtz)
+
+## 8.11.7
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.38.1 (#1303) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.20.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.20.0)
+
+## 8.11.6
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Force `presentPaywall` to run on main thread (#1301) via Josh Holtz (@joshdholtz)
+
+### 🔄 Other Changes
+* chore: update react-native-purchase-ui documentation (#1284) via Perttu (@plahteenlahti)
+
+## 8.11.5
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.37.0 (#1293) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.29.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.29.0)
+
+### 🔄 Other Changes
+* Update MagicWeather to RN 0.80, remove external dependencies (#1291) via Jens-Fabian Goetzmann (@jefago)
+
+## 8.11.4
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.36.0 (#1289) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.28.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.28.1)
+  * [iOS 5.28.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.28.0)
+
+## RevenueCatUI SDK
+### 🐞 Bugfixes
+* Posts request layout in `ComposeViewWrapper` (#1286) via Cesar de la Vega (@vegaro)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.227.2 to 2.228.0 (#1287) via dependabot[bot] (@dependabot[bot])
+
+## 8.11.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.35.0 (#1281) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.19.2](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.2)
+  * [Android 8.19.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.1)
+  * [iOS 5.27.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.27.1)
+
+## 8.11.2
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix `WindowRecomposer` issue in paywall views (#1274) via Cesar de la Vega (@vegaro)
+
+## 8.11.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.33.0 (#1276) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.19.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.19.0)
+  * [Android 8.18.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.18.0)
+  * [iOS 5.26.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.26.0)
+  * [iOS 5.25.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.3)
+  * [iOS 5.25.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.2)
+  * [iOS 5.25.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.1)
+  * [iOS 5.25.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.25.0)
+
+### 🔄 Other Changes
+* Better native modules check for Preview API mode in react-native-purchases-ui (#1275) via Antonio Pallares (@ajpallares)
+
+## 8.11.0
+## RevenueCat SDK
+### ✨ New Features
+* Add default log handler (#1271) via Antonio Pallares (@ajpallares)
+* Preview API Mode for Expo Go in RevenueCatUI (#1272) via Antonio Pallares (@ajpallares)
+* Preview API Mode for Expo Go (#1270) via Antonio Pallares (@ajpallares)
+
+## 8.10.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.32.0 (#1267) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.24.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.24.0)
+
+## 8.10.0
+## RevenueCat SDK
+### ✨ New Features
+* Add `getStorefront` API (#1258) via Toni Rico (@tonidero)
+
+## 8.9.7
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.31.0 (#1260) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.23.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.23.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.30.0 (#1257) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.23.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.23.0)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.227.0 to 2.227.2 (#1259) via dependabot[bot] (@dependabot[bot])
+* Bump nokogiri from 1.18.4 to 1.18.8 (#1247) via dependabot[bot] (@dependabot[bot])
+
+## 8.9.6
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.29.1 (#1251) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.17.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.17.1)
+  * [Android 8.17.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.17.0)
+  * [iOS 5.22.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.2)
+  * [iOS 5.22.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.1)
+  * [iOS 5.22.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.22.0)
+
+## RevenueCatUI SDK
+### 🐞 Bugfixes
+* [EXTERNAL] Correctly sets RevenueCatUI podspec platform to `13.0` to fix compatibility issue (#1246) via @rgomezp (#1249) via JayShortway (@JayShortway)
+
+## 8.9.5
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.28.1 (#1243) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.16.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.16.1)
+  * [iOS 5.21.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.21.2)
+  * [iOS 5.21.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.21.1)
+
+### 🔄 Other Changes
+* Update Example app to RN v0.79 (#1240) via Jens-Fabian Goetzmann (@jefago)
+
+## 8.9.4
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.28.0 (#1238) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.16.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.16.0)
+  * [iOS 5.21.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.21.0)
+  * [iOS 5.20.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.3)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.27.0 (#1237) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.16.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.16.0)
+  * [iOS 5.21.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.21.0)
+  * [iOS 5.20.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.3)
+
+### 🔄 Other Changes
+* Working updated MagicWeather app (#1233) via Jens-Fabian Goetzmann (@jefago)
+
+## 8.9.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 13.26.1 (#1232) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 8.15.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.15.1)
+  * [iOS 5.20.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.2)
+  * [iOS 5.20.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.20.1)
+
+## 8.9.2
+## RevenueCatUI SDK
+### 🐞 Bugfixes
+* Fix crash on Paywalls when setting options with null offering (#1225) via Cesar de la Vega (@vegaro)
+
+### 🔄 Other Changes
+* Bump nokogiri from 1.18.3 to 1.18.4 (#1222) via dependabot[bot] (@dependabot[bot])
+
+## 8.9.1
+## RevenueCatUI SDK
+### Customer Center
+#### 🐞 Bugfixes
+* Fix Typescript definition of onManagementOptionSelected (#1220) via Cesar de la Vega (@vegaro)
+
 ## 8.9.0
 ## RevenueCat SDK
 ### 📦 Dependency Updates
