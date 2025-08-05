@@ -114,13 +114,8 @@
     ]
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@revenuecat/purchases-typescript-internal": "13.26.0",
-    "react-native-safe-area-context": "5.3.0"
-=======
     "@revenuecat/purchases-js-hybrid-mappings": "16.2.1",
     "@revenuecat/purchases-typescript-internal": "16.2.1",
     "react-native-get-random-values": "^1.11.0"
->>>>>>> main
   }
 }
