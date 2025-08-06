@@ -119,9 +119,11 @@ const App = () => {
           <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
           <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
             <Stack.Screen name="PaywallModalNoHeader" component={PaywallScreen} />
+            <Stack.Screen name="CustomerCenterModalNoHeader" component={CustomerCenterScreen} />
           </Stack.Group>
           <Stack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
             <Stack.Screen name="PaywallModalWithHeader" component={PaywallScreen} />
+            <Stack.Screen name="CustomerCenterModalWithHeader" component={CustomerCenterScreen} />
           </Stack.Group>
           <Stack.Screen name="Paywall" component={PaywallScreen} />
           <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />

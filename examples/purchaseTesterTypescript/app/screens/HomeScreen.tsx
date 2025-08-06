@@ -199,25 +199,24 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   };
 
 const onDismissCustomerCenter = () => {
-
   setIsModalVisible(false)
 }
 
   return (
     <SafeAreaView>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isModalVisible}
-              onRequestClose={onDismissCustomerCenter}
-            >
-              <View style={styles.modalOverlay}>
-                <RevenueCatUI.CustomerCenterView
-                  style={styles.modalContent}
-                  onDismiss={onDismissCustomerCenter}
-                />
-              </View>
-            </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={onDismissCustomerCenter}
+      >
+        <View style={styles.modalOverlay}>
+          <RevenueCatUI.CustomerCenterView
+            style={styles.modalContent}
+            onDismiss={onDismissCustomerCenter}
+          />
+        </View>
+      </Modal>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
           <TouchableOpacity
@@ -393,9 +392,9 @@ const onDismissCustomerCenter = () => {
           <TouchableOpacity onPress={() => navigation.navigate('CustomerCenterScreen')}>
             <Text style={styles.otherActions}>Push CustomerCenter</Text>
           </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-                      <Text style={styles.otherActions}>Show CustomerCenter as Modal</Text>
-                    </TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <Text style={styles.otherActions}>Show CustomerCenter as Modal</Text>
+          </TouchableOpacity>
         </View>
 
         <Divider />

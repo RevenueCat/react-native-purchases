@@ -1,5 +1,6 @@
 package com.revenuecat.purchases.react.ui
 
+import android.util.Log
 import android.view.View
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.MapBuilder
@@ -48,7 +49,7 @@ internal class CustomerCenterViewManager :
         context: ReactContext,
         view: WrappedCustomerCenterView
     ) {
-        android.util.Log.d(REACT_CLASS, "CustomerCenter dismiss event triggered")
+        Log.d(REACT_CLASS, "CustomerCenter dismiss event triggered")
 
         // Emit the onDismiss event to React Native
         context

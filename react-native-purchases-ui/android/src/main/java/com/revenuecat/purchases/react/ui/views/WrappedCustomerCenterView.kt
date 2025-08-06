@@ -15,7 +15,6 @@ class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerC
         wrappedView?.setDismissHandler(dismissHandler)
     }
 
-    // Ensure the view re-measures properly after loading state changes
     override fun requestLayout() {
         super.requestLayout()
         post(measureAndLayout)
