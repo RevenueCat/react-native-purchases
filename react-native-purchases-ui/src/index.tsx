@@ -43,11 +43,11 @@ if (!RNCustomerCenter) {
   throw new Error(LINKING_ERROR);
 }
 
-const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
+const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
   ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
   : null;
 
-const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
+const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
   ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
@@ -261,16 +261,17 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
 };
 
 const InternalCustomerCenterView =
-   UIManager.getViewManagerConfig('CustomerCenterView') != null
-     ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
-     : () => {
-       throw new Error(LINKING_ERROR);
-     };
+  UIManager.getViewManagerConfig('CustomerCenterView') != null
+    ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
+    : () => {
+        throw new Error(LINKING_ERROR);
+      };
 
- export interface CustomerCenterViewProps {
-     style?: StyleProp<ViewStyle>;
-     onDismiss?: () => void;
-   }
+export interface CustomerCenterViewProps {
+  style?: StyleProp<ViewStyle>;
+  onDismiss?: () => void;
+}
+
 export type CustomerCenterManagementOption =
   | 'cancel'
   | 'custom_url'
@@ -413,7 +414,7 @@ export default class RevenueCatUI {
                                                                    onDismiss,
                                                                  }) => {
     return (
-      <InternalPaywall 
+      <InternalPaywall
         options={options}
         children={children}
         onPurchaseStarted={onPurchaseStarted}
@@ -496,23 +497,23 @@ export default class RevenueCatUI {
 
   /**
    * A React component for embedding the Customer Center directly in your UI.
-   * 
-   * This component renders the RevenueCat Customer Center as a native view that can be 
+   *
+   * This component renders the RevenueCat Customer Center as a native view that can be
    * embedded within your existing React Native screens. Unlike `presentCustomerCenter()`,
-   * which presents the Customer Center modally, this component gives you full control 
+   * which presents the Customer Center modally, this component gives you full control
    * over layout and presentation.
-   * 
+   *
    * The Customer Center allows users to manage their subscriptions, view purchase history,
    * request refunds (iOS), and access support options - all configured through the
    * RevenueCat dashboard.
-   * 
+   *
    * @param style - Optional style prop to customize the appearance and layout
    * @param onDismiss - Callback fired when the user dismisses the Customer Center (e.g., taps a close button)
-   * 
+   *
    * @example
    * ```tsx
    * import RevenueCatUI from 'react-native-purchases-ui';
-   * 
+   *
    * function MyScreen() {
    *   return (
    *     <View style={{ flex: 1 }}>

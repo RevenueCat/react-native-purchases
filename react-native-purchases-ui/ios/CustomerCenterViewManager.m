@@ -58,7 +58,7 @@ RCT_EXPORT_MODULE(CustomerCenterView)
 }
 
 + (BOOL)requiresMainQueueSetup {
-    return YES; // Ensure it's initialized on the main queue
+    return YES;
 }
 
 @end
