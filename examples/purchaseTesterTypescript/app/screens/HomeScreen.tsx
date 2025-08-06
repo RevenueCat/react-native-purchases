@@ -291,6 +291,14 @@ const onDismissCustomerCenter = () => {
             <Text style={styles.otherActions}>Go to Paywall Modal (with header)</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() => navigation.navigate('CustomerCenterModalNoHeader', {})}>
+            <Text style={styles.otherActions}>Go to Customer Center Modal (no header)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomerCenterModalWithHeader', {})}>
+            <Text style={styles.otherActions}>Go to Customer Center Modal (with header)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() =>
               navigation.navigate('FooterPaywall', {offering: null})
             }>
@@ -390,10 +398,10 @@ const onDismissCustomerCenter = () => {
             <Text style={styles.otherActions}>Present customer center</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('CustomerCenterScreen')}>
-            <Text style={styles.otherActions}>Push CustomerCenter</Text>
+            <Text style={styles.otherActions}>Go to Customer Center (push)</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-            <Text style={styles.otherActions}>Show CustomerCenter as Modal</Text>
+            <Text style={styles.otherActions}>Go to Customer Center (modal)</Text>
           </TouchableOpacity>
         </View>
 
