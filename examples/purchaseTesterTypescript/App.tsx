@@ -22,6 +22,7 @@ import OfferingDetailScreen from './app/screens/OfferingDetailScreen';
 import PaywallScreen from './app/screens/PaywallScreen';
 import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
+import CustomerCenterScreen from "./app/screens/CustomerCenterScreen";
 import VirtualCurrencyScreen from "./app/screens/VirtualCurrencyScreen";
 
 import APIKeys from './app/APIKeys';
@@ -118,13 +119,20 @@ const App = () => {
           <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
           <Stack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
             <Stack.Screen name="PaywallModalNoHeader" component={PaywallScreen} />
+            <Stack.Screen name="CustomerCenterModalNoHeader" component={CustomerCenterScreen} />
           </Stack.Group>
           <Stack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
             <Stack.Screen name="PaywallModalWithHeader" component={PaywallScreen} />
+            <Stack.Screen name="CustomerCenterModalWithHeader" component={CustomerCenterScreen} />
           </Stack.Group>
           <Stack.Screen name="Paywall" component={PaywallScreen} />
           <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
           <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
+          <Stack.Screen
+              name="CustomerCenterScreen"
+              component={CustomerCenterScreen}
+              options={{ headerShown: false }}
+           />
           <Stack.Screen name="VirtualCurrency" component={VirtualCurrencyScreen} />
         </Stack.Navigator>
       </NavigationContainer>

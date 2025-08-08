@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {
+  Modal,
   Alert,
   SafeAreaView,
   ScrollView,
@@ -56,6 +57,8 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     // from a non-asyn function
     setTimeout(fetchData, 1);
   }, []);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Gets customer info, app user id, if user is anonymous, and offerings
   const fetchData = async () => {
@@ -195,8 +198,25 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
+const onDismissCustomerCenter = () => {
+  setIsModalVisible(false)
+}
+
   return (
     <SafeAreaView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={onDismissCustomerCenter}
+      >
+        <View style={styles.modalOverlay}>
+          <RevenueCatUI.CustomerCenterView
+            style={styles.modalContent}
+            onDismiss={onDismissCustomerCenter}
+          />
+        </View>
+      </Modal>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
           <TouchableOpacity
@@ -269,6 +289,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('PaywallModalWithHeader', {})}>
             <Text style={styles.otherActions}>Go to Paywall Modal (with header)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomerCenterModalNoHeader', {})}>
+            <Text style={styles.otherActions}>Go to Customer Center Modal (no header)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomerCenterModalWithHeader', {})}>
+            <Text style={styles.otherActions}>Go to Customer Center Modal (with header)</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
@@ -369,6 +397,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             }}>
             <Text style={styles.otherActions}>Present customer center</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('CustomerCenterScreen')}>
+            <Text style={styles.otherActions}>Go to Customer Center (push)</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <Text style={styles.otherActions}>Go to Customer Center (modal)</Text>
+          </TouchableOpacity>
         </View>
 
         <Divider />
@@ -414,6 +448,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'dodgerblue',
     marginVertical: 5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white'
   },
 });
 

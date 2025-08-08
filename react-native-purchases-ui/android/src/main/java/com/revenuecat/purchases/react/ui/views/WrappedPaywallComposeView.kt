@@ -32,8 +32,6 @@ class WrappedPaywallComposeView(context: Context) : ComposeViewWrapper<PaywallVi
         wrappedView?.setDisplayDismissButton(shouldDisplayDismissButton)
     }
 
-    // Ensure the view re-measures properly after loading state changes
-    // Similar logic used in PaywallFooterViewManager
     override fun requestLayout() {
         super.requestLayout()
         post(measureAndLayout)

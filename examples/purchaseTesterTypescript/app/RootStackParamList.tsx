@@ -13,6 +13,7 @@ type RootStackParamList = {
     offering: PurchasesOffering | null;
     fontFamily?: string | null;
   };
+  CustomerCenterScreen: {};
 };
 
 export default RootStackParamList;
