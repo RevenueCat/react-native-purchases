@@ -1,3 +1,8 @@
+## 9.2.2
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Remove `react-native-get-random-values` dependency temporarily (#1364) via Toni Rico (@tonidero)
+
 ## 9.2.1
 ## RevenueCat SDK
 ### 📦 Dependency Updates
