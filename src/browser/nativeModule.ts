@@ -1,4 +1,3 @@
-import 'react-native-get-random-values'; // needed to generate random Ids in purchases-js in RN apps.
 import {
   INTRO_ELIGIBILITY_STATUS,
   MakePurchaseResult,
