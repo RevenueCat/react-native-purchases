@@ -62,6 +62,7 @@ RCT_EXPORT_MODULE();
 // MARK: -
 
 RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
+                  presentedOfferingContext:(nullable NSDictionary *)presentedOfferingContext
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   withResolve:(RCTPromiseResolveBlock)resolve
@@ -70,6 +71,9 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
             options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
+        }
+        if (presentedOfferingContext != nil) {
+            options[PaywallOptionsKeys.presentedOfferingContext] = presentedOfferingContext;
         }
         options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
         if (fontFamily) {
@@ -87,6 +91,7 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
 
 RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifier
                   withOfferingIdentifier:(nullable NSString *)offeringIdentifier
+                  presentedOfferingContext:(nullable NSDictionary *)presentedOfferingContext
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   withResolve:(RCTPromiseResolveBlock)resolve
@@ -95,6 +100,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
             options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
+        }
+        if (presentedOfferingContext != nil) {
+            options[PaywallOptionsKeys.presentedOfferingContext] = presentedOfferingContext;
         }
         options[PaywallOptionsKeys.requiredEntitlementIdentifier] = requiredEntitlementIdentifier;
         options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
