@@ -90,15 +90,20 @@ internal class RNCustomerCenterModule(
     private fun presentCustomerCenterFromActivity(
         activity: Activity
     ) {
+        Log.d(NAME, "Presenting customer center from activity")
         val customerCenterListener = createCustomerCenterListener()
+        Log.d(NAME, "Setting customer center listener on Purchases instance")
         Purchases.sharedInstance.customerCenterListener = customerCenterListener
         val intent = ShowCustomerCenter()
             .createIntent(activity, Unit)
+        Log.d(NAME, "Starting customer center activity")
         activity.startActivityForResult(intent, REQUEST_CODE_CUSTOMER_CENTER)
     }
 
     private fun createCustomerCenterListener(): CustomerCenterListener {
+        Log.d(NAME, "Creating customer center listener")
         return object : CustomerCenterListenerWrapper() {
+
             override fun onFeedbackSurveyCompletedWrapper(feedbackSurveyOptionId: String) {
                 val params = WritableNativeMap().apply {
                     putString("feedbackSurveyOptionId", feedbackSurveyOptionId)
@@ -107,6 +112,7 @@ internal class RNCustomerCenterModule(
             }
 
             override fun onManagementOptionSelectedWrapper(action: String, url: String?) {
+                Log.d(NAME, "Management option selected: $action, URL: $url")
                 val params = WritableNativeMap().apply {
                     putString("option", action)
                     putString("url", url)
@@ -135,15 +141,28 @@ internal class RNCustomerCenterModule(
             override fun onRestoreStartedWrapper() {
                 sendEvent("onRestoreStarted", null)
             }
+
+            override fun onCustomerCenterCustomActionSelectedWrapper(
+                actionId: String,
+                purchaseIdentifier: String?
+            ) {
+                Log.d(NAME, "*** CUSTOM ACTION METHOD CALLED *** actionId: $actionId, purchaseId: $purchaseIdentifier")
+                val params = WritableNativeMap().apply {
+                    putString("actionId", actionId)
+                }
+                sendEvent("onCustomActionSelected", params)
+            }
         }
     }
 
     private fun sendEvent(eventName: String, params: WritableMap?) {
+        Log.d(NAME, "Sending event: $eventName with params: $params")
         reactContext.runOnUiQueueThread {
             try {
                 reactContext
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                     .emit(eventName, params)
+                Log.d(NAME, "Event $eventName sent successfully")
             } catch (e: Exception) {
                 Log.e(NAME, "Error sending event $eventName", e)
             }

@@ -384,9 +384,16 @@ const onDismissCustomerCenter = () => {
                     onManagementOptionSelected: ({option, url}: CustomerCenterManagementOptionEvent) => {
                       if (option === 'custom_url') {
                         console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with URL:', url);
+                      } else if (option === 'unknown') {
+                        console.log('🔍 CUSTOMER CENTER - Unknown management option (possibly custom action):', option);
+                        // Treat 'unknown' management options as custom actions for now
+                        console.log('🎯 CUSTOMER CENTER - Treating unknown option as custom action');
                       } else {
                         console.log('🔍 CUSTOMER CENTER - Management option selected:', option);
                       }
+                    },
+                    onCustomActionSelected: ({actionId}: {actionId: string}) => {
+                      console.log('🎯 CUSTOMER CENTER - Custom action selected:', actionId);
                     }
                   }
                 });

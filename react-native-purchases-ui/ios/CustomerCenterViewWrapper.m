@@ -63,4 +63,11 @@ API_AVAILABLE(ios(15.0))
     }
 }
 
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+didSelectCustomActionWithID:(NSString *)actionID API_AVAILABLE(ios(15.0)) {
+    if (self.onCustomActionSelected) {
+        self.onCustomActionSelected(@{@"actionId": actionID});
+    }
+}
+
 @end

@@ -2,6 +2,7 @@ package com.revenuecat.purchases.react.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
 
@@ -13,6 +14,12 @@ class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerC
 
     fun setDismissHandler(dismissHandler: (() -> Unit)?) {
         wrappedView?.setDismissHandler(dismissHandler)
+    }
+
+    fun setCustomActionHandler(customActionHandler: ((String) -> Unit)?) {
+        // Note: setCustomActionHandler method may not be available in current version
+        // wrappedView?.setCustomActionHandler(customActionHandler)
+        Log.d("WrappedCustomerCenterView", "Custom action handler set (method may not be available)")
     }
 
     override fun requestLayout() {

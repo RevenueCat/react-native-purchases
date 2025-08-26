@@ -13,6 +13,10 @@ const CustomerCenterScreen: React.FC<Props> = ({navigation}: Props) => {
     navigation.pop();
   };
 
+  const onCustomActionSelected = ({actionId}: {actionId: string}) => {
+    console.log('Custom action selected:', actionId);
+  };
+
   const styles = StyleSheet.create({
     flex1: {
       flex: 1,
@@ -24,6 +28,7 @@ const CustomerCenterScreen: React.FC<Props> = ({navigation}: Props) => {
       <RevenueCatUI.CustomerCenterView
         style={styles.flex1}
         onDismiss={onDismiss}
+        onCustomActionSelected={onCustomActionSelected}
       />
     </View>
   );
