@@ -270,7 +270,6 @@ const InternalCustomerCenterView =
 export interface CustomerCenterViewProps {
   style?: StyleProp<ViewStyle>;
   onDismiss?: () => void;
-  onCustomActionSelected?: ({actionId}: { actionId: string }) => void;
 }
 
 export type CustomerCenterManagementOption =
@@ -328,11 +327,6 @@ export interface CustomerCenterCallbacks {
    * For all other options, the url parameter will be null.
    */
   onManagementOptionSelected?: (event: CustomerCenterManagementOptionEvent) => void;
-
-  /**
-   * Called when a custom action is selected in the customer center.
-   */
-  onCustomActionSelected?: ({actionId}: { actionId: string }) => void;
 }
 
 export interface PresentCustomerCenterParams {
@@ -535,11 +529,9 @@ export default class RevenueCatUI {
   public static CustomerCenterView: React.FC<CustomerCenterViewProps> = ({
     style,
     onDismiss,
-    onCustomActionSelected,
   }) => (
     <InternalCustomerCenterView
       onDismiss={() => onDismiss && onDismiss()}
-      onCustomActionSelected={(event: any) => onCustomActionSelected && onCustomActionSelected(event.nativeEvent)}
       style={[{ flex: 1 }, style]}
     />
   );
@@ -635,17 +627,6 @@ export default class RevenueCatUI {
           'onManagementOptionSelected',
           (event: CustomerCenterManagementOptionEvent) => callbacks.onManagementOptionSelected &&
             callbacks.onManagementOptionSelected(event)
-        );
-        if (subscription) {
-          subscriptions.push(subscription);
-        }
-      }
-
-      if (callbacks.onCustomActionSelected) {
-        const subscription = customerCenterEventEmitter?.addListener(
-          'onCustomActionSelected',
-          (event: { actionId: string }) => callbacks.onCustomActionSelected &&
-            callbacks.onCustomActionSelected(event)
         );
         if (subscription) {
           subscriptions.push(subscription);

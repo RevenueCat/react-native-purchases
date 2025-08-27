@@ -18,7 +18,6 @@ API_AVAILABLE(ios(15.0))
 @implementation CustomerCenterViewManager
 
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onCustomActionSelected, RCTDirectEventBlock)
 RCT_EXPORT_MODULE(CustomerCenterView)
 
 - (instancetype)init {
