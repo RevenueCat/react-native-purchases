@@ -16,12 +16,6 @@ class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerC
         wrappedView?.setDismissHandler(dismissHandler)
     }
 
-    fun setCustomActionHandler(customActionHandler: ((String) -> Unit)?) {
-        // Note: setCustomActionHandler method may not be available in current version
-        // wrappedView?.setCustomActionHandler(customActionHandler)
-        Log.d("WrappedCustomerCenterView", "Custom action handler set (method may not be available)")
-    }
-
     override fun requestLayout() {
         super.requestLayout()
         post(measureAndLayout)
