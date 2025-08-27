@@ -120,6 +120,19 @@ internal class RNCustomerCenterModule(
                 sendEvent("onManagementOptionSelected", params)
             }
 
+            override fun onManagementOptionSelectedWrapper(
+                action: String,
+                customAction: String?,
+                purchaseIdentifier: String?
+            ) {
+                val params = WritableNativeMap().apply {
+                    putString("option", action)
+                    putString("actionId", customAction)
+                    putString("purchaseIdentifier", purchaseIdentifier)
+                }
+                sendEvent("onManagementOptionSelected", params)
+            }
+
             override fun onShowingManageSubscriptionsWrapper() {
                 sendEvent("onShowingManageSubscriptions", null)
             }
@@ -140,17 +153,6 @@ internal class RNCustomerCenterModule(
 
             override fun onRestoreStartedWrapper() {
                 sendEvent("onRestoreStarted", null)
-            }
-
-            override fun onCustomerCenterCustomActionSelectedWrapper(
-                actionId: String,
-                purchaseIdentifier: String?
-            ) {
-                Log.d(NAME, "*** CUSTOM ACTION METHOD CALLED *** actionId: $actionId, purchaseId: $purchaseIdentifier")
-                val params = WritableNativeMap().apply {
-                    putString("actionId", actionId)
-                }
-                sendEvent("onCustomActionSelected", params)
             }
         }
     }

@@ -1,8 +1,8 @@
 
 // REPLACE THESE WITH YOUR OWN
 const APIKeys = {
-  apple: "",
-  google: "",
+  apple: "appl_TFIZqBlauHeMhnqfNlWWFBjZwkf",
+  google: "goog_uArAGtKQJeuXMWoSNXCAZBzTepD",
   amazon: ""
 };
 
