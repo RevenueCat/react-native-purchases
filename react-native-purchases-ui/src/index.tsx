@@ -367,6 +367,7 @@ export default class RevenueCatUI {
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
     return RNPaywalls.presentPaywall(
       offering?.identifier ?? null,
+      offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
     )
@@ -395,6 +396,7 @@ export default class RevenueCatUI {
     return RNPaywalls.presentPaywallIfNeeded(
       requiredEntitlementIdentifier,
       offering?.identifier ?? null,
+      offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
     )
