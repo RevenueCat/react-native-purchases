@@ -24,7 +24,6 @@ internal class CustomerCenterViewManager :
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any> {
         return MapBuilder.builder<String, Any>()
             .putEvent(CustomerCenterEventName.ON_DISMISS)
-            .putEvent(CustomerCenterEventName.ON_CUSTOM_ACTION_SELECTED)
             .build()
     }
 
@@ -34,10 +33,6 @@ internal class CustomerCenterViewManager :
 
         wrappedView.setDismissHandler {
             emitDismissEvent(themedReactContext, wrappedView)
-        }
-
-        wrappedView.setCustomActionHandler { actionId ->
-            emitCustomActionEvent(themedReactContext, wrappedView, actionId)
         }
 
         return wrappedView
@@ -60,22 +55,5 @@ internal class CustomerCenterViewManager :
         context
             .getJSModule(RCTEventEmitter::class.java)
             .receiveEvent(view.id, CustomerCenterEventName.ON_DISMISS.eventName, null)
-    }
-
-    private fun emitCustomActionEvent(
-        context: ReactContext,
-        view: WrappedCustomerCenterView,
-        actionId: String
-    ) {
-        Log.d(REACT_CLASS, "CustomerCenter custom action selected: $actionId")
-        Log.d(REACT_CLASS, "Emitting custom action event to React Native with view ID: ${view.id}")
-
-        val params = com.facebook.react.bridge.WritableNativeMap().apply {
-            putString("actionId", actionId)
-        }
-        // Emit the onCustomActionSelected event to React Native
-        context
-            .getJSModule(RCTEventEmitter::class.java)
-            .receiveEvent(view.id, CustomerCenterEventName.ON_CUSTOM_ACTION_SELECTED.eventName, params)
     }
 }
