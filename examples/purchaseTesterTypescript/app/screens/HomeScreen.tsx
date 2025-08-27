@@ -202,6 +202,10 @@ const onDismissCustomerCenter = () => {
   setIsModalVisible(false)
 }
 
+const onCustomActionSelected = (event: {actionId: string}) => {
+  console.log('🎯 CUSTOMER CENTER MODAL - Custom action selected:', event.actionId);
+}
+
   return (
     <SafeAreaView>
       <Modal
@@ -214,6 +218,7 @@ const onDismissCustomerCenter = () => {
           <RevenueCatUI.CustomerCenterView
             style={styles.modalContent}
             onDismiss={onDismissCustomerCenter}
+            onCustomActionSelected={onCustomActionSelected}
           />
         </View>
       </Modal>

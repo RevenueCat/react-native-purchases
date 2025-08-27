@@ -143,8 +143,12 @@ withURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
     [self sendEventWithName:@"onManagementOptionSelected" body:@{@"option": optionID, @"url": url ?: [NSNull null]}];
 }
 
-- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller didSelectCustomAction:(NSString *)actionID withPurchaseIdentifier:(NSString *)purchaseIdentifier {
-    [self sendEventWithName:@"onCustomActionSelected" body:@{@"actionId": actionID}];
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+               didSelectCustomAction:(NSString *)actionID
+              withPurchaseIdentifier:(NSString *)purchaseIdentifier {
+    [self sendEventWithName:@"onCustomActionSelected"
+                       body:@{@"actionId": actionID, @"purchaseIdentifier": purchaseIdentifier ?: [NSNull null]}
+    ];
 }
 
 + (BOOL)requiresMainQueueSetup
