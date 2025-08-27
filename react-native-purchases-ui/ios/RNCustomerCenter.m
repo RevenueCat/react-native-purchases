@@ -59,7 +59,7 @@ RCT_EXPORT_MODULE();
         @"onRefundRequestCompleted",
         @"onFeedbackSurveyCompleted",
         @"onManagementOptionSelected",
-        @"u",
+        @"onCustomActionSelected",
         @"onDismiss"
     ];
 }
