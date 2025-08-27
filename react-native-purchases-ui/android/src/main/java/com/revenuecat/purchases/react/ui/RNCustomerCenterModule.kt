@@ -38,10 +38,8 @@ internal class RNCustomerCenterModule(
             ) {
                 if (requestCode == REQUEST_CODE_CUSTOMER_CENTER) {
                     if (resultCode == Activity.RESULT_OK) {
-                        Log.d(NAME, "Customer Center closed successfully")
                         customerCenterPromise?.resolve(null)
                     } else {
-                        Log.d(NAME, "Customer Center closed with result $resultCode")
                         customerCenterPromise?.reject(
                             "CUSTOMER_CENTER_ERROR",
                             "Customer Center closed with result code: $resultCode",
@@ -90,18 +88,14 @@ internal class RNCustomerCenterModule(
     private fun presentCustomerCenterFromActivity(
         activity: Activity
     ) {
-        Log.d(NAME, "Presenting customer center from activity")
         val customerCenterListener = createCustomerCenterListener()
-        Log.d(NAME, "Setting customer center listener on Purchases instance")
         Purchases.sharedInstance.customerCenterListener = customerCenterListener
         val intent = ShowCustomerCenter()
             .createIntent(activity, Unit)
-        Log.d(NAME, "Starting customer center activity")
         activity.startActivityForResult(intent, REQUEST_CODE_CUSTOMER_CENTER)
     }
 
     private fun createCustomerCenterListener(): CustomerCenterListener {
-        Log.d(NAME, "Creating customer center listener")
         return object : CustomerCenterListenerWrapper() {
 
             override fun onFeedbackSurveyCompletedWrapper(feedbackSurveyOptionId: String) {
@@ -112,7 +106,6 @@ internal class RNCustomerCenterModule(
             }
 
             override fun onManagementOptionSelectedWrapper(action: String, url: String?) {
-                Log.d(NAME, "Management option selected: $action, URL: $url")
                 val params = WritableNativeMap().apply {
                     putString("option", action)
                     putString("url", url)
@@ -158,13 +151,11 @@ internal class RNCustomerCenterModule(
     }
 
     private fun sendEvent(eventName: String, params: WritableMap?) {
-        Log.d(NAME, "Sending event: $eventName with params: $params")
         reactContext.runOnUiQueueThread {
             try {
                 reactContext
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                     .emit(eventName, params)
-                Log.d(NAME, "Event $eventName sent successfully")
             } catch (e: Exception) {
                 Log.e(NAME, "Error sending event $eventName", e)
             }
