@@ -311,6 +311,8 @@ export const browserNativeModuleRNPurchases = {
     PurchasesCommon.getInstance().invalidateVirtualCurrenciesCache();
   },
   getCachedVirtualCurrencies: async () => {
-    methodNotSupportedOnWeb('getCachedVirtualCurrencies');
+    ensurePurchasesConfigured();
+    const cachedVirtualCurrencies = await PurchasesCommon.getInstance().getCachedVirtualCurrencies();
+    return cachedVirtualCurrencies ? validateAndTransform(cachedVirtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies') : null;
   },
 };
