@@ -203,7 +203,7 @@ const onDismissCustomerCenter = () => {
 }
 
 const onCustomActionSelected = (event: {actionId: string}) => {
-  console.log('🎯 CUSTOMER CENTER MODAL - Custom action selected:', event.actionId);
+  console.log('Custom action selected:', event.actionId);
 }
 
   return (
