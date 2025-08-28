@@ -4,7 +4,7 @@ import {
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
-import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult } from './typeGuards';
+import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult, isPurchasesVirtualCurrencies } from './typeGuards';
 import { isExpoGo } from '../utils/environment';
 
 
@@ -302,7 +302,8 @@ export const browserNativeModuleRNPurchases = {
     methodNotSupportedOnWeb('redeemWebPurchase');
   },
   getVirtualCurrencies: async () => {
-    methodNotSupportedOnWeb('getVirtualCurrencies');
+    const virtualCurrencies = await PurchasesCommon.getInstance().getVirtualCurrencies();
+    return validateAndTransform(virtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies');
   },
   invalidateVirtualCurrenciesCache: async () => {
     methodNotSupportedOnWeb('invalidateVirtualCurrenciesCache');
