@@ -302,11 +302,13 @@ export const browserNativeModuleRNPurchases = {
     methodNotSupportedOnWeb('redeemWebPurchase');
   },
   getVirtualCurrencies: async () => {
+    ensurePurchasesConfigured();
     const virtualCurrencies = await PurchasesCommon.getInstance().getVirtualCurrencies();
     return validateAndTransform(virtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies');
   },
   invalidateVirtualCurrenciesCache: async () => {
-    methodNotSupportedOnWeb('invalidateVirtualCurrenciesCache');
+    ensurePurchasesConfigured();
+    PurchasesCommon.getInstance().invalidateVirtualCurrenciesCache();
   },
   getCachedVirtualCurrencies: async () => {
     methodNotSupportedOnWeb('getCachedVirtualCurrencies');
