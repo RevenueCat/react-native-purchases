@@ -3397,26 +3397,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:16.2.1":
-  version: 16.2.1
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:16.2.1"
+"@revenuecat/purchases-js-hybrid-mappings@npm:17.0.0":
+  version: 17.0.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.0.0"
   dependencies:
-    "@revenuecat/purchases-js": 1.11.1
-  checksum: 0ab243a558136134ebd9732285b1fb21fbc0852f1e895519a932b326a05c8b627ff10b1a5cb961ca21a458ec8f4c9f9d4521cc69e008b17616c9b1cc3a29b110
+    "@revenuecat/purchases-js": 1.12.1
+  checksum: ec656bce9313d4fd05801bbb9785a4d48008de8602b62823e8e8ea057933af874b4a0db0f60167d1dc9bc849a2d827d95375de5f6ad2fe28ff50c1d501426e30
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js@npm:1.11.1":
-  version: 1.11.1
-  resolution: "@revenuecat/purchases-js@npm:1.11.1"
-  checksum: 04f5a13948c137e0a5088972c6260d9e450ee9399a1c71d4e9f482a070409397478e4dd24451b1ddddde9669b31443a50299b30d326dfe9444c40084ceaa2d61
-  languageName: node
-  linkType: hard
-
-"@revenuecat/purchases-typescript-internal@npm:16.2.1":
-  version: 16.2.1
-  resolution: "@revenuecat/purchases-typescript-internal@npm:16.2.1"
-  checksum: 978ad3ef4682841c52246f3a2ff0767e73bbc61827cd88175124491c2ff491ea8598084b6b47b4505b07f6723f2daf02cf24e4e6af78ce732c2085203e94ef93
+"@revenuecat/purchases-js@npm:1.12.1":
+  version: 1.12.1
+  resolution: "@revenuecat/purchases-js@npm:1.12.1"
+  checksum: 603a05926282a2bd639e04c5972ee19ce822ec4b6e0298d1a728a6f585cf87cfd51fb3ae93f22c9a16e86e24627bdc9cb14224693a0080f13b5e62d0c135bdcb
   languageName: node
   linkType: hard
 
@@ -8450,8 +8443,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 16.2.1
-    "@revenuecat/purchases-typescript-internal": 16.2.1
+    "@revenuecat/purchases-js-hybrid-mappings": 17.0.0
+    "@revenuecat/purchases-typescript-internal": 17.0.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
