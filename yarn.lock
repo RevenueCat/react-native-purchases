@@ -8442,6 +8442,7 @@ __metadata:
 "react-native-purchases@workspace:.":
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
+  dependencies:
     "@revenuecat/purchases-js-hybrid-mappings": 17.0.0
     "@revenuecat/purchases-typescript-internal": 17.0.0
     "@types/jest": ^29.5.12
