@@ -311,6 +311,21 @@ export default function TabOneScreen() {
           )} 
         />
 
+        {/* Virtual Currencies */}
+        <SectionHeader title="Virtual Currencies" />
+        <MethodButton 
+          title="getVirtualCurrencies" 
+          onPress={() => callMethod('getVirtualCurrencies', () => Purchases.getVirtualCurrencies())} 
+        />
+        <MethodButton 
+          title="invalidateVirtualCurrencyCache" 
+          onPress={() => callMethod('invalidateVirtualCurrencyCache', () => Purchases.invalidateVirtualCurrenciesCache())} 
+        />
+        <MethodButton 
+          title="getCachedVirtualCurrencies" 
+          onPress={() => callMethod('getCachedVirtualCurrencies', () => Purchases.getCachedVirtualCurrencies())} 
+        />
+
         {/* RevenueCat UI - Paywall Methods */}
         <SectionHeader title="RevenueCat UI - Paywall Methods" />
         <MethodButton 
