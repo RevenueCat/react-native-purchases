@@ -318,8 +318,8 @@ export default function TabOneScreen() {
           onPress={() => callMethod('getVirtualCurrencies', () => Purchases.getVirtualCurrencies())} 
         />
         <MethodButton 
-          title="invalidateVirtualCurrencyCache" 
-          onPress={() => callMethod('invalidateVirtualCurrencyCache', () => Purchases.invalidateVirtualCurrenciesCache())} 
+          title="invalidateVirtualCurrenciesCache" 
+          onPress={() => callMethod('invalidateVirtualCurrenciesCache', () => Purchases.invalidateVirtualCurrenciesCache())} 
         />
         <MethodButton 
           title="getCachedVirtualCurrencies" 
