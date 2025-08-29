@@ -312,7 +312,7 @@ export const browserNativeModuleRNPurchases = {
   },
   getCachedVirtualCurrencies: async () => {
     ensurePurchasesConfigured();
-    const cachedVirtualCurrencies = await PurchasesCommon.getInstance().getCachedVirtualCurrencies();
+    const cachedVirtualCurrencies = PurchasesCommon.getInstance().getCachedVirtualCurrencies();
     return cachedVirtualCurrencies ? validateAndTransform(cachedVirtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies') : null;
   },
 };
