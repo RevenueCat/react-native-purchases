@@ -73,6 +73,5 @@ export function isMakePurchaseResult(value: any): value is MakePurchaseResult {
 
 export function isPurchasesVirtualCurrencies(value: any): value is PurchasesVirtualCurrencies {
   return value && typeof value === 'object' &&
-         typeof value.all === 'object' &&
-         (value.current === null || typeof value.current === 'object');
+         typeof value.all === 'object';
 }
