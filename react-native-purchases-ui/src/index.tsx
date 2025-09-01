@@ -271,6 +271,16 @@ export interface CustomerCenterViewProps {
   style?: StyleProp<ViewStyle>;
   onDismiss?: () => void;
   onCustomActionSelected?: ({actionId}: { actionId: string }) => void;
+  /**
+   * Whether to show the close button in the customer center.
+   * 
+   * When `true`, displays an internal close button that can be used to dismiss the customer center.
+   * When `false`, hides the internal close button - typically used for push navigation where
+   * the navigation bar provides the back button.
+   * 
+   * @default true
+   */
+  shouldShowCloseButton?: boolean;
 }
 
 export type CustomerCenterManagementOption =
@@ -536,10 +546,12 @@ export default class RevenueCatUI {
     style,
     onDismiss,
     onCustomActionSelected,
+    shouldShowCloseButton = true,
   }) => (
     <InternalCustomerCenterView
       onDismiss={() => onDismiss && onDismiss()}
       onCustomActionSelected={(event: any) => onCustomActionSelected && onCustomActionSelected(event.nativeEvent)}
+      shouldShowCloseButton={shouldShowCloseButton}
       style={[{ flex: 1 }, style]}
     />
   );

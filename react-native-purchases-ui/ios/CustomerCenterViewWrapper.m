@@ -23,8 +23,10 @@ API_AVAILABLE(ios(15.0))
 - (instancetype)initWithCustomerCenterViewController:(CustomerCenterUIViewController *)viewController API_AVAILABLE(ios(15.0)) {
     NSParameterAssert(viewController);
 
-    if ((self = [super initWithFrame:viewController.view.bounds])) {
+    if ((self = [super initWithFrame:CGRectZero])) { // Don't access viewController.view yet!
         _customerCenterVC = viewController;
+        _shouldShowCloseButton = YES; // Default to YES
+        // Don't set viewController.shouldShowCloseButton yet - wait for React Native properties
     }
 
     return self;
@@ -40,6 +42,9 @@ API_AVAILABLE(ios(15.0))
     if (!self.addedToHierarchy) {
         UIViewController *parentController = self.parentViewController;
         if (parentController) {
+            // Configure the close button BEFORE accessing .view (which triggers viewDidLoad)
+            self.customerCenterVC.shouldShowCloseButton = self.shouldShowCloseButton;
+            
             self.customerCenterVC.view.translatesAutoresizingMaskIntoConstraints = NO;
             [parentController addChildViewController:self.customerCenterVC];
             [self addSubview:self.customerCenterVC.view];
@@ -51,6 +56,7 @@ API_AVAILABLE(ios(15.0))
                     [self.customerCenterVC.view.leftAnchor constraintEqualToAnchor:self.leftAnchor],
                     [self.customerCenterVC.view.rightAnchor constraintEqualToAnchor:self.rightAnchor]
             ]];
+
 
             self.addedToHierarchy = YES;
         }
@@ -68,6 +74,16 @@ API_AVAILABLE(ios(15.0))
               withPurchaseIdentifier:(NSString *)purchaseIdentifier API_AVAILABLE(ios(15.0)) {
     if (self.onCustomActionSelected) {
         self.onCustomActionSelected(@{@"actionId": actionID, @"purchaseIdentifier": purchaseIdentifier ?: [NSNull null]});
+    }
+}
+
+- (void)setShouldShowCloseButton:(BOOL)shouldShowCloseButton {
+    _shouldShowCloseButton = shouldShowCloseButton;
+    
+    // Only set the view controller property if we haven't been added to hierarchy yet
+    // Once added to hierarchy, the property is already configured and shouldn't be changed
+    if (self.customerCenterVC && !self.addedToHierarchy) {
+        self.customerCenterVC.shouldShowCloseButton = shouldShowCloseButton;
     }
 }
 

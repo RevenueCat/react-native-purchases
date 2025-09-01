@@ -131,7 +131,7 @@ const App = () => {
           <Stack.Screen
               name="CustomerCenterScreen"
               component={CustomerCenterScreen}
-              options={{ headerShown: false }}
+              options={{ title: 'Customer Center' }}
            />
           <Stack.Screen name="VirtualCurrency" component={VirtualCurrencyScreen} />
         </Stack.Navigator>

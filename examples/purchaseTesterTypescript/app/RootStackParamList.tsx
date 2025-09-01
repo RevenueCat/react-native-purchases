@@ -13,7 +13,7 @@ type RootStackParamList = {
     offering: PurchasesOffering | null;
     fontFamily?: string | null;
   };
-  CustomerCenterScreen: {};
+  CustomerCenterScreen: { shouldShowCloseButton?: boolean };
 };
 
 export default RootStackParamList;

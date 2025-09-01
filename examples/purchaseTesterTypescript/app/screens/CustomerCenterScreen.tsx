@@ -7,7 +7,9 @@ import RootStackParamList from '../RootStackParamList';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomerCenterScreen'>;
 
-const CustomerCenterScreen: React.FC<Props> = ({navigation}: Props) => {
+const CustomerCenterScreen: React.FC<Props> = ({navigation, route}: Props) => {
+  const { shouldShowCloseButton = true } = route.params || {};
+
   const onDismiss = () => {
     console.log('Dismissed');
     navigation.pop();
@@ -27,6 +29,7 @@ const CustomerCenterScreen: React.FC<Props> = ({navigation}: Props) => {
     <View style={styles.flex1}>
       <RevenueCatUI.CustomerCenterView
         style={styles.flex1}
+        shouldShowCloseButton={shouldShowCloseButton}
         onDismiss={onDismiss}
         onCustomActionSelected={onCustomActionSelected}
       />

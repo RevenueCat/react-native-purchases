@@ -6,4 +6,4 @@ const APIKeys = {
   web: "test-api-key"
 };
 
-export default APIKeys; 
+export default APIKeys;
