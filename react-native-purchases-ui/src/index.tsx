@@ -19,7 +19,7 @@ import {
 import React, { type ReactNode, useEffect, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
-import { PreviewPaywall } from "./preview/previewComponents";
+import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponents";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
@@ -260,12 +260,9 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
 
-const InternalCustomerCenterView =
-  UIManager.getViewManagerConfig('CustomerCenterView') != null
+const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
     ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
-    : () => {
-        throw new Error(LINKING_ERROR);
-      };
+    : null;
 
 export interface CustomerCenterViewProps {
   style?: StyleProp<ViewStyle>;
@@ -547,14 +544,29 @@ export default class RevenueCatUI {
     onDismiss,
     onCustomActionSelected,
     shouldShowCloseButton = true,
-  }) => (
-    <InternalCustomerCenterView
-      onDismiss={() => onDismiss && onDismiss()}
-      onCustomActionSelected={(event: any) => onCustomActionSelected && onCustomActionSelected(event.nativeEvent)}
-      shouldShowCloseButton={shouldShowCloseButton}
-      style={[{ flex: 1 }, style]}
-    />
-  );
+  }) => {
+    if (usingPreviewAPIMode) {
+      return (
+        <PreviewCustomerCenter
+          onDismiss={() => onDismiss && onDismiss()}
+          style={[{ flex: 1 }, style]}
+        />
+      );
+    }
+    
+    if (!InternalCustomerCenterView) {
+      throw new Error(LINKING_ERROR);
+    }
+    
+    return (
+      <InternalCustomerCenterView
+        onDismiss={() => onDismiss && onDismiss()}
+        onCustomActionSelected={(event: any) => onCustomActionSelected && onCustomActionSelected(event.nativeEvent)}
+        shouldShowCloseButton={shouldShowCloseButton}
+        style={[{ flex: 1 }, style]}
+      />
+    );
+  };
 
   /**
    * Presents the customer center to the user.
