@@ -23,10 +23,9 @@ API_AVAILABLE(ios(15.0))
 - (instancetype)initWithCustomerCenterViewController:(CustomerCenterUIViewController *)viewController API_AVAILABLE(ios(15.0)) {
     NSParameterAssert(viewController);
 
-    if ((self = [super initWithFrame:CGRectZero])) { // Don't access viewController.view yet!
+    if ((self = [super initWithFrame:CGRectZero])) { // Don't access the .view yet (rely on autolayout in layoutSubviews)
         _customerCenterVC = viewController;
         _shouldShowCloseButton = YES; // Default to YES
-        // Don't set viewController.shouldShowCloseButton yet - wait for React Native properties
     }
 
     return self;
