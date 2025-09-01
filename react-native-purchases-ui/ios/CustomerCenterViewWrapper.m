@@ -63,4 +63,12 @@ API_AVAILABLE(ios(15.0))
     }
 }
 
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+               didSelectCustomAction:(NSString *)actionID
+              withPurchaseIdentifier:(NSString *)purchaseIdentifier API_AVAILABLE(ios(15.0)) {
+    if (self.onCustomActionSelected) {
+        self.onCustomActionSelected(@{@"actionId": actionID, @"purchaseIdentifier": purchaseIdentifier ?: [NSNull null]});
+    }
+}
+
 @end

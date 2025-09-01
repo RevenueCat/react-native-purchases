@@ -13,6 +13,7 @@
 @interface CustomerCenterViewWrapper : UIView<RCCustomerCenterViewControllerDelegateWrapper>
 
 @property (nonatomic, copy) RCTDirectEventBlock onDismiss;
+@property (nonatomic, copy) RCTDirectEventBlock onCustomActionSelected;
 
 - (instancetype)initWithCustomerCenterViewController:(CustomerCenterUIViewController *)viewController;
 

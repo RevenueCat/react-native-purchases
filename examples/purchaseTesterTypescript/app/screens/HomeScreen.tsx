@@ -202,6 +202,10 @@ const onDismissCustomerCenter = () => {
   setIsModalVisible(false)
 }
 
+const onCustomActionSelected = (event: {actionId: string}) => {
+  console.log('Custom action selected:', event.actionId);
+}
+
   return (
     <SafeAreaView>
       <Modal
@@ -214,6 +218,7 @@ const onDismissCustomerCenter = () => {
           <RevenueCatUI.CustomerCenterView
             style={styles.modalContent}
             onDismiss={onDismissCustomerCenter}
+            onCustomActionSelected={onCustomActionSelected}
           />
         </View>
       </Modal>
@@ -387,6 +392,12 @@ const onDismissCustomerCenter = () => {
                       } else {
                         console.log('🔍 CUSTOMER CENTER - Management option selected:', option);
                       }
+                    },
+                    onManagementOptionSelected: ({option, actionId, purchaseIdentifier}: CustomerCenterManagementOptionEvent) => {
+                        console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with action:', actionId, 'with purchase:', purchaseIdentifier);
+                    },
+                    onCustomActionSelected: ({actionId}: {actionId: string}) => {
+                      console.log('🎯 CUSTOMER CENTER - Custom action selected:', actionId);
                     }
                   }
                 });
