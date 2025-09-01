@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, type ViewStyle, type StyleProp } from 'react-native';
 import {
   type CustomerInfo,
   type PurchasesError,
@@ -168,4 +168,49 @@ const styles = StyleSheet.create({
     color: '#999999',
     textAlign: 'center',
   },
-}); 
+});
+
+export interface PreviewCustomerCenterProps {
+  style?: StyleProp<ViewStyle>;
+  onDismiss?: () => void;
+}
+
+export const PreviewCustomerCenter: React.FC<PreviewCustomerCenterProps> = ({
+  style,
+  onDismiss,
+}) => {
+  const handleClose = () => {
+    onDismiss?.();
+  };
+
+  return (
+    <View style={[styles.container, style]}>
+      <View style={styles.header}>
+        <Text style={[styles.title]}>
+          Preview Customer Center
+        </Text>
+        <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>✕</Text>
+        </TouchableOpacity>
+      </View>
+      
+      <View style={styles.content}>
+        <Text style={[styles.notSupportedMessage]}>
+          Web customer center is not supported yet.
+        </Text>
+        <Text style={[styles.fakeMessage]}>
+          This is a fake preview implementation.
+        </Text>
+        <Text style={[styles.previewMode]}>
+          Currently in preview mode
+        </Text>
+        
+        <TouchableOpacity style={styles.closePaywallButton} onPress={handleClose}>
+          <Text style={[styles.closePaywallButtonText]}>
+            Close Customer Center
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
