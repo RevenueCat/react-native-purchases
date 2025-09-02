@@ -3,6 +3,7 @@ import {
   MakePurchaseResult,
   PurchasesOffering,
   PurchasesOfferings,
+  PurchasesVirtualCurrencies,
 } from '@revenuecat/purchases-typescript-internal';
 
 /**
@@ -68,4 +69,9 @@ export function isMakePurchaseResult(value: any): value is MakePurchaseResult {
          typeof value.customerInfo === 'object' &&
          isCustomerInfo(value.customerInfo) &&
          typeof value.transaction === 'object';
+}
+
+export function isPurchasesVirtualCurrencies(value: any): value is PurchasesVirtualCurrencies {
+  return value && typeof value === 'object' &&
+         typeof value.all === 'object';
 }
