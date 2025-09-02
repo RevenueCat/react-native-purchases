@@ -271,7 +271,7 @@ export interface CustomerCenterViewProps {
   /**
    * Whether to show the close button in the customer center.
    * 
-   * When `true`, displays an internal close button that can be used to dismiss the customer center.
+   * When `true`, displays a close button that can be used to dismiss the customer center.
    * When `false`, hides the internal close button - typically used for push navigation where
    * the navigation bar provides the back button.
    * 
