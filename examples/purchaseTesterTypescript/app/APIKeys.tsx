@@ -3,7 +3,7 @@
 const APIKeys = {
   apple: "",
   google: "",
-  amazon: ""
+  amazon: "",
 };
 
 export default APIKeys;

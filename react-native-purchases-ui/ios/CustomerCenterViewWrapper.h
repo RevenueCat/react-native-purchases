@@ -14,6 +14,7 @@
 
 @property (nonatomic, copy) RCTDirectEventBlock onDismiss;
 @property (nonatomic, copy) RCTDirectEventBlock onCustomActionSelected;
+@property (nonatomic, assign) BOOL shouldShowCloseButton;
 
 - (instancetype)initWithCustomerCenterViewController:(CustomerCenterUIViewController *)viewController;
 

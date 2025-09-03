@@ -217,6 +217,7 @@ const onCustomActionSelected = (event: {actionId: string}) => {
         <View style={styles.modalOverlay}>
           <RevenueCatUI.CustomerCenterView
             style={styles.modalContent}
+            shouldShowCloseButton={true}
             onDismiss={onDismissCustomerCenter}
             onCustomActionSelected={onCustomActionSelected}
           />
@@ -296,11 +297,11 @@ const onCustomActionSelected = (event: {actionId: string}) => {
             <Text style={styles.otherActions}>Go to Paywall Modal (with header)</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('CustomerCenterModalNoHeader', {})}>
+            onPress={() => navigation.navigate('CustomerCenterModalNoHeader', { shouldShowCloseButton: true })}>
             <Text style={styles.otherActions}>Go to Customer Center Modal (no header)</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('CustomerCenterModalWithHeader', {})}>
+            onPress={() => navigation.navigate('CustomerCenterModalWithHeader', { shouldShowCloseButton: false })}>
             <Text style={styles.otherActions}>Go to Customer Center Modal (with header)</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -408,7 +409,7 @@ const onCustomActionSelected = (event: {actionId: string}) => {
             }}>
             <Text style={styles.otherActions}>Present customer center</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('CustomerCenterScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('CustomerCenterScreen', { shouldShowCloseButton: false })}>
             <Text style={styles.otherActions}>Go to Customer Center (push)</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsModalVisible(true)}>

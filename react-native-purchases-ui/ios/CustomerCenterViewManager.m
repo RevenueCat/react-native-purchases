@@ -19,6 +19,7 @@ API_AVAILABLE(ios(15.0))
 
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onCustomActionSelected, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(shouldShowCloseButton, BOOL)
 RCT_EXPORT_MODULE(CustomerCenterView)
 
 - (instancetype)init {
@@ -37,6 +38,10 @@ RCT_EXPORT_MODULE(CustomerCenterView)
         
         // Create a placeholder block that we'll update after wrapper creation
         __block CustomerCenterViewWrapper *wrapper = nil;
+        
+        // Set onCloseHandler - always provide handler regardless of shouldShowCloseButton
+        // The close button visibility is controlled by shouldShowCloseButton property,
+        // but when the button IS shown, it needs this handler to function properly
         viewController.onCloseHandler = ^{
             if (wrapper && wrapper.onDismiss) {
                 wrapper.onDismiss(nil);
