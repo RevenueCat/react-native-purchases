@@ -162,6 +162,7 @@ async function checkConfigure() {
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
   const diagnosticsEnabled: boolean = true;
+  const automaticDeviceIdentifierCollectionEnabled: boolean = true;
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -217,6 +218,17 @@ async function checkConfigure() {
     useAmazon,
     shouldShowInAppMessagesAutomatically,
     diagnosticsEnabled,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+    diagnosticsEnabled,
+    automaticDeviceIdentifierCollectionEnabled,
   });
 
   // PurchasesAreCompletedBy == MY_APP

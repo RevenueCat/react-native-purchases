@@ -88,7 +88,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled,
-                               boolean diagnosticsEnabled) {
+                               boolean diagnosticsEnabled, 
+                               boolean automaticDeviceIdentifierCollectionEnabled) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
@@ -105,7 +106,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             shouldShowInAppMessagesAutomatically,
             entitlementVerificationMode,
             pendingTransactionsForPrepaidPlansEnabled,
-            diagnosticsEnabled
+            diagnosticsEnabled,
+            automaticDeviceIdentifierCollectionEnabled
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }
