@@ -162,6 +162,7 @@ async function checkConfigure() {
   const userDefaultsSuiteName: string = "";
   const shouldShowInAppMessagesAutomatically: boolean = true;
   const diagnosticsEnabled: boolean = true;
+  const automaticDeviceIdentifierCollectionEnabled: boolean = true;
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -218,6 +219,17 @@ async function checkConfigure() {
     shouldShowInAppMessagesAutomatically,
     diagnosticsEnabled,
   });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+    diagnosticsEnabled,
+    automaticDeviceIdentifierCollectionEnabled,
+  });
 
   // PurchasesAreCompletedBy == MY_APP
   purchasesAreCompletedBy = {
@@ -267,6 +279,17 @@ async function checkConfigure() {
     storeKitVersion,
     useAmazon,
     shouldShowInAppMessagesAutomatically,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+    diagnosticsEnabled,
+    automaticDeviceIdentifierCollectionEnabled,
   });
 
   await Purchases.setProxyURL("");
