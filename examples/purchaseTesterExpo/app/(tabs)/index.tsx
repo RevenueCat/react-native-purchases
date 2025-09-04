@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 export default function TabOneScreen() {
   const [lastResult, setLastResult] = useState<string>('No method called yet');
   const [showModalPaywall, setShowModalPaywall] = useState(false);
+  const [showModalCustomerCenter, setShowModalCustomerCenter] = useState(false);
 
   const getPlatformInfo = (): string => {
     if (Platform.OS === 'web') {
@@ -311,6 +312,21 @@ export default function TabOneScreen() {
           )} 
         />
 
+        {/* Virtual Currencies */}
+        <SectionHeader title="Virtual Currencies" />
+        <MethodButton 
+          title="getVirtualCurrencies" 
+          onPress={() => callMethod('getVirtualCurrencies', () => Purchases.getVirtualCurrencies())} 
+        />
+        <MethodButton 
+          title="invalidateVirtualCurrenciesCache" 
+          onPress={() => callMethod('invalidateVirtualCurrenciesCache', () => Purchases.invalidateVirtualCurrenciesCache())} 
+        />
+        <MethodButton 
+          title="getCachedVirtualCurrencies" 
+          onPress={() => callMethod('getCachedVirtualCurrencies', () => Purchases.getCachedVirtualCurrencies())} 
+        />
+
         {/* RevenueCat UI - Paywall Methods */}
         <SectionHeader title="RevenueCat UI - Paywall Methods" />
         <MethodButton 
@@ -369,6 +385,13 @@ export default function TabOneScreen() {
             }
           }))} 
         />
+        <MethodButton 
+          title="Show Modal Customer Center (Fullscreen)" 
+          onPress={() => {
+            setLastResult('[' + new Date().toLocaleTimeString() + '] Opening modal customer center...');
+            setShowModalCustomerCenter(true);
+          }} 
+        />
 
         <View style={styles.bottomPadding} />
       </ScrollView>
@@ -412,6 +435,26 @@ export default function TabOneScreen() {
             onDismiss={() => {
               setLastResult(`[${new Date().toLocaleTimeString()}] Modal paywall dismissed`);
               setShowModalPaywall(false);
+            }}
+          />
+        </View>
+      </Modal>
+
+      {/* Modal Customer Center */}
+      <Modal
+        visible={showModalCustomerCenter}
+        animationType="slide"
+        presentationStyle="fullScreen"
+        onRequestClose={() => setShowModalCustomerCenter(false)}
+      >
+        <View style={styles.modalContainer}>
+          <RevenueCatUI.CustomerCenterView
+            onDismiss={() => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Modal customer center dismissed`);
+              setShowModalCustomerCenter(false);
+            }}
+            onCustomActionSelected={({ actionId }) => {
+              setLastResult(`[${new Date().toLocaleTimeString()}] Custom action selected: ${actionId}`);
             }}
           />
         </View>

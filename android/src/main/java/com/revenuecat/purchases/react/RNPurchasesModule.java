@@ -47,7 +47,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String CUSTOMER_INFO_UPDATED = "Purchases-CustomerInfoUpdated";
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "9.1.0";
+    public static final String PLUGIN_VERSION = "9.3.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -88,7 +88,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled,
-                               boolean diagnosticsEnabled) {
+                               boolean diagnosticsEnabled, 
+                               boolean automaticDeviceIdentifierCollectionEnabled) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
@@ -105,7 +106,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             shouldShowInAppMessagesAutomatically,
             entitlementVerificationMode,
             pendingTransactionsForPrepaidPlansEnabled,
-            diagnosticsEnabled
+            diagnosticsEnabled,
+            automaticDeviceIdentifierCollectionEnabled
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }

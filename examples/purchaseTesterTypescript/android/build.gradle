@@ -7,10 +7,12 @@ buildscript {
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.0.21"
     }
+
     repositories {
         google()
         mavenCentral()
     }
+
     dependencies {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
@@ -19,11 +21,11 @@ buildscript {
 }
 
 allprojects {
-  repositories {
-    google()
-    mavenCentral()
-    mavenLocal()
-  }
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+    }
 }
 
 apply plugin: "com.facebook.react.rootproject"

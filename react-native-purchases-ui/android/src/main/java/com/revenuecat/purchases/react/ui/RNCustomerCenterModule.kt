@@ -38,10 +38,8 @@ internal class RNCustomerCenterModule(
             ) {
                 if (requestCode == REQUEST_CODE_CUSTOMER_CENTER) {
                     if (resultCode == Activity.RESULT_OK) {
-                        Log.d(NAME, "Customer Center closed successfully")
                         customerCenterPromise?.resolve(null)
                     } else {
-                        Log.d(NAME, "Customer Center closed with result $resultCode")
                         customerCenterPromise?.reject(
                             "CUSTOMER_CENTER_ERROR",
                             "Customer Center closed with result code: $resultCode",
@@ -99,6 +97,7 @@ internal class RNCustomerCenterModule(
 
     private fun createCustomerCenterListener(): CustomerCenterListener {
         return object : CustomerCenterListenerWrapper() {
+
             override fun onFeedbackSurveyCompletedWrapper(feedbackSurveyOptionId: String) {
                 val params = WritableNativeMap().apply {
                     putString("feedbackSurveyOptionId", feedbackSurveyOptionId)
@@ -110,6 +109,19 @@ internal class RNCustomerCenterModule(
                 val params = WritableNativeMap().apply {
                     putString("option", action)
                     putString("url", url)
+                }
+                sendEvent("onManagementOptionSelected", params)
+            }
+
+            override fun onManagementOptionSelectedWrapper(
+                action: String,
+                customAction: String?,
+                purchaseIdentifier: String?
+            ) {
+                val params = WritableNativeMap().apply {
+                    putString("option", action)
+                    putString("actionId", customAction)
+                    putString("purchaseIdentifier", purchaseIdentifier)
                 }
                 sendEvent("onManagementOptionSelected", params)
             }

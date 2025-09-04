@@ -8,6 +8,8 @@
 
 #import <React/RCTEventEmitter.h>
 
-@interface RNCustomerCenter : RCTEventEmitter <RCTBridgeModule>
+@import PurchasesHybridCommonUI;
+
+@interface RNCustomerCenter : RCTEventEmitter <RCTBridgeModule, RCCustomerCenterViewControllerDelegateWrapper>
 
 @end

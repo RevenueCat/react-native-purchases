@@ -1,14 +1,13 @@
-import 'react-native-get-random-values'; // needed to generate random Ids in purchases-js in RN apps.
 import {
   INTRO_ELIGIBILITY_STATUS,
   MakePurchaseResult,
   PurchasesPackage,
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
+import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult, isPurchasesVirtualCurrencies } from './typeGuards';
 import { isExpoGo } from '../utils/environment';
 import { showTestPurchaseAlert } from './showTestPurchaseAlert';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb, createMockTransaction } from './utils';
-import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult } from './typeGuards';
 
 
 const packageVersion = '9.1.0';
@@ -343,12 +342,17 @@ export const browserNativeModuleRNPurchases = {
     methodNotSupportedOnWeb('redeemWebPurchase');
   },
   getVirtualCurrencies: async () => {
-    methodNotSupportedOnWeb('getVirtualCurrencies');
+    ensurePurchasesConfigured();
+    const virtualCurrencies = await PurchasesCommon.getInstance().getVirtualCurrencies();
+    return validateAndTransform(virtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies');
   },
   invalidateVirtualCurrenciesCache: async () => {
-    methodNotSupportedOnWeb('invalidateVirtualCurrenciesCache');
+    ensurePurchasesConfigured();
+    PurchasesCommon.getInstance().invalidateVirtualCurrenciesCache();
   },
   getCachedVirtualCurrencies: async () => {
-    methodNotSupportedOnWeb('getCachedVirtualCurrencies');
+    ensurePurchasesConfigured();
+    const cachedVirtualCurrencies = PurchasesCommon.getInstance().getCachedVirtualCurrencies();
+    return cachedVirtualCurrencies ? validateAndTransform(cachedVirtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies') : null;
   },
 };

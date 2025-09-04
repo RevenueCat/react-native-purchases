@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "9.1.0",
+  "version": "9.3.0",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android. ",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -114,8 +114,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-js-hybrid-mappings": "16.2.1",
-    "@revenuecat/purchases-typescript-internal": "16.2.1",
-    "react-native-get-random-values": "^1.11.0"
+    "@revenuecat/purchases-js-hybrid-mappings": "17.4.0",
+    "@revenuecat/purchases-typescript-internal": "17.4.0"
   }
 }

@@ -61,7 +61,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
-                  diagnosticsEnabled:(BOOL)diagnosticsEnabled) {
+                  diagnosticsEnabled:(BOOL)diagnosticsEnabled 
+                  automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -72,7 +73,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                             dangerousSettings:nil
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode.mappingNSNullToNil
-                                           diagnosticsEnabled:diagnosticsEnabled];
+                                           diagnosticsEnabled:diagnosticsEnabled
+                   automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled];
     purchases.delegate = self;
 }
 
@@ -657,7 +659,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"9.1.0";
+    return @"9.3.0";
 }
 
 @end

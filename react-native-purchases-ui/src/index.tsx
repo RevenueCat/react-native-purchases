@@ -19,7 +19,7 @@ import {
 import React, { type ReactNode, useEffect, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
-import { PreviewPaywall } from "./preview/previewComponents";
+import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponents";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
@@ -43,11 +43,11 @@ if (!RNCustomerCenter) {
   throw new Error(LINKING_ERROR);
 }
 
-const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
+const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
   ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
   : null;
 
-const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null 
+const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
   ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
@@ -260,6 +260,26 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
 };
 
+const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
+    ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
+    : null;
+
+export interface CustomerCenterViewProps {
+  style?: StyleProp<ViewStyle>;
+  onDismiss?: () => void;
+  onCustomActionSelected?: ({actionId}: { actionId: string }) => void;
+  /**
+   * Whether to show the close button in the customer center.
+   * 
+   * When `true`, displays a close button that can be used to dismiss the customer center.
+   * When `false`, hides the internal close button - typically used for push navigation where
+   * the navigation bar provides the back button.
+   * 
+   * @default true
+   */
+  shouldShowCloseButton?: boolean;
+}
+
 export type CustomerCenterManagementOption =
   | 'cancel'
   | 'custom_url'
@@ -315,6 +335,11 @@ export interface CustomerCenterCallbacks {
    * For all other options, the url parameter will be null.
    */
   onManagementOptionSelected?: (event: CustomerCenterManagementOptionEvent) => void;
+
+  /**
+   * Called when a custom action is selected in the customer center.
+   */
+  onCustomActionSelected?: ({actionId}: { actionId: string }) => void;
 }
 
 export interface PresentCustomerCenterParams {
@@ -402,7 +427,7 @@ export default class RevenueCatUI {
                                                                    onDismiss,
                                                                  }) => {
     return (
-      <InternalPaywall 
+      <InternalPaywall
         options={options}
         children={children}
         onPurchaseStarted={onPurchaseStarted}
@@ -480,6 +505,66 @@ export default class RevenueCatUI {
           onMeasure={(event: any) => setHeight(event.nativeEvent.measurements.height)}
         />
       </View>
+    );
+  };
+
+  /**
+   * A React component for embedding the Customer Center directly in your UI.
+   *
+   * This component renders the RevenueCat Customer Center as a native view that can be
+   * embedded within your existing React Native screens. Unlike `presentCustomerCenter()`,
+   * which presents the Customer Center modally, this component gives you full control
+   * over layout and presentation.
+   *
+   * The Customer Center allows users to manage their subscriptions, view purchase history,
+   * request refunds (iOS), and access support options - all configured through the
+   * RevenueCat dashboard.
+   *
+   * @param style - Optional style prop to customize the appearance and layout
+   * @param onDismiss - Callback fired when the user dismisses the Customer Center (e.g., taps a close button)
+   *
+   * @example
+   * ```tsx
+   * import RevenueCatUI from 'react-native-purchases-ui';
+   *
+   * function MyScreen() {
+   *   return (
+   *     <View style={{ flex: 1 }}>
+   *       <RevenueCatUI.CustomerCenterView
+   *         style={{ flex: 1 }}
+   *         onDismiss={() => navigation.goBack()}
+   *       />
+   *     </View>
+   *   );
+   * }
+   * ```
+   */
+  public static CustomerCenterView: React.FC<CustomerCenterViewProps> = ({
+    style,
+    onDismiss,
+    onCustomActionSelected,
+    shouldShowCloseButton = true,
+  }) => {
+    if (usingPreviewAPIMode) {
+      return (
+        <PreviewCustomerCenter
+          onDismiss={() => onDismiss && onDismiss()}
+          style={[{ flex: 1 }, style]}
+        />
+      );
+    }
+    
+    if (!InternalCustomerCenterView) {
+      throw new Error(LINKING_ERROR);
+    }
+    
+    return (
+      <InternalCustomerCenterView
+        onDismiss={() => onDismiss && onDismiss()}
+        onCustomActionSelected={(event: any) => onCustomActionSelected && onCustomActionSelected(event.nativeEvent)}
+        shouldShowCloseButton={shouldShowCloseButton}
+        style={[{ flex: 1 }, style]}
+      />
     );
   };
 
@@ -574,6 +659,17 @@ export default class RevenueCatUI {
           'onManagementOptionSelected',
           (event: CustomerCenterManagementOptionEvent) => callbacks.onManagementOptionSelected &&
             callbacks.onManagementOptionSelected(event)
+        );
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
+      }
+
+      if (callbacks.onCustomActionSelected) {
+        const subscription = customerCenterEventEmitter?.addListener(
+          'onCustomActionSelected',
+          (event: { actionId: string }) => callbacks.onCustomActionSelected &&
+            callbacks.onCustomActionSelected(event)
         );
         if (subscription) {
           subscriptions.push(subscription);
