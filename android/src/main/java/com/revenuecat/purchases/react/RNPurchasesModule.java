@@ -88,7 +88,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled,
-                               boolean diagnosticsEnabled, boolean automaticDeviceIdentifierCollectionEnabled) {
+                               boolean diagnosticsEnabled, 
+                               boolean automaticDeviceIdentifierCollectionEnabled) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
