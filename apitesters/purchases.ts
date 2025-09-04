@@ -280,17 +280,6 @@ async function checkConfigure() {
     useAmazon,
     shouldShowInAppMessagesAutomatically,
   });
-  Purchases.configure({
-    apiKey,
-    appUserID,
-    purchasesAreCompletedBy,
-    userDefaultsSuiteName,
-    storeKitVersion,
-    useAmazon,
-    shouldShowInAppMessagesAutomatically,
-    diagnosticsEnabled,
-    automaticDeviceIdentifierCollectionEnabled,
-  });
 
   await Purchases.setProxyURL("");
   await Purchases.setDebugLogsEnabled(true);
