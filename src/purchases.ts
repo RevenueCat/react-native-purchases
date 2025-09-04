@@ -242,6 +242,7 @@ export default class Purchases {
     entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
+    automaticDeviceIdentifierCollectionEnabled = true,
   }: PurchasesConfiguration): void {
 
     if (!customLogHandler) {
@@ -323,7 +324,8 @@ export default class Purchases {
       shouldShowInAppMessagesAutomatically,
       entitlementVerificationMode,
       pendingTransactionsForPrepaidPlansEnabled,
-      diagnosticsEnabled
+      diagnosticsEnabled,
+      automaticDeviceIdentifierCollectionEnabled
     );
   }
 
