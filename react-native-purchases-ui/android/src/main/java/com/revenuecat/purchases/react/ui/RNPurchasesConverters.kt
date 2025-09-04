@@ -1,9 +1,12 @@
 package com.revenuecat.purchases.react.ui
 
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
+import com.revenuecat.purchases.PresentedOfferingContext
+import kotlin.collections.get
 
 internal object RNPurchasesConverters {
 
@@ -44,5 +47,29 @@ internal object RNPurchasesConverters {
             }
         }
         return writableArray
+    }
+
+    fun presentedOfferingContext(offeringIdentifier: String, presentedOfferingContext: Map<*,*>?) : PresentedOfferingContext {
+        if (presentedOfferingContext == null) {
+            return PresentedOfferingContext(offeringIdentifier)
+        }
+
+        var targetingContext: PresentedOfferingContext.TargetingContext? = null;
+        val targetingContextMap = presentedOfferingContext["targetingContext"] as? Map<*, *>
+        if (targetingContextMap != null) {
+            val revision = (targetingContextMap["revision"] as? Number)?.toInt()
+            val ruleId = targetingContextMap["ruleId"] as? String
+            if (revision != null && ruleId != null) {
+                targetingContext = PresentedOfferingContext.TargetingContext(revision, ruleId)
+            }
+        }
+
+        val placementIdentifier = presentedOfferingContext["placementIdentifier"] as? String
+
+        return PresentedOfferingContext(
+            offeringIdentifier,
+            placementIdentifier,
+            targetingContext
+        )
     }
 }

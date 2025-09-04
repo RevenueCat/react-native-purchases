@@ -10,6 +10,8 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.Event
+import com.revenuecat.purchases.Package
+import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.react.ui.events.OnDismissEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseCancelledEvent
@@ -29,9 +31,13 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         private const val OFFERING_IDENTIFIER = "identifier"
         private const val OPTION_FONT_FAMILY = "fontFamily"
         private const val OPTION_DISPLAY_CLOSE_BUTTON = "displayCloseButton"
+
+        private const val OPTION_OFFERING_AVAILABLE_PACKAGES = "availablePackages"
+
+        private const val OPTION_OFFERING_AVAILABLE_PACKAGES_PRESENTED_OFFERING_CONTEXT = "presentedOfferingContext"
     }
 
-    abstract fun setOfferingId(view: T, identifier: String)
+    abstract fun setOfferingId(view: T, offeringId: String?, presentedOfferingContext: PresentedOfferingContext? = null)
 
     abstract fun setDisplayDismissButton(view: T, display: Boolean)
 
@@ -69,12 +75,26 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             // getDynamic crashes if the value is null, that's why we use props?.toHashMap
             return
         }
+
+        val offeringMap = options.getDynamic(OPTION_OFFERING).asMap();
+
         // this is a workaround for the fact that getDynamic doesn't work with null values
-        val offeringIdentifier =
-            options.getDynamic(OPTION_OFFERING)?.asMap()?.getString(OFFERING_IDENTIFIER)
-        offeringIdentifier?.let {
-            setOfferingId(view, it)
+        val offeringIdentifier = offeringMap.getString(OFFERING_IDENTIFIER)
+        if (offeringIdentifier == null) {
+            return
         }
+
+        val presentedOfferingContext = getPresentedOfferingContext(offeringIdentifier, offeringMap)
+
+        setOfferingId(view, offeringIdentifier, presentedOfferingContext)
+    }
+
+    private fun getPresentedOfferingContext(offeringIdentifier: String, offeringMap: ReadableMap?) : PresentedOfferingContext {
+        val availablePackages = offeringMap?.getArray(OPTION_OFFERING_AVAILABLE_PACKAGES)?.toArrayList()
+        val firstAvailablePackage = availablePackages?.firstOrNull() as? Map<*, *>;
+        val presentedOfferingContextMap = firstAvailablePackage?.get(OPTION_OFFERING_AVAILABLE_PACKAGES_PRESENTED_OFFERING_CONTEXT) as? Map<*,*>;
+
+        return RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, presentedOfferingContextMap)
     }
 
     private fun setFontFamilyProp(view: T, options: ReadableMap?) {

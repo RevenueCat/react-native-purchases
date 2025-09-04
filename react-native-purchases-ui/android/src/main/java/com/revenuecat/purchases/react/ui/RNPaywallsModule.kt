@@ -6,6 +6,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
 import com.revenuecat.purchases.hybridcommon.ui.PaywallSource
 import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
@@ -38,6 +39,7 @@ internal class RNPaywallsModule(
     @ReactMethod
     fun presentPaywall(
         offeringIdentifier: String?,
+        presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean?,
         fontFamily: String?,
         promise: Promise
@@ -45,6 +47,7 @@ internal class RNPaywallsModule(
         presentPaywall(
             null,
             offeringIdentifier,
+            presentedOfferingContext,
             displayCloseButton,
             fontFamily,
             promise
@@ -55,6 +58,7 @@ internal class RNPaywallsModule(
     fun presentPaywallIfNeeded(
         requiredEntitlementIdentifier: String,
         offeringIdentifier: String?,
+        presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean,
         fontFamily: String?,
         promise: Promise
@@ -62,6 +66,7 @@ internal class RNPaywallsModule(
         presentPaywall(
             requiredEntitlementIdentifier,
             offeringIdentifier,
+            presentedOfferingContext,
             displayCloseButton,
             fontFamily,
             promise
@@ -81,6 +86,7 @@ internal class RNPaywallsModule(
     private fun presentPaywall(
         requiredEntitlementIdentifier: String?,
         offeringIdentifier: String?,
+        presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean?,
         fontFamilyName: String?,
         promise: Promise
@@ -90,6 +96,11 @@ internal class RNPaywallsModule(
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
         }
 
+        val paywallSource: PaywallSource = offeringIdentifier?.let { offeringIdentifier ->
+            val presentedOfferingContextMap = RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, presentedOfferingContext?.toHashMap())
+            PaywallSource.OfferingIdentifierWithPresentedOfferingContext(offeringIdentifier, presentedOfferingContext=presentedOfferingContextMap)
+        } ?: PaywallSource.DefaultOffering
+
         // @ReactMethod is not guaranteed to run on the main thread
         activity.runOnUiThread {
             presentPaywallFromFragment(
@@ -97,9 +108,7 @@ internal class RNPaywallsModule(
                 PresentPaywallOptions(
                     requiredEntitlementIdentifier = requiredEntitlementIdentifier,
                     shouldDisplayDismissButton = displayCloseButton,
-                    paywallSource = offeringIdentifier?.let {
-                        PaywallSource.OfferingIdentifier(it)
-                    } ?: PaywallSource.DefaultOffering,
+                    paywallSource = paywallSource,
                     paywallResultListener = object : PaywallResultListener {
                         override fun onPaywallResult(paywallResult: String) {
                             promise.resolve(paywallResult)
