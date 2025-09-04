@@ -97,9 +97,8 @@ internal class RNPaywallsModule(
         }
 
         val paywallSource: PaywallSource = offeringIdentifier?.let { offeringIdentifier ->
-            RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, presentedOfferingContext?.toHashMap())?.let {
-                PaywallSource.OfferingIdentifierWithPresentedOfferingContext(offeringIdentifier, presentedOfferingContext=it)
-            }
+            val presentedOfferingContextMap = RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, presentedOfferingContext?.toHashMap())
+            PaywallSource.OfferingIdentifierWithPresentedOfferingContext(offeringIdentifier, presentedOfferingContext=presentedOfferingContextMap)
         } ?: PaywallSource.DefaultOffering
 
         // @ReactMethod is not guaranteed to run on the main thread

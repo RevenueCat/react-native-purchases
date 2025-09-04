@@ -84,16 +84,17 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             return
         }
 
-        val availablePackages = offeringMap.getArray(OPTION_OFFERING_AVAILABLE_PACKAGES)?.toArrayList() //as? Array<Map<*, *>>
-        val firstAvailablePackage = availablePackages?.firstOrNull() as? Map<*, *>;
-
-        val presentedOfferingContext = firstAvailablePackage?.let {
-            (it.get(OPTION_OFFERING_AVAILABLE_PACKAGES_PRESENTED_OFFERING_CONTEXT) as? Map<*,*>)?.let {
-                RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, it)
-            }
-        } ?: PresentedOfferingContext(offeringIdentifier)
+        val presentedOfferingContext = getPresentedOfferingContext(offeringIdentifier, offeringMap)
 
         setOfferingId(view, offeringIdentifier, presentedOfferingContext)
+    }
+
+    private fun getPresentedOfferingContext(offeringIdentifier: String, offeringMap: ReadableMap?) : PresentedOfferingContext {
+        val availablePackages = offeringMap?.getArray(OPTION_OFFERING_AVAILABLE_PACKAGES)?.toArrayList()
+        val firstAvailablePackage = availablePackages?.firstOrNull() as? Map<*, *>;
+        val presentedOfferingContextMap = firstAvailablePackage?.get(OPTION_OFFERING_AVAILABLE_PACKAGES_PRESENTED_OFFERING_CONTEXT) as? Map<*,*>;
+
+        return RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, presentedOfferingContextMap)
     }
 
     private fun setFontFamilyProp(view: T, options: ReadableMap?) {

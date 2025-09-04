@@ -49,7 +49,7 @@ internal object RNPurchasesConverters {
         return writableArray
     }
 
-    fun presentedOfferingContext(offeringIdentifier: String, presentedOfferingContext: Map<*,*>?) : PresentedOfferingContext? {
+    fun presentedOfferingContext(offeringIdentifier: String, presentedOfferingContext: Map<*,*>?) : PresentedOfferingContext {
         if (presentedOfferingContext == null) {
             return PresentedOfferingContext(offeringIdentifier)
         }
@@ -64,9 +64,11 @@ internal object RNPurchasesConverters {
             }
         }
 
+        val placementIdentifier = presentedOfferingContext["placementIdentifier"] as? String
+
         return PresentedOfferingContext(
             offeringIdentifier,
-            placementIdentifier = presentedOfferingContext["placementIdentifier"] as? String,
+            placementIdentifier,
             targetingContext
         )
     }

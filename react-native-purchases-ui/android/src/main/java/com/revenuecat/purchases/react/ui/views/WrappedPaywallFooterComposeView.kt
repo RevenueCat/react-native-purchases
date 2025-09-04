@@ -16,9 +16,14 @@ open class WrappedPaywallFooterComposeView(context: Context) : ComposeViewWrappe
 
     @OptIn(InternalRevenueCatAPI::class)
     fun setOfferingId(offeringId: String?, presentedOfferingContext: PresentedOfferingContext? = null) {
-        val offeringId = offeringId ?: "default"
-        val presentedOfferingContext = presentedOfferingContext ?: PresentedOfferingContext(offeringId)
-        wrappedView?.setOfferingIdAndPresentedOfferingContext(offeringId, presentedOfferingContext)
+        if (offeringId == null) {
+            // We'll get rid of this deprecated API usage once https://github.com/RevenueCat/purchases-android/pull/2658 is merged
+            wrappedView?.setOfferingId(null)
+        }
+        else {
+            val presentedOfferingContext = presentedOfferingContext ?: PresentedOfferingContext(offeringId)
+            wrappedView?.setOfferingIdAndPresentedOfferingContext(offeringId, presentedOfferingContext)
+        }
     }
 
     fun setFontProvider(customFontProvider: CustomFontProvider) {
