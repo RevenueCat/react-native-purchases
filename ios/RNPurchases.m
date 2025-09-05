@@ -62,7 +62,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled 
-                  automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled) {
+                  automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled,
+                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -74,7 +75,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode.mappingNSNullToNil
                                            diagnosticsEnabled:diagnosticsEnabled
-                   automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled];
+                   automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled
+                                    preferredUILocaleOverride:preferredUILocaleOverride.mappingNSNullToNil];
     purchases.delegate = self;
 }
 

@@ -243,6 +243,7 @@ export default class Purchases {
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
+    preferredUILocaleOverride = null,
   }: PurchasesConfiguration): void {
 
     if (!customLogHandler) {
@@ -325,7 +326,8 @@ export default class Purchases {
       entitlementVerificationMode,
       pendingTransactionsForPrepaidPlansEnabled,
       diagnosticsEnabled,
-      automaticDeviceIdentifierCollectionEnabled
+      automaticDeviceIdentifierCollectionEnabled,
+      preferredUILocaleOverride,
     );
   }
 
