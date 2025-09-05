@@ -340,6 +340,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         promise.resolve(Purchases.isConfigured());
     }
 
+    @ReactMethod
+    public void overridePreferredLocale(@Nullable String locale) {
+        CommonKt.overridePreferredLocale(locale);
+    }
+
     //================================================================================
     // Virtual Currencies 
     //================================================================================

@@ -432,6 +432,10 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative) {
     [RCCommonFunctionality setCreative:creative.mappingNSNullToNil];
 }
 
+RCT_EXPORT_METHOD(overridePreferredLocale:(nullable NSString *)locale) {
+    [RCCommonFunctionality overridePreferredLocale:locale.mappingNSNullToNil];
+}
+
 RCT_REMAP_METHOD(canMakePayments,
                  canMakePaymentsWithFeatures:(NSArray<NSNumber *> *)features
                  resolve:(RCTPromiseResolveBlock)resolve

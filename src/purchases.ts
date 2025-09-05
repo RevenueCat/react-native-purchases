@@ -1426,6 +1426,20 @@ export default class Purchases {
   }
 
   /**
+   * Overrides the preferred UI locale used by RevenueCat UI components.
+   * Pass null to clear the override and use the device's locale.
+   *
+   * @param locale A BCP 47 locale identifier (e.g., "en-US") or null to clear.
+   * @returns {Promise<void>}
+   */
+  public static async overridePreferredLocale(
+    locale: string | null
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.overridePreferredLocale(locale);
+  }
+
+  /**
    * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
    * and optionally, whether a list of specified feature types are supported.
    *

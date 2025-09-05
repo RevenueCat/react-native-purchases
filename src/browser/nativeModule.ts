@@ -274,6 +274,9 @@ export const browserNativeModuleRNPurchases = {
   setCreative: async (_creative: string) => {
     methodNotSupportedOnWeb('setCreative');
   },
+  overridePreferredLocale: async (_locale: string | null) => {
+    methodNotSupportedOnWeb('overridePreferredLocale');
+  },
   canMakePayments: async (_features: any[]) => {
     return true;
   },
