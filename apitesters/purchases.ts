@@ -163,6 +163,7 @@ async function checkConfigure() {
   const shouldShowInAppMessagesAutomatically: boolean = true;
   const diagnosticsEnabled: boolean = true;
   const automaticDeviceIdentifierCollectionEnabled: boolean = true;
+  const overridePreferredLocale: string = "";
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -229,6 +230,18 @@ async function checkConfigure() {
     shouldShowInAppMessagesAutomatically,
     diagnosticsEnabled,
     automaticDeviceIdentifierCollectionEnabled,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+    diagnosticsEnabled,
+    automaticDeviceIdentifierCollectionEnabled,
+    overridePreferredLocale,
   });
 
   // PurchasesAreCompletedBy == MY_APP
@@ -429,4 +442,9 @@ async function checkInvalidateVirtualCurrenciesCache() {
 
 async function checkGetCachedVirtualCurrencies() {
   const cachedVirtualCurrencies: PurchasesVirtualCurrencies | null = await Purchases.getCachedVirtualCurrencies();
+}
+
+async function checkOverridePreferredLocale() {
+  const preferredUILocaleOverride: string | null = "en-US";
+  await Purchases.overridePreferredLocale(preferredUILocaleOverride);
 }
