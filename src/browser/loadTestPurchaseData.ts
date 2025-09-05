@@ -32,18 +32,16 @@ export async function loadTestPurchaseData(packageIdentifier: string, offeringId
     throw new Error(`Package with identifier ${packageIdentifier} not found in offering ${offeringIdentifier}`);
   }
 
-  const packageInfo = targetPackage;
-
   // Build offers array
   const offers: string[] = [];
-  if (packageInfo.product.introPrice) {
-    offers.push(`Intro: ${packageInfo.product.introPrice.priceString} for ${packageInfo.product.introPrice.cycles} ${packageInfo.product.introPrice.periodUnit.toLowerCase()}(s)`);
+  if (targetPackage.product.introPrice) {
+    offers.push(`Intro: ${targetPackage.product.introPrice.priceString} for ${targetPackage.product.introPrice.cycles} ${targetPackage.product.introPrice.periodUnit.toLowerCase()}(s)`);
   }
-  if (packageInfo.product.discounts && packageInfo.product.discounts.length > 0) {
-    packageInfo.product.discounts.forEach(discount => {
+  if (targetPackage.product.discounts && targetPackage.product.discounts.length > 0) {
+    targetPackage.product.discounts.forEach(discount => {
       offers.push(`Discount: ${discount.priceString} for ${discount.cycles} ${discount.periodUnit.toLowerCase()}(s)`);
     });
   }
 
-  return { packageInfo, offers };
+  return { packageInfo: targetPackage, offers };
 }

@@ -7,11 +7,13 @@ import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult, isPurchasesVirtualCurrencies } from './typeGuards';
 import { isExpoGo } from '../utils/environment';
 import { showTestPurchaseAlert } from './showTestPurchaseAlert';
-import { ensurePurchasesConfigured, methodNotSupportedOnWeb, createMockTransaction } from './utils';
+import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 
 
 const packageVersion = '9.1.0';
 
+// This will allow only to purchase simulated products in Expo Go since 
+// neither StoreKit, Play Store, nor Web Billing store are available.
 async function purchasePackageExpoGo(packageIdentifier: string, presentedOfferingContext: any): Promise<MakePurchaseResult> {
   const offeringIdentifier = presentedOfferingContext?.offeringIdentifier;
   if (!offeringIdentifier) {
@@ -19,19 +21,16 @@ async function purchasePackageExpoGo(packageIdentifier: string, presentedOfferin
   }
 
   return new Promise((resolve, reject) => {
-    const handlePurchase = async (packageInfo: PurchasesPackage) => {
+    const handlePurchase = async (_: PurchasesPackage) => {
       try {
-        // TODO: Actually purchase the package.
-        const customerInfo = validateAndTransform(
-          await PurchasesCommon.getInstance().getCustomerInfo(), 
-          isCustomerInfo, 
-          'CustomerInfo'
+        // @ts-expect-error Using internal method
+        const purchaseResult: MakePurchaseResult = await PurchasesCommon.getInstance()._purchaseSimulatedStorePackage(
+          {
+            packageIdentifier: packageIdentifier,
+            presentedOfferingContext: presentedOfferingContext,
+          },
         );
-        resolve({
-          productIdentifier: packageInfo.product.identifier,
-          customerInfo: customerInfo,
-          transaction: createMockTransaction(packageInfo.product.identifier), // TODO: get proper transaction data.
-        });
+        resolve(purchaseResult as MakePurchaseResult);
       } catch (error) {
         reject(error);
       }
