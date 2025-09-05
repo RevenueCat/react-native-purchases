@@ -227,7 +227,9 @@ export default class Purchases {
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
    * Default is null, which will make the SDK use standardUserDefaults.
    * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to true to enable pending transactions for prepaid subscriptions in Google Play.
-   * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
+   * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics. 
+   * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to enable automatic device identifier collection.
+   * @param {String?} [overridePreferredLocale=null] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -243,7 +245,7 @@ export default class Purchases {
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
-    preferredUILocaleOverride = null,
+    overridePreferredLocale,
   }: PurchasesConfiguration): void {
 
     if (!customLogHandler) {
@@ -327,7 +329,7 @@ export default class Purchases {
       pendingTransactionsForPrepaidPlansEnabled,
       diagnosticsEnabled,
       automaticDeviceIdentifierCollectionEnabled,
-      preferredUILocaleOverride,
+      overridePreferredLocale,
     );
   }
 
