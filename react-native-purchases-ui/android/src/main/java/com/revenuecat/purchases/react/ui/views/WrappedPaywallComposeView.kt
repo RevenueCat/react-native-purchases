@@ -2,6 +2,7 @@ package com.revenuecat.purchases.react.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
+import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 import com.revenuecat.purchases.ui.revenuecatui.fonts.FontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
@@ -20,8 +21,8 @@ class WrappedPaywallComposeView(context: Context) : ComposeViewWrapper<PaywallVi
         wrappedView?.setDismissHandler(dismissHandler)
     }
 
-    fun setOfferingId(offeringId: String?) {
-        wrappedView?.setOfferingId(offeringId)
+    fun setOfferingId(offeringId: String?, presentedOfferingContext: PresentedOfferingContext? = null) {
+        wrappedView?.setOfferingId(offeringId, presentedOfferingContext)
     }
 
     fun setFontProvider(fontProvider: FontProvider?) {

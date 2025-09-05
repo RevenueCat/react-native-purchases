@@ -10,6 +10,7 @@
 #import "UIView+React.h"
 
 @import PurchasesHybridCommonUI;
+@import RevenueCat;
 @import RevenueCatUI;
 
 static NSString *const KeyCustomerInfo = @"customerInfo";
@@ -81,7 +82,9 @@ API_AVAILABLE(ios(15.0))
         if (offering && ![offering isKindOfClass:[NSNull class]]) {
             NSString *identifier = offering[@"identifier"];
             if (identifier) {
-                [self.paywallViewController updateWithOfferingIdentifier:identifier];
+                RCPresentedOfferingContext *presentedOfferingContext = [self presentedOfferingContextFromOffering:offering];
+                [self.paywallViewController updateWithOfferingIdentifier:identifier
+                                                presentedOfferingContext:presentedOfferingContext];
             }
         }
 
@@ -98,6 +101,47 @@ API_AVAILABLE(ios(15.0))
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     }
+}
+
+- (RCPresentedOfferingContext *)presentedOfferingContextFromOffering:(NSDictionary *)offering {
+    NSArray *availablePackages = offering[@"availablePackages"];
+    if (!availablePackages || ![availablePackages isKindOfClass:[NSArray class]] || [availablePackages count] < 1) {
+        return nil;
+    }
+    
+    NSDictionary *firstAvailablePackage = availablePackages[0];
+    if (!firstAvailablePackage || ![firstAvailablePackage isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    
+    NSDictionary *presentedOfferingContextOptions = firstAvailablePackage[@"presentedOfferingContext"];
+    if (!presentedOfferingContextOptions || [presentedOfferingContextOptions isKindOfClass:[NSNull class]]) {
+        return nil;
+    }
+    
+    NSString *offeringIdentifier = presentedOfferingContextOptions[@"offeringIdentifier"];
+    if (!offeringIdentifier || [offeringIdentifier isKindOfClass:[NSNull class]]) {
+        return nil;
+    }
+    
+    NSString *placementIdentifier = presentedOfferingContextOptions[@"placementIdentifier"];
+    if (![placementIdentifier isKindOfClass:[NSString class]]) {
+        placementIdentifier = nil;
+    }
+    
+    RCTargetingContext *targetingContext;
+    NSDictionary *targetingContextOptions = presentedOfferingContextOptions[@"targetingContext"];
+    if (targetingContextOptions && ![targetingContextOptions isKindOfClass:[NSNull class]]) {
+        NSNumber *revision = targetingContextOptions[@"revision"];
+        NSString *ruleId = targetingContextOptions[@"ruleId"];
+        if (revision && [revision isKindOfClass:[NSNumber class]] && ruleId && [ruleId isKindOfClass:[NSString class]]) {
+            targetingContext = [[RCTargetingContext alloc] initWithRevision:[revision integerValue] ruleId:ruleId];
+        }
+    }
+    
+    return [[RCPresentedOfferingContext alloc] initWithOfferingIdentifier:offeringIdentifier
+                                                      placementIdentifier:placementIdentifier
+                                                         targetingContext:targetingContext];
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller

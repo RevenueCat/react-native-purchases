@@ -2,6 +2,7 @@ package com.revenuecat.purchases.react.ui
 
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
+import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.react.ui.events.OnMeasureEvent
 import com.revenuecat.purchases.react.ui.views.WrappedPaywallFooterComposeView
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
@@ -72,8 +73,12 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<WrappedPaywallF
         }
     }
 
-    override fun setOfferingId(view: WrappedPaywallFooterComposeView, identifier: String) {
-        view.setOfferingId(identifier)
+    override fun setOfferingId(
+        view: WrappedPaywallFooterComposeView,
+        offeringId: String?,
+        presentedOfferingContext: PresentedOfferingContext?
+    ) {
+        view.setOfferingId(offeringId, presentedOfferingContext)
     }
 
     override fun setFontFamily(view: WrappedPaywallFooterComposeView, customFontProvider: CustomFontProvider) {
