@@ -6,7 +6,7 @@ import {
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult, isPurchasesVirtualCurrencies } from './typeGuards';
 import { isExpoGo } from '../utils/environment';
-import { showTestPurchaseAlert } from './showTestPurchaseAlert';
+import { showSimulatedPurchaseAlert } from './showSimulatedPurchaseAlert';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 
 
@@ -44,7 +44,7 @@ async function purchasePackageExpoGo(packageIdentifier: string, presentedOfferin
       });
     };
 
-    showTestPurchaseAlert(packageIdentifier, offeringIdentifier, handlePurchase, handleCancel)
+    showSimulatedPurchaseAlert(packageIdentifier, offeringIdentifier, handlePurchase, handleCancel)
         .catch(reject);
   });
 }

@@ -1,11 +1,11 @@
 import { PurchasesPackage } from '@revenuecat/purchases-typescript-internal';
 import { Alert } from 'react-native';
-import { loadTestPurchaseData, TestPurchaseData } from './loadTestPurchaseData';
+import { loadSimulatedPurchaseData, SimulatedPurchaseData } from './loadSimulatedPurchaseData';
 
 /**
- * Shows a test purchase alert for platforms that don't support DOM manipulation.
+ * Shows a simulated purchase alert for platforms that don't support DOM manipulation.
  */
-export function showTestPurchaseAlert(
+export function showSimulatedPurchaseAlert(
   packageIdentifier: string, 
   offeringIdentifier: string,
   onPurchase: (packageInfo: PurchasesPackage) => Promise<void>,
@@ -17,7 +17,7 @@ export function showTestPurchaseAlert(
       resolve();
     };
 
-    const handlePurchase = async (data: TestPurchaseData) => {
+    const handlePurchase = async (data: SimulatedPurchaseData) => {
       try {
         await onPurchase(data.packageInfo);
         resolve();
@@ -26,7 +26,7 @@ export function showTestPurchaseAlert(
       }
     };
 
-    loadTestPurchaseData(packageIdentifier, offeringIdentifier)
+    loadSimulatedPurchaseData(packageIdentifier, offeringIdentifier)
       .then((data) => {
         const { packageInfo, offers } = data;
 

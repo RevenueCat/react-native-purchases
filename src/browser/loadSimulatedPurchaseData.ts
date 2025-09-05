@@ -4,10 +4,8 @@ import {
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 import { validateAndTransform, isPurchasesOfferings } from './typeGuards';
 
-/**
- * Common data for test purchases - used by both modal and alert
- */
-export interface TestPurchaseData {
+
+export interface SimulatedPurchaseData {
   packageInfo: PurchasesPackage;
   offers: string[];
 }
@@ -15,7 +13,7 @@ export interface TestPurchaseData {
 /**
  * Loads package data and formats offer information
  */
-export async function loadTestPurchaseData(packageIdentifier: string, offeringIdentifier: string): Promise<TestPurchaseData> {
+export async function loadSimulatedPurchaseData(packageIdentifier: string, offeringIdentifier: string): Promise<SimulatedPurchaseData> {
   const offeringsResult = await PurchasesCommon.getInstance().getOfferings();
   const offerings = validateAndTransform(offeringsResult, isPurchasesOfferings, 'PurchasesOfferings');
 
