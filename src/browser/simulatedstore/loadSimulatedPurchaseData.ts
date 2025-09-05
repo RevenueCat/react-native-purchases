@@ -2,7 +2,7 @@ import {
   PurchasesPackage,
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
-import { validateAndTransform, isPurchasesOfferings } from './typeGuards';
+import { validateAndTransform, isPurchasesOfferings } from '../typeGuards';
 
 
 export interface SimulatedPurchaseData {

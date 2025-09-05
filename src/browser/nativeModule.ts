@@ -1,53 +1,15 @@
 import {
   INTRO_ELIGIBILITY_STATUS,
   MakePurchaseResult,
-  PurchasesPackage,
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult, isPurchasesVirtualCurrencies } from './typeGuards';
 import { isExpoGo } from '../utils/environment';
-import { showSimulatedPurchaseAlert } from './showSimulatedPurchaseAlert';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
+import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
 
 
 const packageVersion = '9.1.0';
-
-// This will allow only to purchase simulated products in Expo Go since 
-// neither StoreKit, Play Store, nor Web Billing store are available.
-async function purchasePackageExpoGo(packageIdentifier: string, presentedOfferingContext: any): Promise<MakePurchaseResult> {
-  const offeringIdentifier = presentedOfferingContext?.offeringIdentifier;
-  if (!offeringIdentifier) {
-    throw new Error('No offering identifier provided in presentedOfferingContext');
-  }
-
-  return new Promise((resolve, reject) => {
-    const handlePurchase = async (_: PurchasesPackage) => {
-      try {
-        // @ts-expect-error Using internal method
-        const purchaseResult: MakePurchaseResult = await PurchasesCommon.getInstance()._purchaseSimulatedStorePackage(
-          {
-            packageIdentifier: packageIdentifier,
-            presentedOfferingContext: presentedOfferingContext,
-          },
-        );
-        resolve(purchaseResult as MakePurchaseResult);
-      } catch (error) {
-        reject(error);
-      }
-    };
-
-    const handleCancel = () => {
-      reject({
-        code: '1',
-        userCancelled: true,
-        message: 'User cancelled purchase.'
-      });
-    };
-
-    showSimulatedPurchaseAlert(packageIdentifier, offeringIdentifier, handlePurchase, handleCancel)
-        .catch(reject);
-  });
-}
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
@@ -185,7 +147,7 @@ export const browserNativeModuleRNPurchases = {
     ensurePurchasesConfigured();
 
     if (isExpoGo()) {
-      return await purchasePackageExpoGo(packageIdentifier, presentedOfferingContext);
+      return await purchaseSimulatedPackage(packageIdentifier, presentedOfferingContext);
     }
 
     const purchaseResult = await PurchasesCommon.getInstance().purchasePackage(
