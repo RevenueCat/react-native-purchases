@@ -89,7 +89,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled,
                                boolean diagnosticsEnabled, 
-                               boolean automaticDeviceIdentifierCollectionEnabled) {
+                               boolean automaticDeviceIdentifierCollectionEnabled,
+                               @Nullable String preferredUILocaleOverride) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
@@ -107,7 +108,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             entitlementVerificationMode,
             pendingTransactionsForPrepaidPlansEnabled,
             diagnosticsEnabled,
-            automaticDeviceIdentifierCollectionEnabled
+            automaticDeviceIdentifierCollectionEnabled,
+            preferredUILocaleOverride
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }
@@ -338,6 +340,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void isConfigured(Promise promise) {
         promise.resolve(Purchases.isConfigured());
+    }
+
+    @ReactMethod
+    public void overridePreferredLocale(@Nullable String locale) {
+        CommonKt.overridePreferredLocale(locale);
     }
 
     //================================================================================
