@@ -163,7 +163,7 @@ async function checkConfigure() {
   const shouldShowInAppMessagesAutomatically: boolean = true;
   const diagnosticsEnabled: boolean = true;
   const automaticDeviceIdentifierCollectionEnabled: boolean = true;
-  const overridePreferredLocale: string = "";
+  const preferredUILocaleOverride: string = "";
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -241,7 +241,7 @@ async function checkConfigure() {
     shouldShowInAppMessagesAutomatically,
     diagnosticsEnabled,
     automaticDeviceIdentifierCollectionEnabled,
-    overridePreferredLocale,
+    preferredUILocaleOverride,
   });
 
   // PurchasesAreCompletedBy == MY_APP

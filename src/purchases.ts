@@ -229,7 +229,7 @@ export default class Purchases {
    * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to true to enable pending transactions for prepaid subscriptions in Google Play.
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics. 
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
-   * @param {String?} [overridePreferredLocale] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
+   * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -245,7 +245,7 @@ export default class Purchases {
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
-    overridePreferredLocale,
+    preferredUILocaleOverride,
   }: PurchasesConfiguration): void {
 
     if (!customLogHandler) {
@@ -329,7 +329,7 @@ export default class Purchases {
       pendingTransactionsForPrepaidPlansEnabled,
       diagnosticsEnabled,
       automaticDeviceIdentifierCollectionEnabled,
-      overridePreferredLocale,
+      preferredUILocaleOverride,
     );
   }
 
