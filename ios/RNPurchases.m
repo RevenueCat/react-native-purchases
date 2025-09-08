@@ -62,7 +62,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled 
-                  automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled,
+                  automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled
                   preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
