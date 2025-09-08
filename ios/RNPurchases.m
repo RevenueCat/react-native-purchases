@@ -76,7 +76,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                              verificationMode:entitlementVerificationMode.mappingNSNullToNil
                                            diagnosticsEnabled:diagnosticsEnabled
                    automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled
-                                    preferredUILocaleOverride:preferredUILocaleOverride.mappingNSNullToNil];
+                                              preferredLocale:preferredUILocaleOverride.mappingNSNullToNil];
     purchases.delegate = self;
 }
 
