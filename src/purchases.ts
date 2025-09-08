@@ -227,7 +227,9 @@ export default class Purchases {
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
    * Default is null, which will make the SDK use standardUserDefaults.
    * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to true to enable pending transactions for prepaid subscriptions in Google Play.
-   * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
+   * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics. 
+   * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
+   * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -243,6 +245,7 @@ export default class Purchases {
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
+    preferredUILocaleOverride,
   }: PurchasesConfiguration): void {
 
     if (!customLogHandler) {
@@ -325,7 +328,8 @@ export default class Purchases {
       entitlementVerificationMode,
       pendingTransactionsForPrepaidPlansEnabled,
       diagnosticsEnabled,
-      automaticDeviceIdentifierCollectionEnabled
+      automaticDeviceIdentifierCollectionEnabled,
+      preferredUILocaleOverride,
     );
   }
 
@@ -1423,6 +1427,20 @@ export default class Purchases {
   public static async setCreative(creative: string | null): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.setCreative(creative);
+  }
+
+  /**
+   * Overrides the preferred UI locale used by RevenueCat UI components.
+   * Pass null to clear the override and use the device's locale.
+   *
+   * @param locale A BCP 47 locale identifier (e.g., "en-US") or null to clear.
+   * @returns {Promise<void>}
+   */
+  public static async overridePreferredLocale(
+    locale: string | null
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.overridePreferredLocale(locale);
   }
 
   /**
