@@ -651,7 +651,7 @@ describe("Purchases", () => {
       shouldShowInAppMessagesAutomatically: false,
       diagnosticsEnabled: true,
       automaticDeviceIdentifierCollectionEnabled: false,
-      overridePreferredLocale: "es_ES",
+      preferredUILocaleOverride: "es_ES",
     });
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false, true, false, "es_ES");
 
