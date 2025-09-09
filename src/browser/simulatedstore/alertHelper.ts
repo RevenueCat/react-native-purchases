@@ -9,11 +9,17 @@ export function showSimulatedPurchaseAlert(
   packageIdentifier: string, 
   offeringIdentifier: string,
   onPurchase: (packageInfo: PurchasesPackage) => Promise<void>,
+  onFailedPurchase: () => void,
   onCancel: () => void
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const handleCancel = () => {
       onCancel();
+      resolve();
+    };
+
+    const handleFailedPurchase = () => {
+      onFailedPurchase();
       resolve();
     };
 
@@ -54,7 +60,12 @@ export function showSimulatedPurchaseAlert(
               onPress: handleCancel,
             },
             {
-              text: 'Test Purchase',
+              text: 'Test Failed Purchase',
+              style: 'destructive',
+              onPress: handleFailedPurchase,
+            },
+            {
+              text: 'Test Valid Purchase',
               onPress: () => handlePurchase(data),
             },
           ],

@@ -83,9 +83,10 @@ describe('alertHelper', () => {
       mockLoadSimulatedPurchaseData.mockResolvedValue(mockPurchaseData);
       
       const onPurchase = jest.fn().mockResolvedValue(undefined);
+      const onFailedPurchase = jest.fn();
       const onCancel = jest.fn();
 
-      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onCancel);
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
 
       // Wait for async operations to complete
       await new Promise(setImmediate);
@@ -97,7 +98,8 @@ describe('alertHelper', () => {
         expect.stringContaining('⚠️ This is a test purchase'),
         expect.arrayContaining([
           expect.objectContaining({ text: 'Cancel' }),
-          expect.objectContaining({ text: 'Test Purchase' })
+          expect.objectContaining({ text: 'Test Failed Purchase' }),
+          expect.objectContaining({ text: 'Test Valid Purchase' })
         ]),
         { cancelable: true, onDismiss: expect.any(Function) }
       );
@@ -112,8 +114,8 @@ describe('alertHelper', () => {
       expect(alertMessage).toContain('• Intro: $0.99 for 1 month(s)');
       expect(alertMessage).toContain('• Discount: $4.99 for 2 week(s)');
 
-      // Simulate user clicking Test Purchase
-      const testPurchaseButton = mockAlert.mock.calls[0]!![2]!![1];
+      // Simulate user clicking Test Valid Purchase (now at index 2)
+      const testPurchaseButton = mockAlert.mock.calls[0]!![2]!![2];
       await testPurchaseButton.onPress!!();
 
       expect(onPurchase).toHaveBeenCalledWith(mockPackageInfo);
@@ -138,9 +140,10 @@ describe('alertHelper', () => {
       mockLoadSimulatedPurchaseData.mockResolvedValue(simplePackageData);
       
       const onPurchase = jest.fn().mockResolvedValue(undefined);
+      const onFailedPurchase = jest.fn();
       const onCancel = jest.fn();
 
-      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onCancel);
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
 
       // Wait for async operations to complete
       await new Promise(setImmediate);
@@ -160,9 +163,10 @@ describe('alertHelper', () => {
       mockLoadSimulatedPurchaseData.mockResolvedValue(mockPurchaseData);
       
       const onPurchase = jest.fn();
+      const onFailedPurchase = jest.fn();
       const onCancel = jest.fn();
 
-      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onCancel);
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
 
       // Wait for async operations to complete
       await new Promise(setImmediate);
@@ -180,9 +184,10 @@ describe('alertHelper', () => {
       mockLoadSimulatedPurchaseData.mockResolvedValue(mockPurchaseData);
       
       const onPurchase = jest.fn();
+      const onFailedPurchase = jest.fn();
       const onCancel = jest.fn();
 
-      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onCancel);
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
 
       // Wait for async operations to complete
       await new Promise(setImmediate);
@@ -201,9 +206,10 @@ describe('alertHelper', () => {
       mockLoadSimulatedPurchaseData.mockRejectedValue(error);
       
       const onPurchase = jest.fn();
+      const onFailedPurchase = jest.fn();
       const onCancel = jest.fn();
 
-      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onCancel);
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
 
       // Wait for async operations to complete
       await new Promise(setImmediate);
@@ -232,15 +238,16 @@ describe('alertHelper', () => {
       mockLoadSimulatedPurchaseData.mockResolvedValue(mockPurchaseData);
       
       const onPurchase = jest.fn().mockRejectedValue(purchaseError);
+      const onFailedPurchase = jest.fn();
       const onCancel = jest.fn();
 
-      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onCancel);
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
 
       // Wait for async operations to complete
       await new Promise(setImmediate);
 
-      // Simulate user clicking Test Purchase
-      const testPurchaseButton = mockAlert.mock.calls[0]!![2]!![1];
+      // Simulate user clicking Test Valid Purchase (now at index 2)
+      const testPurchaseButton = mockAlert.mock.calls[0]!![2]!![2];
       // Don't await this since it will reject
       testPurchaseButton.onPress!!();
 
@@ -253,9 +260,10 @@ describe('alertHelper', () => {
       mockLoadSimulatedPurchaseData.mockRejectedValue(nonErrorObject);
       
       const onPurchase = jest.fn();
+      const onFailedPurchase = jest.fn();
       const onCancel = jest.fn();
 
-      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onCancel);
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
 
       // Wait for async operations to complete
       await new Promise(setImmediate);
@@ -267,6 +275,27 @@ describe('alertHelper', () => {
       // Simulate clicking Close to resolve the promise
       const closeButton = mockAlert.mock.calls[0]!![2]!![0];
       closeButton.onPress!!();
+
+      await alertPromise;
+    });
+
+    it('should handle failed purchase button press', async () => {
+      mockLoadSimulatedPurchaseData.mockResolvedValue(mockPurchaseData);
+      
+      const onPurchase = jest.fn();
+      const onFailedPurchase = jest.fn();
+      const onCancel = jest.fn();
+
+      const alertPromise = showSimulatedPurchaseAlert('test-package', 'test-offering', onPurchase, onFailedPurchase, onCancel);
+
+      // Wait for async operations to complete
+      await new Promise(setImmediate);
+
+      // Simulate user clicking Test Failed Purchase (at index 1)
+      const testFailedPurchaseButton = mockAlert.mock.calls[0]!![2]!![1];
+      testFailedPurchaseButton.onPress!!();
+
+      expect(onFailedPurchase).toHaveBeenCalled();
 
       await alertPromise;
     });

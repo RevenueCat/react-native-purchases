@@ -1,6 +1,7 @@
 import { purchaseSimulatedPackage } from '../src/browser/simulatedstore/purchaseSimulatedPackageHelper';
 import { showSimulatedPurchaseAlert } from '../src/browser/simulatedstore/alertHelper';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
+import { PURCHASES_ERROR_CODE } from '@revenuecat/purchases-typescript-internal';
 
 // Mock dependencies
 jest.mock('../src/browser/simulatedstore/alertHelper');
@@ -37,7 +38,7 @@ describe('purchaseSimulatedPackageHelper', () => {
     it('should successfully complete purchase flow', async () => {
       // Mock the alert to call onPurchase callback immediately
       mockShowSimulatedPurchaseAlert.mockImplementation(
-        async (packageId, _offeringId, onPurchase, _onCancel) => {
+        async (packageId, _offeringId, onPurchase, _onFailedPurchase, _onCancel) => {
           const mockPackageInfo = {
             identifier: packageId,
             product: { identifier: 'test-product' }
@@ -60,6 +61,7 @@ describe('purchaseSimulatedPackageHelper', () => {
         'test-package',
         'test-offering',
         expect.any(Function),
+        expect.any(Function),
         expect.any(Function)
       );
       expect(mockInstance._purchaseSimulatedStorePackage).toHaveBeenCalledWith({
@@ -71,7 +73,7 @@ describe('purchaseSimulatedPackageHelper', () => {
     it('should handle user cancellation', async () => {
       // Mock the alert to call onCancel callback
       mockShowSimulatedPurchaseAlert.mockImplementation(
-        async (_packageId, _offeringId, _onPurchase, onCancel) => {
+        async (_packageId, _offeringId, _onPurchase, _onFailedPurchase, onCancel) => {
           onCancel();
           return Promise.resolve();
         }
@@ -84,7 +86,7 @@ describe('purchaseSimulatedPackageHelper', () => {
 
       await expect(purchaseSimulatedPackage('test-package', mockPresentedOfferingContext))
         .rejects.toEqual({
-          code: '1',
+          code: PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
           userCancelled: true,
           message: 'User cancelled purchase.'
         });
@@ -97,7 +99,7 @@ describe('purchaseSimulatedPackageHelper', () => {
 
       // Mock the alert to call onPurchase callback
       mockShowSimulatedPurchaseAlert.mockImplementation(
-        async (packageId, _offeringId, onPurchase, _onCancel) => {
+        async (packageId, _offeringId, onPurchase, _onFailedPurchase, _onCancel) => {
           const mockPackageInfo = {
             identifier: packageId,
             product: { identifier: 'test-product' }
@@ -156,6 +158,7 @@ describe('purchaseSimulatedPackageHelper', () => {
         'my-package',
         'my-offering',
         expect.any(Function),
+        expect.any(Function),
         expect.any(Function)
       );
     }, 1000);
@@ -167,6 +170,30 @@ describe('purchaseSimulatedPackageHelper', () => {
 
       await expect(purchaseSimulatedPackage('test-package', contextWithUndefinedOffering))
         .rejects.toThrow('No offering identifier provided in presentedOfferingContext');
+    });
+
+    it('should handle failed purchase button press', async () => {
+      // Mock the alert to call onFailedPurchase callback
+      mockShowSimulatedPurchaseAlert.mockImplementation(
+        async (_packageId, _offeringId, _onPurchase, onFailedPurchase, _onCancel) => {
+          onFailedPurchase();
+          return Promise.resolve();
+        }
+      );
+
+      const mockInstance = {
+        _purchaseSimulatedStorePackage: jest.fn()
+      };
+      mockPurchasesCommon.getInstance.mockReturnValue(mockInstance as any);
+
+      await expect(purchaseSimulatedPackage('test-package', mockPresentedOfferingContext))
+        .rejects.toEqual({
+          code: PURCHASES_ERROR_CODE.PRODUCT_NOT_AVAILABLE_FOR_PURCHASE_ERROR,
+          userCancelled: false,
+          message: 'Test purchase failure: no real transaction occurred'
+        });
+
+      expect(mockInstance._purchaseSimulatedStorePackage).not.toHaveBeenCalled();
     });
   });
 });

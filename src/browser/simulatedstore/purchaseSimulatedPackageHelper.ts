@@ -1,4 +1,4 @@
-import { MakePurchaseResult, PurchasesPackage } from "@revenuecat/purchases-typescript-internal";
+import { MakePurchaseResult, PURCHASES_ERROR_CODE, PurchasesPackage } from "@revenuecat/purchases-typescript-internal";
 import { PurchasesCommon } from "@revenuecat/purchases-js-hybrid-mappings";
 import { showSimulatedPurchaseAlert } from "./alertHelper";
 
@@ -26,16 +26,29 @@ export async function purchaseSimulatedPackage(packageIdentifier: string, presen
       }
     };
 
+    const handleFailedPurchase = () => {
+      reject({
+        code: PURCHASES_ERROR_CODE.PRODUCT_NOT_AVAILABLE_FOR_PURCHASE_ERROR,
+        userCancelled: false,
+        message: 'Test purchase failure: no real transaction occurred'
+      });
+    };
+
     const handleCancel = () => {
       reject({
-        code: '1',
+        code: PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
         userCancelled: true,
         message: 'User cancelled purchase.'
       });
     };
 
-    showSimulatedPurchaseAlert(packageIdentifier, offeringIdentifier, handlePurchase, handleCancel)
-        .catch(reject);
+    showSimulatedPurchaseAlert(
+      packageIdentifier,
+      offeringIdentifier,
+      handlePurchase,
+      handleFailedPurchase,
+      handleCancel
+    ).catch(reject);
   });
 }
 
