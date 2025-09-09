@@ -122,6 +122,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "17.5.0"
+    "@revenuecat/purchases-typescript-internal": "17.5.1"
   }
 }

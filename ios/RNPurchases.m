@@ -62,7 +62,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled 
-                  automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled) {
+                  automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled
+                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -74,7 +75,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode.mappingNSNullToNil
                                            diagnosticsEnabled:diagnosticsEnabled
-                   automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled];
+                   automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled
+                                              preferredLocale:preferredUILocaleOverride.mappingNSNullToNil];
     purchases.delegate = self;
 }
 
@@ -430,6 +432,10 @@ RCT_EXPORT_METHOD(setKeyword:(NSString *)keyword) {
 
 RCT_EXPORT_METHOD(setCreative:(NSString *)creative) {
     [RCCommonFunctionality setCreative:creative.mappingNSNullToNil];
+}
+
+RCT_EXPORT_METHOD(overridePreferredLocale:(nullable NSString *)locale) {
+    [RCCommonFunctionality overridePreferredLocale:locale.mappingNSNullToNil];
 }
 
 RCT_REMAP_METHOD(canMakePayments,

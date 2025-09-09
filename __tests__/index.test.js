@@ -580,7 +580,7 @@ describe("Purchases", () => {
     const defaultVerificationMode = "DISABLED"
 
     Purchases.configure({apiKey: "key", appUserID: "user"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, true, defaultVerificationMode, false, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, true, defaultVerificationMode, false, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -591,7 +591,7 @@ describe("Purchases", () => {
       },
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "STOREKIT_1", false, true, defaultVerificationMode, false, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "STOREKIT_1", false, true, defaultVerificationMode, false, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -600,7 +600,7 @@ describe("Purchases", () => {
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", false, true, defaultVerificationMode, false, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", false, true, defaultVerificationMode, false, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -614,7 +614,7 @@ describe("Purchases", () => {
         Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
       pendingTransactionsForPrepaidPlansEnabled: true,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -626,7 +626,7 @@ describe("Purchases", () => {
       shouldShowInAppMessagesAutomatically: false,
       diagnosticsEnabled: true,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false, true, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false, true, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -639,9 +639,23 @@ describe("Purchases", () => {
       diagnosticsEnabled: true,
       automaticDeviceIdentifierCollectionEnabled: false,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false, true, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false, true, false, undefined);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(6);
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      purchasesAreCompletedBy: PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
+      userDefaultsSuiteName: "suite name",
+      storeKitVersion: STOREKIT_VERSION.DEFAULT,
+      useAmazon: true,
+      shouldShowInAppMessagesAutomatically: false,
+      diagnosticsEnabled: true,
+      automaticDeviceIdentifierCollectionEnabled: false,
+      preferredUILocaleOverride: "es_ES",
+    });
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, false, defaultVerificationMode, false, true, false, "es_ES");
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(7);
   })
 
   it("cancelled purchaseProduct sets userCancelled in the error", () => {

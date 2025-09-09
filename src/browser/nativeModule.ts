@@ -25,7 +25,9 @@ export const browserNativeModuleRNPurchases = {
     _shouldShowInAppMessagesAutomatically: boolean,
     _entitlementVerificationMode: string | null,
     _pendingTransactionsForPrepaidPlansEnabled: boolean,
-    _diagnosticsEnabled: boolean
+    _diagnosticsEnabled: boolean,
+    _automaticDeviceIdentifierCollectionEnabled: boolean,
+    _preferredUILocaleOverride: string | null
   ) => {
     try {
       PurchasesCommon.configure({
@@ -274,6 +276,9 @@ export const browserNativeModuleRNPurchases = {
   },
   setCreative: async (_creative: string) => {
     methodNotSupportedOnWeb('setCreative');
+  },
+  overridePreferredLocale: async (_locale: string | null) => {
+    methodNotSupportedOnWeb('overridePreferredLocale');
   },
   canMakePayments: async (_features: any[]) => {
     return true;
