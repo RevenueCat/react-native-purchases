@@ -3,9 +3,10 @@ import {
   MakePurchaseResult,
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
-import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult, isPurchasesVirtualCurrencies } from './typeGuards';
 import { isExpoGo } from '../utils/environment';
+import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
+import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
 
 
 const packageVersion = '9.1.0';
@@ -148,7 +149,7 @@ export const browserNativeModuleRNPurchases = {
     ensurePurchasesConfigured();
 
     if (isExpoGo()) {
-      throw new Error('Purchasing is not currently supported in Expo Go');
+      return await purchaseSimulatedPackage(packageIdentifier, presentedOfferingContext);
     }
 
     const purchaseResult = await PurchasesCommon.getInstance().purchasePackage(
