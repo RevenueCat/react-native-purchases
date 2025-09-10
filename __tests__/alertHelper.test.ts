@@ -227,9 +227,8 @@ describe('alertHelper', () => {
       const closeButton = mockAlert.mock.calls[0]!![2]!![0];
       closeButton.onPress!!();
 
-      expect(onCancel).toHaveBeenCalled();
-
-      await alertPromise;
+      // The promise should reject with the error instead of calling onCancel
+      await expect(alertPromise).rejects.toThrow('Test error');
     });
 
     it('should handle purchase function throwing error', async () => {
@@ -272,11 +271,12 @@ describe('alertHelper', () => {
       const alertMessage = mockAlert.mock.calls[0][1];
       expect(alertMessage).toContain('Error loading package details: Unknown error');
 
-      // Simulate clicking Close to resolve the promise
+      // Simulate clicking Close on error dialog
       const closeButton = mockAlert.mock.calls[0]!![2]!![0];
       closeButton.onPress!!();
 
-      await alertPromise;
+      // The promise should reject with the unknown error instead of resolving
+      await expect(alertPromise).rejects.toEqual(nonErrorObject);
     });
 
     it('should handle failed purchase button press', async () => {

@@ -82,10 +82,10 @@ export function showSimulatedPurchaseAlert(
           [
             {
               text: 'Close',
-              onPress: handleCancel,
+              onPress: () => { reject(error) },
             },
           ],
-          { cancelable: true, onDismiss: handleCancel }
+          { cancelable: true, onDismiss: () => { reject(error) } }
         );
       });
   });
