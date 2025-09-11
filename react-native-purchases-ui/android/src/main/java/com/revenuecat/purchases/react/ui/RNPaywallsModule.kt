@@ -23,7 +23,7 @@ internal class RNPaywallsModule(
 
     private val currentFragmentActivity: FragmentActivity?
         get() {
-            return when (val currentActivity = currentActivity) {
+            return when (val currentActivity = reactApplicationContext.currentActivity) {
                 is FragmentActivity -> currentActivity
                 else -> {
                     Log.e(NAME, "RevenueCat paywalls require applications to use a FragmentActivity")

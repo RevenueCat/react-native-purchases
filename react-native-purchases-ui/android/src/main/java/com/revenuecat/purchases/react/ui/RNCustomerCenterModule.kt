@@ -63,7 +63,7 @@ internal class RNCustomerCenterModule(
     fun presentCustomerCenter(
         promise: Promise
     ) {
-        currentActivity?.let {
+        reactApplicationContext.currentActivity?.let {
             customerCenterPromise = promise
             presentCustomerCenterFromActivity(it)
         } ?: run {

@@ -79,7 +79,9 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         val offeringMap = options.getDynamic(OPTION_OFFERING).asMap();
 
         // this is a workaround for the fact that getDynamic doesn't work with null values
-        val offeringIdentifier = offeringMap.getString(OFFERING_IDENTIFIER)
+        // Null check required for version 0.81 of RN where `asMap()` returns optional
+        @Suppress("UNNECESSARY_SAFE_CALL")
+        val offeringIdentifier = offeringMap?.getString(OFFERING_IDENTIFIER)
         if (offeringIdentifier == null) {
             return
         }
