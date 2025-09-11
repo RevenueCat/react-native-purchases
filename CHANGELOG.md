@@ -1,3 +1,8 @@
+## 9.4.2
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix compilation in 0.81 (#1400) via Cesar de la Vega (@vegaro)
+
 ## 9.4.1
 ## RevenueCat SDK
 > [!WARNING]  
