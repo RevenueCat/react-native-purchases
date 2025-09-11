@@ -88,7 +88,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled,
-                               boolean diagnosticsEnabled, 
+                               boolean diagnosticsEnabled,
                                boolean automaticDeviceIdentifierCollectionEnabled,
                                @Nullable String preferredUILocaleOverride) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
@@ -176,7 +176,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
 
         CommonKt.purchaseProduct(
-            getCurrentActivity(),
+            getReactApplicationContext().getCurrentActivity(),
             productIdentifier,
             type,
             null,
@@ -201,7 +201,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         Map<String, Object> mapPresentedOfferingContext = presentedOfferingContext.toHashMap();
 
         CommonKt.purchasePackage(
-            getCurrentActivity(),
+            getReactApplicationContext().getCurrentActivity(),
             packageIdentifier,
             mapPresentedOfferingContext,
             googleUpgradeInfo.getOldProductIdentifier(),
@@ -228,7 +228,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
 
         CommonKt.purchaseSubscriptionOption(
-            getCurrentActivity(),
+            getReactApplicationContext().getCurrentActivity(),
             productIdentifer,
             optionIdentifier,
             googleUpgradeInfo.getOldProductIdentifier(),
@@ -348,7 +348,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     //================================================================================
-    // Virtual Currencies 
+    // Virtual Currencies
     //================================================================================
     @ReactMethod
     public void getVirtualCurrencies(final Promise promise) {
@@ -540,7 +540,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void showInAppMessages(ReadableArray messageTypes, final Promise promise) {
         if (messageTypes == null) {
-            CommonKt.showInAppMessagesIfNeeded(getCurrentActivity());
+            CommonKt.showInAppMessagesIfNeeded(getReactApplicationContext().getCurrentActivity());
         } else {
             ArrayList<InAppMessageType> messageTypesList = new ArrayList<>();
             InAppMessageType[] inAppMessageTypes = InAppMessageType.values();
@@ -556,7 +556,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                     Log.e("RNPurchases", "Invalid in-app message type: " + messageTypeInt);
                 }
             }
-            CommonKt.showInAppMessagesIfNeeded(getCurrentActivity(), messageTypesList);
+            CommonKt.showInAppMessagesIfNeeded(getReactApplicationContext().getCurrentActivity(), messageTypesList);
         }
         promise.resolve(null);
     }
