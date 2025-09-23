@@ -264,17 +264,16 @@ const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewMana
     ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
     : null;
 
-export interface CustomerCenterViewProps {
+export interface CustomerCenterViewProps extends CustomerCenterCallbacks {
   style?: StyleProp<ViewStyle>;
   onDismiss?: () => void;
-  onCustomActionSelected?: ({actionId}: { actionId: string }) => void;
   /**
    * Whether to show the close button in the customer center.
-   * 
+   *
    * When `true`, displays a close button that can be used to dismiss the customer center.
    * When `false`, hides the internal close button - typically used for push navigation where
    * the navigation bar provides the back button.
-   * 
+   *
    * @default true
    */
   shouldShowCloseButton?: boolean;
@@ -339,7 +338,7 @@ export interface CustomerCenterCallbacks {
   /**
    * Called when a custom action is selected in the customer center.
    */
-  onCustomActionSelected?: ({actionId}: { actionId: string }) => void;
+  onCustomActionSelected?: ({actionId, purchaseIdentifier}: { actionId: string; purchaseIdentifier: string | null }) => void;
 }
 
 export interface PresentCustomerCenterParams {
@@ -545,6 +544,14 @@ export default class RevenueCatUI {
     style,
     onDismiss,
     onCustomActionSelected,
+    onFeedbackSurveyCompleted,
+    onShowingManageSubscriptions,
+    onRestoreCompleted,
+    onRestoreFailed,
+    onRestoreStarted,
+    onRefundRequestStarted,
+    onRefundRequestCompleted,
+    onManagementOptionSelected,
     shouldShowCloseButton = true,
   }) => {
     if (usingPreviewAPIMode) {
@@ -562,8 +569,16 @@ export default class RevenueCatUI {
     
     return (
       <InternalCustomerCenterView
-        onDismiss={() => onDismiss && onDismiss()}
-        onCustomActionSelected={(event: any) => onCustomActionSelected && onCustomActionSelected(event.nativeEvent)}
+        onDismiss={onDismiss ? () => onDismiss() : undefined}
+        onCustomActionSelected={onCustomActionSelected ? (event: any) => onCustomActionSelected(event.nativeEvent) : undefined}
+        onFeedbackSurveyCompleted={onFeedbackSurveyCompleted ? (event: any) => onFeedbackSurveyCompleted(event.nativeEvent) : undefined}
+        onShowingManageSubscriptions={onShowingManageSubscriptions ? () => onShowingManageSubscriptions() : undefined}
+        onRestoreCompleted={onRestoreCompleted ? (event: any) => onRestoreCompleted(event.nativeEvent) : undefined}
+        onRestoreFailed={onRestoreFailed ? (event: any) => onRestoreFailed(event.nativeEvent) : undefined}
+        onRestoreStarted={onRestoreStarted ? () => onRestoreStarted() : undefined}
+        onRefundRequestStarted={onRefundRequestStarted ? (event: any) => onRefundRequestStarted(event.nativeEvent) : undefined}
+        onRefundRequestCompleted={onRefundRequestCompleted ? (event: any) => onRefundRequestCompleted(event.nativeEvent) : undefined}
+        onManagementOptionSelected={onManagementOptionSelected ? (event: any) => onManagementOptionSelected(event.nativeEvent) : undefined}
         shouldShowCloseButton={shouldShowCloseButton}
         style={[{ flex: 1 }, style]}
       />
@@ -670,7 +685,7 @@ export default class RevenueCatUI {
       if (callbacks.onCustomActionSelected) {
         const subscription = customerCenterEventEmitter?.addListener(
           'onCustomActionSelected',
-          (event: { actionId: string }) => callbacks.onCustomActionSelected &&
+          (event: { actionId: string; purchaseIdentifier: string | null }) => callbacks.onCustomActionSelected &&
             callbacks.onCustomActionSelected(event)
         );
         if (subscription) {

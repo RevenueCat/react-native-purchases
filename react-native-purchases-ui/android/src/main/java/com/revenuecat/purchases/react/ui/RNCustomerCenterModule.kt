@@ -147,6 +147,21 @@ internal class RNCustomerCenterModule(
             override fun onRestoreStartedWrapper() {
                 sendEvent("onRestoreStarted", null)
             }
+
+            override fun onRefundRequestStartedWrapper(productIdentifier: String) {
+                val params = WritableNativeMap().apply {
+                    putString("productIdentifier", productIdentifier)
+                }
+                sendEvent("onRefundRequestStarted", params)
+            }
+
+            override fun onRefundRequestCompletedWrapper(productIdentifier: String, refundRequestStatus: String) {
+                val params = WritableNativeMap().apply {
+                    putString("productIdentifier", productIdentifier)
+                    putString("refundRequestStatus", refundRequestStatus)
+                }
+                sendEvent("onRefundRequestCompleted", params)
+            }
         }
     }
 

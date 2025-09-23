@@ -394,11 +394,8 @@ const onCustomActionSelected = (event: {actionId: string}) => {
                         console.log('🔍 CUSTOMER CENTER - Management option selected:', option);
                       }
                     },
-                    onManagementOptionSelected: ({option, actionId, purchaseIdentifier}: CustomerCenterManagementOptionEvent) => {
-                        console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with action:', actionId, 'with purchase:', purchaseIdentifier);
-                    },
-                    onCustomActionSelected: ({actionId}: {actionId: string}) => {
-                      console.log('🎯 CUSTOMER CENTER - Custom action selected:', actionId);
+                    onCustomActionSelected: ({actionId, purchaseIdentifier}: {actionId: string; purchaseIdentifier: string | null}) => {
+                      console.log('🎯 CUSTOMER CENTER - Custom action selected:', actionId, 'purchaseIdentifier:', purchaseIdentifier);
                     }
                   }
                 });
