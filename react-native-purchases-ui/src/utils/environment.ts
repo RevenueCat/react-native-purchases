@@ -11,6 +11,9 @@ export function shouldUsePreviewAPIMode(): boolean {
   if (isExpoGo()) {
     console.log('Expo Go app detected. Using RevenueCat in Preview API Mode.');
     return true;
+  } else if (isRorkSandbox()) {
+    console.log('Rork app detected. Using RevenueCat in Preview API Mode.');
+    return true;
   } else if (isWebPlatform()) {
     console.log('Web platform detected. Using RevenueCat in Preview API Mode.');
     return true;
@@ -36,6 +39,17 @@ function isExpoGo(): boolean {
   }
 
   return !!globalThis.expo?.modules?.ExpoGo;
+}
+
+/**
+ * Detects if the app is running in the Rork app
+ */
+function isRorkSandbox(): boolean {
+  if (!!NativeModules.RNPaywalls && !!NativeModules.RNCustomerCenter) {
+    return false;
+  }
+
+  return !!NativeModules.RorkSandbox;
 }
 
 /**
