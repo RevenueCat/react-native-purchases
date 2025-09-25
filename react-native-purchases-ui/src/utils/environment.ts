@@ -45,10 +45,6 @@ function isExpoGo(): boolean {
  * Detects if the app is running in the Rork app
  */
 function isRorkSandbox(): boolean {
-  if (!!NativeModules.RNPaywalls && !!NativeModules.RNCustomerCenter) {
-    return false;
-  }
-
   return !!NativeModules.RorkSandbox;
 }
 
