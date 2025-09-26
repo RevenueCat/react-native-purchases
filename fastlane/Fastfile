@@ -73,7 +73,8 @@ desc "Automatically bumps version, edit changelog, and create pull request"
 lane :automatic_bump do |options|
   next_version, type_of_bump = determine_next_version_using_labels(
     repo_name: repo_name,
-    github_rate_limit: options[:github_rate_limit]
+    github_rate_limit: options[:github_rate_limit],
+    current_version: current_version_number
   )
   options[:next_version] = next_version
   options[:automatic_release] = true
