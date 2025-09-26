@@ -210,8 +210,11 @@ workflows:
 
   deploy:
     when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      and:
+      - not:
+          equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      - not:
+          equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
       - hold:
           type: approval
