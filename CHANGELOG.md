@@ -1,3 +1,24 @@
+## 9.5.1
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.8.0 (#1417) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.7.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.7.2)
+  * [Android 9.7.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.7.1)
+  * [iOS 5.40.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.40.0)
+  * [iOS 5.39.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.3)
+  * [iOS 5.39.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.2)
+  * [iOS 5.39.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.1)
+
+### 🔄 Other Changes
+* Add Rork app detection for preview API mode (#1416) via Antonio Pallares (@ajpallares)
+* Add CODEOWNERS (#1415) via Antonio Pallares (@ajpallares)
+* Bump fastlane-plugin-revenuecat_internal from `a6dc551` to `24d8eda` (#1414) via dependabot[bot] (@dependabot[bot])
+
 ## 9.5.0
 > [!WARNING]  
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
@@ -231,6 +252,19 @@ Now, our libraries will work when you try to run your react native app on web. H
 
 ### 🔄 Other Changes
 * Make hold job wait for tests to pass (#1332) via Cesar de la Vega (@vegaro)
+
+## 8.12.0
+## RevenueCat SDK
+### 📦 Dependency Updates
+* Updates purchases-hybrid-common to 14.3.0 (#1421) via Antonio Pallares (@ajpallares)
+  * [Android 8.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.24.0)
+  * [Android 8.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.23.0)
+  * [Android 8.22.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.22.1)
+
+### 🔄 Other Changes
+* [V8] Pass current version to determine next version action (#1424) via Antonio Pallares (@ajpallares)
+* [V8] [CI] `bump` pipeline action won't trigger `deploy` workflow (#1422) via Antonio Pallares (@ajpallares)
+* [v8] Bump fastlane-plugin-revenuecat_internal from `7d97553` to `1593f78` (#1418) via Antonio Pallares (@ajpallares)
 
 ## 8.11.10
 ## RevenueCat SDK

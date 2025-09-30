@@ -112,6 +112,9 @@ jobs:
           name: API Tests
           command: yarn tsc -p apitesters
       - run:
+          name: UI API Tests
+          command: yarn workspace react-native-purchases-ui apitest
+      - run:
           name: Linter
           command: yarn run tslint
 
@@ -295,8 +298,11 @@ jobs:
 workflows:
   build-test-hold-deploy:
     when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      and:
+      - not:
+          equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      - not:
+          equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
       # Testing phase - runs on all branches
       - analyse_js
