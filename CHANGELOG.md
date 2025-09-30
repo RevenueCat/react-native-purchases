@@ -253,6 +253,19 @@ Now, our libraries will work when you try to run your react native app on web. H
 ### 🔄 Other Changes
 * Make hold job wait for tests to pass (#1332) via Cesar de la Vega (@vegaro)
 
+## 8.12.0
+## RevenueCat SDK
+### 📦 Dependency Updates
+* Updates purchases-hybrid-common to 14.3.0 (#1421) via Antonio Pallares (@ajpallares)
+  * [Android 8.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.24.0)
+  * [Android 8.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.23.0)
+  * [Android 8.22.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.22.1)
+
+### 🔄 Other Changes
+* [V8] Pass current version to determine next version action (#1424) via Antonio Pallares (@ajpallares)
+* [V8] [CI] `bump` pipeline action won't trigger `deploy` workflow (#1422) via Antonio Pallares (@ajpallares)
+* [v8] Bump fastlane-plugin-revenuecat_internal from `7d97553` to `1593f78` (#1418) via Antonio Pallares (@ajpallares)
+
 ## 8.11.10
 ## RevenueCat SDK
 ### 🐞 Bugfixes
