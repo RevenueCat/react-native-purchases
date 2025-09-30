@@ -24,5 +24,7 @@
     "strict": true,
     "target": "esnext",
     "verbatimModuleSyntax": true
-  }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "lib", "apitesters"]
 }
