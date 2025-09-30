@@ -112,6 +112,9 @@ jobs:
           name: API Tests
           command: yarn tsc -p apitesters
       - run:
+          name: UI API Tests
+          command: yarn workspace react-native-purchases-ui apitest
+      - run:
           name: Linter
           command: yarn run tslint
 

@@ -32,7 +32,8 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "tslint": "tslint -c tslint.json 'src/*.ts'",
-    "prepare": "bob build"
+    "prepare": "bob build",
+    "apitest": "echo \"Running react-native-purchases-ui API type checks\" && tsc --project apitesters/tsconfig.json"
   },
   "repository": {
     "type": "git",
