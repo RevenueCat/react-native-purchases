@@ -228,11 +228,101 @@ async function testRefundCallbacks() {
   });
 }
 
+// Additional CustomerCenterView tests to prove both onCustomActionSelected variations work
+const customerCenterViewWithLegacyCallback = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={true}
+    onDismiss={() => {}}
+    // Test legacy callback - only actionId parameter (backward compatibility)
+    onCustomActionSelected={({ actionId }: { actionId: string }) => {
+      const id: string = actionId;
+      console.log(`[CustomerCenterView] Legacy callback: ${id}`);
+      void id;
+    }}
+    style={{ flex: 1 }}
+  />
+);
+
+const customerCenterViewWithNewCallback = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={true}
+    onDismiss={() => {}}
+    // Test new callback - actionId + optional purchaseIdentifier parameter
+    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier?: string | null }) => {
+      const id: string = actionId;
+      const identifier: string | null = purchaseIdentifier ?? null;
+      console.log(`[CustomerCenterView] New callback: ${id}, purchaseId: ${identifier}`);
+      void id;
+      void identifier;
+    }}
+    style={{ flex: 1 }}
+  />
+);
+
+// Complete test of ALL callbacks with RevenueCatUI.CustomerCenterView
+const customerCenterViewAllCallbacks = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={false}
+    onDismiss={() => {
+      console.log('[CustomerCenterView] All callbacks test - dismissed');
+    }}
+    onFeedbackSurveyCompleted={({ feedbackSurveyOptionId }: { feedbackSurveyOptionId: string }) => {
+      const optionId: string = feedbackSurveyOptionId;
+      console.log(`[CustomerCenterView] All callbacks test - feedback survey: ${optionId}`);
+      void optionId;
+    }}
+    onShowingManageSubscriptions={() => {
+      console.log('[CustomerCenterView] All callbacks test - showing manage subscriptions');
+    }}
+    onRestoreStarted={() => {
+      console.log('[CustomerCenterView] All callbacks test - restore started');
+    }}
+    onRestoreCompleted={({ customerInfo }: { customerInfo: CustomerInfo }) => {
+      const info: CustomerInfo = customerInfo;
+      console.log('[CustomerCenterView] All callbacks test - restore completed');
+      void info;
+    }}
+    onRestoreFailed={({ error }: { error: PurchasesError }) => {
+      const purchasesError: PurchasesError = error;
+      console.log('[CustomerCenterView] All callbacks test - restore failed');
+      void purchasesError;
+    }}
+    onRefundRequestStarted={({ productIdentifier }: { productIdentifier: string }) => {
+      const identifier: string = productIdentifier;
+      console.log(`[CustomerCenterView] All callbacks test - refund started (iOS): ${identifier}`);
+      void identifier;
+    }}
+    onRefundRequestCompleted={({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
+      const identifier: string = productIdentifier;
+      const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+      console.log(`[CustomerCenterView] All callbacks test - refund completed (iOS): ${identifier}, status: ${status}`);
+      void identifier;
+      void status;
+    }}
+    onManagementOptionSelected={(event: CustomerCenterManagementOptionEvent) => {
+      const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
+      console.log('[CustomerCenterView] All callbacks test - management option selected');
+      handleManagementOptionEvent(managementOptionEvent);
+    }}
+    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier?: string | null }) => {
+      const id: string = actionId;
+      const identifier: string | null = purchaseIdentifier ?? null;
+      console.log(`[CustomerCenterView] All callbacks test - custom action: ${id}, purchaseId: ${identifier}`);
+      void id;
+      void identifier;
+    }}
+    style={{ flex: 1 }}
+  />
+);
+
 void customerCenterElement;
 void presentCustomerCenterParams;
 void backwardCompatibleElement1;
 void backwardCompatibleElement2;
 void testRefundCallbacks;
+void customerCenterViewWithLegacyCallback;
+void customerCenterViewWithNewCallback;
+void customerCenterViewAllCallbacks;
 
 export {
   checkPresentCustomerCenter,
@@ -242,4 +332,7 @@ export {
   withoutPurchaseIdCallback,
   withPurchaseIdCallback,
   testRefundCallbacks,
+  customerCenterViewWithLegacyCallback,
+  customerCenterViewWithNewCallback,
+  customerCenterViewAllCallbacks,
 };
