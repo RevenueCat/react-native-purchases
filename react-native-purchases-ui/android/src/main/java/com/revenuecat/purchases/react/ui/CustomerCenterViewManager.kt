@@ -155,30 +155,6 @@ internal class CustomerCenterViewManager :
                 }
             }
 
-            override fun onRefundRequestStartedWrapper(productIdentifier: String) {
-                val payload = WritableNativeMap().apply {
-                    putString("productIdentifier", productIdentifier)
-                }
-                emitEvent(
-                    themedReactContext,
-                    view,
-                    CustomerCenterEventName.ON_REFUND_REQUEST_STARTED,
-                    payload
-                )
-            }
-
-            override fun onRefundRequestCompletedWrapper(productIdentifier: String, refundRequestStatus: String) {
-                val payload = WritableNativeMap().apply {
-                    putString("productIdentifier", productIdentifier)
-                    putString("refundRequestStatus", refundRequestStatus)
-                }
-                emitEvent(
-                    themedReactContext,
-                    view,
-                    CustomerCenterEventName.ON_REFUND_REQUEST_COMPLETED,
-                    payload
-                )
-            }
         }
     }
 

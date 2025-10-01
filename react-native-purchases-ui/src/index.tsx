@@ -283,7 +283,7 @@ export type CustomerCenterManagementOption =
   | 'cancel'
   | 'custom_url'
   | 'missing_purchase'
-  | 'refund_request'
+  | 'refund_request' // iOS only - not available on Android
   | 'change_plans'
   | 'unknown'
   | string; // This is to prevent breaking changes when the native SDK adds new options
@@ -319,12 +319,16 @@ export interface CustomerCenterCallbacks {
   onRestoreStarted?: () => void;
 
   /**
-   * Called when a refund request starts with the product identifier. iOS-only callback.
+   * Called when a refund request starts with the product identifier.
+   * 
+   * **iOS only** - This callback will never be called on Android as refund requests are not supported on that platform.
    */
   onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
 
   /**
-   * Called when a refund request completes with status information. iOS-only callback.
+   * Called when a refund request completes with status information.
+   * 
+   * **iOS only** - This callback will never be called on Android as refund requests are not supported on that platform.
    */
   onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
 
@@ -518,7 +522,7 @@ export default class RevenueCatUI {
    * over layout and presentation.
    *
    * The Customer Center allows users to manage their subscriptions, view purchase history,
-   * request refunds (iOS), and access support options - all configured through the
+   * request refunds (iOS only), and access support options - all configured through the
    * RevenueCat dashboard.
    *
    * @param style - Optional style prop to customize the appearance and layout
