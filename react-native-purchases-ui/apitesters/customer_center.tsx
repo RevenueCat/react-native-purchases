@@ -41,13 +41,17 @@ const customerCenterCallbacks: CustomerCenterCallbacks = {
     const purchasesError: PurchasesError = error;
     void purchasesError;
   },
-  onRefundRequestStarted: ({ productIdentifier }) => {
+  onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
     const identifier: string = productIdentifier;
+    // Prove this works cross-platform: log a message that will be visible during testing
+    console.log(`[API TEST] Refund request started for product: ${identifier}`);
     void identifier;
   },
-  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }) => {
+  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
     const identifier: string = productIdentifier;
     const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+    // Prove this works cross-platform: log a message that will be visible during testing  
+    console.log(`[API TEST] Refund request completed for product: ${identifier}, status: ${status}`);
     void identifier;
     void status;
   },
@@ -145,11 +149,11 @@ const customerCenterViewProps: CustomerCenterViewProps = {
     const purchasesError: PurchasesError = error;
     void purchasesError;
   },
-  onRefundRequestStarted: ({ productIdentifier }) => {
+  onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
     const identifier: string = productIdentifier;
     void identifier;
   },
-  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }) => {
+  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
     const identifier: string = productIdentifier;
     const status: REFUND_REQUEST_STATUS = refundRequestStatus;
     void identifier;
@@ -202,10 +206,33 @@ const backwardCompatibleElement2 = (
   />
 );
 
+// Test specifically for iOS-only refund callbacks (will compile on both platforms)
+async function testRefundCallbacks() {
+  await RevenueCatUI.presentCustomerCenter({
+    callbacks: {
+      // iOS-only callbacks - these will never fire on Android but should compile fine
+      onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
+        console.log(`[REFUND TEST] iOS refund started: ${productIdentifier}`);
+        // Prove TypeScript knows this is a string
+        const productId: string = productIdentifier;
+        return productId.length > 0;
+      },
+      onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
+        console.log(`[REFUND TEST] iOS refund completed: ${productIdentifier} with status ${refundRequestStatus}`);
+        // Prove TypeScript knows the correct types
+        const productId: string = productIdentifier;
+        const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+        return productId.length > 0 && status !== null;
+      },
+    },
+  });
+}
+
 void customerCenterElement;
 void presentCustomerCenterParams;
 void backwardCompatibleElement1;
 void backwardCompatibleElement2;
+void testRefundCallbacks;
 
 export {
   checkPresentCustomerCenter,
@@ -214,4 +241,5 @@ export {
   presentCustomerCenterParams,
   withoutPurchaseIdCallback,
   withPurchaseIdCallback,
+  testRefundCallbacks,
 };
