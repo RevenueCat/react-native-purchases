@@ -9,8 +9,7 @@ import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
 
 class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerCenterView>(context) {
 
-    private var previousCustomerCenterListener: CustomerCenterListener? = null
-    private var customerCenterListener: CustomerCenterListener? = null
+    private var originalCustomerCenterListener: CustomerCenterListener? = null
 
     override fun createWrappedView(context: Context, attrs: AttributeSet?): CustomerCenterView {
         return CustomerCenterView(context, attrs)
@@ -22,20 +21,14 @@ class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerC
 
     fun registerCustomerCenterListener(listener: CustomerCenterListener) {
         val purchases = Purchases.sharedInstance
-        if (customerCenterListener == null) {
-            previousCustomerCenterListener = purchases.customerCenterListener
-        }
-        customerCenterListener = listener
+        originalCustomerCenterListener = purchases.customerCenterListener
         purchases.customerCenterListener = listener
     }
 
     fun unregisterCustomerCenterListener() {
         val purchases = Purchases.sharedInstance
-        if (customerCenterListener != null && purchases.customerCenterListener === customerCenterListener) {
-            purchases.customerCenterListener = previousCustomerCenterListener
-        }
-        customerCenterListener = null
-        previousCustomerCenterListener = null
+        purchases.customerCenterListener = originalCustomerCenterListener
+        originalCustomerCenterListener = null
     }
 
     override fun requestLayout() {
