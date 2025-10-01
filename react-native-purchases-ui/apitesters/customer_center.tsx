@@ -55,9 +55,11 @@ const customerCenterCallbacks: CustomerCenterCallbacks = {
     const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
     handleManagementOptionEvent(managementOptionEvent);
   },
-  onCustomActionSelected: ({ actionId }) => {
+  onCustomActionSelected: ({ actionId, purchaseIdentifier }) => {
     const id: string = actionId;
+    const identifier: string | null = purchaseIdentifier ?? null;
     void id;
+    void identifier;
   },
 };
 
@@ -81,9 +83,39 @@ const customerCenterElement = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={false}
     onDismiss={() => {}}
-    onCustomActionSelected={({ actionId }) => {
+    onCustomActionSelected={({ actionId, purchaseIdentifier }) => {
       const id: string = actionId;
+      const identifier: string | null = purchaseIdentifier ?? null;
       void id;
+      void identifier;
+    }}
+    onFeedbackSurveyCompleted={({ feedbackSurveyOptionId }) => {
+      const optionId: string = feedbackSurveyOptionId;
+      void optionId;
+    }}
+    onShowingManageSubscriptions={() => {}}
+    onRestoreStarted={() => {}}
+    onRestoreCompleted={({ customerInfo }) => {
+      const info: CustomerInfo = customerInfo;
+      void info;
+    }}
+    onRestoreFailed={({ error }) => {
+      const purchasesError: PurchasesError = error;
+      void purchasesError;
+    }}
+    onRefundRequestStarted={({ productIdentifier }) => {
+      const identifier: string = productIdentifier;
+      void identifier;
+    }}
+    onRefundRequestCompleted={({ productIdentifier, refundRequestStatus }) => {
+      const identifier: string = productIdentifier;
+      const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+      void identifier;
+      void status;
+    }}
+    onManagementOptionSelected={(event) => {
+      const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
+      handleManagementOptionEvent(managementOptionEvent);
     }}
     style={{ flex: 1 }}
   />
@@ -93,9 +125,39 @@ type CustomerCenterViewProps = ComponentProps<typeof RevenueCatUI.CustomerCenter
 
 const customerCenterViewProps: CustomerCenterViewProps = {
   onDismiss: () => {},
-  onCustomActionSelected: ({ actionId }) => {
+  onCustomActionSelected: ({ actionId, purchaseIdentifier }) => {
     const id: string = actionId;
+    const identifier: string | null = purchaseIdentifier ?? null;
     void id;
+    void identifier;
+  },
+  onFeedbackSurveyCompleted: ({ feedbackSurveyOptionId }) => {
+    const optionId: string = feedbackSurveyOptionId;
+    void optionId;
+  },
+  onShowingManageSubscriptions: () => {},
+  onRestoreStarted: () => {},
+  onRestoreCompleted: ({ customerInfo }) => {
+    const info: CustomerInfo = customerInfo;
+    void info;
+  },
+  onRestoreFailed: ({ error }) => {
+    const purchasesError: PurchasesError = error;
+    void purchasesError;
+  },
+  onRefundRequestStarted: ({ productIdentifier }) => {
+    const identifier: string = productIdentifier;
+    void identifier;
+  },
+  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }) => {
+    const identifier: string = productIdentifier;
+    const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+    void identifier;
+    void status;
+  },
+  onManagementOptionSelected: (event) => {
+    const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
+    handleManagementOptionEvent(managementOptionEvent);
   },
   shouldShowCloseButton: true,
   style: { flex: 1 },
@@ -107,12 +169,49 @@ const presentCustomerCenterParams: PresentCustomerCenterParams = {
   callbacks: customerCenterCallbacks,
 };
 
+// Test without purchaseIdentifier parameter (only actionId)
+const withoutPurchaseIdCallback = ({ actionId }: { actionId: string }) => {
+  const id: string = actionId;
+  void id;
+};
+
+// Test with purchaseIdentifier parameter (actionId + purchaseIdentifier)
+const withPurchaseIdCallback = ({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier?: string | null }) => {
+  const id: string = actionId;
+  const identifier: string | null = purchaseIdentifier ?? null;
+  void id;
+  void identifier;
+};
+
+// Test cases demonstrating both work
+const backwardCompatibleElement1 = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={false}
+    onDismiss={() => {}}
+    onCustomActionSelected={withoutPurchaseIdCallback}
+    style={{ flex: 1 }}
+  />
+);
+
+const backwardCompatibleElement2 = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={false}
+    onDismiss={() => {}}
+    onCustomActionSelected={withPurchaseIdCallback}
+    style={{ flex: 1 }}
+  />
+);
+
 void customerCenterElement;
 void presentCustomerCenterParams;
+void backwardCompatibleElement1;
+void backwardCompatibleElement2;
 
 export {
   checkPresentCustomerCenter,
   checkPresentCustomerCenterWithCallbacks,
   customerCenterCallbacks,
   presentCustomerCenterParams,
+  withoutPurchaseIdCallback,
+  withPurchaseIdCallback,
 };
