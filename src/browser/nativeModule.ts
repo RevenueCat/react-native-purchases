@@ -4,7 +4,7 @@ import {
 } from '@revenuecat/purchases-typescript-internal';
 import { PurchasesCommon } from '@revenuecat/purchases-js-hybrid-mappings';
 import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchasesOffering, isLogInResult, isMakePurchaseResult, isPurchasesVirtualCurrencies } from './typeGuards';
-import { isExpoGo } from '../utils/environment';
+import { isExpoGo, isRorkSandbox } from '../utils/environment';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
 
@@ -148,7 +148,7 @@ export const browserNativeModuleRNPurchases = {
   ): Promise<MakePurchaseResult> => {
     ensurePurchasesConfigured();
 
-    if (isExpoGo()) {
+    if (isExpoGo() || isRorkSandbox()) {
       return await purchaseSimulatedPackage(packageIdentifier, presentedOfferingContext);
     }
 
