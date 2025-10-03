@@ -44,7 +44,7 @@ export function isExpoGo(): boolean {
 /**
  * Detects if the app is running in the Rork app
  */
-function isRorkSandbox(): boolean {
+export function isRorkSandbox(): boolean {
   return !!NativeModules.RorkSandbox;
 }
 
