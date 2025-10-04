@@ -3,9 +3,13 @@ package com.revenuecat.purchases.react.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.customercenter.CustomerCenterListener
 import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
 
 class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerCenterView>(context) {
+
+    private var originalCustomerCenterListener: CustomerCenterListener? = null
 
     override fun createWrappedView(context: Context, attrs: AttributeSet?): CustomerCenterView {
         return CustomerCenterView(context, attrs)
@@ -15,9 +19,26 @@ class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerC
         wrappedView?.setDismissHandler(dismissHandler)
     }
 
+    fun registerCustomerCenterListener(listener: CustomerCenterListener) {
+        val purchases = Purchases.sharedInstance
+        originalCustomerCenterListener = purchases.customerCenterListener
+        purchases.customerCenterListener = listener
+    }
+
+    fun unregisterCustomerCenterListener() {
+        val purchases = Purchases.sharedInstance
+        purchases.customerCenterListener = originalCustomerCenterListener
+        originalCustomerCenterListener = null
+    }
+
     override fun requestLayout() {
         super.requestLayout()
         post(measureAndLayout)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        unregisterCustomerCenterListener()
     }
 
     private val measureAndLayout = Runnable {

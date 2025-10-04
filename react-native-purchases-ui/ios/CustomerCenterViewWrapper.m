@@ -62,7 +62,81 @@ API_AVAILABLE(ios(15.0))
     }
 }
 
+- (void)customerCenterViewControllerDidStartRestore:(CustomerCenterUIViewController *)controller API_AVAILABLE(ios(15.0)) {
+    if (self.onRestoreStarted) {
+        self.onRestoreStarted(@{});
+    }
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+         didFinishRestoringWithCustomerInfoDictionary:(NSDictionary<NSString *, id> *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
+    if (self.onRestoreCompleted) {
+        NSDictionary *payload = customerInfoDictionary ? @{@"customerInfo": customerInfoDictionary} : @{};
+        self.onRestoreCompleted(payload);
+    }
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+              didFailRestoringWithErrorDictionary:(NSDictionary<NSString *, id> *)errorDictionary API_AVAILABLE(ios(15.0)) {
+    if (self.onRestoreFailed) {
+        NSDictionary *payload = errorDictionary ? @{@"error": errorDictionary} : @{};
+        self.onRestoreFailed(payload);
+    }
+}
+
+- (void)customerCenterViewControllerDidShowManageSubscriptions:(CustomerCenterUIViewController *)controller API_AVAILABLE(ios(15.0)) {
+    if (self.onShowingManageSubscriptions) {
+        self.onShowingManageSubscriptions(@{});
+    }
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+    didStartRefundRequestForProductWithID:(NSString *)productID API_AVAILABLE(ios(15.0)) {
+    if (self.onRefundRequestStarted) {
+        self.onRefundRequestStarted(@{
+            @"productIdentifier": productID ?: [NSNull null]
+        });
+    }
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+    didCompleteRefundRequestForProductWithID:(NSString *)productID
+                                  withStatus:(NSString *)status API_AVAILABLE(ios(15.0)) {
+    if (self.onRefundRequestCompleted) {
+        self.onRefundRequestCompleted(@{
+            @"productIdentifier": productID ?: [NSNull null],
+            @"refundRequestStatus": status ?: [NSNull null]
+        });
+    }
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+    didCompleteFeedbackSurveyWithOptionID:(NSString *)optionID API_AVAILABLE(ios(15.0)) {
+    if (self.onFeedbackSurveyCompleted) {
+        self.onFeedbackSurveyCompleted(@{
+            @"feedbackSurveyOptionId": optionID ?: [NSNull null]
+        });
+    }
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+    didSelectCustomerCenterManagementOption:(NSString *)optionID
+                                     withURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
+    if (self.onManagementOptionSelected) {
+        self.onManagementOptionSelected(@{
+            @"option": optionID ?: [NSNull null],
+            @"url": url ?: [NSNull null]
+        });
+    }
+}
+
 - (void)customerCenterViewControllerRequestedDismissal:(CustomerCenterUIViewController *)controller {
+    if (self.onDismiss) {
+        self.onDismiss(nil);
+    }
+}
+
+- (void)customerCenterViewControllerWasDismissed:(CustomerCenterUIViewController *)controller API_AVAILABLE(ios(15.0)) {
     if (self.onDismiss) {
         self.onDismiss(nil);
     }
