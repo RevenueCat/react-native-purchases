@@ -92,14 +92,20 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/lib/"
     ],
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
+    },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.js$",
     "testPathIgnorePatterns": [
       "\\.snap$",
       "<rootDir>/node_modules/"
     ],
     "cacheDirectory": ".jest/cache",
-    "transformIgnorePatterns": [
-      "node_modules/(?!(@revenuecat|@react-native|react-native)/)"
+    "setupFiles": [
+      "./scripts/setupJest.js"
     ]
   },
   "react-native-builder-bob": {
