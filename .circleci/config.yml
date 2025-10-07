@@ -109,6 +109,9 @@ jobs:
           name: Tests
           command: yarn test
       - run:
+          name: UI Tests
+          command: yarn workspace react-native-purchases-ui test
+      - run:
           name: API Tests
           command: yarn tsc -p apitesters
       - run:

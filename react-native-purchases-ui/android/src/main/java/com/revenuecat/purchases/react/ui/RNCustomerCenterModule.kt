@@ -119,11 +119,10 @@ internal class RNCustomerCenterModule(
                 purchaseIdentifier: String?
             ) {
                 val params = WritableNativeMap().apply {
-                    putString("option", action)
                     putString("actionId", customAction)
                     putString("purchaseIdentifier", purchaseIdentifier)
                 }
-                sendEvent("onManagementOptionSelected", params)
+                sendEvent("onCustomActionSelected", params)
             }
 
             override fun onShowingManageSubscriptionsWrapper() {
