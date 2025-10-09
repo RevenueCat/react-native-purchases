@@ -113,6 +113,14 @@ internal class RNCustomerCenterModule(
                 sendEvent("onManagementOptionSelected", params)
             }
 
+            override fun onManagementOptionSelectedWrapper(
+                action: String,
+                customAction: String?,
+                purchaseIdentifier: String?
+            ) {
+                // DEPRECATED
+            }
+
             override fun onCustomActionSelectedWrapper(
                 actionId: String,
                 purchaseIdentifier: String?
