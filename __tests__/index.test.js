@@ -125,6 +125,20 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(2);
   })
 
+  it("calling configure with a native api key works as expected", () => {
+    expect(() => {
+      Purchases.configure({apiKey: 'appl_a'})
+    }).not.toThrowError();
+
+    expect(() => {
+      Purchases.configure({apiKey: 'goog_a'})
+    }).not.toThrowError();
+
+    expect(() => {
+      Purchases.configure({apiKey: 'amzn_a'})
+    }).not.toThrowError();
+  })
+
   it("allowing sharing store account works", async () => {
     await Purchases.setAllowSharingStoreAccount(true)
 
