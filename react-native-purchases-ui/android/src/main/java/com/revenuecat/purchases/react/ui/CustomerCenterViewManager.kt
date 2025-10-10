@@ -138,6 +138,14 @@ internal class CustomerCenterViewManager :
                 emitManagementOptionSelectedEvent(themedReactContext, view, action, url)
             }
 
+            override fun onManagementOptionSelectedWrapper(
+                action: String,
+                customAction: String?,
+                purchaseIdentifier: String?
+            ) {
+                // DEPRECATED: handled by onCustomActionSelectedWrapper
+            }
+
             override fun onCustomActionSelectedWrapper(actionId: String, purchaseIdentifier: String?) {
                 emitCustomActionSelectedEvent(
                     themedReactContext,
