@@ -50,14 +50,14 @@ internal class CustomerCenterViewManager :
         }
 
         val customerCenterListener = createCustomerCenterListener(themedReactContext, wrappedView)
-        wrappedView.registerCustomerCenterListener(customerCenterListener)
+        wrappedView.setCustomerCenterListener(customerCenterListener)
 
         return wrappedView
     }
 
     override fun onDropViewInstance(view: WrappedCustomerCenterView) {
         super.onDropViewInstance(view)
-        view.unregisterCustomerCenterListener()
+        view.setCustomerCenterListener(null)
     }
 
     private fun MapBuilder.Builder<String, Any>.putEvent(
@@ -138,21 +138,13 @@ internal class CustomerCenterViewManager :
                 emitManagementOptionSelectedEvent(themedReactContext, view, action, url)
             }
 
-            override fun onManagementOptionSelectedWrapper(
-                action: String,
-                customAction: String?,
-                purchaseIdentifier: String?
-            ) {
-                emitManagementOptionSelectedEvent(themedReactContext, view, action, null)
-
-                if (customAction != null) {
-                    emitCustomActionSelectedEvent(
-                        themedReactContext,
-                        view,
-                        customAction,
-                        purchaseIdentifier
-                    )
-                }
+            override fun onCustomActionSelectedWrapper(actionId: String, purchaseIdentifier: String?) {
+                emitCustomActionSelectedEvent(
+                    themedReactContext,
+                    view,
+                    actionId,
+                    purchaseIdentifier
+                )
             }
 
         }

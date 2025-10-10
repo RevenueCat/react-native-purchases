@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {
   Modal,
@@ -59,6 +59,44 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [customerCenterNotification, setCustomerCenterNotification] = useState<{
+    title: string;
+    message?: string;
+  } | null>(null);
+  const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const formatNotificationPayload = (payload?: Record<string, unknown>) => {
+    if (!payload || Object.keys(payload).length === 0) {
+      return undefined;
+    }
+    try {
+      return JSON.stringify(payload, null, 2);
+    } catch (error) {
+      console.warn('Failed to format Customer Center payload', error);
+      return String(payload);
+    }
+  };
+
+  const showCustomerCenterNotification = (callbackName: string, payload?: Record<string, unknown>) => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+    setCustomerCenterNotification({
+      title: callbackName,
+      message: formatNotificationPayload(payload),
+    });
+    notificationTimeoutRef.current = setTimeout(() => {
+      setCustomerCenterNotification(null);
+    }, 4000);
+  };
 
   // Gets customer info, app user id, if user is anonymous, and offerings
   const fetchData = async () => {
@@ -198,13 +236,18 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
-const onDismissCustomerCenter = () => {
-  setIsModalVisible(false)
-}
+  const onDismissCustomerCenter = () => {
+    showCustomerCenterNotification('onDismiss');
+    setIsModalVisible(false);
+  };
 
-const onCustomActionSelected = (event: {actionId: string}) => {
-  console.log('Custom action selected:', event.actionId);
-}
+  const onCustomActionSelected = (event: {actionId: string; purchaseIdentifier?: string | null}) => {
+    showCustomerCenterNotification('onCustomActionSelected', {
+      actionId: event.actionId,
+      purchaseIdentifier: event.purchaseIdentifier ?? null,
+    });
+    console.log('Custom action selected:', event.actionId);
+  };
 
   return (
     <SafeAreaView>
@@ -220,6 +263,40 @@ const onCustomActionSelected = (event: {actionId: string}) => {
             shouldShowCloseButton={true}
             onDismiss={onDismissCustomerCenter}
             onCustomActionSelected={onCustomActionSelected}
+            onFeedbackSurveyCompleted={({feedbackSurveyOptionId}) => {
+              showCustomerCenterNotification('onFeedbackSurveyCompleted', {feedbackSurveyOptionId});
+            }}
+            onShowingManageSubscriptions={() => {
+              showCustomerCenterNotification('onShowingManageSubscriptions');
+            }}
+            onRestoreStarted={() => {
+              showCustomerCenterNotification('onRestoreStarted');
+            }}
+            onRestoreCompleted={({customerInfo}) => {
+              const activeEntitlements = Object.keys(customerInfo.entitlements.active ?? {});
+              showCustomerCenterNotification('onRestoreCompleted', {
+                originalAppUserId: customerInfo.originalAppUserId,
+                activeEntitlements,
+              });
+            }}
+            onRestoreFailed={({error}) => {
+              showCustomerCenterNotification('onRestoreFailed', {
+                code: error.code,
+                message: error.message,
+              });
+            }}
+            onRefundRequestStarted={({productIdentifier}) => {
+              showCustomerCenterNotification('onRefundRequestStarted', {productIdentifier});
+            }}
+            onRefundRequestCompleted={({productIdentifier, refundRequestStatus}) => {
+              showCustomerCenterNotification('onRefundRequestCompleted', {
+                productIdentifier,
+                refundRequestStatus,
+              });
+            }}
+            onManagementOptionSelected={({option, url}) => {
+              showCustomerCenterNotification('onManagementOptionSelected', {option, url: url ?? null});
+            }}
           />
         </View>
       </Modal>
@@ -361,33 +438,51 @@ const onCustomActionSelected = (event: {actionId: string}) => {
                 await RevenueCatUI.presentCustomerCenter({
                   callbacks: {
                     onFeedbackSurveyCompleted: ({feedbackSurveyOptionId}: {feedbackSurveyOptionId: string}) => {
+                      showCustomerCenterNotification('onFeedbackSurveyCompleted', {feedbackSurveyOptionId});
                       console.log('📊 CUSTOMER CENTER - Feedback survey completed with option ID:', feedbackSurveyOptionId);
                     },
                     onShowingManageSubscriptions: () => {
+                      showCustomerCenterNotification('onShowingManageSubscriptions');
                       console.log('📲 CUSTOMER CENTER - Showing manage subscriptions');
                     },
                     onRestoreStarted: () => {
+                      showCustomerCenterNotification('onRestoreStarted');
                       console.log('🔄 CUSTOMER CENTER - Restore started');
                     },
                     onRestoreCompleted: ({customerInfo}: {customerInfo: CustomerInfo}) => {
+                      const activeEntitlements = Object.keys(customerInfo.entitlements.active ?? {});
+                      showCustomerCenterNotification('onRestoreCompleted', {
+                        originalAppUserId: customerInfo.originalAppUserId,
+                        activeEntitlements,
+                      });
                       console.log('✅ CUSTOMER CENTER - Restore completed successfully');
                       console.log('   • Active entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
                       console.log('   • Original app user ID:', customerInfo.originalAppUserId);
                       console.log('   • Latest expiration date:', customerInfo.latestExpirationDate || 'none');
                     },
                     onRestoreFailed: ({error}: {error: PurchasesError}) => {
+                      showCustomerCenterNotification('onRestoreFailed', {
+                        code: error.code,
+                        message: error.message,
+                      });
                       console.log('❌ CUSTOMER CENTER - Restore failed', error);
                       console.log('   • Error code:', error.code);
                       console.log('   • Error message:', error.message);
                       console.log('   • Error underlying error:', error.underlyingErrorMessage || 'none');
                     },
                     onRefundRequestStarted: ({productIdentifier}: {productIdentifier: string}) => {
+                      showCustomerCenterNotification('onRefundRequestStarted', {productIdentifier});
                       console.log('💰 CUSTOMER CENTER - Refund request started for product:', productIdentifier);
                     },
                     onRefundRequestCompleted: ({productIdentifier, refundRequestStatus}: {productIdentifier: string, refundRequestStatus: REFUND_REQUEST_STATUS}) => {
+                      showCustomerCenterNotification('onRefundRequestCompleted', {
+                        productIdentifier,
+                        refundRequestStatus,
+                      });
                       console.log('✅ CUSTOMER CENTER - Refund request completed for product:', productIdentifier, 'with status:', refundRequestStatus);
                     },
                     onManagementOptionSelected: ({option, url}: CustomerCenterManagementOptionEvent) => {
+                      showCustomerCenterNotification('onManagementOptionSelected', {option, url: url ?? null});
                       if (option === 'custom_url') {
                         console.log('🔍 CUSTOMER CENTER - Management option selected:', option, 'with URL:', url);
                       } else {
@@ -395,6 +490,10 @@ const onCustomActionSelected = (event: {actionId: string}) => {
                       }
                     },
                     onCustomActionSelected: ({actionId, purchaseIdentifier}: {actionId: string; purchaseIdentifier: string | null}) => {
+                      showCustomerCenterNotification('onCustomActionSelected', {
+                        actionId,
+                        purchaseIdentifier: purchaseIdentifier ?? null,
+                      });
                       console.log('🎯 CUSTOMER CENTER - Custom action selected:', actionId, 'purchaseIdentifier:', purchaseIdentifier);
                     }
                   }
@@ -422,6 +521,17 @@ const onCustomActionSelected = (event: {actionId: string}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {customerCenterNotification && (
+        <View style={styles.toastWrapper} pointerEvents="none">
+          <View style={styles.toastContainer}>
+            <Text style={styles.toastTitle}>{customerCenterNotification.title}</Text>
+            {customerCenterNotification.message ? (
+              <Text style={styles.toastMessage}>{customerCenterNotification.message}</Text>
+            ) : null}
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -468,6 +578,36 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'white'
+  },
+  toastWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 24,
+    alignItems: 'center',
+  },
+  toastContainer: {
+    maxWidth: '90%',
+    backgroundColor: 'rgba(33, 37, 41, 0.95)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 4,
+  },
+  toastTitle: {
+    color: '#ffffff',
+    fontWeight: '600',
+    marginBottom: 4,
+    fontSize: 14,
+  },
+  toastMessage: {
+    color: '#f1f3f5',
+    fontSize: 12,
+    fontFamily: 'monospace',
   },
 });
 
