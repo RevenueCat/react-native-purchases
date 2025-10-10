@@ -774,7 +774,11 @@ export default class Purchases {
    */
   public static setLogHandler(logHandler: LogHandler): void {
     customLogHandler = logHandler;
-    RNPurchases.setLogHandler();
+    if (usingBrowserMode) {
+      RNPurchases.setLogHandler(logHandler);
+    } else {
+      RNPurchases.setLogHandler();
+    }
   }
 
   /**
