@@ -8,8 +8,6 @@ import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
 
 class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerCenterView>(context) {
 
-    private var customerCenterListener: CustomerCenterListener? = null
-
     override fun createWrappedView(context: Context, attrs: AttributeSet?): CustomerCenterView {
         return CustomerCenterView(context, attrs)
     }
@@ -19,13 +17,7 @@ class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerC
     }
 
     fun setCustomerCenterListener(listener: CustomerCenterListener?) {
-        customerCenterListener = listener
         wrappedView?.setCustomerCenterListener(listener)
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        wrappedView?.setCustomerCenterListener(customerCenterListener)
     }
 
     override fun requestLayout() {
