@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, Alert, Platform, Modal } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Purchases from 'react-native-purchases';
@@ -42,6 +42,49 @@ export default function TabOneScreen() {
     } catch (error) {
       setLastResult(formatResult(methodName, null, error));
     }
+  };
+
+  const [customerCenterNotification, setCustomerCenterNotification] = useState<{
+    title: string;
+    message?: string;
+  } | null>(null);
+  const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const formatNotificationPayload = (payload?: Record<string, unknown>) => {
+    if (!payload || Object.keys(payload).length === 0) {
+      return undefined;
+    }
+    try {
+      return JSON.stringify(payload, null, 2);
+    } catch (error) {
+      console.warn('Failed to format Customer Center payload', error);
+      return String(payload);
+    }
+  };
+
+  const showCustomerCenterNotification = (callbackName: string, payload?: Record<string, unknown>) => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+    setCustomerCenterNotification({
+      title: callbackName,
+      message: formatNotificationPayload(payload),
+    });
+    notificationTimeoutRef.current = setTimeout(() => {
+      setCustomerCenterNotification(null);
+    }, 4000);
+  };
+
+  const logCustomerCenterEvent = (message: string) => {
+    setLastResult(`[${new Date().toLocaleTimeString()}] ${message}`);
   };
 
   const MethodButton = ({ title, onPress, disabled = false }: { title: string; onPress: () => void; disabled?: boolean }) => (
@@ -359,28 +402,53 @@ export default function TabOneScreen() {
           onPress={() => callMethod('presentCustomerCenter', () => RevenueCatUI.presentCustomerCenter({
             callbacks: {
               onFeedbackSurveyCompleted: ({ feedbackSurveyOptionId }) => {
+                showCustomerCenterNotification('onFeedbackSurveyCompleted', { feedbackSurveyOptionId });
                 console.log('Feedback survey completed:', feedbackSurveyOptionId);
               },
               onShowingManageSubscriptions: () => {
+                showCustomerCenterNotification('onShowingManageSubscriptions');
                 console.log('Showing manage subscriptions');
               },
               onRestoreCompleted: ({ customerInfo }) => {
+                const activeEntitlements = Object.keys(customerInfo.entitlements?.active ?? {});
+                showCustomerCenterNotification('onRestoreCompleted', {
+                  originalAppUserId: customerInfo.originalAppUserId,
+                  activeEntitlements
+                });
                 console.log('Restore completed:', customerInfo);
               },
               onRestoreFailed: ({ error }) => {
+                showCustomerCenterNotification('onRestoreFailed', {
+                  code: error.code,
+                  message: error.message
+                });
                 console.log('Restore failed:', error);
               },
               onRestoreStarted: () => {
+                showCustomerCenterNotification('onRestoreStarted');
                 console.log('Restore started');
               },
               onRefundRequestStarted: ({ productIdentifier }) => {
+                showCustomerCenterNotification('onRefundRequestStarted', { productIdentifier });
                 console.log('Refund request started:', productIdentifier);
               },
               onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }) => {
+                showCustomerCenterNotification('onRefundRequestCompleted', {
+                  productIdentifier,
+                  refundRequestStatus
+                });
                 console.log('Refund request completed:', productIdentifier, refundRequestStatus);
               },
               onManagementOptionSelected: (event) => {
+                showCustomerCenterNotification('onManagementOptionSelected', event);
                 console.log('Management option selected:', event);
+              },
+              onCustomActionSelected: ({ actionId, purchaseIdentifier }) => {
+                showCustomerCenterNotification('onCustomActionSelected', {
+                  actionId,
+                  purchaseIdentifier: purchaseIdentifier ?? null
+                });
+                console.log('Custom action selected:', actionId, purchaseIdentifier);
               }
             }
           }))} 
@@ -450,15 +518,73 @@ export default function TabOneScreen() {
         <View style={styles.modalContainer}>
           <RevenueCatUI.CustomerCenterView
             onDismiss={() => {
-              setLastResult(`[${new Date().toLocaleTimeString()}] Modal customer center dismissed`);
+              logCustomerCenterEvent('Modal customer center dismissed');
+              showCustomerCenterNotification('onDismiss');
               setShowModalCustomerCenter(false);
             }}
-            onCustomActionSelected={({ actionId }) => {
-              setLastResult(`[${new Date().toLocaleTimeString()}] Custom action selected: ${actionId}`);
+            onCustomActionSelected={({ actionId, purchaseIdentifier }) => {
+              logCustomerCenterEvent(`Custom action selected: ${actionId}`);
+              showCustomerCenterNotification('onCustomActionSelected', {
+                actionId,
+                purchaseIdentifier: purchaseIdentifier ?? null
+              });
+            }}
+            onFeedbackSurveyCompleted={({ feedbackSurveyOptionId }) => {
+              logCustomerCenterEvent(`Feedback survey completed: ${feedbackSurveyOptionId}`);
+              showCustomerCenterNotification('onFeedbackSurveyCompleted', { feedbackSurveyOptionId });
+            }}
+            onShowingManageSubscriptions={() => {
+              logCustomerCenterEvent('Showing manage subscriptions');
+              showCustomerCenterNotification('onShowingManageSubscriptions');
+            }}
+            onRestoreStarted={() => {
+              logCustomerCenterEvent('Restore started');
+              showCustomerCenterNotification('onRestoreStarted');
+            }}
+            onRestoreCompleted={({ customerInfo }) => {
+              const activeEntitlements = Object.keys(customerInfo.entitlements?.active ?? {});
+              logCustomerCenterEvent('Restore completed');
+              showCustomerCenterNotification('onRestoreCompleted', {
+                originalAppUserId: customerInfo.originalAppUserId,
+                activeEntitlements
+              });
+            }}
+            onRestoreFailed={({ error }) => {
+              logCustomerCenterEvent(`Restore failed: ${error.message}`);
+              showCustomerCenterNotification('onRestoreFailed', {
+                code: error.code,
+                message: error.message
+              });
+            }}
+            onRefundRequestStarted={({ productIdentifier }) => {
+              logCustomerCenterEvent(`Refund request started: ${productIdentifier}`);
+              showCustomerCenterNotification('onRefundRequestStarted', { productIdentifier });
+            }}
+            onRefundRequestCompleted={({ productIdentifier, refundRequestStatus }) => {
+              logCustomerCenterEvent(`Refund request completed: ${productIdentifier}`);
+              showCustomerCenterNotification('onRefundRequestCompleted', {
+                productIdentifier,
+                refundRequestStatus
+              });
+            }}
+            onManagementOptionSelected={(event) => {
+              logCustomerCenterEvent(`Management option selected: ${event.option}`);
+              showCustomerCenterNotification('onManagementOptionSelected', event);
             }}
           />
         </View>
       </Modal>
+
+      {customerCenterNotification && (
+        <View style={styles.toastWrapper} pointerEvents="none">
+          <View style={styles.toastContainer}>
+            <Text style={styles.toastTitle}>{customerCenterNotification.title}</Text>
+            {customerCenterNotification.message ? (
+              <Text style={styles.toastMessage}>{customerCenterNotification.message}</Text>
+            ) : null}
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -543,5 +669,35 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  toastWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 24,
+    alignItems: 'center',
+  },
+  toastContainer: {
+    maxWidth: '90%',
+    backgroundColor: 'rgba(33, 37, 41, 0.95)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
+  },
+  toastTitle: {
+    color: '#ffffff',
+    fontWeight: '600',
+    marginBottom: 4,
+    fontSize: 14,
+  },
+  toastMessage: {
+    color: '#f1f3f5',
+    fontSize: 12,
+    fontFamily: 'monospace',
   },
 });
