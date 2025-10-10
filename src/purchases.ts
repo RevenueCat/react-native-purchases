@@ -279,6 +279,14 @@ export default class Purchases {
         'Invalid API key. It must be called with an Object: configure({apiKey: "key"})'
       );
     }
+    
+    // Make sure no native API key is used when running in browser mode, because the underlaying purchases-js error message isn't super clear when a native API key is used
+    const nativeApiKeyPrefixes = ['appl_', 'goog_', 'amzn_'];
+    if (shouldUseBrowserMode() && nativeApiKeyPrefixes.some(prefix => apiKey.startsWith(prefix))) {
+      throw new Error(
+        'Invalid API key. No native modules are available in browser mode, please use your Web Billing API Key or switch to native mode in order to use native features.'
+      );
+    }
 
     if (
       appUserID !== null &&
