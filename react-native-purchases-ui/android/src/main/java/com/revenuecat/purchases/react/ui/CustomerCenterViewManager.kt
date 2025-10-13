@@ -12,7 +12,6 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.revenuecat.purchases.hybridcommon.ui.CustomerCenterListenerWrapper
 import com.revenuecat.purchases.react.ui.customercenter.events.CustomerCenterEventName
-import com.revenuecat.purchases.react.ui.RNPurchasesConverters
 import com.revenuecat.purchases.react.ui.views.WrappedCustomerCenterView
 
 internal class CustomerCenterViewManager :
