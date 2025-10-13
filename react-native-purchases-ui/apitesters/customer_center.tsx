@@ -181,6 +181,22 @@ const withPurchaseIdCallback = ({ actionId, purchaseIdentifier }: { actionId: st
   void identifier;
 };
 
+async function presentCustomerCenterWithLegacyCustomAction() {
+  await RevenueCatUI.presentCustomerCenter({
+    callbacks: {
+      onCustomActionSelected: withoutPurchaseIdCallback,
+    },
+  });
+}
+
+async function presentCustomerCenterWithNewCustomAction() {
+  await RevenueCatUI.presentCustomerCenter({
+    callbacks: {
+      onCustomActionSelected: withPurchaseIdCallback,
+    },
+  });
+}
+
 const backwardCompatibleElement1 = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={false}
@@ -285,6 +301,8 @@ const customerCenterViewAllCallbacks = (
 
 void customerCenterElement;
 void presentCustomerCenterParams;
+void presentCustomerCenterWithLegacyCustomAction;
+void presentCustomerCenterWithNewCustomAction;
 void backwardCompatibleElement1;
 void backwardCompatibleElement2;
 void testRefundCallbacks;
