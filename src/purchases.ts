@@ -44,7 +44,7 @@ import {
   WebPurchaseRedemptionResult,
   Storefront,
 } from "@revenuecat/purchases-typescript-internal";
-import { isExpoGo, isRorkSandbox, shouldUseBrowserMode } from "./utils/environment";
+import { shouldUseBrowserMode } from "./utils/environment";
 import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
