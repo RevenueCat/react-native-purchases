@@ -41,11 +41,11 @@ const customerCenterCallbacks: CustomerCenterCallbacks = {
     const purchasesError: PurchasesError = error;
     void purchasesError;
   },
-  onRefundRequestStarted: ({ productIdentifier }) => {
+  onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
     const identifier: string = productIdentifier;
     void identifier;
   },
-  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }) => {
+  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
     const identifier: string = productIdentifier;
     const status: REFUND_REQUEST_STATUS = refundRequestStatus;
     void identifier;
@@ -55,9 +55,11 @@ const customerCenterCallbacks: CustomerCenterCallbacks = {
     const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
     handleManagementOptionEvent(managementOptionEvent);
   },
-  onCustomActionSelected: ({ actionId }) => {
+  onCustomActionSelected: ({ actionId, purchaseIdentifier }) => {
     const id: string = actionId;
+    const identifier: string | null = purchaseIdentifier ?? null;
     void id;
+    void identifier;
   },
 };
 
@@ -81,9 +83,39 @@ const customerCenterElement = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={false}
     onDismiss={() => {}}
-    onCustomActionSelected={({ actionId }) => {
+    onCustomActionSelected={({ actionId, purchaseIdentifier }) => {
       const id: string = actionId;
+      const identifier: string | null = purchaseIdentifier ?? null;
       void id;
+      void identifier;
+    }}
+    onFeedbackSurveyCompleted={({ feedbackSurveyOptionId }) => {
+      const optionId: string = feedbackSurveyOptionId;
+      void optionId;
+    }}
+    onShowingManageSubscriptions={() => {}}
+    onRestoreStarted={() => {}}
+    onRestoreCompleted={({ customerInfo }) => {
+      const info: CustomerInfo = customerInfo;
+      void info;
+    }}
+    onRestoreFailed={({ error }) => {
+      const purchasesError: PurchasesError = error;
+      void purchasesError;
+    }}
+    onRefundRequestStarted={({ productIdentifier }) => {
+      const identifier: string = productIdentifier;
+      void identifier;
+    }}
+    onRefundRequestCompleted={({ productIdentifier, refundRequestStatus }) => {
+      const identifier: string = productIdentifier;
+      const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+      void identifier;
+      void status;
+    }}
+    onManagementOptionSelected={(event) => {
+      const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
+      handleManagementOptionEvent(managementOptionEvent);
     }}
     style={{ flex: 1 }}
   />
@@ -93,9 +125,39 @@ type CustomerCenterViewProps = ComponentProps<typeof RevenueCatUI.CustomerCenter
 
 const customerCenterViewProps: CustomerCenterViewProps = {
   onDismiss: () => {},
-  onCustomActionSelected: ({ actionId }) => {
+  onCustomActionSelected: ({ actionId, purchaseIdentifier }) => {
     const id: string = actionId;
+    const identifier: string | null = purchaseIdentifier ?? null;
     void id;
+    void identifier;
+  },
+  onFeedbackSurveyCompleted: ({ feedbackSurveyOptionId }) => {
+    const optionId: string = feedbackSurveyOptionId;
+    void optionId;
+  },
+  onShowingManageSubscriptions: () => {},
+  onRestoreStarted: () => {},
+  onRestoreCompleted: ({ customerInfo }) => {
+    const info: CustomerInfo = customerInfo;
+    void info;
+  },
+  onRestoreFailed: ({ error }) => {
+    const purchasesError: PurchasesError = error;
+    void purchasesError;
+  },
+  onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
+    const identifier: string = productIdentifier;
+    void identifier;
+  },
+  onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
+    const identifier: string = productIdentifier;
+    const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+    void identifier;
+    void status;
+  },
+  onManagementOptionSelected: (event) => {
+    const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
+    handleManagementOptionEvent(managementOptionEvent);
   },
   shouldShowCloseButton: true,
   style: { flex: 1 },
@@ -107,12 +169,156 @@ const presentCustomerCenterParams: PresentCustomerCenterParams = {
   callbacks: customerCenterCallbacks,
 };
 
+const withoutPurchaseIdCallback = ({ actionId }: { actionId: string }) => {
+  const id: string = actionId;
+  void id;
+};
+
+const withPurchaseIdCallback = ({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
+  const id: string = actionId;
+  const identifier: string | null = purchaseIdentifier ?? null;
+  void id;
+  void identifier;
+};
+
+async function presentCustomerCenterWithLegacyCustomAction() {
+  await RevenueCatUI.presentCustomerCenter({
+    callbacks: {
+      onCustomActionSelected: withoutPurchaseIdCallback,
+    },
+  });
+}
+
+async function presentCustomerCenterWithNewCustomAction() {
+  await RevenueCatUI.presentCustomerCenter({
+    callbacks: {
+      onCustomActionSelected: withPurchaseIdCallback,
+    },
+  });
+}
+
+const backwardCompatibleElement1 = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={false}
+    onDismiss={() => {}}
+    onCustomActionSelected={withoutPurchaseIdCallback}
+    style={{ flex: 1 }}
+  />
+);
+
+const backwardCompatibleElement2 = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={false}
+    onDismiss={() => {}}
+    onCustomActionSelected={withPurchaseIdCallback}
+    style={{ flex: 1 }}
+  />
+);
+
+async function testRefundCallbacks() {
+  await RevenueCatUI.presentCustomerCenter({
+    callbacks: {
+      onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
+        const productId: string = productIdentifier;
+        return productId.length > 0;
+      },
+      onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
+        const productId: string = productIdentifier;
+        const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+        return productId.length > 0 && status !== null;
+      },
+    },
+  });
+}
+
+const customerCenterViewWithLegacyCallback = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={true}
+    onDismiss={() => {}}
+    onCustomActionSelected={({ actionId }: { actionId: string }) => {
+      const id: string = actionId;
+      void id;
+    }}
+    style={{ flex: 1 }}
+  />
+);
+
+const customerCenterViewWithNewCallback = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={true}
+    onDismiss={() => {}}
+    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
+      const id: string = actionId;
+      const identifier: string | null = purchaseIdentifier ?? null;
+      void id;
+      void identifier;
+    }}
+    style={{ flex: 1 }}
+  />
+);
+
+const customerCenterViewAllCallbacks = (
+  <RevenueCatUI.CustomerCenterView
+    shouldShowCloseButton={false}
+    onDismiss={() => {}}
+    onFeedbackSurveyCompleted={({ feedbackSurveyOptionId }: { feedbackSurveyOptionId: string }) => {
+      const optionId: string = feedbackSurveyOptionId;
+      void optionId;
+    }}
+    onShowingManageSubscriptions={() => {}}
+    onRestoreStarted={() => {}}
+    onRestoreCompleted={({ customerInfo }: { customerInfo: CustomerInfo }) => {
+      const info: CustomerInfo = customerInfo;
+      void info;
+    }}
+    onRestoreFailed={({ error }: { error: PurchasesError }) => {
+      const purchasesError: PurchasesError = error;
+      void purchasesError;
+    }}
+    onRefundRequestStarted={({ productIdentifier }: { productIdentifier: string }) => {
+      const identifier: string = productIdentifier;
+      void identifier;
+    }}
+    onRefundRequestCompleted={({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
+      const identifier: string = productIdentifier;
+      const status: REFUND_REQUEST_STATUS = refundRequestStatus;
+      void identifier;
+      void status;
+    }}
+    onManagementOptionSelected={(event: CustomerCenterManagementOptionEvent) => {
+      const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
+      handleManagementOptionEvent(managementOptionEvent);
+    }}
+    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
+      const id: string = actionId;
+      const identifier: string | null = purchaseIdentifier ?? null;
+      void id;
+      void identifier;
+    }}
+    style={{ flex: 1 }}
+  />
+);
+
 void customerCenterElement;
 void presentCustomerCenterParams;
+void presentCustomerCenterWithLegacyCustomAction;
+void presentCustomerCenterWithNewCustomAction;
+void backwardCompatibleElement1;
+void backwardCompatibleElement2;
+void testRefundCallbacks;
+void customerCenterViewWithLegacyCallback;
+void customerCenterViewWithNewCallback;
+void customerCenterViewAllCallbacks;
 
 export {
   checkPresentCustomerCenter,
   checkPresentCustomerCenterWithCallbacks,
   customerCenterCallbacks,
   presentCustomerCenterParams,
+  withoutPurchaseIdCallback,
+  withPurchaseIdCallback,
+  testRefundCallbacks,
+  customerCenterViewWithLegacyCallback,
+  customerCenterViewWithNewCallback,
+  customerCenterViewAllCallbacks,
 };
