@@ -279,20 +279,6 @@ export default class Purchases {
         'Invalid API key. It must be called with an Object: configure({apiKey: "key"})'
       );
     }
-    
-    // Make sure no native API key is used when running in browser mode, because the underlaying purchases-js error message isn't super clear when a native API key is used
-    const nativeApiKeyPrefixes = ['appl_', 'goog_', 'amzn_'];
-    const isNativeApiKey = nativeApiKeyPrefixes.some(prefix => apiKey.startsWith(prefix));
-    if (isExpoGo() && isNativeApiKey) {
-      throw new Error(
-        'Invalid API key. The native store is not available when running inside Expo Go, please use your test API Key or create a development build in order to use native features.'
-      );
-    }
-    else if (isRorkSandbox() && isNativeApiKey) {
-      throw new Error(
-        'Invalid API key. The native store is not available when running inside the Rork sandbox, please use your test API Key or create a development build of your app in order to use native features.'
-      );
-    }
 
     if (
       appUserID !== null &&

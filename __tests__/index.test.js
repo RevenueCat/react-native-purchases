@@ -128,15 +128,15 @@ describe("Purchases", () => {
   it("calling configure with a native api key works as expected", () => {
     expect(() => {
       Purchases.configure({apiKey: 'appl_a'})
-    }).not.toThrowError();
+    }).not.toThrow();
 
     expect(() => {
       Purchases.configure({apiKey: 'goog_a'})
-    }).not.toThrowError();
+    }).not.toThrow();
 
     expect(() => {
       Purchases.configure({apiKey: 'amzn_a'})
-    }).not.toThrowError();
+    }).not.toThrow();
   })
 
   it("allowing sharing store account works", async () => {
