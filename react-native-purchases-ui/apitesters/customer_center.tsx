@@ -43,14 +43,12 @@ const customerCenterCallbacks: CustomerCenterCallbacks = {
   },
   onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
     const identifier: string = productIdentifier;
-    // Prove this works cross-platform: log a message that will be visible during testing
     console.log(`[API TEST] Refund request started for product: ${identifier}`);
     void identifier;
   },
   onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
     const identifier: string = productIdentifier;
     const status: REFUND_REQUEST_STATUS = refundRequestStatus;
-    // Prove this works cross-platform: log a message that will be visible during testing  
     console.log(`[API TEST] Refund request completed for product: ${identifier}, status: ${status}`);
     void identifier;
     void status;
@@ -173,21 +171,18 @@ const presentCustomerCenterParams: PresentCustomerCenterParams = {
   callbacks: customerCenterCallbacks,
 };
 
-// Test without purchaseIdentifier parameter (only actionId)
 const withoutPurchaseIdCallback = ({ actionId }: { actionId: string }) => {
   const id: string = actionId;
   void id;
 };
 
-// Test with purchaseIdentifier parameter (actionId + purchaseIdentifier)
-const withPurchaseIdCallback = ({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier?: string | null }) => {
+const withPurchaseIdCallback = ({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
   const id: string = actionId;
   const identifier: string | null = purchaseIdentifier ?? null;
   void id;
   void identifier;
 };
 
-// Test cases demonstrating both work
 const backwardCompatibleElement1 = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={false}
@@ -206,20 +201,16 @@ const backwardCompatibleElement2 = (
   />
 );
 
-// Test specifically for iOS-only refund callbacks (will compile on both platforms)
 async function testRefundCallbacks() {
   await RevenueCatUI.presentCustomerCenter({
     callbacks: {
-      // iOS-only callbacks - these will never fire on Android but should compile fine
       onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
         console.log(`[REFUND TEST] iOS refund started: ${productIdentifier}`);
-        // Prove TypeScript knows this is a string
         const productId: string = productIdentifier;
         return productId.length > 0;
       },
       onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
         console.log(`[REFUND TEST] iOS refund completed: ${productIdentifier} with status ${refundRequestStatus}`);
-        // Prove TypeScript knows the correct types
         const productId: string = productIdentifier;
         const status: REFUND_REQUEST_STATUS = refundRequestStatus;
         return productId.length > 0 && status !== null;
@@ -228,12 +219,10 @@ async function testRefundCallbacks() {
   });
 }
 
-// Additional CustomerCenterView tests to prove both onCustomActionSelected variations work
 const customerCenterViewWithLegacyCallback = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={true}
     onDismiss={() => {}}
-    // Test legacy callback - only actionId parameter (backward compatibility)
     onCustomActionSelected={({ actionId }: { actionId: string }) => {
       const id: string = actionId;
       console.log(`[CustomerCenterView] Legacy callback: ${id}`);
@@ -247,8 +236,7 @@ const customerCenterViewWithNewCallback = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={true}
     onDismiss={() => {}}
-    // Test new callback - actionId + optional purchaseIdentifier parameter
-    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier?: string | null }) => {
+    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
       const id: string = actionId;
       const identifier: string | null = purchaseIdentifier ?? null;
       console.log(`[CustomerCenterView] New callback: ${id}, purchaseId: ${identifier}`);
@@ -259,7 +247,6 @@ const customerCenterViewWithNewCallback = (
   />
 );
 
-// Complete test of ALL callbacks with RevenueCatUI.CustomerCenterView
 const customerCenterViewAllCallbacks = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={false}
@@ -304,7 +291,7 @@ const customerCenterViewAllCallbacks = (
       console.log('[CustomerCenterView] All callbacks test - management option selected');
       handleManagementOptionEvent(managementOptionEvent);
     }}
-    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier?: string | null }) => {
+    onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
       const id: string = actionId;
       const identifier: string | null = purchaseIdentifier ?? null;
       console.log(`[CustomerCenterView] All callbacks test - custom action: ${id}, purchaseId: ${identifier}`);

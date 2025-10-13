@@ -342,7 +342,7 @@ export interface CustomerCenterCallbacks {
   /**
    * Called when a custom action is selected in the customer center.
    */
-  onCustomActionSelected?: ({actionId, purchaseIdentifier}: { actionId: string; purchaseIdentifier?: string | null }) => void;
+  onCustomActionSelected?: ({actionId, purchaseIdentifier}: { actionId: string; purchaseIdentifier: string | null }) => void;
 }
 
 export interface PresentCustomerCenterParams {

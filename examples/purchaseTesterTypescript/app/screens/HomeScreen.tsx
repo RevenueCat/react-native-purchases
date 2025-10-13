@@ -241,10 +241,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     setIsModalVisible(false);
   };
 
-  const onCustomActionSelected = (event: {actionId: string; purchaseIdentifier?: string | null}) => {
+  const onCustomActionSelected = (event: {actionId: string}) => {
     showCustomerCenterNotification('onCustomActionSelected', {
       actionId: event.actionId,
-      purchaseIdentifier: event.purchaseIdentifier ?? null,
     });
     console.log('Custom action selected:', event.actionId);
   };
@@ -262,7 +261,13 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             style={styles.modalContent}
             shouldShowCloseButton={true}
             onDismiss={onDismissCustomerCenter}
-            onCustomActionSelected={onCustomActionSelected}
+            onCustomActionSelected={({actionId, purchaseIdentifier}) => {
+              showCustomerCenterNotification('onCustomActionSelected', {
+                actionId,
+                purchaseIdentifier: purchaseIdentifier ?? null,
+              });
+              console.log('[CustomerCenter Modal] Custom action selected:', actionId, 'purchaseIdentifier:', purchaseIdentifier);
+            }}
             onFeedbackSurveyCompleted={({feedbackSurveyOptionId}) => {
               showCustomerCenterNotification('onFeedbackSurveyCompleted', {feedbackSurveyOptionId});
             }}
