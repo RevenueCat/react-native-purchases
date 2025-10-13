@@ -43,13 +43,11 @@ const customerCenterCallbacks: CustomerCenterCallbacks = {
   },
   onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
     const identifier: string = productIdentifier;
-    console.log(`[API TEST] Refund request started for product: ${identifier}`);
     void identifier;
   },
   onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
     const identifier: string = productIdentifier;
     const status: REFUND_REQUEST_STATUS = refundRequestStatus;
-    console.log(`[API TEST] Refund request completed for product: ${identifier}, status: ${status}`);
     void identifier;
     void status;
   },
@@ -205,12 +203,10 @@ async function testRefundCallbacks() {
   await RevenueCatUI.presentCustomerCenter({
     callbacks: {
       onRefundRequestStarted: ({ productIdentifier }: { productIdentifier: string }) => {
-        console.log(`[REFUND TEST] iOS refund started: ${productIdentifier}`);
         const productId: string = productIdentifier;
         return productId.length > 0;
       },
       onRefundRequestCompleted: ({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
-        console.log(`[REFUND TEST] iOS refund completed: ${productIdentifier} with status ${refundRequestStatus}`);
         const productId: string = productIdentifier;
         const status: REFUND_REQUEST_STATUS = refundRequestStatus;
         return productId.length > 0 && status !== null;
@@ -225,7 +221,6 @@ const customerCenterViewWithLegacyCallback = (
     onDismiss={() => {}}
     onCustomActionSelected={({ actionId }: { actionId: string }) => {
       const id: string = actionId;
-      console.log(`[CustomerCenterView] Legacy callback: ${id}`);
       void id;
     }}
     style={{ flex: 1 }}
@@ -239,7 +234,6 @@ const customerCenterViewWithNewCallback = (
     onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
       const id: string = actionId;
       const identifier: string | null = purchaseIdentifier ?? null;
-      console.log(`[CustomerCenterView] New callback: ${id}, purchaseId: ${identifier}`);
       void id;
       void identifier;
     }}
@@ -250,51 +244,38 @@ const customerCenterViewWithNewCallback = (
 const customerCenterViewAllCallbacks = (
   <RevenueCatUI.CustomerCenterView
     shouldShowCloseButton={false}
-    onDismiss={() => {
-      console.log('[CustomerCenterView] All callbacks test - dismissed');
-    }}
+    onDismiss={() => {}}
     onFeedbackSurveyCompleted={({ feedbackSurveyOptionId }: { feedbackSurveyOptionId: string }) => {
       const optionId: string = feedbackSurveyOptionId;
-      console.log(`[CustomerCenterView] All callbacks test - feedback survey: ${optionId}`);
       void optionId;
     }}
-    onShowingManageSubscriptions={() => {
-      console.log('[CustomerCenterView] All callbacks test - showing manage subscriptions');
-    }}
-    onRestoreStarted={() => {
-      console.log('[CustomerCenterView] All callbacks test - restore started');
-    }}
+    onShowingManageSubscriptions={() => {}}
+    onRestoreStarted={() => {}}
     onRestoreCompleted={({ customerInfo }: { customerInfo: CustomerInfo }) => {
       const info: CustomerInfo = customerInfo;
-      console.log('[CustomerCenterView] All callbacks test - restore completed');
       void info;
     }}
     onRestoreFailed={({ error }: { error: PurchasesError }) => {
       const purchasesError: PurchasesError = error;
-      console.log('[CustomerCenterView] All callbacks test - restore failed');
       void purchasesError;
     }}
     onRefundRequestStarted={({ productIdentifier }: { productIdentifier: string }) => {
       const identifier: string = productIdentifier;
-      console.log(`[CustomerCenterView] All callbacks test - refund started (iOS): ${identifier}`);
       void identifier;
     }}
     onRefundRequestCompleted={({ productIdentifier, refundRequestStatus }: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => {
       const identifier: string = productIdentifier;
       const status: REFUND_REQUEST_STATUS = refundRequestStatus;
-      console.log(`[CustomerCenterView] All callbacks test - refund completed (iOS): ${identifier}, status: ${status}`);
       void identifier;
       void status;
     }}
     onManagementOptionSelected={(event: CustomerCenterManagementOptionEvent) => {
       const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
-      console.log('[CustomerCenterView] All callbacks test - management option selected');
       handleManagementOptionEvent(managementOptionEvent);
     }}
     onCustomActionSelected={({ actionId, purchaseIdentifier }: { actionId: string; purchaseIdentifier: string | null }) => {
       const id: string = actionId;
       const identifier: string | null = purchaseIdentifier ?? null;
-      console.log(`[CustomerCenterView] All callbacks test - custom action: ${id}, purchaseId: ${identifier}`);
       void id;
       void identifier;
     }}
