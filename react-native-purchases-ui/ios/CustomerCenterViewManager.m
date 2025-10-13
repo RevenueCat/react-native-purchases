@@ -19,6 +19,14 @@ API_AVAILABLE(ios(15.0))
 
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onCustomActionSelected, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRestoreStarted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRestoreFailed, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onShowingManageSubscriptions, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRefundRequestStarted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRefundRequestCompleted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onFeedbackSurveyCompleted, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onManagementOptionSelected, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(shouldShowCloseButton, BOOL)
 RCT_EXPORT_MODULE(CustomerCenterView)
 
@@ -48,7 +56,6 @@ RCT_EXPORT_MODULE(CustomerCenterView)
             }
         };
         
-        // Now create the wrapper (which triggers viewDidLoad via viewController.view.bounds)
         wrapper = [[CustomerCenterViewWrapper alloc] initWithCustomerCenterViewController: viewController];
         viewController.delegate = wrapper;
         

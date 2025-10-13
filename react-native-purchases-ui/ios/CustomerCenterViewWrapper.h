@@ -14,9 +14,16 @@
 
 @property (nonatomic, copy) RCTDirectEventBlock onDismiss;
 @property (nonatomic, copy) RCTDirectEventBlock onCustomActionSelected;
+@property (nonatomic, copy) RCTDirectEventBlock onRestoreStarted;
+@property (nonatomic, copy) RCTDirectEventBlock onRestoreCompleted;
+@property (nonatomic, copy) RCTDirectEventBlock onRestoreFailed;
+@property (nonatomic, copy) RCTDirectEventBlock onShowingManageSubscriptions;
+@property (nonatomic, copy) RCTDirectEventBlock onRefundRequestStarted;
+@property (nonatomic, copy) RCTDirectEventBlock onRefundRequestCompleted;
+@property (nonatomic, copy) RCTDirectEventBlock onFeedbackSurveyCompleted;
+@property (nonatomic, copy) RCTDirectEventBlock onManagementOptionSelected;
 @property (nonatomic, assign) BOOL shouldShowCloseButton;
 
 - (instancetype)initWithCustomerCenterViewController:(CustomerCenterUIViewController *)viewController;
 
 @end
-

@@ -2,7 +2,8 @@ package com.revenuecat.purchases.react.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.View.MeasureSpec
+import com.revenuecat.purchases.customercenter.CustomerCenterListener
 import com.revenuecat.purchases.ui.revenuecatui.views.CustomerCenterView
 
 class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerCenterView>(context) {
@@ -13,6 +14,10 @@ class WrappedCustomerCenterView(context: Context) : ComposeViewWrapper<CustomerC
 
     fun setDismissHandler(dismissHandler: (() -> Unit)?) {
         wrappedView?.setDismissHandler(dismissHandler)
+    }
+
+    fun setCustomerCenterListener(listener: CustomerCenterListener?) {
+        wrappedView?.setCustomerCenterListener(listener)
     }
 
     override fun requestLayout() {

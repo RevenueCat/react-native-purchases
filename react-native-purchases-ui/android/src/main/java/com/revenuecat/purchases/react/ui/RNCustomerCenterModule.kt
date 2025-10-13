@@ -153,6 +153,7 @@ internal class RNCustomerCenterModule(
             override fun onRestoreStartedWrapper() {
                 sendEvent("onRestoreStarted", null)
             }
+
         }
     }
 
