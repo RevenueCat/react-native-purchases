@@ -15,7 +15,7 @@ const packageVersion = '9.1.0';
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
  */
 export const browserNativeModuleRNPurchases = {
-  setupPurchases: async (
+  setupPurchases: (
     apiKey: string,
     appUserID: string | null,
     _purchasesAreCompletedBy: string | null,
