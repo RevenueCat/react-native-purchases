@@ -1,3 +1,92 @@
+## 9.5.4
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.10.0 (#1446) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.9.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.9.0)
+  * [Android 9.8.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.1)
+  * [iOS 5.43.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.43.0)
+  * [iOS 5.42.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.42.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.9.1 (#1444) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.9.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.9.0)
+  * [Android 9.8.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.1)
+  * [iOS 5.43.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.43.0)
+  * [iOS 5.42.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.42.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `3f7fffc` to `25c7fb8` (#1445) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `a8770fd` to `3f7fffc` (#1443) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `db640e8` to `a8770fd` (#1441) via dependabot[bot] (@dependabot[bot])
+
+## 9.5.3
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix web targets and expo go (#1439) via Toni Rico (@tonidero)
+
+### 🔄 Other Changes
+* Fix Rork support in RevenueCat module (#1438) via Antonio Pallares (@ajpallares)
+
+## 9.5.2
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.9.0 (#1434) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.8.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.0)
+  * [iOS 5.41.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.41.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `e555afb` to `db640e8` (#1435) via dependabot[bot] (@dependabot[bot])
+* Update fastlane-plugin-revenuecat_internal to e555afb (#1433) via Cesar de la Vega (@vegaro)
+* Add APITests for UI (#1431) via Facundo Menzella (@facumenzella)
+* Bump fastlane-plugin-revenuecat_internal from `1593f78` to `7508f17` (#1430) via dependabot[bot] (@dependabot[bot])
+* Update changelog for release v8.12.0 (#1429) via Antonio Pallares (@ajpallares)
+* [CI] `bump` pipeline action won't trigger `build-test-hold-deploy` workflow (#1423) via Antonio Pallares (@ajpallares)
+* Bump fastlane-plugin-revenuecat_internal from `24d8eda` to `1593f78` (#1420) via dependabot[bot] (@dependabot[bot])
+
+## 9.5.1
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.8.0 (#1417) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.7.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.7.2)
+  * [Android 9.7.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.7.1)
+  * [iOS 5.40.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.40.0)
+  * [iOS 5.39.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.3)
+  * [iOS 5.39.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.2)
+  * [iOS 5.39.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.39.1)
+
+### 🔄 Other Changes
+* Add Rork app detection for preview API mode (#1416) via Antonio Pallares (@ajpallares)
+* Add CODEOWNERS (#1415) via Antonio Pallares (@ajpallares)
+* Bump fastlane-plugin-revenuecat_internal from `a6dc551` to `24d8eda` (#1414) via dependabot[bot] (@dependabot[bot])
+
+## 9.5.0
+> [!WARNING]  
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### ✨ New Features
+* Implement log handler (#1408) via Antonio Borrero Granell (@antoniobg)
+
 ## 9.4.3
 > [!WARNING]  
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
@@ -221,6 +310,19 @@ Now, our libraries will work when you try to run your react native app on web. H
 
 ### 🔄 Other Changes
 * Make hold job wait for tests to pass (#1332) via Cesar de la Vega (@vegaro)
+
+## 8.12.0
+## RevenueCat SDK
+### 📦 Dependency Updates
+* Updates purchases-hybrid-common to 14.3.0 (#1421) via Antonio Pallares (@ajpallares)
+  * [Android 8.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.24.0)
+  * [Android 8.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/8.23.0)
+  * [Android 8.22.1](https://github.com/RevenueCat/purchases-android/releases/tag/8.22.1)
+
+### 🔄 Other Changes
+* [V8] Pass current version to determine next version action (#1424) via Antonio Pallares (@ajpallares)
+* [V8] [CI] `bump` pipeline action won't trigger `deploy` workflow (#1422) via Antonio Pallares (@ajpallares)
+* [v8] Bump fastlane-plugin-revenuecat_internal from `7d97553` to `1593f78` (#1418) via Antonio Pallares (@ajpallares)
 
 ## 8.11.10
 ## RevenueCat SDK
