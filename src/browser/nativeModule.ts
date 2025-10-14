@@ -31,9 +31,9 @@ export const browserNativeModuleRNPurchases = {
   ) => {
     try {
       // Make sure no native API key is used when running in browser mode, because the underlaying purchases-js error message isn't super clear when a native API key is used
-      const nativeApiKeyPrefixes = ['appl_', 'goog_', 'amzn_'];
-      const isNativeApiKey = nativeApiKeyPrefixes.some(prefix => apiKey.startsWith(prefix));
-      if (isNativeApiKey && (isExpoGo() || isRorkSandbox())) {
+      const webPlatformCompatibleApiKeyPrefixList = ['test_', 'rcb_'];
+      const isWebPlatformCompatibleApiKey = webPlatformCompatibleApiKeyPrefixList.some(prefix => apiKey.startsWith(prefix));
+      if (!isWebPlatformCompatibleApiKey && (isExpoGo() || isRorkSandbox())) {
         const platform = isRorkSandbox() ? 'Rork sandbox' : 'Expo Go';
         throw new Error(
           `Invalid API key. The native store is not available when running inside ${platform}, please use your Test Store API Key or create a development build in order to use native features. See https://rev.cat/sdk-test-store on how to use the Test Store.`
