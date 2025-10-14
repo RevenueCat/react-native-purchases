@@ -30,7 +30,7 @@ export const browserNativeModuleRNPurchases = {
     _preferredUILocaleOverride: string | null
   ) => {
     try {
-      // Make sure no native API key is used when running in browser mode, because the underlaying purchases-js error message isn't super clear when a native API key is used
+      // Make sure that when running in Expo Go or Rork sandbox a web-compatible API key is used, because the underlying purchases-js error message isn't super clear when a non-compatible API key type is used in this case
       const webPlatformCompatibleApiKeyPrefixList = ['test_', 'rcb_'];
       const isWebPlatformCompatibleApiKey = webPlatformCompatibleApiKeyPrefixList.some(prefix => apiKey.startsWith(prefix));
       if (!isWebPlatformCompatibleApiKey && (isExpoGo() || isRorkSandbox())) {
