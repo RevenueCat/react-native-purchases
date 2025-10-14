@@ -18,8 +18,8 @@ describe("Purchases.configure API key validation tests (Rork Sandbox)", () => {
     Purchases = require("../../dist/index").default;
   });
 
-  it("calling configure with a native api key when using the Rork sandbox environment throws an exception", () => {
-    const expectedError = new Error('Invalid API key. The native store is not available when running inside the Rork sandbox, please use your Test Store API Key or create a development build of your app in order to use native features. See https://rev.cat/sdk-test-store on how the Test Store works.');
+  it("calling configure with a native api key when using Rork sandbox environment throws an exception", () => {
+    const expectedError = new Error('Invalid API key. The native store is not available when running inside Rork sandbox, please use your Test Store API Key or create a development build in order to use native features. See https://rev.cat/sdk-test-store on how to use the Test Store.');
 
     expect(() => {
       Purchases.configure({ apiKey: "appl_a" });
