@@ -30,6 +30,16 @@ export const browserNativeModuleRNPurchases = {
     _preferredUILocaleOverride: string | null
   ) => {
     try {
+      // Make sure that when running in Expo Go or Rork sandbox a web-compatible API key is used, because the underlying purchases-js error message isn't super clear when a non-compatible API key type is used in this case
+      const webPlatformCompatibleApiKeyPrefixList = ['test_', 'rcb_'];
+      const isWebPlatformCompatibleApiKey = webPlatformCompatibleApiKeyPrefixList.some(prefix => apiKey.startsWith(prefix));
+      if (!isWebPlatformCompatibleApiKey && (isExpoGo() || isRorkSandbox())) {
+        const platform = isRorkSandbox() ? 'Rork sandbox' : 'Expo Go';
+        throw new Error(
+          `Invalid API key. The native store is not available when running inside ${platform}, please use your Test Store API Key or create a development build in order to use native features. See https://rev.cat/sdk-test-store on how to use the Test Store.`
+        );
+      }
+      
       PurchasesCommon.configure({
         apiKey,
         appUserId: appUserID || undefined,
