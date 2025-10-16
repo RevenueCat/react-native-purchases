@@ -26,12 +26,12 @@ aliases:
     executor:
       name: rn/macos
       resource_class: macos.m1.medium.gen1
-      xcode_version: '15.2'
+      xcode_version: '15.4'
   base-mac-job-xcode-16: &base-mac-job-xcode-16
     executor:
       name: rn/macos
       resource_class: macos.m1.medium.gen1
-      xcode_version: '16.3'
+      xcode_version: '16.4'
 
 parameters:
   action:
