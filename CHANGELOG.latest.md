@@ -3,20 +3,13 @@
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
 
-## RevenueCat SDK
-### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.10.0 (#1446) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 9.9.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.9.0)
-  * [Android 9.8.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.1)
-  * [iOS 5.43.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.43.0)
-  * [iOS 5.42.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.42.0)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.9.1 (#1444) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 9.9.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.9.0)
-  * [Android 9.8.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.8.1)
-  * [iOS 5.43.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.43.0)
-  * [iOS 5.42.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.42.0)
+## RevenueCatUI SDK
+### Customer Center
+#### ✨ New Features
+* Add missing handlers for Customer Center (#1411) via Facundo Menzella (@facumenzella)
 
 ### 🔄 Other Changes
-* Bump fastlane-plugin-revenuecat_internal from `3f7fffc` to `25c7fb8` (#1445) via dependabot[bot] (@dependabot[bot])
-* Bump fastlane-plugin-revenuecat_internal from `a8770fd` to `3f7fffc` (#1443) via dependabot[bot] (@dependabot[bot])
-* Bump fastlane-plugin-revenuecat_internal from `db640e8` to `a8770fd` (#1441) via dependabot[bot] (@dependabot[bot])
+* Update React Native to v0.82 and RevenueCat to 9.5.4 (#1452) via Jens-Fabian Goetzmann (@jefago)
+* Improve API key validation error for native API key when running on Expo GO (#1447) via Rick (@rickvdl)
+* Removed the async keyword from setupPurchases since no async calls are being made (#1451) via Rick (@rickvdl)
+* Bump rexml from 3.4.1 to 3.4.2 in /examples/MagicWeather (#1410) via dependabot[bot] (@dependabot[bot])
