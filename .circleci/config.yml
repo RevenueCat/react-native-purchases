@@ -89,6 +89,16 @@ commands:
           name: Copy npmrc sample file to final location
           command: cp .npmrc.SAMPLE .npmrc
 
+  install-ruby-3-2-0:
+    steps:
+      - run:
+          name: Set Ruby 3.2.0
+          command: |
+            eval "$(rbenv init -)"
+            rbenv install -s 3.2.0
+            rbenv global 3.2.0
+            rbenv rehash
+
 jobs:
   analyse_js:
     executor:
@@ -175,7 +185,7 @@ jobs:
           name: Prebuild Android Expo app
           working_directory: examples/purchaseTesterExpo
           command: |
-            npx expo prebuild --platform android --no-install  
+            npx expo prebuild --platform android --no-install
       - run:
           name: Build Android Expo app
           working_directory: examples/purchaseTesterExpo/android
@@ -242,13 +252,7 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
-      - run:
-          name: Set Ruby 3.2.0
-          command: |
-            eval "$(rbenv init -)"
-            rbenv install -s 3.2.0
-            rbenv global 3.2.0
-            rbenv rehash
+      - install-ruby-3-2-0
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
@@ -284,6 +288,7 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
+      - install-ruby-3-2-0
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - revenuecat/trust-github-key
