@@ -37,7 +37,7 @@ aliases:
 parameters:
   action:
     type: enum
-    enum: [build, upgrade-hybrid-common, bump]
+    enum: [build, upgrade-hybrid-common, upgrade-hybrid-common-dry-run, bump]
     default: build
   version:
     type: string
@@ -293,6 +293,26 @@ jobs:
             version:<< pipeline.parameters.version >> \
             open_pr:true \
             automatic_release:<< pipeline.parameters.automatic >>
+
+  update-hybrid-common-versions-dry-run:
+    description: "Creates a PR updating purchases-hybrid-common to latest release"
+    <<: *base-mac-job
+    steps:
+      - checkout
+      - ruby/install:
+          version: '3.2.0'
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+      - revenuecat/trust-github-key
+      - revenuecat/setup-git-credentials
+      - run:
+          name: Updating to next version of phc
+          command: |
+            bundle exec fastlane update_hybrid_common dry_run:true \
+            version:<< pipeline.parameters.version >> \
+            open_pr:true \
+            automatic_release:<< pipeline.parameters.automatic >>
+
 workflows:
   build-test-hold-deploy:
     when:
@@ -355,3 +375,9 @@ workflows:
        equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
      jobs:
        - update-hybrid-common-versions
+
+  update-hybrid-common-versions-dry-run:
+    when:
+      equal: [ upgrade-hybrid-common-dry-run, << pipeline.parameters.action >> ]
+    jobs:
+      - update-hybrid-common-versions-dry-run
