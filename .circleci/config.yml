@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@8.0.1
   revenuecat: revenuecat/sdks-common-config@2.2.0
-  ruby: circleci/ruby@2.5.4
 
 aliases:
   release-tags: &release-tags
@@ -89,6 +88,16 @@ commands:
       - run:
           name: Copy npmrc sample file to final location
           command: cp .npmrc.SAMPLE .npmrc
+
+  install-ruby-3-2-0:
+    steps:
+      - run:
+          name: Set Ruby 3.2.0
+          command: |
+            eval "$(rbenv init -)"
+            rbenv install -s 3.2.0
+            rbenv global 3.2.0
+            rbenv rehash
 
 jobs:
   analyse_js:
@@ -243,8 +252,7 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
-      - ruby/install:
-          version: '3.2.0'
+      - install-ruby-3-2-0
       - install-dependencies-ios-build
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
@@ -280,8 +288,7 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
-      - ruby/install:
-          version: '3.2.0'
+      - install-ruby-3-2-0
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - revenuecat/trust-github-key
