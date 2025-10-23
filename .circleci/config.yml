@@ -36,7 +36,7 @@ aliases:
 parameters:
   action:
     type: enum
-    enum: [build, upgrade-hybrid-common, bump]
+    enum: [build, upgrade-hybrid-common, bump, temp-make-release]
     default: build
   version:
     type: string
@@ -335,6 +335,15 @@ workflows:
           <<: *release-tags
       - docs-deploy:
           <<: *release-tags
+          requires:
+            - make-release
+
+  temp-make-release:
+    when:
+      equal: [ temp-make-release, << pipeline.parameters.action >> ]
+    jobs:
+      - make-release
+      - docs-deploy:
           requires:
             - make-release
 
