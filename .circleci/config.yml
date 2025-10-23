@@ -220,6 +220,7 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
+      - install-ruby-3-2-0
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -273,6 +274,7 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
+      - install-ruby-3-2-0
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
