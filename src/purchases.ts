@@ -63,6 +63,9 @@ export {
   MakePurchaseResult,
   LogHandler,
   LogInResult,
+  WebPurchaseRedemption,
+  WebPurchaseRedemptionResult,
+  WebPurchaseRedemptionResultType,
 } from "@revenuecat/purchases-typescript-internal";
 
 import { Platform } from "react-native";
