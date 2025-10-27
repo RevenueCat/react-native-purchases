@@ -5,7 +5,6 @@ import {
   PurchasesOffering,
   PurchasesVirtualCurrencies,
   Storefront,
-  WebPurchaseRedemption,
 } from "@revenuecat/purchases-typescript-internal";
 import {
   CustomerInfo,
@@ -29,6 +28,7 @@ import {
   PurchasesAreCompletedByMyApp,
   PURCHASES_ARE_COMPLETED_BY_TYPE,
   STOREKIT_VERSION,
+  WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   WebPurchaseRedemptionResultType,
 } from "../dist";
