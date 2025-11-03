@@ -1578,7 +1578,7 @@ export default class Purchases {
   public static async parseAsWebPurchaseRedemption(
     urlString: string
   ): Promise<WebPurchaseRedemption | null> {
-    if (RNPurchases.isWebPurchaseRedemptionURL(urlString)) {
+    if (await RNPurchases.isWebPurchaseRedemptionURL(urlString)) {
       return { redemptionLink: urlString };
     }
     return null;
