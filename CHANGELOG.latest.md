@@ -4,12 +4,7 @@
 
 
 ## RevenueCat SDK
-### 🐞 Bugfixes
-* Fix `parseAsWebPurchaseRedemption` always returning the url that was passed (#1470) via Mark Villacampa (@MarkVillacampa)
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.16.0 (#1475) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 9.12.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.12.2)
-  * [iOS 5.46.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.1)
-
-### 🔄 Other Changes
-* Add 9.6.1 to CHANGELOG (#1468) via Toni Rico (@tonidero)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.16.1 (#1478) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.46.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.3)
+  * [iOS 5.46.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.2)
