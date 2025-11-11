@@ -62,3 +62,11 @@ buck-out/
 ios/.xcode.env.local
 
 android/app/.cxx
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
