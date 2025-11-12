@@ -5,6 +5,10 @@
 
 ## RevenueCat SDK
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.16.1 (#1478) via RevenueCat Git Bot (@RCGitBot)
-  * [iOS 5.46.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.3)
-  * [iOS 5.46.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.2)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.17.0 (#1481) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.13.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.13.0)
+  * [iOS 5.47.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.47.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `525d48c` to `1e3e3fd` (#1483) via dependabot[bot] (@dependabot[bot])
+* Fix running MagicWeather example with `yarn` (#1482) via Antonio Pallares (@ajpallares)
