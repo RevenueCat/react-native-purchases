@@ -125,6 +125,61 @@ lane :release do |options|
   github_release(version: version_number)
 end
 
+desc "Publishes react-native-purchases and react-native-purchases-ui with bc7 variant dependencies on bc7 npm tag"
+lane :release_bc7 do |options|
+  version_number = current_version_number
+  bc7_version_number = "#{version_number}+bc7"
+  UI.important("ℹ️  Publishing bc7 variant with version #{bc7_version_number}")
+
+  # Update version number in package.json files only (for npm publishing)
+  package_json_path = File.join(get_root_folder, 'package.json')
+  package_json = JSON.parse(File.read(package_json_path))
+  package_json['version'] = bc7_version_number
+  File.write(package_json_path, JSON.pretty_generate(package_json) + "\n")
+
+  ui_package_json_path = File.join(get_root_folder, 'react-native-purchases-ui/package.json')
+  ui_package_json = JSON.parse(File.read(ui_package_json_path))
+  ui_package_json['version'] = bc7_version_number
+  # Also update the react-native-purchases peerDependency to match
+  if ui_package_json['peerDependencies'] && ui_package_json['peerDependencies']['react-native-purchases']
+    ui_package_json['peerDependencies']['react-native-purchases'] = bc7_version_number
+  end
+  File.write(ui_package_json_path, JSON.pretty_generate(ui_package_json) + "\n")
+
+  UI.success("✓ Updated version number in package.json files to #{bc7_version_number}")
+
+  # Update Android dependencies to bc7 variants
+  android_build_gradle_path = File.join(get_root_folder, 'android/build.gradle')
+  android_build_gradle_content = File.read(android_build_gradle_path)
+  android_build_gradle_content.gsub!(
+    /com\.revenuecat\.purchases:purchases-hybrid-common:/,
+    'com.revenuecat.purchases:purchases-hybrid-common-bc7:'
+  )
+  File.write(android_build_gradle_path, android_build_gradle_content)
+
+  ui_android_build_gradle_path = File.join(get_root_folder, 'react-native-purchases-ui/android/build.gradle')
+  ui_android_build_gradle_content = File.read(ui_android_build_gradle_path)
+  ui_android_build_gradle_content.gsub!(
+    /com\.revenuecat\.purchases:purchases-hybrid-common-ui:/,
+    'com.revenuecat.purchases:purchases-hybrid-common-ui-bc7:'
+  )
+  File.write(ui_android_build_gradle_path, ui_android_build_gradle_content)
+
+  UI.success("✓ Updated Android dependencies to bc7 variants")
+
+  # Publish with bc7 tag
+  args = ['npm', 'publish', '--tag', 'bc7']
+
+  Dir.chdir(get_root_folder) do
+    sh(args)
+  end
+  Dir.chdir(File.expand_path('react-native-purchases-ui', get_root_folder)) do
+    sh(args)
+  end
+
+  UI.success("✓ Published packages with bc7 tag")
+end
+
 desc "Build example"
 lane :build_example do |options|
   Dir.chdir(get_root_folder) do
