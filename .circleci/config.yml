@@ -351,6 +351,8 @@ workflows:
           <<: *release-tags
       - make-release-bc7:
           <<: *release-tags
+          requires:
+            - make-release
       - docs-deploy:
           <<: *release-tags
           requires:
