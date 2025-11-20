@@ -8,10 +8,10 @@ PODS:
   - hermes-engine (0.78.0):
     - hermes-engine/Pre-built (= 0.78.0)
   - hermes-engine/Pre-built (0.78.0)
-  - PurchasesHybridCommon (17.18.1):
+  - PurchasesHybridCommon (17.19.0):
     - RevenueCat (= 5.48.0)
-  - PurchasesHybridCommonUI (17.18.1):
-    - PurchasesHybridCommon (= 17.18.1)
+  - PurchasesHybridCommonUI (17.19.0):
+    - PurchasesHybridCommon (= 17.19.0)
     - RevenueCatUI (= 5.48.0)
   - RCT-Folly (2024.11.18.00):
     - boost
@@ -1600,10 +1600,10 @@ PODS:
   - RevenueCatUI (5.48.0):
     - RevenueCat (= 5.48.0)
   - RNPaywalls (9.6.6):
-    - PurchasesHybridCommonUI (= 17.18.1)
+    - PurchasesHybridCommonUI (= 17.19.0)
     - React-Core
   - RNPurchases (9.6.6):
-    - PurchasesHybridCommon (= 17.18.1)
+    - PurchasesHybridCommon (= 17.19.0)
     - React-Core
   - RNScreens (4.11.1):
     - DoubleConversion
@@ -1886,8 +1886,8 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: b417d2b2aee3b89b58e63e23a51e02be91dc876d
-  PurchasesHybridCommon: 5446a1f388c11a8a922e6d95002f68954fb48115
-  PurchasesHybridCommonUI: 446e563ff9e71867c790d84bed8de54f7c88bcdf
+  PurchasesHybridCommon: 94dd371f1d290146d806199ee127db80d9369abc
+  PurchasesHybridCommonUI: 3468dba39f323e96fa6097f392e95274f37d805e
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: b2eecf2d60216df56bc5e6be5f063826d3c1ee35
   RCTRequired: 78522de7dc73b81f3ed7890d145fa341f5bb32ea
@@ -1949,8 +1949,8 @@ SPEC CHECKSUMS:
   ReactCommon: 0c097b53f03d6bf166edbcd0915da32f3015dd90
   RevenueCat: 1e61140a343a77dc286f171b3ffab99ca09a4b57
   RevenueCatUI: 625b2b2f4ee8c052d2e9939c2b906cdaecded253
-  RNPaywalls: 9ba2901922d4957db063285a571423e167c70cd3
-  RNPurchases: 31feb36488d6fab0b0393719b66453441793b1e3
+  RNPaywalls: 6e06c807b3169668cf410af3e3f08ca3c1cca497
+  RNPurchases: 574530ad53ec35d74199cf8023130a164242cb27
   RNScreens: 8aec64fb213fd52a64445e2e470f7a9b546c5df3
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
