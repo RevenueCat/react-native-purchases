@@ -131,6 +131,11 @@ lane :release_bc7 do |options|
   bc7_version_number = "#{version_number}+bc7"
   UI.important("ℹ️  Publishing bc7 variant with version #{bc7_version_number}")
 
+  if prerelease?
+    UI.important("ℹ️  Prerelease detected, skipping bc7 variant release")
+    next
+  end
+
   # Update version number in package.json files only (for npm publishing)
   package_json_path = File.join(get_root_folder, 'package.json')
   package_json = JSON.parse(File.read(package_json_path))
