@@ -23,6 +23,7 @@ API_AVAILABLE(ios(15.0))
 
 @property(strong, nonatomic) RCPaywallViewController *paywallViewController;
 @property(nonatomic) BOOL addedToHierarchy;
+@property(nonatomic) BOOL isInLayoutUpdate;
 
 @end
 
@@ -38,15 +39,58 @@ API_AVAILABLE(ios(15.0))
     return self;
 }
 
-
 - (void)reactSetFrame:(CGRect)frame
 {
     NSLog(@"RNPaywalls - reactSetFrame: %@", NSStringFromCGRect(frame));
 
     [super reactSetFrame: frame];
+    
+    // Only trigger layout if we're not already in a layout update to prevent infinite loops
+    if (!self.isInLayoutUpdate) {
+        [self setNeedsLayout];
+        // Use dispatch_async to break potential synchronous loops
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!self.isInLayoutUpdate) {
+                [self layoutIfNeeded];
+            }
+        });
+    }
+}
+
+- (void)setBounds:(CGRect)bounds {
+    CGRect oldBounds = self.bounds;
+    [super setBounds:bounds];
+    
+    // Only trigger layout if bounds actually changed and we're not in a layout update
+    if (!self.isInLayoutUpdate && !CGRectEqualToRect(oldBounds, bounds)) {
+        [self setNeedsLayout];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!self.isInLayoutUpdate) {
+                [self layoutIfNeeded];
+            }
+        });
+    }
+}
+
+- (void)setFrame:(CGRect)frame {
+    CGRect oldFrame = self.frame;
+    [super setFrame:frame];
+    
+    // Only trigger layout if frame actually changed and we're not in a layout update
+    if (!self.isInLayoutUpdate && !CGRectEqualToRect(oldFrame, frame)) {
+        [self setNeedsLayout];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!self.isInLayoutUpdate) {
+                [self layoutIfNeeded];
+            }
+        });
+    }
 }
 
 - (void)layoutSubviews {
+    // Set flag to prevent infinite layout loops
+    self.isInLayoutUpdate = YES;
+    
     [super layoutSubviews];
 
     CGSize size = self.bounds.size;
@@ -74,6 +118,9 @@ API_AVAILABLE(ios(15.0))
             self.addedToHierarchy = YES;
         }
     }
+    
+    // Clear flag after layout is complete
+    self.isInLayoutUpdate = NO;
 }
 
 - (void)setOptions:(NSDictionary *)options {
