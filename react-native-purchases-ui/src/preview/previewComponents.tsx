@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, type ViewStyle, type StyleProp } from 'react-native';
 import {
   type CustomerInfo,
@@ -7,6 +7,23 @@ import {
   type PurchasesPackage,
   type PurchasesStoreTransaction,
 } from "@revenuecat/purchases-typescript-internal";
+import { isExpoGo, isRorkSandbox } from "../utils/environment";
+import { PurchasesCommon } from "@revenuecat/purchases-js-hybrid-mappings";
+
+// Import getStoredApiKey from react-native-purchases
+// This is a peer dependency, so it should be available at runtime
+let getStoredApiKey: (() => string | null) | null = null;
+try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const rnPurchases = require("react-native-purchases");
+    getStoredApiKey = rnPurchases.getStoredApiKey;
+} catch (e) {
+    console.warn('[PreviewPaywall] Could not import from react-native-purchases');
+}
+
+// Lazy load WebViewPaywall to avoid issues when react-native-webview is not installed
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let WebViewPaywall: React.ComponentType<any> | null = null;
 
 export interface PreviewPaywallProps {
   offering?: PurchasesOffering | null;
@@ -25,17 +42,136 @@ export interface PreviewPaywallProps {
   onDismiss?: () => void;
 }
 
+/**
+ * Determines if WebView-based paywall should be used.
+ * WebView is needed for Expo Go and Rork sandbox where DOM APIs are not available.
+ */
+function shouldUseWebViewPaywall(): boolean {
+  return (isExpoGo() || isRorkSandbox());
+}
+
 export const PreviewPaywall: React.FC<PreviewPaywallProps> = ({
+  offering,
   displayCloseButton = true,
   fontFamily,
+  onPurchaseCompleted,
+  onPurchaseError,
+  onPurchaseCancelled,
   onDismiss,
 }) => {
-  const handleClose = () => {
+  const [WebViewComponent, setWebViewComponent] = useState<React.ComponentType<any> | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const useWebView = shouldUseWebViewPaywall();
+
+  // Load WebViewPaywall component dynamically for Expo Go
+  useEffect(() => {
+    if (useWebView && !WebViewPaywall) {
+      import('./WebViewPaywall')
+        .then((module) => {
+          WebViewPaywall = module.WebViewPaywall;
+          setWebViewComponent(() => module.WebViewPaywall);
+        })
+        .catch((error) => {
+          console.warn('[PreviewPaywall] Failed to load WebViewPaywall:', error);
+          setLoadError('Failed to load WebView paywall component');
+        });
+    } else if (useWebView && WebViewPaywall) {
+      setWebViewComponent(() => WebViewPaywall);
+    }
+  }, [useWebView]);
+
+  const handleClose = useCallback(() => {
+    onPurchaseCancelled?.();
     onDismiss?.();
-  };
+  }, [onPurchaseCancelled, onDismiss]);
+
+  const handlePurchased = useCallback((customerInfo: Record<string, unknown>) => {
+    onPurchaseCompleted?.({
+      customerInfo: customerInfo as unknown as CustomerInfo,
+      storeTransaction: {} as PurchasesStoreTransaction,
+    });
+    onDismiss?.();
+  }, [onPurchaseCompleted, onDismiss]);
+
+  const handleError = useCallback((error: { message: string; code?: string }) => {
+    onPurchaseError?.({
+      error: { message: error.message, code: error.code } as unknown as PurchasesError,
+    });
+    onDismiss?.();
+  }, [onPurchaseError, onDismiss]);
 
   const textStyle = fontFamily ? { fontFamily } : undefined;
 
+  // For Expo Go/Rork: Use WebView-based paywall
+  if (useWebView) {
+    const apiKey = getStoredApiKey?.();
+    
+    if (!apiKey) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.content}>
+            <Text style={[styles.notSupportedMessage, textStyle]}>
+              Configuration Error
+            </Text>
+            <Text style={[styles.fakeMessage, textStyle]}>
+              Purchases must be configured before presenting a paywall.
+            </Text>
+            <TouchableOpacity style={styles.closePaywallButton} onPress={handleClose}>
+              <Text style={[styles.closePaywallButtonText, textStyle]}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
+    if (loadError) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.content}>
+            <Text style={[styles.notSupportedMessage, textStyle]}>
+              {loadError}
+            </Text>
+            <TouchableOpacity style={styles.closePaywallButton} onPress={handleClose}>
+              <Text style={[styles.closePaywallButtonText, textStyle]}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
+    if (!WebViewComponent) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.content}>
+            <Text style={[styles.previewMode, textStyle]}>Loading paywall...</Text>
+          </View>
+        </View>
+      );
+    }
+
+    // Get app user ID from PurchasesCommon
+    let appUserId = '';
+    try {
+      appUserId = PurchasesCommon.getInstance().getAppUserId();
+    } catch (e) {
+      console.error('[PreviewPaywall] Failed to get app user ID:', e);
+    }
+
+    return (
+      <WebViewComponent
+        visible={true}
+        apiKey={apiKey}
+        appUserId={appUserId}
+        offeringIdentifier={offering?.identifier}
+        onPurchased={handlePurchased}
+        onCancelled={handleClose}
+        onError={handleError}
+        onDismiss={handleClose}
+      />
+    );
+  }
+
+  // For Web: Show placeholder (web uses PurchasesCommon.presentPaywall() directly via imperative API)
   return (
     <View style={styles.container}>
       <View style={styles.header}>

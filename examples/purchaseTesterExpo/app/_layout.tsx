@@ -9,6 +9,7 @@ import { Platform } from 'react-native';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import Purchases from 'react-native-purchases';
+import { WebViewPaywallProvider } from 'react-native-purchases-ui';
 import APIKeys from '@/constants/APIKeys';
 
 export {
@@ -92,11 +93,13 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <WebViewPaywallProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+      </ThemeProvider>
+    </WebViewPaywallProvider>
   );
 }
