@@ -22,6 +22,9 @@ import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } fr
 import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponents";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
+// WebViewPaywallProvider is no longer exported - the SDK now automatically handles modal presentation in Expo Go
+// WebViewPaywallModal is kept for backward compatibility but is also deprecated
+export { WebViewPaywallModal } from "./preview/WebViewPaywallPresenter";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-ui' doesn't seem to be linked. Make sure: \n\n` +
@@ -713,6 +716,28 @@ export default class RevenueCatUI {
    */
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> =
     RevenueCatUI.OriginalTemplatePaywallFooterContainerView;
+
+  /**
+   * Modal component for WebView-based paywall presentation in Expo Go.
+   * 
+   * Add this component anywhere in your app to enable paywall presentation
+   * in environments without native module support (like Expo Go).
+   * 
+   * Usage:
+   * ```tsx
+   * import RevenueCatUI from 'react-native-purchases-ui';
+   * 
+   * export default function App() {
+   *   return (
+   *     <>
+   *       <YourAppContent />
+   *       <RevenueCatUI.WebViewPaywallModal />
+   *     </>
+   *   );
+   * }
+   * ```
+   */
+  public static WebViewPaywallModal: React.FC = require("./preview/WebViewPaywallPresenter").WebViewPaywallModal;
 
   private static logWarningIfPreviewAPIMode(methodName: string) {
     if (usingPreviewAPIMode) {

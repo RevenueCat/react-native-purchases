@@ -11,6 +11,18 @@ import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPack
 
 const packageVersion = '9.1.0';
 
+// Store configuration for use by WebView paywall in Expo Go
+let storedApiKey: string | null = null;
+
+/**
+ * Get the API key that was used to configure Purchases.
+ * Used by WebView paywall in Expo Go environments.
+ * @internal
+ */
+export function getStoredApiKey(): string | null {
+  return storedApiKey;
+}
+
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
  */
@@ -39,6 +51,9 @@ export const browserNativeModuleRNPurchases = {
           `Invalid API key. The native store is not available when running inside ${platform}, please use your Test Store API Key or create a development build in order to use native features. See https://rev.cat/sdk-test-store on how to use the Test Store.`
         );
       }
+      
+      // Store API key for use by WebView paywall in Expo Go
+      storedApiKey = apiKey;
       
       PurchasesCommon.configure({
         apiKey,

@@ -79,10 +79,14 @@
     "react": "*",
     "react-native": ">= 0.73.0",
     "react-native-purchases": "9.6.9",
-    "react-native-web": "*"
+    "react-native-web": "*",
+    "react-native-webview": "*"
   },
   "peerDependenciesMeta": {
     "react-native-web": {
+      "optional": true
+    },
+    "react-native-webview": {
       "optional": true
     }
   },

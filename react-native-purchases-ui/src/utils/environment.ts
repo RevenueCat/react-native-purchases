@@ -33,7 +33,7 @@ declare global {
 /**
  * Detects if the app is running in Expo Go
  */
-function isExpoGo(): boolean {
+export function isExpoGo(): boolean {
   if (!!NativeModules.RNPaywalls && !!NativeModules.RNCustomerCenter) {
     return false;
   }
@@ -44,13 +44,13 @@ function isExpoGo(): boolean {
 /**
  * Detects if the app is running in the Rork app
  */
-function isRorkSandbox(): boolean {
+export function isRorkSandbox(): boolean {
   return !!NativeModules.RorkSandbox;
 }
 
 /**
  * Detects if the app is running on web platform
  */
-function isWebPlatform(): boolean {
+export function isWebPlatform(): boolean {
   return Platform.OS === 'web';
 }
