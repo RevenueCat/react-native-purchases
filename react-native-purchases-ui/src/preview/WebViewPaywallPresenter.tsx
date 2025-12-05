@@ -34,7 +34,7 @@ function notifyListeners() {
   paywallState.listeners.forEach(listener => listener());
 }
 
-function subscribe(listener: () => void): () => void {
+export function subscribe(listener: () => void): () => void {
   paywallState.listeners.add(listener);
   console.log("[WebViewPaywallPresenter] Listener subscribed, total:", paywallState.listeners.size);
   return () => {
@@ -43,7 +43,7 @@ function subscribe(listener: () => void): () => void {
   };
 }
 
-function getPendingPaywall(): PaywallResolver | null {
+export function getPendingPaywall(): PaywallResolver | null {
   return paywallState.pendingPaywall;
 }
 
@@ -62,10 +62,8 @@ export async function presentWebViewPaywall(
   console.log("[WebViewPaywall] Presenting paywall...");
   console.log("[WebViewPaywall] Number of listeners:", paywallState.listeners.size);
   
-  if (paywallState.listeners.size === 0) {
-    console.error("[WebViewPaywall] ERROR: No listeners registered! Make sure <WebViewPaywallProvider> wraps your app.");
-    return PAYWALL_RESULT.ERROR;
-  }
+  // Note: Listeners are no longer required. The auto-mounted PaywallModalRoot will handle rendering.
+  // This check is removed to allow presentPaywall to work without WebViewPaywallProvider.
   
   if (paywallState.pendingPaywall) {
     // Already presenting a paywall, reject the pending one
@@ -80,7 +78,7 @@ export async function presentWebViewPaywall(
 /**
  * Called when the paywall completes (purchased, cancelled, or error).
  */
-function handlePaywallComplete(result: PAYWALL_RESULT): void {
+export function handlePaywallComplete(result: PAYWALL_RESULT): void {
   const pending = paywallState.pendingPaywall;
   if (pending) {
     pending.resolve(result);
@@ -91,29 +89,20 @@ function handlePaywallComplete(result: PAYWALL_RESULT): void {
 /**
  * Dismiss the current paywall if any.
  */
-function dismissPaywall(): void {
+export function dismissPaywall(): void {
   if (paywallState.pendingPaywall) {
     handlePaywallComplete(PAYWALL_RESULT.CANCELLED);
   }
 }
 
 /**
- * Provider component that must be rendered at the root of the app
+ * @deprecated This provider is no longer required. The SDK now automatically handles modal presentation in Expo Go.
+ * This component is kept internally for backward compatibility but should not be used in new code.
+ * 
+ * Provider component that was previously required to be rendered at the root of the app
  * to enable WebView paywall presentation in Expo Go.
  * 
- * Usage:
- * ```tsx
- * // In your App.tsx
- * import { WebViewPaywallProvider } from 'react-native-purchases-ui';
- * 
- * export default function App() {
- *   return (
- *     <WebViewPaywallProvider>
- *       <YourApp />
- *     </WebViewPaywallProvider>
- *   );
- * }
- * ```
+ * @internal
  */
 export const WebViewPaywallProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [, forceUpdate] = useState({});

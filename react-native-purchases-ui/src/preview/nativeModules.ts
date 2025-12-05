@@ -2,6 +2,8 @@ import { PurchasesCommon } from "@revenuecat/purchases-js-hybrid-mappings"
 import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal"
 import { isExpoGo, isRorkSandbox, isWebPlatform } from "../utils/environment"
 import { presentWebViewPaywall } from "./WebViewPaywallPresenter"
+import { AppRegistry } from "react-native"
+import React from "react"
 
 // Import getStoredApiKey from react-native-purchases
 // This is a peer dependency, so it should be available at runtime
@@ -109,4 +111,39 @@ export const previewNativeModuleRNCustomerCenter = {
         return null
     }
 
+}
+
+// Auto-mount PaywallModalRoot in Expo Go environments
+// This allows presentPaywall to work without requiring WebViewPaywallProvider
+if (shouldUseWebViewPaywall()) {
+    try {
+        // Dynamically import PaywallModalRoot to avoid loading it in non-Expo Go environments
+        import('./PaywallModalRoot').then((module) => {
+            const { PaywallModalRoot } = module;
+            
+            // Use AppRegistry.setWrapperComponentProvider to wrap the root component
+            // This ensures PaywallModalRoot is always mounted in the React tree
+            // Note: This API may not be available in all React Native versions
+            if (AppRegistry.setWrapperComponentProvider) {
+                AppRegistry.setWrapperComponentProvider(() => {
+                    return (props: { children: React.ReactNode }) => {
+                        return (
+                            <>
+                                {props.children}
+                                <PaywallModalRoot />
+                            </>
+                        );
+                    };
+                });
+                
+                console.log('[RevenueCatUI] Auto-mounted PaywallModalRoot for Expo Go');
+            } else {
+                console.warn('[RevenueCatUI] AppRegistry.setWrapperComponentProvider is not available. PaywallModalRoot will not be auto-mounted.');
+            }
+        }).catch((error) => {
+            console.warn('[RevenueCatUI] Failed to auto-mount PaywallModalRoot:', error);
+        });
+    } catch (error) {
+        console.warn('[RevenueCatUI] Failed to set up auto-mounting for PaywallModalRoot:', error);
+    }
 }

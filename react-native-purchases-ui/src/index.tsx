@@ -22,7 +22,9 @@ import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } fr
 import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponents";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
-export { WebViewPaywallProvider, WebViewPaywallModal } from "./preview/WebViewPaywallPresenter";
+// WebViewPaywallProvider is no longer exported - the SDK now automatically handles modal presentation in Expo Go
+// WebViewPaywallModal is kept for backward compatibility but is also deprecated
+export { WebViewPaywallModal } from "./preview/WebViewPaywallPresenter";
 
 const LINKING_ERROR =
   `The package 'react-native-purchases-ui' doesn't seem to be linked. Make sure: \n\n` +
