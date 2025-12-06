@@ -53,6 +53,14 @@ Make github release
 
 Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui
 
+### release_bc7
+
+```sh
+[bundle exec] fastlane release_bc7
+```
+
+Publishes react-native-purchases and react-native-purchases-ui with bc7 variant dependencies on bc7 npm tag
+
 ### build_example
 
 ```sh
