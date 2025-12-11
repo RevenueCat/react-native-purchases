@@ -2738,7 +2738,7 @@ __metadata:
     react: 19.2.0
     react-native: ^0.83.0
     react-native-purchases: ^9.6.10
-    react-native-safe-area-context: ^5.5.2
+    react-native-safe-area-context: ^5.6.2
     react-test-renderer: 19.2.0
     typescript: ^5.8.3
   languageName: unknown
@@ -7395,13 +7395,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:^5.5.2":
-  version: 5.6.0
-  resolution: "react-native-safe-area-context@npm:5.6.0"
+"react-native-safe-area-context@npm:^5.6.2":
+  version: 5.6.2
+  resolution: "react-native-safe-area-context@npm:5.6.2"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 23f382a6504dc6ff1064fe45af53207014a27d3312eeaa5e0fd92281c425cb518d7e5e7bc79cf29b0f8e685a30931df93800dfe98e5d81bd768499aa5e737ab0
+  checksum: 7b15cdd07df4f3650cf443fb322ee2d51b3ab45c652789cbea4cb48a8e6fd2b66e2be01e9f63e614ceaf28d9d228af681ca8857b2ed8dabe48f23964076d40c3
   languageName: node
   linkType: hard
 
