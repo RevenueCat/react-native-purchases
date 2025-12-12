@@ -190,7 +190,7 @@ jobs:
           name: Build Android Expo app
           working_directory: examples/purchaseTesterExpo/android
           command: |
-            export GRADLE_OPTS="-Xmx8192m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx8192m\" -Dorg.gradle.parallel=false -Dorg.gradle.workers.max=2"
+            export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
             ./gradlew assembleDebug
 
   expo_web:
