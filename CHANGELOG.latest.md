@@ -5,8 +5,15 @@
 
 ## RevenueCat SDK
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.23.0 (#1514) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 9.15.3](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.3)
-  * [Android 9.15.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.2)
-  * [iOS 5.50.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.50.0)
-  * [iOS 5.49.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.3)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.24.0 (#1523) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.5](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.5)
+  * [Android 9.15.4](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.4)
+  * [iOS 5.50.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.50.1)
+* [RENOVATE] Update dependency com.android.tools.build:gradle to v8.13.2 (#1522) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Upgrade MagicWeather to RN 0.83 and RC 9.6.10 (#1519) via Jens-Fabian Goetzmann (@jefago)
+* Remove unnecessary dependencies from expo sample project (#1520) via Cesar de la Vega (@vegaro)
+* Update sample to Expo 54 (#1516) via Cesar de la Vega (@vegaro)
+* Bump fastlane-plugin-revenuecat_internal from `efca663` to `76a3a08` (#1518) via dependabot[bot] (@dependabot[bot])
+* Updated CircleCI macos executor from m1 to m4 to avoid deprecation (#1517) via Rick (@rickvdl)
