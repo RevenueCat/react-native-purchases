@@ -8431,7 +8431,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 9.6.13
+    react-native-purchases: 9.6.14
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
