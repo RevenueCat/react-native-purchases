@@ -83,7 +83,10 @@ const App = () => {
           apiKey: APIKeys.google,
           entitlementVerificationMode: verificationMode,
           pendingTransactionsForPrepaidPlansEnabled: true,
-          diagnosticsEnabled: true
+          diagnosticsEnabled: true,
+          trackedEventListener: (event) => {
+            console.log('[TrackedEvent]', JSON.stringify(event, null, 2));
+          }
         });
       }
     } else {
