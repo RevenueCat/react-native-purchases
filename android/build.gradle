@@ -49,6 +49,7 @@ android {
 repositories {
     mavenCentral()
     google()
+    maven { url 'https://jitpack.io' }
 
     def found = false
     def defaultDir = null
@@ -121,6 +122,6 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 dependencies {
     //noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
-    implementation 'com.revenuecat.purchases:purchases-hybrid-common:17.26.1'
+    implementation 'com.github.RevenueCat.purchases-hybrid-common:hybridcommon:paywall-events-debug-SNAPSHOT'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
