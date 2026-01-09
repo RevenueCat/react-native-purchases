@@ -81,6 +81,23 @@ let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
 
 let customLogHandler: LogHandler;
 
+/**
+ * Represents a tracked feature event from RevenueCatUI.
+ * @internal This is a debug API.
+ */
+export interface TrackedEvent {
+  eventType: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Listener for tracked feature events.
+ * @internal This is a debug API.
+ */
+export type TrackedEventListener = (event: TrackedEvent) => void;
+
+let trackedEventListeners: TrackedEventListener[] = [];
+
 eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
   (customerInfo: CustomerInfo) => {
@@ -102,6 +119,13 @@ eventEmitter?.addListener(
   ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
     const logLevelEnum = LOG_LEVEL[logLevel];
     customLogHandler(logLevelEnum, message);
+  }
+);
+
+eventEmitter?.addListener(
+  "Purchases-TrackedEvent",
+  (event: TrackedEvent) => {
+    trackedEventListeners.forEach((listener) => listener(event));
   }
 );
 
@@ -233,6 +257,7 @@ export default class Purchases {
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics. 
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
+   * @param {TrackedEventListener?} [trackedEventListener] An optional listener for tracked feature events. This is a debug API for monitoring paywall and customer center events.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -249,7 +274,8 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
-  }: PurchasesConfiguration): void {
+    trackedEventListener,
+  }: PurchasesConfiguration & { trackedEventListener?: TrackedEventListener }): void {
 
     if (!customLogHandler) {
       this.setLogHandler((logLevel: LOG_LEVEL, message: string) => {
@@ -334,6 +360,10 @@ export default class Purchases {
       automaticDeviceIdentifierCollectionEnabled,
       preferredUILocaleOverride,
     );
+
+    if (trackedEventListener) {
+      Purchases.addTrackedEventListener(trackedEventListener);
+    }
   }
 
   /**
@@ -781,6 +811,25 @@ export default class Purchases {
       RNPurchases.setLogHandler(logHandler);
     } else {
       RNPurchases.setLogHandler();
+    }
+  }
+
+  /**
+   * Sets a function to be called when a feature event is tracked by RevenueCatUI.
+   * This is a debug API for monitoring paywall and customer center events.
+   * @internal
+   * @param {TrackedEventListener} trackedEventListener TrackedEvent listener
+   */
+  private static addTrackedEventListener(
+    trackedEventListener: TrackedEventListener
+  ): void {
+    if (typeof trackedEventListener !== "function") {
+      throw new Error("addTrackedEventListener needs a function");
+    }
+    const isFirstListener = trackedEventListeners.length === 0;
+    trackedEventListeners.push(trackedEventListener);
+    if (isFirstListener && !usingBrowserMode) {
+      RNPurchases.setTrackedEventListener();
     }
   }
 
