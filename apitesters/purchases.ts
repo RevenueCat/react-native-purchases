@@ -31,6 +31,7 @@ import {
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   WebPurchaseRedemptionResultType,
+  SyncPurchasesResult,
 } from "../dist";
 
 import Purchases from "../dist/purchases";
@@ -136,6 +137,7 @@ async function checkPurchasing(
     );
 
   const syncPurchases: void = await Purchases.syncPurchases();
+  const syncPurchasesResult: SyncPurchasesResult = await Purchases.syncPurchasesForResult();
 
   const canMakePayments1: boolean = await Purchases.canMakePayments();
   const canMakePayments2: boolean = await Purchases.canMakePayments(features);

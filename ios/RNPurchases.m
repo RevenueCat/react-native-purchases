@@ -161,6 +161,13 @@ RCT_EXPORT_METHOD(syncPurchases) {
     [RCCommonFunctionality syncPurchasesWithCompletionBlock:nil];
 }
 
+RCT_REMAP_METHOD(syncPurchasesForResult,
+                 syncPurchasesForResultWithResolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality syncPurchasesWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                reject:reject]];
+}
+
 RCT_REMAP_METHOD(getAppUserID,
                  getAppUserIDWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
