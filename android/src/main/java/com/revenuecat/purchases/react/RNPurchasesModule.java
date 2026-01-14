@@ -301,6 +301,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void syncPurchasesForResult(final Promise promise) {
+        CommonKt.syncPurchases(getOnResult(promise));
+    }
+
+    @ReactMethod
     public void isAnonymous(final Promise promise) {
         promise.resolve(CommonKt.isAnonymous());
     }
