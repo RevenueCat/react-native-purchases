@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases-ui",
   "title": "React Native Purchases UI",
-  "version": "9.6.15",
+  "version": "9.7.0",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -78,7 +78,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": ">= 0.73.0",
-    "react-native-purchases": "9.6.15",
+    "react-native-purchases": "9.7.0",
     "react-native-web": "*"
   },
   "peerDependenciesMeta": {
