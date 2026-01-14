@@ -205,6 +205,10 @@ export default function TabOneScreen() {
           title="syncPurchases" 
           onPress={() => callMethod('syncPurchases', () => Purchases.syncPurchases())} 
         />
+        <MethodButton
+          title="syncPurchasesForResult"
+          onPress={() => callMethod('syncPurchasesForResult', () => Purchases.syncPurchasesForResult())}
+        />
 
         {/* iOS-specific Purchase Methods */}
         {Platform.OS === 'ios' && (
