@@ -450,3 +450,8 @@ async function checkOverridePreferredLocale() {
   const preferredUILocaleOverride: string | null = "en-US";
   await Purchases.overridePreferredLocale(preferredUILocaleOverride);
 }
+
+async function checkSyncPurchasesResult() {
+  const syncPurchasesResult: SyncPurchasesResult = await Purchases.syncPurchasesForResult();
+  const customerInfo: CustomerInfo = syncPurchasesResult.customerInfo;
+}
