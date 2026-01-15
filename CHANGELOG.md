@@ -1,5 +1,79 @@
+## 9.7.0
+## RevenueCat SDK
+### ✨ New Features
+* Adds `syncPurchasesForResult` (#1537) via JayShortway (@JayShortway)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.27.1 (#1538) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.54.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.54.1)
+
+## 9.6.15
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.27.0 (#1535) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.0)
+  * [iOS 5.54.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.54.0)
+  * [iOS 5.53.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.53.0)
+## RevenueCat UI SDK
+### Paywalls
+#### ✨ New Features
+* Add exit offers support
+
+## 9.6.14
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.26.1 (#1533) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.18.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.18.1)
+  * [iOS 5.52.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.52.1)
+
+## 9.6.13
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.26.0 (#1531) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.52.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.52.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `76a3a08` to `e6454e3` (#1530) via dependabot[bot] (@dependabot[bot])
+
+## 9.6.12
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.25.0 (#1528) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.18.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.18.0)
+  * [Android 9.17.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.17.1)
+  * [Android 9.17.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.17.0)
+  * [Android 9.16.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.16.0)
+  * [iOS 5.51.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.51.1)
+  * [iOS 5.51.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.51.0)
+
+### 🔄 Other Changes
+* Bump fastlane from 2.229.1 to 2.230.0 (#1526) via dependabot[bot] (@dependabot[bot])
+* Bump aws-sdk-s3 from 1.205.0 to 1.208.0 (#1525) via dependabot[bot] (@dependabot[bot])
+* Bump brace-expansion from 1.1.11 to 1.1.12 in /examples/MagicWeather (#1521) via dependabot[bot] (@dependabot[bot])
+* Bump node-forge from 1.3.1 to 1.3.2 (#1506) via dependabot[bot] (@dependabot[bot])
+
+## 9.6.11
+> [!WARNING]
+> If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
+> Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
+
+
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.24.0 (#1523) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.15.5](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.5)
+  * [Android 9.15.4](https://github.com/RevenueCat/purchases-android/releases/tag/9.15.4)
+  * [iOS 5.50.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.50.1)
+* [RENOVATE] Update dependency com.android.tools.build:gradle to v8.13.2 (#1522) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Upgrade MagicWeather to RN 0.83 and RC 9.6.10 (#1519) via Jens-Fabian Goetzmann (@jefago)
+* Remove unnecessary dependencies from expo sample project (#1520) via Cesar de la Vega (@vegaro)
+* Update sample to Expo 54 (#1516) via Cesar de la Vega (@vegaro)
+* Bump fastlane-plugin-revenuecat_internal from `efca663` to `76a3a08` (#1518) via dependabot[bot] (@dependabot[bot])
+* Updated CircleCI macos executor from m1 to m4 to avoid deprecation (#1517) via Rick (@rickvdl)
+
 ## 9.6.10
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -13,7 +87,7 @@
   * [iOS 5.49.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.3)
 
 ## 9.6.9
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -30,7 +104,7 @@
   * [iOS 5.49.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.49.1)
 
 ## 9.6.8
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -55,7 +129,7 @@
 * Bump js-yaml from 3.14.1 to 3.14.2 (#1495) via dependabot[bot] (@dependabot[bot])
 
 ## 9.6.7
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -70,7 +144,7 @@
   * [Android 9.14.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.14.1)
 
 ## 9.6.6
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -86,7 +160,7 @@
 * Bump fastlane-plugin-revenuecat_internal from `1e3e3fd` to `083ced9` (#1488) via dependabot[bot] (@dependabot[bot])
 
 ## 9.6.5
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -102,7 +176,7 @@
 * Fix running MagicWeather example with `yarn` (#1482) via Antonio Pallares (@ajpallares)
 
 ## 9.6.4
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -114,7 +188,7 @@
   * [iOS 5.46.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.46.2)
 
 ## 9.6.3
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -131,7 +205,7 @@
 * Add 9.6.1 to CHANGELOG (#1468) via Toni Rico (@tonidero)
 
 ## 9.6.2
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -146,7 +220,7 @@
   * [iOS 5.45.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.45.0)
 
 ## 9.6.1
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -163,7 +237,7 @@
 * Bump rexml from 3.4.1 to 3.4.2 in /examples/purchaseTesterTypescript (#1460) via dependabot[bot] (@dependabot[bot])
 
 ## 9.6.0
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -191,7 +265,7 @@
 * Bump rexml from 3.4.1 to 3.4.2 in /examples/MagicWeather (#1410) via dependabot[bot] (@dependabot[bot])
 
 ## 9.5.4
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -215,7 +289,7 @@
 * Bump fastlane-plugin-revenuecat_internal from `db640e8` to `a8770fd` (#1441) via dependabot[bot] (@dependabot[bot])
 
 ## 9.5.3
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -228,7 +302,7 @@
 * Fix Rork support in RevenueCat module (#1438) via Antonio Pallares (@ajpallares)
 
 ## 9.5.2
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -249,7 +323,7 @@
 * Bump fastlane-plugin-revenuecat_internal from `24d8eda` to `1593f78` (#1420) via dependabot[bot] (@dependabot[bot])
 
 ## 9.5.1
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -270,7 +344,7 @@
 * Bump fastlane-plugin-revenuecat_internal from `a6dc551` to `24d8eda` (#1414) via dependabot[bot] (@dependabot[bot])
 
 ## 9.5.0
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -280,7 +354,7 @@
 * Implement log handler (#1408) via Antonio Borrero Granell (@antoniobg)
 
 ## 9.4.3
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -297,7 +371,7 @@
 
 ## 9.4.2
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have a login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -306,7 +380,7 @@
 
 ## 9.4.1
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have a login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -322,7 +396,7 @@
 
 ## 9.4.0
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have a login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -351,7 +425,7 @@
 
 ## 9.3.0
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have a login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -382,7 +456,7 @@
 
 ## 9.2.3
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -400,7 +474,7 @@
 
 ## 9.2.2
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -409,7 +483,7 @@
 
 ## 9.2.1
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -424,7 +498,7 @@
 
 ## 9.2.0
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -445,7 +519,7 @@
 
 ## 9.1.0
 ## RevenueCat SDK
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 
@@ -472,7 +546,7 @@
 ## 9.0.0
 ## RevenueCat SDK
 
-> [!WARNING]  
+> [!WARNING]
 > If you don't have any login system in your app, please make sure your one-time purchase products have been correctly configured in the RevenueCat dashboard as either consumable or non-consumable. If they're incorrectly configured as consumables, RevenueCat will consume these purchases. This means that users won't be able to restore them from version 9.0.0 onward.
 > Non-consumables are products that are meant to be bought only once, for example, lifetime subscriptions.
 

@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/RevenueCat/fastlane-plugin-revenuecat_internal
-  revision: 76a3a08a26bc0644f6dc444f911f9076c53825b2
+  revision: e6454e3d321d7f28e39a037b8e20fc41d8e8f8b6
   specs:
     fastlane-plugin-revenuecat_internal (0.1.0)
       nokogiri
@@ -31,8 +31,8 @@ GEM
     artifactory (3.0.17)
     atomos (0.1.3)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1187.0)
-    aws-sdk-core (3.239.1)
+    aws-partitions (1.1197.0)
+    aws-sdk-core (3.240.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -43,7 +43,7 @@ GEM
     aws-sdk-kms (1.118.0)
       aws-sdk-core (~> 3, >= 3.239.1)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.205.0)
+    aws-sdk-s3 (1.208.0)
       aws-sdk-core (~> 3, >= 3.234.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -52,7 +52,7 @@ GEM
     babosa (1.0.4)
     base64 (0.2.0)
     benchmark (0.4.1)
-    bigdecimal (3.3.1)
+    bigdecimal (4.0.1)
     claide (1.1.0)
     claide-plugins (0.9.2)
       cork
@@ -160,7 +160,7 @@ GEM
     faraday_middleware (1.2.1)
       faraday (~> 1.0)
     fastimage (2.4.0)
-    fastlane (2.229.1)
+    fastlane (2.230.0)
       CFPropertyList (>= 2.3, < 4.0.0)
       abbrev (~> 0.1.2)
       addressable (>= 2.8, < 3.0.0)
@@ -189,6 +189,7 @@ GEM
       http-cookie (~> 1.0.5)
       json (< 3.0.0)
       jwt (>= 2.1.0, < 3)
+      logger (>= 1.6, < 2.0)
       mini_magick (>= 4.9.4, < 5.0.0)
       multipart-post (>= 2.0.0, < 3.0.0)
       mutex_m (~> 0.3.0)
@@ -264,7 +265,7 @@ GEM
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     jmespath (1.6.2)
-    json (2.16.0)
+    json (2.18.0)
     jwt (2.10.2)
       base64
     kramdown (2.5.1)
@@ -281,7 +282,7 @@ GEM
     mini_portile2 (2.8.9)
     minitest (5.25.5)
     molinillo (0.8.0)
-    multi_json (1.17.0)
+    multi_json (1.18.0)
     multipart-post (2.4.1)
     mutex_m (0.3.0)
     nanaimo (0.4.0)
@@ -298,7 +299,7 @@ GEM
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
     open4 (1.3.4)
-    optparse (0.8.0)
+    optparse (0.8.1)
     os (1.1.4)
     plist (3.7.2)
     process_executer (1.3.0)
