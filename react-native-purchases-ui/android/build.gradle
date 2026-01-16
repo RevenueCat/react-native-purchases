@@ -59,7 +59,7 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     versionCode 1
-    versionName '9.7.0'
+    versionName '9.7.1'
   }
 
   buildTypes {
