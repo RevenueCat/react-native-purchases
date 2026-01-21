@@ -17,6 +17,6 @@ Pod::Spec.new do |spec|
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommonUI", '17.27.1'
+  spec.dependency   "PurchasesHybridCommonUI", '17.28.1'
   spec.swift_version    = '5.7'
 end

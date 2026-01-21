@@ -3397,26 +3397,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:17.27.1":
-  version: 17.27.1
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.27.1"
+"@revenuecat/purchases-js-hybrid-mappings@npm:17.28.1":
+  version: 17.28.1
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.28.1"
   dependencies:
-    "@revenuecat/purchases-js": 1.23.1
-  checksum: 11a204772d0a77b4199550272540e1eb57780d0a096fbf444d55b582e4bf52f2f0636b9ee4ca7705dbc592e90cdac0b0003b58b2b24cf4aefb00ccb6995edc3c
+    "@revenuecat/purchases-js": 1.24.1
+  checksum: 9723a4008673be957e8f4705f58da79a78cb09561398a88b4666d942990e804fb9f8bf97c84c26a83d13cfbae39f72707cde5f160fd5ef437398b633e62c8698
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js@npm:1.23.1":
-  version: 1.23.1
-  resolution: "@revenuecat/purchases-js@npm:1.23.1"
-  checksum: 9987c9c5f02cc22d56fb2e859dc88f68af40de897c4bbc44b04ced1545ec853f5090f4d4ccc4b6efdcf1554b3be6d90099266731ae128412080e0abdc3c51dda
+"@revenuecat/purchases-js@npm:1.24.1":
+  version: 1.24.1
+  resolution: "@revenuecat/purchases-js@npm:1.24.1"
+  checksum: cbc24487cac568fd1af2bab02fef8f670d2ce901c6b9f3a70aa38b0e58a59b1892a49eb901e6cc8786866180c9eea31d6fad73683608852f7d2096b88a75da7e
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:17.27.1":
-  version: 17.27.1
-  resolution: "@revenuecat/purchases-typescript-internal@npm:17.27.1"
-  checksum: 2cb2f186470d3228fe064d1f1f991fdaad6e007bea82067790f44246af7c2931c234e1ba141c2c0b6605e75147d9f2603be3978408df0ea0e87196d72602311e
+"@revenuecat/purchases-typescript-internal@npm:17.28.1":
+  version: 17.28.1
+  resolution: "@revenuecat/purchases-typescript-internal@npm:17.28.1"
+  checksum: 1b2dc54da621baf8e5023e709b422ed30e98cf867bd6361be776bd912151c97e3abb99e5c28c239db8e0eba88ed8d17c36ee1f941333b4909306bec70f07a0d0
   languageName: node
   linkType: hard
 
@@ -7615,6 +7615,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minizlib@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "minizlib@npm:3.1.0"
+  dependencies:
+    minipass: ^7.1.2
+  checksum: a15e6f0128f514b7d41a1c68ce531155447f4669e32d279bba1c1c071ef6c2abd7e4d4579bb59ccc2ed1531346749665968fdd7be8d83eb6b6ae2fe1f3d370a7
+  languageName: node
+  linkType: hard
+
 "mkdirp@npm:^0.5.1":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
@@ -7632,15 +7641,6 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: a96865108c6c3b1b8e1d5e9f11843de1e077e57737602de1b82030815f311be11f96f09cce59bd5b903d0b29834733e5313f9301e3ed6d6f6fba2eae0df4298f
-  languageName: node
-  linkType: hard
-
-"mkdirp@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "mkdirp@npm:3.0.1"
-  bin:
-    mkdirp: dist/cjs/src/bin.js
-  checksum: 972deb188e8fb55547f1e58d66bd6b4a3623bf0c7137802582602d73e6480c1c2268dcbafbfb1be466e00cc7e56ac514d7fd9334b7cf33e3e2ab547c16f83a8d
   languageName: node
   linkType: hard
 
@@ -8411,7 +8411,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 17.27.1
+    "@revenuecat/purchases-typescript-internal": 17.28.1
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -8431,7 +8431,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 9.7.0
+    react-native-purchases: 9.7.1
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
@@ -8443,8 +8443,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 17.27.1
-    "@revenuecat/purchases-typescript-internal": 17.27.1
+    "@revenuecat/purchases-js-hybrid-mappings": 17.28.1
+    "@revenuecat/purchases-typescript-internal": 17.28.1
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -9438,16 +9438,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.4.3
-  resolution: "tar@npm:7.4.3"
+  version: 7.5.3
+  resolution: "tar@npm:7.5.3"
   dependencies:
     "@isaacs/fs-minipass": ^4.0.0
     chownr: ^3.0.0
     minipass: ^7.1.2
-    minizlib: ^3.0.1
-    mkdirp: ^3.0.1
+    minizlib: ^3.1.0
     yallist: ^5.0.0
-  checksum: 8485350c0688331c94493031f417df069b778aadb25598abdad51862e007c39d1dd5310702c7be4a6784731a174799d8885d2fde0484269aea205b724d7b2ffa
+  checksum: 146cd30727cd886c6cbed9e8f67c280f98bcab57c69d7acdb44d8a743987aac9b27cb10a98c2ea3cd416ded44ee93cad84c4acd6abad900f6aaa4845ceaf1b46
   languageName: node
   linkType: hard
 
