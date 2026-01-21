@@ -25,7 +25,7 @@ export const previewNativeModuleRNPaywalls = {
         presentedOfferingContext?: Record<string, unknown>, 
         _displayCloseButton?: boolean, 
         _fontFamily?: string | null,
-    ) => {
+    ): Promise<PAYWALL_RESULT> => {
         return await PurchasesCommon.getInstance().presentPaywall({
             requiredEntitlementIdentifier,
             offeringIdentifier,
