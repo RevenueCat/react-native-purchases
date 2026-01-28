@@ -46,7 +46,7 @@
 ## RevenueCatUI SDK
 ### Paywalls
 #### 🐞 Bugfixes
-* fix: infinite recursion crash in PaywallViewController
+* Fix for infinite recursion crash in PaywallViewController (https://github.com/RevenueCat/purchases-ios/pull/6066)
 
 ## 9.6.15
 ## RevenueCat SDK
