@@ -43,6 +43,10 @@
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.27.1 (#1538) via RevenueCat Git Bot (@RCGitBot)
   * [iOS 5.54.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.54.1)
+## RevenueCatUI SDK
+### Paywalls
+#### 🐞 Bugfixes
+* Fix for infinite recursion crash in PaywallViewController (https://github.com/RevenueCat/purchases-ios/pull/6066)
 
 ## 9.6.15
 ## RevenueCat SDK
