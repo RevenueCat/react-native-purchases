@@ -3397,12 +3397,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:17.29.0":
-  version: 17.29.0
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.29.0"
+"@revenuecat/purchases-js-hybrid-mappings@npm:17.30.0":
+  version: 17.30.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.30.0"
   dependencies:
     "@revenuecat/purchases-js": 1.24.3
-  checksum: e466569e1aba1c2d36e70a7196ee988d27077c43ee8fd64ddd627ae014063255b375377a17404ddbcbc744479674b10a700d33f488c6e0dc97762e340f428bb8
+  checksum: 79e26c9ec4a8c41e98099e32afb83767e128291e8b677811e0c3e6ea5e80fee8766eb8c562a4c7ac422276eb7a702e8a4c85231e2da6b69a4335d7ab12651092
   languageName: node
   linkType: hard
 
@@ -3413,10 +3413,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:17.29.0":
-  version: 17.29.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:17.29.0"
-  checksum: d68387063ed7c38586e39ba7b606ca85b54d26fc4112c540916a73fac70b92a3e98884786a19b32aed3da7009ce1b7a6f05a0e314b5143a03032a8accaedeb70
+"@revenuecat/purchases-typescript-internal@npm:17.30.0":
+  version: 17.30.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:17.30.0"
+  checksum: a1a5d29f4cb00fe857de03a9edaca1e37c8d9cedc2134312f62d2a978f9def28052da5bdd2bbc3d86ca6365406355c2601ab68968669c579a57eb97dc9f34bec
   languageName: node
   linkType: hard
 
@@ -8411,7 +8411,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 17.29.0
+    "@revenuecat/purchases-typescript-internal": 17.30.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -8443,8 +8443,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 17.29.0
-    "@revenuecat/purchases-typescript-internal": 17.29.0
+    "@revenuecat/purchases-js-hybrid-mappings": 17.30.0
+    "@revenuecat/purchases-typescript-internal": 17.30.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
