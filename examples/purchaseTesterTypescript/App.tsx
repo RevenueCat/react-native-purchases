@@ -86,7 +86,7 @@ const App = () => {
           diagnosticsEnabled: true,
         });
       }
-      Purchases.addTrackedEventListener((event) => {
+      Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
         console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
       });
     } else {
