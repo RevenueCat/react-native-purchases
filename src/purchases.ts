@@ -823,8 +823,8 @@ export default class Purchases {
   public static async addTrackedEventListener(
     trackedEventListener: TrackedEventListener
   ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
     if (Platform.OS === "android") {
-      await Purchases.throwIfNotConfigured();
       if (typeof trackedEventListener !== "function") {
         throw new Error("addTrackedEventListener needs a function");
       }
