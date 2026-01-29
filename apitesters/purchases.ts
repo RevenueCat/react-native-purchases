@@ -346,6 +346,9 @@ function checkListeners() {
 
   Purchases.addShouldPurchasePromoProductListener(shouldPurchaseListener);
   Purchases.removeShouldPurchasePromoProductListener(shouldPurchaseListener);
+
+  Purchases.addTrackedEventListener((event) => {});
+  Purchases.removeTrackedEventListener((event) => {});
 }
 
 async function checkBeginRefundRequest(

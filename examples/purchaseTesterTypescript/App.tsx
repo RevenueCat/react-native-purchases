@@ -84,11 +84,11 @@ const App = () => {
           entitlementVerificationMode: verificationMode,
           pendingTransactionsForPrepaidPlansEnabled: true,
           diagnosticsEnabled: true,
-          trackedEventListener: (event) => {
-            console.log('[TrackedEvent]', JSON.stringify(event, null, 2));
-          }
         });
       }
+      Purchases.addTrackedEventListener((event) => {
+        console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
+      });
     } else {
       Purchases.configure({
         apiKey: APIKeys.apple,

@@ -94,16 +94,15 @@ let customLogHandler: LogHandler;
 
 /**
  * Represents a tracked feature event from RevenueCatUI.
- * @internal This is a debug API.
+ * @internal This is a debug API not meant for public use.
  */
 export interface TrackedEvent {
-  eventType: string;
-  [key: string]: unknown;
+  eventDictionary: Record<string, unknown>;
 }
 
 /**
  * Listener for tracked feature events.
- * @internal This is a debug API.
+ * @internal This is a debug API not meant for public use.
  */
 export type TrackedEventListener = (event: TrackedEvent) => void;
 
@@ -135,8 +134,8 @@ eventEmitter?.addListener(
 
 eventEmitter?.addListener(
   "Purchases-TrackedEvent",
-  (event: TrackedEvent) => {
-    trackedEventListeners.forEach((listener) => listener(event));
+  (eventDictionary: Record<string, unknown>) => {
+    trackedEventListeners.forEach((listener) => listener({ eventDictionary }));
   }
 );
 
@@ -285,8 +284,7 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
-    trackedEventListener,
-  }: PurchasesConfiguration & { trackedEventListener?: TrackedEventListener }): void {
+  }: PurchasesConfiguration): void {
 
     if (!customLogHandler) {
       this.setLogHandler((logLevel: LOG_LEVEL, message: string) => {
@@ -371,10 +369,6 @@ export default class Purchases {
       automaticDeviceIdentifierCollectionEnabled,
       preferredUILocaleOverride,
     );
-
-    if (trackedEventListener) {
-      Purchases.addTrackedEventListener(trackedEventListener);
-    }
   }
 
   /**
@@ -827,21 +821,36 @@ export default class Purchases {
 
   /**
    * Sets a function to be called when a feature event is tracked by RevenueCatUI.
-   * This is a debug API for monitoring paywall and customer center events.
+   * This is a debug API for monitoring paywall and customer center events not meant for public use.
+   * Currently only works on Android.
    * @internal
    * @param {TrackedEventListener} trackedEventListener TrackedEvent listener
    */
-  private static addTrackedEventListener(
+  public static addTrackedEventListener(
     trackedEventListener: TrackedEventListener
   ): void {
-    if (typeof trackedEventListener !== "function") {
-      throw new Error("addTrackedEventListener needs a function");
+    if (Platform.OS === "android") {
+      if (typeof trackedEventListener !== "function") {
+        throw new Error("addTrackedEventListener needs a function");
+      }
+      const isFirstListener = trackedEventListeners.length === 0;
+      trackedEventListeners.push(trackedEventListener);
+      if (isFirstListener && !usingBrowserMode) {
+        RNPurchases.setTrackedEventListener();
+      }
     }
-    const isFirstListener = trackedEventListeners.length === 0;
-    trackedEventListeners.push(trackedEventListener);
-    if (isFirstListener && !usingBrowserMode) {
-      RNPurchases.setTrackedEventListener();
-    }
+  }
+
+  /**
+   * Removes a given TrackedEventListener. 
+   * This is a debug API not meant for public use.
+   * @internal
+   * @param trackedEventListener TrackedEvent listener to remove
+   */
+  public static removeTrackedEventListener(
+    trackedEventListener: TrackedEventListener
+  ): void {
+    trackedEventListeners = trackedEventListeners.filter((listener) => listener !== trackedEventListener);
   }
 
   /**
