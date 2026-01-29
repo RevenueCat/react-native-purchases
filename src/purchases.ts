@@ -241,15 +241,9 @@ export default class Purchases {
    */
   public static PURCHASES_ARE_COMPLETED_BY_TYPE =
     PURCHASES_ARE_COMPLETED_BY_TYPE;
-
-  /**
-   * @internal
-   */
+ 
   public static UninitializedPurchasesError = UninitializedPurchasesError;
 
-  /**
-   * @internal
-   */
   public static UnsupportedPlatformError = UnsupportedPlatformError;
 
   /**
