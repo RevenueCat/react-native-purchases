@@ -1,3 +1,8 @@
+## 9.7.5
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix issue in iOS with incorrectly configured event (#1566) via Toni Rico (@tonidero)
+
 ## 9.7.4
 ## RevenueCat SDK
 ### 📦 Dependency Updates
