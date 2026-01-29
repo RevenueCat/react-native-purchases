@@ -1,6 +1,7 @@
 package com.revenuecat.purchases.react.ui
 
 internal enum class PaywallEventName(val eventName: String) {
+    ON_PURCHASE_PACKAGE_INITIATED("onPurchasePackageInitiated"),
     ON_PURCHASE_STARTED("onPurchaseStarted"),
     ON_PURCHASE_COMPLETED("onPurchaseCompleted"),
     ON_PURCHASE_ERROR("onPurchaseError"),
@@ -14,6 +15,7 @@ internal enum class PaywallEventName(val eventName: String) {
 
 internal enum class PaywallEventKey(val key: String) {
     PACKAGE("packageBeingPurchased"),
+    CALLBACK_ID("callbackId"),
     CUSTOMER_INFO("customerInfo"),
     STORE_TRANSACTION("storeTransaction"),
     ERROR("error"),

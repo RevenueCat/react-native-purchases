@@ -17,6 +17,7 @@ static NSString *const KeyCustomerInfo = @"customerInfo";
 static NSString *const KeyStoreTransaction = @"storeTransaction";
 static NSString *const KeyError = @"error";
 static NSString *const KeyPackage = @"packageBeingPurchased";
+static NSString *const KeyCallbackId = @"callbackId";
 
 API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper ()
@@ -142,6 +143,17 @@ API_AVAILABLE(ios(15.0))
     return [[RCPresentedOfferingContext alloc] initWithOfferingIdentifier:offeringIdentifier
                                                       placementIdentifier:placementIdentifier
                                                          targetingContext:targetingContext];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+  didInitiatePurchaseWith:(NSDictionary *)packageDictionary
+               callbackId:(NSString *)callbackId API_AVAILABLE(ios(15.0)) {
+    if (self.onPurchasePackageInitiated) {
+        self.onPurchasePackageInitiated(@{
+            KeyPackage: packageDictionary,
+            KeyCallbackId: callbackId,
+        });
+    }
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller

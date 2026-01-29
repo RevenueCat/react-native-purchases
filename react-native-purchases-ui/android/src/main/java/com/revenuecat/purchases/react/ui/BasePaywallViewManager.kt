@@ -14,6 +14,7 @@ import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.react.ui.events.OnDismissEvent
+import com.revenuecat.purchases.react.ui.events.OnPurchasePackageInitiatedEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseCancelledEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseErrorEvent
@@ -43,6 +44,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
+            .putEvent(PaywallEventName.ON_PURCHASE_PACKAGE_INITIATED)
             .putEvent(PaywallEventName.ON_PURCHASE_STARTED)
             .putEvent(PaywallEventName.ON_PURCHASE_COMPLETED)
             .putEvent(PaywallEventName.ON_PURCHASE_ERROR)
@@ -117,6 +119,16 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         themedReactContext: ThemedReactContext,
         view: View
     ) = object : PaywallListenerWrapper() {
+        override fun onPurchasePackageInitiated(rcPackage: Map<String, Any?>, callbackId: String) {
+            val event = OnPurchasePackageInitiatedEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+                rcPackage,
+                callbackId
+            )
+            emitEvent(themedReactContext, view.id, event)
+        }
+
         override fun onPurchaseStarted(rcPackage: Map<String, Any?>) {
             val event = OnPurchaseStartedEvent(
                 surfaceId = view.surfaceId,

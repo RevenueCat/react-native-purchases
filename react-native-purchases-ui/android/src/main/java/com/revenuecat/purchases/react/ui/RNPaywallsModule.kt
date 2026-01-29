@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
 import com.revenuecat.purchases.hybridcommon.ui.PaywallSource
 import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
@@ -71,6 +72,16 @@ internal class RNPaywallsModule(
             fontFamily,
             promise
         )
+    }
+
+    /**
+     * Resumes a pending purchase flow that was intercepted by onPurchasePackageInitiated.
+     * @param callbackId The callback ID received from the onPurchasePackageInitiated event
+     * @param shouldProceed Whether to proceed with the purchase (true) or cancel it (false)
+     */
+    @ReactMethod
+    fun resumePurchase(callbackId: String, shouldProceed: Boolean) {
+        PaywallListenerWrapper.resumePurchase(callbackId, shouldProceed)
     }
 
     @ReactMethod

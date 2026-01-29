@@ -22,6 +22,7 @@
 
 RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary);
 
+RCT_EXPORT_VIEW_PROPERTY(onPurchasePackageInitiated, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchaseStarted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchaseCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchaseError, RCTDirectEventBlock)

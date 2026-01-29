@@ -58,6 +58,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   style,
   children,
   options,
+  onPurchasePackageInitiated,
   onPurchaseStarted,
   onPurchaseCompleted,
   onPurchaseError,
@@ -89,6 +90,13 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         style={style}
         children={children}
         options={options}
+        onPurchasePackageInitiated={onPurchasePackageInitiated ? (event: any) => {
+          const { packageBeingPurchased, callbackId } = event.nativeEvent;
+          const resume = (shouldProceed: boolean) => {
+            RNPaywalls.resumePurchase(callbackId, shouldProceed);
+          };
+          onPurchasePackageInitiated({ packageBeingPurchased, resume });
+        } : undefined}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -108,6 +116,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
   style,
   children,
   options,
+  onPurchasePackageInitiated,
   onPurchaseStarted,
   onPurchaseCompleted,
   onPurchaseError,
@@ -140,6 +149,13 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
         style={style}
         children={children}
         options={options}
+        onPurchasePackageInitiated={onPurchasePackageInitiated ? (event: any) => {
+          const { packageBeingPurchased, callbackId } = event.nativeEvent;
+          const resume = (shouldProceed: boolean) => {
+            RNPaywalls.resumePurchase(callbackId, shouldProceed);
+          };
+          onPurchasePackageInitiated({ packageBeingPurchased, resume });
+        } : undefined}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -226,6 +242,28 @@ type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
+  /**
+   * Called when a purchase is about to be initiated, before the payment sheet is displayed.
+   * This allows the app to perform any necessary preparation (e.g., authentication) before proceeding.
+   * 
+   * You must call `resume(true)` or `resume(false)`. In the latter case, the purchase will not proceed.
+   * 
+   * @example
+   * ```tsx
+   * <RevenueCatUI.Paywall
+   *   onPurchasePackageInitiated={({packageBeingPurchased, resume}) => {
+   *     showAuthModal({
+   *       onSuccess: () => resume(true),
+   *       onCancel: () => resume(false)
+   *     });
+   *   }}
+   * />
+   * ```
+   */
+  onPurchasePackageInitiated?: ({packageBeingPurchased, resume}: { 
+    packageBeingPurchased: PurchasesPackage;
+    resume: (shouldProceed: boolean) => void;
+  }) => void;
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -243,6 +281,28 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  /**
+   * Called when a package purchase is about to be initiated, before the payment sheet is displayed.
+   * This allows the app to perform any necessary preparation (e.g., authentication) before proceeding.
+   * 
+   * You must call `resume(true)` or `resume(false)`. In the latter case, the purchase will not proceed.
+   * 
+   * @example
+   * ```tsx
+   * <RevenueCatUI.OriginalTemplatePaywallFooterContainerView
+   *   onPurchasePackageInitiated={({packageBeingPurchased, resume}) => {
+   *     showAuthModal({
+   *       onSuccess: () => resume(true),
+   *       onCancel: () => resume(false)
+   *     });
+   *   }}
+   * />
+   * ```
+   */
+  onPurchasePackageInitiated?: ({packageBeingPurchased, resume}: { 
+    packageBeingPurchased: PurchasesPackage;
+    resume: (shouldProceed: boolean) => void;
+  }) => void;
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -258,6 +318,10 @@ type FooterPaywallViewProps = {
 
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
+  onPurchasePackageInitiated?: ({packageBeingPurchased, resume}: { 
+    packageBeingPurchased: PurchasesPackage;
+    resume: (shouldProceed: boolean) => void;
+  }) => void;
 };
 
 const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
@@ -422,6 +486,7 @@ export default class RevenueCatUI {
                                                                    style,
                                                                    children,
                                                                    options,
+                                                                   onPurchasePackageInitiated,
                                                                    onPurchaseStarted,
                                                                    onPurchaseCompleted,
                                                                    onPurchaseError,
@@ -435,6 +500,7 @@ export default class RevenueCatUI {
       <InternalPaywall
         options={options}
         children={children}
+        onPurchasePackageInitiated={onPurchasePackageInitiated}
         onPurchaseStarted={onPurchaseStarted}
         onPurchaseCompleted={onPurchaseCompleted}
         onPurchaseError={onPurchaseError}
@@ -452,6 +518,7 @@ export default class RevenueCatUI {
                                                                                                   style,
                                                                                                   children,
                                                                                                   options,
+                                                                                                  onPurchasePackageInitiated,
                                                                                                   onPurchaseStarted,
                                                                                                   onPurchaseCompleted,
                                                                                                   onPurchaseError,
@@ -499,6 +566,7 @@ export default class RevenueCatUI {
             android: {marginTop: -20, height}
           })}
           options={options}
+          onPurchasePackageInitiated={onPurchasePackageInitiated}
           onPurchaseStarted={onPurchaseStarted}
           onPurchaseCompleted={onPurchaseCompleted}
           onPurchaseError={onPurchaseError}
