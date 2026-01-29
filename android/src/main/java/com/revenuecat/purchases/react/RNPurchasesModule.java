@@ -50,7 +50,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String LOG_HANDLER_EVENT = "Purchases-LogHandlerEvent";
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "9.6.14";
+    public static final String PLUGIN_VERSION = "9.7.3";
 
     private final ReactApplicationContext reactContext;
 
@@ -310,6 +310,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void syncPurchases() {
         CommonKt.syncPurchases();
+    }
+
+    @ReactMethod
+    public void syncPurchasesForResult(final Promise promise) {
+        CommonKt.syncPurchases(getOnResult(promise));
     }
 
     @ReactMethod

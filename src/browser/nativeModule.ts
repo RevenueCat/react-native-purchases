@@ -115,6 +115,9 @@ export const browserNativeModuleRNPurchases = {
   syncPurchases: async () => {
     methodNotSupportedOnWeb('syncPurchases');
   },
+  syncPurchasesForResult: async () => {
+    methodNotSupportedOnWeb('syncPurchasesForResult');
+  },
   syncAmazonPurchase: async (
     _productID: string,
     _receiptID: string,

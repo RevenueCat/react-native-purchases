@@ -44,6 +44,17 @@ import {
   WebPurchaseRedemptionResult,
   Storefront,
 } from "@revenuecat/purchases-typescript-internal";
+
+/**
+ * Result of a syncPurchases operation.
+ */
+export interface SyncPurchasesResult {
+  /**
+   * The updated customer info after syncing purchases.
+   */
+  customerInfo: CustomerInfo;
+}
+
 import { shouldUseBrowserMode } from "./utils/environment";
 import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
@@ -848,6 +859,7 @@ export default class Purchases {
    * This method will send all the purchases to the RevenueCat backend. Call this when using your own implementation
    * for subscriptions anytime a sync is needed, like after a successful purchase.
    *
+   * @deprecated Use {@link syncPurchasesForResult} instead, which returns the updated CustomerInfo.
    * @warning This function should only be called if you're not calling purchaseProduct/purchaseStoreProduct/purchasePackage/purchaseSubscriptionOption.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * syncing purchases.
@@ -855,6 +867,20 @@ export default class Purchases {
   public static async syncPurchases(): Promise<void> {
     await Purchases.throwIfNotConfigured();
     RNPurchases.syncPurchases();
+  }
+
+  /**
+   * This method will send all the purchases to the RevenueCat backend. Call this when using your own implementation
+   * for subscriptions anytime a sync is needed, like after a successful purchase.
+   *
+   * @warning This function should only be called if you're not calling purchaseProduct/purchaseStoreProduct/purchasePackage/purchaseSubscriptionOption.
+   * @returns {Promise<SyncPurchasesResult>} A promise containing the sync result with customer info. The promise will
+   * be rejected if configure has not been called yet or if there's an error syncing purchases.
+   */
+  public static async syncPurchasesForResult(): Promise<SyncPurchasesResult> {
+    await Purchases.throwIfNotConfigured();
+    const customerInfo: CustomerInfo = await RNPurchases.syncPurchasesForResult();
+    return { customerInfo };
   }
 
   /**
