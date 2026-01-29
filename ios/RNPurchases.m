@@ -28,7 +28,7 @@ typedef void (^StartPurchaseBlock)(PurchaseCompletedBlock);
 NSString *RNPurchasesCustomerInfoUpdatedEvent = @"Purchases-CustomerInfoUpdated";
 NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchasePromoProduct";
 NSString *RNPurchasesLogHandlerEvent = @"Purchases-LogHandlerEvent";
-NSString *RNTrackedEvent = @"Purchases-TrackedEvent";
+NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
 
 @implementation RNPurchases
 
@@ -40,7 +40,7 @@ NSString *RNTrackedEvent = @"Purchases-TrackedEvent";
     return @[RNPurchasesCustomerInfoUpdatedEvent,
              RNPurchasesShouldPurchasePromoProductEvent,
              RNPurchasesLogHandlerEvent, 
-             RNTrackedEvent];
+             RNPurchasesTrackedEvent];
 }
 
 - (void)sendEventWithName:(NSString *)name body:(id)body {
