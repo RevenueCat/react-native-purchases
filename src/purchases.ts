@@ -820,10 +820,11 @@ export default class Purchases {
    * @internal
    * @param {TrackedEventListener} trackedEventListener TrackedEvent listener
    */
-  public static addTrackedEventListener(
+  public static async addTrackedEventListener(
     trackedEventListener: TrackedEventListener
-  ): void {
+  ): Promise<void> {
     if (Platform.OS === "android") {
+      await Purchases.throwIfNotConfigured();
       if (typeof trackedEventListener !== "function") {
         throw new Error("addTrackedEventListener needs a function");
       }
