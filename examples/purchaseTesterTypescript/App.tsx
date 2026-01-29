@@ -83,9 +83,12 @@ const App = () => {
           apiKey: APIKeys.google,
           entitlementVerificationMode: verificationMode,
           pendingTransactionsForPrepaidPlansEnabled: true,
-          diagnosticsEnabled: true
+          diagnosticsEnabled: true,
         });
       }
+      Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
+        console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
+      });
     } else {
       Purchases.configure({
         apiKey: APIKeys.apple,

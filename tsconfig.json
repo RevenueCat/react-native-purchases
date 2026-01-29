@@ -23,7 +23,8 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "stripInternal": true
   },
   "files": ["src/index.ts"],
   "exclude": ["node_modules", "dist", "./installPeerdeps.ts"],
