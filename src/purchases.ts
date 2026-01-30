@@ -83,11 +83,12 @@ import { Platform } from "react-native";
 
 const NATIVE_MODULE_ERROR =
   `[RevenueCat] Native module (RNPurchases) not found. This can happen if:\n\n` +
-  `- You are running in an unsupported environment (e.g., Expo Go without a development build)\n` +
+  `- You are running in an environment where native modules are unavailable\n` +
   `- The native module failed to initialize\n` +
   `- The package is not properly linked\n\n` +
   `To fix this:\n` +
-  `- If using Expo, create a development build: https://docs.expo.dev/develop/development-builds/create-a-build/\n` +
+  `- If using Expo Go, the SDK works in preview mode but native modules are not available. ` +
+  `For full functionality, create a development build: https://docs.expo.dev/develop/development-builds/create-a-build/\n` +
   `- If using bare React Native, run 'pod install' and rebuild the app\n` +
   `- Check that you have rebuilt the app after installing the package\n`;
 
