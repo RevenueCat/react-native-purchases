@@ -25,7 +25,7 @@ export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
 const NATIVE_MODULE_NOT_FOUND_ERROR =
   `[RevenueCatUI] Native module not found. This can happen if:\n\n` +
-  `- You are running in an unsupported environment (e.g., Expo Go without a development build)\n` +
+  `- You are running in an unsupported environment (e.g., A browser or a container app that doesn't actually use the native modules)\n` +
   `- The native module failed to initialize\n` +
   `- react-native-purchases is not properly installed\n\n` +
   `To fix this:\n` +
