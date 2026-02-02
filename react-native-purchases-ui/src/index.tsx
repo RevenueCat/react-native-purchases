@@ -41,14 +41,8 @@ const RNPaywalls = usingPreviewAPIMode ? previewNativeModuleRNPaywalls : NativeM
 const RNCustomerCenter = usingPreviewAPIMode ? previewNativeModuleRNCustomerCenter : NativeModules.RNCustomerCenter;
 
 // Helper function to check native module availability - called at usage time, not import time
-function throwIfPaywallsNotAvailable(): void {
-  if (!RNPaywalls) {
-    throw new Error(NATIVE_MODULE_NOT_FOUND_ERROR);
-  }
-}
-
-function throwIfCustomerCenterNotAvailable(): void {
-  if (!RNCustomerCenter) {
+function throwIfNativeModulesNotAvailable(): void {
+  if (!RNPaywalls || !RNCustomerCenter) {
     throw new Error(NATIVE_MODULE_NOT_FOUND_ERROR);
   }
 }
@@ -391,7 +385,7 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
-    throwIfPaywallsNotAvailable();
+    throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
     return RNPaywalls!.presentPaywall(
       offering?.identifier ?? null,
@@ -420,7 +414,7 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
-    throwIfPaywallsNotAvailable();
+    throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
     return RNPaywalls!.presentPaywallIfNeeded(
       requiredEntitlementIdentifier,
@@ -609,7 +603,7 @@ export default class RevenueCatUI {
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
   public static presentCustomerCenter(params?: PresentCustomerCenterParams): Promise<void> {
-    throwIfCustomerCenterNotAvailable();
+    throwIfNativeModulesNotAvailable();
     if (params?.callbacks) {
       const subscriptions: { remove: () => void }[] = [];
       const callbacks = params.callbacks as CustomerCenterCallbacks;

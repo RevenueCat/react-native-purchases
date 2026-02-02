@@ -1748,6 +1748,8 @@ export default class Purchases {
   public static isConfigured(): Promise<boolean> {
     if (!RNPurchases) {
       // Native module not available, so SDK cannot be configured
+      // tslint:disable-next-line:no-console
+      console.warn(`[RevenueCat] isConfigured() returning false: Native module not available`);
       return Promise.resolve(false);
     }
     return RNPurchases.isConfigured();
