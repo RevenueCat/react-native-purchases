@@ -23,10 +23,15 @@ import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponen
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
-const LINKING_ERROR =
-  `The package 'react-native-purchases-ui' doesn't seem to be linked. Make sure: \n\n` +
-  '- You have run \'pod install\'\n' +
-  '- You rebuilt the app after installing the package\n';
+const NATIVE_MODULE_NOT_FOUND_ERROR =
+  `[RevenueCatUI] Native module not found. This can happen if:\n\n` +
+  `- You are running in an unsupported environment (e.g., A browser or a container app that doesn't actually use the native modules)\n` +
+  `- The native module failed to initialize\n` +
+  `- react-native-purchases is not properly installed\n\n` +
+  `To fix this:\n` +
+  `- If using Expo, create a development build: https://docs.expo.dev/develop/development-builds/create-a-build/\n` +
+  `- If using bare React Native, run 'pod install' and rebuild the app\n` +
+  `- Make sure react-native-purchases is installed and you have rebuilt the app\n`;
 
 
 // Get the native module or use the preview implementation
@@ -35,12 +40,11 @@ const usingPreviewAPIMode = shouldUsePreviewAPIMode();
 const RNPaywalls = usingPreviewAPIMode ? previewNativeModuleRNPaywalls : NativeModules.RNPaywalls;
 const RNCustomerCenter = usingPreviewAPIMode ? previewNativeModuleRNCustomerCenter : NativeModules.RNCustomerCenter;
 
-if (!RNPaywalls) {
-  throw new Error(LINKING_ERROR);
-}
-
-if (!RNCustomerCenter) {
-  throw new Error(LINKING_ERROR);
+// Helper function to check native module availability - called at usage time, not import time
+function throwIfNativeModulesNotAvailable(): void {
+  if (!RNPaywalls || !RNCustomerCenter) {
+    throw new Error(NATIVE_MODULE_NOT_FOUND_ERROR);
+  }
 }
 
 const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
@@ -51,8 +55,9 @@ const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConf
   ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
-const eventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNPaywalls);
-const customerCenterEventEmitter = usingPreviewAPIMode ? null : new NativeEventEmitter(RNCustomerCenter);
+// Only create event emitters if native modules are available
+const eventEmitter = !usingPreviewAPIMode && RNPaywalls ? new NativeEventEmitter(RNPaywalls) : null;
+const customerCenterEventEmitter = !usingPreviewAPIMode && RNCustomerCenter ? new NativeEventEmitter(RNCustomerCenter) : null;
 
 const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   style,
@@ -101,7 +106,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
     );
   }
 
-  throw new Error(LINKING_ERROR);
+  throw new Error(NATIVE_MODULE_NOT_FOUND_ERROR);
 };
 
 const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
@@ -153,7 +158,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
     );
   }
 
-  throw new Error(LINKING_ERROR);
+  throw new Error(NATIVE_MODULE_NOT_FOUND_ERROR);
 };
 
 export interface PresentPaywallParams {
@@ -320,14 +325,14 @@ export interface CustomerCenterCallbacks {
 
   /**
    * Called when a refund request starts with the product identifier.
-   * 
+   *
    * **iOS only** - This callback will never be called on Android as refund requests are not supported on that platform.
    */
   onRefundRequestStarted?: ({productIdentifier}: { productIdentifier: string }) => void;
 
   /**
    * Called when a refund request completes with status information.
-   * 
+   *
    * **iOS only** - This callback will never be called on Android as refund requests are not supported on that platform.
    */
   onRefundRequestCompleted?: ({productIdentifier, refundRequestStatus}: { productIdentifier: string; refundRequestStatus: REFUND_REQUEST_STATUS }) => void;
@@ -380,8 +385,9 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
+    throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
-    return RNPaywalls.presentPaywall(
+    return RNPaywalls!.presentPaywall(
       offering?.identifier ?? null,
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
@@ -408,8 +414,9 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
+    throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
-    return RNPaywalls.presentPaywallIfNeeded(
+    return RNPaywalls!.presentPaywallIfNeeded(
       requiredEntitlementIdentifier,
       offering?.identifier ?? null,
       offering?.availablePackages?.[0]?.presentedOfferingContext,
@@ -566,11 +573,11 @@ export default class RevenueCatUI {
         />
       );
     }
-    
+
     if (!InternalCustomerCenterView) {
-      throw new Error(LINKING_ERROR);
+      throw new Error(NATIVE_MODULE_NOT_FOUND_ERROR);
     }
-    
+
     return (
       <InternalCustomerCenterView
         onDismiss={onDismiss ? () => onDismiss() : undefined}
@@ -596,6 +603,7 @@ export default class RevenueCatUI {
    * @returns {Promise<void>} A promise that resolves when the customer center is presented.
    */
   public static presentCustomerCenter(params?: PresentCustomerCenterParams): Promise<void> {
+    throwIfNativeModulesNotAvailable();
     if (params?.callbacks) {
       const subscriptions: { remove: () => void }[] = [];
       const callbacks = params.callbacks as CustomerCenterCallbacks;
@@ -698,14 +706,14 @@ export default class RevenueCatUI {
       }
 
       // Return a promise that resolves when the customer center is dismissed
-      return RNCustomerCenter.presentCustomerCenter().finally(() => {
+      return RNCustomerCenter!.presentCustomerCenter().finally(() => {
         // Clean up all event listeners when the customer center is dismissed
         subscriptions.forEach(subscription => subscription.remove());
       });
     }
 
     RevenueCatUI.logWarningIfPreviewAPIMode("presentCustomerCenter");
-    return RNCustomerCenter.presentCustomerCenter();
+    return RNCustomerCenter!.presentCustomerCenter();
   }
 
   /**
