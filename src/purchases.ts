@@ -146,8 +146,10 @@ eventEmitter?.addListener(
 eventEmitter?.addListener(
   "Purchases-LogHandlerEvent",
   ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
-    const logLevelEnum = LOG_LEVEL[logLevel];
-    customLogHandler(logLevelEnum, message);
+    if (customLogHandler) {
+      const logLevelEnum = LOG_LEVEL[logLevel];
+      customLogHandler(logLevelEnum, message);
+    }
   }
 );
 
