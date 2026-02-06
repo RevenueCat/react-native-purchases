@@ -6,12 +6,17 @@ type RootStackParamList = {
   OfferingDetail: {offering: PurchasesOffering | null};
   WinBackTesting: {};
   VirtualCurrency: {};
-  Paywall: {offering: PurchasesOffering | null; fontFamily?: string | null};
+  Paywall: {
+    offering: PurchasesOffering | null;
+    fontFamily?: string | null;
+    customVariables?: { [key: string]: string };
+  };
   PaywallModalNoHeader: {};
   PaywallModalWithHeader: {};
   FooterPaywall: {
     offering: PurchasesOffering | null;
     fontFamily?: string | null;
+    customVariables?: { [key: string]: string };
   };
   CustomerCenterScreen: { shouldShowCloseButton?: boolean };
 };

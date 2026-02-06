@@ -54,6 +54,7 @@ const FooterPaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
                                                              options={{
                                                                offering: route.params.offering,
                                                                fontFamily: route.params.fontFamily,
+                                                               customVariables: route.params.customVariables,
                                                              }}
                                                              onPurchaseStarted={onPurchaseStarted}
                                                              onPurchaseCompleted={onPurchaseCompleted}

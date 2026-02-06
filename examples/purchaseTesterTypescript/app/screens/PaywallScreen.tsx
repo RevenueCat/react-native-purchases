@@ -62,6 +62,7 @@ const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
           offering: route.params.offering,
           fontFamily: route.params.fontFamily,
           displayCloseButton: true,
+          customVariables: route.params.customVariables,
         }}
         onPurchaseStarted={onPurchaseStarted}
         onPurchaseCompleted={onPurchaseCompleted}
