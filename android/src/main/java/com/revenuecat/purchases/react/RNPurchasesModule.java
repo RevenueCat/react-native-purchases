@@ -588,6 +588,33 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
       CommonKt.redeemWebPurchase(urlString, getOnResult(promise));
     }
 
+    // region Ad Tracking
+
+    @ReactMethod
+    public void trackAdFailedToLoad(ReadableMap adData) {
+        CommonKt.trackAdFailedToLoad(adData.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdLoaded(ReadableMap adData) {
+        CommonKt.trackAdLoaded(adData.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdDisplayed(ReadableMap adData) {
+        CommonKt.trackAdDisplayed(adData.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdOpened(ReadableMap adData) {
+        CommonKt.trackAdOpened(adData.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdRevenue(ReadableMap adData) {
+        CommonKt.trackAdRevenue(adData.toHashMap());
+    }
+
     // endregion
 
     //================================================================================
