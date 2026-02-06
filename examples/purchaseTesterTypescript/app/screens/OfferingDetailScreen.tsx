@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, } from 'react-native';
 
@@ -13,12 +13,15 @@ import RevenueCatUI from 'react-native-purchases-ui';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
+import CustomVariablesEditor from '../components/CustomVariablesEditor';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
 
 // Taken from https://reactnative.dev/docs/typescript
 const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => {
   const isDarkMode = useColorScheme() === 'dark';
+  const [customVariables, setCustomVariables] = useState<{ [key: string]: string }>({});
+  const [isEditorVisible, setIsEditorVisible] = useState(false);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -68,11 +71,26 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
           <Text style={styles.value}>
             { JSON.stringify(route.params.offering?.metadata) }
           </Text>
+          <View style={styles.customVariablesSection}>
+            <TouchableOpacity
+              style={styles.editVariablesButton}
+              onPress={() => setIsEditorVisible(true)}>
+              <Text style={styles.editVariablesButtonText}>
+                Edit Custom Variables ({Object.keys(customVariables).length})
+              </Text>
+            </TouchableOpacity>
+            {Object.keys(customVariables).length > 0 && (
+              <Text style={styles.variablesPreview}>
+                {Object.entries(customVariables).map(([k, v]) => `${k}: ${v}`).join(', ')}
+              </Text>
+            )}
+          </View>
           <View style={styles.paywallsButtonStack}>
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => RevenueCatUI.presentPaywall({
-                offering: route.params.offering
+                offering: route.params.offering,
+                customVariables: Object.keys(customVariables).length > 0 ? customVariables : undefined,
               })}>
               <Text>
                 Present paywall
@@ -84,6 +102,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                 offering: route.params.offering,
                 displayCloseButton: false,
                 requiredEntitlementIdentifier: "pro_cat",
+                customVariables: Object.keys(customVariables).length > 0 ? customVariables : undefined,
               })}>
               <Text>
                 Present paywall if needed "pro_cat"
@@ -91,19 +110,28 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => navigation.navigate('Paywall', { offering: route.params.offering })}>
+              onPress={() => navigation.navigate('Paywall', { offering: route.params.offering, customVariables })}>
               <Text>
                 Show paywall
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => navigation.navigate('FooterPaywall', { offering: route.params.offering })}>
+              onPress={() => navigation.navigate('FooterPaywall', { offering: route.params.offering, customVariables })}>
               <Text>
                 Show paywall as footer
               </Text>
             </TouchableOpacity>
           </View>
+          <CustomVariablesEditor
+            isVisible={isEditorVisible}
+            variables={customVariables}
+            onSave={(vars) => {
+              setCustomVariables(vars);
+              setIsEditorVisible(false);
+            }}
+            onCancel={() => setIsEditorVisible(false)}
+          />
           {
             route.params.offering?.availablePackages.map((pkg: PurchasesPackage) => {
               return (
@@ -181,6 +209,29 @@ const styles = StyleSheet.create({
   },
   value: {
     marginBottom: 10
+  },
+  customVariablesSection: {
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+    borderRadius: 8,
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  editVariablesButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+  },
+  editVariablesButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  variablesPreview: {
+    marginTop: 8,
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
   },
   packageContainer: {
     flex: 1,

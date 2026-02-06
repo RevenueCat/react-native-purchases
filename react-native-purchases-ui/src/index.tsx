@@ -185,6 +185,14 @@ export interface PresentPaywallParams {
    * Only available for original template paywalls. Ignored for V2 Paywalls and web.
    */
   fontFamily?: string | null;
+
+  /**
+   * Custom variables to pass to the paywall for text substitution.
+   * Use `{{ custom.variable_name }}` syntax in your paywall text to reference these values.
+   * Keys must start with a letter and can only contain letters, numbers, and underscores.
+   * Only available for V2 Paywalls.
+   */
+  customVariables?: { [key: string]: string };
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -212,6 +220,14 @@ export interface PaywallViewOptions {
    * Only available for original template paywalls. Ignored for V2 Paywalls.
    */
   fontFamily?: string | null;
+
+  /**
+   * Custom variables to pass to the paywall for text substitution.
+   * Use `{{ custom.variable_name }}` syntax in your paywall text to reference these values.
+   * Keys must start with a letter and can only contain letters, numbers, and underscores.
+   * Only available for V2 Paywalls.
+   */
+  customVariables?: { [key: string]: string };
 }
 
 export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
@@ -384,6 +400,7 @@ export default class RevenueCatUI {
                                  offering,
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
+                                 customVariables,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
@@ -392,6 +409,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
+      customVariables ?? null,
     )
   }
 
@@ -413,6 +431,7 @@ export default class RevenueCatUI {
                                          offering,
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
+                                         customVariables,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
@@ -422,6 +441,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
+      customVariables ?? null,
     )
   }
 

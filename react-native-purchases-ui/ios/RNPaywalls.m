@@ -65,6 +65,7 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   presentedOfferingContext:(nullable NSDictionary *)presentedOfferingContext
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
+                  customVariables:(nullable NSDictionary *)customVariables
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
@@ -78,6 +79,9 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
         options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
         if (fontFamily) {
             options[PaywallOptionsKeys.fontName] = fontFamily;
+        }
+        if (customVariables) {
+            options[PaywallOptionsKeys.customVariables] = customVariables;
         }
 
         [self.paywalls presentPaywallWithOptions:options
@@ -94,6 +98,7 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
                   presentedOfferingContext:(nullable NSDictionary *)presentedOfferingContext
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
+                  customVariables:(nullable NSDictionary *)customVariables
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
@@ -108,6 +113,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
         options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
         if (fontFamily) {
             options[PaywallOptionsKeys.fontName] = fontFamily;
+        }
+        if (customVariables) {
+            options[PaywallOptionsKeys.customVariables] = customVariables;
         }
 
         [self.paywalls presentPaywallIfNeededWithOptions:options

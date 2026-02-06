@@ -17,11 +17,11 @@ end
 target 'PurchaseTester' do
   config = use_native_modules!
 
-#  # Uncomment these to use a local version of `purchases-ios` and `purchases-hybrid-common`:
-#  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'
-#  pod 'RevenueCatUI',  :path => '../../../../../purchases-ios/'
-#  pod 'PurchasesHybridCommon', :path => '../../../../../purchases-hybrid-common/'
-#  pod 'PurchasesHybridCommonUI', :path => '../../../../../purchases-hybrid-common/'
+  # Uncomment these to use a local version of `purchases-ios` and `purchases-hybrid-common`:
+#  pod 'RevenueCat',  :path => '../../../../purchases-ios/'
+#  pod 'RevenueCatUI',  :path => '../../../../purchases-ios/'
+#  pod 'PurchasesHybridCommon', :path => '../../../../purchases-hybrid-common/'
+#  pod 'PurchasesHybridCommonUI', :path => '../../../../purchases-hybrid-common/'
 
   use_react_native!(
     :path => config[:reactNativePath],

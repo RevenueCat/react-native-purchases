@@ -21,6 +21,7 @@ import com.revenuecat.purchases.react.ui.events.OnPurchaseStartedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
+import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
@@ -31,6 +32,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         private const val OFFERING_IDENTIFIER = "identifier"
         private const val OPTION_FONT_FAMILY = "fontFamily"
         private const val OPTION_DISPLAY_CLOSE_BUTTON = "displayCloseButton"
+        private const val OPTION_CUSTOM_VARIABLES = "customVariables"
 
         private const val OPTION_OFFERING_AVAILABLE_PACKAGES = "availablePackages"
 
@@ -40,6 +42,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     abstract fun setOfferingId(view: T, offeringId: String?, presentedOfferingContext: PresentedOfferingContext? = null)
 
     abstract fun setDisplayDismissButton(view: T, display: Boolean)
+
+    abstract fun setCustomVariables(view: T, customVariables: Map<String, CustomVariableValue>)
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
@@ -63,6 +67,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             setOfferingIdProp(view, options)
             setFontFamilyProp(view, options)
             setDisplayCloseButton(view, options)
+            setCustomVariablesProp(view, options)
         }
     }
 
@@ -111,6 +116,13 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         options.takeIf { it.hasKey(OPTION_DISPLAY_CLOSE_BUTTON) }?.let {
             setDisplayDismissButton(view, it.getBoolean(OPTION_DISPLAY_CLOSE_BUTTON))
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun setCustomVariablesProp(view: T, options: ReadableMap?) {
+        val optionsMap = options?.toHashMap() ?: return
+        val customVariables = optionsMap[OPTION_CUSTOM_VARIABLES] as? Map<String, String> ?: return
+        setCustomVariables(view, customVariables.mapValues { CustomVariableValue.String(it.value) })
     }
 
     internal fun createPaywallListenerWrapper(

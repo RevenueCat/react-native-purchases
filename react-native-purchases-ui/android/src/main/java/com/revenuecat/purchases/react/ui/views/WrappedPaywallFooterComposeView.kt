@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.revenuecat.purchases.InternalRevenueCatAPI
 import com.revenuecat.purchases.PresentedOfferingContext
+import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.OriginalTemplatePaywallFooterView
@@ -36,6 +37,10 @@ open class WrappedPaywallFooterComposeView(context: Context) : ComposeViewWrappe
 
     fun setDismissHandler(handler: (() -> Unit)) {
         wrappedView?.setDismissHandler(handler)
+    }
+
+    fun setCustomVariables(customVariables: Map<String, CustomVariableValue>) {
+        wrappedView?.setCustomVariables(customVariables)
     }
 
 }
