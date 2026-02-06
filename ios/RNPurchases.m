@@ -337,6 +337,24 @@ RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
 }
 
 
+#pragma mark - Health
+
+RCT_EXPORT_METHOD(healthRequest:(BOOL)signatureVerification
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality healthRequestWithSignatureVerification:signatureVerification completion:^(RCErrorContainer * _Nullable errorContainer) {
+        if (errorContainer) {
+            reject(
+                [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
+                errorContainer.message,
+                errorContainer.error
+            );
+        } else {
+            resolve(nil);
+        }
+    }];
+}
+
 #pragma mark - Ad Tracking
 
 RCT_EXPORT_METHOD(trackAdFailedToLoad:(NSDictionary *)adData) {

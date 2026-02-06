@@ -1558,6 +1558,19 @@ export default class Purchases {
     RNPurchases.overridePreferredLocale(locale);
   }
 
+  /**
+   * Performs an unauthenticated request to the RevenueCat API to verify connectivity.
+   * @param {boolean} signatureVerification Whether to verify the response signature.
+   * @returns {Promise<void>} The promise will be rejected if the request fails or if configure
+   * has not been called yet.
+   */
+  public static async healthRequest(
+    signatureVerification: boolean
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.healthRequest(signatureVerification);
+  }
+
   // region Ad Tracking
 
   /**
