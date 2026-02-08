@@ -1,3 +1,4 @@
+import { PurchasesCommon } from "@revenuecat/purchases-js-hybrid-mappings"
 import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal"
 
 /**
@@ -6,12 +7,30 @@ import { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal"
  */
 export const previewNativeModuleRNPaywalls = {
 
-    presentPaywall: () => {
-        return PAYWALL_RESULT.NOT_PRESENTED
+    presentPaywall: async (
+        offeringIdentifier?: string, 
+        presentedOfferingContext?: Record<string, unknown>, 
+        _displayCloseButton?: boolean, 
+        _fontFamily?: string | null,
+    ): Promise<PAYWALL_RESULT> => {
+        return await PurchasesCommon.getInstance().presentPaywall({
+            offeringIdentifier,
+            presentedOfferingContext,
+        }) as PAYWALL_RESULT;
     },
 
-    presentPaywallIfNeeded: () => {
-        return PAYWALL_RESULT.NOT_PRESENTED
+    presentPaywallIfNeeded: async (
+        requiredEntitlementIdentifier: string,
+        offeringIdentifier?: string, 
+        presentedOfferingContext?: Record<string, unknown>, 
+        _displayCloseButton?: boolean, 
+        _fontFamily?: string | null,
+    ): Promise<PAYWALL_RESULT> => {
+        return await PurchasesCommon.getInstance().presentPaywall({
+            requiredEntitlementIdentifier,
+            offeringIdentifier,
+            presentedOfferingContext,
+        }) as PAYWALL_RESULT;
     },
     
 }
