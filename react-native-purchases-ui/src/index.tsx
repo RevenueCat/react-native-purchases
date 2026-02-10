@@ -164,7 +164,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
 export interface PresentPaywallParams {
   /**
    * Whether to display the close button or not.
-   * Only available for original template paywalls. Ignored for V2 Paywalls.
+   * Only available for original template paywalls. Ignored for V2 Paywalls and web.
    */
   displayCloseButton?: boolean;
 
@@ -182,7 +182,7 @@ export interface PresentPaywallParams {
    * - Bold: MyFont_bold.ttf/MyFont_bold.otf
    * - Italic: MyFont_italic.ttf/MyFont_italic.otf
    * - Bold and Italic: MyFont_bold_italic.ttf/MyFont_bold_italic.otf
-   * Only available for original template paywalls. Ignored for V2 Paywalls.
+   * Only available for original template paywalls. Ignored for V2 Paywalls and web.
    */
   fontFamily?: string | null;
 }
