@@ -1,3 +1,68 @@
+## 9.7.6
+> [!WARNING]
+> In previous versions of the SDK, there was a discrepancy in the `pricePer{week/month/year}` StoreProduct APIs between platforms. On iOS, the value was expressed as a decimal number, while on Android it was expressed in micros. As of this release, this discrepancy has been fixed and both platforms now return the value as a decimal number.
+
+
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Handle missing log handler when reloading (#1573) via Toni Rico (@tonidero)
+* Avoid crash on import when native modules are unavailable (#1559) via Facundo Menzella (@facumenzella)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.31.0 (#1574) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.20.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.20.0)
+  * [iOS 5.57.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.57.0)
+  * [iOS 5.56.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.56.1)
+* [RENOVATE] Update dependency gradle to v9.3.1 (#1569) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Added LeakCanary to Android purchaseTester example app (#1571) via Rick (@rickvdl)
+
+## 9.7.5
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix issue in iOS with incorrectly configured event (#1566) via Toni Rico (@tonidero)
+
+## 9.7.4
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.30.1 (#1560) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.4](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.4)
+
+### 🔄 Other Changes
+* Add internal API to debug tracked events (#1562) via Toni Rico (@tonidero)
+* Bump tar from 7.5.6 to 7.5.7 (#1561) via dependabot[bot] (@dependabot[bot])
+* Add PaywallViewController bugfix to changelog (#1558) via Cesar de la Vega (@vegaro)
+
+## 9.7.3
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.30.0 (#1555) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.3](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.3)
+  * [iOS 5.56.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.56.0)
+
+## 9.7.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.29.0 (#1553) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.2)
+  * [iOS 5.55.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.3)
+  * [iOS 5.55.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.2)
+* [RENOVATE] Update dependency gradle to v8.14.4 (#1552) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.28.1 (#1546) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.19.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.19.2)
+  * [iOS 5.55.3](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.3)
+  * [iOS 5.55.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.55.2)
+* [RENOVATE] Update dependency gradle to v9.3.0 (#1544) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Update dependencies to solve dependabot alerts (#1551) via Toni Rico (@tonidero)
+* Bump lodash from 4.17.21 to 4.17.23 in /examples/MagicWeather (#1550) via dependabot[bot] (@dependabot[bot])
+* Bump tar from 7.5.3 to 7.5.6 in /examples/MagicWeather (#1549) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.231.0 to 2.231.1 (#1548) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.230.0 to 2.231.0 (#1545) via dependabot[bot] (@dependabot[bot])
+* Bump tar from 7.4.3 to 7.5.3 (#1542) via dependabot[bot] (@dependabot[bot])
+* Bump tar from 7.5.2 to 7.5.3 in /examples/MagicWeather (#1543) via dependabot[bot] (@dependabot[bot])
+
 ## 9.7.1
 ## RevenueCat SDK
 ### 📦 Dependency Updates
@@ -13,6 +78,10 @@
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.27.1 (#1538) via RevenueCat Git Bot (@RCGitBot)
   * [iOS 5.54.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.54.1)
+## RevenueCatUI SDK
+### Paywalls
+#### 🐞 Bugfixes
+* Fix for infinite recursion crash in PaywallViewController (https://github.com/RevenueCat/purchases-ios/pull/6066)
 
 ## 9.6.15
 ## RevenueCat SDK

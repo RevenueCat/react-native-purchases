@@ -56,6 +56,10 @@ export default function RootLayout() {
             appUserID: null,
             useAmazon: false
           });
+          // @ts-expect-error - addTrackedEventListener is internal
+          await Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
+            console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
+          });
           setPurchasesConfigured(true);
           console.log('Purchases configured successfully');
         } else {
