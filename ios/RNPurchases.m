@@ -54,15 +54,13 @@ NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
 RCT_EXPORT_MODULE();
 
 // Required for RN 0.65+ NativeEventEmitter support
-// Without these methods exported, NativeEventEmitter constructor will throw in RN 0.79+
+// Without these methods exported HERE, NativeEventEmitter constructor will throw in RN 0.79+
 //
-// Why we call [super]:
-// RCTEventEmitter's base implementation tracks listener count and calls lifecycle methods
-// (startObserving/stopObserving). If we had empty implementations, we'd lose this functionality.
-// By calling [super], we preserve the base class's listener counting and lifecycle management.
-//
-// What [super addListener] does: validates eventName, increments _listenerCount, calls startObserving when first listener added
-// What [super removeListeners] does: decrements _listenerCount, calls stopObserving when last listener removed
+// WHY export them here when RCTEventEmitter already has them?
+// React Native's bridge only exposes methods that are EXPLICITLY exported in each class.
+// Even though our parent class (RCTEventEmitter) has these methods, they are NOT automatically
+// visible to JavaScript from RNPurchases. We must re-export them here to make them callable
+// from JS, then delegate to [super] to use the parent's implementation.
 //
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
 // See: https://github.com/facebook/react-native/blob/main/packages/react-native/React/Modules/RCTEventEmitter.m#L101-L125
