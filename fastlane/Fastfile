@@ -149,7 +149,8 @@ lane :pod_install_and_update_if_needed do
 
       UI.message("⚠️  pod install failed on bump branch, attempting pod update PurchasesHybridCommonUI...")
       sh("pod update PurchasesHybridCommonUI")
-      commit_current_changes(commit_message: "update Podfile.lock")
+      sh("git add Podfile.lock")
+      sh("git commit -m 'update Podfile.lock'")
       push_to_git_remote(set_upstream: true)
       UI.user_error!("pod install failed but Podfile.lock has been updated and pushed. A new build will be triggered.")
     end
