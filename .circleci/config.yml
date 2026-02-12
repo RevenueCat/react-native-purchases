@@ -259,7 +259,6 @@ jobs:
       - revenuecat/setup-git-credentials
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
-          working_directory: examples/purchaseTesterTypescript
       - run:
           name: Pod Install
           command: bundle exec fastlane pod_install_and_update_if_needed
