@@ -255,13 +255,14 @@ jobs:
           device: iPhone 15
       - install-ruby-3-2-0
       - install-dependencies-ios-build
+      - revenuecat/trust-github-key
+      - revenuecat/setup-git-credentials
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
           working_directory: examples/purchaseTesterTypescript
-      - rn/pod_install:
-          cache: false
-          pod_install_directory: examples/purchaseTesterTypescript/ios
-          pod_install_command: bundle exec pod install --repo-update
+      - run:
+          name: Pod Install
+          command: bundle exec fastlane pod_install_and_update_if_needed
       - run:
           name: Build iOS
           # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
