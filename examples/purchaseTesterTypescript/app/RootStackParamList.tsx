@@ -1,4 +1,5 @@
 import { CustomerInfo, PurchasesOffering } from 'react-native-purchases';
+import { CustomVariables } from 'react-native-purchases-ui';
 
 type RootStackParamList = {
   Home: undefined;
@@ -9,14 +10,14 @@ type RootStackParamList = {
   Paywall: {
     offering: PurchasesOffering | null;
     fontFamily?: string | null;
-    customVariables?: { [key: string]: string };
+    customVariables?: CustomVariables;
   };
   PaywallModalNoHeader: {};
   PaywallModalWithHeader: {};
   FooterPaywall: {
     offering: PurchasesOffering | null;
     fontFamily?: string | null;
-    customVariables?: { [key: string]: string };
+    customVariables?: CustomVariables;
   };
   CustomerCenterScreen: { shouldShowCloseButton?: boolean };
 };

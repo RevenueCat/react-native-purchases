@@ -23,6 +23,84 @@ import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponen
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 
+/**
+ * A value type for custom paywall variables that can be passed to paywalls at runtime.
+ *
+ * Custom variables allow developers to personalize paywall text with dynamic values.
+ * Variables are defined in the RevenueCat dashboard and can be overridden at runtime.
+ *
+ * Currently only string values are supported. Additional types may be added in the future.
+ *
+ * @example
+ * ```typescript
+ * RevenueCatUI.presentPaywall({
+ *   customVariables: {
+ *     'player_name': CustomVariableValue.string('John'),
+ *     'level': CustomVariableValue.string('42'),
+ *   },
+ * });
+ * ```
+ *
+ * In the paywall text (configured in the dashboard), use the `custom.` prefix:
+ * ```
+ * Hello {{ custom.player_name }}!
+ * ```
+ */
+export type CustomVariableValue = {
+  readonly type: 'string';
+  readonly value: string;
+};
+
+/**
+ * Factory methods for creating CustomVariableValue instances.
+ */
+export const CustomVariableValue = {
+  /**
+   * Creates a string custom variable value.
+   * @param value The string value for the custom variable.
+   * @returns A CustomVariableValue containing the string.
+   */
+  string: (value: string): CustomVariableValue => ({ type: 'string', value }),
+} as const;
+
+/**
+ * A map of custom variable names to their values.
+ */
+export type CustomVariables = { [key: string]: CustomVariableValue };
+
+/**
+ * Converts CustomVariables to a string map for native bridge.
+ * @internal
+ */
+function convertCustomVariablesToStringMap(
+  customVariables: CustomVariables | undefined
+): { [key: string]: string } | null {
+  if (!customVariables) return null;
+  const result: { [key: string]: string } = {};
+  for (const key of Object.keys(customVariables)) {
+    const variable = customVariables[key];
+    if (variable) {
+      result[key] = variable.value;
+    }
+  }
+  return result;
+}
+
+/**
+ * Transforms PaywallViewOptions to native format, converting CustomVariables to string map.
+ * @internal
+ */
+function transformOptionsForNative<T extends PaywallViewOptions>(
+  options: T | undefined
+): (Omit<T, 'customVariables'> & { customVariables?: { [key: string]: string } | null }) | undefined {
+  if (!options) return undefined;
+  const { customVariables, ...rest } = options;
+  return {
+    ...rest,
+    customVariables: convertCustomVariablesToStringMap(customVariables),
+  } as any;
+}
+
 const NATIVE_MODULE_NOT_FOUND_ERROR =
   `[RevenueCatUI] Native module not found. This can happen if:\n\n` +
   `- You are running in an unsupported environment (e.g., A browser or a container app that doesn't actually use the native modules)\n` +
@@ -89,11 +167,13 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
       />
     );
   } else if (!!NativePaywall) {
+    // Transform options to native format (CustomVariables -> string map)
+    const nativeOptions = transformOptionsForNative(options);
     return (
       <NativePaywall
         style={style}
         children={children}
-        options={options}
+        options={nativeOptions as any}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -140,11 +220,13 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
       />
     );
   } else if (!!NativePaywallFooter) {
+    // Transform options to native format (CustomVariables -> string map)
+    const nativeOptions = transformOptionsForNative(options);
     return (
       <NativePaywallFooter
         style={style}
         children={children}
-        options={options}
+        options={nativeOptions as any}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -191,8 +273,16 @@ export interface PresentPaywallParams {
    * Use `{{ custom.variable_name }}` syntax in your paywall text to reference these values.
    * Keys must start with a letter and can only contain letters, numbers, and underscores.
    * Only available for V2 Paywalls.
+   *
+   * @example
+   * ```typescript
+   * customVariables: {
+   *   'player_name': CustomVariableValue.string('John'),
+   *   'level': CustomVariableValue.string('42'),
+   * }
+   * ```
    */
-  customVariables?: { [key: string]: string };
+  customVariables?: CustomVariables;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -226,8 +316,16 @@ export interface PaywallViewOptions {
    * Use `{{ custom.variable_name }}` syntax in your paywall text to reference these values.
    * Keys must start with a letter and can only contain letters, numbers, and underscores.
    * Only available for V2 Paywalls.
+   *
+   * @example
+   * ```typescript
+   * customVariables: {
+   *   'player_name': CustomVariableValue.string('John'),
+   *   'level': CustomVariableValue.string('42'),
+   * }
+   * ```
    */
-  customVariables?: { [key: string]: string };
+  customVariables?: CustomVariables;
 }
 
 export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
@@ -409,7 +507,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
-      customVariables ?? null,
+      convertCustomVariablesToStringMap(customVariables),
     )
   }
 
@@ -441,7 +539,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
-      customVariables ?? null,
+      convertCustomVariablesToStringMap(customVariables),
     )
   }
 

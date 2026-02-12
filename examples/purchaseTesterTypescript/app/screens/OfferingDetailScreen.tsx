@@ -9,7 +9,7 @@ import Purchases, {
   PurchasesStoreProduct,
   SubscriptionOption
 } from 'react-native-purchases';
-import RevenueCatUI from 'react-native-purchases-ui';
+import RevenueCatUI, { CustomVariableValue, CustomVariables } from 'react-native-purchases-ui';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
@@ -17,10 +17,28 @@ import CustomVariablesEditor from '../components/CustomVariablesEditor';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
 
+// Helper to convert CustomVariables to string map for display/editing
+const customVariablesToStringMap = (vars: CustomVariables): { [key: string]: string } => {
+  const result: { [key: string]: string } = {};
+  for (const key of Object.keys(vars)) {
+    result[key] = vars[key].value;
+  }
+  return result;
+};
+
+// Helper to convert string map to CustomVariables
+const stringMapToCustomVariables = (vars: { [key: string]: string }): CustomVariables => {
+  const result: CustomVariables = {};
+  for (const key of Object.keys(vars)) {
+    result[key] = CustomVariableValue.string(vars[key]);
+  }
+  return result;
+};
+
 // Taken from https://reactnative.dev/docs/typescript
 const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const [customVariables, setCustomVariables] = useState<{ [key: string]: string }>({});
+  const [customVariables, setCustomVariables] = useState<CustomVariables>({});
   const [isEditorVisible, setIsEditorVisible] = useState(false);
 
   const backgroundStyle = {
@@ -81,7 +99,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
             </TouchableOpacity>
             {Object.keys(customVariables).length > 0 && (
               <Text style={styles.variablesPreview}>
-                {Object.entries(customVariables).map(([k, v]) => `${k}: ${v}`).join(', ')}
+                {Object.entries(customVariables).map(([k, v]) => `${k}: ${v.value}`).join(', ')}
               </Text>
             )}
           </View>
@@ -125,9 +143,9 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
           </View>
           <CustomVariablesEditor
             isVisible={isEditorVisible}
-            variables={customVariables}
+            variables={customVariablesToStringMap(customVariables)}
             onSave={(vars) => {
-              setCustomVariables(vars);
+              setCustomVariables(stringMapToCustomVariables(vars));
               setIsEditorVisible(false);
             }}
             onCancel={() => setIsEditorVisible(false)}
