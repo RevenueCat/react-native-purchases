@@ -53,14 +53,16 @@ NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
 
 RCT_EXPORT_MODULE();
 
-// Required for RN 0.65+ NativeEventEmitter support
-// Without these methods exported HERE, NativeEventEmitter constructor will throw in RN 0.79+
+// Required for RN 0.65+ NativeEventEmitter (JavaScript class) support
 //
-// WHY export them here when RCTEventEmitter already has them?
-// React Native's bridge only exposes methods that are EXPLICITLY exported in each class.
-// Even though our parent class (RCTEventEmitter) has these methods, they are NOT automatically
-// visible to JavaScript from RNPurchases. We must re-export them here to make them callable
-// from JS, then delegate to [super] to use the parent's implementation.
+// In JavaScript: new NativeEventEmitter(RNPurchases)
+// NativeEventEmitter checks if the native module has addListener/removeListeners methods.
+// Without these exported methods, construction throws in RN 0.79+.
+//
+// WHY export them here when our parent class RCTEventEmitter already has them?
+// React Native's bridge only exposes methods that are EXPLICITLY exported with RCT_EXPORT_METHOD.
+// Parent class methods are NOT automatically visible to JavaScript. We must re-export them here
+// to make them callable from JS, then call [super] to use the parent's implementation.
 //
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
 // See: https://github.com/facebook/react-native/blob/main/packages/react-native/React/Modules/RCTEventEmitter.m#L101-L125
