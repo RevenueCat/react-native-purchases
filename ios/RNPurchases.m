@@ -54,16 +54,15 @@ NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
 RCT_EXPORT_MODULE();
 
 // Required for RN 0.65+ NativeEventEmitter support
-// Without these methods, NativeEventEmitter constructor will throw in RN 0.79+
+// Without these methods exported, NativeEventEmitter constructor will throw in RN 0.79+
 //
-// [super addListener] does the following:
-// 1. Validates eventName is in supportedEvents (debug builds only)
-// 2. Increments _listenerCount
-// 3. Calls startObserving when first listener is added (_listenerCount == 1)
+// Why we call [super]:
+// RCTEventEmitter's base implementation tracks listener count and calls lifecycle methods
+// (startObserving/stopObserving). If we had empty implementations, we'd lose this functionality.
+// By calling [super], we preserve the base class's listener counting and lifecycle management.
 //
-// [super removeListeners] does the following:
-// 1. Decrements _listenerCount by count
-// 2. Calls stopObserving when last listener is removed (_listenerCount == 0)
+// What [super addListener] does: validates eventName, increments _listenerCount, calls startObserving when first listener added
+// What [super removeListeners] does: decrements _listenerCount, calls stopObserving when last listener removed
 //
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
 // See: https://github.com/facebook/react-native/blob/main/packages/react-native/React/Modules/RCTEventEmitter.m#L101-L125
