@@ -53,15 +53,16 @@ NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
 
 RCT_EXPORT_MODULE();
 
-// Required for RN 0.79+ NativeEventEmitter support
-// Without these methods, NativeEventEmitter constructor will throw
+// Required for RN 0.65+ NativeEventEmitter support
+// Without these methods, NativeEventEmitter constructor will throw in RN 0.79+
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
+// See: https://github.com/facebook/react-native/blob/main/packages/react-native/React/Modules/RCTEventEmitter.m
 RCT_EXPORT_METHOD(addListener:(NSString *)eventName) {
-    // Keep: Required for RN built in Event Emitter Calls.
+    [super addListener:eventName];
 }
 
-RCT_EXPORT_METHOD(removeListeners:(NSInteger)count) {
-    // Keep: Required for RN built in Event Emitter Calls.
+RCT_EXPORT_METHOD(removeListeners:(double)count) {
+    [super removeListeners:count];
 }
 
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
