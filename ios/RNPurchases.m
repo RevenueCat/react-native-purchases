@@ -55,8 +55,18 @@ RCT_EXPORT_MODULE();
 
 // Required for RN 0.65+ NativeEventEmitter support
 // Without these methods, NativeEventEmitter constructor will throw in RN 0.79+
+//
+// [super addListener] does the following:
+// 1. Validates eventName is in supportedEvents (debug builds only)
+// 2. Increments _listenerCount
+// 3. Calls startObserving when first listener is added (_listenerCount == 1)
+//
+// [super removeListeners] does the following:
+// 1. Decrements _listenerCount by count
+// 2. Calls stopObserving when last listener is removed (_listenerCount == 0)
+//
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
-// See: https://github.com/facebook/react-native/blob/main/packages/react-native/React/Modules/RCTEventEmitter.m
+// See: https://github.com/facebook/react-native/blob/main/packages/react-native/React/Modules/RCTEventEmitter.m#L101-L125
 RCT_EXPORT_METHOD(addListener:(NSString *)eventName) {
     [super addListener:eventName];
 }
