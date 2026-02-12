@@ -95,8 +95,26 @@ const NATIVE_MODULE_ERROR =
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
 const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+
 // Only create event emitter if native module is available to avoid crash on import
-const eventEmitter = !usingBrowserMode && RNPurchases ? new NativeEventEmitter(RNPurchases) : null;
+// Wrapped in try-catch to handle React Native 0.79+ where NativeEventEmitter
+// constructor is stricter and can throw if the native module is not properly initialized
+let eventEmitter: NativeEventEmitter | null = null;
+if (!usingBrowserMode && RNPurchases) {
+  try {
+    eventEmitter = new NativeEventEmitter(RNPurchases);
+  } catch (error) {
+    // NativeEventEmitter construction failed (likely RN 0.79+ compatibility issue)
+    // Event listeners won't work, but the SDK will still function for basic operations
+    // tslint:disable-next-line:no-console
+    console.warn(
+      '[RevenueCat] Failed to create NativeEventEmitter. ' +
+      'Event listeners (customer info updates, promo purchases) will not work. ' +
+      'This may happen if the native module is not properly initialized. ' +
+      'Error:', error
+    );
+  }
+}
 
 // Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
 function throwIfNativeModuleNotAvailable(): void {
