@@ -53,7 +53,7 @@ const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
     packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void
   }) => {
     console.log('Purchase package initiated:', packageBeingPurchased.identifier);
-    resume(false);
+    resume(true);
   };
 
   const styles = StyleSheet.create({

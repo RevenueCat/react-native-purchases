@@ -511,7 +511,7 @@ export default function TabOneScreen() {
             onPurchasePackageInitiated={({ packageBeingPurchased, resume }) => {
               console.log('Purchase package initiated:', packageBeingPurchased.identifier);
               setLastResult(`[${new Date().toLocaleTimeString()}] Purchase package initiated: ${packageBeingPurchased.identifier}`);
-              resume(false);
+              resume(true);
             }}
           />
         </View>
