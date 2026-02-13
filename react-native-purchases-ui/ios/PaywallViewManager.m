@@ -30,6 +30,7 @@ RCT_EXPORT_VIEW_PROPERTY(onRestoreStarted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPurchasePackageInitiated, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(Paywall)
 

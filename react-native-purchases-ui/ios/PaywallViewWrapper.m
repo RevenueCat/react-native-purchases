@@ -197,4 +197,15 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
     NSLog(@"RNPaywalls - Paywall view wrapper did change size to: %@", NSStringFromCGSize(size));
 }
 
+- (void)paywallViewController:(RCPaywallViewController *)controller
+didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
+                     requestId:(NSString *)requestId API_AVAILABLE(ios(15.0)) {
+    if (self.onPurchasePackageInitiated) {
+        self.onPurchasePackageInitiated(@{
+            KeyPackage: packageDictionary,
+            @"requestId": requestId,
+        });
+    }
+}
+
 @end

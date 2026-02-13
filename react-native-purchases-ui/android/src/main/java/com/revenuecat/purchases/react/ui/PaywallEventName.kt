@@ -9,11 +9,13 @@ internal enum class PaywallEventName(val eventName: String) {
     ON_RESTORE_COMPLETED("onRestoreCompleted"),
     ON_RESTORE_ERROR("onRestoreError"),
     ON_DISMISS("onDismiss"),
-    ON_MEASURE("onMeasure");
+    ON_MEASURE("onMeasure"),
+    ON_PURCHASE_PACKAGE_INITIATED("onPurchasePackageInitiated");
 }
 
 internal enum class PaywallEventKey(val key: String) {
     PACKAGE("packageBeingPurchased"),
+    REQUEST_ID("requestId"),
     CUSTOMER_INFO("customerInfo"),
     STORE_TRANSACTION("storeTransaction"),
     ERROR("error"),

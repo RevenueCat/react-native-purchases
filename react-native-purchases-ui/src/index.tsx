@@ -71,6 +71,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   onRestoreCompleted,
   onRestoreError,
   onDismiss,
+  onPurchasePackageInitiated,
 }) => {
   if (usingPreviewAPIMode) {
     return (
@@ -102,6 +103,17 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
         onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
         onDismiss={() => onDismiss && onDismiss()}
+        onPurchasePackageInitiated={(event: any) => {
+          const { packageBeingPurchased, requestId } = event.nativeEvent;
+          if (onPurchasePackageInitiated) {
+            const resume = (shouldProceed: boolean) => {
+              RNPaywalls!.resumePurchasePackageInitiated(requestId, shouldProceed);
+            };
+            onPurchasePackageInitiated({ packageBeingPurchased, resume });
+          } else {
+            RNPaywalls!.resumePurchasePackageInitiated(requestId, true);
+          }
+        }}
       />
     );
   }
@@ -242,6 +254,10 @@ type FullScreenPaywallViewProps = {
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
+  onPurchasePackageInitiated?: ({
+    packageBeingPurchased, 
+    resume
+  }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
 };
 
 type FooterPaywallViewProps = {
@@ -437,6 +453,7 @@ export default class RevenueCatUI {
                                                                    onRestoreCompleted,
                                                                    onRestoreError,
                                                                    onDismiss,
+                                                                   onPurchasePackageInitiated,
                                                                  }) => {
     return (
       <InternalPaywall
@@ -450,6 +467,7 @@ export default class RevenueCatUI {
         onRestoreCompleted={onRestoreCompleted}
         onRestoreError={onRestoreError}
         onDismiss={onDismiss}
+        onPurchasePackageInitiated={onPurchasePackageInitiated}
         style={[{flex: 1}, style]}
       />
     );
