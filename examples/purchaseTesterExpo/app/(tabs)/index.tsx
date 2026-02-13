@@ -508,6 +508,11 @@ export default function TabOneScreen() {
               setLastResult(`[${new Date().toLocaleTimeString()}] Modal paywall dismissed`);
               setShowModalPaywall(false);
             }}
+            onPurchasePackageInitiated={({ packageBeingPurchased, resume }) => {
+              console.log('Purchase package initiated:', packageBeingPurchased.identifier);
+              setLastResult(`[${new Date().toLocaleTimeString()}] Purchase package initiated: ${packageBeingPurchased.identifier}`);
+              resume(false);
+            }}
           />
         </View>
       </Modal>
