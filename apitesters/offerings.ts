@@ -76,6 +76,7 @@ function checkPackage(pack: PurchasesPackage) {
   const offeringIdentifier: string = pack.offeringIdentifier;
   const presentedOfferingContext: PresentedOfferingContext =
     pack.presentedOfferingContext;
+  const webCheckoutUrl: string | null = pack.webCheckoutUrl;
 }
 
 function checkOffering(offering: PurchasesOffering) {
@@ -90,6 +91,7 @@ function checkOffering(offering: PurchasesOffering) {
   const twoMonth: PurchasesPackage | null = offering.twoMonth;
   const monthly: PurchasesPackage | null = offering.monthly;
   const weekly: PurchasesPackage | null = offering.weekly;
+  const webCheckoutUrl: string | null = offering.webCheckoutUrl;
 }
 
 function checkOfferings(offerings: PurchasesOfferings) {

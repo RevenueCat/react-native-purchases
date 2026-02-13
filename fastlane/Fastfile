@@ -135,6 +135,28 @@ lane :build_example do |options|
   end
 end
 
+desc "Run pod install, and if it fails on a bump-phc branch, attempt pod update and push the fix"
+lane :pod_install_and_update_if_needed do
+  ios_dir = File.expand_path("#{sample_path}/ios", get_root_folder)
+  Dir.chdir(ios_dir) do
+    begin
+      sh("pod install --repo-update")
+    rescue => e
+      branch = Actions.git_branch
+      unless branch.start_with?("bump-phc/")
+        UI.user_error!("pod install failed: #{e.message}")
+      end
+
+      UI.message("⚠️  pod install failed on bump branch, attempting pod update PurchasesHybridCommonUI...")
+      sh("pod update PurchasesHybridCommonUI")
+      sh("git add Podfile.lock")
+      sh("git commit -m 'update Podfile.lock'")
+      push_to_git_remote(set_upstream: true)
+      UI.user_error!("pod install failed but Podfile.lock has been updated and pushed. A new build will be triggered.")
+    end
+  end
+end
+
 desc "Update purchases-hybrid-common version, pushes changes to a new branch if open_pr option is true"
 lane :update_hybrid_common do |options|
   if options[:dry_run]

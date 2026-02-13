@@ -118,6 +118,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
 
 // Call passing parameter -PcommonPath="$HOME/Development/repos/purchases-hybrid-common/android"

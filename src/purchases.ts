@@ -81,16 +81,51 @@ export {
 
 import { Platform } from "react-native";
 
+const NATIVE_MODULE_ERROR =
+  `[RevenueCat] Native module (RNPurchases) not found. This can happen if:\n\n` +
+  `- You are running in an environment where native modules are unavailable\n` +
+  `- The native module failed to initialize\n` +
+  `- The package is not properly linked\n\n` +
+  `To fix this:\n` +
+  `- If using Expo Go, the SDK works in preview mode but native modules are not available. ` +
+  `For full functionality, create a development build: https://docs.expo.dev/develop/development-builds/create-a-build/\n` +
+  `- If using bare React Native, run 'pod install' and rebuild the app\n` +
+  `- Check that you have rebuilt the app after installing the package\n`;
+
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
 const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
-const eventEmitter = usingBrowserMode ? null : new NativeEventEmitter(RNPurchases);
+// Only create event emitter if native module is available to avoid crash on import
+const eventEmitter = !usingBrowserMode && RNPurchases ? new NativeEventEmitter(RNPurchases) : null;
+
+// Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
+function throwIfNativeModuleNotAvailable(): void {
+  if (!RNPurchases) {
+    throw new Error(NATIVE_MODULE_ERROR);
+  }
+}
 
 let customerInfoUpdateListeners: CustomerInfoUpdateListener[] = [];
 let shouldPurchasePromoProductListeners: ShouldPurchasePromoProductListener[] =
   [];
 
 let customLogHandler: LogHandler;
+
+/**
+ * Represents a tracked feature event from RevenueCatUI.
+ * @internal This is a debug API not meant for public use.
+ */
+export interface TrackedEvent {
+  eventDictionary: Record<string, unknown>;
+}
+
+/**
+ * Listener for tracked feature events.
+ * @internal This is a debug API not meant for public use.
+ */
+export type TrackedEventListener = (event: TrackedEvent) => void;
+
+let trackedEventListeners: TrackedEventListener[] = [];
 
 eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
@@ -111,8 +146,17 @@ eventEmitter?.addListener(
 eventEmitter?.addListener(
   "Purchases-LogHandlerEvent",
   ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
-    const logLevelEnum = LOG_LEVEL[logLevel];
-    customLogHandler(logLevelEnum, message);
+    if (customLogHandler) {
+      const logLevelEnum = LOG_LEVEL[logLevel];
+      customLogHandler(logLevelEnum, message);
+    }
+  }
+);
+
+eventEmitter?.addListener(
+  "Purchases-TrackedEvent",
+  (eventDictionary: Record<string, unknown>) => {
+    trackedEventListeners.forEach((listener) => listener({ eventDictionary }));
   }
 );
 
@@ -218,15 +262,9 @@ export default class Purchases {
    */
   public static PURCHASES_ARE_COMPLETED_BY_TYPE =
     PURCHASES_ARE_COMPLETED_BY_TYPE;
-
-  /**
-   * @internal
-   */
+ 
   public static UninitializedPurchasesError = UninitializedPurchasesError;
 
-  /**
-   * @internal
-   */
   public static UnsupportedPlatformError = UnsupportedPlatformError;
 
   /**
@@ -241,9 +279,10 @@ export default class Purchases {
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
    * Default is null, which will make the SDK use standardUserDefaults.
    * @param {boolean} [pendingTransactionsForPrepaidPlansEnabled=false] An optional boolean. Android-only. Set this to true to enable pending transactions for prepaid subscriptions in Google Play.
-   * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics. 
+   * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
+   * @param {TrackedEventListener?} [trackedEventListener] An optional listener for tracked feature events. This is a debug API for monitoring paywall and customer center events.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -261,6 +300,7 @@ export default class Purchases {
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
   }: PurchasesConfiguration): void {
+    throwIfNativeModuleNotAvailable();
 
     if (!customLogHandler) {
       this.setLogHandler((logLevel: LOG_LEVEL, message: string) => {
@@ -796,6 +836,41 @@ export default class Purchases {
   }
 
   /**
+   * Sets a function to be called when a feature event is tracked by RevenueCatUI.
+   * This is a debug API for monitoring paywall and customer center events not meant for public use.
+   * Currently only works on Android.
+   * @internal
+   * @param {TrackedEventListener} trackedEventListener TrackedEvent listener
+   */
+  public static async addTrackedEventListener(
+    trackedEventListener: TrackedEventListener
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    if (Platform.OS === "android") {
+      if (typeof trackedEventListener !== "function") {
+        throw new Error("addTrackedEventListener needs a function");
+      }
+      const isFirstListener = trackedEventListeners.length === 0;
+      trackedEventListeners.push(trackedEventListener);
+      if (isFirstListener && !usingBrowserMode) {
+        RNPurchases.setTrackedEventListener();
+      }
+    }
+  }
+
+  /**
+   * Removes a given TrackedEventListener. 
+   * This is a debug API not meant for public use.
+   * @internal
+   * @param trackedEventListener TrackedEvent listener to remove
+   */
+  public static removeTrackedEventListener(
+    trackedEventListener: TrackedEventListener
+  ): void {
+    trackedEventListeners = trackedEventListeners.filter((listener) => listener !== trackedEventListener);
+  }
+
+  /**
    * Gets current customer info
    * @returns {Promise<CustomerInfo>} A promise of a customer info object. Rejections return an error code, and an
    * userInfo object with more information. The promise will be rejected if configure has not been called yet or if
@@ -919,7 +994,7 @@ export default class Purchases {
     productID: string
   ): Promise<PurchasesStoreTransaction> {
     await Purchases.throwIfAndroidPlatform();
-    await Purchases.throwIfNotConfigured(); 
+    await Purchases.throwIfNotConfigured();
     return RNPurchases.recordPurchaseForProductID(productID);
   }
 
@@ -1490,6 +1565,10 @@ export default class Purchases {
   public static canMakePayments(
     features: BILLING_FEATURE[] = []
   ): Promise<boolean> {
+    if (!RNPurchases) {
+      // Native module not available, so payments cannot be made
+      return Promise.resolve(false);
+    }
     return RNPurchases.canMakePayments(features);
   }
 
@@ -1625,7 +1704,7 @@ export default class Purchases {
 
   /**
    * Fetches the virtual currencies for the current subscriber.
-   * 
+   *
    * @returns {Promise<PurchasesVirtualCurrencies>} A PurchasesVirtualCurrencies object containing the subscriber's virtual currencies.
    * The promise will be rejected if configure has not been called yet or if an error occurs.
    */
@@ -1640,7 +1719,7 @@ export default class Purchases {
    * This is useful for cases where a virtual currency's balance might have been updated
    * outside of the app, like if you decreased a user's balance from the user spending a virtual currency,
    * or if you increased the balance from your backend using the server APIs.
-   * 
+   *
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or there's an error
    * invalidating the virtual currencies cache.
    */
@@ -1651,10 +1730,10 @@ export default class Purchases {
 
   /**
    * The currently cached [PurchasesVirtualCurrencies] if one is available.
-   * This value will remain null until virtual currencies have been fetched at 
+   * This value will remain null until virtual currencies have been fetched at
    * least once with [Purchases.getVirtualCurrencies] or an equivalent function.
-   * 
-   * @returns {Promise<PurchasesVirtualCurrencies | null>} The currently cached virtual currencies for the current subscriber. 
+   *
+   * @returns {Promise<PurchasesVirtualCurrencies | null>} The currently cached virtual currencies for the current subscriber.
    * The promise will be rejected if configure has not been called yet or there's an error.
    */
   public static async getCachedVirtualCurrencies(): Promise<PurchasesVirtualCurrencies | null> {
@@ -1669,6 +1748,12 @@ export default class Purchases {
    * @returns {Promise<Boolean>} promise with boolean response
    */
   public static isConfigured(): Promise<boolean> {
+    if (!RNPurchases) {
+      // Native module not available, so SDK cannot be configured
+      // tslint:disable-next-line:no-console
+      console.warn(`[RevenueCat] isConfigured() returning false: Native module not available`);
+      return Promise.resolve(false);
+    }
     return RNPurchases.isConfigured();
   }
 
