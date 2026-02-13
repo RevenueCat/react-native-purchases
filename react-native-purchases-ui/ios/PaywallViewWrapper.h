@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) RCTDirectEventBlock onRestoreCompleted;
 @property (nonatomic, copy) RCTDirectEventBlock onRestoreError;
 @property (nonatomic, copy) RCTDirectEventBlock onDismiss;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onPurchasePackageInitiated;
 
 - (instancetype)initWithCoder:(NSCoder *)coder NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
