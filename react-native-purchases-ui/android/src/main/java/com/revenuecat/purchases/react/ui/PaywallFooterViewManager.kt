@@ -91,7 +91,7 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<WrappedPaywallF
     }
 
     override fun setCustomVariables(view: WrappedPaywallFooterComposeView, customVariables: Map<String, CustomVariableValue>) {
-        view.setCustomVariables(customVariables)
+        // No-op: Footer paywalls (legacy templates) don't support custom variables
     }
 
 }
