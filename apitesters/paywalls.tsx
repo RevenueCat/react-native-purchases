@@ -1,6 +1,8 @@
 import React from "react";
 
 import RevenueCatUI, {
+  CustomVariableValue,
+  CustomVariables,
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
   PAYWALL_RESULT,
@@ -35,6 +37,18 @@ async function checkPresentPaywall(offering: PurchasesOffering) {
     displayCloseButton: false,
     fontFamily: 'Ubuntu',
   });
+  paywallResult = await RevenueCatUI.presentPaywall({
+    customVariables: {
+      player_name: CustomVariableValue.string('John'),
+      level: CustomVariableValue.string('42'),
+    },
+  });
+  paywallResult = await RevenueCatUI.presentPaywall({
+    offering: offering,
+    customVariables: {
+      player_name: CustomVariableValue.string('John'),
+    },
+  });
 }
 
 async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
@@ -62,18 +76,34 @@ async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
     displayCloseButton: false,
     fontFamily: 'Ubuntu',
   });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement",
+    customVariables: {
+      player_name: CustomVariableValue.string('John'),
+    },
+  });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement",
+    offering: offering,
+    customVariables: {
+      player_name: CustomVariableValue.string('John'),
+      level: CustomVariableValue.string('42'),
+    },
+  });
 }
 
-function checkPresentPaywallParams(params: PresentPaywallIfNeededParams) {
+function checkPresentPaywallParams(params: PresentPaywallParams) {
+  const offeringIdentifier: PurchasesOffering | undefined = params.offering;
+  const displayCloseButton: boolean | undefined = params.displayCloseButton;
+  const customVariables: CustomVariables | undefined = params.customVariables;
+}
+
+function checkPresentPaywallIfNeededParams(params: PresentPaywallIfNeededParams) {
   const requiredEntitlementIdentifier: string =
     params.requiredEntitlementIdentifier;
   const offeringIdentifier: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
-}
-
-function checkPresentPaywallIfNeededParams(params: PresentPaywallParams) {
-  const offeringIdentifier: PurchasesOffering | undefined = params.offering;
-  const displayCloseButton: boolean | undefined = params.displayCloseButton;
+  const customVariables: CustomVariables | undefined = params.customVariables;
 }
 
 function checkFullScreenPaywallViewOptions(
@@ -82,11 +112,19 @@ function checkFullScreenPaywallViewOptions(
   const offering: PurchasesOffering | undefined | null = options.offering;
   const fontFamily: string | undefined | null = options.fontFamily;
   const displayCloseButton: boolean | undefined = options.displayCloseButton;
+  const customVariables: CustomVariables | undefined = options.customVariables;
 }
 
 function checkFooterPaywallViewOptions(options: FooterPaywallViewOptions) {
   const offering: PurchasesOffering | undefined | null = options.offering;
   const fontFamily: string | undefined | null = options.fontFamily;
+  const customVariables: CustomVariables | undefined = options.customVariables;
+}
+
+function checkPaywallViewOptions(options: PaywallViewOptions) {
+  const offering: PurchasesOffering | undefined | null = options.offering;
+  const fontFamily: string | undefined | null = options.fontFamily;
+  const customVariables: CustomVariables | undefined = options.customVariables;
 }
 
 const onPurchaseStarted = ({
@@ -177,6 +215,21 @@ const PaywallScreenWithOfferingAndEvents = (
 
 const PaywallScreenNoOptions = () => {
   return <RevenueCatUI.Paywall style={{ marginBottom: 10 }} />;
+};
+
+const PaywallScreenWithCustomVariables = (offering: PurchasesOffering) => {
+  return (
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      options={{
+        offering: offering,
+        customVariables: {
+          player_name: CustomVariableValue.string('John'),
+          level: CustomVariableValue.string('42'),
+        },
+      }}
+    />
+  );
 };
 
 const OriginalTemplatePaywallFooterPaywallScreen = () => {
