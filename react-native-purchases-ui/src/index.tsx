@@ -311,27 +311,18 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
 };
 
 /**
- * Native version of FullScreenPaywallViewOptions with string map for customVariables.
+ * Helper type that replaces CustomVariables with NativeCustomVariables in an options type.
  * @internal
  */
-type NativeFullScreenPaywallViewOptions = Omit<FullScreenPaywallViewOptions, 'customVariables'> & {
-  customVariables?: NativeCustomVariables | null;
-};
-
-/**
- * Native version of FooterPaywallViewOptions with string map for customVariables.
- * @internal
- */
-type NativeFooterPaywallViewOptions = Omit<FooterPaywallViewOptions, 'customVariables'> & {
-  customVariables?: NativeCustomVariables | null;
-};
+type WithNativeCustomVariables<T extends { customVariables?: CustomVariables }> =
+  Omit<T, 'customVariables'> & { customVariables?: NativeCustomVariables | null };
 
 /**
  * Native props for FullScreenPaywall component.
  * @internal
  */
 type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'options'> & {
-  options?: NativeFullScreenPaywallViewOptions;
+  options?: WithNativeCustomVariables<FullScreenPaywallViewOptions>;
 };
 
 /**
@@ -339,7 +330,7 @@ type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'option
  * @internal
  */
 type NativeInternalFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
-  options?: NativeFooterPaywallViewOptions;
+  options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
 };
 
 const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
