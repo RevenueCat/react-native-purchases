@@ -205,6 +205,8 @@ didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
             KeyPackage: packageDictionary,
             @"requestId": requestId,
         });
+    } else {
+        [PaywallProxy resumePurchasePackageInitiatedWithRequestId:requestId shouldProceed:YES];
     }
 }
 
