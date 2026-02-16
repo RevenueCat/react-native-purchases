@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
 import com.revenuecat.purchases.hybridcommon.ui.PaywallSource
 import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
@@ -75,6 +76,11 @@ internal class RNPaywallsModule(
             customVariables,
             promise
         )
+    }
+
+    @ReactMethod
+    fun resumePurchasePackageInitiated(requestId: String, shouldProceed: Boolean) {
+        PaywallListenerWrapper.resumePurchasePackageInitiated(requestId, shouldProceed)
     }
 
     @ReactMethod
