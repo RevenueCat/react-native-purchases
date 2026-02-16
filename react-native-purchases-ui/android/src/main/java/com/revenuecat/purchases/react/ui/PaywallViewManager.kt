@@ -3,6 +3,7 @@ package com.revenuecat.purchases.react.ui
 import com.facebook.react.uimanager.ThemedReactContext
 import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.react.ui.views.WrappedPaywallComposeView
+import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 
 
@@ -41,6 +42,10 @@ internal class PaywallViewManager : BasePaywallViewManager<WrappedPaywallCompose
 
     override fun setDisplayDismissButton(view: WrappedPaywallComposeView, display: Boolean) {
         view.setDisplayDismissButton(display)
+    }
+
+    override fun setCustomVariables(view: WrappedPaywallComposeView, customVariables: Map<String, CustomVariableValue>) {
+        view.setCustomVariables(customVariables)
     }
 
 }
