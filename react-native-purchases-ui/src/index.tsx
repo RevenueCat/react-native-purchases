@@ -20,86 +20,17 @@ import React, { type ReactNode, useEffect, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
 import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponents";
+import {
+  type CustomVariables,
+  type NativeCustomVariables,
+  convertCustomVariablesToStringMap,
+  transformOptionsForNative,
+} from "./customVariables";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
-
-/**
- * A value type for custom paywall variables that can be passed to paywalls at runtime.
- *
- * Custom variables allow developers to personalize paywall text with dynamic values.
- * Variables are defined in the RevenueCat dashboard and can be overridden at runtime.
- *
- * Currently only string values are supported. Additional types may be added in the future.
- *
- * @example
- * ```typescript
- * RevenueCatUI.presentPaywall({
- *   customVariables: {
- *     'player_name': CustomVariableValue.string('John'),
- *     'level': CustomVariableValue.string('42'),
- *   },
- * });
- * ```
- *
- * In the paywall text (configured in the dashboard), use the `custom.` prefix:
- * ```
- * Hello {{ custom.player_name }}!
- * ```
- */
-export type CustomVariableValue = {
-  readonly type: 'string';
-  readonly value: string;
-};
-
-/**
- * Factory methods for creating CustomVariableValue instances.
- */
-export const CustomVariableValue = {
-  /**
-   * Creates a string custom variable value.
-   * @param value The string value for the custom variable.
-   * @returns A CustomVariableValue containing the string.
-   */
-  string: (value: string): CustomVariableValue => ({ type: 'string', value }),
-} as const;
-
-/**
- * A map of custom variable names to their values.
- */
-export type CustomVariables = { [key: string]: CustomVariableValue };
-
-/**
- * Converts CustomVariables to a string map for native bridge.
- * @internal
- */
-function convertCustomVariablesToStringMap(
-  customVariables: CustomVariables | undefined
-): { [key: string]: string } | null {
-  if (!customVariables) return null;
-  const result: { [key: string]: string } = {};
-  for (const key of Object.keys(customVariables)) {
-    const variable = customVariables[key];
-    if (variable) {
-      result[key] = variable.value;
-    }
-  }
-  return result;
-}
-
-/**
- * Transforms PaywallViewOptions to native format, converting CustomVariables to string map.
- * @internal
- */
-function transformOptionsForNative<T extends PaywallViewOptions>(
-  options: T | undefined
-): (Omit<T, 'customVariables'> & { customVariables?: { [key: string]: string } | null }) | undefined {
-  if (!options) return undefined;
-  const { customVariables, ...rest } = options;
-  return {
-    ...rest,
-    customVariables: convertCustomVariablesToStringMap(customVariables),
-  } as any;
-}
+export { CustomVariableValue, type CustomVariables } from "./customVariables";
+// Re-export for testing purposes (marked as @internal)
+export { convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
 const NATIVE_MODULE_NOT_FOUND_ERROR =
   `[RevenueCatUI] Native module not found. This can happen if:\n\n` +
@@ -126,11 +57,11 @@ function throwIfNativeModulesNotAvailable(): void {
 }
 
 const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
+  ? requireNativeComponent<NativeFullScreenPaywallViewProps>('Paywall')
   : null;
 
 const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
+  ? requireNativeComponent<NativeInternalFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
 // Only create event emitters if native modules are available
@@ -173,7 +104,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
       <NativePaywall
         style={style}
         children={children}
-        options={nativeOptions as any}
+        options={nativeOptions}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -226,7 +157,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
       <NativePaywallFooter
         style={style}
         children={children}
-        options={nativeOptions as any}
+        options={nativeOptions}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -377,6 +308,38 @@ type FooterPaywallViewProps = {
 
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
+};
+
+/**
+ * Native version of FullScreenPaywallViewOptions with string map for customVariables.
+ * @internal
+ */
+type NativeFullScreenPaywallViewOptions = Omit<FullScreenPaywallViewOptions, 'customVariables'> & {
+  customVariables?: NativeCustomVariables | null;
+};
+
+/**
+ * Native version of FooterPaywallViewOptions with string map for customVariables.
+ * @internal
+ */
+type NativeFooterPaywallViewOptions = Omit<FooterPaywallViewOptions, 'customVariables'> & {
+  customVariables?: NativeCustomVariables | null;
+};
+
+/**
+ * Native props for FullScreenPaywall component.
+ * @internal
+ */
+type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'options'> & {
+  options?: NativeFullScreenPaywallViewOptions;
+};
+
+/**
+ * Native props for FooterPaywall component.
+ * @internal
+ */
+type NativeInternalFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
+  options?: NativeFooterPaywallViewOptions;
 };
 
 const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null

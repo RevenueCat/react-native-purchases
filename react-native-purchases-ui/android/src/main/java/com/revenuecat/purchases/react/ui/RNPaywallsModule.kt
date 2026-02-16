@@ -107,7 +107,9 @@ internal class RNPaywallsModule(
             PaywallSource.OfferingIdentifierWithPresentedOfferingContext(offeringIdentifier, presentedOfferingContext=presentedOfferingContextMap)
         } ?: PaywallSource.DefaultOffering
 
-        val customVariablesMap = customVariables?.toHashMap()?.mapValues { it.value as String }
+        val customVariablesMap = customVariables?.toHashMap()
+            ?.mapValues { it.value as? String }
+            ?.filterValues { it != null } as? Map<String, String>
 
         // @ReactMethod is not guaranteed to run on the main thread
         activity.runOnUiThread {
