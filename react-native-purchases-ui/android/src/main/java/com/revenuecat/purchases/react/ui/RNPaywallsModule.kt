@@ -87,7 +87,6 @@ internal class RNPaywallsModule(
         // Keep: Required for RN built in Event Emitter Calls.
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun presentPaywall(
         requiredEntitlementIdentifier: String?,
         offeringIdentifier: String?,
@@ -107,9 +106,15 @@ internal class RNPaywallsModule(
             PaywallSource.OfferingIdentifierWithPresentedOfferingContext(offeringIdentifier, presentedOfferingContext=presentedOfferingContextMap)
         } ?: PaywallSource.DefaultOffering
 
-        val customVariablesMap = customVariables?.toHashMap()
-            ?.mapValues { it.value as? String }
-            ?.filterValues { it != null } as? Map<String, String>
+        val customVariablesMap = customVariables?.let { cv ->
+            val result = mutableMapOf<String, String>()
+            val iterator = cv.keySetIterator()
+            while (iterator.hasNextKey()) {
+                val key = iterator.nextKey()
+                cv.getString(key)?.let { result[key] = it }
+            }
+            result.takeIf { it.isNotEmpty() }
+        }
 
         // @ReactMethod is not guaranteed to run on the main thread
         activity.runOnUiThread {

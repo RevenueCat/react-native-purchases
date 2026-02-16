@@ -118,11 +118,19 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun setCustomVariablesProp(view: T, options: ReadableMap?) {
-        val optionsMap = options?.toHashMap() ?: return
-        val customVariables = optionsMap[OPTION_CUSTOM_VARIABLES] as? Map<String, String> ?: return
-        setCustomVariables(view, customVariables.mapValues { CustomVariableValue.String(it.value) })
+        val customVariablesMap = options?.getMap(OPTION_CUSTOM_VARIABLES) ?: return
+        val customVariables = mutableMapOf<String, CustomVariableValue>()
+        val iterator = customVariablesMap.keySetIterator()
+        while (iterator.hasNextKey()) {
+            val key = iterator.nextKey()
+            customVariablesMap.getString(key)?.let {
+                customVariables[key] = CustomVariableValue.String(it)
+            }
+        }
+        if (customVariables.isNotEmpty()) {
+            setCustomVariables(view, customVariables)
+        }
     }
 
     internal fun createPaywallListenerWrapper(
