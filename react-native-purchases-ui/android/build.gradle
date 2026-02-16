@@ -59,7 +59,7 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     versionCode 1
-    versionName '9.8.0'
+    versionName '9.9.0'
   }
 
   buildTypes {
@@ -91,7 +91,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'com.revenuecat.purchases:purchases-hybrid-common-ui:17.37.0'
+  implementation 'com.revenuecat.purchases:purchases-hybrid-common-ui:17.38.0'
   implementation 'androidx.compose.ui:ui-android:1.5.4'
   implementation "androidx.appcompat:appcompat:1.6.1"
 }
