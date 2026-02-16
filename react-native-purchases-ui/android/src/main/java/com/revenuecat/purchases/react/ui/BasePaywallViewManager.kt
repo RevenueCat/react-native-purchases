@@ -22,6 +22,7 @@ import com.revenuecat.purchases.react.ui.events.OnPurchaseStartedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
+import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
@@ -32,6 +33,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         private const val OFFERING_IDENTIFIER = "identifier"
         private const val OPTION_FONT_FAMILY = "fontFamily"
         private const val OPTION_DISPLAY_CLOSE_BUTTON = "displayCloseButton"
+        private const val OPTION_CUSTOM_VARIABLES = "customVariables"
 
         private const val OPTION_OFFERING_AVAILABLE_PACKAGES = "availablePackages"
 
@@ -41,6 +43,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     abstract fun setOfferingId(view: T, offeringId: String?, presentedOfferingContext: PresentedOfferingContext? = null)
 
     abstract fun setDisplayDismissButton(view: T, display: Boolean)
+
+    abstract fun setCustomVariables(view: T, customVariables: Map<String, CustomVariableValue>)
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
@@ -65,6 +69,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             setOfferingIdProp(view, options)
             setFontFamilyProp(view, options)
             setDisplayCloseButton(view, options)
+            setCustomVariablesProp(view, options)
         }
     }
 
@@ -112,6 +117,21 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     private fun setDisplayCloseButton(view: T, options: ReadableMap) {
         options.takeIf { it.hasKey(OPTION_DISPLAY_CLOSE_BUTTON) }?.let {
             setDisplayDismissButton(view, it.getBoolean(OPTION_DISPLAY_CLOSE_BUTTON))
+        }
+    }
+
+    private fun setCustomVariablesProp(view: T, options: ReadableMap?) {
+        val customVariablesMap = options?.getMap(OPTION_CUSTOM_VARIABLES) ?: return
+        val customVariables = mutableMapOf<String, CustomVariableValue>()
+        val iterator = customVariablesMap.keySetIterator()
+        while (iterator.hasNextKey()) {
+            val key = iterator.nextKey()
+            customVariablesMap.getString(key)?.let {
+                customVariables[key] = CustomVariableValue.String(it)
+            }
+        }
+        if (customVariables.isNotEmpty()) {
+            setCustomVariables(view, customVariables)
         }
     }
 

@@ -43,6 +43,7 @@ internal class RNPaywallsModule(
         presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean?,
         fontFamily: String?,
+        customVariables: ReadableMap?,
         promise: Promise
     ) {
         presentPaywall(
@@ -51,6 +52,7 @@ internal class RNPaywallsModule(
             presentedOfferingContext,
             displayCloseButton,
             fontFamily,
+            customVariables,
             promise
         )
     }
@@ -62,6 +64,7 @@ internal class RNPaywallsModule(
         presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean,
         fontFamily: String?,
+        customVariables: ReadableMap?,
         promise: Promise
     ) {
         presentPaywall(
@@ -70,6 +73,7 @@ internal class RNPaywallsModule(
             presentedOfferingContext,
             displayCloseButton,
             fontFamily,
+            customVariables,
             promise
         )
     }
@@ -95,6 +99,7 @@ internal class RNPaywallsModule(
         presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean?,
         fontFamilyName: String?,
+        customVariables: ReadableMap?,
         promise: Promise
     ) {
         val activity = currentFragmentActivity ?: return
@@ -106,6 +111,16 @@ internal class RNPaywallsModule(
             val presentedOfferingContextMap = RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, presentedOfferingContext?.toHashMap())
             PaywallSource.OfferingIdentifierWithPresentedOfferingContext(offeringIdentifier, presentedOfferingContext=presentedOfferingContextMap)
         } ?: PaywallSource.DefaultOffering
+
+        val customVariablesMap = customVariables?.let { cv ->
+            val result = mutableMapOf<String, String>()
+            val iterator = cv.keySetIterator()
+            while (iterator.hasNextKey()) {
+                val key = iterator.nextKey()
+                cv.getString(key)?.let { result[key] = it }
+            }
+            result.takeIf { it.isNotEmpty() }
+        }
 
         // @ReactMethod is not guaranteed to run on the main thread
         activity.runOnUiThread {
@@ -120,7 +135,8 @@ internal class RNPaywallsModule(
                             promise.resolve(paywallResult)
                         }
                     },
-                    fontFamily = fontFamily
+                    fontFamily = fontFamily,
+                    customVariables = customVariablesMap
                 )
             )
         }

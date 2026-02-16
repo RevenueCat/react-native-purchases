@@ -3,6 +3,7 @@ package com.revenuecat.purchases.react.ui.views
 import android.content.Context
 import android.util.AttributeSet
 import com.revenuecat.purchases.PresentedOfferingContext
+import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.PaywallListener
 import com.revenuecat.purchases.ui.revenuecatui.fonts.FontProvider
 import com.revenuecat.purchases.ui.revenuecatui.views.PaywallView
@@ -31,6 +32,10 @@ class WrappedPaywallComposeView(context: Context) : ComposeViewWrapper<PaywallVi
 
     fun setDisplayDismissButton(shouldDisplayDismissButton: Boolean) {
         wrappedView?.setDisplayDismissButton(shouldDisplayDismissButton)
+    }
+
+    fun setCustomVariables(customVariables: Map<String, CustomVariableValue>) {
+        wrappedView?.setCustomVariables(customVariables)
     }
 
     override fun requestLayout() {

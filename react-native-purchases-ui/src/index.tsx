@@ -20,8 +20,17 @@ import React, { type ReactNode, useEffect, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
 import { previewNativeModuleRNCustomerCenter, previewNativeModuleRNPaywalls } from "./preview/nativeModules";
 import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponents";
+import {
+  type CustomVariables,
+  type NativeCustomVariables,
+  convertCustomVariablesToStringMap,
+  transformOptionsForNative,
+} from "./customVariables";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
+export { CustomVariableValue, type CustomVariables } from "./customVariables";
+// Re-export for testing purposes (marked as @internal)
+export { convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
 const NATIVE_MODULE_NOT_FOUND_ERROR =
   `[RevenueCatUI] Native module not found. This can happen if:\n\n` +
@@ -48,11 +57,11 @@ function throwIfNativeModulesNotAvailable(): void {
 }
 
 const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<FullScreenPaywallViewProps>('Paywall')
+  ? requireNativeComponent<NativeFullScreenPaywallViewProps>('Paywall')
   : null;
 
 const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<InternalFooterPaywallViewProps>('RCPaywallFooterView')
+  ? requireNativeComponent<NativeInternalFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
 // Only create event emitters if native modules are available
@@ -90,11 +99,13 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
       />
     );
   } else if (!!NativePaywall) {
+    // Transform options to native format (CustomVariables -> string map)
+    const nativeOptions = transformOptionsForNative(options);
     return (
       <NativePaywall
         style={style}
         children={children}
-        options={options}
+        options={nativeOptions}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -152,11 +163,13 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
       />
     );
   } else if (!!NativePaywallFooter) {
+    // Transform options to native format (CustomVariables -> string map)
+    const nativeOptions = transformOptionsForNative(options);
     return (
       <NativePaywallFooter
         style={style}
         children={children}
-        options={options}
+        options={nativeOptions}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -197,6 +210,22 @@ export interface PresentPaywallParams {
    * Only available for original template paywalls. Ignored for V2 Paywalls and web.
    */
   fontFamily?: string | null;
+
+  /**
+   * Custom variables to pass to the paywall for text substitution.
+   * Use `{{ custom.variable_name }}` syntax in your paywall text to reference these values.
+   * Keys must start with a letter and can only contain letters, numbers, and underscores.
+   * Only available for V2 Paywalls.
+   *
+   * @example
+   * ```typescript
+   * customVariables: {
+   *   'player_name': CustomVariableValue.string('John'),
+   *   'level': CustomVariableValue.string('42'),
+   * }
+   * ```
+   */
+  customVariables?: CustomVariables;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -224,6 +253,22 @@ export interface PaywallViewOptions {
    * Only available for original template paywalls. Ignored for V2 Paywalls.
    */
   fontFamily?: string | null;
+
+  /**
+   * Custom variables to pass to the paywall for text substitution.
+   * Use `{{ custom.variable_name }}` syntax in your paywall text to reference these values.
+   * Keys must start with a letter and can only contain letters, numbers, and underscores.
+   * Only available for V2 Paywalls.
+   *
+   * @example
+   * ```typescript
+   * customVariables: {
+   *   'player_name': CustomVariableValue.string('John'),
+   *   'level': CustomVariableValue.string('42'),
+   * }
+   * ```
+   */
+  customVariables?: CustomVariables;
 }
 
 export interface FullScreenPaywallViewOptions extends PaywallViewOptions {
@@ -279,6 +324,29 @@ type FooterPaywallViewProps = {
 
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
+};
+
+/**
+ * Helper type that replaces CustomVariables with NativeCustomVariables in an options type.
+ * @internal
+ */
+type WithNativeCustomVariables<T extends { customVariables?: CustomVariables }> =
+  Omit<T, 'customVariables'> & { customVariables?: NativeCustomVariables | null };
+
+/**
+ * Native props for FullScreenPaywall component.
+ * @internal
+ */
+type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'options'> & {
+  options?: WithNativeCustomVariables<FullScreenPaywallViewOptions>;
+};
+
+/**
+ * Native props for FooterPaywall component.
+ * @internal
+ */
+type NativeInternalFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
+  options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
 };
 
 const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
@@ -400,6 +468,7 @@ export default class RevenueCatUI {
                                  offering,
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
+                                 customVariables,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
@@ -408,6 +477,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
+      convertCustomVariablesToStringMap(customVariables),
     )
   }
 
@@ -429,6 +499,7 @@ export default class RevenueCatUI {
                                          offering,
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
+                                         customVariables,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
@@ -438,6 +509,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
+      convertCustomVariablesToStringMap(customVariables),
     )
   }
 

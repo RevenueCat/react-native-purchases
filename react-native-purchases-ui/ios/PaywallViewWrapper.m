@@ -98,6 +98,16 @@ API_AVAILABLE(ios(15.0))
         if (displayCloseButton) {
             [self.paywallViewController updateWithDisplayCloseButton:displayCloseButton];
         }
+
+        NSDictionary *customVariables = options[@"customVariables"];
+        if (customVariables && [customVariables isKindOfClass:[NSDictionary class]]) {
+            for (NSString *key in customVariables) {
+                NSString *value = customVariables[key];
+                if ([value isKindOfClass:[NSString class]]) {
+                    [self.paywallViewController setCustomVariable:value forKey:key];
+                }
+            }
+        }
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     }
