@@ -425,6 +425,14 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('PurchaseLogicPaywall', {offering: null})
+            }>
+            <Text style={styles.otherActions}>
+              Go to Paywall with custom PurchaseLogic
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={async () => {
               const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
                 requiredEntitlementIdentifier: 'pro_cat',

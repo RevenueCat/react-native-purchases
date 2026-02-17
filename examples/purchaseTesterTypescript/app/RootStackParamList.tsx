@@ -23,6 +23,7 @@ type RootStackParamList = {
   CustomerCenterModalNoHeader: { shouldShowCloseButton?: boolean };
   CustomerCenterModalWithHeader: { shouldShowCloseButton?: boolean };
   CustomVariables: undefined;
+  PurchaseLogicPaywall: { offering: PurchasesOffering | null };
 };
 
 export default RootStackParamList;
