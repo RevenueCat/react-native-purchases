@@ -87,6 +87,8 @@ RCT_EXPORT_VIEW_PROPERTY(onRestoreStarted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPerformPurchase, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPerformRestore, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(RCPaywallFooterView)
 
@@ -110,6 +112,10 @@ RCT_EXPORT_MODULE(RCPaywallFooterView)
         UIViewController *footerViewController = [self.proxy createFooterPaywallView];
         FooterViewWrapper *wrapper = [[FooterViewWrapper alloc] initWithPaywallViewController:footerViewController
                                                                                        bridge:self.bridge];
+        PaywallProxy *proxy = self.proxy;
+        wrapper.createViewController = ^UIViewController * _Nullable(HybridPurchaseLogicBridge * _Nonnull bridge) {
+            return [proxy createFooterPaywallViewWithPurchaseLogicBridge:bridge];
+        };
         self.proxy.delegate = wrapper;
 
         return wrapper;

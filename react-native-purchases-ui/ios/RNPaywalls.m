@@ -134,6 +134,14 @@ RCT_EXPORT_METHOD(resumePurchasePackageInitiated:(NSString *)requestId
     }
 }
 
+RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
+                  result:(NSString *)result
+                  errorMessage:(nullable NSString *)errorMessage) {
+    if (@available(iOS 15.0, *)) {
+        [HybridPurchaseLogicBridge resolveResultWithRequestId:requestId resultString:result errorMessage:errorMessage];
+    }
+}
+
 - (void)rejectPaywallsUnsupportedError:(RCTPromiseRejectBlock)reject {
     NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     reject(@"PaywallsUnsupportedCode", @"Paywalls are not supported prior to iOS 15.", nil);
