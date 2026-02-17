@@ -29,6 +29,7 @@ NSString *RNPurchasesCustomerInfoUpdatedEvent = @"Purchases-CustomerInfoUpdated"
 NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchasePromoProduct";
 NSString *RNPurchasesLogHandlerEvent = @"Purchases-LogHandlerEvent";
 NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
+NSString *RNPurchasesDebugEvent = @"Purchases-DebugEvent";
 
 @implementation RNPurchases
 
@@ -40,7 +41,8 @@ NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
     return @[RNPurchasesCustomerInfoUpdatedEvent,
              RNPurchasesShouldPurchasePromoProductEvent,
              RNPurchasesLogHandlerEvent, 
-             RNPurchasesTrackedEvent];
+             RNPurchasesTrackedEvent,
+             RNPurchasesDebugEvent];
 }
 
 - (void)sendEventWithName:(NSString *)name body:(id)body {

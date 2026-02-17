@@ -89,6 +89,9 @@ const App = () => {
       Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
         console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
       });
+      Purchases.addDebugEventListener((event: Record<string, unknown>) => {
+        console.log('[RCDebugEvent]', JSON.stringify(event, null, 2));
+      });
     } else {
       Purchases.configure({
         apiKey: APIKeys.apple,
