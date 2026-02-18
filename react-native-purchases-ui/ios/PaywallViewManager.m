@@ -57,7 +57,9 @@ RCT_EXPORT_MODULE(Paywall)
         PaywallViewWrapper *wrapper = [[PaywallViewWrapper alloc] initWithPaywallViewController:viewController];
         PaywallProxy *proxy = self.proxy;
         wrapper.createViewController = ^UIViewController * _Nullable(HybridPurchaseLogicBridge * _Nonnull bridge) {
-            return [proxy createPaywallViewWithPurchaseLogicBridge:bridge];
+            PaywallViewCreationParams *params = [PaywallViewCreationParams new];
+            params.purchaseLogicBridge = bridge;
+            return [proxy createPaywallViewWithParams:params];
         };
         self.proxy.delegate = wrapper;
 

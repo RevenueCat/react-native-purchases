@@ -103,7 +103,7 @@ API_AVAILABLE(ios(15.0))
 
             __weak typeof(self) weakSelf = self;
             HybridPurchaseLogicBridge *bridge = [[HybridPurchaseLogicBridge alloc]
-                initWithOnPerformPurchase:^(NSDictionary *eventData) {
+                initOnPerformPurchase:^(NSDictionary *eventData) {
                     __strong typeof(weakSelf) strongSelf = weakSelf;
                     if (strongSelf && strongSelf.onPerformPurchase) {
                         strongSelf.onPerformPurchase(eventData);
@@ -229,10 +229,12 @@ API_AVAILABLE(ios(15.0))
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
         transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseCompleted(@{
-        KeyCustomerInfo: customerInfoDictionary,
-        KeyStoreTransaction: transactionDictionary,
-    });
+    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObject:customerInfoDictionary
+                                                                   forKey:KeyCustomerInfo];
+    if (transactionDictionary) {
+        event[KeyStoreTransaction] = transactionDictionary;
+    }
+    self.onPurchaseCompleted([event copy]);
 }
 
 - (void)paywallViewControllerDidCancelPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
