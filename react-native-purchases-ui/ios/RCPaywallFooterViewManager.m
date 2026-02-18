@@ -112,10 +112,6 @@ RCT_EXPORT_MODULE(RCPaywallFooterView)
         UIViewController *footerViewController = [self.proxy createFooterPaywallView];
         FooterViewWrapper *wrapper = [[FooterViewWrapper alloc] initWithPaywallViewController:footerViewController
                                                                                        bridge:self.bridge];
-        PaywallProxy *proxy = self.proxy;
-        wrapper.createViewController = ^UIViewController * _Nullable(HybridPurchaseLogicBridge * _Nonnull bridge) {
-            return [proxy createFooterPaywallViewWithPurchaseLogicBridge:bridge];
-        };
         self.proxy.delegate = wrapper;
 
         return wrapper;
