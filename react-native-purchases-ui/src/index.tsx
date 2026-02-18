@@ -97,13 +97,15 @@ function throwIfNativeModulesNotAvailable(): void {
   }
 }
 
-// Internal native props include purchase logic bridge events
-type NativeFullScreenPaywallViewProps = FullScreenPaywallViewProps & {
+// Internal native props include purchase logic bridge events and native custom variable transforms
+type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'options'> & {
+  options?: WithNativeCustomVariables<FullScreenPaywallViewOptions>;
   onPerformPurchase?: (event: any) => void;
   onPerformRestore?: (event: any) => void;
 };
 
-type NativeFooterPaywallViewProps = InternalFooterPaywallViewProps & {
+type NativeFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
+  options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
   onPerformPurchase?: (event: any) => void;
   onPerformRestore?: (event: any) => void;
 };
@@ -113,7 +115,7 @@ const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Pa
   : null;
 
 const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<NativeInternalFooterPaywallViewProps>('RCPaywallFooterView')
+  ? requireNativeComponent<NativeFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
 // Only create event emitters if native modules are available
@@ -428,21 +430,6 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
 type WithNativeCustomVariables<T extends { customVariables?: CustomVariables }> =
   Omit<T, 'customVariables'> & { customVariables?: NativeCustomVariables | null };
 
-/**
- * Native props for FullScreenPaywall component.
- * @internal
- */
-type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'options'> & {
-  options?: WithNativeCustomVariables<FullScreenPaywallViewOptions>;
-};
-
-/**
- * Native props for FooterPaywall component.
- * @internal
- */
-type NativeInternalFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
-  options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
-};
 
 const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
     ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
