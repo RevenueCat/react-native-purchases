@@ -127,6 +127,22 @@ export type TrackedEventListener = (event: TrackedEvent) => void;
 
 let trackedEventListeners: TrackedEventListener[] = [];
 
+/**
+ * Represents a debug event from RevenueCat.
+ * @internal This is a debug API not meant for public use.
+ */
+export interface DebugEvent {
+  eventDictionary: Record<string, unknown>;
+}
+
+/**
+ * Listener for debug events.
+ * @internal This is a debug API not meant for public use.
+ */
+export type DebugEventListener = (event: DebugEvent) => void;
+
+let debugEventListeners: DebugEventListener[] = [];
+
 eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
   (customerInfo: CustomerInfo) => {
@@ -157,6 +173,13 @@ eventEmitter?.addListener(
   "Purchases-TrackedEvent",
   (eventDictionary: Record<string, unknown>) => {
     trackedEventListeners.forEach((listener) => listener({ eventDictionary }));
+  }
+);
+
+eventEmitter?.addListener(
+  "Purchases-DebugEvent",
+  (eventDictionary: Record<string, unknown>) => {
+    debugEventListeners.forEach((listener) => listener({ eventDictionary }));
   }
 );
 
@@ -282,7 +305,6 @@ export default class Purchases {
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
-   * @param {TrackedEventListener?} [trackedEventListener] An optional listener for tracked feature events. This is a debug API for monitoring paywall and customer center events.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -868,6 +890,41 @@ export default class Purchases {
     trackedEventListener: TrackedEventListener
   ): void {
     trackedEventListeners = trackedEventListeners.filter((listener) => listener !== trackedEventListener);
+  }
+
+  /**
+   * Sets a function to be called when a debug event is tracked by RevenueCat.
+   * This is a debug API for monitoring debug events not meant for public use.
+   * Currently only works on Android.
+   * @internal
+   * @param {DebugEventListener} debugEventListener DebugEvent listener
+   */
+  public static async addDebugEventListener(
+    debugEventListener: DebugEventListener
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    if (Platform.OS === "android") {
+      if (typeof debugEventListener !== "function") {
+        throw new Error("addDebugEventListener needs a function");
+      }
+      const isFirstListener = debugEventListeners.length === 0;
+      debugEventListeners.push(debugEventListener);
+      if (isFirstListener && !usingBrowserMode) {
+        RNPurchases.setDebugEventListener();
+      }
+    }
+  }
+  
+  /**
+   * Removes a given DebugEventListener. 
+   * This is a debug API not meant for public use.
+   * @internal
+   * @param debugEventListener DebugEventListener listener to remove
+   */
+  public static removeDebugEventListener(
+    debugEventListener: DebugEventListener
+  ): void {
+    debugEventListeners = debugEventListeners.filter((listener) => listener !== debugEventListener);
   }
 
   /**

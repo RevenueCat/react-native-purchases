@@ -153,6 +153,14 @@ const onRestoreCompleted = ({
   customerInfo: CustomerInfo;
 }) => {};
 
+const onPurchasePackageInitiated = ({
+  packageBeingPurchased,
+  resume,
+}: {
+  packageBeingPurchased: PurchasesPackage;
+  resume: (shouldResume: boolean) => void;
+}) => {};
+
 const onRestoreError = ({ error }: { error: PurchasesError }) => {};
 
 const onDismiss = () => {};
@@ -209,6 +217,7 @@ const PaywallScreenWithOfferingAndEvents = (
       onRestoreCompleted={onRestoreCompleted}
       onRestoreError={onRestoreError}
       onDismiss={onDismiss}
+      onPurchasePackageInitiated={onPurchasePackageInitiated}
     />
   );
 };

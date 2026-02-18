@@ -29,6 +29,7 @@ NSString *RNPurchasesCustomerInfoUpdatedEvent = @"Purchases-CustomerInfoUpdated"
 NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchasePromoProduct";
 NSString *RNPurchasesLogHandlerEvent = @"Purchases-LogHandlerEvent";
 NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
+NSString *RNPurchasesDebugEvent = @"Purchases-DebugEvent";
 
 @implementation RNPurchases
 
@@ -40,7 +41,8 @@ NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
     return @[RNPurchasesCustomerInfoUpdatedEvent,
              RNPurchasesShouldPurchasePromoProductEvent,
              RNPurchasesLogHandlerEvent, 
-             RNPurchasesTrackedEvent];
+             RNPurchasesTrackedEvent,
+             RNPurchasesDebugEvent];
 }
 
 - (void)sendEventWithName:(NSString *)name body:(id)body {
@@ -673,7 +675,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"9.9.0";
+    return @"9.10.1";
 }
 
 @end

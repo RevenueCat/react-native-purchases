@@ -49,6 +49,13 @@ const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
     navigation.pop();
   };
 
+  const onPurchasePackageInitiated = ({packageBeingPurchased, resume}: {
+    packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void
+  }) => {
+    console.log('Purchase package initiated:', packageBeingPurchased.identifier);
+    resume(true);
+  };
+
   const styles = StyleSheet.create({
     flex1: {
       flex: 1,
@@ -72,6 +79,7 @@ const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
         onRestoreCompleted={onRestoreCompleted}
         onRestoreError={onRestoreError}
         onDismiss={onDismiss}
+        onPurchasePackageInitiated={onPurchasePackageInitiated}
       />
     </View>
   );
