@@ -897,7 +897,7 @@ export default class Purchases {
    * This is a debug API for monitoring debug events not meant for public use.
    * Currently only works on Android.
    * @internal
-   * @param {TrackedEventListener} trackedEventListener TrackedEvent listener
+   * @param {DebugEventListener} debugEventListener DebugEvent listener
    */
   public static async addDebugEventListener(
     debugEventListener: DebugEventListener
