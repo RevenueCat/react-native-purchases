@@ -1146,6 +1146,7 @@ describe("Purchases", () => {
       "isPurchasesAreCompletedByMyApp",
       "parseAsWebPurchaseRedemption",
       "removeTrackedEventListener",
+      "removeDebugEventListener",
     ];
     const functionsThatRequireAndroidAndInstance = [
       "syncAmazonPurchase",

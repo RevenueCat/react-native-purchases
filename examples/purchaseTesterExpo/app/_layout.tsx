@@ -60,6 +60,10 @@ export default function RootLayout() {
           await Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
             console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
           });
+          // @ts-expect-error - addDebugEventListener is internal
+          await Purchases.addDebugEventListener((event: Record<string, unknown>) => {
+            console.log('[RCDebugEvent]', JSON.stringify(event, null, 2));
+          });
           setPurchasesConfigured(true);
           console.log('Purchases configured successfully');
         } else {
