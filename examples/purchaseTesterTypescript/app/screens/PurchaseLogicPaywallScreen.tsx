@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import RevenueCatUI, {PURCHASE_LOGIC_RESULT} from 'react-native-purchases-ui';
 
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList';
 import {useCustomPurchaseLogic} from '../../App';
@@ -11,9 +11,10 @@ import {
   PurchasesPackage,
   PurchasesStoreTransaction,
 } from '@revenuecat/purchases-typescript-internal';
-import Purchases from 'react-native-purchases';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PurchaseLogicPaywall'>;
+
+type ModalType = 'purchase' | 'restore';
 
 /**
  * Example screen demonstrating custom PurchaseLogic with paywalls.
@@ -23,6 +24,26 @@ type Props = NativeStackScreenProps<RootStackParamList, 'PurchaseLogicPaywall'>;
  * This is used when `purchasesAreCompletedBy` is set to `MY_APP`.
  */
 const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<ModalType>('purchase');
+  const [packageInfo, setPackageInfo] = useState('');
+  const resolveRef = useRef<((result: PURCHASE_LOGIC_RESULT) => void) | null>(null);
+
+  const showResultModal = (type: ModalType, pkgName?: string): Promise<PURCHASE_LOGIC_RESULT> => {
+    return new Promise(resolve => {
+      resolveRef.current = resolve;
+      setModalType(type);
+      setPackageInfo(pkgName ?? '');
+      setModalVisible(true);
+    });
+  };
+
+  const pickResult = (result: PURCHASE_LOGIC_RESULT) => {
+    setModalVisible(false);
+    resolveRef.current?.(result);
+    resolveRef.current = null;
+  };
+
   const onPurchaseStarted = ({
     packageBeingPurchased,
   }: {
@@ -36,9 +57,9 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
     storeTransaction,
   }: {
     customerInfo: CustomerInfo;
-    storeTransaction: PurchasesStoreTransaction;
+    storeTransaction?: PurchasesStoreTransaction;
   }) => {
-    console.log('[PurchaseLogic] onPurchaseCompleted - transaction:', storeTransaction.transactionIdentifier);
+    console.log('[PurchaseLogic] onPurchaseCompleted - transaction:', storeTransaction?.transactionIdentifier ?? 'none');
     console.log('[PurchaseLogic] onPurchaseCompleted - active subscriptions:', customerInfo.activeSubscriptions);
     console.log('[PurchaseLogic] onPurchaseCompleted - active entitlements:', Object.keys(customerInfo.entitlements.active));
   };
@@ -94,35 +115,12 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
             console.log('[PurchaseLogic] performPurchase - package:', packageToPurchase.identifier);
             console.log('[PurchaseLogic] performPurchase - product:', packageToPurchase.product?.identifier);
 
-            try {
-              const result = await Purchases.purchasePackage(packageToPurchase);
-              console.log('[PurchaseLogic] performPurchase - SUCCESS');
-              Alert.alert('Purchase Success', `Active subscriptions: ${result.customerInfo.activeSubscriptions.join(', ')}`);
-              return PURCHASE_LOGIC_RESULT.SUCCESS;
-            } catch (e: any) {
-              if (e.userCancelled) {
-                console.log('[PurchaseLogic] performPurchase - CANCELLATION');
-                Alert.alert('Purchase Cancelled', 'User cancelled the purchase.');
-                return PURCHASE_LOGIC_RESULT.CANCELLATION;
-              }
-              console.log('[PurchaseLogic] performPurchase - ERROR:', e.message);
-              Alert.alert('Purchase Error', e.message);
-              return PURCHASE_LOGIC_RESULT.ERROR;
-            }
+            return showResultModal('purchase', packageToPurchase.identifier);
           },
           performRestore: async () => {
             console.log('[PurchaseLogic] performRestore called');
 
-            try {
-              const customerInfo = await Purchases.restorePurchases();
-              console.log('[PurchaseLogic] performRestore - SUCCESS');
-              Alert.alert('Restore Success', `Active subscriptions: ${customerInfo.activeSubscriptions.join(', ')}`);
-              return PURCHASE_LOGIC_RESULT.SUCCESS;
-            } catch (e: any) {
-              console.log('[PurchaseLogic] performRestore - ERROR:', e.message);
-              Alert.alert('Restore Error', e.message);
-              return PURCHASE_LOGIC_RESULT.ERROR;
-            }
+            return showResultModal('restore');
           },
         }}
         onPurchaseStarted={onPurchaseStarted}
@@ -134,6 +132,43 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
         onRestoreError={onRestoreError}
         onDismiss={onDismiss}
       />
+
+      <Modal
+        transparent
+        animationType="fade"
+        visible={modalVisible}
+        onRequestClose={() => pickResult(PURCHASE_LOGIC_RESULT.ERROR)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalHeader}>Custom PurchaseLogic</Text>
+            <Text style={styles.modalTitle}>
+              {modalType === 'purchase'
+                ? `Simulate Purchase\n"${packageInfo}"`
+                : 'Simulate Restore'}
+            </Text>
+
+            <Pressable
+              style={[styles.modalButton, styles.successButton]}
+              onPress={() => pickResult(PURCHASE_LOGIC_RESULT.SUCCESS)}>
+              <Text style={styles.modalButtonText}>Success</Text>
+            </Pressable>
+
+            {modalType === 'purchase' && (
+              <Pressable
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => pickResult(PURCHASE_LOGIC_RESULT.CANCELLATION)}>
+                <Text style={styles.modalButtonText}>Cancelled</Text>
+              </Pressable>
+            )}
+
+            <Pressable
+              style={[styles.modalButton, styles.errorButton]}
+              onPress={() => pickResult(PURCHASE_LOGIC_RESULT.ERROR)}>
+              <Text style={styles.modalButtonText}>Error</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -152,6 +187,55 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: '#333',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 24,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalHeader: {
+    fontSize: 13,
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    color: '#888',
+    marginBottom: 4,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
+  },
+  modalButton: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  successButton: {
+    backgroundColor: '#34C759',
+  },
+  cancelButton: {
+    backgroundColor: '#FF9500',
+  },
+  errorButton: {
+    backgroundColor: '#FF3B30',
   },
 });
 
