@@ -53,7 +53,8 @@ RCT_EXPORT_MODULE(Paywall)
 - (UIView *)view
 {
     if (@available(iOS 15.0, *)) {
-        RCPaywallViewController *viewController = [self.proxy createPaywallView];
+        PaywallViewCreationParams *params = [PaywallViewCreationParams new];
+        RCPaywallViewController *viewController = [self.proxy createPaywallViewWithParams:params];
         PaywallViewWrapper *wrapper = [[PaywallViewWrapper alloc] initWithPaywallViewController:viewController];
         PaywallProxy *proxy = self.proxy;
         wrapper.createViewController = ^UIViewController * _Nullable(HybridPurchaseLogicBridge * _Nonnull bridge) {
