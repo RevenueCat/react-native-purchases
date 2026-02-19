@@ -87,6 +87,11 @@ const App = () => {
       } else {
         Purchases.configure({
           apiKey: APIKeys.google,
+          ...(useCustomPurchaseLogic && {
+            purchasesAreCompletedBy: {
+              type: Purchases.PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+            },
+          }),
           entitlementVerificationMode: verificationMode,
           pendingTransactionsForPrepaidPlansEnabled: true,
           diagnosticsEnabled: true,
