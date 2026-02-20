@@ -1,3 +1,7 @@
+## 9.10.3
+### 🔄 Other Changes
+* Add internal API to debug tracked events on iOS (#1612) via Antonio Pallares (@ajpallares)
+
 ## 9.10.2
 ## RevenueCat SDK
 ### 📦 Dependency Updates
