@@ -20,6 +20,7 @@ type RootStackParamList = {
     customVariables?: CustomVariables;
   };
   CustomerCenterScreen: { shouldShowCloseButton?: boolean };
+  PurchaseLogicPaywall: { offering: PurchasesOffering | null };
 };
 
 export default RootStackParamList;

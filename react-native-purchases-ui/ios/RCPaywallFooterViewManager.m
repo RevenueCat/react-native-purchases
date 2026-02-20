@@ -87,6 +87,8 @@ RCT_EXPORT_VIEW_PROPERTY(onRestoreStarted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPerformPurchase, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPerformRestore, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(RCPaywallFooterView)
 

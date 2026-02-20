@@ -24,11 +24,15 @@ import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
 import CustomerCenterScreen from "./app/screens/CustomerCenterScreen";
 import VirtualCurrencyScreen from "./app/screens/VirtualCurrencyScreen";
+import PurchaseLogicPaywallScreen from "./app/screens/PurchaseLogicPaywallScreen";
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
+
+// Set to true to use custom purchase logic (purchasesAreCompletedBy: MY_APP).
+export const useCustomPurchaseLogic = true;
 
 const App = () => {
   const hasKeys = () => {
@@ -81,6 +85,11 @@ const App = () => {
       } else {
         Purchases.configure({
           apiKey: APIKeys.google,
+          ...(useCustomPurchaseLogic && {
+            purchasesAreCompletedBy: {
+              type: Purchases.PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+            },
+          }),
           entitlementVerificationMode: verificationMode,
           pendingTransactionsForPrepaidPlansEnabled: true,
           diagnosticsEnabled: true,
@@ -92,6 +101,12 @@ const App = () => {
     } else {
       Purchases.configure({
         apiKey: APIKeys.apple,
+        ...(useCustomPurchaseLogic && {
+          purchasesAreCompletedBy: {
+            type: Purchases.PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+            storeKitVersion: Purchases.STOREKIT_VERSION.STOREKIT_2,
+          },
+        }),
         entitlementVerificationMode: verificationMode,
         diagnosticsEnabled: true
       });
@@ -140,6 +155,11 @@ const App = () => {
               options={{ title: 'Customer Center' }}
            />
           <Stack.Screen name="VirtualCurrency" component={VirtualCurrencyScreen} />
+          <Stack.Screen
+              name="PurchaseLogicPaywall"
+              component={PurchaseLogicPaywallScreen}
+              options={{ title: 'PurchaseLogic Paywall' }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );

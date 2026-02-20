@@ -32,6 +32,47 @@ export { CustomVariableValue, type CustomVariables } from "./customVariables";
 // Re-export for testing purposes (marked as @internal)
 export { convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
+/**
+ * The result of a purchase or restore operation performed by custom app-based logic.
+ * Used when `purchasesAreCompletedBy` is set to `MY_APP`.
+ * @readonly
+ * @enum {string}
+ */
+export enum PURCHASE_LOGIC_RESULT {
+  /** The purchase or restore was successful. */
+  SUCCESS = "SUCCESS",
+  /** The purchase was cancelled by the user. */
+  CANCELLATION = "CANCELLATION",
+  /** An error occurred during the purchase or restore. */
+  ERROR = "ERROR",
+}
+
+/**
+ * Interface for handling purchases and restores within paywalls when
+ * `purchasesAreCompletedBy` is set to `MY_APP`.
+ *
+ * When provided, the paywall will call these functions instead of using
+ * RevenueCat's default purchase/restore behavior.
+ */
+export interface PaywallPurchaseLogic {
+  /**
+   * Called when the paywall wants to perform a purchase.
+   * Implement this to execute your custom purchase logic.
+   *
+   * @param packageToPurchase - The package the user wants to purchase.
+   * @returns A promise resolving to a PURCHASE_LOGIC_RESULT indicating the outcome.
+   */
+  performPurchase: (packageToPurchase: PurchasesPackage) => Promise<PURCHASE_LOGIC_RESULT>;
+
+  /**
+   * Called when the paywall wants to perform a restore.
+   * Implement this to execute your custom restore logic.
+   *
+   * @returns A promise resolving to a PURCHASE_LOGIC_RESULT indicating the outcome.
+   */
+  performRestore: () => Promise<PURCHASE_LOGIC_RESULT>;
+}
+
 const NATIVE_MODULE_NOT_FOUND_ERROR =
   `[RevenueCatUI] Native module not found. This can happen if:\n\n` +
   `- You are running in an unsupported environment (e.g., A browser or a container app that doesn't actually use the native modules)\n` +
@@ -56,22 +97,66 @@ function throwIfNativeModulesNotAvailable(): void {
   }
 }
 
+// Internal native props include purchase logic bridge events and native custom variable transforms
+type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'options'> & {
+  options?: WithNativeCustomVariables<FullScreenPaywallViewOptions>;
+  onPerformPurchase?: (event: any) => void;
+  onPerformRestore?: (event: any) => void;
+};
+
+type NativeFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
+  options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
+  onPerformPurchase?: (event: any) => void;
+  onPerformRestore?: (event: any) => void;
+};
+
 const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
   ? requireNativeComponent<NativeFullScreenPaywallViewProps>('Paywall')
   : null;
 
 const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<NativeInternalFooterPaywallViewProps>('RCPaywallFooterView')
+  ? requireNativeComponent<NativeFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
 // Only create event emitters if native modules are available
 const eventEmitter = !usingPreviewAPIMode && RNPaywalls ? new NativeEventEmitter(RNPaywalls) : null;
 const customerCenterEventEmitter = !usingPreviewAPIMode && RNCustomerCenter ? new NativeEventEmitter(RNCustomerCenter) : null;
 
+function createPurchaseLogicHandlers(purchaseLogic?: PaywallPurchaseLogic) {
+  if (!purchaseLogic) {
+    return { nativeOptions: {}, handlePerformPurchase: undefined, handlePerformRestore: undefined };
+  }
+
+  const nativeOptions = { hasPurchaseLogic: true };
+
+  const handlePerformPurchase = async (event: any) => {
+    const { requestId, packageBeingPurchased } = event.nativeEvent;
+    try {
+      const result = await purchaseLogic.performPurchase(packageBeingPurchased);
+      RNPaywalls?.resolvePurchaseLogicResult(requestId, result, null);
+    } catch (e) {
+      RNPaywalls?.resolvePurchaseLogicResult(requestId, PURCHASE_LOGIC_RESULT.ERROR, e instanceof Error ? e.message : null);
+    }
+  };
+
+  const handlePerformRestore = async (event: any) => {
+    const { requestId } = event.nativeEvent;
+    try {
+      const result = await purchaseLogic.performRestore();
+      RNPaywalls?.resolvePurchaseLogicResult(requestId, result, null);
+    } catch (e) {
+      RNPaywalls?.resolvePurchaseLogicResult(requestId, PURCHASE_LOGIC_RESULT.ERROR, e instanceof Error ? e.message : null);
+    }
+  };
+
+  return { nativeOptions, handlePerformPurchase, handlePerformRestore };
+}
+
 const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   style,
   children,
   options,
+  purchaseLogic,
   onPurchaseStarted,
   onPurchaseCompleted,
   onPurchaseError,
@@ -82,6 +167,8 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   onDismiss,
   onPurchasePackageInitiated,
 }) => {
+  const { nativeOptions, handlePerformPurchase, handlePerformRestore } = createPurchaseLogicHandlers(purchaseLogic);
+
   if (usingPreviewAPIMode) {
     return (
       <PreviewPaywall
@@ -100,12 +187,12 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
     );
   } else if (!!NativePaywall) {
     // Transform options to native format (CustomVariables -> string map)
-    const nativeOptions = transformOptionsForNative(options);
+    const transformedOptions = transformOptionsForNative(options);
     return (
       <NativePaywall
         style={style}
         children={children}
-        options={nativeOptions}
+        options={{ ...transformedOptions, ...nativeOptions }}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -125,6 +212,8 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
             RNPaywalls!.resumePurchasePackageInitiated(requestId, true);
           }
         }}
+        onPerformPurchase={handlePerformPurchase}
+        onPerformRestore={handlePerformRestore}
       />
     );
   }
@@ -136,6 +225,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
   style,
   children,
   options,
+  purchaseLogic,
   onPurchaseStarted,
   onPurchaseCompleted,
   onPurchaseError,
@@ -146,6 +236,8 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
   onDismiss,
   onMeasure,
 }) => {
+  const { nativeOptions, handlePerformPurchase, handlePerformRestore } = createPurchaseLogicHandlers(purchaseLogic);
+
   if (usingPreviewAPIMode) {
     return (
       <PreviewPaywall
@@ -164,12 +256,12 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
     );
   } else if (!!NativePaywallFooter) {
     // Transform options to native format (CustomVariables -> string map)
-    const nativeOptions = transformOptionsForNative(options);
+    const transformedOptions = transformOptionsForNative(options);
     return (
       <NativePaywallFooter
         style={style}
         children={children}
-        options={nativeOptions}
+        options={{ ...transformedOptions, ...nativeOptions }}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -178,6 +270,8 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
         onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
         onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
         onDismiss={() => onDismiss && onDismiss()}
+        onPerformPurchase={handlePerformPurchase}
+        onPerformRestore={handlePerformRestore}
         onMeasure={onMeasure}
       />
     );
@@ -288,6 +382,7 @@ type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
+  purchaseLogic?: PaywallPurchaseLogic;
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -309,6 +404,7 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  purchaseLogic?: PaywallPurchaseLogic;
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -324,6 +420,7 @@ type FooterPaywallViewProps = {
 
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
+  purchaseLogic?: PaywallPurchaseLogic;
 };
 
 /**
@@ -333,21 +430,6 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
 type WithNativeCustomVariables<T extends { customVariables?: CustomVariables }> =
   Omit<T, 'customVariables'> & { customVariables?: NativeCustomVariables | null };
 
-/**
- * Native props for FullScreenPaywall component.
- * @internal
- */
-type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'options'> & {
-  options?: WithNativeCustomVariables<FullScreenPaywallViewOptions>;
-};
-
-/**
- * Native props for FooterPaywall component.
- * @internal
- */
-type NativeInternalFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
-  options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
-};
 
 const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
     ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
@@ -517,6 +599,7 @@ export default class RevenueCatUI {
                                                                    style,
                                                                    children,
                                                                    options,
+                                                                   purchaseLogic,
                                                                    onPurchaseStarted,
                                                                    onPurchaseCompleted,
                                                                    onPurchaseError,
@@ -531,6 +614,7 @@ export default class RevenueCatUI {
       <InternalPaywall
         options={options}
         children={children}
+        purchaseLogic={purchaseLogic}
         onPurchaseStarted={onPurchaseStarted}
         onPurchaseCompleted={onPurchaseCompleted}
         onPurchaseError={onPurchaseError}
@@ -549,6 +633,7 @@ export default class RevenueCatUI {
                                                                                                   style,
                                                                                                   children,
                                                                                                   options,
+                                                                                                  purchaseLogic,
                                                                                                   onPurchaseStarted,
                                                                                                   onPurchaseCompleted,
                                                                                                   onPurchaseError,
@@ -596,6 +681,7 @@ export default class RevenueCatUI {
             android: {marginTop: -20, height}
           })}
           options={options}
+          purchaseLogic={purchaseLogic}
           onPurchaseStarted={onPurchaseStarted}
           onPurchaseCompleted={onPurchaseCompleted}
           onPurchaseError={onPurchaseError}
