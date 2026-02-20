@@ -86,9 +86,6 @@ const App = () => {
           diagnosticsEnabled: true,
         });
       }
-      Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
-        console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
-      });
       Purchases.addDebugEventListener((event: Record<string, unknown>) => {
         console.log('[RCDebugEvent]', JSON.stringify(event, null, 2));
       });
@@ -99,6 +96,9 @@ const App = () => {
         diagnosticsEnabled: true
       });
     }
+    Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
+      console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
+    });
 
     Purchases.enableAdServicesAttributionTokenCollection();
   }, []);
