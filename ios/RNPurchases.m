@@ -566,6 +566,12 @@ RCT_EXPORT_METHOD(setLogHandler) {
     }];
 }
 
+RCT_EXPORT_METHOD(setTrackedEventListener) {
+    [RCCommonFunctionality setTrackedEventListenerOnEventReceived:^(NSDictionary<NSString *, id> * _Nonnull eventDetails) {
+        [self sendEventWithName:RNPurchasesTrackedEvent body:eventDetails];
+    }];
+}
+
 RCT_EXPORT_METHOD(isWebPurchaseRedemptionURL:(NSString *)urlString
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
