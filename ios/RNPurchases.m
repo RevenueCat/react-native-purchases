@@ -339,6 +339,46 @@ RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
 }
 
 
+#pragma mark - Health
+
+RCT_EXPORT_METHOD(healthRequest:(BOOL)signatureVerification
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality healthRequestWithSignatureVerification:signatureVerification completion:^(RCErrorContainer * _Nullable errorContainer) {
+        if (errorContainer) {
+            reject(
+                [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
+                errorContainer.message,
+                errorContainer.error
+            );
+        } else {
+            resolve(nil);
+        }
+    }];
+}
+
+#pragma mark - Ad Tracking
+
+RCT_EXPORT_METHOD(trackAdFailedToLoad:(NSDictionary *)adData) {
+    [RCCommonFunctionality trackAdFailedToLoad:adData.mappingNSNullToNil];
+}
+
+RCT_EXPORT_METHOD(trackAdLoaded:(NSDictionary *)adData) {
+    [RCCommonFunctionality trackAdLoaded:adData.mappingNSNullToNil];
+}
+
+RCT_EXPORT_METHOD(trackAdDisplayed:(NSDictionary *)adData) {
+    [RCCommonFunctionality trackAdDisplayed:adData.mappingNSNullToNil];
+}
+
+RCT_EXPORT_METHOD(trackAdOpened:(NSDictionary *)adData) {
+    [RCCommonFunctionality trackAdOpened:adData.mappingNSNullToNil];
+}
+
+RCT_EXPORT_METHOD(trackAdRevenue:(NSDictionary *)adData) {
+    [RCCommonFunctionality trackAdRevenue:adData.mappingNSNullToNil];
+}
+
 #pragma mark - Subscriber Attributes
 
 RCT_EXPORT_METHOD(setProxyURLString:(nullable NSString *)proxyURLString
