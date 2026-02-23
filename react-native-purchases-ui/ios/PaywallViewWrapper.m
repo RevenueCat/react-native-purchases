@@ -23,6 +23,7 @@ API_AVAILABLE(ios(15.0))
 
 @property(strong, nonatomic) RCPaywallViewController *paywallViewController;
 @property(nonatomic) BOOL addedToHierarchy;
+@property(strong, nonatomic) NSDictionary *pendingOptions;
 
 @end
 
@@ -58,6 +59,12 @@ API_AVAILABLE(ios(15.0))
     if (!self.addedToHierarchy) {
         UIViewController *parentController = self.parentViewController;
         if (parentController) {
+            // Apply custom variables BEFORE adding to hierarchy.
+            // This is critical because PaywallViewController requires custom variables
+            // to be set before viewDidLoad is called (which happens when added to hierarchy).
+            // See: https://github.com/RevenueCat/react-native-purchases/issues/1622
+            [self applyCustomVariablesFromPendingOptions];
+
             self.paywallViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
             [parentController addChildViewController:self.paywallViewController];
             [self addSubview:self.paywallViewController.view];
@@ -72,13 +79,50 @@ API_AVAILABLE(ios(15.0))
             ]];
 
             self.addedToHierarchy = YES;
+
+            // Apply remaining options after adding to hierarchy
+            [self applyNonCustomVariableOptionsFromPendingOptions];
         }
     }
 }
 
 - (void)setOptions:(NSDictionary *)options {
     if (@available(iOS 15.0, *)) {
-        NSDictionary *offering = options[@"offering"];
+        self.pendingOptions = options;
+
+        if (self.addedToHierarchy) {
+            // View is already in hierarchy, apply all options now.
+            // Note: custom variables set after the view is loaded won't take effect,
+            // but we still try to set them (the SDK will log a warning).
+            [self applyCustomVariablesFromPendingOptions];
+            [self applyNonCustomVariableOptionsFromPendingOptions];
+        } else {
+            // View is not yet in hierarchy, trigger layout to apply options.
+            // Custom variables will be applied before adding to hierarchy in layoutSubviews.
+            [self setNeedsLayout];
+        }
+    } else {
+        NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
+    }
+}
+
+- (void)applyCustomVariablesFromPendingOptions {
+    if (@available(iOS 15.0, *)) {
+        NSDictionary *customVariables = self.pendingOptions[@"customVariables"];
+        if (customVariables && [customVariables isKindOfClass:[NSDictionary class]]) {
+            for (NSString *key in customVariables) {
+                NSString *value = customVariables[key];
+                if ([value isKindOfClass:[NSString class]]) {
+                    [self.paywallViewController setCustomVariable:value forKey:key];
+                }
+            }
+        }
+    }
+}
+
+- (void)applyNonCustomVariableOptionsFromPendingOptions {
+    if (@available(iOS 15.0, *)) {
+        NSDictionary *offering = self.pendingOptions[@"offering"];
         if (offering && ![offering isKindOfClass:[NSNull class]]) {
             NSString *identifier = offering[@"identifier"];
             if (identifier) {
@@ -88,28 +132,16 @@ API_AVAILABLE(ios(15.0))
             }
         }
 
-        NSString *fontFamily = options[@"fontFamily"];
+        NSString *fontFamily = self.pendingOptions[@"fontFamily"];
         if (fontFamily && [fontFamily isKindOfClass:[NSString class]] && fontFamily.length > 0) {
             [self.paywallViewController updateFontWithFontName:fontFamily];
         }
 
-        NSNumber *displayCloseButtonValue = options[@"displayCloseButton"];
+        NSNumber *displayCloseButtonValue = self.pendingOptions[@"displayCloseButton"];
         BOOL displayCloseButton = [displayCloseButtonValue isKindOfClass:[NSNumber class]] ? [displayCloseButtonValue boolValue] : NO;
         if (displayCloseButton) {
             [self.paywallViewController updateWithDisplayCloseButton:displayCloseButton];
         }
-
-        NSDictionary *customVariables = options[@"customVariables"];
-        if (customVariables && [customVariables isKindOfClass:[NSDictionary class]]) {
-            for (NSString *key in customVariables) {
-                NSString *value = customVariables[key];
-                if ([value isKindOfClass:[NSString class]]) {
-                    [self.paywallViewController setCustomVariable:value forKey:key];
-                }
-            }
-        }
-    } else {
-        NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
     }
 }
 
