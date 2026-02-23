@@ -20,6 +20,9 @@ type RootStackParamList = {
     customVariables?: CustomVariables;
   };
   CustomerCenterScreen: { shouldShowCloseButton?: boolean };
+  CustomerCenterModalNoHeader: { shouldShowCloseButton?: boolean };
+  CustomerCenterModalWithHeader: { shouldShowCloseButton?: boolean };
+  CustomVariables: undefined;
 };
 
 export default RootStackParamList;

@@ -9,10 +9,19 @@ import {
   PurchasesError, PurchasesPackage,
   PurchasesStoreTransaction
 } from "@revenuecat/purchases-typescript-internal";
+import { useCustomVariables } from '../context/CustomVariablesContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Paywall'>;
 
 const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
+  const { customVariables: globalCustomVariables } = useCustomVariables();
+
+  // Merge route params custom variables with global ones (route params take precedence)
+  const customVariables = {
+    ...globalCustomVariables,
+    ...route.params.customVariables,
+  };
+
   // Example handlers for the events
   const onPurchaseCompleted = ({customerInfo, storeTransaction}: {
     customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction
@@ -69,7 +78,7 @@ const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
           offering: route.params.offering,
           fontFamily: route.params.fontFamily,
           displayCloseButton: true,
-          customVariables: route.params.customVariables,
+          customVariables: customVariables,
         }}
         onPurchaseStarted={onPurchaseStarted}
         onPurchaseCompleted={onPurchaseCompleted}
