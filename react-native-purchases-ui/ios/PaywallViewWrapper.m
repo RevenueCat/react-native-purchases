@@ -32,7 +32,10 @@ API_AVAILABLE(ios(15.0))
 - (instancetype)initWithPaywallViewController:(RCPaywallViewController *)paywallViewController API_AVAILABLE(ios(15.0)) {
     NSParameterAssert(paywallViewController);
 
-    if ((self = [super initWithFrame:paywallViewController.view.bounds])) {
+    // Don't access paywallViewController.view here - it triggers viewDidLoad which sets up
+    // the hostingController, making it impossible to set custom variables afterwards.
+    // See: https://github.com/RevenueCat/react-native-purchases/issues/1622
+    if ((self = [super initWithFrame:CGRectZero])) {
         _paywallViewController = paywallViewController;
     }
 
@@ -56,13 +59,15 @@ API_AVAILABLE(ios(15.0))
     // Need to wait for this view to be in the hierarchy to look for the parent UIVC.
     // This is required to add a SwiftUI `UIHostingController` to the hierarchy in a way that allows
     // UIKit to read properties from the environment, like traits and safe area.
-    if (!self.addedToHierarchy) {
+    //
+    // IMPORTANT: We also need to wait for pendingOptions to be set (via setOptions:).
+    // Custom variables MUST be applied before accessing the PaywallViewController's view,
+    // because viewDidLoad sets up the hostingController which makes custom variables immutable.
+    // See: https://github.com/RevenueCat/react-native-purchases/issues/1622
+    if (!self.addedToHierarchy && self.pendingOptions != nil) {
         UIViewController *parentController = self.parentViewController;
         if (parentController) {
-            // Apply custom variables BEFORE adding to hierarchy.
-            // This is critical because PaywallViewController requires custom variables
-            // to be set before viewDidLoad is called (which happens when added to hierarchy).
-            // See: https://github.com/RevenueCat/react-native-purchases/issues/1622
+            // Apply custom variables BEFORE accessing .view (which triggers viewDidLoad).
             [self applyCustomVariablesFromPendingOptions];
 
             self.paywallViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -91,10 +96,10 @@ API_AVAILABLE(ios(15.0))
         self.pendingOptions = options;
 
         if (self.addedToHierarchy) {
-            // View is already in hierarchy, apply all options now.
-            // Note: custom variables set after the view is loaded won't take effect,
-            // but we still try to set them (the SDK will log a warning).
-            [self applyCustomVariablesFromPendingOptions];
+            // View is already in hierarchy, apply non-custom-variable options only.
+            // Custom variables cannot be set after the PaywallViewController has loaded
+            // (the SDK will assert if we try). They must be set before viewDidLoad.
+            // See: https://github.com/RevenueCat/react-native-purchases/issues/1622
             [self applyNonCustomVariableOptionsFromPendingOptions];
         } else {
             // View is not yet in hierarchy, trigger layout to apply options.
