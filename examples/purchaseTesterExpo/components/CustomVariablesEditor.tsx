@@ -129,20 +129,20 @@ const CustomVariablesEditor: React.FC = () => {
                 placeholderTextColor="#999"
               />
               <View style={styles.addFormButtons}>
-                <Button
-                  title="Cancel"
+                <TouchableOpacity
+                  style={styles.cancelFormButton}
                   onPress={() => {
                     setIsAdding(false);
                     setNewKey('');
                     setNewValue('');
-                  }}
-                  color="#888"
-                />
-                <Button
-                  title="Add"
-                  onPress={handleAddVariable}
-                  disabled={!newKey.trim()}
-                />
+                  }}>
+                  <Text style={styles.cancelFormButtonText}>CANCEL</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.addFormButton, !newKey.trim() && styles.addFormButtonDisabled]}
+                  onPress={handleAddVariable}>
+                  <Text style={[styles.addFormButtonText, !newKey.trim() && styles.addFormButtonTextDisabled]}>ADD</Text>
+                </TouchableOpacity>
               </View>
             </View>
           ) : (
@@ -262,6 +262,32 @@ const styles = StyleSheet.create({
   addFormButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  cancelFormButton: {
+    backgroundColor: '#888',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+  },
+  cancelFormButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  addFormButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+  },
+  addFormButtonDisabled: {
+    backgroundColor: '#ccc',
+  },
+  addFormButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  addFormButtonTextDisabled: {
+    color: '#888',
   },
   addButton: {
     backgroundColor: '#007AFF',
