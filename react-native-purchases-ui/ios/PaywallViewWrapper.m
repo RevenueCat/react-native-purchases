@@ -116,10 +116,13 @@ API_AVAILABLE(ios(15.0))
 
 - (void)applyCustomVariablesFromPendingOptions {
     if (@available(iOS 15.0, *)) {
+        NSLog(@"RNPaywalls - pendingOptions: %@", self.pendingOptions);
         NSDictionary *customVariables = self.pendingOptions[@"customVariables"];
+        NSLog(@"RNPaywalls - customVariables from options: %@ (class: %@)", customVariables, [customVariables class]);
         if (customVariables && [customVariables isKindOfClass:[NSDictionary class]]) {
             for (NSString *key in customVariables) {
                 NSString *value = customVariables[key];
+                NSLog(@"RNPaywalls - Setting custom variable: %@ = %@ (class: %@)", key, value, [value class]);
                 if ([value isKindOfClass:[NSString class]]) {
                     [self.paywallViewController setCustomVariable:value forKey:key];
                 }
