@@ -46,16 +46,11 @@ API_AVAILABLE(ios(15.0))
 
 - (void)reactSetFrame:(CGRect)frame
 {
-    NSLog(@"RNPaywalls - reactSetFrame: %@", NSStringFromCGRect(frame));
-
     [super reactSetFrame: frame];
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-
-    CGSize size = self.bounds.size;
-    NSLog(@"RNPaywalls - Size on layoutSubviews: %@", NSStringFromCGSize(size));
 
     // Need to wait for this view to be in the hierarchy to look for the parent UIVC.
     // This is required to add a SwiftUI `UIHostingController` to the hierarchy in a way that allows
@@ -77,7 +72,6 @@ API_AVAILABLE(ios(15.0))
             [self addSubview:self.paywallViewController.view];
             [self.paywallViewController didMoveToParentViewController:parentController];
 
-            NSLog(@"RNPaywalls - Activating constraints");
             [NSLayoutConstraint activateConstraints:@[
                 [self.paywallViewController.view.topAnchor constraintEqualToAnchor:self.topAnchor],
                 [self.paywallViewController.view.bottomAnchor constraintEqualToAnchor:self.bottomAnchor],
@@ -116,13 +110,10 @@ API_AVAILABLE(ios(15.0))
 
 - (void)applyCustomVariablesFromPendingOptions {
     if (@available(iOS 15.0, *)) {
-        NSLog(@"RNPaywalls - pendingOptions: %@", self.pendingOptions);
         NSDictionary *customVariables = self.pendingOptions[@"customVariables"];
-        NSLog(@"RNPaywalls - customVariables from options: %@ (class: %@)", customVariables, [customVariables class]);
         if (customVariables && [customVariables isKindOfClass:[NSDictionary class]]) {
             for (NSString *key in customVariables) {
                 NSString *value = customVariables[key];
-                NSLog(@"RNPaywalls - Setting custom variable: %@ = %@ (class: %@)", key, value, [value class]);
                 if ([value isKindOfClass:[NSString class]]) {
                     [self.paywallViewController setCustomVariable:value forKey:key];
                 }
@@ -247,7 +238,6 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)) {
-    NSLog(@"RNPaywalls - Paywall view wrapper did change size to: %@", NSStringFromCGSize(size));
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller
