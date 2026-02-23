@@ -23,6 +23,7 @@ API_AVAILABLE(ios(15.0))
 
 @property(strong, nonatomic) RCPaywallViewController *paywallViewController;
 @property(nonatomic) BOOL addedToHierarchy;
+@property(nonatomic) BOOL didReceiveInitialOptions;
 @property(strong, nonatomic) NSDictionary *pendingOptions;
 
 @end
@@ -60,11 +61,12 @@ API_AVAILABLE(ios(15.0))
     // This is required to add a SwiftUI `UIHostingController` to the hierarchy in a way that allows
     // UIKit to read properties from the environment, like traits and safe area.
     //
-    // IMPORTANT: We also need to wait for pendingOptions to be set (via setOptions:).
+    // IMPORTANT: We also need to wait for setOptions: to be called (via didReceiveInitialOptions).
     // Custom variables MUST be applied before accessing the PaywallViewController's view,
     // because viewDidLoad sets up the hostingController which makes custom variables immutable.
+    // Note: options can be nil/empty (default usage), so we track the flag separately.
     // See: https://github.com/RevenueCat/react-native-purchases/issues/1622
-    if (!self.addedToHierarchy && self.pendingOptions != nil) {
+    if (!self.addedToHierarchy && self.didReceiveInitialOptions) {
         UIViewController *parentController = self.parentViewController;
         if (parentController) {
             // Apply custom variables BEFORE accessing .view (which triggers viewDidLoad).
@@ -93,7 +95,8 @@ API_AVAILABLE(ios(15.0))
 
 - (void)setOptions:(NSDictionary *)options {
     if (@available(iOS 15.0, *)) {
-        self.pendingOptions = options;
+        self.pendingOptions = options ?: @{};
+        self.didReceiveInitialOptions = YES;
 
         if (self.addedToHierarchy) {
             // View is already in hierarchy, apply non-custom-variable options only.

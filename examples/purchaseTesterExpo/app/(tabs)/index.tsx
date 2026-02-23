@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, Alert, Platform, Modal, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, Alert, Platform, Modal, TouchableOpacity, ActivityIndicator, Switch } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Purchases from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
@@ -13,6 +13,7 @@ export default function TabOneScreen() {
   const [offerings, setOfferings] = useState<any>(null);
   const [selectedOffering, setSelectedOffering] = useState<any>(null);
   const [loadingOfferings, setLoadingOfferings] = useState(false);
+  const [usePresentPaywall, setUsePresentPaywall] = useState(false); // false = PaywallView, true = presentPaywall()
   const { customVariables } = useCustomVariables();
 
   // Fetch offerings on mount
@@ -142,8 +143,18 @@ export default function TabOneScreen() {
       <View style={styles.offeringsContainer}>
         <View style={styles.offeringsHeader}>
           <Text style={styles.offeringsTitle}>Offerings</Text>
+          <View style={styles.offeringsToggleContainer}>
+            <Text style={styles.offeringsToggleLabel}>
+              {usePresentPaywall ? 'presentPaywall()' : 'PaywallView'}
+            </Text>
+            <Switch
+              value={usePresentPaywall}
+              onValueChange={setUsePresentPaywall}
+              trackColor={{ false: '#4a90d9', true: '#34c759' }}
+            />
+          </View>
           <TouchableOpacity onPress={fetchOfferings} style={styles.refreshButton}>
-            <Text style={styles.refreshButtonText}>↻ Refresh</Text>
+            <Text style={styles.refreshButtonText}>↻</Text>
           </TouchableOpacity>
         </View>
         {loadingOfferings ? (
@@ -157,11 +168,29 @@ export default function TabOneScreen() {
                 <TouchableOpacity
                   key={offering.identifier}
                   style={[styles.offeringCard, isCurrent && styles.currentOfferingCard]}
-                  onPress={() => {
-                    setSelectedOffering(offering);
-                    setShowModalPaywall(true);
+                  onPress={async () => {
                     const varsCount = Object.keys(customVariables).length;
-                    setLastResult(`[${new Date().toLocaleTimeString()}] Opening paywall for "${offering.identifier}"${varsCount > 0 ? ` with ${varsCount} custom variables` : ''}`);
+                    const varsInfo = varsCount > 0 ? ` with ${varsCount} custom variables` : '';
+
+                    if (usePresentPaywall) {
+                      // Use presentPaywall() API
+                      setLastResult(`[${new Date().toLocaleTimeString()}] Calling presentPaywall() for "${offering.identifier}"${varsInfo}`);
+                      try {
+                        const result = await RevenueCatUI.presentPaywall({
+                          offering: offering,
+                          displayCloseButton: true,
+                          customVariables: varsCount > 0 ? customVariables : undefined,
+                        });
+                        setLastResult(`[${new Date().toLocaleTimeString()}] presentPaywall() result: ${result}`);
+                      } catch (error: any) {
+                        setLastResult(`[${new Date().toLocaleTimeString()}] presentPaywall() error: ${error.message}`);
+                      }
+                    } else {
+                      // Use PaywallView component
+                      setSelectedOffering(offering);
+                      setShowModalPaywall(true);
+                      setLastResult(`[${new Date().toLocaleTimeString()}] Opening PaywallView for "${offering.identifier}"${varsInfo}`);
+                    }
                   }}
                 >
                   <Text style={styles.offeringIdentifier} numberOfLines={1}>
@@ -442,7 +471,7 @@ export default function TabOneScreen() {
         {/* RevenueCat UI - Paywall Methods */}
         <SectionHeader title="RevenueCat UI - Paywall Methods" />
         <Text style={styles.customVarsHint}>
-          Tap {} in the header to add custom variables
+          Tap {'{}'} in the header to add custom variables
         </Text>
         <MethodButton
           title={`presentPaywall${Object.keys(customVariables).length > 0 ? ` (${Object.keys(customVariables).length} vars)` : ''}`}
@@ -815,6 +844,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
+  },
+  offeringsToggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  offeringsToggleLabel: {
+    fontSize: 11,
+    color: '#666',
+    fontWeight: '500',
   },
   refreshButton: {
     paddingHorizontal: 10,
