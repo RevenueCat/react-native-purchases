@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.revenuecat.PaywallsTester"
+      "bundleIdentifier": "com.revenuecat.sampleapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +23,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.revenuecat.paywall_tester"
+      "package": "com.revenuecat.purchases_sample"
     },
     "web": {
       "bundler": "metro",
