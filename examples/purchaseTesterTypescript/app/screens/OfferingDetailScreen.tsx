@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, } from 'react-native';
 
@@ -9,37 +9,18 @@ import Purchases, {
   PurchasesStoreProduct,
   SubscriptionOption
 } from 'react-native-purchases';
-import RevenueCatUI, { CustomVariableValue, CustomVariables } from 'react-native-purchases-ui';
+import RevenueCatUI from 'react-native-purchases-ui';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
-import CustomVariablesEditor from '../components/CustomVariablesEditor';
+import { useCustomVariables } from '../context/CustomVariablesContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
-
-// Helper to convert CustomVariables to string map for display/editing
-const customVariablesToStringMap = (vars: CustomVariables): { [key: string]: string } => {
-  const result: { [key: string]: string } = {};
-  for (const key of Object.keys(vars)) {
-    result[key] = vars[key].value;
-  }
-  return result;
-};
-
-// Helper to convert string map to CustomVariables
-const stringMapToCustomVariables = (vars: { [key: string]: string }): CustomVariables => {
-  const result: CustomVariables = {};
-  for (const key of Object.keys(vars)) {
-    result[key] = CustomVariableValue.string(vars[key]);
-  }
-  return result;
-};
 
 // Taken from https://reactnative.dev/docs/typescript
 const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const [customVariables, setCustomVariables] = useState<CustomVariables>({});
-  const [isEditorVisible, setIsEditorVisible] = useState(false);
+  const { customVariables } = useCustomVariables();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -89,26 +70,12 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
           <Text style={styles.value}>
             { JSON.stringify(route.params.offering?.metadata) }
           </Text>
-          <View style={styles.customVariablesSection}>
-            <TouchableOpacity
-              style={styles.editVariablesButton}
-              onPress={() => setIsEditorVisible(true)}>
-              <Text style={styles.editVariablesButtonText}>
-                Edit Custom Variables ({Object.keys(customVariables).length})
-              </Text>
-            </TouchableOpacity>
-            {Object.keys(customVariables).length > 0 && (
-              <Text style={styles.variablesPreview}>
-                {Object.entries(customVariables).map(([k, v]) => `${k}: ${v.value}`).join(', ')}
-              </Text>
-            )}
-          </View>
-          <View style={styles.paywallsButtonStack}>
+                    <View style={styles.paywallsButtonStack}>
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => RevenueCatUI.presentPaywall({
                 offering: route.params.offering,
-                customVariables: Object.keys(customVariables).length > 0 ? customVariables : undefined,
+                customVariables: customVariables,
               })}>
               <Text>
                 Present paywall
@@ -120,7 +87,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                 offering: route.params.offering,
                 displayCloseButton: false,
                 requiredEntitlementIdentifier: "pro_cat",
-                customVariables: Object.keys(customVariables).length > 0 ? customVariables : undefined,
+                customVariables: customVariables,
               })}>
               <Text>
                 Present paywall if needed "pro_cat"
@@ -141,16 +108,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
               </Text>
             </TouchableOpacity>
           </View>
-          <CustomVariablesEditor
-            isVisible={isEditorVisible}
-            variables={customVariablesToStringMap(customVariables)}
-            onSave={(vars) => {
-              setCustomVariables(stringMapToCustomVariables(vars));
-              setIsEditorVisible(false);
-            }}
-            onCancel={() => setIsEditorVisible(false)}
-          />
-          {
+                    {
             route.params.offering?.availablePackages.map((pkg: PurchasesPackage) => {
               return (
                 <View key={pkg.identifier} style={styles.packageContainer}>
@@ -228,30 +186,7 @@ const styles = StyleSheet.create({
   value: {
     marginBottom: 10
   },
-  customVariablesSection: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 8,
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  editVariablesButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 6,
-  },
-  editVariablesButtonText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  variablesPreview: {
-    marginTop: 8,
-    fontSize: 12,
-    color: '#666',
-    textAlign: 'center',
-  },
-  packageContainer: {
+    packageContainer: {
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-start",

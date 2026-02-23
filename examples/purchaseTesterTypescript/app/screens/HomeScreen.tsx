@@ -23,6 +23,7 @@ import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList';
 import PromptWithTextInput from '../components/InputModal';
 import { PurchasesError, REFUND_REQUEST_STATUS } from '@revenuecat/purchases-typescript-internal';
+import { useCustomVariables } from '../context/CustomVariablesContext';
 
 interface State {
   appUserID: String | null;
@@ -34,6 +35,8 @@ interface State {
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomerInfo'>;
 
 const HomeScreen: React.FC<Props> = ({navigation}) => {
+  const { customVariables } = useCustomVariables();
+
   const initialState: State = {
     appUserID: null,
     customerInfo: null,
@@ -358,6 +361,11 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.otherActions}>Virtual Currency Testing Screen</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomVariables')}>
+            <Text style={styles.otherActions}>Custom Variables</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={showManageSubscriptions}>
             <Text style={styles.otherActions}>Manage Subscriptions</Text>
           </TouchableOpacity>
@@ -421,6 +429,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
               const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
                 requiredEntitlementIdentifier: 'pro_cat',
                 displayCloseButton: true,
+                customVariables: customVariables,
               });
               console.log('Paywall result: ', paywallResult);
             }}>
@@ -432,6 +441,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             onPress={async () => {
               const paywallResult = await RevenueCatUI.presentPaywall({
                 displayCloseButton: true,
+                customVariables: customVariables,
               });
               console.log('Paywall result: ', paywallResult);
             }}>

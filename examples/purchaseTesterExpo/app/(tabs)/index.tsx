@@ -1,14 +1,40 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, Alert, Platform, Modal } from 'react-native';
+import { StyleSheet, ScrollView, Alert, Platform, Modal, TouchableOpacity, ActivityIndicator, Switch } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Purchases from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
 import Constants from 'expo-constants';
+import { useCustomVariables } from '@/components/CustomVariablesContext';
 
 export default function TabOneScreen() {
   const [lastResult, setLastResult] = useState<string>('No method called yet');
   const [showModalPaywall, setShowModalPaywall] = useState(false);
   const [showModalCustomerCenter, setShowModalCustomerCenter] = useState(false);
+  const [offerings, setOfferings] = useState<any>(null);
+  const [selectedOffering, setSelectedOffering] = useState<any>(null);
+  const [loadingOfferings, setLoadingOfferings] = useState(false);
+  const [usePresentPaywall, setUsePresentPaywall] = useState(false); // false = PaywallView, true = presentPaywall()
+  const { customVariables } = useCustomVariables();
+  const customVariableCount = Object.keys(customVariables).length;
+  const hasCustomVariables = customVariableCount > 0;
+
+  // Fetch offerings on mount
+  useEffect(() => {
+    fetchOfferings();
+  }, []);
+
+  const fetchOfferings = async () => {
+    setLoadingOfferings(true);
+    try {
+      const result = await Purchases.getOfferings();
+      setOfferings(result);
+      setLastResult(`[${new Date().toLocaleTimeString()}] Offerings loaded: ${Object.keys(result.all).length} offerings found`);
+    } catch (error: any) {
+      setLastResult(`[${new Date().toLocaleTimeString()}] Error loading offerings: ${error.message}`);
+    } finally {
+      setLoadingOfferings(false);
+    }
+  };
 
   const getPlatformInfo = (): string => {
     if (Platform.OS === 'web') {
@@ -113,6 +139,75 @@ export default function TabOneScreen() {
         <ScrollView style={styles.resultsScroll}>
           <Text style={styles.resultsText}>{lastResult}</Text>
         </ScrollView>
+      </View>
+
+      {/* Offerings List */}
+      <View style={styles.offeringsContainer}>
+        <View style={styles.offeringsHeader}>
+          <Text style={styles.offeringsTitle}>Offerings</Text>
+          <View style={styles.offeringsToggleContainer}>
+            <Text style={styles.offeringsToggleLabel}>
+              {usePresentPaywall ? 'presentPaywall()' : 'PaywallView'}
+            </Text>
+            <Switch
+              value={usePresentPaywall}
+              onValueChange={setUsePresentPaywall}
+              trackColor={{ false: '#4a90d9', true: '#34c759' }}
+            />
+          </View>
+          <TouchableOpacity onPress={fetchOfferings} style={styles.refreshButton}>
+            <Text style={styles.refreshButtonText}>↻</Text>
+          </TouchableOpacity>
+        </View>
+        {loadingOfferings ? (
+          <ActivityIndicator size="small" color="#2f95dc" style={{ padding: 10 }} />
+        ) : offerings ? (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.offeringsList}>
+            {Object.keys(offerings.all).map((key) => {
+              const offering = offerings.all[key];
+              const isCurrent = offerings.current?.identifier === offering.identifier;
+              return (
+                <TouchableOpacity
+                  key={offering.identifier}
+                  style={[styles.offeringCard, isCurrent && styles.currentOfferingCard]}
+                  onPress={async () => {
+                    const varsInfo = hasCustomVariables ? ` with ${customVariableCount} custom variables` : '';
+
+                    if (usePresentPaywall) {
+                      // Use presentPaywall() API
+                      setLastResult(`[${new Date().toLocaleTimeString()}] Calling presentPaywall() for "${offering.identifier}"${varsInfo}`);
+                      try {
+                        const result = await RevenueCatUI.presentPaywall({
+                          offering: offering,
+                          displayCloseButton: true,
+                          customVariables: hasCustomVariables ? customVariables : undefined,
+                        });
+                        setLastResult(`[${new Date().toLocaleTimeString()}] presentPaywall() result: ${result}`);
+                      } catch (error: any) {
+                        setLastResult(`[${new Date().toLocaleTimeString()}] presentPaywall() error: ${error.message}`);
+                      }
+                    } else {
+                      // Use PaywallView component
+                      setSelectedOffering(offering);
+                      setShowModalPaywall(true);
+                      setLastResult(`[${new Date().toLocaleTimeString()}] Opening PaywallView for "${offering.identifier}"${varsInfo}`);
+                    }
+                  }}
+                >
+                  <Text style={styles.offeringIdentifier} numberOfLines={1}>
+                    {offering.identifier}
+                  </Text>
+                  {isCurrent && <Text style={styles.currentBadge}>CURRENT</Text>}
+                  <Text style={styles.offeringPackages}>
+                    {offering.availablePackages?.length || 0} packages
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <Text style={styles.noOfferingsText}>No offerings loaded. Tap Refresh.</Text>
+        )}
       </View>
 
       {/* Methods */}
@@ -376,23 +471,33 @@ export default function TabOneScreen() {
 
         {/* RevenueCat UI - Paywall Methods */}
         <SectionHeader title="RevenueCat UI - Paywall Methods" />
-        <MethodButton 
-          title="presentPaywall (default)" 
-          onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall())} 
+        <Text style={styles.customVarsHint}>
+          Tap {'{}'} in the header to add custom variables
+        </Text>
+        <MethodButton
+          title={`presentPaywall${hasCustomVariables ? ` (${customVariableCount} vars)` : ''}`}
+          onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall({
+            customVariables: hasCustomVariables ? customVariables : undefined
+          }))}
         />
-        <MethodButton 
-          title="presentPaywallIfNeeded (requiredEntitlementIdentifier: pro)" 
-          onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({ 
+        <MethodButton
+          title="presentPaywallIfNeeded (pro)"
+          onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({
             requiredEntitlementIdentifier: 'pro',
-            displayCloseButton: false
-          }))} 
+            displayCloseButton: false,
+            customVariables: hasCustomVariables ? customVariables : undefined
+          }))}
         />
-        <MethodButton 
-          title="Show Modal Paywall (Fullscreen)" 
+        <MethodButton
+          title={`Show Modal Paywall${hasCustomVariables ? ` (${customVariableCount} vars)` : ''}`}
           onPress={() => {
-            setLastResult('[' + new Date().toLocaleTimeString() + '] Opening modal paywall...');
+            const varsInfo = hasCustomVariables
+              ? JSON.stringify(Object.fromEntries(Object.entries(customVariables).map(([k,v]) => [k, v.value])))
+              : 'none';
+            setLastResult('[' + new Date().toLocaleTimeString() + '] Opening modal paywall with custom variables: ' + varsInfo);
+            setSelectedOffering(null); // Use default/current offering
             setShowModalPaywall(true);
-          }} 
+          }}
         />
 
         {/* RevenueCat UI - Customer Center */}
@@ -473,14 +578,18 @@ export default function TabOneScreen() {
         visible={showModalPaywall}
         animationType="slide"
         presentationStyle="fullScreen"
-        onRequestClose={() => setShowModalPaywall(false)}
+        onRequestClose={() => {
+          setShowModalPaywall(false);
+          setSelectedOffering(null);
+        }}
       >
         <View style={styles.modalContainer}>
           <RevenueCatUI.Paywall
             options={{
               displayCloseButton: true,
-              offering: null,
-              fontFamily: null
+              offering: selectedOffering,
+              fontFamily: null,
+              customVariables: hasCustomVariables ? customVariables : undefined
             }}
             onPurchaseStarted={({ packageBeingPurchased }) => {
               setLastResult(`[${new Date().toLocaleTimeString()}] Purchase started for: ${packageBeingPurchased.identifier}`);
@@ -507,6 +616,7 @@ export default function TabOneScreen() {
             onDismiss={() => {
               setLastResult(`[${new Date().toLocaleTimeString()}] Modal paywall dismissed`);
               setShowModalPaywall(false);
+              setSelectedOffering(null);
             }}
             onPurchasePackageInitiated={({ packageBeingPurchased, resume }) => {
               console.log('Purchase package initiated:', packageBeingPurchased.identifier);
@@ -708,5 +818,92 @@ const styles = StyleSheet.create({
     color: '#f1f3f5',
     fontSize: 12,
     fontFamily: 'monospace',
+  },
+  customVarsHint: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 8,
+    fontStyle: 'italic',
+  },
+  offeringsContainer: {
+    backgroundColor: '#ffffff',
+    marginHorizontal: 10,
+    marginBottom: 10,
+    borderRadius: 8,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  offeringsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  offeringsTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  offeringsToggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  offeringsToggleLabel: {
+    fontSize: 11,
+    color: '#666',
+    fontWeight: '500',
+    marginRight: 6,
+  },
+  refreshButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: '#e9ecef',
+    borderRadius: 4,
+  },
+  refreshButtonText: {
+    fontSize: 12,
+    color: '#495057',
+    fontWeight: '500',
+  },
+  offeringsList: {
+    flexDirection: 'row',
+  },
+  offeringCard: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    padding: 12,
+    marginRight: 10,
+    minWidth: 120,
+    borderWidth: 1,
+    borderColor: '#dee2e6',
+  },
+  currentOfferingCard: {
+    backgroundColor: '#e7f5ff',
+    borderColor: '#2f95dc',
+    borderWidth: 2,
+  },
+  offeringIdentifier: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  currentBadge: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#2f95dc',
+    marginBottom: 4,
+  },
+  offeringPackages: {
+    fontSize: 12,
+    color: '#666',
+  },
+  noOfferingsText: {
+    textAlign: 'center',
+    color: '#888',
+    padding: 10,
+    fontStyle: 'italic',
   },
 });

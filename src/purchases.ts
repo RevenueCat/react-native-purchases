@@ -860,7 +860,7 @@ export default class Purchases {
   /**
    * Sets a function to be called when a feature event is tracked by RevenueCatUI.
    * This is a debug API for monitoring paywall and customer center events not meant for public use.
-   * Currently only works on Android.
+   * Currently only works on Android and iOS.
    * @internal
    * @param {TrackedEventListener} trackedEventListener TrackedEvent listener
    */
@@ -868,7 +868,7 @@ export default class Purchases {
     trackedEventListener: TrackedEventListener
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
       if (typeof trackedEventListener !== "function") {
         throw new Error("addTrackedEventListener needs a function");
       }

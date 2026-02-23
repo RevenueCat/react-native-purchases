@@ -1,7 +1,6 @@
-## RevenueCat SDK
-### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.40.0 (#1608) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 9.22.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.22.0)
+## RevenueCatUI SDK
+### 🐞 Bugfixes
+* Fix crash when using customVariables with Paywall component (#1623) via Facundo Menzella (@facumenzella)
 
 ### 🔄 Other Changes
-* Add debugEventListener internal API (#1609) via Toni Rico (@tonidero)
+* Bump fastlane-plugin-revenuecat_internal from `afc9219` to `ea6276c` (#1624) via dependabot[bot] (@dependabot[bot])

@@ -10,7 +10,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { Alert, Linking, Platform, Text } from 'react-native';
+import { Alert, Linking, Platform, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -24,6 +24,8 @@ import FooterPaywallScreen from "./app/screens/FooterPaywallScreen";
 import WinBackTestingScreen from "./app/screens/WinBackTestingScreen";
 import CustomerCenterScreen from "./app/screens/CustomerCenterScreen";
 import VirtualCurrencyScreen from "./app/screens/VirtualCurrencyScreen";
+import CustomVariablesScreen from "./app/screens/CustomVariablesScreen";
+import { CustomVariablesProvider } from "./app/context/CustomVariablesContext";
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -86,9 +88,6 @@ const App = () => {
           diagnosticsEnabled: true,
         });
       }
-      Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
-        console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
-      });
       Purchases.addDebugEventListener((event: Record<string, unknown>) => {
         console.log('[RCDebugEvent]', JSON.stringify(event, null, 2));
       });
@@ -99,6 +98,9 @@ const App = () => {
         diagnosticsEnabled: true
       });
     }
+    Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
+      console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
+    });
 
     Purchases.enableAdServicesAttributionTokenCollection();
   }, []);
@@ -114,12 +116,23 @@ const App = () => {
         </Text>
       </SafeAreaView>
     ) : (
+      <CustomVariablesProvider>
       <NavigationContainer>
         <Stack.Navigator  initialRouteName="Home">
           <Stack.Screen
             name="Home"
             component={HomeScreen}
-            options={{ title: 'PurchaseTester' }}
+            options={({ navigation }) => ({
+              title: 'PurchaseTester',
+              headerRight: () => (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('CustomVariables')}
+                  style={{ marginRight: 10 }}
+                >
+                  <Text style={{ color: '#007AFF', fontSize: 18 }}>{'{ }'}</Text>
+                </TouchableOpacity>
+              ),
+            })}
           />
           <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
           <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
@@ -140,8 +153,14 @@ const App = () => {
               options={{ title: 'Customer Center' }}
            />
           <Stack.Screen name="VirtualCurrency" component={VirtualCurrencyScreen} />
+          <Stack.Screen
+            name="CustomVariables"
+            component={CustomVariablesScreen}
+            options={{ title: 'Custom Variables' }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
+      </CustomVariablesProvider>
     );
 };
 
