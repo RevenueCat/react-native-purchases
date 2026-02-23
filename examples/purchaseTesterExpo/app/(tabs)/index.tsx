@@ -15,6 +15,8 @@ export default function TabOneScreen() {
   const [loadingOfferings, setLoadingOfferings] = useState(false);
   const [usePresentPaywall, setUsePresentPaywall] = useState(false); // false = PaywallView, true = presentPaywall()
   const { customVariables } = useCustomVariables();
+  const customVariableCount = Object.keys(customVariables).length;
+  const hasCustomVariables = customVariableCount > 0;
 
   // Fetch offerings on mount
   useEffect(() => {
@@ -169,8 +171,7 @@ export default function TabOneScreen() {
                   key={offering.identifier}
                   style={[styles.offeringCard, isCurrent && styles.currentOfferingCard]}
                   onPress={async () => {
-                    const varsCount = Object.keys(customVariables).length;
-                    const varsInfo = varsCount > 0 ? ` with ${varsCount} custom variables` : '';
+                    const varsInfo = hasCustomVariables ? ` with ${customVariableCount} custom variables` : '';
 
                     if (usePresentPaywall) {
                       // Use presentPaywall() API
@@ -179,7 +180,7 @@ export default function TabOneScreen() {
                         const result = await RevenueCatUI.presentPaywall({
                           offering: offering,
                           displayCloseButton: true,
-                          customVariables: varsCount > 0 ? customVariables : undefined,
+                          customVariables: hasCustomVariables ? customVariables : undefined,
                         });
                         setLastResult(`[${new Date().toLocaleTimeString()}] presentPaywall() result: ${result}`);
                       } catch (error: any) {
@@ -474,9 +475,9 @@ export default function TabOneScreen() {
           Tap {'{}'} in the header to add custom variables
         </Text>
         <MethodButton
-          title={`presentPaywall${Object.keys(customVariables).length > 0 ? ` (${Object.keys(customVariables).length} vars)` : ''}`}
+          title={`presentPaywall${hasCustomVariables ? ` (${customVariableCount} vars)` : ''}`}
           onPress={() => callMethod('presentPaywall', () => RevenueCatUI.presentPaywall({
-            customVariables: Object.keys(customVariables).length > 0 ? customVariables : undefined
+            customVariables: hasCustomVariables ? customVariables : undefined
           }))}
         />
         <MethodButton
@@ -484,13 +485,13 @@ export default function TabOneScreen() {
           onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({
             requiredEntitlementIdentifier: 'pro',
             displayCloseButton: false,
-            customVariables: Object.keys(customVariables).length > 0 ? customVariables : undefined
+            customVariables: hasCustomVariables ? customVariables : undefined
           }))}
         />
         <MethodButton
-          title={`Show Modal Paywall${Object.keys(customVariables).length > 0 ? ` (${Object.keys(customVariables).length} vars)` : ''}`}
+          title={`Show Modal Paywall${hasCustomVariables ? ` (${customVariableCount} vars)` : ''}`}
           onPress={() => {
-            const varsInfo = Object.keys(customVariables).length > 0
+            const varsInfo = hasCustomVariables
               ? JSON.stringify(Object.fromEntries(Object.entries(customVariables).map(([k,v]) => [k, v.value])))
               : 'none';
             setLastResult('[' + new Date().toLocaleTimeString() + '] Opening modal paywall with custom variables: ' + varsInfo);
@@ -588,7 +589,7 @@ export default function TabOneScreen() {
               displayCloseButton: true,
               offering: selectedOffering,
               fontFamily: null,
-              customVariables: Object.keys(customVariables).length > 0 ? customVariables : undefined
+              customVariables: hasCustomVariables ? customVariables : undefined
             }}
             onPurchaseStarted={({ packageBeingPurchased }) => {
               setLastResult(`[${new Date().toLocaleTimeString()}] Purchase started for: ${packageBeingPurchased.identifier}`);
@@ -848,12 +849,12 @@ const styles = StyleSheet.create({
   offeringsToggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
   },
   offeringsToggleLabel: {
     fontSize: 11,
     color: '#666',
     fontWeight: '500',
+    marginRight: 6,
   },
   refreshButton: {
     paddingHorizontal: 10,
