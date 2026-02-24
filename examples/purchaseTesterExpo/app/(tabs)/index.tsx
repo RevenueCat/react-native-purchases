@@ -2,9 +2,10 @@ import React, { useRef, useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, Alert, Platform, Modal, TouchableOpacity, ActivityIndicator, Switch } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Purchases from 'react-native-purchases';
-import RevenueCatUI from 'react-native-purchases-ui';
+import RevenueCatUI, { PURCHASE_LOGIC_RESULT } from 'react-native-purchases-ui';
 import Constants from 'expo-constants';
 import { useCustomVariables } from '@/components/CustomVariablesContext';
+import ConfigOptions from '@/constants/ConfigOptions';
 
 export default function TabOneScreen() {
   const [lastResult, setLastResult] = useState<string>('No method called yet');
@@ -14,6 +15,7 @@ export default function TabOneScreen() {
   const [selectedOffering, setSelectedOffering] = useState<any>(null);
   const [loadingOfferings, setLoadingOfferings] = useState(false);
   const [usePresentPaywall, setUsePresentPaywall] = useState(false); // false = PaywallView, true = presentPaywall()
+  const isMyAppMode = ConfigOptions.usePurchasesCompletedByMyApp;
   const { customVariables } = useCustomVariables();
   const customVariableCount = Object.keys(customVariables).length;
   const hasCustomVariables = customVariableCount > 0;
@@ -481,13 +483,95 @@ export default function TabOneScreen() {
           }))}
         />
         <MethodButton
-          title="presentPaywallIfNeeded (pro)"
+          title="presentPaywallIfNeeded (requiredEntitlementIdentifier: pro)"
           onPress={() => callMethod('presentPaywallIfNeeded', () => RevenueCatUI.presentPaywallIfNeeded({
             requiredEntitlementIdentifier: 'pro',
             displayCloseButton: false,
             customVariables: hasCustomVariables ? customVariables : undefined
           }))}
         />
+        <MethodButton
+          title="presentPaywall (with listener)"
+          onPress={() => callMethod('presentPaywall (with listener)', () => RevenueCatUI.presentPaywall({
+            displayCloseButton: true,
+            listener: {
+              onPurchaseStarted: ({ packageBeingPurchased }) => {
+                console.log('🛒 PAYWALL - Purchase started for:', packageBeingPurchased?.identifier);
+              },
+              onPurchaseCompleted: ({ customerInfo, storeTransaction }) => {
+                console.log('✅ PAYWALL - Purchase completed:', storeTransaction?.transactionIdentifier);
+                console.log('   Active entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
+              },
+              onPurchaseError: ({ error }) => {
+                console.log('❌ PAYWALL - Purchase error:', error.code, error.message);
+              },
+              onPurchaseCancelled: () => {
+                console.log('🚫 PAYWALL - Purchase cancelled');
+              },
+              onRestoreStarted: () => {
+                console.log('🔄 PAYWALL - Restore started');
+              },
+              onRestoreCompleted: ({ customerInfo }) => {
+                console.log('✅ PAYWALL - Restore completed. Entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
+              },
+              onRestoreError: ({ error }) => {
+                console.log('❌ PAYWALL - Restore error:', error.code, error.message);
+              },
+              onPurchaseInitiated: ({ packageBeingPurchased, resumable }) => {
+                console.log('⏳ PAYWALL - Purchase initiated for:', packageBeingPurchased?.identifier, '- auto-proceeding');
+                resumable.resume(true);
+              },
+            },
+          }))}
+        />
+        <View style={styles.purchaseLogicContainer}>
+          <Text style={styles.purchaseLogicLabel}>
+            purchasesAreCompletedBy: {isMyAppMode ? 'MY_APP' : 'REVENUECAT'}
+          </Text>
+          <MethodButton
+            title="presentPaywall (with PurchaseLogic)"
+            disabled={!isMyAppMode}
+            onPress={() => callMethod('presentPaywall (with PurchaseLogic)', () => RevenueCatUI.presentPaywall({
+              displayCloseButton: true,
+              listener: {
+                onPurchaseStarted: ({ packageBeingPurchased }) => {
+                  console.log('🛒 PURCHASE_LOGIC - Purchase started for:', packageBeingPurchased?.identifier);
+                },
+                onPurchaseCompleted: ({ customerInfo }) => {
+                  console.log('✅ PURCHASE_LOGIC - Purchase completed. Entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
+                },
+                onPurchaseError: ({ error }) => {
+                  console.log('❌ PURCHASE_LOGIC - Purchase error:', error.code, error.message);
+                },
+                onPurchaseCancelled: () => {
+                  console.log('🚫 PURCHASE_LOGIC - Purchase cancelled');
+                },
+              },
+              purchaseLogic: {
+                performPurchase: async ({ packageToPurchase }) => {
+                  console.log('🔧 PURCHASE_LOGIC - performPurchase called for:', packageToPurchase?.identifier);
+                  // In a real app, you would handle the purchase with your own payment system here
+                  Alert.alert(
+                    'Custom Purchase',
+                    `performPurchase called for ${packageToPurchase?.identifier}. Returning SUCCESS.`,
+                  );
+                  return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                },
+                performRestore: async () => {
+                  console.log('🔧 PURCHASE_LOGIC - performRestore called');
+                  Alert.alert('Custom Restore', 'performRestore called. Returning SUCCESS.');
+                  return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                },
+              },
+            }))}
+          />
+          {!isMyAppMode && (
+            <Text style={styles.purchaseLogicHint}>
+              Requires purchasesAreCompletedBy: MY_APP.
+              Set usePurchasesCompletedByMyApp in constants/ConfigOptions.ts and rebuild.
+            </Text>
+          )}
+        </View>
         <MethodButton
           title={`Show Modal Paywall${hasCustomVariables ? ` (${customVariableCount} vars)` : ''}`}
           onPress={() => {
@@ -824,6 +908,30 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 8,
+    fontStyle: 'italic',
+  },
+  purchaseLogicContainer: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    padding: 10,
+    marginHorizontal: 5,
+    marginVertical: 6,
+    borderWidth: 1,
+    borderColor: '#dee2e6',
+  },
+  purchaseLogicLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#555',
+    fontFamily: 'monospace',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  purchaseLogicHint: {
+    fontSize: 11,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 4,
     fontStyle: 'italic',
   },
   offeringsContainer: {

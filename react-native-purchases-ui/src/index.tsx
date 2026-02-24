@@ -32,6 +32,95 @@ export { CustomVariableValue, type CustomVariables } from "./customVariables";
 // Re-export for testing purposes (marked as @internal)
 export { convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
+// MARK: - PaywallListener & PurchaseLogic types
+
+/**
+ * Object passed to onPurchaseInitiated that allows the developer to
+ * control when (and whether) the purchase flow continues.
+ * The developer can store this and call resume() asynchronously
+ * (e.g., after an auth flow on a different screen).
+ */
+export interface PurchaseResumable {
+  /** Call to proceed with or cancel the purchase. Defaults to true (proceed). */
+  resume(shouldProceed?: boolean): void;
+}
+
+/**
+ * Callbacks for observing paywall lifecycle events such as purchases,
+ * restores, and errors. All callbacks are optional.
+ *
+ * Pass as `listener` in {@link PresentPaywallParams} to receive events
+ * while the paywall is displayed.
+ */
+export interface PaywallListener {
+  /** Called when a purchase begins for a package. */
+  onPurchaseStarted?: (args: { packageBeingPurchased: PurchasesPackage }) => void;
+  /** Called when a purchase completes successfully. */
+  onPurchaseCompleted?: (args: { customerInfo: CustomerInfo; storeTransaction: PurchasesStoreTransaction }) => void;
+  /** Called when a purchase fails with an error. */
+  onPurchaseError?: (args: { error: PurchasesError }) => void;
+  /** Called when the user cancels a purchase. */
+  onPurchaseCancelled?: () => void;
+  /** Called when a restore operation begins. */
+  onRestoreStarted?: () => void;
+  /** Called when a restore operation completes successfully. */
+  onRestoreCompleted?: (args: { customerInfo: CustomerInfo }) => void;
+  /** Called when a restore operation fails with an error. */
+  onRestoreError?: (args: { error: PurchasesError }) => void;
+  /**
+   * Called before the payment sheet is displayed, allowing the app to gate
+   * the purchase flow (e.g., require authentication first).
+   *
+   * The developer receives a {@link PurchaseResumable} that can be stored
+   * and called asynchronously. Call `resumable.resume(true)` to proceed
+   * with the purchase, or `resumable.resume(false)` to cancel it.
+   *
+   * If this callback is not provided, the purchase proceeds automatically.
+   */
+  onPurchaseInitiated?: (args: { packageBeingPurchased: PurchasesPackage; resumable: PurchaseResumable }) => void;
+}
+
+/**
+ * Possible outcomes from a custom {@link PurchaseLogic} operation.
+ */
+export enum PURCHASE_LOGIC_RESULT {
+  /** The purchase or restore completed successfully. */
+  SUCCESS = 'SUCCESS',
+  /** The user cancelled the purchase or restore. */
+  CANCELLATION = 'CANCELLATION',
+  /** The purchase or restore failed with an error. */
+  ERROR = 'ERROR',
+}
+
+/**
+ * The result of a custom purchase or restore operation performed by {@link PurchaseLogic}.
+ */
+export type PurchaseLogicResult =
+  | { result: PURCHASE_LOGIC_RESULT.SUCCESS }
+  | { result: PURCHASE_LOGIC_RESULT.CANCELLATION }
+  | { result: PURCHASE_LOGIC_RESULT.ERROR; error?: PurchasesError };
+
+/**
+ * Custom purchase and restore handlers for apps that manage their own
+ * purchase flow (`purchasesAreCompletedBy: MY_APP`).
+ *
+ * When provided in {@link PresentPaywallParams}, the paywall delegates
+ * purchase and restore operations to these handlers instead of using
+ * RevenueCat's built-in purchase flow.
+ */
+export interface PurchaseLogic {
+  /**
+   * Called when the user initiates a purchase from the paywall.
+   * Perform the purchase using your own payment system and return the result.
+   */
+  performPurchase: (args: { packageToPurchase: PurchasesPackage }) => Promise<PurchaseLogicResult>;
+  /**
+   * Called when the user initiates a restore from the paywall.
+   * Perform the restore using your own system and return the result.
+   */
+  performRestore: () => Promise<PurchaseLogicResult>;
+}
+
 const NATIVE_MODULE_NOT_FOUND_ERROR =
   `[RevenueCatUI] Native module not found. This can happen if:\n\n` +
   `- You are running in an unsupported environment (e.g., A browser or a container app that doesn't actually use the native modules)\n` +
@@ -226,6 +315,18 @@ export interface PresentPaywallParams {
    * ```
    */
   customVariables?: CustomVariables;
+
+  /**
+   * Optional listener for paywall lifecycle events such as purchase
+   * completion, restoration, and errors.
+   */
+  listener?: PaywallListener;
+
+  /**
+   * Optional custom purchase/restore logic for when
+   * `purchasesAreCompletedBy` is set to `MY_APP`.
+   */
+  purchaseLogic?: PurchaseLogic;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -469,16 +570,25 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                  customVariables,
+                                 listener,
+                                 purchaseLogic,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
-    return RNPaywalls!.presentPaywall(
-      offering?.identifier ?? null,
-      offering?.availablePackages?.[0]?.presentedOfferingContext,
-      displayCloseButton,
-      fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
-    )
+
+    return RevenueCatUI.presentPaywallInternal(
+      () => RNPaywalls!.presentPaywall(
+        offering?.identifier ?? null,
+        offering?.availablePackages?.[0]?.presentedOfferingContext,
+        displayCloseButton,
+        fontFamily,
+        convertCustomVariablesToStringMap(customVariables),
+        !!listener,
+        !!purchaseLogic,
+      ),
+      listener,
+      purchaseLogic,
+    );
   }
 
   /**
@@ -500,17 +610,26 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                          customVariables,
+                                         listener,
+                                         purchaseLogic,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
-    return RNPaywalls!.presentPaywallIfNeeded(
-      requiredEntitlementIdentifier,
-      offering?.identifier ?? null,
-      offering?.availablePackages?.[0]?.presentedOfferingContext,
-      displayCloseButton,
-      fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
-    )
+
+    return RevenueCatUI.presentPaywallInternal(
+      () => RNPaywalls!.presentPaywallIfNeeded(
+        requiredEntitlementIdentifier,
+        offering?.identifier ?? null,
+        offering?.availablePackages?.[0]?.presentedOfferingContext,
+        displayCloseButton,
+        fontFamily,
+        convertCustomVariablesToStringMap(customVariables),
+        !!listener,
+        !!purchaseLogic,
+      ),
+      listener,
+      purchaseLogic,
+    );
   }
 
   public static Paywall: React.FC<FullScreenPaywallViewProps> = ({
@@ -811,6 +930,148 @@ export default class RevenueCatUI {
    */
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> =
     RevenueCatUI.OriginalTemplatePaywallFooterContainerView;
+
+  private static async presentPaywallInternal(
+    nativeCall: () => Promise<PAYWALL_RESULT>,
+    listener?: PaywallListener,
+    purchaseLogic?: PurchaseLogic,
+  ): Promise<PAYWALL_RESULT> {
+    const subscriptions: { remove: () => void }[] = [];
+
+    try {
+      // Register PaywallListener event handlers
+      if (listener) {
+        if (listener.onPurchaseStarted) {
+          const cb = listener.onPurchaseStarted;
+          const sub = eventEmitter?.addListener('onPurchaseStarted', (data: any) => {
+            cb({ packageBeingPurchased: data.packageBeingPurchased ?? data });
+          });
+          if (sub) subscriptions.push(sub);
+        }
+        if (listener.onPurchaseCompleted) {
+          const cb = listener.onPurchaseCompleted;
+          const sub = eventEmitter?.addListener('onPurchaseCompleted', (data: any) => {
+            cb({
+              customerInfo: data.customerInfo,
+              storeTransaction: data.storeTransaction,
+            });
+          });
+          if (sub) subscriptions.push(sub);
+        }
+        if (listener.onPurchaseError) {
+          const cb = listener.onPurchaseError;
+          const sub = eventEmitter?.addListener('onPurchaseError', (data: any) => {
+            cb({ error: data.error ?? data });
+          });
+          if (sub) subscriptions.push(sub);
+        }
+        if (listener.onPurchaseCancelled) {
+          const cb = listener.onPurchaseCancelled;
+          const sub = eventEmitter?.addListener('onPurchaseCancelled', () => {
+            cb();
+          });
+          if (sub) subscriptions.push(sub);
+        }
+        if (listener.onRestoreStarted) {
+          const cb = listener.onRestoreStarted;
+          const sub = eventEmitter?.addListener('onRestoreStarted', () => {
+            cb();
+          });
+          if (sub) subscriptions.push(sub);
+        }
+        if (listener.onRestoreCompleted) {
+          const cb = listener.onRestoreCompleted;
+          const sub = eventEmitter?.addListener('onRestoreCompleted', (data: any) => {
+            cb({ customerInfo: data.customerInfo ?? data });
+          });
+          if (sub) subscriptions.push(sub);
+        }
+        if (listener.onRestoreError) {
+          const cb = listener.onRestoreError;
+          const sub = eventEmitter?.addListener('onRestoreError', (data: any) => {
+            cb({ error: data.error ?? data });
+          });
+          if (sub) subscriptions.push(sub);
+        }
+      }
+
+      // Always register onPurchaseInitiated so we auto-resume when the user
+      // doesn't provide an onPurchaseInitiated callback — otherwise the
+      // purchase flow hangs waiting for a resume that never comes.
+      const onPurchaseInitiatedCb = listener?.onPurchaseInitiated;
+      const purchaseInitiatedSub = eventEmitter?.addListener('onPurchaseInitiated', (data: any) => {
+        const requestId: string = data.requestId;
+        const packageBeingPurchased = data.package ?? data.packageBeingPurchased;
+        if (onPurchaseInitiatedCb) {
+          onPurchaseInitiatedCb({
+            packageBeingPurchased,
+            resumable: {
+              resume(shouldProceed = true) {
+                RNPaywalls!.resumePurchasePackageInitiated(requestId, shouldProceed);
+              },
+            },
+          });
+        } else {
+          // No callback provided — auto-proceed with the purchase.
+          RNPaywalls!.resumePurchasePackageInitiated(requestId, true);
+        }
+      });
+      if (purchaseInitiatedSub) subscriptions.push(purchaseInitiatedSub);
+
+      // Register PurchaseLogic event handlers
+      if (purchaseLogic) {
+        const purchaseSub = eventEmitter?.addListener('onPerformPurchaseRequest', async (data: any) => {
+          const requestId: string = data.requestId;
+          const packageToPurchase = data.package ?? data.packageBeingPurchased ?? data.packageToPurchase;
+          try {
+            const result = await purchaseLogic.performPurchase({ packageToPurchase });
+            RNPaywalls!.resumePurchaseLogicPurchase(
+              requestId,
+              result.result,
+              result.result === PURCHASE_LOGIC_RESULT.ERROR && 'error' in result && result.error
+                ? { code: result.error.code, message: result.error.message }
+                : null,
+            );
+          } catch (e: any) {
+            RNPaywalls!.resumePurchaseLogicPurchase(
+              requestId,
+              PURCHASE_LOGIC_RESULT.ERROR,
+              { message: e?.message ?? 'Unknown error' },
+            );
+          }
+        });
+        if (purchaseSub) subscriptions.push(purchaseSub);
+
+        const restoreSub = eventEmitter?.addListener('onPerformRestoreRequest', async (data: any) => {
+          const requestId: string = data.requestId;
+          try {
+            const result = await purchaseLogic.performRestore();
+            RNPaywalls!.resumePurchaseLogicRestore(
+              requestId,
+              result.result,
+              result.result === PURCHASE_LOGIC_RESULT.ERROR && 'error' in result && result.error
+                ? { code: result.error.code, message: result.error.message }
+                : null,
+            );
+          } catch (e: any) {
+            RNPaywalls!.resumePurchaseLogicRestore(
+              requestId,
+              PURCHASE_LOGIC_RESULT.ERROR,
+              { message: e?.message ?? 'Unknown error' },
+            );
+          }
+        });
+        if (restoreSub) subscriptions.push(restoreSub);
+      }
+
+      return await nativeCall();
+    } finally {
+      // Clean up all registered listeners
+      for (const sub of subscriptions) {
+        sub.remove();
+      }
+    }
+  }
 
   private static logWarningIfPreviewAPIMode(methodName: string) {
     if (usingPreviewAPIMode) {

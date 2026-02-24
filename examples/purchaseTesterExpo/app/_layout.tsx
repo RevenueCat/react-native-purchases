@@ -9,8 +9,9 @@ import { Platform } from 'react-native';
 import { useColorScheme } from '@/components/useColorScheme';
 import { CustomVariablesProvider } from '@/components/CustomVariablesContext';
 import CustomVariablesEditor from '@/components/CustomVariablesEditor';
-import Purchases from 'react-native-purchases';
+import Purchases, { PURCHASES_ARE_COMPLETED_BY_TYPE, PurchasesAreCompletedBy, STOREKIT_VERSION } from 'react-native-purchases';
 import APIKeys from '@/constants/APIKeys';
+import ConfigOptions from '@/constants/ConfigOptions';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,10 +54,14 @@ export default function RootLayout() {
         if (apiKey) {
           // Initialize the RevenueCat Purchases SDK
           // appUserID is null, so an anonymous ID will be generated automatically
+          const purchasesAreCompletedBy: PurchasesAreCompletedBy = ConfigOptions.usePurchasesCompletedByMyApp
+            ? { type: PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP, storeKitVersion: STOREKIT_VERSION.STOREKIT_2 }
+            : PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT;
           Purchases.configure({
             apiKey: apiKey,
             appUserID: null,
-            useAmazon: false
+            useAmazon: false,
+            purchasesAreCompletedBy: purchasesAreCompletedBy,
           });
           // @ts-expect-error - addTrackedEventListener is internal
           await Purchases.addTrackedEventListener((event: Record<string, unknown>) => {

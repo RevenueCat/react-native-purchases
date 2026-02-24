@@ -449,6 +449,44 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
+              const paywallResult = await RevenueCatUI.presentPaywall({
+                displayCloseButton: true,
+                listener: {
+                  onPurchaseStarted: ({packageBeingPurchased}) => {
+                    console.log('🛒 PAYWALL - Purchase started for package:', packageBeingPurchased?.identifier);
+                  },
+                  onPurchaseCompleted: ({customerInfo, storeTransaction}) => {
+                    console.log('✅ PAYWALL - Purchase completed:', storeTransaction?.transactionIdentifier);
+                    console.log('   Active entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
+                  },
+                  onPurchaseError: ({error}) => {
+                    console.log('❌ PAYWALL - Purchase error:', error.code, error.message);
+                  },
+                  onPurchaseCancelled: () => {
+                    console.log('🚫 PAYWALL - Purchase cancelled');
+                  },
+                  onRestoreStarted: () => {
+                    console.log('🔄 PAYWALL - Restore started');
+                  },
+                  onRestoreCompleted: ({customerInfo}) => {
+                    console.log('✅ PAYWALL - Restore completed. Active entitlements:', Object.keys(customerInfo.entitlements.active).join(', ') || 'none');
+                  },
+                  onRestoreError: ({error}) => {
+                    console.log('❌ PAYWALL - Restore error:', error.code, error.message);
+                  },
+                  onPurchaseInitiated: ({packageBeingPurchased, resumable}) => {
+                    console.log('⏳ PAYWALL - Purchase initiated for:', packageBeingPurchased?.identifier, '- auto-proceeding');
+                    // Example: you could show an auth screen here, then call resume
+                    resumable.resume(true);
+                  },
+                },
+              });
+              console.log('Paywall with listener result: ', paywallResult);
+            }}>
+            <Text style={styles.otherActions}>Present paywall with listener</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () => {
               try {
                 await RevenueCatUI.presentCustomerCenter({
                   callbacks: {

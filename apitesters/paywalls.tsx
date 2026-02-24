@@ -6,9 +6,16 @@ import RevenueCatUI, {
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
   PAYWALL_RESULT,
+  PURCHASE_LOGIC_RESULT,
   PaywallViewOptions,
   PresentPaywallIfNeededParams,
   PresentPaywallParams,
+} from "../react-native-purchases-ui";
+import type {
+  PaywallListener,
+  PurchaseLogic,
+  PurchaseLogicResult,
+  PurchaseResumable,
 } from "../react-native-purchases-ui";
 import {
   CustomerInfo,
@@ -96,6 +103,8 @@ function checkPresentPaywallParams(params: PresentPaywallParams) {
   const offeringIdentifier: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
   const customVariables: CustomVariables | undefined = params.customVariables;
+  const listener: PaywallListener | undefined = params.listener;
+  const purchaseLogic: PurchaseLogic | undefined = params.purchaseLogic;
 }
 
 function checkPresentPaywallIfNeededParams(params: PresentPaywallIfNeededParams) {
@@ -104,6 +113,90 @@ function checkPresentPaywallIfNeededParams(params: PresentPaywallIfNeededParams)
   const offeringIdentifier: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
   const customVariables: CustomVariables | undefined = params.customVariables;
+  const listener: PaywallListener | undefined = params.listener;
+  const purchaseLogic: PurchaseLogic | undefined = params.purchaseLogic;
+}
+
+async function checkPresentPaywallWithListener(offering: PurchasesOffering) {
+  const listener: PaywallListener = {
+    onPurchaseStarted: ({ packageBeingPurchased }) => {
+      const pkg: PurchasesPackage = packageBeingPurchased;
+    },
+    onPurchaseCompleted: ({ customerInfo, storeTransaction }) => {
+      const info: CustomerInfo = customerInfo;
+      const txn: PurchasesStoreTransaction = storeTransaction;
+    },
+    onPurchaseError: ({ error }) => {
+      const err: PurchasesError = error;
+    },
+    onPurchaseCancelled: () => {},
+    onRestoreStarted: () => {},
+    onRestoreCompleted: ({ customerInfo }) => {
+      const info: CustomerInfo = customerInfo;
+    },
+    onRestoreError: ({ error }) => {
+      const err: PurchasesError = error;
+    },
+    onPurchaseInitiated: ({ packageBeingPurchased, resumable }) => {
+      const pkg: PurchasesPackage = packageBeingPurchased;
+      const res: PurchaseResumable = resumable;
+      resumable.resume(true);
+      resumable.resume(false);
+      resumable.resume();
+    },
+  };
+
+  let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({
+    listener,
+  });
+  paywallResult = await RevenueCatUI.presentPaywall({
+    offering,
+    listener,
+  });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement",
+    listener,
+  });
+}
+
+async function checkPresentPaywallWithPurchaseLogic(offering: PurchasesOffering) {
+  const purchaseLogic: PurchaseLogic = {
+    performPurchase: async ({ packageToPurchase }) => {
+      const pkg: PurchasesPackage = packageToPurchase;
+      const successResult: PurchaseLogicResult = { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+      const cancelResult: PurchaseLogicResult = { result: PURCHASE_LOGIC_RESULT.CANCELLATION };
+      const errorResult: PurchaseLogicResult = { result: PURCHASE_LOGIC_RESULT.ERROR, error: { code: "1", message: "test" } as PurchasesError };
+      return successResult;
+    },
+    performRestore: async () => {
+      return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+    },
+  };
+
+  let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({
+    purchaseLogic,
+  });
+  paywallResult = await RevenueCatUI.presentPaywall({
+    offering,
+    purchaseLogic,
+  });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement",
+    purchaseLogic,
+  });
+}
+
+async function checkPresentPaywallWithBoth(offering: PurchasesOffering) {
+  const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({
+    offering,
+    listener: {
+      onPurchaseStarted: () => {},
+    },
+    purchaseLogic: {
+      performPurchase: async () => ({ result: PURCHASE_LOGIC_RESULT.SUCCESS }),
+      performRestore: async () => ({ result: PURCHASE_LOGIC_RESULT.SUCCESS }),
+    },
+  });
 }
 
 function checkFullScreenPaywallViewOptions(
