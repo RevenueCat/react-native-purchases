@@ -17,7 +17,7 @@ Sign up to [get started for free](https://app.revenuecat.com/signup).
 
 ## React Native Purchases
 
-React Native Purchases is the client for the [RevenueCat](https://www.revenuecat.com/) subscription and purchase tracking system. It is an open source framework that provides a wrapper around `StoreKit`, `Google Play Billing` and the RevenueCat backend to make implementing in-app purchases in `React Native` easy.
+React Native Purchases is the client for the [RevenueCat](https://www.revenuecat.com/) subscription and purchase tracking system. It is an open source framework that provides a wrapper around StoreKit, Google Play Billing, RevenueCat Web Billing and the RevenueCat backend to make implementing in-app purchases in React Native easy.
 
 ## Migrating from React-Native Purchases v4 to v5
 - See our [Migration guide](./v4_to_v5_migration_guide.md)
