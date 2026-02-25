@@ -138,6 +138,29 @@ function resolveLogicResult(requestId: string, logicResult: PurchaseLogicResult)
   RNPaywalls?.resolvePurchaseLogicResult(requestId, logicResult.result, errorMessage);
 }
 
+function handlePurchaseLogicEvent(
+  purchaseLogic: PurchaseLogic,
+  type: 'purchase' | 'restore',
+  eventData: any,
+) {
+  const { requestId, packageBeingPurchased } = eventData;
+  const operation = type === 'purchase'
+    ? purchaseLogic.performPurchase({ packageToPurchase: packageBeingPurchased })
+    : purchaseLogic.performRestore();
+
+  operation
+    .then((logicResult) => {
+      resolveLogicResult(requestId, logicResult);
+    })
+    .catch((e) => {
+      RNPaywalls?.resolvePurchaseLogicResult(
+        requestId,
+        PURCHASE_LOGIC_RESULT.ERROR,
+        e instanceof Error ? e.message : null,
+      );
+    });
+}
+
 function createPurchaseLogicHandlers(purchaseLogic?: PurchaseLogic) {
   if (!purchaseLogic) {
     return { nativeOptions: {}, handlePerformPurchase: undefined, handlePerformRestore: undefined };
@@ -146,23 +169,11 @@ function createPurchaseLogicHandlers(purchaseLogic?: PurchaseLogic) {
   const nativeOptions = { hasPurchaseLogic: true };
 
   const handlePerformPurchase = async (event: any) => {
-    const { requestId, packageBeingPurchased } = event.nativeEvent;
-    try {
-      const logicResult = await purchaseLogic.performPurchase({ packageToPurchase: packageBeingPurchased });
-      resolveLogicResult(requestId, logicResult);
-    } catch (e) {
-      RNPaywalls?.resolvePurchaseLogicResult(requestId, PURCHASE_LOGIC_RESULT.ERROR, e instanceof Error ? e.message : null);
-    }
+    handlePurchaseLogicEvent(purchaseLogic, 'purchase', event.nativeEvent);
   };
 
   const handlePerformRestore = async (event: any) => {
-    const { requestId } = event.nativeEvent;
-    try {
-      const logicResult = await purchaseLogic.performRestore();
-      resolveLogicResult(requestId, logicResult);
-    } catch (e) {
-      RNPaywalls?.resolvePurchaseLogicResult(requestId, PURCHASE_LOGIC_RESULT.ERROR, e instanceof Error ? e.message : null);
-    }
+    handlePurchaseLogicEvent(purchaseLogic, 'restore', event.nativeEvent);
   };
 
   return { nativeOptions, handlePerformPurchase, handlePerformRestore };
@@ -336,6 +347,15 @@ export interface PresentPaywallParams {
    * ```
    */
   customVariables?: CustomVariables;
+
+  /**
+   * Custom purchase logic for handling purchases and restores within the paywall.
+   * When provided, the paywall will call these functions instead of using
+   * RevenueCat's default purchase/restore behavior.
+   *
+   * Use this when `purchasesAreCompletedBy` is set to `MY_APP`.
+   */
+  purchaseLogic?: PurchaseLogic;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -567,16 +587,22 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                  customVariables,
+                                 purchaseLogic,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
-    return RNPaywalls!.presentPaywall(
-      offering?.identifier ?? null,
-      offering?.availablePackages?.[0]?.presentedOfferingContext,
-      displayCloseButton,
-      fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
-    )
+
+    return RevenueCatUI.presentPaywallInternal(
+      () => RNPaywalls!.presentPaywall(
+        offering?.identifier ?? null,
+        offering?.availablePackages?.[0]?.presentedOfferingContext,
+        displayCloseButton,
+        fontFamily,
+        convertCustomVariablesToStringMap(customVariables),
+        !!purchaseLogic,
+      ),
+      purchaseLogic,
+    );
   }
 
   /**
@@ -598,17 +624,23 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                          customVariables,
+                                         purchaseLogic,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
-    return RNPaywalls!.presentPaywallIfNeeded(
-      requiredEntitlementIdentifier,
-      offering?.identifier ?? null,
-      offering?.availablePackages?.[0]?.presentedOfferingContext,
-      displayCloseButton,
-      fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
-    )
+
+    return RevenueCatUI.presentPaywallInternal(
+      () => RNPaywalls!.presentPaywallIfNeeded(
+        requiredEntitlementIdentifier,
+        offering?.identifier ?? null,
+        offering?.availablePackages?.[0]?.presentedOfferingContext,
+        displayCloseButton,
+        fontFamily,
+        convertCustomVariablesToStringMap(customVariables),
+        !!purchaseLogic,
+      ),
+      purchaseLogic,
+    );
   }
 
   public static Paywall: React.FC<FullScreenPaywallViewProps> = ({
@@ -913,6 +945,33 @@ export default class RevenueCatUI {
    */
   public static PaywallFooterContainerView: React.FC<FooterPaywallViewProps> =
     RevenueCatUI.OriginalTemplatePaywallFooterContainerView;
+
+  private static async presentPaywallInternal(
+    nativeCall: () => Promise<PAYWALL_RESULT>,
+    purchaseLogic?: PurchaseLogic,
+  ): Promise<PAYWALL_RESULT> {
+    const subscriptions: { remove: () => void }[] = [];
+
+    try {
+      if (purchaseLogic) {
+        const purchaseSub = eventEmitter?.addListener('onPerformPurchaseRequest', (data: any) => {
+          handlePurchaseLogicEvent(purchaseLogic, 'purchase', data);
+        });
+        if (purchaseSub) subscriptions.push(purchaseSub);
+
+        const restoreSub = eventEmitter?.addListener('onPerformRestoreRequest', (data: any) => {
+          handlePurchaseLogicEvent(purchaseLogic, 'restore', data);
+        });
+        if (restoreSub) subscriptions.push(restoreSub);
+      }
+
+      return await nativeCall();
+    } finally {
+      for (const sub of subscriptions) {
+        sub.remove();
+      }
+    }
+  }
 
   private static logWarningIfPreviewAPIMode(methodName: string) {
     if (usingPreviewAPIMode) {

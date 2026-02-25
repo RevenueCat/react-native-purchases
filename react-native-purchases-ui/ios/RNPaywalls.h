@@ -7,6 +7,10 @@
 
 static NSString *const safeAreaInsetsDidChangeEvent = @"safeAreaInsetsDidChange";
 
+// PurchaseLogic event names
+static NSString *const onPerformPurchaseRequestEvent = @"onPerformPurchaseRequest";
+static NSString *const onPerformRestoreRequestEvent = @"onPerformRestoreRequest";
+
 @interface RNPaywalls : RCTEventEmitter <RCTBridgeModule>
 
 @end

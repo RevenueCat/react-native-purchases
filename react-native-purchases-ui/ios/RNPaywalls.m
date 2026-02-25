@@ -48,7 +48,11 @@ RCT_EXPORT_MODULE();
 // MARK: -
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[safeAreaInsetsDidChangeEvent];
+    return @[
+        safeAreaInsetsDidChangeEvent,
+        onPerformPurchaseRequestEvent,
+        onPerformRestoreRequestEvent,
+    ];
 }
 
 - (dispatch_queue_t)methodQueue {
@@ -59,32 +63,27 @@ RCT_EXPORT_MODULE();
     return self.paywallProxy;
 }
 
-// MARK: -
+// MARK: - presentPaywall / presentPaywallIfNeeded
 
 RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   presentedOfferingContext:(nullable NSDictionary *)presentedOfferingContext
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  hasPurchaseLogic:(BOOL)hasPurchaseLogic
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        NSMutableDictionary *options = [NSMutableDictionary dictionary];
-        if (offeringIdentifier != nil) {
-            options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
-        }
-        if (presentedOfferingContext != nil) {
-            options[PaywallOptionsKeys.presentedOfferingContext] = presentedOfferingContext;
-        }
-        options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
-        if (fontFamily) {
-            options[PaywallOptionsKeys.fontName] = fontFamily;
-        }
-        if (customVariables) {
-            options[PaywallOptionsKeys.customVariables] = customVariables;
-        }
+        NSMutableDictionary *options = [self buildOptionsWithOfferingIdentifier:offeringIdentifier
+                                                     presentedOfferingContext:presentedOfferingContext
+                                                          displayCloseButton:displayCloseButton
+                                                                  fontFamily:fontFamily
+                                                             customVariables:customVariables];
+
+        HybridPurchaseLogicBridge *bridge = hasPurchaseLogic ? [self createPurchaseLogicBridge] : nil;
 
         [self.paywalls presentPaywallWithOptions:options
+                            purchaseLogicBridge:bridge
                             paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
@@ -99,26 +98,21 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  hasPurchaseLogic:(BOOL)hasPurchaseLogic
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        NSMutableDictionary *options = [NSMutableDictionary dictionary];
-        if (offeringIdentifier != nil) {
-            options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
-        }
-        if (presentedOfferingContext != nil) {
-            options[PaywallOptionsKeys.presentedOfferingContext] = presentedOfferingContext;
-        }
+        NSMutableDictionary *options = [self buildOptionsWithOfferingIdentifier:offeringIdentifier
+                                                     presentedOfferingContext:presentedOfferingContext
+                                                          displayCloseButton:displayCloseButton
+                                                                  fontFamily:fontFamily
+                                                             customVariables:customVariables];
         options[PaywallOptionsKeys.requiredEntitlementIdentifier] = requiredEntitlementIdentifier;
-        options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
-        if (fontFamily) {
-            options[PaywallOptionsKeys.fontName] = fontFamily;
-        }
-        if (customVariables) {
-            options[PaywallOptionsKeys.customVariables] = customVariables;
-        }
+
+        HybridPurchaseLogicBridge *bridge = hasPurchaseLogic ? [self createPurchaseLogicBridge] : nil;
 
         [self.paywalls presentPaywallIfNeededWithOptions:options
+                                    purchaseLogicBridge:bridge
                                     paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
@@ -126,6 +120,8 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
         [self rejectPaywallsUnsupportedError:reject];
     }
 }
+
+// MARK: - Resume methods
 
 RCT_EXPORT_METHOD(resumePurchasePackageInitiated:(NSString *)requestId
                   shouldProceed:(BOOL)shouldProceed) {
@@ -140,6 +136,42 @@ RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
     if (@available(iOS 15.0, *)) {
         [HybridPurchaseLogicBridge resolveResultWithRequestId:requestId resultString:result errorMessage:errorMessage];
     }
+}
+
+// MARK: - Helpers
+
+- (NSMutableDictionary *)buildOptionsWithOfferingIdentifier:(nullable NSString *)offeringIdentifier
+                                   presentedOfferingContext:(nullable NSDictionary *)presentedOfferingContext
+                                        displayCloseButton:(BOOL)displayCloseButton
+                                                fontFamily:(nullable NSString *)fontFamily
+                                           customVariables:(nullable NSDictionary *)customVariables
+API_AVAILABLE(ios(15.0)) {
+    NSMutableDictionary *options = [NSMutableDictionary dictionary];
+    if (offeringIdentifier != nil) {
+        options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
+    }
+    if (presentedOfferingContext != nil) {
+        options[PaywallOptionsKeys.presentedOfferingContext] = presentedOfferingContext;
+    }
+    options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
+    if (fontFamily) {
+        options[PaywallOptionsKeys.fontName] = fontFamily;
+    }
+    if (customVariables) {
+        options[PaywallOptionsKeys.customVariables] = customVariables;
+    }
+    return options;
+}
+
+- (HybridPurchaseLogicBridge *)createPurchaseLogicBridge API_AVAILABLE(ios(15.0)) {
+    __weak typeof(self) weakSelf = self;
+    return [[HybridPurchaseLogicBridge alloc]
+        initOnPerformPurchase:^(NSDictionary<NSString *, id> * _Nonnull eventData) {
+            [weakSelf sendEventWithName:onPerformPurchaseRequestEvent body:eventData];
+        }
+        onPerformRestore:^(NSDictionary<NSString *, id> * _Nonnull eventData) {
+            [weakSelf sendEventWithName:onPerformRestoreRequestEvent body:eventData];
+        }];
 }
 
 - (void)rejectPaywallsUnsupportedError:(RCTPromiseRejectBlock)reject {

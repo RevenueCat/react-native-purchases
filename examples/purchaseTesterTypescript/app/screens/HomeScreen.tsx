@@ -15,7 +15,7 @@ import Purchases, {
   CustomerInfo,
   PurchasesOfferings,
 } from 'react-native-purchases';
-import RevenueCatUI, { CustomerCenterManagementOption, CustomerCenterManagementOptionEvent } from 'react-native-purchases-ui';
+import RevenueCatUI, { CustomerCenterManagementOption, CustomerCenterManagementOptionEvent, PURCHASE_LOGIC_RESULT } from 'react-native-purchases-ui';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
@@ -450,10 +450,24 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
               const paywallResult = await RevenueCatUI.presentPaywall({
                 displayCloseButton: true,
                 customVariables: customVariables,
+                purchaseLogic: {
+                  performPurchase: async ({ packageToPurchase }) => {
+                    console.log('[Modal PurchaseLogic] performPurchase called for:', packageToPurchase.identifier);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    console.log('[Modal PurchaseLogic] returning SUCCESS');
+                    return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                  },
+                  performRestore: async () => {
+                    console.log('[Modal PurchaseLogic] performRestore called');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    console.log('[Modal PurchaseLogic] returning SUCCESS');
+                    return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                  },
+                },
               });
               console.log('Paywall result: ', paywallResult);
             }}>
-            <Text style={styles.otherActions}>Present paywall</Text>
+            <Text style={styles.otherActions}>Present paywall (with PurchaseLogic)</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {

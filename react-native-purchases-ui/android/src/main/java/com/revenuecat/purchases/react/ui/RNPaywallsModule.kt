@@ -1,12 +1,16 @@
 package com.revenuecat.purchases.react.ui
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
@@ -45,15 +49,17 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        hasPurchaseLogic: Boolean,
         promise: Promise
     ) {
-        presentPaywall(
+        presentPaywallInternal(
             null,
             offeringIdentifier,
             presentedOfferingContext,
             displayCloseButton,
             fontFamily,
             customVariables,
+            hasPurchaseLogic,
             promise
         )
     }
@@ -66,15 +72,17 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        hasPurchaseLogic: Boolean,
         promise: Promise
     ) {
-        presentPaywall(
+        presentPaywallInternal(
             requiredEntitlementIdentifier,
             offeringIdentifier,
             presentedOfferingContext,
             displayCloseButton,
             fontFamily,
             customVariables,
+            hasPurchaseLogic,
             promise
         )
     }
@@ -99,13 +107,45 @@ internal class RNPaywallsModule(
         // Keep: Required for RN built in Event Emitter Calls.
     }
 
-    private fun presentPaywall(
+    // MARK: - Internal
+
+    private fun sendEvent(eventName: String, params: Any?) {
+        reactApplicationContext
+            .getJSModule(RCTDeviceEventEmitter::class.java)
+            .emit(eventName, params)
+    }
+
+    private fun createPurchaseLogicBridge(): HybridPurchaseLogicBridge {
+        return HybridPurchaseLogicBridge(
+            onPerformPurchase = { eventData ->
+                // HybridPurchaseLogicBridge posts this callback on the main thread.
+                // We need to schedule the event emission on a separate message to avoid
+                // blocking the JS event loop — otherwise async callbacks (setTimeout,
+                // network requests) inside performPurchase will never resolve.
+                Handler(Looper.getMainLooper()).post {
+                    sendEvent("onPerformPurchaseRequest", Arguments.makeNativeMap(
+                        eventData.mapValues { it.value }
+                    ))
+                }
+            },
+            onPerformRestore = { eventData ->
+                Handler(Looper.getMainLooper()).post {
+                    sendEvent("onPerformRestoreRequest", Arguments.makeNativeMap(
+                        eventData.mapValues { it.value }
+                    ))
+                }
+            },
+        )
+    }
+
+    private fun presentPaywallInternal(
         requiredEntitlementIdentifier: String?,
         offeringIdentifier: String?,
         presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean?,
         fontFamilyName: String?,
         customVariables: ReadableMap?,
+        hasPurchaseLogic: Boolean,
         promise: Promise
     ) {
         val activity = currentFragmentActivity ?: return
@@ -128,6 +168,8 @@ internal class RNPaywallsModule(
             result.takeIf { it.isNotEmpty() }
         }
 
+        val purchaseLogic = if (hasPurchaseLogic) createPurchaseLogicBridge() else null
+
         // @ReactMethod is not guaranteed to run on the main thread
         activity.runOnUiThread {
             presentPaywallFromFragment(
@@ -142,7 +184,8 @@ internal class RNPaywallsModule(
                         }
                     },
                     fontFamily = fontFamily,
-                    customVariables = customVariablesMap
+                    customVariables = customVariablesMap,
+                    purchaseLogic = purchaseLogic,
                 )
             )
         }
