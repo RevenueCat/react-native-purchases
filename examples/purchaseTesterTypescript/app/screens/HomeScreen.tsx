@@ -452,16 +452,30 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                 customVariables: customVariables,
                 purchaseLogic: {
                   performPurchase: async ({ packageToPurchase }) => {
-                    console.log('[Modal PurchaseLogic] performPurchase called for:', packageToPurchase.identifier);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    console.log('[Modal PurchaseLogic] returning SUCCESS');
-                    return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                    console.log('[PurchaseLogic] performPurchase', packageToPurchase.identifier);
+                    // In a real app, you would perform the purchase using your own
+                    // payment system here, then return the result.
+                    // For this demo, we use RevenueCat's purchase methods.
+                    try {
+                      await Purchases.purchasePackage(packageToPurchase);
+                      return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                    } catch (e: any) {
+                      if (e?.userCancelled) {
+                        return { result: PURCHASE_LOGIC_RESULT.CANCELLATION };
+                      }
+                      return { result: PURCHASE_LOGIC_RESULT.ERROR, errorMessage: e?.message };
+                    }
                   },
                   performRestore: async () => {
-                    console.log('[Modal PurchaseLogic] performRestore called');
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    console.log('[Modal PurchaseLogic] returning SUCCESS');
-                    return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                    console.log('[PurchaseLogic] performRestore');
+                    // In a real app, you would restore purchases using your own
+                    // system here. For this demo, we use RevenueCat's restore method.
+                    try {
+                      await Purchases.restorePurchases();
+                      return { result: PURCHASE_LOGIC_RESULT.SUCCESS };
+                    } catch (e: any) {
+                      return { result: PURCHASE_LOGIC_RESULT.ERROR, errorMessage: e?.message };
+                    }
                   },
                 },
               });

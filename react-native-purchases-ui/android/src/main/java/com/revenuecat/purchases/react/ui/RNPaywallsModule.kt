@@ -118,10 +118,6 @@ internal class RNPaywallsModule(
     private fun createPurchaseLogicBridge(): HybridPurchaseLogicBridge {
         return HybridPurchaseLogicBridge(
             onPerformPurchase = { eventData ->
-                // HybridPurchaseLogicBridge posts this callback on the main thread.
-                // We need to schedule the event emission on a separate message to avoid
-                // blocking the JS event loop — otherwise async callbacks (setTimeout,
-                // network requests) inside performPurchase will never resolve.
                 Handler(Looper.getMainLooper()).post {
                     sendEvent("onPerformPurchaseRequest", Arguments.makeNativeMap(
                         eventData.mapValues { it.value }
