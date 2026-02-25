@@ -48,29 +48,38 @@ export enum PURCHASE_LOGIC_RESULT {
 }
 
 /**
+ * The result of a purchase or restore operation performed by custom purchase logic.
+ * Uses a discriminated union to allow structured error information.
+ */
+export type PurchaseLogicResult =
+  | { result: PURCHASE_LOGIC_RESULT.SUCCESS }
+  | { result: PURCHASE_LOGIC_RESULT.CANCELLATION }
+  | { result: PURCHASE_LOGIC_RESULT.ERROR; error?: PurchasesError };
+
+/**
  * Interface for handling purchases and restores within paywalls when
  * `purchasesAreCompletedBy` is set to `MY_APP`.
  *
  * When provided, the paywall will call these functions instead of using
  * RevenueCat's default purchase/restore behavior.
  */
-export interface PaywallPurchaseLogic {
+export interface PurchaseLogic {
   /**
    * Called when the paywall wants to perform a purchase.
    * Implement this to execute your custom purchase logic.
    *
-   * @param packageToPurchase - The package the user wants to purchase.
-   * @returns A promise resolving to a PURCHASE_LOGIC_RESULT indicating the outcome.
+   * @param args.packageToPurchase - The package the user wants to purchase.
+   * @returns A promise resolving to a PurchaseLogicResult indicating the outcome.
    */
-  performPurchase: (packageToPurchase: PurchasesPackage) => Promise<PURCHASE_LOGIC_RESULT>;
+  performPurchase: (args: { packageToPurchase: PurchasesPackage }) => Promise<PurchaseLogicResult>;
 
   /**
    * Called when the paywall wants to perform a restore.
    * Implement this to execute your custom restore logic.
    *
-   * @returns A promise resolving to a PURCHASE_LOGIC_RESULT indicating the outcome.
+   * @returns A promise resolving to a PurchaseLogicResult indicating the outcome.
    */
-  performRestore: () => Promise<PURCHASE_LOGIC_RESULT>;
+  performRestore: () => Promise<PurchaseLogicResult>;
 }
 
 const NATIVE_MODULE_NOT_FOUND_ERROR =
@@ -122,7 +131,14 @@ const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConf
 const eventEmitter = !usingPreviewAPIMode && RNPaywalls ? new NativeEventEmitter(RNPaywalls) : null;
 const customerCenterEventEmitter = !usingPreviewAPIMode && RNCustomerCenter ? new NativeEventEmitter(RNCustomerCenter) : null;
 
-function createPurchaseLogicHandlers(purchaseLogic?: PaywallPurchaseLogic) {
+function resolveLogicResult(requestId: string, logicResult: PurchaseLogicResult) {
+  const errorMessage = logicResult.result === PURCHASE_LOGIC_RESULT.ERROR && logicResult.error
+    ? logicResult.error.message
+    : null;
+  RNPaywalls?.resolvePurchaseLogicResult(requestId, logicResult.result, errorMessage);
+}
+
+function createPurchaseLogicHandlers(purchaseLogic?: PurchaseLogic) {
   if (!purchaseLogic) {
     return { nativeOptions: {}, handlePerformPurchase: undefined, handlePerformRestore: undefined };
   }
@@ -132,8 +148,8 @@ function createPurchaseLogicHandlers(purchaseLogic?: PaywallPurchaseLogic) {
   const handlePerformPurchase = async (event: any) => {
     const { requestId, packageBeingPurchased } = event.nativeEvent;
     try {
-      const result = await purchaseLogic.performPurchase(packageBeingPurchased);
-      RNPaywalls?.resolvePurchaseLogicResult(requestId, result, null);
+      const logicResult = await purchaseLogic.performPurchase({ packageToPurchase: packageBeingPurchased });
+      resolveLogicResult(requestId, logicResult);
     } catch (e) {
       RNPaywalls?.resolvePurchaseLogicResult(requestId, PURCHASE_LOGIC_RESULT.ERROR, e instanceof Error ? e.message : null);
     }
@@ -142,8 +158,8 @@ function createPurchaseLogicHandlers(purchaseLogic?: PaywallPurchaseLogic) {
   const handlePerformRestore = async (event: any) => {
     const { requestId } = event.nativeEvent;
     try {
-      const result = await purchaseLogic.performRestore();
-      RNPaywalls?.resolvePurchaseLogicResult(requestId, result, null);
+      const logicResult = await purchaseLogic.performRestore();
+      resolveLogicResult(requestId, logicResult);
     } catch (e) {
       RNPaywalls?.resolvePurchaseLogicResult(requestId, PURCHASE_LOGIC_RESULT.ERROR, e instanceof Error ? e.message : null);
     }
@@ -382,7 +398,7 @@ type FullScreenPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
-  purchaseLogic?: PaywallPurchaseLogic;
+  purchaseLogic?: PurchaseLogic;
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -404,7 +420,7 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
-  purchaseLogic?: PaywallPurchaseLogic;
+  purchaseLogic?: PurchaseLogic;
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -420,7 +436,7 @@ type FooterPaywallViewProps = {
 
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
-  purchaseLogic?: PaywallPurchaseLogic;
+  purchaseLogic?: PurchaseLogic;
 };
 
 /**
