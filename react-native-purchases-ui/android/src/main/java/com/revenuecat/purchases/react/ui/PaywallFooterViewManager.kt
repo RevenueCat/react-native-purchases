@@ -3,6 +3,7 @@ package com.revenuecat.purchases.react.ui
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
 import com.revenuecat.purchases.PresentedOfferingContext
+import android.util.Log
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.react.ui.events.OnMeasureEvent
 import com.revenuecat.purchases.react.ui.views.WrappedPaywallFooterComposeView
@@ -97,7 +98,7 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<WrappedPaywallF
 
     override fun setPurchaseLogic(view: WrappedPaywallFooterComposeView, bridge: HybridPurchaseLogicBridge?) {
         if (bridge != null) {
-            android.util.Log.w("PaywallFooterViewManager", "Custom purchase logic is not supported for footer paywalls on Android")
+            Log.w("PaywallFooterViewManager", "Custom purchase logic is not supported for footer paywalls on Android")
         }
     }
 
