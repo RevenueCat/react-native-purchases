@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import RevenueCatUI, {PURCHASE_LOGIC_RESULT} from 'react-native-purchases-ui';
+import RevenueCatUI, {PURCHASE_LOGIC_RESULT, type PurchaseLogicResult} from 'react-native-purchases-ui';
 
 import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -27,9 +27,9 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<ModalType>('purchase');
   const [packageInfo, setPackageInfo] = useState('');
-  const resolveRef = useRef<((result: PURCHASE_LOGIC_RESULT) => void) | null>(null);
+  const resolveRef = useRef<((result: PurchaseLogicResult) => void) | null>(null);
 
-  const showResultModal = (type: ModalType, pkgName?: string): Promise<PURCHASE_LOGIC_RESULT> => {
+  const showResultModal = (type: ModalType, pkgName?: string): Promise<PurchaseLogicResult> => {
     return new Promise(resolve => {
       resolveRef.current = resolve;
       setModalType(type);
@@ -38,7 +38,7 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
     });
   };
 
-  const pickResult = (result: PURCHASE_LOGIC_RESULT) => {
+  const pickResult = (result: PurchaseLogicResult) => {
     setModalVisible(false);
     resolveRef.current?.(result);
     resolveRef.current = null;
@@ -110,7 +110,7 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
           displayCloseButton: true,
         }}
         purchaseLogic={{
-          performPurchase: async (packageToPurchase: PurchasesPackage) => {
+          performPurchase: async ({ packageToPurchase }) => {
             console.log('[PurchaseLogic] performPurchase called');
             console.log('[PurchaseLogic] performPurchase - package:', packageToPurchase.identifier);
             console.log('[PurchaseLogic] performPurchase - product:', packageToPurchase.product?.identifier);
@@ -137,7 +137,7 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
         transparent
         animationType="fade"
         visible={modalVisible}
-        onRequestClose={() => pickResult(PURCHASE_LOGIC_RESULT.ERROR)}>
+        onRequestClose={() => pickResult({ result: PURCHASE_LOGIC_RESULT.ERROR })}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalHeader}>Custom PurchaseLogic</Text>
@@ -149,21 +149,21 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
 
             <Pressable
               style={[styles.modalButton, styles.successButton]}
-              onPress={() => pickResult(PURCHASE_LOGIC_RESULT.SUCCESS)}>
+              onPress={() => pickResult({ result: PURCHASE_LOGIC_RESULT.SUCCESS })}>
               <Text style={styles.modalButtonText}>Success</Text>
             </Pressable>
 
             {modalType === 'purchase' && (
               <Pressable
                 style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => pickResult(PURCHASE_LOGIC_RESULT.CANCELLATION)}>
+                onPress={() => pickResult({ result: PURCHASE_LOGIC_RESULT.CANCELLATION })}>
                 <Text style={styles.modalButtonText}>Cancelled</Text>
               </Pressable>
             )}
 
             <Pressable
               style={[styles.modalButton, styles.errorButton]}
-              onPress={() => pickResult(PURCHASE_LOGIC_RESULT.ERROR)}>
+              onPress={() => pickResult({ result: PURCHASE_LOGIC_RESULT.ERROR })}>
               <Text style={styles.modalButtonText}>Error</Text>
             </Pressable>
           </View>
