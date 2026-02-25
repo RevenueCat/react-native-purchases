@@ -27,6 +27,7 @@ import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
+import java.util.concurrent.ConcurrentHashMap
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
 
@@ -44,7 +45,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         private const val OPTION_OFFERING_AVAILABLE_PACKAGES_PRESENTED_OFFERING_CONTEXT = "presentedOfferingContext"
     }
 
-    private val purchaseLogicBridges = java.util.concurrent.ConcurrentHashMap<Int, HybridPurchaseLogicBridge>()
+    private val purchaseLogicBridges = ConcurrentHashMap<Int, HybridPurchaseLogicBridge>()
 
     abstract fun setOfferingId(view: T, offeringId: String?, presentedOfferingContext: PresentedOfferingContext? = null)
 

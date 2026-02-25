@@ -104,15 +104,13 @@ API_AVAILABLE(ios(15.0))
             __weak typeof(self) weakSelf = self;
             HybridPurchaseLogicBridge *bridge = [[HybridPurchaseLogicBridge alloc]
                 initOnPerformPurchase:^(NSDictionary *eventData) {
-                    __strong typeof(weakSelf) strongSelf = weakSelf;
-                    if (strongSelf && strongSelf.onPerformPurchase) {
-                        strongSelf.onPerformPurchase(eventData);
+                    if (weakSelf.onPerformPurchase) {
+                        weakSelf.onPerformPurchase(eventData);
                     }
                 }
                 onPerformRestore:^(NSDictionary *eventData) {
-                    __strong typeof(weakSelf) strongSelf = weakSelf;
-                    if (strongSelf && strongSelf.onPerformRestore) {
-                        strongSelf.onPerformRestore(eventData);
+                    if (weakSelf.onPerformRestore) {
+                        weakSelf.onPerformRestore(eventData);
                     }
                 }];
             self.purchaseLogicBridge = bridge;
