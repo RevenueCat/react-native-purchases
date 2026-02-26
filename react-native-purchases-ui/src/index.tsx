@@ -115,8 +115,6 @@ type NativeFullScreenPaywallViewProps = Omit<FullScreenPaywallViewProps, 'option
 
 type NativeFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'options'> & {
   options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
-  onPerformPurchase?: (event: any) => void;
-  onPerformRestore?: (event: any) => void;
 };
 
 const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
@@ -241,7 +239,6 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
   style,
   children,
   options,
-  purchaseLogic,
   onPurchaseStarted,
   onPurchaseCompleted,
   onPurchaseError,
@@ -252,8 +249,6 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
   onDismiss,
   onMeasure,
 }) => {
-  const { nativeOptions, handlePerformPurchase, handlePerformRestore } = createPurchaseLogicHandlers(purchaseLogic);
-
   if (usingPreviewAPIMode) {
     return (
       <PreviewPaywall
@@ -277,7 +272,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
       <NativePaywallFooter
         style={style}
         children={children}
-        options={{ ...transformedOptions, ...nativeOptions }}
+        options={transformedOptions}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
         onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
@@ -286,8 +281,6 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
         onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
         onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
         onDismiss={() => onDismiss && onDismiss()}
-        onPerformPurchase={handlePerformPurchase}
-        onPerformRestore={handlePerformRestore}
         onMeasure={onMeasure}
       />
     );
@@ -420,7 +413,6 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
-  purchaseLogic?: PurchaseLogic;
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -436,7 +428,6 @@ type FooterPaywallViewProps = {
 
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
   onMeasure?: ({height}: { height: number }) => void;
-  purchaseLogic?: PurchaseLogic;
 };
 
 /**
@@ -649,7 +640,6 @@ export default class RevenueCatUI {
                                                                                                   style,
                                                                                                   children,
                                                                                                   options,
-                                                                                                  purchaseLogic,
                                                                                                   onPurchaseStarted,
                                                                                                   onPurchaseCompleted,
                                                                                                   onPurchaseError,
@@ -697,7 +687,6 @@ export default class RevenueCatUI {
             android: {marginTop: -20, height}
           })}
           options={options}
-          purchaseLogic={purchaseLogic}
           onPurchaseStarted={onPurchaseStarted}
           onPurchaseCompleted={onPurchaseCompleted}
           onPurchaseError={onPurchaseError}
