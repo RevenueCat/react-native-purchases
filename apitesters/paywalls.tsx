@@ -6,9 +6,11 @@ import RevenueCatUI, {
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
   PAYWALL_RESULT,
+  PaywallListener,
   PaywallViewOptions,
   PresentPaywallIfNeededParams,
   PresentPaywallParams,
+  PurchaseResumable,
 } from "../react-native-purchases-ui";
 import {
   CustomerInfo,
@@ -356,5 +358,93 @@ const OriginalTemplateFooterPaywallScreenNoOptions = () => {
 const FooterPaywallScreenNoOptions = () => {
   return (
     <RevenueCatUI.PaywallFooterContainerView></RevenueCatUI.PaywallFooterContainerView>
+  );
+};
+
+// PaywallListener and PurchaseResumable type checks
+
+function checkPaywallListener() {
+  const listener: PaywallListener = {
+    onPurchaseStarted: (args: { packageBeingPurchased: PurchasesPackage }) => {
+      const pkg: PurchasesPackage = args.packageBeingPurchased;
+    },
+    onPurchaseCompleted: (args: { customerInfo: CustomerInfo; storeTransaction: PurchasesStoreTransaction }) => {
+      const info: CustomerInfo = args.customerInfo;
+      const txn: PurchasesStoreTransaction = args.storeTransaction;
+    },
+    onPurchaseError: (args: { error: PurchasesError }) => {
+      const err: PurchasesError = args.error;
+    },
+    onPurchaseCancelled: () => {},
+    onRestoreStarted: () => {},
+    onRestoreCompleted: (args: { customerInfo: CustomerInfo }) => {
+      const info: CustomerInfo = args.customerInfo;
+    },
+    onRestoreError: (args: { error: PurchasesError }) => {
+      const err: PurchasesError = args.error;
+    },
+    onPurchaseInitiated: (args: { packageBeingPurchased: PurchasesPackage; resumable: PurchaseResumable }) => {
+      const pkg: PurchasesPackage = args.packageBeingPurchased;
+      const r: PurchaseResumable = args.resumable;
+      args.resumable.resume();
+      args.resumable.resume(true);
+      args.resumable.resume(false);
+    },
+  };
+}
+
+const PaywallScreenWithListener = () => {
+  const listener: PaywallListener = {
+    onPurchaseStarted: (args: { packageBeingPurchased: PurchasesPackage }) => {},
+    onPurchaseCompleted: (args: { customerInfo: CustomerInfo; storeTransaction: PurchasesStoreTransaction }) => {},
+    onPurchaseError: (args: { error: PurchasesError }) => {},
+    onPurchaseCancelled: () => {},
+    onRestoreStarted: () => {},
+    onRestoreCompleted: (args: { customerInfo: CustomerInfo }) => {},
+    onRestoreError: (args: { error: PurchasesError }) => {},
+    onPurchaseInitiated: (args: { packageBeingPurchased: PurchasesPackage; resumable: PurchaseResumable }) => {
+      args.resumable.resume(true);
+    },
+  };
+
+  return (
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      listener={listener}
+    />
+  );
+};
+
+const PaywallScreenWithListenerAndIndividualProps = () => {
+  // Individual props should take precedence over listener
+  const listener: PaywallListener = {
+    onPurchaseStarted: (args: { packageBeingPurchased: PurchasesPackage }) => {},
+    onPurchaseCompleted: (args: { customerInfo: CustomerInfo; storeTransaction: PurchasesStoreTransaction }) => {},
+  };
+
+  return (
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      listener={listener}
+      onPurchaseStarted={onPurchaseStarted}
+    />
+  );
+};
+
+const FooterPaywallScreenWithListener = () => {
+  const listener: PaywallListener = {
+    onPurchaseStarted: (args: { packageBeingPurchased: PurchasesPackage }) => {},
+    onPurchaseCompleted: (args: { customerInfo: CustomerInfo; storeTransaction: PurchasesStoreTransaction }) => {},
+    onPurchaseError: (args: { error: PurchasesError }) => {},
+    onPurchaseCancelled: () => {},
+    onRestoreStarted: () => {},
+    onRestoreCompleted: (args: { customerInfo: CustomerInfo }) => {},
+    onRestoreError: (args: { error: PurchasesError }) => {},
+  };
+
+  return (
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView
+      listener={listener}
+    ></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
   );
 };
