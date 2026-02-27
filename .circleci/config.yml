@@ -288,6 +288,28 @@ jobs:
           name: release
           command: bundle exec fastlane release
 
+  run-maestro-e2e-tests:
+    <<: *base-mac-job-xcode-16
+    steps:
+      - checkout
+      - install-ruby-3-2-0
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+      - revenuecat/install-maestro
+      - run:
+          name: Boot iOS Simulator
+          command: |
+            xcrun simctl boot "iPhone 16 Pro" || true
+            xcrun simctl bootstatus "iPhone 16 Pro" -b
+      - run:
+          name: Run Maestro E2E Tests
+          command: bundle exec fastlane run_maestro_e2e_tests
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
+
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
     <<: *base-mac-job
@@ -361,6 +383,15 @@ workflows:
       equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
       - revenuecat/automatic-bump
+
+  maestro-e2e-tests:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests:
+          context:
+            - maestro-e2e-tests
 
   update-hybrid-common-versions:
      when:

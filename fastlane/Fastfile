@@ -319,6 +319,18 @@ def check_no_git_tag_exists(version_number)
   end
 end
 
+desc "Run maestro E2E tests"
+lane :run_maestro_e2e_tests do
+  Dir.chdir("e2e-tests/MaestroTestApp") do
+    sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_MAESTRO_E2E_API_KEY\"'/g' App.tsx")
+    sh("yarn install")
+    sh("cd ios && pod install")
+    sh("xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -derivedDataPath build")
+    sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
+  end
+  sh("maestro test --format junit --output test_output/report.xml e2e-tests/maestro/")
+end
+
 private_lane :update_sample_podfile_lock_with_retry do |options|
   pod_name = options[:pod_name]
 
