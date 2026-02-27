@@ -473,15 +473,28 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  /**
+   * Optional listener for paywall lifecycle events such as purchase
+   * completion, restoration, and errors.
+   * Individual callback props take precedence over listener callbacks.
+   */
+  listener?: PaywallListener;
+  /** @deprecated Use `listener.onPurchaseStarted` instead. */
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
+  /** @deprecated Use `listener.onPurchaseCompleted` instead. */
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
                          }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  /** @deprecated Use `listener.onPurchaseError` instead. */
   onPurchaseError?: ({error}: { error: PurchasesError }) => void;
+  /** @deprecated Use `listener.onPurchaseCancelled` instead. */
   onPurchaseCancelled?: () => void;
+  /** @deprecated Use `listener.onRestoreStarted` instead. */
   onRestoreStarted?: () => void;
+  /** @deprecated Use `listener.onRestoreCompleted` instead. */
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  /** @deprecated Use `listener.onRestoreError` instead. */
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
 };
@@ -750,6 +763,7 @@ export default class RevenueCatUI {
                                                                                                   style,
                                                                                                   children,
                                                                                                   options,
+                                                                                                  listener,
                                                                                                   onPurchaseStarted,
                                                                                                   onPurchaseCompleted,
                                                                                                   onPurchaseError,
@@ -759,6 +773,16 @@ export default class RevenueCatUI {
                                                                                                   onRestoreError,
                                                                                                   onDismiss,
                                                                                                 }) => {
+    const resolved = resolvePaywallCallbacks({
+      listener,
+      onPurchaseStarted,
+      onPurchaseCompleted,
+      onPurchaseError,
+      onPurchaseCancelled,
+      onRestoreStarted,
+      onRestoreCompleted,
+      onRestoreError,
+    });
 
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
@@ -798,13 +822,13 @@ export default class RevenueCatUI {
             android: {marginTop: -20, height}
           })}
           options={options}
-          onPurchaseStarted={onPurchaseStarted}
-          onPurchaseCompleted={onPurchaseCompleted}
-          onPurchaseError={onPurchaseError}
-          onPurchaseCancelled={onPurchaseCancelled}
-          onRestoreStarted={onRestoreStarted}
-          onRestoreCompleted={onRestoreCompleted}
-          onRestoreError={onRestoreError}
+          onPurchaseStarted={resolved.onPurchaseStarted}
+          onPurchaseCompleted={resolved.onPurchaseCompleted}
+          onPurchaseError={resolved.onPurchaseError}
+          onPurchaseCancelled={resolved.onPurchaseCancelled}
+          onRestoreStarted={resolved.onRestoreStarted}
+          onRestoreCompleted={resolved.onRestoreCompleted}
+          onRestoreError={resolved.onRestoreError}
           onDismiss={onDismiss}
           onMeasure={(event: any) => setHeight(event.nativeEvent.measurements.height)}
         />

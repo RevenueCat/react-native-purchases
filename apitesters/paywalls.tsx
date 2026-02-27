@@ -431,3 +431,20 @@ const PaywallScreenWithListenerAndIndividualProps = () => {
   );
 };
 
+const FooterPaywallScreenWithListener = () => {
+  const listener: PaywallListener = {
+    onPurchaseStarted: (args: { packageBeingPurchased: PurchasesPackage }) => {},
+    onPurchaseCompleted: (args: { customerInfo: CustomerInfo; storeTransaction: PurchasesStoreTransaction }) => {},
+    onPurchaseError: (args: { error: PurchasesError }) => {},
+    onPurchaseCancelled: () => {},
+    onRestoreStarted: () => {},
+    onRestoreCompleted: (args: { customerInfo: CustomerInfo }) => {},
+    onRestoreError: (args: { error: PurchasesError }) => {},
+  };
+
+  return (
+    <RevenueCatUI.OriginalTemplatePaywallFooterContainerView
+      listener={listener}
+    ></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
+  );
+};
