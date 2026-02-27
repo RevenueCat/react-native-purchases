@@ -1,0 +1,43 @@
+# This flow tests the purchase through paywall flow.
+# It navigates to the purchase screen, verifies initial entitlements,
+# presents the paywall, makes a purchase, and verifies entitlements update.
+
+appId: com.revenuecat.maestro.e2e
+name: Purchase through paywall
+
+---
+- clearState
+- pressKey: home
+- launchApp
+- extendedWaitUntil:
+    visible: "Test Cases"
+    timeout: 30000
+- assertVisible: "Test Cases"
+- tapOn:
+    text: "Purchase through paywall"
+- extendedWaitUntil:
+    visible: "Entitlements: none"
+    timeout: 15000
+- assertVisible: "Entitlements: none"
+- assertVisible: "Present Paywall"
+- tapOn:
+    text: "Present Paywall"
+# Wait for paywall to load
+- extendedWaitUntil:
+    visible: "Subscribe"
+    timeout: 30000
+- tapOn:
+    text: "Subscribe"
+# Handle StoreKit purchase confirmation on iOS simulator
+- extendedWaitUntil:
+    visible: "OK"
+    timeout: 15000
+- waitForAnimationToEnd
+- tapOn:
+    text: "OK"
+# Verify entitlements updated after purchase
+- extendedWaitUntil:
+    visible: "Entitlements: pro"
+    timeout: 15000
+- assertVisible: "Entitlements: pro"
+- takeScreenshot: "purchase_through_paywall_completed"
