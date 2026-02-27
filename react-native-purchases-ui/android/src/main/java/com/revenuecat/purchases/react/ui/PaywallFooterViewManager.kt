@@ -3,6 +3,7 @@ package com.revenuecat.purchases.react.ui
 import androidx.core.view.children
 import com.facebook.react.uimanager.ThemedReactContext
 import com.revenuecat.purchases.PresentedOfferingContext
+import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.react.ui.events.OnMeasureEvent
 import com.revenuecat.purchases.react.ui.views.WrappedPaywallFooterComposeView
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
@@ -92,6 +93,10 @@ internal class PaywallFooterViewManager : BasePaywallViewManager<WrappedPaywallF
 
     override fun setCustomVariables(view: WrappedPaywallFooterComposeView, customVariables: Map<String, CustomVariableValue>) {
         // No-op: Footer paywalls (legacy templates) don't support custom variables
+    }
+
+    override fun setPurchaseLogic(view: WrappedPaywallFooterComposeView, bridge: HybridPurchaseLogicBridge?) {
+        // No-op: Footer paywalls don't support custom purchase logic
     }
 
 }

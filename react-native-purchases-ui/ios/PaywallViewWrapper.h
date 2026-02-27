@@ -22,6 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) RCTDirectEventBlock onRestoreError;
 @property (nonatomic, copy) RCTDirectEventBlock onDismiss;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onPurchasePackageInitiated;
+@property (nonatomic, copy) RCTDirectEventBlock onPerformPurchase;
+@property (nonatomic, copy) RCTDirectEventBlock onPerformRestore;
+
+@property (nonatomic, strong, nullable) HybridPurchaseLogicBridge *purchaseLogicBridge;
+@property (nonatomic, copy, nullable) UIViewController * _Nullable (^createViewController)(HybridPurchaseLogicBridge * _Nonnull);
 
 - (instancetype)initWithCoder:(NSCoder *)coder NS_UNAVAILABLE;
 - (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
