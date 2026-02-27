@@ -33,6 +33,52 @@ export { CustomVariableValue, type CustomVariables } from "./customVariables";
 export { convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
 /**
+ * Object passed to onPurchaseInitiated that allows the developer to
+ * control when (and whether) the purchase flow continues.
+ * The developer can store this and call resume() asynchronously
+ * (e.g., after an auth flow on a different screen).
+ */
+export interface PurchaseResumable {
+  /** Call to proceed with or cancel the purchase. Defaults to true (proceed). */
+  resume(shouldProceed?: boolean): void;
+}
+
+/**
+ * Callbacks for observing paywall lifecycle events such as purchases,
+ * restores, and errors. All callbacks are optional.
+ *
+ * Pass as `listener` to PaywallView components to receive events
+ * while the paywall is displayed.
+ */
+export interface PaywallListener {
+  /** Called when a purchase begins for a package. */
+  onPurchaseStarted?: (args: { packageBeingPurchased: PurchasesPackage }) => void;
+  /** Called when a purchase completes successfully. */
+  onPurchaseCompleted?: (args: { customerInfo: CustomerInfo; storeTransaction: PurchasesStoreTransaction }) => void;
+  /** Called when a purchase fails with an error. */
+  onPurchaseError?: (args: { error: PurchasesError }) => void;
+  /** Called when the user cancels a purchase. */
+  onPurchaseCancelled?: () => void;
+  /** Called when a restore operation begins. */
+  onRestoreStarted?: () => void;
+  /** Called when a restore operation completes successfully. */
+  onRestoreCompleted?: (args: { customerInfo: CustomerInfo }) => void;
+  /** Called when a restore operation fails with an error. */
+  onRestoreError?: (args: { error: PurchasesError }) => void;
+  /**
+   * Called before the payment sheet is displayed, allowing the app to gate
+   * the purchase flow (e.g., require authentication first).
+   *
+   * The developer receives a {@link PurchaseResumable} that can be stored
+   * and called asynchronously. Call `resumable.resume(true)` to proceed
+   * with the purchase, or `resumable.resume(false)` to cancel it.
+   *
+   * If this callback is not provided, the purchase proceeds automatically.
+   */
+  onPurchaseInitiated?: (args: { packageBeingPurchased: PurchasesPackage; resumable: PurchaseResumable }) => void;
+}
+
+/**
  * The result of a purchase or restore operation performed by custom app-based logic.
  * Used when `purchasesAreCompletedBy` is set to `MY_APP`.
  * @readonly
@@ -392,19 +438,33 @@ type FullScreenPaywallViewProps = {
   children?: ReactNode;
   options?: FullScreenPaywallViewOptions;
   purchaseLogic?: PurchaseLogic;
+  /**
+   * Optional listener for paywall lifecycle events such as purchase
+   * completion, restoration, and errors.
+   * Individual callback props take precedence over listener callbacks.
+   */
+  listener?: PaywallListener;
+  /** @deprecated Use `listener.onPurchaseStarted` instead. */
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
+  /** @deprecated Use `listener.onPurchaseCompleted` instead. */
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
                          }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  /** @deprecated Use `listener.onPurchaseError` instead. */
   onPurchaseError?: ({error}: { error: PurchasesError }) => void;
+  /** @deprecated Use `listener.onPurchaseCancelled` instead. */
   onPurchaseCancelled?: () => void;
+  /** @deprecated Use `listener.onRestoreStarted` instead. */
   onRestoreStarted?: () => void;
+  /** @deprecated Use `listener.onRestoreCompleted` instead. */
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  /** @deprecated Use `listener.onRestoreError` instead. */
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
+  /** @deprecated Use `listener.onPurchaseInitiated` instead. */
   onPurchasePackageInitiated?: ({
-    packageBeingPurchased, 
+    packageBeingPurchased,
     resume
   }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
 };
@@ -413,15 +473,28 @@ type FooterPaywallViewProps = {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   options?: FooterPaywallViewOptions;
+  /**
+   * Optional listener for paywall lifecycle events such as purchase
+   * completion, restoration, and errors.
+   * Individual callback props take precedence over listener callbacks.
+   */
+  listener?: PaywallListener;
+  /** @deprecated Use `listener.onPurchaseStarted` instead. */
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
+  /** @deprecated Use `listener.onPurchaseCompleted` instead. */
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
                          }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  /** @deprecated Use `listener.onPurchaseError` instead. */
   onPurchaseError?: ({error}: { error: PurchasesError }) => void;
+  /** @deprecated Use `listener.onPurchaseCancelled` instead. */
   onPurchaseCancelled?: () => void;
+  /** @deprecated Use `listener.onRestoreStarted` instead. */
   onRestoreStarted?: () => void;
+  /** @deprecated Use `listener.onRestoreCompleted` instead. */
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  /** @deprecated Use `listener.onRestoreError` instead. */
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
 };
@@ -437,6 +510,44 @@ type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
 type WithNativeCustomVariables<T extends { customVariables?: CustomVariables }> =
   Omit<T, 'customVariables'> & { customVariables?: NativeCustomVariables | null };
 
+
+/**
+ * Merges individual callback props with a PaywallListener.
+ * Individual props take precedence over listener callbacks.
+ * @internal
+ */
+function resolvePaywallCallbacks(props: {
+  listener?: PaywallListener;
+  onPurchaseStarted?: FullScreenPaywallViewProps['onPurchaseStarted'];
+  onPurchaseCompleted?: FullScreenPaywallViewProps['onPurchaseCompleted'];
+  onPurchaseError?: FullScreenPaywallViewProps['onPurchaseError'];
+  onPurchaseCancelled?: FullScreenPaywallViewProps['onPurchaseCancelled'];
+  onRestoreStarted?: FullScreenPaywallViewProps['onRestoreStarted'];
+  onRestoreCompleted?: FullScreenPaywallViewProps['onRestoreCompleted'];
+  onRestoreError?: FullScreenPaywallViewProps['onRestoreError'];
+  onPurchasePackageInitiated?: FullScreenPaywallViewProps['onPurchasePackageInitiated'];
+}) {
+  const { listener } = props;
+  return {
+    onPurchaseStarted: props.onPurchaseStarted ?? listener?.onPurchaseStarted,
+    onPurchaseCompleted: props.onPurchaseCompleted ?? listener?.onPurchaseCompleted,
+    onPurchaseError: props.onPurchaseError ?? listener?.onPurchaseError,
+    onPurchaseCancelled: props.onPurchaseCancelled ?? listener?.onPurchaseCancelled,
+    onRestoreStarted: props.onRestoreStarted ?? listener?.onRestoreStarted,
+    onRestoreCompleted: props.onRestoreCompleted ?? listener?.onRestoreCompleted,
+    onRestoreError: props.onRestoreError ?? listener?.onRestoreError,
+    onPurchasePackageInitiated: props.onPurchasePackageInitiated ?? (
+      listener?.onPurchaseInitiated
+        ? ({ packageBeingPurchased, resume }: { packageBeingPurchased: PurchasesPackage; resume: (shouldResume: boolean) => void }) => {
+            listener.onPurchaseInitiated!({
+              packageBeingPurchased,
+              resumable: { resume: (shouldProceed = true) => resume(shouldProceed) },
+            });
+          }
+        : undefined
+    ),
+  };
+}
 
 const InternalCustomerCenterView = !usingPreviewAPIMode && UIManager.getViewManagerConfig('CustomerCenterView') != null
     ? requireNativeComponent<CustomerCenterViewProps>('CustomerCenterView')
@@ -607,6 +718,7 @@ export default class RevenueCatUI {
                                                                    children,
                                                                    options,
                                                                    purchaseLogic,
+                                                                   listener,
                                                                    onPurchaseStarted,
                                                                    onPurchaseCompleted,
                                                                    onPurchaseError,
@@ -617,20 +729,31 @@ export default class RevenueCatUI {
                                                                    onDismiss,
                                                                    onPurchasePackageInitiated,
                                                                  }) => {
+    const resolved = resolvePaywallCallbacks({
+      listener,
+      onPurchaseStarted,
+      onPurchaseCompleted,
+      onPurchaseError,
+      onPurchaseCancelled,
+      onRestoreStarted,
+      onRestoreCompleted,
+      onRestoreError,
+      onPurchasePackageInitiated,
+    });
     return (
       <InternalPaywall
         options={options}
         children={children}
         purchaseLogic={purchaseLogic}
-        onPurchaseStarted={onPurchaseStarted}
-        onPurchaseCompleted={onPurchaseCompleted}
-        onPurchaseError={onPurchaseError}
-        onPurchaseCancelled={onPurchaseCancelled}
-        onRestoreStarted={onRestoreStarted}
-        onRestoreCompleted={onRestoreCompleted}
-        onRestoreError={onRestoreError}
+        onPurchaseStarted={resolved.onPurchaseStarted}
+        onPurchaseCompleted={resolved.onPurchaseCompleted}
+        onPurchaseError={resolved.onPurchaseError}
+        onPurchaseCancelled={resolved.onPurchaseCancelled}
+        onRestoreStarted={resolved.onRestoreStarted}
+        onRestoreCompleted={resolved.onRestoreCompleted}
+        onRestoreError={resolved.onRestoreError}
         onDismiss={onDismiss}
-        onPurchasePackageInitiated={onPurchasePackageInitiated}
+        onPurchasePackageInitiated={resolved.onPurchasePackageInitiated}
         style={[{flex: 1}, style]}
       />
     );
@@ -640,6 +763,7 @@ export default class RevenueCatUI {
                                                                                                   style,
                                                                                                   children,
                                                                                                   options,
+                                                                                                  listener,
                                                                                                   onPurchaseStarted,
                                                                                                   onPurchaseCompleted,
                                                                                                   onPurchaseError,
@@ -649,6 +773,17 @@ export default class RevenueCatUI {
                                                                                                   onRestoreError,
                                                                                                   onDismiss,
                                                                                                 }) => {
+    const resolved = resolvePaywallCallbacks({
+      listener,
+      onPurchaseStarted,
+      onPurchaseCompleted,
+      onPurchaseError,
+      onPurchaseCancelled,
+      onRestoreStarted,
+      onRestoreCompleted,
+      onRestoreError,
+    });
+
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
     // safe area insets change. Not adding this extra padding on iOS will cause the content of the scrollview
@@ -687,13 +822,13 @@ export default class RevenueCatUI {
             android: {marginTop: -20, height}
           })}
           options={options}
-          onPurchaseStarted={onPurchaseStarted}
-          onPurchaseCompleted={onPurchaseCompleted}
-          onPurchaseError={onPurchaseError}
-          onPurchaseCancelled={onPurchaseCancelled}
-          onRestoreStarted={onRestoreStarted}
-          onRestoreCompleted={onRestoreCompleted}
-          onRestoreError={onRestoreError}
+          onPurchaseStarted={resolved.onPurchaseStarted}
+          onPurchaseCompleted={resolved.onPurchaseCompleted}
+          onPurchaseError={resolved.onPurchaseError}
+          onPurchaseCancelled={resolved.onPurchaseCancelled}
+          onRestoreStarted={resolved.onRestoreStarted}
+          onRestoreCompleted={resolved.onRestoreCompleted}
+          onRestoreError={resolved.onRestoreError}
           onDismiss={onDismiss}
           onMeasure={(event: any) => setHeight(event.nativeEvent.measurements.height)}
         />

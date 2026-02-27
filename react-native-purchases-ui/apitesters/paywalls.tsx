@@ -9,6 +9,8 @@ import type {
   PresentPaywallIfNeededParams,
   PresentPaywallParams,
   CustomVariables,
+  PaywallListener,
+  PurchaseResumable,
 } from "react-native-purchases-ui";
 import type {
   CustomerInfo,
@@ -509,6 +511,61 @@ const FooterPaywallScreenNoOptions = () => {
   return <RevenueCatUI.PaywallFooterContainerView />;
 };
 
+const PaywallScreenWithListener = () => {
+  const listener: PaywallListener = {
+    onPurchaseStarted: ({ packageBeingPurchased }) => {
+      const pkg: PurchasesPackage = packageBeingPurchased;
+      void pkg;
+    },
+    onPurchaseCompleted: ({ customerInfo, storeTransaction }) => {
+      const info: CustomerInfo = customerInfo;
+      const txn: PurchasesStoreTransaction = storeTransaction;
+      void info;
+      void txn;
+    },
+    onPurchaseError: ({ error }) => {
+      const err: PurchasesError = error;
+      void err;
+    },
+    onPurchaseCancelled: () => {},
+    onRestoreStarted: () => {},
+    onRestoreCompleted: ({ customerInfo }) => {
+      const info: CustomerInfo = customerInfo;
+      void info;
+    },
+    onRestoreError: ({ error }) => {
+      const err: PurchasesError = error;
+      void err;
+    },
+    onPurchaseInitiated: ({ packageBeingPurchased, resumable }) => {
+      const pkg: PurchasesPackage = packageBeingPurchased;
+      const res: PurchaseResumable = resumable;
+      void pkg;
+      res.resume();
+      res.resume(true);
+      res.resume(false);
+    },
+  };
+  return (
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      listener={listener}
+      onDismiss={onDismiss}
+    />
+  );
+};
+
+const PaywallScreenWithListenerAndIndividualProps = () => {
+  return (
+    <RevenueCatUI.Paywall
+      style={{ marginBottom: 10 }}
+      listener={{ onPurchaseStarted: () => {} }}
+      onPurchaseCompleted={onPurchaseCompleted}
+      onDismiss={onDismiss}
+    />
+  );
+};
+
 export {
   FooterPaywallScreen,
   FooterPaywallScreenNoOptions,
@@ -526,4 +583,6 @@ export {
   PaywallScreenWithFontFamily,
   PaywallScreenWithOffering,
   PaywallScreenWithOfferingAndEvents,
+  PaywallScreenWithListener,
+  PaywallScreenWithListenerAndIndividualProps,
 };
