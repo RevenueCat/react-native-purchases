@@ -1273,6 +1273,26 @@ describe("Purchases", () => {
     });
   });
 
+  describe("healthRequest", () => {
+    it("healthRequest calls native module with correct parameter", async () => {
+      NativeModules.RNPurchases.healthRequest.mockResolvedValueOnce(undefined);
+
+      await Purchases.healthRequest(true);
+
+      expect(NativeModules.RNPurchases.healthRequest).toBeCalledWith(true);
+      expect(NativeModules.RNPurchases.healthRequest).toBeCalledTimes(1);
+    });
+
+    it("healthRequest passes false for signatureVerification", async () => {
+      NativeModules.RNPurchases.healthRequest.mockResolvedValueOnce(undefined);
+
+      await Purchases.healthRequest(false);
+
+      expect(NativeModules.RNPurchases.healthRequest).toBeCalledWith(false);
+      expect(NativeModules.RNPurchases.healthRequest).toBeCalledTimes(1);
+    });
+  });
+
   describe("beginRefundRequest", () => {
     beforeEach(() => {
       Platform.OS = "ios";
