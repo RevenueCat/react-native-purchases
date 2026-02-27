@@ -444,17 +444,25 @@ type FullScreenPaywallViewProps = {
    * Individual callback props take precedence over listener callbacks.
    */
   listener?: PaywallListener;
+  /** @deprecated Use `listener.onPurchaseStarted` instead. */
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
+  /** @deprecated Use `listener.onPurchaseCompleted` instead. */
   onPurchaseCompleted?: ({
                            customerInfo,
                            storeTransaction
                          }: { customerInfo: CustomerInfo, storeTransaction: PurchasesStoreTransaction }) => void;
+  /** @deprecated Use `listener.onPurchaseError` instead. */
   onPurchaseError?: ({error}: { error: PurchasesError }) => void;
+  /** @deprecated Use `listener.onPurchaseCancelled` instead. */
   onPurchaseCancelled?: () => void;
+  /** @deprecated Use `listener.onRestoreStarted` instead. */
   onRestoreStarted?: () => void;
+  /** @deprecated Use `listener.onRestoreCompleted` instead. */
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
+  /** @deprecated Use `listener.onRestoreError` instead. */
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
+  /** @deprecated Use `listener.onPurchaseInitiated` instead. */
   onPurchasePackageInitiated?: ({
     packageBeingPurchased,
     resume
