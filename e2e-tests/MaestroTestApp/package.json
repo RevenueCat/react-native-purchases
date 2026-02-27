@@ -17,7 +17,7 @@
     "react-native-purchases": "*",
     "react-native-purchases-ui": "*",
     "react-native-safe-area-context": "^4.14.0",
-    "react-native-screens": "^4.4.0"
+    "react-native-screens": "~4.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.44",
