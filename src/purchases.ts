@@ -1,4 +1,11 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
+import type {
+  AdFailedToLoadData,
+  AdLoadedData,
+  AdDisplayedData,
+  AdOpenedData,
+  AdRevenueData,
+} from "./ads";
 import {
   PurchasesError,
   PURCHASES_ERROR_CODE,
@@ -1607,6 +1614,57 @@ export default class Purchases {
     await Purchases.throwIfNotConfigured();
     RNPurchases.overridePreferredLocale(locale);
   }
+
+  // region Ad Tracking
+
+  /**
+   * Tracks when an ad fails to load. Call this from your ad SDK's failure callback.
+   * @param {AdFailedToLoadData} data The failed-to-load event data
+   */
+  public static async trackAdFailedToLoad(
+    data: AdFailedToLoadData
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.trackAdFailedToLoad(data);
+  }
+
+  /**
+   * Tracks when an ad successfully loads.
+   * @param {AdLoadedData} data The ad loaded event data
+   */
+  public static async trackAdLoaded(data: AdLoadedData): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.trackAdLoaded(data);
+  }
+
+  /**
+   * Tracks when an ad is displayed (impression).
+   * @param {AdDisplayedData} data The ad displayed event data
+   */
+  public static async trackAdDisplayed(data: AdDisplayedData): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.trackAdDisplayed(data);
+  }
+
+  /**
+   * Tracks when an ad is opened/clicked.
+   * @param {AdOpenedData} data The ad opened event data
+   */
+  public static async trackAdOpened(data: AdOpenedData): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.trackAdOpened(data);
+  }
+
+  /**
+   * Tracks ad revenue. Use this to report ad revenue alongside subscription data.
+   * @param {AdRevenueData} data The ad revenue event data
+   */
+  public static async trackAdRevenue(data: AdRevenueData): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.trackAdRevenue(data);
+  }
+
+  // endregion
 
   /**
    * Check if billing is supported for the current user (meaning IN-APP purchases are supported)
