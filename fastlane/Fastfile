@@ -322,7 +322,7 @@ end
 desc "Run maestro E2E tests"
 lane :run_maestro_e2e_tests do
   Dir.chdir("e2e-tests/MaestroTestApp") do
-    sh("find . -type f \\( -name '*.tsx' -o -name '*.ts' -o -name '*.js' \\) -exec sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_MAESTRO_E2E_API_KEY\"'/g' {} +")
+    sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_MAESTRO_E2E_API_KEY\"'/g' App.tsx")
     sh("yarn install")
     sh("cd ios && pod install")
     sh("xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -derivedDataPath build")
