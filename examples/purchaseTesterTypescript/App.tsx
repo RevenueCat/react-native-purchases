@@ -34,7 +34,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const Stack = createNativeStackNavigator();
 
 // Set to true to use custom purchase logic (purchasesAreCompletedBy: MY_APP).
-export const useCustomPurchaseLogic = true;
+export const purchasesAreCompletedByMyApp = false;
 
 const App = () => {
   const hasKeys = () => {
@@ -87,7 +87,7 @@ const App = () => {
       } else {
         Purchases.configure({
           apiKey: APIKeys.google,
-          ...(useCustomPurchaseLogic && {
+          ...(purchasesAreCompletedByMyApp && {
             purchasesAreCompletedBy: {
               type: Purchases.PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
             },
@@ -103,7 +103,7 @@ const App = () => {
     } else {
       Purchases.configure({
         apiKey: APIKeys.apple,
-        ...(useCustomPurchaseLogic && {
+        ...(purchasesAreCompletedByMyApp && {
           purchasesAreCompletedBy: {
             type: Purchases.PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
             storeKitVersion: Purchases.STOREKIT_VERSION.STOREKIT_2,

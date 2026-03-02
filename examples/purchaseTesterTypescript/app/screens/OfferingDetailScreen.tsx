@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, } from 'react-native';
-
-import { Colors, } from 'react-native/Libraries/NewAppScreen';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 
 import Purchases, {
   PurchasesPackage,
@@ -14,17 +12,13 @@ import RevenueCatUI from 'react-native-purchases-ui';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList'
 import { useCustomVariables } from '../context/CustomVariablesContext';
+import { purchasesAreCompletedByMyApp } from '../../App';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
 
 // Taken from https://reactnative.dev/docs/typescript
 const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => {
-  const isDarkMode = useColorScheme() === 'dark';
   const { customVariables } = useCustomVariables();
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
   const purchasePackage = (pkg: PurchasesPackage) => {
     Purchases.purchasePackage(pkg).then(() => {
@@ -57,7 +51,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
   return (
     <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={[backgroundStyle, styles.container]}>
+        style={styles.container}>
           <Text style={styles.title}>Description</Text>
           <Text style={styles.value}>
             { route.params.offering?.serverDescription }
@@ -98,6 +92,16 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
               onPress={() => navigation.navigate('Paywall', { offering: route.params.offering, customVariables })}>
               <Text>
                 Show paywall
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, !purchasesAreCompletedByMyApp && styles.disabledButton]}
+              disabled={!purchasesAreCompletedByMyApp}
+              onPress={() => navigation.navigate('PurchaseLogicPaywall', { offering: route.params.offering })}>
+              <Text style={!purchasesAreCompletedByMyApp && styles.disabledText}>
+                {purchasesAreCompletedByMyApp
+                  ? 'Show paywall with custom PurchaseLogic'
+                  : 'Show paywall with custom PurchaseLogic\n(Enable purchasesAreCompletedByMyApp)'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -216,6 +220,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginHorizontal: 10,
     borderRadius: 4
+  },
+  disabledButton: {
+    backgroundColor: "#d3d3d3",
+  },
+  disabledText: {
+    color: "#888",
+    textAlign: "center" as const,
   },
   buttonStack: {
     flex: 1,

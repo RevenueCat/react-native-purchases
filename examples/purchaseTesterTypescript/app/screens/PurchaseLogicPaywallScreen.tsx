@@ -4,7 +4,7 @@ import RevenueCatUI, {PURCHASE_LOGIC_RESULT, type PurchaseLogicResult} from 'rea
 import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList';
-import {useCustomPurchaseLogic} from '../../App';
+import {purchasesAreCompletedByMyApp} from '../../App';
 import {
   CustomerInfo,
   PurchasesError,
@@ -90,7 +90,7 @@ const PurchaseLogicPaywallScreen: React.FC<Props> = ({route, navigation}: Props)
     navigation.pop();
   };
 
-  if (!useCustomPurchaseLogic) {
+  if (!purchasesAreCompletedByMyApp) {
     return (
       <View style={styles.container}>
         <Text style={styles.warningText}>
