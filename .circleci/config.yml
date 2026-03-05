@@ -36,7 +36,7 @@ aliases:
 parameters:
   action:
     type: enum
-    enum: [build, upgrade-hybrid-common, bump]
+    enum: [build, upgrade-hybrid-common, bump, docs-only]
     default: build
   version:
     type: string
@@ -367,3 +367,9 @@ workflows:
        equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
      jobs:
        - update-hybrid-common-versions
+
+  docs-only:
+    when:
+      equal: [ docs-only, << pipeline.parameters.action >> ]
+    jobs:
+      - docs-deploy
