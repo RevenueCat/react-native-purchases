@@ -24,6 +24,7 @@ type RootStackParamList = {
   CustomerCenterModalWithHeader: { shouldShowCloseButton?: boolean };
   CustomVariables: undefined;
   PurchaseLogicPaywall: { offering: PurchasesOffering | null };
+  CustomPaywall: undefined;
 };
 
 export default RootStackParamList;
