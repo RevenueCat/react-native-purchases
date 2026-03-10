@@ -627,6 +627,12 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
     }
 }
 
+RCT_EXPORT_METHOD(trackCustomPaywallImpression:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackCustomPaywallImpression:data];
+    }
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases receivedUpdatedCustomerInfo:(RCCustomerInfo *)customerInfo {
