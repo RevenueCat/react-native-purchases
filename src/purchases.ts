@@ -1831,6 +1831,26 @@ export default class Purchases {
     return RNPurchases.isConfigured();
   }
 
+  /**
+   * Tracks an impression of a custom (non-RevenueCat) paywall.
+   * Call this method when your custom paywall is displayed to a user.
+   * This enables RevenueCat to track paywall impressions for analytics.
+   *
+   * @experimental This API is experimental and may change in future releases.
+   * @param params - Optional parameters for the impression event.
+   * @param params.paywallId - Optional identifier for the custom paywall being shown.
+   */
+  public static async trackCustomPaywallImpression(
+    params?: { paywallId?: string | null }
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    const data: { [key: string]: any } = {};
+    if (params?.paywallId != null) {
+      data.paywallId = params.paywallId;
+    }
+    RNPurchases.trackCustomPaywallImpression(data);
+  }
+
   private static async throwIfNotConfigured() {
     const isConfigured = await Purchases.isConfigured();
     if (!isConfigured) {
