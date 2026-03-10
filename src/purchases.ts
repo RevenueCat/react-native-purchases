@@ -546,6 +546,23 @@ export default class Purchases {
   }
 
   /**
+   * Sets attribution data from Appstack's attribution params, then syncs subscriber attributes and fetches
+   * fresh offerings so that Appstack-based targeting is applied before the promise resolves.
+   *
+   * Pass the object received from the Appstack Attribution SDK's `getAttributionParams()` directly.
+   * The SDK extracts relevant attribution info and sets the appropriate subscriber attributes.
+   *
+   * @param {object} data The attribution params from the Appstack Attribution SDK.
+   * @returns {Promise<PurchasesOfferings>} Promise of offerings targeted with Appstack data.
+   */
+  public static async setAppstackAttributionParams(
+    data: { [key: string]: string }
+  ): Promise<PurchasesOfferings> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.setAppstackAttributionParams(data);
+  }
+
+  /**
    * Fetch the product info
    * @param {String[]} productIdentifiers Array of product identifiers
    * @param {String} type Optional type of products to fetch, can be SUBSCRIPTION or NON_SUBSCRIPTION. SUBSCRIPTION by default

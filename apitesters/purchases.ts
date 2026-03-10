@@ -51,6 +51,9 @@ async function checkPurchases(purchases: Purchases) {
   const newOfferings: PurchasesOfferings =
     await Purchases.syncAttributesAndOfferingsIfNeeded();
 
+  const appstackOfferings: PurchasesOfferings =
+    await Purchases.setAppstackAttributionParams({ appstack_id: "test" });
+
   const customerInfo: CustomerInfo = await Purchases.restorePurchases();
 
   await Purchases.presentCodeRedemptionSheet();

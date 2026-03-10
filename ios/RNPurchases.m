@@ -104,6 +104,14 @@ RCT_REMAP_METHOD(syncAttributesAndOfferingsIfNeeded,
                                                                                                 reject:reject]];
 }
 
+RCT_REMAP_METHOD(setAppstackAttributionParams,
+                 setAppstackAttributionParamsWithData:(NSDictionary *)data
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality setAppstackAttributionParams:data completionBlock:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                reject:reject]];
+}
+
 RCT_EXPORT_METHOD(getCurrentOfferingForPlacement:(NSString *)placementIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
