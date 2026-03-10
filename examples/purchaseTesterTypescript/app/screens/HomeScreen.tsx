@@ -175,38 +175,32 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
-  const setAppstackAttribution = async () => {
-    Alert.prompt(
-      'Set Appstack Attribution Params',
-      'Enter params as JSON (e.g. {"appstack_id":"abc"})',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: async text => {
-            try {
-              const data = JSON.parse(text || '{}');
-              const offerings =
-                await Purchases.setAppstackAttributionParams(data);
-              console.log('offerings after appstack attribution', offerings);
-              setState({...state, offerings: offerings});
-              Alert.alert(
-                'Success',
-                `Received ${Object.keys(offerings?.all || {}).length} offerings`,
-              );
-            } catch (error) {
-              console.log('error setting appstack attribution', error);
-              Alert.alert('Error', String(error));
-            }
-          },
-        },
-      ],
-      'plain-text',
-      '{"appstack_id": "test"}',
-    );
+  const [promptAppstackVisible, setPromptAppstackVisible] = useState(false);
+
+  const setAppstackAttribution = () => {
+    setPromptAppstackVisible(true);
+  };
+
+  const handlePromptAppstackCancel = () => {
+    setPromptAppstackVisible(false);
+  };
+
+  const handlePromptAppstackSubmit = async (inputValue: string) => {
+    setPromptAppstackVisible(false);
+    try {
+      const data = JSON.parse(inputValue || '{}');
+      const offerings =
+        await Purchases.setAppstackAttributionParams(data);
+      console.log('offerings after appstack attribution', offerings);
+      setState({...state, offerings: offerings});
+      Alert.alert(
+        'Success',
+        `Received ${Object.keys(offerings?.all || {}).length} offerings`,
+      );
+    } catch (error) {
+      console.log('error setting appstack attribution', error);
+      Alert.alert('Error', String(error));
+    }
   };
 
   const makePurchase = async () => {
@@ -368,6 +362,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           isVisible={promptPlacementVisible}
           onCancel={handlePromptPlacementCancel}
           onSubmit={handlePromptPlacementSubmit}
+        />
+
+        <PromptWithTextInput
+          isVisible={promptAppstackVisible}
+          onCancel={handlePromptAppstackCancel}
+          onSubmit={handlePromptAppstackSubmit}
         />
 
         <Divider />
