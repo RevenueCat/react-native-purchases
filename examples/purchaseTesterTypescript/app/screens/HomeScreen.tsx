@@ -175,6 +175,40 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
+  const setAppstackAttribution = async () => {
+    Alert.prompt(
+      'Set Appstack Attribution Params',
+      'Enter params as JSON (e.g. {"appstack_id":"abc"})',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async text => {
+            try {
+              const data = JSON.parse(text || '{}');
+              const offerings =
+                await Purchases.setAppstackAttributionParams(data);
+              console.log('offerings after appstack attribution', offerings);
+              setState({...state, offerings: offerings});
+              Alert.alert(
+                'Success',
+                `Received ${Object.keys(offerings?.all || {}).length} offerings`,
+              );
+            } catch (error) {
+              console.log('error setting appstack attribution', error);
+              Alert.alert('Error', String(error));
+            }
+          },
+        },
+      ],
+      'plain-text',
+      '{"appstack_id": "test"}',
+    );
+  };
+
   const makePurchase = async () => {
     Alert.prompt('Purchase Product', 'Enter Product ID for purchasing', [
       {
@@ -345,6 +379,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity onPress={syncAttributesAndOfferings}>
             <Text style={styles.otherActions}>
               Sync attributes and offerings
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={setAppstackAttribution}>
+            <Text style={styles.otherActions}>
+              Set Appstack Attribution Params
             </Text>
           </TouchableOpacity>
 
