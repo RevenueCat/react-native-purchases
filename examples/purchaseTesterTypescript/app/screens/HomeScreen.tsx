@@ -62,6 +62,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [promptAppstackVisible, setPromptAppstackVisible] = useState(false);
   const [customerCenterNotification, setCustomerCenterNotification] = useState<{
     title: string;
     message?: string;
@@ -172,6 +173,32 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
       setState({...state, offerings: offerings});
     } catch (error) {
       console.log('error', error);
+    }
+  };
+
+  const setAppstackAttribution = () => {
+    setPromptAppstackVisible(true);
+  };
+
+  const handlePromptAppstackCancel = () => {
+    setPromptAppstackVisible(false);
+  };
+
+  const handlePromptAppstackSubmit = async (inputValue: string) => {
+    setPromptAppstackVisible(false);
+    try {
+      const data = JSON.parse(inputValue || '{}');
+      const offerings =
+        await Purchases.setAppstackAttributionParams(data);
+      console.log('offerings after appstack attribution', offerings);
+      setState({...state, offerings: offerings});
+      Alert.alert(
+        'Success',
+        `Received ${Object.keys(offerings?.all || {}).length} offerings`,
+      );
+    } catch (error) {
+      console.log('error setting appstack attribution', error);
+      Alert.alert('Error', String(error));
     }
   };
 
@@ -336,6 +363,13 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           onSubmit={handlePromptPlacementSubmit}
         />
 
+        <PromptWithTextInput
+          isVisible={promptAppstackVisible}
+          onCancel={handlePromptAppstackCancel}
+          onSubmit={handlePromptAppstackSubmit}
+          placeholder='{"appstack_id": "test_id"}'
+        />
+
         <Divider />
         <View>
           <TouchableOpacity onPress={getByPlacement}>
@@ -345,6 +379,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity onPress={syncAttributesAndOfferings}>
             <Text style={styles.otherActions}>
               Sync attributes and offerings
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={setAppstackAttribution}>
+            <Text style={styles.otherActions}>
+              Set Appstack Attribution Params
             </Text>
           </TouchableOpacity>
 
