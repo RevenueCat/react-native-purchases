@@ -72,10 +72,8 @@ export const browserNativeModuleRNPurchases = {
     const offerings = await PurchasesCommon.getInstance().getOfferings();
     return validateAndTransform(offerings, isPurchasesOfferings, 'PurchasesOfferings');
   },
-  setAppstackAttributionParams: async (_data: { [key: string]: string }) => {
-    ensurePurchasesConfigured();
-    const offerings = await PurchasesCommon.getInstance().getOfferings();
-    return validateAndTransform(offerings, isPurchasesOfferings, 'PurchasesOfferings');
+  setAppstackAttributionParams: async (_data: { [key: string]: any }) => {
+    methodNotSupportedOnWeb('setAppstackAttributionParams');
   },
   getProductInfo: async (_productIdentifiers: string[], _type: string) => {
     methodNotSupportedOnWeb('getProductInfo');

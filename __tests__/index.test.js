@@ -190,6 +190,17 @@ describe("Purchases", () => {
     expect(offerings).toEqual(offeringsStub);
   })
 
+  it("setAppstackAttributionParams rejects when not configured", async () => {
+    NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+    try {
+      await Purchases.setAppstackAttributionParams({ appstack_id: "test_id" });
+      fail("expected error");
+    } catch (error) { }
+
+    expect(NativeModules.RNPurchases.setAppstackAttributionParams).toBeCalledTimes(0);
+  })
+
   it("getProducts works and gets subs by default", async () => {
     NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce(productsStub);
 

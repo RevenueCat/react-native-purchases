@@ -62,6 +62,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [promptAppstackVisible, setPromptAppstackVisible] = useState(false);
   const [customerCenterNotification, setCustomerCenterNotification] = useState<{
     title: string;
     message?: string;
@@ -174,8 +175,6 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
       console.log('error', error);
     }
   };
-
-  const [promptAppstackVisible, setPromptAppstackVisible] = useState(false);
 
   const setAppstackAttribution = () => {
     setPromptAppstackVisible(true);
@@ -368,6 +367,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           isVisible={promptAppstackVisible}
           onCancel={handlePromptAppstackCancel}
           onSubmit={handlePromptAppstackSubmit}
+          placeholder='{"appstack_id": "test_id"}'
         />
 
         <Divider />

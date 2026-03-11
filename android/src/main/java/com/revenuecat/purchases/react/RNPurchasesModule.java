@@ -140,9 +140,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setAppstackAttributionParams(ReadableMap data, final Promise promise) {
-        HashMap<String, String> dataMap = new HashMap<>();
+        HashMap<String, Object> dataMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
-            dataMap.put(entry.getKey(), String.valueOf(entry.getValue()));
+            if (entry.getValue() != null) {
+                dataMap.put(entry.getKey(), entry.getValue());
+            }
         }
         CommonKt.setAppstackAttributionParams(dataMap, getOnResult(promise));
     }
