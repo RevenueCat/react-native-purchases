@@ -556,7 +556,7 @@ export default class Purchases {
    * @returns {Promise<PurchasesOfferings>} Promise of offerings targeted with Appstack data.
    */
   public static async setAppstackAttributionParams(
-    data: { [key: string]: any }
+    data: Record<string, any>
   ): Promise<PurchasesOfferings> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.setAppstackAttributionParams(data);
