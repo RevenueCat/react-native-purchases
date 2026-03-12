@@ -3397,26 +3397,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:17.46.1":
-  version: 17.46.1
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.46.1"
+"@revenuecat/purchases-js-hybrid-mappings@npm:17.48.0":
+  version: 17.48.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.48.0"
   dependencies:
-    "@revenuecat/purchases-js": 1.27.0
-  checksum: 6669276d8b855c846b7780814387fd726ad8cfb7a2f2afb171ef10c36e161cdfaef12c6d094ed9fb3e8c15feae25bdab2ed5836e5abb60f1b03012662f990b88
+    "@revenuecat/purchases-js": 1.28.0
+  checksum: 220055a3524c8526bf65ad3f238027d5b893b17b19af178763adf7873cfb8c0dd4be7978366776bd32ac5e05c02794578d029159ad82060d9882195b6cff9ecc
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js@npm:1.27.0":
-  version: 1.27.0
-  resolution: "@revenuecat/purchases-js@npm:1.27.0"
-  checksum: a1a3556d7cc232f83d6dfa0e64ad56f21eaecccb278dceacb6e87495c78b348d780a23a44744011c5ed05ab6c6c675d07682d897e1674fbc3486fb41bf21076e
+"@revenuecat/purchases-js@npm:1.28.0":
+  version: 1.28.0
+  resolution: "@revenuecat/purchases-js@npm:1.28.0"
+  checksum: fc5776aad5219dec5510cbbd2e2811dd3e01f51c818954a5377f45615681df76b9fb09936aae12dfadfed57808b6fa40fe07b263b359b71c7b93e0f8734fa046
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:17.46.1":
-  version: 17.46.1
-  resolution: "@revenuecat/purchases-typescript-internal@npm:17.46.1"
-  checksum: 0dd785ea3677d3bc58637a1158f552f4e59135342036926c90e4ae7a6661f7c75980116247d8ca824f18bde48a3d05b915200affe8ae7976a6baf0380df95f71
+"@revenuecat/purchases-typescript-internal@npm:17.48.0":
+  version: 17.48.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:17.48.0"
+  checksum: e75ae95cdf46192ff2232a70236b49ad657bbaa8526d3430e03b62af7ea511c47a3caf62ac86087abd372ca0c45487f02aab6c78fb7d9566938ced1c646fe4af
   languageName: node
   linkType: hard
 
@@ -8411,7 +8411,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 17.46.1
+    "@revenuecat/purchases-typescript-internal": 17.48.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -8443,8 +8443,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 17.46.1
-    "@revenuecat/purchases-typescript-internal": 17.46.1
+    "@revenuecat/purchases-js-hybrid-mappings": 17.48.0
+    "@revenuecat/purchases-typescript-internal": 17.48.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
