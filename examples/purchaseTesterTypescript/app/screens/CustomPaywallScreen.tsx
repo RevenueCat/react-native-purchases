@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState} from 'react';
 
 import {
   SafeAreaView,
@@ -15,40 +15,72 @@ import RootStackParamList from '../RootStackParamList';
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomPaywall'>;
 
 const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
-  useEffect(() => {
-    const trackImpression = async () => {
+  const [status, setStatus] = useState<string | null>(null);
+
+  const trackImpressionNoId = async () => {
+    try {
+      await Purchases.trackCustomPaywallImpression();
+      setStatus('trackCustomPaywallImpression (no id) succeeded');
+      console.log('[CustomPaywall] Tracked custom paywall impression (no id)');
+    } catch (e) {
+      setStatus(`Error: ${e}`);
+    }
+  };
+
+  const trackImpressionWithId = async () => {
+    try {
       await Purchases.trackCustomPaywallImpression({
-        paywallId: 'custom-paywall-example',
+        paywallId: 'my-test-paywall',
       });
-      console.log('[CustomPaywall] Tracked custom paywall impression');
-    };
-    trackImpression();
-  }, []);
+      setStatus('trackCustomPaywallImpression (with id) succeeded');
+      console.log('[CustomPaywall] Tracked custom paywall impression (with id)');
+    } catch (e) {
+      setStatus(`Error: ${e}`);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Custom Paywall</Text>
-        <Text style={styles.subtitle}>
-          This is a dummy custom paywall screen.
-        </Text>
+        <Text style={styles.title}>Custom Paywall Impression</Text>
         <Text style={styles.description}>
-          An impression event was tracked when this screen appeared.
+          Use this screen to test tracking custom paywall impressions.
         </Text>
-
-        <View style={styles.productCard}>
-          <Text style={styles.productTitle}>Pro Subscription</Text>
-          <Text style={styles.productPrice}>$9.99 / month</Text>
-          <Text style={styles.productDescription}>
-            Unlock all premium features
-          </Text>
-        </View>
 
         <TouchableOpacity
-          style={styles.purchaseButton}
-          onPress={() => console.log('[CustomPaywall] Purchase tapped')}>
-          <Text style={styles.purchaseButtonText}>Subscribe Now</Text>
+          style={styles.button}
+          onPress={trackImpressionNoId}>
+          <Text style={styles.buttonText}>
+            Track custom paywall impression (no id)
+          </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={trackImpressionWithId}>
+          <Text style={styles.buttonText}>
+            Track custom paywall impression (with id)
+          </Text>
+        </TouchableOpacity>
+
+        {status && (
+          <View
+            style={[
+              styles.statusContainer,
+              status.startsWith('Error')
+                ? styles.errorContainer
+                : styles.successContainer,
+            ]}>
+            <Text
+              style={
+                status.startsWith('Error')
+                  ? styles.errorText
+                  : styles.successText
+              }>
+              {status}
+            </Text>
+          </View>
+        )}
 
         <TouchableOpacity
           style={styles.closeButton}
@@ -77,47 +109,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: '#212529',
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#6c757d',
-    marginBottom: 4,
-  },
   description: {
     fontSize: 14,
     color: '#868e96',
     marginBottom: 24,
     textAlign: 'center',
   },
-  productCard: {
-    width: '100%',
-    padding: 20,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    marginBottom: 24,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 3,
-  },
-  productTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#212529',
-    marginBottom: 4,
-  },
-  productPrice: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1971c2',
-    marginBottom: 4,
-  },
-  productDescription: {
-    fontSize: 14,
-    color: '#6c757d',
-  },
-  purchaseButton: {
+  button: {
     width: '100%',
     padding: 16,
     backgroundColor: '#1971c2',
@@ -125,10 +123,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
-  purchaseButtonText: {
-    fontSize: 18,
+  buttonText: {
+    fontSize: 16,
     fontWeight: '600',
     color: '#ffffff',
+  },
+  statusContainer: {
+    width: '100%',
+    padding: 16,
+    borderRadius: 8,
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  successContainer: {
+    backgroundColor: '#d3f9d8',
+    borderColor: '#69db7c',
+    borderWidth: 1,
+  },
+  errorContainer: {
+    backgroundColor: '#ffe3e3',
+    borderColor: '#ff8787',
+    borderWidth: 1,
+  },
+  successText: {
+    color: '#2b8a3e',
+    fontSize: 14,
+  },
+  errorText: {
+    color: '#c92a2a',
+    fontSize: 14,
   },
   closeButton: {
     padding: 12,

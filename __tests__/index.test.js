@@ -1535,7 +1535,7 @@ describe("Purchases", () => {
       await Purchases.trackCustomPaywallImpression({ paywallId: null });
 
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
-      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({});
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: null });
     });
   });
 });
