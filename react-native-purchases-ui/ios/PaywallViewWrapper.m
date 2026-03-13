@@ -30,6 +30,10 @@ API_AVAILABLE(ios(15.0))
 
 @implementation PaywallViewWrapper
 
+- (void)dealloc {
+    [self.purchaseLogicBridge cancelPending];
+}
+
 - (instancetype)initWithPaywallViewController:(RCPaywallViewController *)paywallViewController API_AVAILABLE(ios(15.0)) {
     NSParameterAssert(paywallViewController);
 
@@ -89,6 +93,31 @@ API_AVAILABLE(ios(15.0))
 
 - (void)setOptions:(NSDictionary *)options {
     if (@available(iOS 15.0, *)) {
+        // Replace the default VC with one that uses custom purchase logic.
+        // This runs before the view is added to the hierarchy (RN sets props after view creation).
+        NSNumber *hasPurchaseLogicValue = options[@"hasPurchaseLogic"];
+        BOOL hasPurchaseLogic = [hasPurchaseLogicValue isKindOfClass:[NSNumber class]] ? [hasPurchaseLogicValue boolValue] : NO;
+        if (hasPurchaseLogic && self.addedToHierarchy) {
+            NSLog(@"RNPaywalls - Warning: Purchase logic must be set before the view is displayed. Ignoring.");
+        } else if (hasPurchaseLogic && self.createViewController != nil) {
+
+            __weak typeof(self) weakSelf = self;
+            HybridPurchaseLogicBridge *bridge = [[HybridPurchaseLogicBridge alloc]
+                initOnPerformPurchase:^(NSDictionary *eventData) {
+                    if (weakSelf.onPerformPurchase) {
+                        weakSelf.onPerformPurchase(eventData);
+                    }
+                }
+                onPerformRestore:^(NSDictionary *eventData) {
+                    if (weakSelf.onPerformRestore) {
+                        weakSelf.onPerformRestore(eventData);
+                    }
+                }];
+            self.purchaseLogicBridge = bridge;
+
+            self.paywallViewController = self.createViewController(bridge);
+        }
+
         self.pendingOptions = options ?: @{};
         self.didReceiveInitialOptions = YES;
 
@@ -152,27 +181,27 @@ API_AVAILABLE(ios(15.0))
     if (!availablePackages || ![availablePackages isKindOfClass:[NSArray class]] || [availablePackages count] < 1) {
         return nil;
     }
-    
+
     NSDictionary *firstAvailablePackage = availablePackages[0];
     if (!firstAvailablePackage || ![firstAvailablePackage isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
-    
+
     NSDictionary *presentedOfferingContextOptions = firstAvailablePackage[@"presentedOfferingContext"];
     if (!presentedOfferingContextOptions || [presentedOfferingContextOptions isKindOfClass:[NSNull class]]) {
         return nil;
     }
-    
+
     NSString *offeringIdentifier = presentedOfferingContextOptions[@"offeringIdentifier"];
     if (!offeringIdentifier || [offeringIdentifier isKindOfClass:[NSNull class]]) {
         return nil;
     }
-    
+
     NSString *placementIdentifier = presentedOfferingContextOptions[@"placementIdentifier"];
     if (![placementIdentifier isKindOfClass:[NSString class]]) {
         placementIdentifier = nil;
     }
-    
+
     RCTargetingContext *targetingContext;
     NSDictionary *targetingContextOptions = presentedOfferingContextOptions[@"targetingContext"];
     if (targetingContextOptions && ![targetingContextOptions isKindOfClass:[NSNull class]]) {
@@ -182,7 +211,7 @@ API_AVAILABLE(ios(15.0))
             targetingContext = [[RCTargetingContext alloc] initWithRevision:[revision integerValue] ruleId:ruleId];
         }
     }
-    
+
     return [[RCPresentedOfferingContext alloc] initWithOfferingIdentifier:offeringIdentifier
                                                       placementIdentifier:placementIdentifier
                                                          targetingContext:targetingContext];
@@ -198,10 +227,12 @@ API_AVAILABLE(ios(15.0))
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
         transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseCompleted(@{
-        KeyCustomerInfo: customerInfoDictionary,
-        KeyStoreTransaction: transactionDictionary,
-    });
+    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObject:customerInfoDictionary
+                                                                   forKey:KeyCustomerInfo];
+    if (transactionDictionary) {
+        event[KeyStoreTransaction] = transactionDictionary;
+    }
+    self.onPurchaseCompleted([event copy]);
 }
 
 - (void)paywallViewControllerDidCancelPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {

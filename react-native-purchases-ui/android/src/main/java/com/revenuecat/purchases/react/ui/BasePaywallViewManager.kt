@@ -12,8 +12,11 @@ import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.events.Event
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.PresentedOfferingContext
+import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.react.ui.events.OnDismissEvent
+import com.revenuecat.purchases.react.ui.events.OnPerformPurchaseEvent
+import com.revenuecat.purchases.react.ui.events.OnPerformRestoreEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseCancelledEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseErrorEvent
@@ -24,6 +27,7 @@ import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
+import java.util.concurrent.ConcurrentHashMap
 
 internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>() {
 
@@ -34,17 +38,22 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         private const val OPTION_FONT_FAMILY = "fontFamily"
         private const val OPTION_DISPLAY_CLOSE_BUTTON = "displayCloseButton"
         private const val OPTION_CUSTOM_VARIABLES = "customVariables"
+        private const val OPTION_HAS_PURCHASE_LOGIC = "hasPurchaseLogic"
 
         private const val OPTION_OFFERING_AVAILABLE_PACKAGES = "availablePackages"
 
         private const val OPTION_OFFERING_AVAILABLE_PACKAGES_PRESENTED_OFFERING_CONTEXT = "presentedOfferingContext"
     }
 
+    private val purchaseLogicBridges = ConcurrentHashMap<Int, HybridPurchaseLogicBridge>()
+
     abstract fun setOfferingId(view: T, offeringId: String?, presentedOfferingContext: PresentedOfferingContext? = null)
 
     abstract fun setDisplayDismissButton(view: T, display: Boolean)
 
     abstract fun setCustomVariables(view: T, customVariables: Map<String, CustomVariableValue>)
+
+    abstract fun setPurchaseLogic(view: T, bridge: HybridPurchaseLogicBridge?)
 
     override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
         return MapBuilder.builder<String, Any>()
@@ -58,6 +67,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .putEvent(PaywallEventName.ON_DISMISS)
             .putEvent(PaywallEventName.ON_MEASURE)
             .putEvent(PaywallEventName.ON_PURCHASE_PACKAGE_INITIATED)
+            .putEvent(PaywallEventName.ON_PERFORM_PURCHASE)
+            .putEvent(PaywallEventName.ON_PERFORM_RESTORE)
             .build()
     }
 
@@ -66,11 +77,17 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     @ReactProp(name = PROP_OPTIONS)
     fun setOptions(view: T, options: ReadableMap?) {
         if (options != null) {
+            setPurchaseLogicProp(view, options)
             setOfferingIdProp(view, options)
             setFontFamilyProp(view, options)
             setDisplayCloseButton(view, options)
             setCustomVariablesProp(view, options)
         }
+    }
+
+    override fun onDropViewInstance(view: T) {
+        purchaseLogicBridges.remove(view.id)?.cancelPending()
+        super.onDropViewInstance(view)
     }
 
     private fun setOfferingIdProp(view: T, options: ReadableMap?) {
@@ -133,6 +150,49 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         if (customVariables.isNotEmpty()) {
             setCustomVariables(view, customVariables)
         }
+    }
+
+    private fun setPurchaseLogicProp(view: T, options: ReadableMap) {
+        val hasPurchaseLogic = options.takeIf { it.hasKey(OPTION_HAS_PURCHASE_LOGIC) }
+            ?.getBoolean(OPTION_HAS_PURCHASE_LOGIC) ?: false
+        if (!hasPurchaseLogic) {
+            return
+        }
+
+        // Purchase logic is set once at view creation and cannot be changed later.
+        // Skip if already configured (e.g., on a React re-render).
+        if (purchaseLogicBridges.containsKey(view.id)) {
+            return
+        }
+
+        val themedReactContext = view.context as? ThemedReactContext ?: return
+
+        val bridge = HybridPurchaseLogicBridge(
+            onPerformPurchase = { eventData ->
+                val requestId = eventData[HybridPurchaseLogicBridge.EVENT_KEY_REQUEST_ID] as? String ?: return@HybridPurchaseLogicBridge
+                @Suppress("UNCHECKED_CAST")
+                val packageMap = eventData[HybridPurchaseLogicBridge.EVENT_KEY_PACKAGE_BEING_PURCHASED] as? Map<String, Any?> ?: emptyMap()
+                val event = OnPerformPurchaseEvent(
+                    surfaceId = view.surfaceId,
+                    viewTag = view.id,
+                    packageMap = packageMap,
+                    requestId = requestId,
+                )
+                emitEvent(themedReactContext, view.id, event)
+            },
+            onPerformRestore = { eventData ->
+                val requestId = eventData[HybridPurchaseLogicBridge.EVENT_KEY_REQUEST_ID] as? String ?: return@HybridPurchaseLogicBridge
+                val event = OnPerformRestoreEvent(
+                    surfaceId = view.surfaceId,
+                    viewTag = view.id,
+                    requestId = requestId,
+                )
+                emitEvent(themedReactContext, view.id, event)
+            },
+        )
+
+        purchaseLogicBridges[view.id] = bridge
+        setPurchaseLogic(view, bridge)
     }
 
     internal fun createPaywallListenerWrapper(

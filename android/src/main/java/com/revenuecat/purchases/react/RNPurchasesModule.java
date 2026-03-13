@@ -51,7 +51,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "9.10.4";
+    public static final String PLUGIN_VERSION = "9.12.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -136,6 +136,17 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void syncAttributesAndOfferingsIfNeeded(final Promise promise) {
         CommonKt.syncAttributesAndOfferingsIfNeeded(getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void setAppstackAttributionParams(ReadableMap data, final Promise promise) {
+        HashMap<String, Object> dataMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
+            if (entry.getValue() != null) {
+                dataMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        CommonKt.setAppstackAttributionParams(dataMap, getOnResult(promise));
     }
 
     @ReactMethod

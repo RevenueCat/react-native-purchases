@@ -3397,26 +3397,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:17.41.1":
-  version: 17.41.1
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.41.1"
+"@revenuecat/purchases-js-hybrid-mappings@npm:17.49.0":
+  version: 17.49.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.49.0"
   dependencies:
-    "@revenuecat/purchases-js": 1.26.2
-  checksum: 70569201b6a54488427b14e28935cca2291c15fe176931de77029582fb4aeee0211532c83a4d89e90c766e0ea5ca47151578e3572e1f347c8af177d556041be2
+    "@revenuecat/purchases-js": 1.28.0
+  checksum: 9ead3b563f006cf8b67261f711a247bbdb7c2e9e567e999320717b2b2d6a7adc4bd81b4a510c8cd6328de8047cdacac92cfee081efbd3c84e4fbb10a0b21dfe8
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js@npm:1.26.2":
-  version: 1.26.2
-  resolution: "@revenuecat/purchases-js@npm:1.26.2"
-  checksum: c5bdaf123964ff76a428663f818b09ba1fc4c6480ab3d221d44e7f9248675879bcaa402f230f84bab03ccc481ca913cba5d91c35ee3900fdcf6fdb14724e37ca
+"@revenuecat/purchases-js@npm:1.28.0":
+  version: 1.28.0
+  resolution: "@revenuecat/purchases-js@npm:1.28.0"
+  checksum: fc5776aad5219dec5510cbbd2e2811dd3e01f51c818954a5377f45615681df76b9fb09936aae12dfadfed57808b6fa40fe07b263b359b71c7b93e0f8734fa046
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:17.41.1":
-  version: 17.41.1
-  resolution: "@revenuecat/purchases-typescript-internal@npm:17.41.1"
-  checksum: b475a29b57a560e99f68883407bbc9591eacf0caea97af386e38986e843fb888a2ee95c91a976beca24b927fca49d4d9678d6f7fc3a993d3fb3ae52bc23f88f9
+"@revenuecat/purchases-typescript-internal@npm:17.49.0":
+  version: 17.49.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:17.49.0"
+  checksum: cf28eb8478b9f3854ef00d733df37e600969659f7326905078f60e2a7d444abfd70e573da0debb418d935149441de89c2ec43d4959516441f37e9e3ea35c5088
   languageName: node
   linkType: hard
 
@@ -5160,13 +5160,13 @@ __metadata:
   linkType: hard
 
 "fast-xml-parser@npm:^4.0.12, fast-xml-parser@npm:^4.2.4":
-  version: 4.5.3
-  resolution: "fast-xml-parser@npm:4.5.3"
+  version: 4.5.4
+  resolution: "fast-xml-parser@npm:4.5.4"
   dependencies:
-    strnum: ^1.1.1
+    strnum: ^1.0.5
   bin:
     fxparser: src/cli/cli.js
-  checksum: cd6a184941ec6c23f9e6b514421a3f396cfdff5f4a8c7c27bd0eff896edb4a2b55c27da16f09b789663613dfc4933602b9b71ac3e9d1d2ddcc0492fc46c8fa52
+  checksum: 29db513a5f0ad5ac33691c27d67315ee22e041b5e8fa5982f8bccf46af400e35c576c17f3087f1b8d4cd81fa91519f5fda4b2a31441ff1bf7596ecc5e934f44d
   languageName: node
   linkType: hard
 
@@ -7489,11 +7489,11 @@ __metadata:
   linkType: hard
 
 "minimatch@npm:^3.0.2, minimatch@npm:^3.0.4, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "minimatch@npm:3.1.2"
+  version: 3.1.5
+  resolution: "minimatch@npm:3.1.5"
   dependencies:
     brace-expansion: ^1.1.7
-  checksum: c154e566406683e7bcb746e000b84d74465b3a832c45d59912b9b55cd50dee66e5c4b1e5566dba26154040e51672f9aa450a9aef0c97cfc7336b78b7afb9540a
+  checksum: 47ef6f412c08be045a7291d11b1c40777925accf7252dc6d3caa39b1bfbb3a7ea390ba7aba464d762d783265c644143d2c8a204e6b5763145024d52ee65a1941
   languageName: node
   linkType: hard
 
@@ -8411,7 +8411,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 17.41.1
+    "@revenuecat/purchases-typescript-internal": 17.49.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -8431,7 +8431,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 9.10.4
+    react-native-purchases: 9.12.0
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
@@ -8443,8 +8443,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 17.41.1
-    "@revenuecat/purchases-typescript-internal": 17.41.1
+    "@revenuecat/purchases-js-hybrid-mappings": 17.49.0
+    "@revenuecat/purchases-typescript-internal": 17.49.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -9389,7 +9389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strnum@npm:^1.1.1":
+"strnum@npm:^1.0.5":
   version: 1.1.2
   resolution: "strnum@npm:1.1.2"
   checksum: a85219eda13e97151c95e343a9e5960eacfb0a0ff98104b4c9cb7a212e3008bddf0c9714c9c37c2e508be78e741a04afc80027c2dc18509d1b5ffd4c37191fc2
@@ -9438,15 +9438,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.5.9
-  resolution: "tar@npm:7.5.9"
+  version: 7.5.11
+  resolution: "tar@npm:7.5.11"
   dependencies:
     "@isaacs/fs-minipass": ^4.0.0
     chownr: ^3.0.0
     minipass: ^7.1.2
     minizlib: ^3.1.0
     yallist: ^5.0.0
-  checksum: 26fbbdf536895814167d03e4883f80febb6520729169c54d0f29ee8a163557283862752493f0e5b60800a6f3608aac3250c41fac8e20a4f056ba4fa63f3dbad7
+  checksum: 7f6785a85dd571b88985e493ec86f692962cbfa7b4017961fddfd2241e0ff3bcd89ed347f4c02b5433aa22b30cca5566e8711543df054fda8fd12425f505378f
   languageName: node
   linkType: hard
 

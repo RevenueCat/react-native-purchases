@@ -31,6 +31,8 @@ RCT_EXPORT_VIEW_PROPERTY(onRestoreCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRestoreError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchasePackageInitiated, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPerformPurchase, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPerformRestore, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(Paywall)
 
@@ -51,8 +53,15 @@ RCT_EXPORT_MODULE(Paywall)
 - (UIView *)view
 {
     if (@available(iOS 15.0, *)) {
-        UIViewController *viewController = [self.proxy createPaywallView];
+        PaywallViewCreationParams *params = [PaywallViewCreationParams new];
+        RCPaywallViewController *viewController = [self.proxy createPaywallViewWithParams:params];
         PaywallViewWrapper *wrapper = [[PaywallViewWrapper alloc] initWithPaywallViewController:viewController];
+        PaywallProxy *proxy = self.proxy;
+        wrapper.createViewController = ^UIViewController * _Nullable(HybridPurchaseLogicBridge * _Nonnull bridge) {
+            PaywallViewCreationParams *params = [PaywallViewCreationParams new];
+            params.purchaseLogicBridge = bridge;
+            return [proxy createPaywallViewWithParams:params];
+        };
         self.proxy.delegate = wrapper;
 
         return wrapper;

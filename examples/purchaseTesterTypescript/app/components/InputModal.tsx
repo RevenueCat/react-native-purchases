@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Modal, View, TextInput, Button, StyleSheet} from 'react-native';
 
-const PromptWithTextInput = ({isVisible, onCancel, onSubmit}) => {
+const PromptWithTextInput = ({isVisible, onCancel, onSubmit, placeholder = 'Enter text here...'}) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleCancel = () => {
@@ -26,7 +26,7 @@ const PromptWithTextInput = ({isVisible, onCancel, onSubmit}) => {
             style={styles.textInput}
             onChangeText={setInputValue}
             value={inputValue}
-            placeholder="Enter text here..."
+            placeholder={placeholder}
           />
           <View style={styles.buttonContainer}>
             <Button title="Cancel" onPress={handleCancel} />

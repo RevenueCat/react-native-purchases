@@ -765,6 +765,7 @@ NativeModules.RNPurchases = {
   getOfferings: jest.fn(),
   getCurrentOfferingForPlacement: jest.fn(),
   syncAttributesAndOfferingsIfNeeded: jest.fn(),
+  setAppstackAttributionParams: jest.fn(),
   getProductInfo: jest.fn(),
   makePurchase: jest.fn(),
   restorePurchases: jest.fn(),

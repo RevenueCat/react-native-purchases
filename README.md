@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/cocoapods/l/RevenueCat.svg?style=flat)](http://cocoapods.org/pods/RevenueCat)
 
-RevenueCat is a powerful, reliable, and free to use in-app purchase server with cross-platform support. Our open-source framework provides a backend and a wrapper around StoreKit and Google Play Billing to make implementing in-app purchases and subscriptions easy. 
+RevenueCat is a powerful, reliable, and free to use in-app purchase server with cross-platform support. Our open-source framework provides a backend and a wrapper around StoreKit, Google Play Billing and RevenueCat Web Billing to make implementing in-app purchases and subscriptions easy. 
 
 Whether you are building a new app or already have millions of customers, you can use RevenueCat to:
 
@@ -17,7 +17,7 @@ Sign up to [get started for free](https://app.revenuecat.com/signup).
 
 ## React Native Purchases
 
-React Native Purchases is the client for the [RevenueCat](https://www.revenuecat.com/) subscription and purchase tracking system. It is an open source framework that provides a wrapper around `StoreKit`, `Google Play Billing` and the RevenueCat backend to make implementing in-app purchases in `React Native` easy.
+React Native Purchases is the client for the [RevenueCat](https://www.revenuecat.com/) subscription and purchase tracking system. It is an open source framework that provides a wrapper around StoreKit, Google Play Billing, RevenueCat Web Billing and the RevenueCat backend to make implementing in-app purchases in React Native easy.
 
 ## Migrating from React-Native Purchases v4 to v5
 - See our [Migration guide](./v4_to_v5_migration_guide.md)

@@ -1,3 +1,64 @@
+## 9.12.0
+## RevenueCat SDK
+### ✨ New Features
+* Add setAppstackAttributionParams API (#1661) via Rick (@rickvdl)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.46.1 (#1663) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.46.0 (#1662) via RevenueCat Git Bot (@RCGitBot)
+* [RENOVATE] Update dependency gradle to v9.4.0 (#1656) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.45.0 (#1657) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Bump tar from 7.5.10 to 7.5.11 in /examples/MagicWeather (#1664) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `f5c099b` to `e146447` (#1659) via dependabot[bot] (@dependabot[bot])
+* Bump tar from 7.5.9 to 7.5.10 in /examples/MagicWeather (#1647) via dependabot[bot] (@dependabot[bot])
+
+## 9.11.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.44.0 (#1654) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.23.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.1)
+  * [Android 9.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.23.0)
+  * [iOS 5.61.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.61.0)
+
+### 🔄 Other Changes
+* Bump fastlane-plugin-revenuecat_internal from `8cd957f` to `f5c099b` (#1652) via dependabot[bot] (@dependabot[bot])
+
+## 9.11.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.42.0 (#1648) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.22.2](https://github.com/RevenueCat/purchases-android/releases/tag/9.22.2)
+  * [iOS 5.60.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.60.0)
+
+### 🔄 Other Changes
+* Bump tar from 7.5.9 to 7.5.10 (#1649) via dependabot[bot] (@dependabot[bot])
+
+## 9.11.0
+## RevenueCat SDK
+### ✨ New Features
+* Add custom PurchaseLogic support to PaywallView component (#1607) via Rick (@rickvdl)
+
+### 🔄 Other Changes
+* Update sdks-common-config orb to 3.13.0 (#1645) via Cesar de la Vega (@vegaro)
+* Bump fast-xml-parser from 4.5.3 to 4.5.4 in /examples/MagicWeather (#1642) via dependabot[bot] (@dependabot[bot])
+* Add custom PurchaseLogic button to OfferingDetailScreen (#1641) via Rick (@rickvdl)
+* Bump fastlane from 2.232.1 to 2.232.2 (#1640) via dependabot[bot] (@dependabot[bot])
+* Bump minimatch from 3.1.3 to 3.1.5 (#1639) via dependabot[bot] (@dependabot[bot])
+* Bump fast-xml-parser from 4.5.3 to 4.5.4 (#1638) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `ea6276c` to `8cd957f` (#1634) via dependabot[bot] (@dependabot[bot])
+
+## 9.10.5
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.41.1 (#1625) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.22.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.22.1)
+
+### 🔄 Other Changes
+* Update `README` to include Web Billing (#1629) via JayShortway (@JayShortway)
+* Bump minimatch from 3.1.2 to 3.1.3 (#1628) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal to ea6276c (#1618) via Facundo Menzella (@facumenzella)
+
 ## 9.10.4
 ## RevenueCatUI SDK
 ### 🐞 Bugfixes

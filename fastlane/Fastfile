@@ -207,7 +207,7 @@ lane :generate_docs do
   unless should_update_index
     UI.important("ℹ️  Prerelease or hotfix detected, skipping index update")
   end
-  docs_repo_base_url = "https://github.com/RevenueCat/"
+  docs_repo_base_url = "git@github.com:RevenueCat/"
   docs_repo_name = "react-native-purchases-docs"
   docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
 
