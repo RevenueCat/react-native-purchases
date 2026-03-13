@@ -1841,14 +1841,10 @@ export default class Purchases {
    * @param params.paywallId - Optional identifier for the custom paywall being shown.
    */
   public static async trackCustomPaywallImpression(
-    params?: { paywallId?: string | null }
+    params?: TrackCustomPaywallImpressionOptions
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    const data: { [key: string]: any } = {};
-    if (params?.paywallId != null) {
-      data.paywallId = params.paywallId;
-    }
-    RNPurchases.trackCustomPaywallImpression(data);
+    RNPurchases.trackCustomPaywallImpression(params ?? {});
   }
 
   private static async throwIfNotConfigured() {
@@ -1894,4 +1890,13 @@ export default class Purchases {
     }
   }
 
+}
+
+/**
+ * @experimental
+ * Options for tracking a custom paywall impression.
+ */
+export interface TrackCustomPaywallImpressionOptions {
+  /** The identifier of the paywall that was shown. */
+  paywallId?: string | null;
 }
