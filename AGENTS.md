@@ -9,6 +9,7 @@ RevenueCat's official React Native SDK for in-app purchases and subscriptions. P
 **Related repositories:**
 - **iOS SDK**: https://github.com/RevenueCat/purchases-ios
 - **Android SDK**: https://github.com/RevenueCat/purchases-android
+- **Web SDK**: https://github.com/RevenueCat/purchases-js — Web/JS SDK
 - **Hybrid Common**: https://github.com/RevenueCat/purchases-hybrid-common — Native bridge layer
 - **UI Package**: Located in `react-native-purchases-ui/` workspace
 
