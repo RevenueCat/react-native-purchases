@@ -141,6 +141,13 @@ export interface DebugEvent {
  */
 export type DebugEventListener = (event: DebugEvent) => void;
 
+/**
+ * Options for tracking a custom paywall impression.
+ */
+export interface TrackCustomPaywallImpressionOptions {
+  paywallId?: string | null;
+}
+
 let debugEventListeners: DebugEventListener[] = [];
 
 eventEmitter?.addListener(
@@ -1890,13 +1897,4 @@ export default class Purchases {
     }
   }
 
-}
-
-/**
- * @experimental
- * Options for tracking a custom paywall impression.
- */
-export interface TrackCustomPaywallImpressionOptions {
-  /** The identifier of the paywall that was shown. */
-  paywallId?: string | null;
 }
