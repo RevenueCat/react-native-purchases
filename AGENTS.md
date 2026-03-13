@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents when working with code in this r
 
 ## Project Overview
 
-RevenueCat's official React Native SDK for in-app purchases and subscriptions. Provides a TypeScript API that wraps native iOS and Android SDKs, with browser fallback support for Expo Go environments.
+RevenueCat's official React Native SDK for in-app purchases and subscriptions. Provides a TypeScript API that wraps native iOS and Android SDKs, with web support and browser fallback for Expo Go environments.
 
 **Related repositories:**
 - **iOS SDK**: https://github.com/RevenueCat/purchases-ios
@@ -36,7 +36,7 @@ When implementing features or debugging, check these repos for reference and pat
 react-native-purchases/
 ├── src/
 │   ├── index.ts              # Main entry point
-│   ├── purchases.ts          # Core Purchases class (~2,000+ lines)
+│   ├── purchases.ts          # Core Purchases class
 │   ├── customerInfo.ts       # Re-exports from typescript-internal
 │   ├── offerings.ts          # Re-exports from typescript-internal
 │   ├── errors.ts             # Re-exports from typescript-internal
