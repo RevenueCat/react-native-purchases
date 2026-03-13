@@ -90,3 +90,6 @@ vendor/
 !.yarn/versions
 
 package.tgz
+
+# Claude Code
+.claude/
