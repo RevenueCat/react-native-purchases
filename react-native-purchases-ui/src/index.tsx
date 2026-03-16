@@ -30,7 +30,7 @@ import {
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
 // Re-export for testing purposes (marked as @internal)
-export { convertCustomVariablesToNativeMap, transformOptionsForNative } from "./customVariables";
+export { convertCustomVariablesToNativeMap, convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
 /**
  * The result of a purchase or restore operation performed by custom app-based logic.

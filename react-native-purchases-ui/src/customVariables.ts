@@ -83,6 +83,13 @@ export function convertCustomVariablesToNativeMap(
 }
 
 /**
+ * @deprecated Use {@link convertCustomVariablesToNativeMap} instead.
+ * @internal
+ * @visibleForTesting
+ */
+export const convertCustomVariablesToStringMap = convertCustomVariablesToNativeMap;
+
+/**
  * Transforms options to native format, converting CustomVariables to native-typed map.
  * @internal
  * @visibleForTesting
