@@ -40,7 +40,8 @@ async function checkPresentPaywall(offering: PurchasesOffering) {
   paywallResult = await RevenueCatUI.presentPaywall({
     customVariables: {
       player_name: CustomVariableValue.string('John'),
-      level: CustomVariableValue.string('42'),
+      level: CustomVariableValue.number(42),
+      is_premium: CustomVariableValue.boolean(true),
     },
   });
   paywallResult = await RevenueCatUI.presentPaywall({
@@ -87,7 +88,8 @@ async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
     offering: offering,
     customVariables: {
       player_name: CustomVariableValue.string('John'),
-      level: CustomVariableValue.string('42'),
+      level: CustomVariableValue.number(42),
+      is_premium: CustomVariableValue.boolean(true),
     },
   });
 }
@@ -234,7 +236,8 @@ const PaywallScreenWithCustomVariables = (offering: PurchasesOffering) => {
         offering: offering,
         customVariables: {
           player_name: CustomVariableValue.string('John'),
-          level: CustomVariableValue.string('42'),
+          level: CustomVariableValue.number(42),
+          is_premium: CustomVariableValue.boolean(true),
         },
       }}
     />

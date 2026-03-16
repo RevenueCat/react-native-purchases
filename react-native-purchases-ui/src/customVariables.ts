@@ -4,14 +4,13 @@
  * Custom variables allow developers to personalize paywall text with dynamic values.
  * Variables are defined in the RevenueCat dashboard and can be overridden at runtime.
  *
- * Currently only string values are supported. Additional types may be added in the future.
- *
  * @example
  * ```typescript
  * RevenueCatUI.presentPaywall({
  *   customVariables: {
  *     'player_name': CustomVariableValue.string('John'),
- *     'level': CustomVariableValue.string('42'),
+ *     'level': CustomVariableValue.number(42),
+ *     'is_premium': CustomVariableValue.boolean(true),
  *   },
  * });
  * ```
@@ -21,10 +20,10 @@
  * Hello {{ custom.player_name }}!
  * ```
  */
-export type CustomVariableValue = {
-  readonly type: 'string';
-  readonly value: string;
-};
+export type CustomVariableValue =
+  | { readonly type: 'string'; readonly value: string }
+  | { readonly type: 'number'; readonly value: number }
+  | { readonly type: 'boolean'; readonly value: boolean };
 
 /**
  * Factory methods for creating CustomVariableValue instances.
@@ -36,6 +35,20 @@ export const CustomVariableValue = {
    * @returns A CustomVariableValue containing the string.
    */
   string: (value: string): CustomVariableValue => ({ type: 'string', value }),
+
+  /**
+   * Creates a numeric custom variable value.
+   * @param value The numeric value for the custom variable.
+   * @returns A CustomVariableValue containing the number.
+   */
+  number: (value: number): CustomVariableValue => ({ type: 'number', value }),
+
+  /**
+   * Creates a boolean custom variable value.
+   * @param value The boolean value for the custom variable.
+   * @returns A CustomVariableValue containing the boolean.
+   */
+  boolean: (value: boolean): CustomVariableValue => ({ type: 'boolean', value }),
 } as const;
 
 /**
@@ -45,17 +58,17 @@ export type CustomVariables = { [key: string]: CustomVariableValue };
 
 /**
  * Internal type for custom variables as sent to native bridge.
- * Currently only string values are supported.
+ * Values preserve their native types (string, number, boolean).
  * @internal
  */
-export type NativeCustomVariables = { [key: string]: string };
+export type NativeCustomVariables = { [key: string]: string | number | boolean };
 
 /**
- * Converts CustomVariables to a string map for native bridge.
+ * Converts CustomVariables to a native-typed map for the bridge.
  * @internal
  * @visibleForTesting
  */
-export function convertCustomVariablesToStringMap(
+export function convertCustomVariablesToNativeMap(
   customVariables: CustomVariables | undefined
 ): NativeCustomVariables | null {
   if (!customVariables) return null;
@@ -70,7 +83,7 @@ export function convertCustomVariablesToStringMap(
 }
 
 /**
- * Transforms options to native format, converting CustomVariables to string map.
+ * Transforms options to native format, converting CustomVariables to native-typed map.
  * @internal
  * @visibleForTesting
  */
@@ -81,6 +94,6 @@ export function transformOptionsForNative<T extends { customVariables?: CustomVa
   const { customVariables, ...rest } = options;
   return {
     ...rest as Omit<T, 'customVariables'>,
-    customVariables: convertCustomVariablesToStringMap(customVariables),
+    customVariables: convertCustomVariablesToNativeMap(customVariables),
   };
 }

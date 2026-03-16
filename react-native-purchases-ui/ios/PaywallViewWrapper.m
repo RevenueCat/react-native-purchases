@@ -142,9 +142,17 @@ API_AVAILABLE(ios(15.0))
         NSDictionary *customVariables = self.pendingOptions[@"customVariables"];
         if (customVariables && [customVariables isKindOfClass:[NSDictionary class]]) {
             for (NSString *key in customVariables) {
-                NSString *value = customVariables[key];
+                id value = customVariables[key];
                 if ([value isKindOfClass:[NSString class]]) {
                     [self.paywallViewController setCustomVariable:value forKey:key];
+                } else if ([value isKindOfClass:[NSNumber class]]) {
+                    // NSNumber can represent both booleans and numbers.
+                    // Check for boolean first using CFBooleanGetTypeID.
+                    if (CFGetTypeID((__bridge CFTypeRef)(value)) == CFBooleanGetTypeID()) {
+                        [self.paywallViewController setCustomVariableBool:[value boolValue] forKey:key];
+                    } else {
+                        [self.paywallViewController setCustomVariableNumber:[value doubleValue] forKey:key];
+                    }
                 }
             }
         }
