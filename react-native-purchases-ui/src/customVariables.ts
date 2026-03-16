@@ -76,6 +76,12 @@ export function convertCustomVariablesToNativeMap(
   for (const key of Object.keys(customVariables)) {
     const variable = customVariables[key];
     if (variable) {
+      if (variable.type === 'number' && !Number.isFinite(variable.value)) {
+        console.warn(
+          `[RevenueCatUI] Custom variable '${key}' has non-finite number value (${variable.value}). Skipping.`
+        );
+        continue;
+      }
       result[key] = variable.value;
     }
   }

@@ -114,6 +114,37 @@ describe('convertCustomVariablesToNativeMap', () => {
       negative: -10,
     });
   });
+
+  it('should skip NaN values and warn', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const customVariables: CustomVariables = {
+      valid: CustomVariableValue.number(42),
+      nan_value: CustomVariableValue.number(NaN),
+    };
+
+    const result = convertCustomVariablesToNativeMap(customVariables);
+
+    expect(result).toEqual({ valid: 42 });
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("nan_value")
+    );
+    warnSpy.mockRestore();
+  });
+
+  it('should skip Infinity values and warn', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const customVariables: CustomVariables = {
+      pos_inf: CustomVariableValue.number(Infinity),
+      neg_inf: CustomVariableValue.number(-Infinity),
+      valid: CustomVariableValue.string('ok'),
+    };
+
+    const result = convertCustomVariablesToNativeMap(customVariables);
+
+    expect(result).toEqual({ valid: 'ok' });
+    expect(warnSpy).toHaveBeenCalledTimes(2);
+    warnSpy.mockRestore();
+  });
 });
 
 describe('transformOptionsForNative', () => {
