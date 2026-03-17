@@ -146,11 +146,6 @@ export type DebugEventListener = (event: DebugEvent) => void;
  */
 export interface TrackCustomPaywallImpressionOptions {
   paywallId?: string | null;
-  /**
-   * An optional identifier for the offering associated with the custom paywall.
-   * If not provided, the SDK will use the current offering identifier from the cache.
-   */
-  offeringId?: string | null;
 }
 
 let debugEventListeners: DebugEventListener[] = [];
@@ -1850,8 +1845,6 @@ export default class Purchases {
    *
    * @param params - Optional parameters for the impression event.
    * @param params.paywallId - Optional identifier for the custom paywall being shown.
-   * @param params.offeringId - Optional identifier for the offering associated with the custom paywall.
-   *   If not provided, the SDK will use the current offering identifier from the cache.
    */
   public static async trackCustomPaywallImpression(
     params?: TrackCustomPaywallImpressionOptions

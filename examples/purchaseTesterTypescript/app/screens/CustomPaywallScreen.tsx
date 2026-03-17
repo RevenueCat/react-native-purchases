@@ -31,10 +31,9 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
     try {
       await Purchases.trackCustomPaywallImpression({
         paywallId: 'my-test-paywall',
-        offeringId: 'my-test-offering',
       });
-      setStatus('trackCustomPaywallImpression (with ids) succeeded');
-      console.log('[CustomPaywall] Tracked custom paywall impression (with ids)');
+      setStatus('trackCustomPaywallImpression (paywallId) succeeded');
+      console.log('[CustomPaywall] Tracked custom paywall impression (paywallId)');
     } catch (e) {
       setStatus(`Error: ${e}`);
     }
@@ -52,7 +51,7 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
           style={styles.button}
           onPress={trackImpressionNoId}>
           <Text style={styles.buttonText}>
-            Track custom paywall impression (no id)
+            Track impression (no params)
           </Text>
         </TouchableOpacity>
 
@@ -60,7 +59,7 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
           style={styles.button}
           onPress={trackImpressionWithId}>
           <Text style={styles.buttonText}>
-            Track custom paywall impression (with id)
+            Track impression (paywallId only)
           </Text>
         </TouchableOpacity>
 
