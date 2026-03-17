@@ -1848,7 +1848,6 @@ export default class Purchases {
    * Call this method when your custom paywall is displayed to a user.
    * This enables RevenueCat to track paywall impressions for analytics.
    *
-   * @experimental This API is experimental and may change in future releases.
    * @param params - Optional parameters for the impression event.
    * @param params.paywallId - Optional identifier for the custom paywall being shown.
    * @param params.offeringId - Optional identifier for the offering associated with the custom paywall.
