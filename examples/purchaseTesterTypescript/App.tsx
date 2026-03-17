@@ -27,6 +27,7 @@ import VirtualCurrencyScreen from "./app/screens/VirtualCurrencyScreen";
 import CustomVariablesScreen from "./app/screens/CustomVariablesScreen";
 import { CustomVariablesProvider } from "./app/context/CustomVariablesContext";
 import PurchaseLogicPaywallScreen from "./app/screens/PurchaseLogicPaywallScreen";
+import CustomPaywallScreen from "./app/screens/CustomPaywallScreen";
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -177,6 +178,11 @@ const App = () => {
               name="PurchaseLogicPaywall"
               component={PurchaseLogicPaywallScreen}
               options={{ title: 'PurchaseLogic Paywall' }}
+          />
+          <Stack.Screen
+              name="CustomPaywall"
+              component={CustomPaywallScreen}
+              options={{ title: 'Custom Paywall' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

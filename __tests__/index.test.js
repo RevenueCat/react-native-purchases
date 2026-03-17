@@ -1502,4 +1502,41 @@ describe("Purchases", () => {
       });
     });
   });
+
+  describe("trackCustomPaywallImpression", () => {
+    describe("when Purchases is not configured", () => {
+      it("it rejects", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+        try {
+          await Purchases.trackCustomPaywallImpression();
+          fail("expected error");
+        } catch (error) { }
+
+        expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(0);
+      });
+    });
+
+    it("makes right call with no params", async () => {
+      await Purchases.trackCustomPaywallImpression();
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({});
+    });
+
+    it("makes right call with paywallId", async () => {
+      await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall" });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: "my_paywall" });
+    });
+
+    it("makes right call with null paywallId", async () => {
+      await Purchases.trackCustomPaywallImpression({ paywallId: null });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: null });
+    });
+
+  });
 });

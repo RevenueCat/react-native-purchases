@@ -141,6 +141,13 @@ export interface DebugEvent {
  */
 export type DebugEventListener = (event: DebugEvent) => void;
 
+/**
+ * Options for tracking a custom paywall impression.
+ */
+export interface TrackCustomPaywallImpressionOptions {
+  paywallId?: string | null;
+}
+
 let debugEventListeners: DebugEventListener[] = [];
 
 eventEmitter?.addListener(
@@ -1829,6 +1836,21 @@ export default class Purchases {
       return Promise.resolve(false);
     }
     return RNPurchases.isConfigured();
+  }
+
+  /**
+   * Tracks an impression of a custom (non-RevenueCat) paywall.
+   * Call this method when your custom paywall is displayed to a user.
+   * This enables RevenueCat to track paywall impressions for analytics.
+   *
+   * @param params - Optional parameters for the impression event.
+   * @param params.paywallId - Optional identifier for the custom paywall being shown.
+   */
+  public static async trackCustomPaywallImpression(
+    params?: TrackCustomPaywallImpressionOptions
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.trackCustomPaywallImpression(params ?? {});
   }
 
   private static async throwIfNotConfigured() {

@@ -609,6 +609,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
       CommonKt.redeemWebPurchase(urlString, getOnResult(promise));
     }
 
+    @ReactMethod
+    public void trackCustomPaywallImpression(ReadableMap data) {
+        CommonKt.trackCustomPaywallImpression(data.toHashMap());
+    }
+
     // endregion
 
     //================================================================================
