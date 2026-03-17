@@ -31,9 +31,10 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
     try {
       await Purchases.trackCustomPaywallImpression({
         paywallId: 'my-test-paywall',
+        offeringId: 'my-test-offering',
       });
-      setStatus('trackCustomPaywallImpression (with id) succeeded');
-      console.log('[CustomPaywall] Tracked custom paywall impression (with id)');
+      setStatus('trackCustomPaywallImpression (with ids) succeeded');
+      console.log('[CustomPaywall] Tracked custom paywall impression (with ids)');
     } catch (e) {
       setStatus(`Error: ${e}`);
     }

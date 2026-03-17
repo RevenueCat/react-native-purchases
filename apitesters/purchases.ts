@@ -460,7 +460,10 @@ async function checkTrackCustomPaywallImpression() {
   await Purchases.trackCustomPaywallImpression({});
   await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall" });
   await Purchases.trackCustomPaywallImpression({ paywallId: null });
-  const options: TrackCustomPaywallImpressionOptions = { paywallId: "test" };
+  await Purchases.trackCustomPaywallImpression({ offeringId: "my_offering" });
+  await Purchases.trackCustomPaywallImpression({ offeringId: null });
+  await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall", offeringId: "my_offering" });
+  const options: TrackCustomPaywallImpressionOptions = { paywallId: "test", offeringId: "offering" };
   await Purchases.trackCustomPaywallImpression(options);
 }
 

@@ -1537,5 +1537,19 @@ describe("Purchases", () => {
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: null });
     });
+
+    it("makes right call with offeringId only", async () => {
+      await Purchases.trackCustomPaywallImpression({ offeringId: "my_offering" });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ offeringId: "my_offering" });
+    });
+
+    it("makes right call with paywallId and offeringId", async () => {
+      await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall", offeringId: "my_offering" });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: "my_paywall", offeringId: "my_offering" });
+    });
   });
 });
