@@ -125,6 +125,7 @@ internal class RNPaywallsModule(
             while (iterator.hasNextKey()) {
                 val key = iterator.nextKey()
                 when (cv.getType(key)) {
+                    // getString returns String? (nullable), while getDouble/getBoolean return primitives
                     ReadableType.String -> cv.getString(key)?.let { result[key] = it }
                     ReadableType.Number -> result[key] = cv.getDouble(key)
                     ReadableType.Boolean -> result[key] = cv.getBoolean(key)

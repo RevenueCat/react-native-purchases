@@ -89,7 +89,6 @@ export function convertCustomVariablesToNativeMap(
 }
 
 /**
- * @deprecated Use {@link convertCustomVariablesToNativeMap} instead.
  * @internal
  * @visibleForTesting
  */
