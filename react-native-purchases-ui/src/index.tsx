@@ -23,14 +23,14 @@ import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponen
 import {
   type CustomVariables,
   type NativeCustomVariables,
-  convertCustomVariablesToStringMap,
+  convertCustomVariablesToNativeMap,
   transformOptionsForNative,
 } from "./customVariables";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
 // Re-export for testing purposes (marked as @internal)
-export { convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
+export { convertCustomVariablesToNativeMap, convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
 /**
  * The result of a purchase or restore operation performed by custom app-based logic.
@@ -324,7 +324,8 @@ export interface PresentPaywallParams {
    * ```typescript
    * customVariables: {
    *   'player_name': CustomVariableValue.string('John'),
-   *   'level': CustomVariableValue.string('42'),
+   *   'level': CustomVariableValue.number(42),
+   *   'is_premium': CustomVariableValue.boolean(true),
    * }
    * ```
    */
@@ -367,7 +368,8 @@ export interface PaywallViewOptions {
    * ```typescript
    * customVariables: {
    *   'player_name': CustomVariableValue.string('John'),
-   *   'level': CustomVariableValue.string('42'),
+   *   'level': CustomVariableValue.number(42),
+   *   'is_premium': CustomVariableValue.boolean(true),
    * }
    * ```
    */
@@ -566,7 +568,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
+      convertCustomVariablesToNativeMap(customVariables),
     )
   }
 
@@ -598,7 +600,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
+      convertCustomVariablesToNativeMap(customVariables),
     )
   }
 
