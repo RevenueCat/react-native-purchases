@@ -35,7 +35,7 @@ import {
 } from "../dist";
 
 import Purchases from "../dist/purchases";
-import { GoogleProductChangeInfo, SubscriptionOption } from "../src";
+import { GoogleProductChangeInfo, SubscriptionOption, TrackCustomPaywallImpressionOptions } from "../src";
 
 async function checkPurchases(purchases: Purchases) {
   const productIds: string[] = [];
@@ -453,6 +453,18 @@ async function checkGetCachedVirtualCurrencies() {
 async function checkOverridePreferredLocale() {
   const preferredUILocaleOverride: string | null = "en-US";
   await Purchases.overridePreferredLocale(preferredUILocaleOverride);
+}
+
+async function checkTrackCustomPaywallImpression() {
+  await Purchases.trackCustomPaywallImpression();
+  await Purchases.trackCustomPaywallImpression({});
+  await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall" });
+  await Purchases.trackCustomPaywallImpression({ paywallId: null });
+  await Purchases.trackCustomPaywallImpression({ offeringId: "my_offering" });
+  await Purchases.trackCustomPaywallImpression({ offeringId: null });
+  await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall", offeringId: "my_offering" });
+  const options: TrackCustomPaywallImpressionOptions = { paywallId: "test", offeringId: "offering" };
+  await Purchases.trackCustomPaywallImpression(options);
 }
 
 async function checkSyncPurchasesResult() {
