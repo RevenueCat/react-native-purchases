@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -16,24 +17,23 @@ type Props = NativeStackScreenProps<RootStackParamList, 'CustomPaywall'>;
 
 const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
   const [status, setStatus] = useState<string | null>(null);
+  const [paywallId, setPaywallId] = useState('');
+  const [offeringId, setOfferingId] = useState('');
 
-  const trackImpressionNoId = async () => {
+  const trackImpression = async () => {
     try {
-      await Purchases.trackCustomPaywallImpression();
-      setStatus('trackCustomPaywallImpression (no id) succeeded');
-      console.log('[CustomPaywall] Tracked custom paywall impression (no id)');
-    } catch (e) {
-      setStatus(`Error: ${e}`);
-    }
-  };
+      const trimmedPaywallId = paywallId.trim() || undefined;
+      const trimmedOfferingId = offeringId.trim() || undefined;
 
-  const trackImpressionWithId = async () => {
-    try {
-      await Purchases.trackCustomPaywallImpression({
-        paywallId: 'my-test-paywall',
-      });
-      setStatus('trackCustomPaywallImpression (paywallId) succeeded');
-      console.log('[CustomPaywall] Tracked custom paywall impression (paywallId)');
+      if (!trimmedPaywallId && !trimmedOfferingId) {
+        await Purchases.trackCustomPaywallImpression();
+      } else {
+        await Purchases.trackCustomPaywallImpression({
+          paywallId: trimmedPaywallId,
+          offeringId: trimmedOfferingId,
+        });
+      }
+      setStatus(`Tracked (paywallId: ${trimmedPaywallId ?? 'nil'}, offeringId: ${trimmedOfferingId ?? 'nil'})`);
     } catch (e) {
       setStatus(`Error: ${e}`);
     }
@@ -47,19 +47,27 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
           Use this screen to test tracking custom paywall impressions.
         </Text>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={trackImpressionNoId}>
-          <Text style={styles.buttonText}>
-            Track impression (no params)
-          </Text>
-        </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder="Paywall ID (optional)"
+          placeholderTextColor="#868e96"
+          value={paywallId}
+          onChangeText={setPaywallId}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Offering ID (optional)"
+          placeholderTextColor="#868e96"
+          value={offeringId}
+          onChangeText={setOfferingId}
+        />
 
         <TouchableOpacity
           style={styles.button}
-          onPress={trackImpressionWithId}>
+          onPress={trackImpression}>
           <Text style={styles.buttonText}>
-            Track impression (paywallId only)
+            Track Custom Paywall Impression
           </Text>
         </TouchableOpacity>
 
@@ -114,6 +122,17 @@ const styles = StyleSheet.create({
     color: '#868e96',
     marginBottom: 24,
     textAlign: 'center',
+  },
+  input: {
+    width: '100%',
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#ced4da',
+    borderRadius: 12,
+    fontSize: 16,
+    color: '#212529',
+    backgroundColor: '#ffffff',
+    marginBottom: 12,
   },
   button: {
     width: '100%',
