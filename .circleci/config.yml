@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@8.0.1
-  revenuecat: revenuecat/sdks-common-config@3.13.0
+  revenuecat: revenuecat/sdks-common-config@3.16.0
 
 aliases:
   release-tags: &release-tags
