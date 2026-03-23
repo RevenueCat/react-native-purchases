@@ -60,6 +60,7 @@ RCT_EXPORT_MODULE();
         @"onFeedbackSurveyCompleted",
         @"onManagementOptionSelected",
         @"onCustomActionSelected",
+        @"onPromotionalOfferSucceeded",
         @"onDismiss"
     ];
 }
@@ -149,6 +150,17 @@ withURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
     [self sendEventWithName:@"onCustomActionSelected"
                        body:@{@"actionId": actionID, @"purchaseIdentifier": purchaseIdentifier ?: [NSNull null]}
     ];
+}
+
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+       didSucceedWithPromotionalOffer:(NSString *)offerId
+               customerInfoDictionary:(NSDictionary<NSString *, id> *)customerInfoDictionary
+               transactionDictionary:(NSDictionary<NSString *, id> *)transactionDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendEventWithName:@"onPromotionalOfferSucceeded" body:@{
+        @"customerInfo": customerInfoDictionary ?: [NSNull null],
+        @"transaction": transactionDictionary ?: [NSNull null],
+        @"offerId": offerId ?: [NSNull null]
+    }];
 }
 
 + (BOOL)requiresMainQueueSetup

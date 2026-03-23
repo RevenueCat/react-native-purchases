@@ -11,6 +11,7 @@ import type {
 import type {
   CustomerInfo,
   PurchasesError,
+  PurchasesStoreTransaction,
   REFUND_REQUEST_STATUS,
 } from "@revenuecat/purchases-typescript-internal";
 
@@ -60,6 +61,14 @@ const customerCenterCallbacks: CustomerCenterCallbacks = {
     const identifier: string | null = purchaseIdentifier ?? null;
     void id;
     void identifier;
+  },
+  onPromotionalOfferSucceeded: ({ customerInfo, transaction, offerId }) => {
+    const info: CustomerInfo = customerInfo;
+    const tx: PurchasesStoreTransaction = transaction;
+    const id: string = offerId;
+    void info;
+    void tx;
+    void id;
   },
 };
 
@@ -117,6 +126,14 @@ const customerCenterElement = (
       const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
       handleManagementOptionEvent(managementOptionEvent);
     }}
+    onPromotionalOfferSucceeded={({ customerInfo, transaction, offerId }) => {
+      const info: CustomerInfo = customerInfo;
+      const tx: PurchasesStoreTransaction = transaction;
+      const id: string = offerId;
+      void info;
+      void tx;
+      void id;
+    }}
     style={{ flex: 1 }}
   />
 );
@@ -158,6 +175,14 @@ const customerCenterViewProps: CustomerCenterViewProps = {
   onManagementOptionSelected: (event) => {
     const managementOptionEvent: CustomerCenterManagementOptionEvent = event;
     handleManagementOptionEvent(managementOptionEvent);
+  },
+  onPromotionalOfferSucceeded: ({ customerInfo, transaction, offerId }) => {
+    const info: CustomerInfo = customerInfo;
+    const tx: PurchasesStoreTransaction = transaction;
+    const id: string = offerId;
+    void info;
+    void tx;
+    void id;
   },
   shouldShowCloseButton: true,
   style: { flex: 1 },
@@ -214,6 +239,21 @@ const backwardCompatibleElement2 = (
     style={{ flex: 1 }}
   />
 );
+
+async function testPromotionalOfferSucceededCallback() {
+  await RevenueCatUI.presentCustomerCenter({
+    callbacks: {
+      onPromotionalOfferSucceeded: ({ customerInfo, transaction, offerId }: { customerInfo: CustomerInfo; transaction: PurchasesStoreTransaction; offerId: string }) => {
+        const info: CustomerInfo = customerInfo;
+        const tx: PurchasesStoreTransaction = transaction;
+        const id: string = offerId;
+        void info;
+        void tx;
+        void id;
+      },
+    },
+  });
+}
 
 async function testRefundCallbacks() {
   await RevenueCatUI.presentCustomerCenter({
@@ -295,6 +335,14 @@ const customerCenterViewAllCallbacks = (
       void id;
       void identifier;
     }}
+    onPromotionalOfferSucceeded={({ customerInfo, transaction, offerId }: { customerInfo: CustomerInfo; transaction: PurchasesStoreTransaction; offerId: string }) => {
+      const info: CustomerInfo = customerInfo;
+      const tx: PurchasesStoreTransaction = transaction;
+      const id: string = offerId;
+      void info;
+      void tx;
+      void id;
+    }}
     style={{ flex: 1 }}
   />
 );
@@ -309,6 +357,7 @@ void testRefundCallbacks;
 void customerCenterViewWithLegacyCallback;
 void customerCenterViewWithNewCallback;
 void customerCenterViewAllCallbacks;
+void testPromotionalOfferSucceededCallback;
 
 export {
   checkPresentCustomerCenter,
@@ -318,6 +367,7 @@ export {
   withoutPurchaseIdCallback,
   withPurchaseIdCallback,
   testRefundCallbacks,
+  testPromotionalOfferSucceededCallback,
   customerCenterViewWithLegacyCallback,
   customerCenterViewWithNewCallback,
   customerCenterViewAllCallbacks,
