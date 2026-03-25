@@ -1,8 +1,9 @@
-# This flow tests the purchase through paywall flow.
-# It navigates to the purchase screen, verifies initial entitlements,
-# presents the paywall, makes a purchase, and verifies entitlements update.
+# This flow requires passing the MAESTRO_STORE environment variable.
+#  app_store for iOS, test_store for Android.
+# Example:
+# maestro test -e MAESTRO_STORE=app_store purchase_through_paywall.yaml
 
-appId: com.revenuecat.maestro.e2e
+appId: com.revenuecat.automatedsdktests
 name: Purchase through paywall
 
 ---
@@ -22,22 +23,18 @@ name: Purchase through paywall
 - assertVisible: "Present Paywall"
 - tapOn:
     text: "Present Paywall"
-# Wait for paywall to load
-- extendedWaitUntil:
-    visible: "Subscribe"
-    timeout: 30000
+- assertVisible: "Paywall V2"
+- takeScreenshot: "purchase_through_paywall - Paywall"
 - tapOn:
-    text: "Subscribe"
-# Handle StoreKit purchase confirmation on iOS simulator
-- extendedWaitUntil:
-    visible: "OK"
-    timeout: 15000
-- waitForAnimationToEnd
+    text: "Yearly"
 - tapOn:
-    text: "OK"
-# Verify entitlements updated after purchase
+    text: "Continue"
+- runFlow:
+    file: ../utils/confirm_purchase.yaml
+    env:
+      SCREENSHOT_PREFIX: purchase_through_paywall
 - extendedWaitUntil:
     visible: "Entitlements: pro"
     timeout: 15000
 - assertVisible: "Entitlements: pro"
-- takeScreenshot: "purchase_through_paywall_completed"
+- takeScreenshot: "purchase_through_paywall - completed"
