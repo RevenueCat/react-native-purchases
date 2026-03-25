@@ -288,7 +288,7 @@ jobs:
           name: release
           command: bundle exec fastlane release
 
-  run-maestro-e2e-tests:
+  run-maestro-e2e-tests-ios:
     <<: *base-mac-job-xcode-16
     steps:
       - checkout
@@ -302,8 +302,37 @@ jobs:
             xcrun simctl boot "iPhone 16 Pro" || true
             xcrun simctl bootstatus "iPhone 16 Pro" -b
       - run:
-          name: Run Maestro E2E Tests
-          command: bundle exec fastlane run_maestro_e2e_tests
+          name: Run Maestro E2E Tests (iOS)
+          command: bundle exec fastlane run_maestro_e2e_tests_ios
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
+
+  run-maestro-e2e-tests-android:
+    machine:
+      image: android:2024.11.1
+    resource_class: xlarge
+    steps:
+      - checkout
+      - run:
+          name: Install Ruby and Bundler
+          command: |
+            gem install bundler
+            bundle install
+      - revenuecat/install-maestro
+      - run:
+          name: Create and start Android emulator
+          command: |
+            sdkmanager "system-images;android-34;google_apis;x86_64"
+            echo "no" | avdmanager create avd -n test-e2e -k "system-images;android-34;google_apis;x86_64" --force
+            nohup emulator -avd test-e2e -no-audio -no-boot-anim -no-window -gpu swiftshader_indirect &
+            adb wait-for-device
+            adb shell input keyevent 82
+      - run:
+          name: Run Maestro E2E Tests (Android)
+          command: bundle exec fastlane run_maestro_e2e_tests_android
           no_output_timeout: 15m
       - store_test_results:
           path: fastlane/test_output
@@ -389,12 +418,22 @@ workflows:
     jobs:
       - revenuecat/automatic-bump
 
-  maestro-e2e-tests:
+  maestro-e2e-tests-ios:
     when:
       or:
         - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
     jobs:
-      - run-maestro-e2e-tests:
+      - run-maestro-e2e-tests-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+
+  maestro-e2e-tests-android:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests-android:
           context:
             - maestro-e2e-tests
             - e2e-tests
