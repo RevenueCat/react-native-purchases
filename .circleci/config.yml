@@ -397,6 +397,7 @@ workflows:
       - run-maestro-e2e-tests:
           context:
             - maestro-e2e-tests
+            - e2e-tests
 
   update-hybrid-common-versions:
      when:
