@@ -429,7 +429,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.maestro.e2e;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.automatedsdktests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MaestroTestApp.app/MaestroTestApp";
 			};
@@ -453,7 +453,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.maestro.e2e;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.automatedsdktests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MaestroTestApp.app/MaestroTestApp";
 			};
@@ -479,7 +479,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.maestro.e2e;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.automatedsdktests;
 				PRODUCT_NAME = MaestroTestApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -506,7 +506,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.maestro.e2e;
+				PRODUCT_BUNDLE_IDENTIFIER = com.revenuecat.automatedsdktests;
 				PRODUCT_NAME = MaestroTestApp;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
