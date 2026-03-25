@@ -334,7 +334,7 @@ end
 desc "Run maestro E2E tests on Android"
 lane :run_maestro_e2e_tests_android do
   Dir.chdir("e2e-tests/MaestroTestApp") do
-    sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_PLAY_STORE\"'/g' App.tsx")
+    sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("yarn install")
     sh("cd android && ./gradlew assembleDebug")
     sh("adb install android/app/build/outputs/apk/debug/app-debug.apk")
