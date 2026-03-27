@@ -340,6 +340,11 @@ workflows:
           <<: *release-tags
           requires:
             - make-release
+      - revenuecat/merge-release-pr:
+          repo_name: react-native-purchases
+          requires:
+            - docs-deploy
+          <<: *release-tags
 
   danger:
     when:
