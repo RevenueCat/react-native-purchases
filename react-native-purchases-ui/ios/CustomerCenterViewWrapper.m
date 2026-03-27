@@ -145,6 +145,19 @@ API_AVAILABLE(ios(15.0))
     }
 }
 
+- (void)customerCenterViewController:(CustomerCenterUIViewController *)controller
+       didSucceedWithPromotionalOffer:(NSString *)offerId
+               customerInfoDictionary:(NSDictionary<NSString *, id> *)customerInfoDictionary
+               transactionDictionary:(NSDictionary<NSString *, id> *)transactionDictionary API_AVAILABLE(ios(15.0)) {
+    if (self.onPromotionalOfferSucceeded) {
+        self.onPromotionalOfferSucceeded(@{
+            @"customerInfo": customerInfoDictionary ?: [NSNull null],
+            @"transaction": transactionDictionary ?: [NSNull null],
+            @"offerId": offerId ?: [NSNull null]
+        });
+    }
+}
+
 - (void)setShouldShowCloseButton:(BOOL)shouldShowCloseButton {
     _shouldShowCloseButton = shouldShowCloseButton;
     
