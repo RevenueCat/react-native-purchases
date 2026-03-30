@@ -325,8 +325,8 @@ lane :run_maestro_e2e_tests_ios do
     sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
     sh("cd ios && rm -f Podfile.lock && pod install")
-    sh("xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
-    sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
+    sh("xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
+    sh("xcrun simctl install booted build/Build/Products/Release-iphonesimulator/MaestroTestApp.app")
   end
   sh("mkdir -p test_output")
   sh("maestro test --format junit --output test_output/report.xml ../e2e-tests/maestro/")
@@ -337,10 +337,10 @@ lane :run_maestro_e2e_tests_android do
   Dir.chdir("../e2e-tests/MaestroTestApp") do
     sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
-    sh("cd android && ./gradlew assembleDebug")
+    sh("cd android && ./gradlew assembleRelease")
     sh("adb start-server")
     sh("adb wait-for-device")
-    sh("adb install android/app/build/outputs/apk/debug/app-debug.apk")
+    sh("adb install android/app/build/outputs/apk/release/app-release.apk")
   end
   sh("mkdir -p test_output")
   sh("maestro test --format junit --output test_output/report.xml ../e2e-tests/maestro/")
