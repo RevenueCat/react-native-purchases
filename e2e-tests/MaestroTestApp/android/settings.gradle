@@ -2,5 +2,12 @@ pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
 plugins { id("com.facebook.react.settings") }
 extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
 rootProject.name = 'MaestroTestApp'
+
+include ':react-native-purchases'
+project(':react-native-purchases').projectDir = new File(rootProject.projectDir, '../../../android')
+
+include ':react-native-purchases-ui'
+project(':react-native-purchases-ui').projectDir = new File(rootProject.projectDir, '../../../react-native-purchases-ui/android')
+
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
