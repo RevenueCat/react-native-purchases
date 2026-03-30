@@ -329,6 +329,11 @@ lane :run_maestro_e2e_tests_ios do
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
   sh("mkdir -p test_output")
+  sh("touch /tmp/maestro_start_marker")
+  sh("xcrun simctl launch booted com.revenuecat.automatedsdktests 2>&1 || true")
+  sh("sleep 5")
+  sh("xcrun simctl get_app_container booted com.revenuecat.automatedsdktests 2>&1 || echo 'App container not found'")
+  sh("xcrun simctl spawn booted log show --predicate 'subsystem == \"com.apple.CoreSimulator\" OR process == \"MaestroTestApp\"' --last 30s --style compact 2>&1 | tail -50 || true")
   sh("maestro test --format junit --output test_output/report.xml --test-output-dir test_output ../e2e-tests/maestro/")
 end
 
