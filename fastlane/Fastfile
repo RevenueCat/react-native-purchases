@@ -338,6 +338,8 @@ lane :run_maestro_e2e_tests_android do
     sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
     sh("cd android && ./gradlew assembleDebug")
+    sh("adb start-server")
+    sh("adb wait-for-device")
     sh("adb install android/app/build/outputs/apk/debug/app-debug.apk")
   end
   sh("mkdir -p test_output")
