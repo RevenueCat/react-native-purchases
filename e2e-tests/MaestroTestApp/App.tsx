@@ -5,7 +5,12 @@ import Purchases from 'react-native-purchases';
 import TestCasesScreen from './src/TestCasesScreen';
 import PurchaseThroughPaywallScreen from './src/PurchaseThroughPaywallScreen';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  TestCases: undefined;
+  PurchaseThroughPaywall: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const API_KEY = 'MAESTRO_TESTS_REVENUECAT_API_KEY';
 

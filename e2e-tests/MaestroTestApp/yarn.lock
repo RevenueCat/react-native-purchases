@@ -2238,26 +2238,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:17.53.0":
-  version: 17.53.0
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.53.0"
+"@revenuecat/purchases-js-hybrid-mappings@npm:17.52.0":
+  version: 17.52.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.52.0"
   dependencies:
-    "@revenuecat/purchases-js": 1.29.0
-  checksum: e5ab858b02a08842f891ea334be144b8defa637d86927cc9d31587a1a804e9056f157b6a53610977c4b80a8696922cb541da850ebbcf614e824f20ebb35227e8
+    "@revenuecat/purchases-js": 1.28.0
+  checksum: f302f168502b3565f1c15e76ecdaecbdccd653532f9063b65de8ef6642fb6755b57341567d957b83b6af1c9269b6ebe8d8f60197fc8e989f091db9bbe1716907
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js@npm:1.29.0":
-  version: 1.29.0
-  resolution: "@revenuecat/purchases-js@npm:1.29.0"
-  checksum: 31afbcbb0098a6dcd45f07590e07450e807e0cab17ed7d98c0b96857bc7a2ca9e76747e8e60b2d1e58de30624c0c2da857f69cfecac67b6edec7d24f20a4bf7e
+"@revenuecat/purchases-js@npm:1.28.0":
+  version: 1.28.0
+  resolution: "@revenuecat/purchases-js@npm:1.28.0"
+  checksum: fc5776aad5219dec5510cbbd2e2811dd3e01f51c818954a5377f45615681df76b9fb09936aae12dfadfed57808b6fa40fe07b263b359b71c7b93e0f8734fa046
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:17.53.0":
-  version: 17.53.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:17.53.0"
-  checksum: 457e003d18817773d99513ec0e4ba62cbcecf5f946156a0ed276d238b4f88ca0b6aabf66349df6dfc93da0affb9889f5e047319f85956419d5aa851e23a227b4
+"@revenuecat/purchases-typescript-internal@npm:17.52.0":
+  version: 17.52.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:17.52.0"
+  checksum: 7305e8d60a2c0769c4c88bbcfc591e83eb92d0bb72e288ae8c3da5695dfed2711a17dd5400872f86bbabf3716cabb384bfdac0192dcc69fbc098a69a7fdd3278
   languageName: node
   linkType: hard
 
@@ -2466,8 +2466,8 @@ __metadata:
     "@types/react": ^18.2.44
     react: ^18.3.1
     react-native: ^0.76.0
-    react-native-purchases: "*"
-    react-native-purchases-ui: "*"
+    react-native-purchases: "portal:../../"
+    react-native-purchases-ui: "portal:../../react-native-purchases-ui"
     react-native-safe-area-context: ^4.14.0
     react-native-screens: ~4.4.0
     typescript: ~5.2.0
@@ -5575,29 +5575,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-purchases-ui@npm:*":
-  version: 9.15.0
-  resolution: "react-native-purchases-ui@npm:9.15.0"
+"react-native-purchases-ui@portal:../../react-native-purchases-ui::locator=MaestroTestApp%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "react-native-purchases-ui@portal:../../react-native-purchases-ui::locator=MaestroTestApp%40workspace%3A."
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 17.53.0
+    "@revenuecat/purchases-typescript-internal": 17.52.0
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 9.15.0
+    react-native-purchases: 9.14.0
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
       optional: true
-  checksum: df83ce7d5dcb477d01a1e4ea9cfe75e581fd8c24db2d0032956fe2a7f12ec895202bbb5b2c7bee5791a0446b9d073fe172dc156d12ac16da61f8cf071e987908
   languageName: node
-  linkType: hard
+  linkType: soft
 
-"react-native-purchases@npm:*":
-  version: 9.15.0
-  resolution: "react-native-purchases@npm:9.15.0"
+"react-native-purchases@portal:../../::locator=MaestroTestApp%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "react-native-purchases@portal:../../::locator=MaestroTestApp%40workspace%3A."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 17.53.0
-    "@revenuecat/purchases-typescript-internal": 17.53.0
+    "@revenuecat/purchases-js-hybrid-mappings": 17.52.0
+    "@revenuecat/purchases-typescript-internal": 17.52.0
   peerDependencies:
     react: ">= 16.6.3"
     react-native: ">= 0.73.0"
@@ -5605,9 +5604,8 @@ __metadata:
   peerDependenciesMeta:
     react-native-web:
       optional: true
-  checksum: 0e0baa9e4bed9f464c383573a846b1c78b4482f0aa976a312cb3485bf5c604d617ee0b9cc08140a93b725b1f3b126757241aec8c28b36a634e48586d93412e85
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "react-native-safe-area-context@npm:^4.14.0":
   version: 4.14.1

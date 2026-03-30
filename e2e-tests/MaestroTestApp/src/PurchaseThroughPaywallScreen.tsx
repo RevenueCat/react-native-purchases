@@ -23,7 +23,11 @@ export default function PurchaseThroughPaywallScreen() {
   };
 
   const presentPaywall = async () => {
-    await RevenueCatUI.presentPaywall();
+    try {
+      await RevenueCatUI.presentPaywall();
+    } catch (error) {
+      console.error('Failed to present paywall:', error);
+    }
   };
 
   return (

@@ -1,7 +1,11 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import type {RootStackParamList} from '../App';
 
-export default function TestCasesScreen({navigation}: any) {
+type Props = NativeStackScreenProps<RootStackParamList, 'TestCases'>;
+
+export default function TestCasesScreen({navigation}: Props) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
