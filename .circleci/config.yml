@@ -296,6 +296,8 @@ jobs:
     steps:
       - checkout
       - install-ruby-3-2-0
+      - install-dependencies:
+          machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - revenuecat/install-maestro
@@ -324,6 +326,8 @@ jobs:
           command: |
             gem install bundler
             bundle install
+      - install-dependencies:
+          machine: "unix"
       - revenuecat/install-maestro
       - run:
           name: Create and start Android emulator
