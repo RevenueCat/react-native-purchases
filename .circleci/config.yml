@@ -372,6 +372,14 @@ workflows:
       - expo_android
       - expo_ios
       - expo_web
+      - run-maestro-e2e-tests-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-android:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
 
       # Hold and deploy phase - only on release branches
       - hold:
