@@ -42,7 +42,6 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MaestroTestApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-MaestroTestApp-MaestroTestAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MaestroTestApp-MaestroTestAppTests.release.xcconfig"; path = "Target Support Files/Pods-MaestroTestApp-MaestroTestAppTests/Pods-MaestroTestApp-MaestroTestAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		A1B2C3D4E5F60002 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MaestroTestApp/AppDelegate.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60003 /* StoreKitConfiguration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKitConfiguration.storekit; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -121,7 +120,6 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
-				A1B2C3D4E5F60003 /* StoreKitConfiguration.storekit */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
