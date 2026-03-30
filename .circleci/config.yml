@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@8.0.1
+  android: circleci/android@3.1.0
   revenuecat: revenuecat/sdks-common-config@3.16.0
 
 aliases:
@@ -328,16 +329,18 @@ jobs:
             bundle install
       - install-dependencies:
           machine: "unix"
-      - revenuecat/install-maestro
       - run:
-          name: Create and start Android emulator
-          command: |
-            sdkmanager "system-images;android-34;google_apis;x86_64"
-            echo "no" | avdmanager create avd -n test-e2e -k "system-images;android-34;google_apis;x86_64" --force
-            nohup emulator -avd test-e2e -no-audio -no-boot-anim -no-window -gpu swiftshader_indirect &
-            adb wait-for-device
-            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
-            adb shell input keyevent 82
+          name: Build Maestro app (Android)
+          command: bundle exec fastlane build_maestro_app_android
+          no_output_timeout: 15m
+      - android/create_avd:
+          avd_name: test-e2e
+          system_image: system-images;android-34;google_apis;x86_64
+          install: true
+      - android/start_emulator:
+          avd_name: test-e2e
+          post_emulator_launch_assemble_command: ""
+      - revenuecat/install-maestro
       - run:
           name: Run Maestro E2E Tests (Android)
           command: bundle exec fastlane run_maestro_e2e_tests_android

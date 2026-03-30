@@ -332,23 +332,18 @@ lane :run_maestro_e2e_tests_ios do
   sh("maestro test --format junit --output test_output/report.xml --test-output-dir test_output ../e2e-tests/maestro/")
 end
 
-desc "Run maestro E2E tests on Android"
-lane :run_maestro_e2e_tests_android do
+desc "Build maestro E2E test app for Android"
+lane :build_maestro_app_android do
   Dir.chdir("../e2e-tests/MaestroTestApp") do
     sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
     sh("cd android && ./gradlew assembleDebug")
-    # Emulator may have died during the long Gradle build (OOM). Try to
-    # reconnect first; if no device appears within 30s, restart the emulator.
-    sh("adb start-server")
-    sh("timeout 30 adb wait-for-device 2>/dev/null || " \
-       "(echo 'Emulator not found, restarting...' && " \
-       "nohup emulator -avd test-e2e -no-audio -no-boot-anim -no-window -gpu swiftshader_indirect & " \
-       "adb wait-for-device && " \
-       "adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done' && " \
-       "adb shell input keyevent 82)")
-    sh("adb install android/app/build/outputs/apk/debug/app-debug.apk")
   end
+end
+
+desc "Run maestro E2E tests on Android (emulator must be running)"
+lane :run_maestro_e2e_tests_android do
+  sh("adb install ../e2e-tests/MaestroTestApp/android/app/build/outputs/apk/debug/app-debug.apk")
   sh("mkdir -p test_output")
   sh("maestro test --format junit --output test_output/report.xml --test-output-dir test_output ../e2e-tests/maestro/")
 end
