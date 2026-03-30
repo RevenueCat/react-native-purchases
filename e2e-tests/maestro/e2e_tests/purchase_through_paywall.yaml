@@ -1,7 +1,6 @@
-# This flow requires passing the MAESTRO_STORE environment variable.
-#  app_store for iOS, test_store for Android.
-# Example:
-# maestro test -e MAESTRO_STORE=app_store purchase_through_paywall.yaml
+# This flow tests the purchase through paywall flow.
+# It navigates to the purchase screen, verifies initial entitlements,
+# presents the paywall, makes a purchase, and verifies entitlements update.
 
 appId: com.revenuecat.automatedsdktests
 name: Purchase through paywall
