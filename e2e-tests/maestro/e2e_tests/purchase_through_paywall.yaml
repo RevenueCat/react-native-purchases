@@ -23,17 +23,13 @@ name: Purchase through paywall
 - tapOn:
     text: "Present Paywall"
 - assertVisible: "Paywall V2"
-- takeScreenshot: "purchase_through_paywall - Paywall"
 - tapOn:
     text: "Yearly"
 - tapOn:
     text: "Continue"
 - runFlow:
     file: ../utils/confirm_purchase.yaml
-    env:
-      SCREENSHOT_PREFIX: purchase_through_paywall
 - extendedWaitUntil:
     visible: "Entitlements: pro"
     timeout: 15000
 - assertVisible: "Entitlements: pro"
-- takeScreenshot: "purchase_through_paywall - completed"
