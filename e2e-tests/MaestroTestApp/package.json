@@ -14,8 +14,6 @@
     "@react-navigation/native-stack": "^7.0.0",
     "react": "^18.3.1",
     "react-native": "^0.76.0",
-    "react-native-purchases": "portal:../../",
-    "react-native-purchases-ui": "portal:../../react-native-purchases-ui",
     "react-native-safe-area-context": "^4.14.0",
     "react-native-screens": "~4.4.0"
   },
@@ -27,6 +25,7 @@
     "@react-native/babel-preset": "^0.76.0",
     "@react-native/metro-config": "^0.76.0",
     "@types/react": "^18.2.44",
+    "babel-plugin-module-resolver": "^5.0.0",
     "typescript": "~5.2.0"
   }
 }

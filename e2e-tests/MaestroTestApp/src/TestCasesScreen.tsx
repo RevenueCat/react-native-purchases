@@ -11,7 +11,7 @@ export default function TestCasesScreen({navigation}: Props) {
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate('PurchaseThroughPaywall')}
-        accessibilityLabel="Purchase through paywall">
+        testID="purchase-through-paywall-button">
         <Text style={styles.buttonText}>Purchase through paywall</Text>
       </TouchableOpacity>
     </View>

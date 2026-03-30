@@ -5,6 +5,7 @@ import RevenueCatUI from 'react-native-purchases-ui';
 
 export default function PurchaseThroughPaywallScreen() {
   const [entitlements, setEntitlements] = useState<string>('none');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const onCustomerInfoUpdate = (info: CustomerInfo) => {
@@ -23,20 +24,30 @@ export default function PurchaseThroughPaywallScreen() {
   };
 
   const presentPaywall = async () => {
+    setError(null);
     try {
       await RevenueCatUI.presentPaywall();
-    } catch (error) {
-      console.error('Failed to present paywall:', error);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      console.error('Failed to present paywall:', message);
+      setError(message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Entitlements: {entitlements}</Text>
+      <Text testID="entitlements-label" style={styles.label}>
+        Entitlements: {entitlements}
+      </Text>
+      {error && (
+        <Text testID="error-message" style={styles.error}>
+          Error: {error}
+        </Text>
+      )}
       <TouchableOpacity
         style={styles.button}
         onPress={presentPaywall}
-        accessibilityLabel="Present Paywall">
+        testID="present-paywall-button">
         <Text style={styles.buttonText}>Present Paywall</Text>
       </TouchableOpacity>
     </View>
@@ -51,6 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {fontSize: 18, marginBottom: 20},
+  error: {fontSize: 14, color: 'red', marginBottom: 20, textAlign: 'center'},
   button: {padding: 16, backgroundColor: '#007AFF', borderRadius: 8},
   buttonText: {color: 'white', fontSize: 16},
 });

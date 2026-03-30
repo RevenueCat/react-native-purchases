@@ -46,7 +46,8 @@
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
-    "react-native-purchases-ui"
+    "react-native-purchases-ui",
+    "e2e-tests/MaestroTestApp"
   ],
   "packageManager": "yarn@3.6.1",
   "repository": {

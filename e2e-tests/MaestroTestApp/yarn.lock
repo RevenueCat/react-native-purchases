@@ -2238,29 +2238,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:17.52.0":
-  version: 17.52.0
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:17.52.0"
-  dependencies:
-    "@revenuecat/purchases-js": 1.28.0
-  checksum: f302f168502b3565f1c15e76ecdaecbdccd653532f9063b65de8ef6642fb6755b57341567d957b83b6af1c9269b6ebe8d8f60197fc8e989f091db9bbe1716907
-  languageName: node
-  linkType: hard
-
-"@revenuecat/purchases-js@npm:1.28.0":
-  version: 1.28.0
-  resolution: "@revenuecat/purchases-js@npm:1.28.0"
-  checksum: fc5776aad5219dec5510cbbd2e2811dd3e01f51c818954a5377f45615681df76b9fb09936aae12dfadfed57808b6fa40fe07b263b359b71c7b93e0f8734fa046
-  languageName: node
-  linkType: hard
-
-"@revenuecat/purchases-typescript-internal@npm:17.52.0":
-  version: 17.52.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:17.52.0"
-  checksum: 7305e8d60a2c0769c4c88bbcfc591e83eb92d0bb72e288ae8c3da5695dfed2711a17dd5400872f86bbabf3716cabb384bfdac0192dcc69fbc098a69a7fdd3278
-  languageName: node
-  linkType: hard
-
 "@sideway/address@npm:^4.1.5":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
@@ -2464,10 +2441,9 @@ __metadata:
     "@react-navigation/native": ^7.0.0
     "@react-navigation/native-stack": ^7.0.0
     "@types/react": ^18.2.44
+    babel-plugin-module-resolver: ^5.0.0
     react: ^18.3.1
     react-native: ^0.76.0
-    react-native-purchases: "portal:../../"
-    react-native-purchases-ui: "portal:../../react-native-purchases-ui"
     react-native-safe-area-context: ^4.14.0
     react-native-screens: ~4.4.0
     typescript: ~5.2.0
@@ -2687,6 +2663,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-plugin-module-resolver@npm:^5.0.0":
+  version: 5.0.3
+  resolution: "babel-plugin-module-resolver@npm:5.0.3"
+  dependencies:
+    find-babel-config: ^2.1.1
+    glob: ^9.3.3
+    pkg-up: ^3.1.0
+    reselect: ^4.1.7
+    resolve: ^1.22.8
+  checksum: a03a614d8a6d7eedb2f7a764503e28e41824d983c4100203c180523d4dbda8fd12d2679b8e1c769c0426595d581e818696fffb10bacf20bdb487a46acdebece3
+  languageName: node
+  linkType: hard
+
 "babel-plugin-polyfill-corejs2@npm:^0.4.14, babel-plugin-polyfill-corejs2@npm:^0.4.15":
   version: 0.4.17
   resolution: "babel-plugin-polyfill-corejs2@npm:0.4.17"
@@ -2847,6 +2836,15 @@ __metadata:
     balanced-match: ^1.0.0
     concat-map: 0.0.1
   checksum: b5f4329fdbe9d2e25fa250c8f866ebd054ba946179426e99b86dcccddabdb1d481f0e40ee5430032e62a7d0a6c2837605ace6783d015aa1d65d85ca72154d936
+  languageName: node
+  linkType: hard
+
+"brace-expansion@npm:^2.0.1":
+  version: 2.0.3
+  resolution: "brace-expansion@npm:2.0.3"
+  dependencies:
+    balanced-match: ^1.0.0
+  checksum: e9dd66caaf0784126e1654f1bc19adb28f3ef86f39f2226f833f7700ec727c141f6cd85eaa47bacf3426beda01c9fbc3a2f28174cf59330dc9b58ffaf9e09d96
   languageName: node
   linkType: hard
 
@@ -3635,6 +3633,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"find-babel-config@npm:^2.1.1":
+  version: 2.1.2
+  resolution: "find-babel-config@npm:2.1.2"
+  dependencies:
+    json5: ^2.2.3
+  checksum: 268f29cb38ee086b0f953c89f762dcea30b5b0e14abee2b39516410c00b49baa6821f598bd50346c93584e5625c5740f5c8b7e34993f568787a068f84dacc8c2
+  languageName: node
+  linkType: hard
+
 "find-cache-dir@npm:^2.0.0":
   version: 2.1.0
   resolution: "find-cache-dir@npm:2.1.0"
@@ -3808,6 +3815,18 @@ __metadata:
     once: ^1.3.0
     path-is-absolute: ^1.0.0
   checksum: 29452e97b38fa704dabb1d1045350fb2467cf0277e155aa9ff7077e90ad81d1ea9d53d3ee63bd37c05b09a065e90f16aec4a65f5b8de401d1dac40bc5605d133
+  languageName: node
+  linkType: hard
+
+"glob@npm:^9.3.3":
+  version: 9.3.5
+  resolution: "glob@npm:9.3.5"
+  dependencies:
+    fs.realpath: ^1.0.0
+    minimatch: ^8.0.2
+    minipass: ^4.2.4
+    path-scurry: ^1.6.1
+  checksum: 94b093adbc591bc36b582f77927d1fb0dbf3ccc231828512b017601408be98d1fe798fc8c0b19c6f2d1a7660339c3502ce698de475e9d938ccbb69b47b647c84
   languageName: node
   linkType: hard
 
@@ -4528,6 +4547,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:^10.2.0":
+  version: 10.4.3
+  resolution: "lru-cache@npm:10.4.3"
+  checksum: 6476138d2125387a6d20f100608c2583d415a4f64a0fecf30c9e2dda976614f09cad4baa0842447bd37dd459a7bd27f57d9d8f8ce558805abd487c583f3d774a
+  languageName: node
+  linkType: hard
+
 "lru-cache@npm:^11.0.0, lru-cache@npm:^11.1.0, lru-cache@npm:^11.2.1":
   version: 11.2.7
   resolution: "lru-cache@npm:11.2.7"
@@ -4911,6 +4937,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^8.0.2":
+  version: 8.0.7
+  resolution: "minimatch@npm:8.0.7"
+  dependencies:
+    brace-expansion: ^2.0.1
+  checksum: edaefeb16297f4f3969287913adb04c12c5683f2bd8610c6d6bfd5aa5b98bbbfd6013a2d0bb24df62e8add9c265128df1bfdbb61bb043ef4aa86b449fc2a9c76
+  languageName: node
+  linkType: hard
+
 "minimist@npm:^1.2.6":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
@@ -4978,7 +5013,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass@npm:^7.0.2, minipass@npm:^7.0.3, minipass@npm:^7.0.4, minipass@npm:^7.1.2, minipass@npm:^7.1.3":
+"minipass@npm:^4.2.4":
+  version: 4.2.8
+  resolution: "minipass@npm:4.2.8"
+  checksum: 7f4914d5295a9a30807cae5227a37a926e6d910c03f315930fde52332cf0575dfbc20295318f91f0baf0e6bb11a6f668e30cde8027dea7a11b9d159867a3c830
+  languageName: node
+  linkType: hard
+
+"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.0.2, minipass@npm:^7.0.3, minipass@npm:^7.0.4, minipass@npm:^7.1.2, minipass@npm:^7.1.3":
   version: 7.1.3
   resolution: "minipass@npm:7.1.3"
   checksum: 2ede17c0bf8fec499be3360fd07f0ec7666189e3907320a9b653f1530cf84af98928c5b12d80bfb75f321833bf2e97785b940540213ebdafe97a5f10327e664d
@@ -5397,6 +5439,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-scurry@npm:^1.6.1":
+  version: 1.11.1
+  resolution: "path-scurry@npm:1.11.1"
+  dependencies:
+    lru-cache: ^10.2.0
+    minipass: ^5.0.0 || ^6.0.2 || ^7.0.0
+  checksum: 890d5abcd593a7912dcce7cf7c6bf7a0b5648e3dee6caf0712c126ca0a65c7f3d7b9d769072a4d1baf370f61ce493ab5b038d59988688e0c5f3f646ee3c69023
+  languageName: node
+  linkType: hard
+
 "path-scurry@npm:^2.0.2":
   version: 2.0.2
   resolution: "path-scurry@npm:2.0.2"
@@ -5448,6 +5500,15 @@ __metadata:
   dependencies:
     find-up: ^3.0.0
   checksum: 70c9476ffefc77552cc6b1880176b71ad70bfac4f367604b2b04efd19337309a4eec985e94823271c7c0e83946fa5aeb18cd360d15d10a5d7533e19344bfa808
+  languageName: node
+  linkType: hard
+
+"pkg-up@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "pkg-up@npm:3.1.0"
+  dependencies:
+    find-up: ^3.0.0
+  checksum: 5bac346b7c7c903613c057ae3ab722f320716199d753f4a7d053d38f2b5955460f3e6ab73b4762c62fd3e947f58e04f1343e92089e7bb6091c90877406fcd8c8
   languageName: node
   linkType: hard
 
@@ -5574,38 +5635,6 @@ __metadata:
   checksum: 646d4f0f11b50131f3f7ac5b50d12b79de35be20fa84bce33fd3fc91557589e388562cb6203b5237098fd983cd1cdf12c5fb952b7f9903ac014de9a5a6cc7e28
   languageName: node
   linkType: hard
-
-"react-native-purchases-ui@portal:../../react-native-purchases-ui::locator=MaestroTestApp%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "react-native-purchases-ui@portal:../../react-native-purchases-ui::locator=MaestroTestApp%40workspace%3A."
-  dependencies:
-    "@revenuecat/purchases-typescript-internal": 17.52.0
-  peerDependencies:
-    react: "*"
-    react-native: ">= 0.73.0"
-    react-native-purchases: 9.14.0
-    react-native-web: "*"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  languageName: node
-  linkType: soft
-
-"react-native-purchases@portal:../../::locator=MaestroTestApp%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "react-native-purchases@portal:../../::locator=MaestroTestApp%40workspace%3A."
-  dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 17.52.0
-    "@revenuecat/purchases-typescript-internal": 17.52.0
-  peerDependencies:
-    react: ">= 16.6.3"
-    react-native: ">= 0.73.0"
-    react-native-web: "*"
-  peerDependenciesMeta:
-    react-native-web:
-      optional: true
-  languageName: node
-  linkType: soft
 
 "react-native-safe-area-context@npm:^4.14.0":
   version: 4.14.1
@@ -5799,6 +5828,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"reselect@npm:^4.1.7":
+  version: 4.1.8
+  resolution: "reselect@npm:4.1.8"
+  checksum: a4ac87cedab198769a29be92bc221c32da76cfdad6911eda67b4d3e7136dca86208c3b210e31632eae31ebd2cded18596f0dd230d3ccc9e978df22f233b5583e
+  languageName: node
+  linkType: hard
+
 "resolve-from@npm:^3.0.0":
   version: 3.0.0
   resolution: "resolve-from@npm:3.0.0"
@@ -5820,7 +5856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.22.11":
+"resolve@npm:^1.22.11, resolve@npm:^1.22.8":
   version: 1.22.11
   resolution: "resolve@npm:1.22.11"
   dependencies:
@@ -5833,7 +5869,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.22.11#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.22.11#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.8#~builtin<compat/resolve>":
   version: 1.22.11
   resolution: "resolve@patch:resolve@npm%3A1.22.11#~builtin<compat/resolve>::version=1.22.11&hash=c3c19d"
   dependencies:

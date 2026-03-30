@@ -46,6 +46,14 @@ The test uses a RevenueCat project configured with:
 
 ## Dependencies
 
-`react-native-purchases` and `react-native-purchases-ui` are referenced as local `file:`
-dependencies so the E2E tests always exercise the code on the current branch, not a
+This app is part of the `react-native-purchases` Yarn workspace. It uses the same
+local dependency mechanism as `examples/purchaseTesterTypescript`:
+- **Babel module-resolver** aliases `react-native-purchases` and
+  `react-native-purchases-ui` imports to the SDK source directories
+- **Metro watchFolders** allows the bundler to access files outside the app's
+  project root
+- **Metro exclusionList** prevents duplicate peer dependency resolution between
+  the app and the SDK's own `node_modules`
+
+This ensures E2E tests always exercise the code on the current branch, not a
 published npm version.
