@@ -328,6 +328,7 @@ lane :run_maestro_e2e_tests_ios do
     sh("xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
+  sh("mkdir -p test_output")
   sh("maestro test --format junit --output test_output/report.xml ../e2e-tests/maestro/")
 end
 
@@ -339,6 +340,7 @@ lane :run_maestro_e2e_tests_android do
     sh("cd android && ./gradlew assembleDebug")
     sh("adb install android/app/build/outputs/apk/debug/app-debug.apk")
   end
+  sh("mkdir -p test_output")
   sh("maestro test --format junit --output test_output/report.xml ../e2e-tests/maestro/")
 end
 
