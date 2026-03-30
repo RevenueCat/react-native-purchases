@@ -12,7 +12,13 @@ export default function PurchaseThroughPaywallScreen() {
       updateEntitlements(info);
     };
     Purchases.addCustomerInfoUpdateListener(onCustomerInfoUpdate);
-    Purchases.getCustomerInfo().then(updateEntitlements);
+    Purchases.getCustomerInfo()
+      .then(updateEntitlements)
+      .catch(e => {
+        const message = e instanceof Error ? e.message : String(e);
+        console.error('Failed to get customer info:', message);
+        setError(message);
+      });
     return () => {
       Purchases.removeCustomerInfoUpdateListener(onCustomerInfoUpdate);
     };

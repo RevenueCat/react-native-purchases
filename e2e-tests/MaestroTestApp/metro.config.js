@@ -17,7 +17,7 @@ const config = {
   watchFolders: [root, root_ui],
 
   resolver: {
-    blacklistRE: exclusionList([
+    blockList: exclusionList([
       ...modules.map(
         m =>
           new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`),
