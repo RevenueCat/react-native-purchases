@@ -329,6 +329,7 @@ jobs:
             echo "no" | avdmanager create avd -n test-e2e -k "system-images;android-34;google_apis;x86_64" --force
             nohup emulator -avd test-e2e -no-audio -no-boot-anim -no-window -gpu swiftshader_indirect &
             adb wait-for-device
+            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
             adb shell input keyevent 82
       - run:
           name: Run Maestro E2E Tests (Android)
