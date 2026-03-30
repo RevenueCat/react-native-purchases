@@ -7,14 +7,13 @@ export default function PurchaseThroughPaywallScreen() {
   const [entitlements, setEntitlements] = useState<string>('none');
 
   useEffect(() => {
-    const listener = Purchases.addCustomerInfoUpdateListener(
-      (info: CustomerInfo) => {
-        updateEntitlements(info);
-      },
-    );
+    const onCustomerInfoUpdate = (info: CustomerInfo) => {
+      updateEntitlements(info);
+    };
+    Purchases.addCustomerInfoUpdateListener(onCustomerInfoUpdate);
     Purchases.getCustomerInfo().then(updateEntitlements);
     return () => {
-      listener.remove();
+      Purchases.removeCustomerInfoUpdateListener(onCustomerInfoUpdate);
     };
   }, []);
 
