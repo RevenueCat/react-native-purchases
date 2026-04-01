@@ -51,7 +51,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "9.12.0";
+    public static final String PLUGIN_VERSION = "9.15.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -607,6 +607,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void redeemWebPurchase(String urlString, final Promise promise) {
       CommonKt.redeemWebPurchase(urlString, getOnResult(promise));
+    }
+
+    @ReactMethod
+    public void trackCustomPaywallImpression(ReadableMap data) {
+        CommonKt.trackCustomPaywallImpression(data.toHashMap());
     }
 
     // endregion

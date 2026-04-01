@@ -3,6 +3,7 @@ package com.revenuecat.purchases.react.ui
 import android.view.View
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableType
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
@@ -143,8 +144,17 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
         val iterator = customVariablesMap.keySetIterator()
         while (iterator.hasNextKey()) {
             val key = iterator.nextKey()
-            customVariablesMap.getString(key)?.let {
-                customVariables[key] = CustomVariableValue.String(it)
+            when (customVariablesMap.getType(key)) {
+                ReadableType.String -> customVariablesMap.getString(key)?.let {
+                    customVariables[key] = CustomVariableValue.String(it)
+                }
+                ReadableType.Number -> {
+                    customVariables[key] = CustomVariableValue.Number(customVariablesMap.getDouble(key))
+                }
+                ReadableType.Boolean -> {
+                    customVariables[key] = CustomVariableValue.Boolean(customVariablesMap.getBoolean(key))
+                }
+                else -> { /* unsupported type, skip */ }
             }
         }
         if (customVariables.isNotEmpty()) {

@@ -22,6 +22,7 @@
 @property (nonatomic, copy) RCTDirectEventBlock onRefundRequestCompleted;
 @property (nonatomic, copy) RCTDirectEventBlock onFeedbackSurveyCompleted;
 @property (nonatomic, copy) RCTDirectEventBlock onManagementOptionSelected;
+@property (nonatomic, copy) RCTDirectEventBlock onPromotionalOfferSucceeded;
 @property (nonatomic, assign) BOOL shouldShowCloseButton;
 
 - (instancetype)initWithCustomerCenterViewController:(CustomerCenterUIViewController *)viewController;

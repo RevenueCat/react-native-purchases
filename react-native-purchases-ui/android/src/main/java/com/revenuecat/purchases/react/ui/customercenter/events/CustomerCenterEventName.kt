@@ -10,5 +10,6 @@ internal enum class CustomerCenterEventName(val eventName: String) {
     ON_FEEDBACK_SURVEY_COMPLETED("onFeedbackSurveyCompleted"),
     ON_MANAGEMENT_OPTION_SELECTED("onManagementOptionSelected"),
     ON_REFUND_REQUEST_STARTED("onRefundRequestStarted"),
-    ON_REFUND_REQUEST_COMPLETED("onRefundRequestCompleted");
+    ON_REFUND_REQUEST_COMPLETED("onRefundRequestCompleted"),
+    ON_PROMOTIONAL_OFFER_SUCCEEDED("onPromotionalOfferSucceeded");
 }

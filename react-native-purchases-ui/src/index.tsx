@@ -23,14 +23,14 @@ import { PreviewCustomerCenter, PreviewPaywall } from "./preview/previewComponen
 import {
   type CustomVariables,
   type NativeCustomVariables,
-  convertCustomVariablesToStringMap,
+  convertCustomVariablesToNativeMap,
   transformOptionsForNative,
 } from "./customVariables";
 
 export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
 // Re-export for testing purposes (marked as @internal)
-export { convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
+export { convertCustomVariablesToNativeMap, convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
 
 /**
  * The result of a purchase or restore operation performed by custom app-based logic.
@@ -324,7 +324,8 @@ export interface PresentPaywallParams {
    * ```typescript
    * customVariables: {
    *   'player_name': CustomVariableValue.string('John'),
-   *   'level': CustomVariableValue.string('42'),
+   *   'level': CustomVariableValue.number(42),
+   *   'is_premium': CustomVariableValue.boolean(true),
    * }
    * ```
    */
@@ -367,7 +368,8 @@ export interface PaywallViewOptions {
    * ```typescript
    * customVariables: {
    *   'player_name': CustomVariableValue.string('John'),
-   *   'level': CustomVariableValue.string('42'),
+   *   'level': CustomVariableValue.number(42),
+   *   'is_premium': CustomVariableValue.boolean(true),
    * }
    * ```
    */
@@ -521,6 +523,11 @@ export interface CustomerCenterCallbacks {
    * Called when a custom action is selected in the customer center.
    */
   onCustomActionSelected?: ({actionId, purchaseIdentifier}: { actionId: string; purchaseIdentifier: string | null }) => void;
+
+  /**
+   * Called when a promotional offer purchase completes successfully in the customer center.
+   */
+  onPromotionalOfferSucceeded?: ({customerInfo, transaction, offerId}: { customerInfo: CustomerInfo; transaction: PurchasesStoreTransaction; offerId: string }) => void;
 }
 
 export interface PresentCustomerCenterParams {
@@ -566,7 +573,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
+      convertCustomVariablesToNativeMap(customVariables),
     )
   }
 
@@ -598,7 +605,7 @@ export default class RevenueCatUI {
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
-      convertCustomVariablesToStringMap(customVariables),
+      convertCustomVariablesToNativeMap(customVariables),
     )
   }
 
@@ -744,6 +751,7 @@ export default class RevenueCatUI {
     onRefundRequestStarted,
     onRefundRequestCompleted,
     onManagementOptionSelected,
+    onPromotionalOfferSucceeded,
     shouldShowCloseButton = true,
   }) => {
     if (usingPreviewAPIMode) {
@@ -771,6 +779,7 @@ export default class RevenueCatUI {
         onRefundRequestStarted={onRefundRequestStarted ? (event: any) => onRefundRequestStarted(event.nativeEvent) : undefined}
         onRefundRequestCompleted={onRefundRequestCompleted ? (event: any) => onRefundRequestCompleted(event.nativeEvent) : undefined}
         onManagementOptionSelected={onManagementOptionSelected ? (event: any) => onManagementOptionSelected(event.nativeEvent) : undefined}
+        onPromotionalOfferSucceeded={onPromotionalOfferSucceeded ? (event: any) => onPromotionalOfferSucceeded(event.nativeEvent) : undefined}
         shouldShowCloseButton={shouldShowCloseButton}
         style={[{ flex: 1 }, style]}
       />
@@ -880,6 +889,17 @@ export default class RevenueCatUI {
           'onCustomActionSelected',
           (event: { actionId: string; purchaseIdentifier: string | null }) => callbacks.onCustomActionSelected &&
             callbacks.onCustomActionSelected(event)
+        );
+        if (subscription) {
+          subscriptions.push(subscription);
+        }
+      }
+
+      if (callbacks.onPromotionalOfferSucceeded) {
+        const subscription = customerCenterEventEmitter?.addListener(
+          'onPromotionalOfferSucceeded',
+          (event: { customerInfo: CustomerInfo; transaction: PurchasesStoreTransaction; offerId: string }) => callbacks.onPromotionalOfferSucceeded &&
+            callbacks.onPromotionalOfferSucceeded(event)
         );
         if (subscription) {
           subscriptions.push(subscription);
