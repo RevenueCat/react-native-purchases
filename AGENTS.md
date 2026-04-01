@@ -103,16 +103,16 @@ yarn prepare-expo
 
 ### Architecture Layers
 1. **TypeScript Wrapper** (`src/purchases.ts`) — Type-safe public API
-2. **Hybrid Mapping** (`@revenuecat/purchases-js-hybrid-mappings`) — Platform bridges
+2. **Native Bridge** (`PurchasesHybridCommon`) — iOS/Android hybrid mappings come from the corresponding PHC libraries
 3. **Native Modules**:
    - iOS: `ios/RNPurchases.m`, `ios/PurchasesPlugin.swift`
    - Android: `android/.../RNPurchasesModule.java`
 4. **Browser Fallback** (`src/browser/`) — For web/Expo Go/Rork Sandbox environments
 
 ### Key Dependencies
-- `@revenuecat/purchases-js-hybrid-mappings` — Bridge layer
-- `@revenuecat/purchases-typescript-internal` — Shared types
-- `PurchasesHybridCommon` (iOS/Android) — Native bridge
+- `@revenuecat/purchases-js-hybrid-mappings` — Mappings for the purchases-js (web) library only; not used for iOS/Android
+- `@revenuecat/purchases-typescript-internal` — Shared types (also shared with purchases-capacitor)
+- `PurchasesHybridCommon` (iOS/Android) — Native bridge and hybrid mappings for iOS/Android
 
 ### Re-export Pattern
 Files like `customerInfo.ts`, `errors.ts`, `offerings.ts` re-export from `@revenuecat/purchases-typescript-internal` for backwards compatibility.
@@ -132,14 +132,7 @@ Don't raise minimum versions unless explicitly required and justified.
 
 ## Testing
 
-Test files are in `__tests__/`:
-- `index.test.js` — Main integration tests
-- `alertHelper.test.ts` — Browser alert tests
-- `offeringsLoader.test.ts` — Offerings tests
-- `purchaseSimulatedPackageHelper.test.ts` — Simulated purchase tests
-- `nativeModuleNull.test.js` — Null native module handling
-- `ApiKeyValidation/ExpoGo.test.js` — Expo Go API key validation
-- `ApiKeyValidation/RorkSandbox.test.js` — Rork Sandbox API key validation
+Test files are in `__tests__/`. Coverage includes native module integration, browser/web mode fallback, environment detection, and API key validation for Expo Go and Rork Sandbox.
 
 ## Development Workflow
 
