@@ -1,6 +1,7 @@
 import UIKit
 import React
 import React_RCTAppDelegate
+import ReactAppDependencyProvider
 
 @main
 class AppDelegate: RCTAppDelegate {
@@ -9,6 +10,7 @@ class AppDelegate: RCTAppDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     self.moduleName = "MaestroTestApp"
+    self.dependencyProvider = RCTAppDependencyProvider()
     self.initialProps = [:]
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
@@ -18,10 +20,6 @@ class AppDelegate: RCTAppDelegate {
   }
 
   override func bundleURL() -> URL {
-    #if DEBUG
-    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")!
-    #else
     return Bundle.main.url(forResource: "main", withExtension: "jsbundle")!
-    #endif
   }
 }
