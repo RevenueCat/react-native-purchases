@@ -9,15 +9,9 @@ name: Purchase through paywall
 - clearState
 - pressKey: home
 - launchApp
-- extendedWaitUntil:
-    visible: "Test Cases"
-    timeout: 30000
 - assertVisible: "Test Cases"
 - tapOn:
     text: "Purchase through paywall"
-- extendedWaitUntil:
-    visible: "Entitlements: none"
-    timeout: 15000
 - assertVisible: "Entitlements: none"
 - assertVisible: "Present Paywall"
 - tapOn:
@@ -29,7 +23,4 @@ name: Purchase through paywall
     text: "Continue"
 - runFlow:
     file: ../utils/confirm_purchase.yaml
-- extendedWaitUntil:
-    visible: "Entitlements: pro"
-    timeout: 15000
 - assertVisible: "Entitlements: pro"
