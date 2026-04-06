@@ -293,7 +293,7 @@ jobs:
     executor:
       name: rn/macos
       resource_class: m4pro.medium
-      xcode_version: '26.4'
+      xcode_version: '26.3'
     steps:
       - checkout
       - install-ruby-3-2-0
