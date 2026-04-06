@@ -20,6 +20,9 @@ class AppDelegate: RCTAppDelegate {
   }
 
   override func bundleURL() -> URL {
-    return Bundle.main.url(forResource: "main", withExtension: "jsbundle")!
+    guard let url = Bundle.main.url(forResource: "main", withExtension: "jsbundle") else {
+      fatalError("main.jsbundle not found. Make sure FORCE_BUNDLING=1 is set when building for CI.")
+    }
+    return url
   }
 }
