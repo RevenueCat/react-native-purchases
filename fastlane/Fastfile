@@ -324,8 +324,8 @@ lane :run_maestro_e2e_tests_ios do
   Dir.chdir("../e2e-tests/MaestroTestApp") do
     sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
-    sh("yarn install")
-    sh("rm -rf ios/Pods && cd ios && pod install")
+    sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
+    sh("rm -rf ios/Pods && cd ios && pod install --repo-update")
     sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
@@ -338,7 +338,7 @@ lane :build_maestro_app_android do
   Dir.chdir("../e2e-tests/MaestroTestApp") do
     sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
-    sh("yarn install")
+    sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
     sh("cd android && ./gradlew assembleDebug")
   end
 end
