@@ -37,6 +37,7 @@ yarn-error.log
 
 # Ruby / CocoaPods
 **/Pods/
+Podfile.lock
 /vendor/bundle/
 
 # Bundle artifact
