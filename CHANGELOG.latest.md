@@ -1,13 +1,12 @@
 ## RevenueCat SDK
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.54.0 (#1706) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 9.28.1](https://github.com/RevenueCat/purchases-android/releases/tag/9.28.1)
-  * [Android 9.28.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.28.0)
-  * [iOS 5.67.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.67.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.55.1 (#1717) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 9.29.0](https://github.com/RevenueCat/purchases-android/releases/tag/9.29.0)
+  * [iOS 5.67.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.67.1)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.55.0 (#1716) via RevenueCat Git Bot (@RCGitBot)
 
 ### 🔄 Other Changes
-* Bump fastlane-plugin-revenuecat_internal from `f11fe40` to `b5a7159` (#1707) via dependabot[bot] (@dependabot[bot])
-* Add AGENTS.md for AI coding assistants (#1616) via Facundo Menzella (@facumenzella)
-* chore: bump react-native devDependency from 0.73.5 to 0.78.0 (#1704) via Cesar de la Vega (@vegaro)
-* Fix known security vulnerabilities in dependencies (#1703) via Cesar de la Vega (@vegaro)
-* Bump brace-expansion from 1.1.12 to 1.1.13 in /examples/MagicWeather (#1702) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `6289be1` to `ceecf91` (#1718) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `5d6e93f` to `6289be1` (#1715) via dependabot[bot] (@dependabot[bot])
+* Bump lodash from 4.17.23 to 4.18.1 in /examples/MagicWeather (#1714) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `b5a7159` to `5d6e93f` (#1713) via dependabot[bot] (@dependabot[bot])
