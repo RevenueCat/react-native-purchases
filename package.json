@@ -41,7 +41,7 @@
     "prepare": "tsc",
     "example": "yarn workspace purchasetester",
     "ui": "yarn workspace react-native-purchases-ui",
-    "bootstrap": "yarn && yarn prepare-expo && yarn example pods",
+    "bootstrap": "yarn && yarn prepare-expo && yarn example pods && yarn workspace MaestroTestApp pods",
     "prepare-expo": "yarn build && yarn ui prepare && yarn pack && yarn ui pack && touch examples/purchaseTesterExpo/yarn.lock"
   },
   "workspaces": [
