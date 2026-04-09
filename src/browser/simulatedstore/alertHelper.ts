@@ -51,7 +51,7 @@ export function showSimulatedPurchaseAlert(
         }
 
         Alert.alert(
-          'Test Purchase',
+          'Test Store Purchase',
           message,
           [
             {
@@ -60,12 +60,12 @@ export function showSimulatedPurchaseAlert(
               onPress: handleCancel,
             },
             {
-              text: 'Test Failed Purchase',
+              text: 'Test failed purchase',
               style: 'destructive',
               onPress: handleFailedPurchase,
             },
             {
-              text: 'Test Valid Purchase',
+              text: 'Test valid purchase',
               onPress: () => handlePurchase(data),
             },
           ],
