@@ -1,0 +1,9 @@
+# This flow handles the Test Store purchase confirmation.
+
+appId: com.revenuecat.automatedsdktests
+name: Confirm purchase - Test Store Purchase Alert
+
+---
+- assertVisible: "Test.*Purchase"
+- tapOn:
+    text: "(?i)test valid purchase"

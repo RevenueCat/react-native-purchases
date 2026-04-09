@@ -1,0 +1,26 @@
+# This flow tests the purchase through paywall flow.
+# It navigates to the purchase screen, verifies initial entitlements,
+# presents the paywall, makes a purchase, and verifies entitlements update.
+
+appId: com.revenuecat.automatedsdktests
+name: Purchase through paywall
+
+---
+- clearState
+- pressKey: home
+- launchApp
+- assertVisible: "Test Cases"
+- tapOn:
+    text: "Purchase through paywall"
+- assertVisible: "Entitlements: none"
+- assertVisible: "Present Paywall"
+- tapOn:
+    text: "Present Paywall"
+- assertVisible: "Paywall V2"
+- tapOn:
+    text: "Yearly"
+- tapOn:
+    text: "Continue"
+- runFlow:
+    file: ../utils/confirm_purchase.yaml
+- assertVisible: "Entitlements: pro"
