@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@8.0.1
+  android: circleci/android@3.1.0
   revenuecat: revenuecat/sdks-common-config@3.16.0
 
 aliases:
@@ -288,6 +289,67 @@ jobs:
           name: release
           command: bundle exec fastlane release
 
+  run-maestro-e2e-tests-ios:
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.3'
+    steps:
+      - checkout
+      - install-ruby-3-2-0
+      - install-dependencies:
+          machine: "macos"
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+      - revenuecat/install-maestro
+      - run:
+          name: Boot iOS Simulator
+          command: |
+            xcrun simctl boot "iPhone 17" || true
+            xcrun simctl bootstatus "iPhone 17" -b
+      - run:
+          name: Run Maestro E2E Tests (iOS)
+          command: bundle exec fastlane run_maestro_e2e_tests_ios
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
+
+  run-maestro-e2e-tests-android:
+    machine:
+      image: android:2024.11.1
+    resource_class: xlarge
+    steps:
+      - checkout
+      - run:
+          name: Install Ruby and Bundler
+          command: |
+            gem install bundler
+            bundle install
+      - install-dependencies:
+          machine: "unix"
+      - run:
+          name: Build Maestro app (Android)
+          command: bundle exec fastlane build_maestro_app_android
+          no_output_timeout: 15m
+      - android/create_avd:
+          avd_name: test-e2e
+          system_image: system-images;android-34;google_apis;x86_64
+          install: true
+      - android/start_emulator:
+          avd_name: test-e2e
+          post_emulator_launch_assemble_command: ""
+      - revenuecat/install-maestro
+      - run:
+          name: Run Maestro E2E Tests (Android)
+          command: bundle exec fastlane run_maestro_e2e_tests_android
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
+
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
     <<: *base-mac-job
@@ -321,6 +383,14 @@ workflows:
       - expo_android
       - expo_ios
       - expo_web
+      - run-maestro-e2e-tests-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-android:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
 
       # Hold and deploy phase - only on release branches
       - hold:
@@ -366,6 +436,26 @@ workflows:
       equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
       - revenuecat/automatic-bump
+
+  maestro-e2e-tests-ios:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+
+  maestro-e2e-tests-android:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests-android:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
 
   update-hybrid-common-versions:
      when:
