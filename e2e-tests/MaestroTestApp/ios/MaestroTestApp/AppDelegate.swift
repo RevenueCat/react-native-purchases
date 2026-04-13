@@ -11,7 +11,12 @@ class AppDelegate: RCTAppDelegate {
   ) -> Bool {
     self.moduleName = "MaestroTestApp"
     self.dependencyProvider = RCTAppDependencyProvider()
-    self.initialProps = [:]
+
+    var props: [String: Any] = [:]
+    if let testFlow = UserDefaults.standard.string(forKey: "e2e_test_flow") {
+      props["e2e_test_flow"] = testFlow
+    }
+    self.initialProps = props
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
