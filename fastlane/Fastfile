@@ -260,32 +260,6 @@ lane :trigger_bump do
   trigger_action_in_circle_ci(action: 'bump', repo_name: repo_name)
 end
 
-def run_maestro_with_retries(flow_dir:, output_dir:)
-  max_retries = 5
-  attempt = 0
-  success = false
-
-  FileUtils.mkdir_p(output_dir)
-
-  while attempt <= max_retries && !success
-    attempt_output_dir = "#{output_dir}/attempt_#{attempt}"
-    FileUtils.mkdir_p(attempt_output_dir)
-
-    begin
-      sh("maestro", "test", "--format", "junit", "--output", "#{attempt_output_dir}/report.xml", "--test-output-dir", attempt_output_dir, flow_dir)
-      success = true
-      FileUtils.cp("#{attempt_output_dir}/report.xml", "#{output_dir}/report.xml")
-    rescue => e
-      UI.error("Maestro test attempt #{attempt} failed: #{e.message}")
-      if attempt >= max_retries
-        raise e
-      end
-      attempt += 1
-      UI.message("Retrying... #{attempt}/#{max_retries}")
-    end
-  end
-end
-
 ###############################################################################
 # Helper functions 🤜🤛                                                      #
 ###############################################################################
@@ -355,7 +329,7 @@ lane :run_maestro_e2e_tests_ios do
     sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
-  run_maestro_with_retries(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
+  run_maestro_e2e_tests(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
 end
 
 desc "Build maestro E2E test app for Android"
@@ -371,7 +345,7 @@ end
 desc "Run maestro E2E tests on Android (emulator must be running)"
 lane :run_maestro_e2e_tests_android do
   sh("adb install ../e2e-tests/MaestroTestApp/android/app/build/outputs/apk/debug/app-debug.apk")
-  run_maestro_with_retries(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
+  run_maestro_e2e_tests(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
 end
 
 private_lane :update_sample_podfile_lock_with_retry do |options|
