@@ -457,6 +457,63 @@ workflows:
             - maestro-e2e-tests
             - e2e-tests
 
+  # TEMPORARY: stress test for maestro retry mechanism - remove after validation
+  stress-test-maestro:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+    jobs:
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-1
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-2
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-3
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-4
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-5
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-6
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-7
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-8
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-9
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: maestro-stress-10
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+
   update-hybrid-common-versions:
      when:
        equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
