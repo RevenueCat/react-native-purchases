@@ -329,8 +329,7 @@ lane :run_maestro_e2e_tests_ios do
     sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
-  sh("mkdir -p test_output")
-  sh("maestro test --format junit --output test_output/report.xml --test-output-dir test_output ../e2e-tests/maestro/")
+  run_maestro_e2e_tests(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
 end
 
 desc "Build maestro E2E test app for Android"
@@ -346,8 +345,7 @@ end
 desc "Run maestro E2E tests on Android (emulator must be running)"
 lane :run_maestro_e2e_tests_android do
   sh("adb install ../e2e-tests/MaestroTestApp/android/app/build/outputs/apk/debug/app-debug.apk")
-  sh("mkdir -p test_output")
-  sh("maestro test --format junit --output test_output/report.xml --test-output-dir test_output ../e2e-tests/maestro/")
+  run_maestro_e2e_tests(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
 end
 
 private_lane :update_sample_podfile_lock_with_retry do |options|
