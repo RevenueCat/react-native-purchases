@@ -48,12 +48,14 @@ lane :bump do |options|
     automatic_release: options[:automatic_release],
     hybrid_common_version: phc_version,
     versions_file_path: versions_path,
-    is_prerelease: options[:is_prerelease]
+    is_prerelease: options[:is_prerelease],
+    include_purchases_js: true
   )
   update_hybrids_versions_file(
     versions_file_path: versions_path,
     new_sdk_version: current_version_number,
-    hybrid_common_version: phc_version
+    hybrid_common_version: phc_version,
+    include_purchases_js: true
   )
   commit_current_changes(commit_message: 'Update VERSIONS.md')
   push_to_git_remote(set_upstream: true)
