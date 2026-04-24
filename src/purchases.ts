@@ -95,7 +95,13 @@ const NATIVE_MODULE_ERROR =
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
 const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+
 // Only create event emitter if native module is available to avoid crash on import
+//
+// React Native 0.79+ requires native modules to implement addListener() and removeListeners()
+// methods for NativeEventEmitter to work. Both iOS and Android native modules now have these.
+// See: https://github.com/RevenueCat/react-native-purchases/issues/1298
+// See: https://reactnative.dev/blog/2025/04/08/react-native-0.79 (Breaking Changes section)
 const eventEmitter = !usingBrowserMode && RNPurchases ? new NativeEventEmitter(RNPurchases) : null;
 
 // Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
