@@ -66,7 +66,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled 
                   automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled
-                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride) {
+                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride
+                  preferredUILocaleOverrideHonorsLayoutDirection:(BOOL)preferredUILocaleOverrideHonorsLayoutDirection) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -81,6 +82,10 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                    automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled
                                               preferredLocale:preferredUILocaleOverride.mappingNSNullToNil];
     purchases.delegate = self;
+    if (preferredUILocaleOverrideHonorsLayoutDirection) {
+        [self applyPreferredLocale:preferredUILocaleOverride
+               honorLayoutDirection:YES];
+    }
 }
 
 RCT_EXPORT_METHOD(setAllowSharingStoreAccount:(BOOL)allowSharingStoreAccount) {
@@ -452,8 +457,40 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative) {
     [RCCommonFunctionality setCreative:creative.mappingNSNullToNil];
 }
 
-RCT_EXPORT_METHOD(overridePreferredLocale:(nullable NSString *)locale) {
-    [RCCommonFunctionality overridePreferredLocale:locale.mappingNSNullToNil];
+RCT_EXPORT_METHOD(overridePreferredLocale:(nullable NSString *)locale
+                  honorLayoutDirection:(BOOL)honorLayoutDirection) {
+    [self applyPreferredLocale:locale
+          honorLayoutDirection:honorLayoutDirection];
+}
+
+- (void)applyPreferredLocale:(nullable NSString *)locale
+        honorLayoutDirection:(BOOL)honorLayoutDirection {
+    if (!honorLayoutDirection) {
+        [RCCommonFunctionality overridePreferredLocale:locale.mappingNSNullToNil];
+        return;
+    }
+
+    if (!RCPurchases.isConfigured) {
+        [RCCommonFunctionality overridePreferredLocale:locale.mappingNSNullToNil];
+        return;
+    }
+
+    RCPurchases *purchases = RCPurchases.sharedPurchases;
+    SEL selector = NSSelectorFromString(@"overridePreferredUILocale:honorLayoutDirection:");
+    if (![purchases respondsToSelector:selector]) {
+        [RCCommonFunctionality overridePreferredLocale:locale.mappingNSNullToNil];
+        return;
+    }
+
+    NSMethodSignature *signature = [purchases methodSignatureForSelector:selector];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    NSString *localeArgument = locale.mappingNSNullToNil;
+    BOOL honorLayoutDirectionArgument = YES;
+    invocation.target = purchases;
+    invocation.selector = selector;
+    [invocation setArgument:&localeArgument atIndex:2];
+    [invocation setArgument:&honorLayoutDirectionArgument atIndex:3];
+    [invocation invoke];
 }
 
 RCT_REMAP_METHOD(canMakePayments,

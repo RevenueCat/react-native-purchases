@@ -94,7 +94,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean pendingTransactionsForPrepaidPlansEnabled,
                                boolean diagnosticsEnabled,
                                boolean automaticDeviceIdentifierCollectionEnabled,
-                               @Nullable String preferredUILocaleOverride) {
+                               @Nullable String preferredUILocaleOverride,
+                               boolean preferredUILocaleOverrideHonorsLayoutDirection) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if (useAmazon) {
@@ -115,6 +116,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             automaticDeviceIdentifierCollectionEnabled,
             preferredUILocaleOverride
         );
+        if (preferredUILocaleOverrideHonorsLayoutDirection) {
+            overridePreferredLocaleIfNeeded(preferredUILocaleOverride, true);
+        }
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }
 
@@ -381,8 +385,24 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void overridePreferredLocale(@Nullable String locale) {
-        CommonKt.overridePreferredLocale(locale);
+    public void overridePreferredLocale(@Nullable String locale, boolean honorLayoutDirection) {
+        overridePreferredLocaleIfNeeded(locale, honorLayoutDirection);
+    }
+
+    private void overridePreferredLocaleIfNeeded(@Nullable String locale, boolean honorLayoutDirection) {
+        if (!honorLayoutDirection) {
+            CommonKt.overridePreferredLocale(locale);
+            return;
+        }
+
+        try {
+            Purchases purchases = Purchases.getSharedInstance();
+            Purchases.class
+                .getMethod("overridePreferredUILocale", String.class, boolean.class)
+                .invoke(purchases, locale, true);
+        } catch (Exception ignored) {
+            CommonKt.overridePreferredLocale(locale);
+        }
     }
 
     //================================================================================

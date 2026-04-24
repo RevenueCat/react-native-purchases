@@ -810,6 +810,7 @@ NativeModules.RNPurchases = {
   getVirtualCurrencies: jest.fn(),
   invalidateVirtualCurrenciesCache: jest.fn(),
   getCachedVirtualCurrencies: jest.fn(),
+  overridePreferredLocale: jest.fn(),
   trackCustomPaywallImpression: jest.fn()
 };
 
