@@ -55,6 +55,14 @@ export interface SyncPurchasesResult {
   customerInfo: CustomerInfo;
 }
 
+export type PurchasesConfigurationWithLayoutDirection = PurchasesConfiguration & {
+  /**
+   * Whether RevenueCat UI components should also derive layout direction from
+   * preferredUILocaleOverride. Defaults to false.
+   */
+  preferredUILocaleOverrideHonorsLayoutDirection?: boolean;
+};
+
 import { shouldUseBrowserMode } from "./utils/environment";
 import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
@@ -317,6 +325,7 @@ export default class Purchases {
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
+   * @param {boolean} [preferredUILocaleOverrideHonorsLayoutDirection=false] An optional boolean. Set this to true for RevenueCat UI components to also derive layout direction from preferredUILocaleOverride.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -333,7 +342,8 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
-  }: PurchasesConfiguration): void {
+    preferredUILocaleOverrideHonorsLayoutDirection = false,
+  }: PurchasesConfigurationWithLayoutDirection): void {
     throwIfNativeModuleNotAvailable();
 
     if (!customLogHandler) {
@@ -418,6 +428,7 @@ export default class Purchases {
       diagnosticsEnabled,
       automaticDeviceIdentifierCollectionEnabled,
       preferredUILocaleOverride,
+      preferredUILocaleOverrideHonorsLayoutDirection,
     );
   }
 
@@ -1628,13 +1639,15 @@ export default class Purchases {
    * Pass null to clear the override and use the device's locale.
    *
    * @param locale A BCP 47 locale identifier (e.g., "en-US") or null to clear.
+   * @param honorLayoutDirection Whether RevenueCat UI components should also derive layout direction from this locale. Defaults to false.
    * @returns {Promise<void>}
    */
   public static async overridePreferredLocale(
-    locale: string | null
+    locale: string | null,
+    honorLayoutDirection = false
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    RNPurchases.overridePreferredLocale(locale);
+    RNPurchases.overridePreferredLocale(locale, honorLayoutDirection);
   }
 
   /**

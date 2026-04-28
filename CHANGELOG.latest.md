@@ -1,4 +1,7 @@
 ## RevenueCat SDK
+### ✨ New Features
+* `RevenueCatUI` Paywalls and Customer Center can now opt in to matching right-to-left layout when overriding the preferred UI locale by setting `preferredUILocaleOverrideHonorsLayoutDirection` at configure time or the `honorLayoutDirection` runtime parameter. The default remains false to preserve existing layout behavior.
+
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.1.0 (#1733) via RevenueCat Git Bot (@RCGitBot)
   * [Android 10.2.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.2.0)

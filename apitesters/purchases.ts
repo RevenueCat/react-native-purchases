@@ -453,6 +453,7 @@ async function checkGetCachedVirtualCurrencies() {
 async function checkOverridePreferredLocale() {
   const preferredUILocaleOverride: string | null = "en-US";
   await Purchases.overridePreferredLocale(preferredUILocaleOverride);
+  await Purchases.overridePreferredLocale(preferredUILocaleOverride, true);
 }
 
 async function checkTrackCustomPaywallImpression() {
