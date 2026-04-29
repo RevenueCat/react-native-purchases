@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
-# Usage:
-#   scripts/build.sh           Build the full SDK stack: JS/web, iOS, and Android.
-#   scripts/build.sh ios       Install JS dependencies and pods, then build JS and the iOS example workspace.
-#   scripts/build.sh android   Install JS dependencies, then build JS and Android.
-#   scripts/build.sh web       Install JS dependencies, then build the web/Expo package.
+# Builds the React Native SDK.
 #
-# Valid platforms: ios, android, web.
+# Usage:
+#   ./build.sh           Build the full SDK stack: JS/web, iOS, and Android.
+#   ./build.sh ios       Install JS dependencies and pods, then build JS and the iOS example workspace.
+#   ./build.sh android   Install JS dependencies, then build JS and Android.
+#   ./build.sh web       Install JS dependencies, then build the web/Expo package.
+#
+# Valid platforms: ios, android, web
 
 set -euo pipefail
 
