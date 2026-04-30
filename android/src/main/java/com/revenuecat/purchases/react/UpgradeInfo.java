@@ -1,12 +1,14 @@
 package com.revenuecat.purchases.react;
 
-class GoogleUpgradeInfo {
+class UpgradeInfo {
     private final String oldProductIdentifier;
     private final Integer prorationMode;
+    private final String replacementMode;
 
-    public GoogleUpgradeInfo(String oldProductIdentifier, Integer prorationMode) {
+    public UpgradeInfo(String oldProductIdentifier, Integer prorationMode, String replacementMode) {
         this.oldProductIdentifier = oldProductIdentifier;
         this.prorationMode = prorationMode;
+        this.replacementMode = replacementMode;
     }
 
     public String getOldProductIdentifier() {
@@ -15,5 +17,9 @@ class GoogleUpgradeInfo {
 
     public Integer getProrationMode() {
         return prorationMode;
+    }
+
+    public String getReplacementMode() {
+        return replacementMode;
     }
 }
