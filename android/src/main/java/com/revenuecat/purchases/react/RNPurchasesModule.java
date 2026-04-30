@@ -181,7 +181,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final ReadableMap googleInfo,
                                 @Nullable final ReadableMap presentedOfferingContext,
                                 final Promise promise) {
-        GoogleUpgradeInfo googleUpgradeInfo = getUpgradeInfo(googleProductChangeInfo);
+        UpgradeInfo upgradeInfo = getUpgradeInfo(googleProductChangeInfo);
 
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
@@ -195,11 +195,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             productIdentifier,
             type,
             null,
-            googleUpgradeInfo.getOldProductIdentifier(),
-            googleUpgradeInfo.getProrationMode(),
+            upgradeInfo.getOldProductIdentifier(),
+            upgradeInfo.getProrationMode(),
             googleIsPersonalized,
             mapPresentedOfferingContext,
-            getOnResult(promise));
+            getOnResult(promise),
+            null,
+            null,
+            null,
+            upgradeInfo.getReplacementMode());
     }
 
     @ReactMethod
@@ -209,7 +213,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final String discountTimestamp,
                                 @Nullable final ReadableMap googleInfo,
                                 final Promise promise) {
-        GoogleUpgradeInfo googleUpgradeInfo = getUpgradeInfo(googleProductChangeInfo);
+        UpgradeInfo upgradeInfo = getUpgradeInfo(googleProductChangeInfo);
 
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
@@ -219,8 +223,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             getReactApplicationContext().getCurrentActivity(),
             packageIdentifier,
             mapPresentedOfferingContext,
-            googleUpgradeInfo.getOldProductIdentifier(),
-            googleUpgradeInfo.getProrationMode(),
+            upgradeInfo.getOldProductIdentifier(),
+            upgradeInfo.getProrationMode(),
             googleIsPersonalized,
             getOnResult(promise));
     }
@@ -233,7 +237,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                            @Nullable final ReadableMap googleInfo,
                                            @Nullable final ReadableMap presentedOfferingContext,
                                            final Promise promise) {
-        GoogleUpgradeInfo googleUpgradeInfo = getUpgradeInfo(upgradeInfo);
+        UpgradeInfo parsedUpgradeInfo = getUpgradeInfo(upgradeInfo);
 
         Boolean googleIsPersonalized = googleInfo != null && googleInfo.hasKey("isPersonalizedPrice") ? googleInfo.getBoolean("isPersonalizedPrice") : null;
 
@@ -246,8 +250,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             getReactApplicationContext().getCurrentActivity(),
             productIdentifer,
             optionIdentifier,
-            googleUpgradeInfo.getOldProductIdentifier(),
-            googleUpgradeInfo.getProrationMode(),
+            parsedUpgradeInfo.getOldProductIdentifier(),
+            parsedUpgradeInfo.getProrationMode(),
             googleIsPersonalized,
             mapPresentedOfferingContext,
             getOnResult(promise));
@@ -656,21 +660,27 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     };
   }
 
-    private static GoogleUpgradeInfo getUpgradeInfo(ReadableMap upgradeInfo) {
-        String googleOldProductId = null;
+    private static UpgradeInfo getUpgradeInfo(ReadableMap upgradeInfo) {
+        String oldProductId = null;
         Integer googleProrationMode = null;
+        String storeReplacementMode = null;
 
         if (upgradeInfo != null) {
             // GoogleProductChangeInfo in V6 and later
-            googleOldProductId = upgradeInfo.hasKey("oldProductIdentifier") ? upgradeInfo.getString("oldProductIdentifier") : null;
-            googleProrationMode = upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+          oldProductId = upgradeInfo.hasKey("oldProductIdentifier") ? upgradeInfo.getString("oldProductIdentifier") : null;
+            storeReplacementMode = upgradeInfo.hasKey("replacementMode") ? upgradeInfo.getString("replacementMode") : null;
+
+            if (storeReplacementMode == null) {
+              // Only use prorationMode if no replacementMode was provided
+              googleProrationMode = upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+            }
 
             // Legacy UpgradeInfo in V5 and earlier
-            if (googleOldProductId == null) {
-                googleOldProductId = upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+            if (oldProductId == null) {
+              oldProductId = upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
             }
         }
 
-        return new GoogleUpgradeInfo(googleOldProductId, googleProrationMode);
+        return new UpgradeInfo(oldProductId, googleProrationMode, storeReplacementMode);
     }
 }
