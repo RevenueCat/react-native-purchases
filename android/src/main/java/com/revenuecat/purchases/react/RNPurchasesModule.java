@@ -258,7 +258,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             parsedUpgradeInfo.getProrationMode(),
             googleIsPersonalized,
             mapPresentedOfferingContext,
-            getOnResult(promise));
+            getOnResult(promise),
+            null,
+            null,
+            null,
+            parsedUpgradeInfo.getReplacementMode());
     }
 
     @ReactMethod

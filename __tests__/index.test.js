@@ -682,6 +682,226 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(2);
   });
 
+  it("purchaseSubscriptionOption forwards StoreProductChangeInfo with replacementMode", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, productChangeInfo);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      productChangeInfo,
+      null,
+      null,
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+  });
+
+  it("purchaseSubscriptionOption forwards StoreProductChangeInfo with personalized price", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, productChangeInfo, true);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      productChangeInfo,
+      null,
+      {isPersonalizedPrice: true},
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+  });
+
+  it("purchaseSubscriptionOption still forwards legacy GoogleProductChangeInfo", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+    const googleProductChangeInfo = {
+      oldProductIdentifier: "old_product",
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_WITH_TIME_PRORATION
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, googleProductChangeInfo);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      googleProductChangeInfo,
+      null,
+      null,
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+  });
+
+  it("purchaseSubscriptionOption forwards null productChangeInfo as null", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, null);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      null,
+      null,
+      null,
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+  });
+
   it("restorePurchases works", async () => {
     NativeModules.RNPurchases.restorePurchases.mockResolvedValueOnce(customerInfoStub);
 

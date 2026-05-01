@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { Alert, Modal, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View, } from 'react-native';
 
 import Purchases, {
-  GoogleProductChangeInfo,
-  PRORATION_MODE,
   PurchasesPackage,
   PurchasesStoreProduct,
+  STORE_REPLACEMENT_MODE,
+  StoreProductChangeInfo,
   SubscriptionOption
 } from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
@@ -21,7 +21,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
 type PurchaseWithOptionalProductChangeInfo = {
   productIdentifier: string;
   purchase: () => void;
-  purchaseWithProductChange: (productChangeInfo: GoogleProductChangeInfo) => void;
+  purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) => void;
 }
 
 type PickerModalOption = {
@@ -35,26 +35,26 @@ type PickerModalState = {
   onCancel: () => void;
 }
 
-const prorationModeOptions = [
+const replacementModeOptions = [
   {
-    title: 'IMMEDIATE_WITH_TIME_PRORATION',
-    value: PRORATION_MODE.IMMEDIATE_WITH_TIME_PRORATION,
+    title: 'WITH_TIME_PRORATION',
+    value: STORE_REPLACEMENT_MODE.WITH_TIME_PRORATION,
   },
   {
-    title: 'IMMEDIATE_AND_CHARGE_PRORATED_PRICE',
-    value: PRORATION_MODE.IMMEDIATE_AND_CHARGE_PRORATED_PRICE,
+    title: 'CHARGE_PRORATED_PRICE',
+    value: STORE_REPLACEMENT_MODE.CHARGE_PRORATED_PRICE,
   },
   {
-    title: 'IMMEDIATE_WITHOUT_PRORATION',
-    value: PRORATION_MODE.IMMEDIATE_WITHOUT_PRORATION,
+    title: 'WITHOUT_PRORATION',
+    value: STORE_REPLACEMENT_MODE.WITHOUT_PRORATION,
   },
   {
     title: 'DEFERRED',
-    value: PRORATION_MODE.DEFERRED,
+    value: STORE_REPLACEMENT_MODE.DEFERRED,
   },
   {
-    title: 'IMMEDIATE_AND_CHARGE_FULL_PRICE',
-    value: PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE,
+    title: 'CHARGE_FULL_PRICE',
+    value: STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE,
   },
 ];
 
@@ -64,14 +64,14 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
   const [productChangeProductIds, setProductChangeProductIds] = useState<Record<string, boolean>>({});
   const [pickerModal, setPickerModal] = useState<PickerModalState | null>(null);
 
-  const purchasePackage = (pkg: PurchasesPackage, productChangeInfo?: GoogleProductChangeInfo) => {
+  const purchasePackage = (pkg: PurchasesPackage, productChangeInfo?: StoreProductChangeInfo) => {
     Purchases.purchasePackage(pkg, null, productChangeInfo).then(() => {
     }).catch((err) => {
       console.log("error", err)
     });
   }
 
-  const purchaseProduct = (product: PurchasesStoreProduct, productChangeInfo?: GoogleProductChangeInfo) => {
+  const purchaseProduct = (product: PurchasesStoreProduct, productChangeInfo?: StoreProductChangeInfo) => {
     Purchases.purchaseStoreProduct(product, productChangeInfo).then((result) => {
       console.log("success", result)
     }).catch((err) => {
@@ -79,8 +79,8 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
     });
   }
 
-  const purchaseSubscriptionOption = (option: SubscriptionOption) => {
-    Purchases.purchaseSubscriptionOption(option).then(() => {
+  const purchaseSubscriptionOption = (option: SubscriptionOption, productChangeInfo?: StoreProductChangeInfo) => {
+    Purchases.purchaseSubscriptionOption(option, productChangeInfo).then(() => {
     }).catch((err) => {
       console.log("error", err)
     });
@@ -105,20 +105,20 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
     }
   }
 
-  const promptForProductChangeInfo = (callback: (productChangeInfo: GoogleProductChangeInfo) => void) => {
+  const promptForProductChangeInfo = (callback: (productChangeInfo: StoreProductChangeInfo) => void) => {
     showOldProductIdPicker((oldProductIdentifier) => {
       if (oldProductIdentifier == null) {
         return;
       }
 
-      showProrationModePicker((prorationMode) => {
-        if (prorationMode == null) {
+      showReplacementModePicker((replacementMode) => {
+        if (replacementMode == null) {
           return;
         }
 
         callback({
           oldProductIdentifier,
-          prorationMode,
+          replacementMode,
         });
       });
     });
@@ -154,10 +154,10 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
     }
   }
 
-  const showProrationModePicker = (callback: (prorationMode: PRORATION_MODE | null) => void) => {
+  const showReplacementModePicker = (callback: (replacementMode: STORE_REPLACEMENT_MODE | null) => void) => {
     showPickerModal(
-      'Choose ProrationMode',
-      prorationModeOptions,
+      'Choose StoreReplacementMode',
+      replacementModeOptions,
       callback,
       () => callback(null),
     );
@@ -283,7 +283,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                           purchaseWithOptionalProductChange({
                             productIdentifier: pkg.product.identifier,
                             purchase: () => purchasePackage(pkg),
-                            purchaseWithProductChange: (productChangeInfo: GoogleProductChangeInfo) =>
+                            purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) =>
                               purchasePackage(pkg, productChangeInfo),
                           })
                         }}>
@@ -296,7 +296,7 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                           purchaseWithOptionalProductChange({
                             productIdentifier: pkg.product.identifier,
                             purchase: () => purchaseProduct(pkg.product),
-                            purchaseWithProductChange: (productChangeInfo: GoogleProductChangeInfo) =>
+                            purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) =>
                               purchaseProduct(pkg.product, productChangeInfo),
                           })
                         }}>
@@ -327,7 +327,14 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                           </View>
                           <TouchableOpacity
                             style={styles.actionButton}
-                            onPress={() => { purchaseSubscriptionOption(option) }}>
+                            onPress={() => {
+                              purchaseWithOptionalProductChange({
+                                productIdentifier: pkg.product.identifier,
+                                purchase: () => purchaseSubscriptionOption(option),
+                                purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) =>
+                                  purchaseSubscriptionOption(option, productChangeInfo),
+                              })
+                            }}>
                             <Text>Buy</Text>
                           </TouchableOpacity>
                         </View>

@@ -742,10 +742,10 @@ export default class Purchases {
    * Google only. Make a purchase of a subscriptionOption
    *
    * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProducts by calling getOfferings
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
@@ -754,15 +754,15 @@ export default class Purchases {
    */
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
-    googleProductChangeInfo?: GoogleProductChangeInfo,
-    googleIsPersonalizedPrice?: boolean
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
+    googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     await Purchases.throwIfIOSPlatform();
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
       subscriptionOption.id,
-      googleProductChangeInfo,
+      productChangeInfo,
       null,
       googleIsPersonalizedPrice == null
         ? null
