@@ -755,7 +755,7 @@ export default class Purchases {
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
     productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
-    googleIsPersonalizedPrice?: boolean | null
+    googleIsPersonalizedPrice?: boolean
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     await Purchases.throwIfIOSPlatform();
