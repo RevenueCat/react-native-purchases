@@ -196,7 +196,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             type,                                               // type
             null,                                               // googleBasePlanId
             upgradeInfo.getOldProductIdentifier(),              // googleOldProductId
-            upgradeInfo.getProrationMode(),                     // googleReplacementModeInt
+            null,                                               // googleReplacementModeInt
             googleIsPersonalized,                               // googleIsPersonalizedPrice
             mapPresentedOfferingContext,                        // presentedOfferingContext
             getOnResult(promise),                               // onResult
@@ -224,7 +224,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             packageIdentifier,                                  // packageIdentifier
             mapPresentedOfferingContext,                        // presentedOfferingContext
             upgradeInfo.getOldProductIdentifier(),              // googleOldProductId
-            upgradeInfo.getProrationMode(),                     // googleReplacementModeInt
+            null,                                               // googleReplacementModeInt
             googleIsPersonalized,                               // googleIsPersonalizedPrice
             getOnResult(promise),                               // onResult
             null,                                               // addOnStoreProducts
@@ -255,7 +255,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             productIdentifer,                                   // productIdentifier
             optionIdentifier,                                   // optionIdentifier
             parsedUpgradeInfo.getOldProductIdentifier(),        // googleOldProductId
-            parsedUpgradeInfo.getProrationMode(),               // googleReplacementModeInt
+            null,                                               // googleReplacementModeInt
             googleIsPersonalized,                               // googleIsPersonalizedPrice
             mapPresentedOfferingContext,                        // presentedOfferingContext
             getOnResult(promise),                               // onResult
@@ -670,25 +670,41 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     private static UpgradeInfo getUpgradeInfo(ReadableMap upgradeInfo) {
         String oldProductId = null;
-        Integer googleProrationMode = null;
         String storeReplacementMode = null;
 
         if (upgradeInfo != null) {
             // GoogleProductChangeInfo in V6 and later
-          oldProductId = upgradeInfo.hasKey("oldProductIdentifier") ? upgradeInfo.getString("oldProductIdentifier") : null;
+            oldProductId = upgradeInfo.hasKey("oldProductIdentifier") ? upgradeInfo.getString("oldProductIdentifier") : null;
             storeReplacementMode = upgradeInfo.hasKey("replacementMode") ? upgradeInfo.getString("replacementMode") : null;
 
             if (storeReplacementMode == null) {
-              // Only use prorationMode if no replacementMode was provided
-              googleProrationMode = upgradeInfo.hasKey("prorationMode") ? upgradeInfo.getInt("prorationMode") : null;
+                storeReplacementMode = upgradeInfo.hasKey("prorationMode")
+                    : null;
             }
 
             // Legacy UpgradeInfo in V5 and earlier
             if (oldProductId == null) {
-              oldProductId = upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
+                oldProductId = upgradeInfo.hasKey("oldSKU") ? upgradeInfo.getString("oldSKU") : null;
             }
         }
 
-        return new UpgradeInfo(oldProductId, googleProrationMode, storeReplacementMode);
+        return new UpgradeInfo(oldProductId, storeReplacementMode);
+    }
+
+    private static String replacementModeFromProrationMode(int prorationMode) {
+        switch (prorationMode) {
+            case 1:
+                return "WITH_TIME_PRORATION";
+            case 2:
+                return "CHARGE_PRORATED_PRICE";
+            case 3:
+                return "WITHOUT_PRORATION";
+            case 5:
+                return "CHARGE_FULL_PRICE";
+            case 6:
+                return "DEFERRED";
+            default:
+                return null;
+        }
     }
 }
