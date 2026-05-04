@@ -678,8 +678,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             storeReplacementMode = upgradeInfo.hasKey("replacementMode") ? upgradeInfo.getString("replacementMode") : null;
 
             if (storeReplacementMode == null) {
-                storeReplacementMode = upgradeInfo.hasKey("prorationMode")
-                    : null;
+                storeReplacementMode = upgradeInfo.hasKey("prorationMode") ? replacementModeFromProrationMode(upgradeInfo.getInt("prorationMode")) : null;
             }
 
             // Legacy UpgradeInfo in V5 and earlier
