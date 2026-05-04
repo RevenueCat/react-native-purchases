@@ -56,6 +56,10 @@ const replacementModeOptions = [
     title: 'CHARGE_FULL_PRICE',
     value: STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE,
   },
+  {
+    title: 'Undefined',
+    value: undefined,
+  },
 ];
 
 // Taken from https://reactnative.dev/docs/typescript
@@ -112,14 +116,19 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
       }
 
       showReplacementModePicker((replacementMode) => {
-        if (replacementMode == null) {
+        if (replacementMode === null) {
           return;
         }
 
-        callback({
+        const productChangeInfo: StoreProductChangeInfo = {
           oldProductIdentifier,
-          replacementMode,
-        });
+        };
+
+        if (replacementMode !== undefined) {
+          productChangeInfo.replacementMode = replacementMode;
+        }
+
+        callback(productChangeInfo);
       });
     });
   }
