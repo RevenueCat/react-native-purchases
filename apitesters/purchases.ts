@@ -5,6 +5,7 @@ import {
   PurchasesOffering,
   PurchasesVirtualCurrencies,
   Storefront,
+  StoreProductChangeInfo,
 } from "@revenuecat/purchases-typescript-internal";
 import {
   CustomerInfo,
@@ -79,7 +80,8 @@ async function checkPurchasing(
   pack: PurchasesPackage,
   subscriptionOption: SubscriptionOption,
   upgradeInfo: UpgradeInfo,
-  googleProductChangeInfo: GoogleProductChangeInfo
+  googleProductChangeInfo: GoogleProductChangeInfo,
+  storeProductChangeInfo: StoreProductChangeInfo,
 ) {
   const productId: string = "";
   const productIds: string[] = [productId];
@@ -105,6 +107,13 @@ async function checkPurchasing(
       googleIsPersonalizedPrice
     );
 
+    const storeProductResult3: MakePurchaseResult =
+      await Purchases.purchaseStoreProduct(
+        product,
+        storeProductChangeInfo,
+        googleIsPersonalizedPrice
+      );
+
   const discountedProductResult1: MakePurchaseResult =
     await Purchases.purchaseDiscountedProduct(product, paymentDiscount);
 
@@ -124,6 +133,12 @@ async function checkPurchasing(
     googleProductChangeInfo,
     googleIsPersonalizedPrice
   );
+  const packageResult4: MakePurchaseResult = await Purchases.purchasePackage(
+    pack,
+    null,
+    storeProductChangeInfo,
+    googleIsPersonalizedPrice
+  );
 
   const discountedPackageResult1: MakePurchaseResult =
     await Purchases.purchaseDiscountedPackage(pack, paymentDiscount);
@@ -137,6 +152,12 @@ async function checkPurchasing(
     await Purchases.purchaseSubscriptionOption(
       subscriptionOption,
       googleProductChangeInfo,
+      googleIsPersonalizedPrice
+    );
+  const subscriptionOptionResult3: MakePurchaseResult =
+    await Purchases.purchaseSubscriptionOption(
+      subscriptionOption,
+      storeProductChangeInfo,
       googleIsPersonalizedPrice
     );
 

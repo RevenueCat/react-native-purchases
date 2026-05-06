@@ -43,6 +43,8 @@ import {
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   Storefront,
+  STORE_REPLACEMENT_MODE,
+  StoreProductChangeInfo,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -231,8 +233,16 @@ export default class Purchases {
    * Replace SKU's ProrationMode.
    * @readonly
    * @enum {number}
+   * @deprecated, use STORE_REPLACEMENT_MODE
    */
   public static PRORATION_MODE = PRORATION_MODE;
+
+  /**
+   * Replacement modes for use when changing products.
+   * @readonly
+   * @enum {string}
+   */
+  public static STORE_REPLACEMENT_MODE = STORE_REPLACEMENT_MODE;
 
   /**
    * Enumeration of all possible Package types.
@@ -624,10 +634,10 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesStoreProduct} product The product you want to purchase
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code,
@@ -636,13 +646,13 @@ export default class Purchases {
    */
   public static async purchaseStoreProduct(
     product: PurchasesStoreProduct,
-    googleProductChangeInfo?: GoogleProductChangeInfo | null,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
       product.identifier,
-      googleProductChangeInfo,
+      productChangeInfo,
       product.productCategory,
       null,
       googleIsPersonalizedPrice == null
@@ -695,11 +705,11 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
-   * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use googleProductChangeInfo.
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use productChangeInfo.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
@@ -709,14 +719,14 @@ export default class Purchases {
   public static async purchasePackage(
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
-    googleProductChangeInfo?: GoogleProductChangeInfo | null,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.presentedOfferingContext,
-      googleProductChangeInfo || upgradeInfo,
+      productChangeInfo || upgradeInfo,
       null,
       googleIsPersonalizedPrice == null
         ? null
@@ -732,10 +742,10 @@ export default class Purchases {
    * Google only. Make a purchase of a subscriptionOption
    *
    * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProducts by calling getOfferings
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
@@ -744,7 +754,7 @@ export default class Purchases {
    */
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
-    googleProductChangeInfo?: GoogleProductChangeInfo,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
@@ -752,7 +762,7 @@ export default class Purchases {
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
       subscriptionOption.id,
-      googleProductChangeInfo,
+      productChangeInfo,
       null,
       googleIsPersonalizedPrice == null
         ? null

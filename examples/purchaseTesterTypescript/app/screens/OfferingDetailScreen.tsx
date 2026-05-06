@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
+import { Alert, Modal, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View, } from 'react-native';
 
 import Purchases, {
   PurchasesPackage,
   PurchasesStoreProduct,
+  STORE_REPLACEMENT_MODE,
+  StoreProductChangeInfo,
   SubscriptionOption
 } from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
@@ -16,29 +18,179 @@ import { purchasesAreCompletedByMyApp } from '../../App';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OfferingDetail'>;
 
+type PurchaseWithOptionalProductChangeInfo = {
+  productIdentifier: string;
+  purchase: () => void;
+  purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) => void;
+}
+
+type PickerModalOption = {
+  title: string;
+  onPress: () => void;
+}
+
+type PickerModalState = {
+  title: string;
+  options: PickerModalOption[];
+  onCancel: () => void;
+}
+
+const replacementModeOptions = [
+  {
+    title: 'WITH_TIME_PRORATION',
+    value: STORE_REPLACEMENT_MODE.WITH_TIME_PRORATION,
+  },
+  {
+    title: 'CHARGE_PRORATED_PRICE',
+    value: STORE_REPLACEMENT_MODE.CHARGE_PRORATED_PRICE,
+  },
+  {
+    title: 'WITHOUT_PRORATION',
+    value: STORE_REPLACEMENT_MODE.WITHOUT_PRORATION,
+  },
+  {
+    title: 'DEFERRED',
+    value: STORE_REPLACEMENT_MODE.DEFERRED,
+  },
+  {
+    title: 'CHARGE_FULL_PRICE',
+    value: STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE,
+  },
+  {
+    title: 'Undefined',
+    value: undefined,
+  },
+];
+
 // Taken from https://reactnative.dev/docs/typescript
 const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => {
   const { customVariables } = useCustomVariables();
+  const [productChangeProductIds, setProductChangeProductIds] = useState<Record<string, boolean>>({});
+  const [pickerModal, setPickerModal] = useState<PickerModalState | null>(null);
 
-  const purchasePackage = (pkg: PurchasesPackage) => {
-    Purchases.purchasePackage(pkg).then(() => {
+  const purchasePackage = (pkg: PurchasesPackage, productChangeInfo?: StoreProductChangeInfo) => {
+    Purchases.purchasePackage(pkg, null, productChangeInfo).then(() => {
     }).catch((err) => {
       console.log("error", err)
     });
   }
 
-  const purchaseProduct = (product: PurchasesStoreProduct) => {
-    Purchases.purchaseStoreProduct(product).then((result) => {
+  const purchaseProduct = (product: PurchasesStoreProduct, productChangeInfo?: StoreProductChangeInfo) => {
+    Purchases.purchaseStoreProduct(product, productChangeInfo).then((result) => {
       console.log("success", result)
     }).catch((err) => {
       console.log("error", err)
     });
   }
 
-  const purchaseSubscriptionOption = (option: SubscriptionOption) => {
-    Purchases.purchaseSubscriptionOption(option).then(() => {
+  const purchaseSubscriptionOption = (option: SubscriptionOption, productChangeInfo?: StoreProductChangeInfo) => {
+    Purchases.purchaseSubscriptionOption(option, productChangeInfo).then(() => {
     }).catch((err) => {
       console.log("error", err)
+    });
+  }
+
+  const updateProductChange = (productIdentifier: string, isProductChange: boolean) => {
+    setProductChangeProductIds({
+      ...productChangeProductIds,
+      [productIdentifier]: isProductChange,
+    });
+  }
+
+  const purchaseWithOptionalProductChange = ({
+    productIdentifier,
+    purchase,
+    purchaseWithProductChange,
+  }: PurchaseWithOptionalProductChangeInfo) => {
+    if (productChangeProductIds[productIdentifier]) {
+      promptForProductChangeInfo(purchaseWithProductChange);
+    } else {
+      purchase();
+    }
+  }
+
+  const promptForProductChangeInfo = (callback: (productChangeInfo: StoreProductChangeInfo) => void) => {
+    showOldProductIdPicker((oldProductIdentifier) => {
+      if (oldProductIdentifier == null) {
+        return;
+      }
+
+      showReplacementModePicker((replacementMode) => {
+        if (replacementMode === null) {
+          return;
+        }
+
+        const productChangeInfo: StoreProductChangeInfo = {
+          oldProductIdentifier,
+        };
+
+        if (replacementMode !== undefined) {
+          productChangeInfo.replacementMode = replacementMode;
+        }
+
+        callback(productChangeInfo);
+      });
+    });
+  }
+
+  const showOldProductIdPicker = async (callback: (oldProductIdentifier: string | null) => void) => {
+    try {
+      await Purchases.invalidateCustomerInfoCache();
+      const customerInfo = await Purchases.getCustomerInfo();
+      const activeProductIds = Array.from(
+        new Set(customerInfo.activeSubscriptions.map((productId) => productId.split(':')[0]))
+      );
+
+      if (activeProductIds.length === 0) {
+        Alert.alert('Cannot upgrade without an existing active subscription.');
+        callback(null);
+        return;
+      }
+
+      showPickerModal(
+        'Choose which active sub to switch from',
+        activeProductIds.map((productId) => ({
+          title: productId,
+          value: productId,
+        })),
+        callback,
+        () => callback(null),
+      );
+    } catch (err) {
+      console.log("error", err)
+      Alert.alert('Error fetching customer info', String(err));
+      callback(null);
+    }
+  }
+
+  const showReplacementModePicker = (callback: (replacementMode: STORE_REPLACEMENT_MODE | null) => void) => {
+    showPickerModal(
+      'Choose StoreReplacementMode',
+      replacementModeOptions,
+      callback,
+      () => callback(null),
+    );
+  }
+
+  const showPickerModal = <T,>(
+    title: string,
+    options: Array<{ title: string; value: T }>,
+    onSelect: (value: T) => void,
+    onCancel: () => void,
+  ) => {
+    setPickerModal({
+      title,
+      options: options.map((option) => ({
+        title: option.title,
+        onPress: () => {
+          setPickerModal(null);
+          onSelect(option.value);
+        },
+      })),
+      onCancel: () => {
+        setPickerModal(null);
+        onCancel();
+      },
     });
   }
 
@@ -136,15 +288,37 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                     <View style={styles.buttonStack}>
                       <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => { purchasePackage(pkg) }}>
+                        onPress={() => {
+                          purchaseWithOptionalProductChange({
+                            productIdentifier: pkg.product.identifier,
+                            purchase: () => purchasePackage(pkg),
+                            purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) =>
+                              purchasePackage(pkg, productChangeInfo),
+                          })
+                        }}>
                         <Text>Buy Package</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         style={styles.actionButton}
-                        onPress={() => { purchaseProduct(pkg.product) }}>
+                        onPress={() => {
+                          purchaseWithOptionalProductChange({
+                            productIdentifier: pkg.product.identifier,
+                            purchase: () => purchaseProduct(pkg.product),
+                            purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) =>
+                              purchaseProduct(pkg.product, productChangeInfo),
+                          })
+                        }}>
                         <Text>Buy Product</Text>
                       </TouchableOpacity>
+
+                      <View style={styles.productChangeContainer}>
+                        <Text>Is product change</Text>
+                        <Switch
+                          value={productChangeProductIds[pkg.product.identifier] ?? false}
+                          onValueChange={(value) => updateProductChange(pkg.product.identifier, value)}
+                        />
+                      </View>
                     </View>
                   </View>
 
@@ -162,7 +336,14 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                           </View>
                           <TouchableOpacity
                             style={styles.actionButton}
-                            onPress={() => { purchaseSubscriptionOption(option) }}>
+                            onPress={() => {
+                              purchaseWithOptionalProductChange({
+                                productIdentifier: pkg.product.identifier,
+                                purchase: () => purchaseSubscriptionOption(option),
+                                purchaseWithProductChange: (productChangeInfo: StoreProductChangeInfo) =>
+                                  purchaseSubscriptionOption(option, productChangeInfo),
+                              })
+                            }}>
                             <Text>Buy</Text>
                           </TouchableOpacity>
                         </View>
@@ -175,6 +356,30 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
             })
 
           }
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={pickerModal != null}
+            onRequestClose={pickerModal?.onCancel}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>{pickerModal?.title}</Text>
+                {pickerModal?.options.map((option) => (
+                  <TouchableOpacity
+                    key={option.title}
+                    style={styles.modalOption}
+                    onPress={option.onPress}>
+                    <Text>{option.title}</Text>
+                  </TouchableOpacity>
+                ))}
+                <TouchableOpacity
+                  style={[styles.modalOption, styles.modalCancelOption]}
+                  onPress={pickerModal?.onCancel}>
+                  <Text>Cancel purchase</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
     </ScrollView>
   );
 };
@@ -220,6 +425,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginHorizontal: 10,
     borderRadius: 4
+  },
+  productChangeContainer: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+    marginHorizontal: 10,
+  },
+  modalOverlay: {
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
+  },
+  modalContent: {
+    alignSelf: "stretch",
+    backgroundColor: "white",
+    borderRadius: 4,
+    padding: 16,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalOption: {
+    borderTopColor: "#CCCCCC",
+    borderTopWidth: 1,
+    paddingVertical: 12,
+  },
+  modalCancelOption: {
+    marginTop: 8,
   },
   disabledButton: {
     backgroundColor: "#d3d3d3",
