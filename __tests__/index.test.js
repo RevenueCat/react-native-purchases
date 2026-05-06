@@ -729,6 +729,25 @@ describe("Purchases", () => {
     });
   });
 
+  it("cancelled purchasePackage sets userCancelled when code is numeric", async () => {
+    NativeModules.RNPurchases.purchasePackage.mockRejectedValueOnce({
+      code: 1,
+      message: "",
+      readableErrorCode: "USER_CANCELLED",
+      underlyingErrorMessage: undefined,
+    });
+
+    return expect(async () => {
+      await Purchases.purchasePackage("onemonth_freetrial")
+    }).rejects.toEqual({
+      code: 1,
+      message: "",
+      readableErrorCode: "USER_CANCELLED",
+      underlyingErrorMessage: undefined,
+      userCancelled: true
+    });
+  });
+
   it("successful purchase works", () => {
     NativeModules.RNPurchases.purchaseProduct.mockResolvedValueOnce({
       purchasedProductIdentifier: "123",
