@@ -1,7 +1,9 @@
 const {NativeModules, NativeEventEmitter, Platform} = require("react-native");
 const {UnsupportedPlatformError} = require("../dist/errors");
 const {
-  PURCHASES_ARE_COMPLETED_BY_TYPE, REFUND_REQUEST_STATUS, STOREKIT_VERSION
+  PURCHASES_ARE_COMPLETED_BY_TYPE,
+  REFUND_REQUEST_STATUS,
+  STOREKIT_VERSION,
 } = require("../dist/purchases");
 
 const nativeEmitter = new NativeEventEmitter();
@@ -908,6 +910,23 @@ describe("Purchases", () => {
     const customerInfo = await Purchases.restorePurchases();
 
     expect(NativeModules.RNPurchases.restorePurchases).toBeCalledTimes(1);
+    expect(customerInfo).toEqual(customerInfoStub);
+  })
+
+  it("falls back to syncPurchasesForResult when restorePurchases returns PAYMENT_PENDING_ERROR on Android", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.restorePurchases.mockRejectedValueOnce({
+      code: Purchases.PURCHASES_ERROR_CODE.PAYMENT_PENDING_ERROR,
+      message: "The payment is pending",
+    });
+    NativeModules.RNPurchases.syncPurchasesForResult.mockResolvedValueOnce({
+      customerInfo: customerInfoStub,
+    });
+
+    const customerInfo = await Purchases.restorePurchases();
+
+    expect(NativeModules.RNPurchases.restorePurchases).toBeCalledTimes(1);
+    expect(NativeModules.RNPurchases.syncPurchasesForResult).toBeCalledTimes(1);
     expect(customerInfo).toEqual(customerInfoStub);
   })
 
