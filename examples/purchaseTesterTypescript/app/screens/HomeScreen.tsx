@@ -23,6 +23,7 @@ import CustomerInfoHeader from '../components/CustomerInfoHeader';
 import RootStackParamList from '../RootStackParamList';
 import PromptWithTextInput from '../components/InputModal';
 import { PurchasesError, REFUND_REQUEST_STATUS } from '@revenuecat/purchases-typescript-internal';
+import { useCustomVariables } from '../context/CustomVariablesContext';
 
 interface State {
   appUserID: String | null;
@@ -34,6 +35,8 @@ interface State {
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomerInfo'>;
 
 const HomeScreen: React.FC<Props> = ({navigation}) => {
+  const { customVariables } = useCustomVariables();
+
   const initialState: State = {
     appUserID: null,
     customerInfo: null,
@@ -59,6 +62,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [promptAppstackVisible, setPromptAppstackVisible] = useState(false);
   const [customerCenterNotification, setCustomerCenterNotification] = useState<{
     title: string;
     message?: string;
@@ -169,6 +173,32 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
       setState({...state, offerings: offerings});
     } catch (error) {
       console.log('error', error);
+    }
+  };
+
+  const setAppstackAttribution = () => {
+    setPromptAppstackVisible(true);
+  };
+
+  const handlePromptAppstackCancel = () => {
+    setPromptAppstackVisible(false);
+  };
+
+  const handlePromptAppstackSubmit = async (inputValue: string) => {
+    setPromptAppstackVisible(false);
+    try {
+      const data = JSON.parse(inputValue || '{}');
+      const offerings =
+        await Purchases.setAppstackAttributionParams(data);
+      console.log('offerings after appstack attribution', offerings);
+      setState({...state, offerings: offerings});
+      Alert.alert(
+        'Success',
+        `Received ${Object.keys(offerings?.all || {}).length} offerings`,
+      );
+    } catch (error) {
+      console.log('error setting appstack attribution', error);
+      Alert.alert('Error', String(error));
     }
   };
 
@@ -333,6 +363,13 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           onSubmit={handlePromptPlacementSubmit}
         />
 
+        <PromptWithTextInput
+          isVisible={promptAppstackVisible}
+          onCancel={handlePromptAppstackCancel}
+          onSubmit={handlePromptAppstackSubmit}
+          placeholder='{"appstack_id": "test_id"}'
+        />
+
         <Divider />
         <View>
           <TouchableOpacity onPress={getByPlacement}>
@@ -342,6 +379,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity onPress={syncAttributesAndOfferings}>
             <Text style={styles.otherActions}>
               Sync attributes and offerings
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={setAppstackAttribution}>
+            <Text style={styles.otherActions}>
+              Set Appstack Attribution Params
             </Text>
           </TouchableOpacity>
 
@@ -356,6 +399,11 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('VirtualCurrency', {})}>
             <Text style={styles.otherActions}>Virtual Currency Testing Screen</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomVariables')}>
+            <Text style={styles.otherActions}>Custom Variables</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={showManageSubscriptions}>
@@ -421,6 +469,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
               const paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
                 requiredEntitlementIdentifier: 'pro_cat',
                 displayCloseButton: true,
+                customVariables: customVariables,
               });
               console.log('Paywall result: ', paywallResult);
             }}>
@@ -432,6 +481,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             onPress={async () => {
               const paywallResult = await RevenueCatUI.presentPaywall({
                 displayCloseButton: true,
+                customVariables: customVariables,
               });
               console.log('Paywall result: ', paywallResult);
             }}>
@@ -520,6 +570,10 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
         <Divider />
         <View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomPaywall')}>
+            <Text style={styles.otherActions}>Custom Paywall Screen (track impression)</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('WinBackTesting', {})}>
             <Text style={styles.otherActions}>Win-Back Offer Testing</Text>

@@ -37,6 +37,7 @@ internal class CustomerCenterViewManager :
             .putEvent(CustomerCenterEventName.ON_MANAGEMENT_OPTION_SELECTED)
             .putEvent(CustomerCenterEventName.ON_REFUND_REQUEST_STARTED)
             .putEvent(CustomerCenterEventName.ON_REFUND_REQUEST_COMPLETED)
+            .putEvent(CustomerCenterEventName.ON_PROMOTIONAL_OFFER_SUCCEEDED)
             .build()
     }
 
@@ -151,6 +152,24 @@ internal class CustomerCenterViewManager :
                     view,
                     actionId,
                     purchaseIdentifier
+                )
+            }
+
+            override fun onPromotionalOfferSucceededWrapper(
+                customerInfo: Map<String, Any?>,
+                transaction: Map<String, Any?>,
+                offerId: String,
+            ) {
+                val payload = WritableNativeMap().apply {
+                    putMap("customerInfo", RNPurchasesConverters.convertMapToWriteableMap(customerInfo))
+                    putMap("transaction", RNPurchasesConverters.convertMapToWriteableMap(transaction))
+                    putString("offerId", offerId)
+                }
+                emitEvent(
+                    themedReactContext,
+                    view,
+                    CustomerCenterEventName.ON_PROMOTIONAL_OFFER_SUCCEEDED,
+                    payload
                 )
             }
 

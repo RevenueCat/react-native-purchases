@@ -27,6 +27,7 @@ RCT_EXPORT_VIEW_PROPERTY(onRefundRequestStarted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onRefundRequestCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onFeedbackSurveyCompleted, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onManagementOptionSelected, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPromotionalOfferSucceeded, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(shouldShowCloseButton, BOOL)
 RCT_EXPORT_MODULE(CustomerCenterView)
 

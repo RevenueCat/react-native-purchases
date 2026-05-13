@@ -29,6 +29,7 @@ NSString *RNPurchasesCustomerInfoUpdatedEvent = @"Purchases-CustomerInfoUpdated"
 NSString *RNPurchasesShouldPurchasePromoProductEvent = @"Purchases-ShouldPurchasePromoProduct";
 NSString *RNPurchasesLogHandlerEvent = @"Purchases-LogHandlerEvent";
 NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
+NSString *RNPurchasesDebugEvent = @"Purchases-DebugEvent";
 
 @implementation RNPurchases
 
@@ -40,7 +41,8 @@ NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
     return @[RNPurchasesCustomerInfoUpdatedEvent,
              RNPurchasesShouldPurchasePromoProductEvent,
              RNPurchasesLogHandlerEvent, 
-             RNPurchasesTrackedEvent];
+             RNPurchasesTrackedEvent,
+             RNPurchasesDebugEvent];
 }
 
 - (void)sendEventWithName:(NSString *)name body:(id)body {
@@ -120,6 +122,14 @@ RCT_REMAP_METHOD(syncAttributesAndOfferingsIfNeeded,
                  syncAttributesAndOfferingsIfNeededWithResolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality syncAttributesAndOfferingsIfNeededWithCompletionBlock:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                reject:reject]];
+}
+
+RCT_REMAP_METHOD(setAppstackAttributionParams,
+                 setAppstackAttributionParamsWithData:(NSDictionary *)data
+                 resolve:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality setAppstackAttributionParams:data completionBlock:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                 reject:reject]];
 }
 
@@ -585,6 +595,12 @@ RCT_EXPORT_METHOD(setLogHandler) {
     }];
 }
 
+RCT_EXPORT_METHOD(setTrackedEventListener) {
+    [RCCommonFunctionality setTrackedEventListenerOnEventReceived:^(NSDictionary<NSString *, id> * _Nonnull eventDetails) {
+        [self sendEventWithName:RNPurchasesTrackedEvent body:eventDetails];
+    }];
+}
+
 RCT_EXPORT_METHOD(isWebPurchaseRedemptionURL:(NSString *)urlString
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
@@ -629,6 +645,14 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
     } else {
         NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater."];
         reject([NSString stringWithFormat:@"%ld", (long) error.code], [error localizedDescription], error);
+    }
+}
+
+RCT_EXPORT_METHOD(trackCustomPaywallImpression:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackCustomPaywallImpression:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackCustomPaywallImpression, but it's only available on iOS 15.0 or greater.");
     }
 }
 
@@ -694,7 +718,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"9.8.0";
+    return @"10.1.0";
 }
 
 @end

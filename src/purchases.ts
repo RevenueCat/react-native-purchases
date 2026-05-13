@@ -43,6 +43,8 @@ import {
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   Storefront,
+  STORE_REPLACEMENT_MODE,
+  StoreProductChangeInfo,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -133,6 +135,34 @@ export type TrackedEventListener = (event: TrackedEvent) => void;
 
 let trackedEventListeners: TrackedEventListener[] = [];
 
+/**
+ * Represents a debug event from RevenueCat.
+ * @internal This is a debug API not meant for public use.
+ */
+export interface DebugEvent {
+  eventDictionary: Record<string, unknown>;
+}
+
+/**
+ * Listener for debug events.
+ * @internal This is a debug API not meant for public use.
+ */
+export type DebugEventListener = (event: DebugEvent) => void;
+
+/**
+ * Options for tracking a custom paywall impression.
+ */
+export interface TrackCustomPaywallImpressionOptions {
+  paywallId?: string | null;
+  /**
+   * An optional identifier for the offering associated with the custom paywall.
+   * If not provided, the SDK will use the current offering identifier from the cache.
+   */
+  offeringId?: string | null;
+}
+
+let debugEventListeners: DebugEventListener[] = [];
+
 eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
   (customerInfo: CustomerInfo) => {
@@ -163,6 +193,13 @@ eventEmitter?.addListener(
   "Purchases-TrackedEvent",
   (eventDictionary: Record<string, unknown>) => {
     trackedEventListeners.forEach((listener) => listener({ eventDictionary }));
+  }
+);
+
+eventEmitter?.addListener(
+  "Purchases-DebugEvent",
+  (eventDictionary: Record<string, unknown>) => {
+    debugEventListeners.forEach((listener) => listener({ eventDictionary }));
   }
 );
 
@@ -202,8 +239,16 @@ export default class Purchases {
    * Replace SKU's ProrationMode.
    * @readonly
    * @enum {number}
+   * @deprecated, use STORE_REPLACEMENT_MODE
    */
   public static PRORATION_MODE = PRORATION_MODE;
+
+  /**
+   * Replacement modes for use when changing products.
+   * @readonly
+   * @enum {string}
+   */
+  public static STORE_REPLACEMENT_MODE = STORE_REPLACEMENT_MODE;
 
   /**
    * Enumeration of all possible Package types.
@@ -288,7 +333,6 @@ export default class Purchases {
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
-   * @param {TrackedEventListener?} [trackedEventListener] An optional listener for tracked feature events. This is a debug API for monitoring paywall and customer center events.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -530,6 +574,23 @@ export default class Purchases {
   }
 
   /**
+   * Sets attribution data from Appstack's attribution params, then syncs subscriber attributes and fetches
+   * fresh offerings so that Appstack-based targeting is applied before the promise resolves.
+   *
+   * Pass the object received from the Appstack Attribution SDK's `getAttributionParams()` directly.
+   * The SDK extracts relevant attribution info and sets the appropriate subscriber attributes.
+   *
+   * @param {object} data The attribution params from the Appstack Attribution SDK.
+   * @returns {Promise<PurchasesOfferings>} Promise of offerings targeted with Appstack data.
+   */
+  public static async setAppstackAttributionParams(
+    data: Record<string, any>
+  ): Promise<PurchasesOfferings> {
+    await Purchases.throwIfNotConfigured();
+    return RNPurchases.setAppstackAttributionParams(data);
+  }
+
+  /**
    * Fetch the product info
    * @param {String[]} productIdentifiers Array of product identifiers
    * @param {String} type Optional type of products to fetch, can be SUBSCRIPTION or NON_SUBSCRIPTION. SUBSCRIPTION by default
@@ -579,10 +640,10 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesStoreProduct} product The product you want to purchase
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code,
@@ -591,13 +652,13 @@ export default class Purchases {
    */
   public static async purchaseStoreProduct(
     product: PurchasesStoreProduct,
-    googleProductChangeInfo?: GoogleProductChangeInfo | null,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
       product.identifier,
-      googleProductChangeInfo,
+      productChangeInfo,
       product.productCategory,
       null,
       googleIsPersonalizedPrice == null
@@ -650,11 +711,11 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
-   * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use googleProductChangeInfo.
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use productChangeInfo.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
@@ -664,14 +725,14 @@ export default class Purchases {
   public static async purchasePackage(
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
-    googleProductChangeInfo?: GoogleProductChangeInfo | null,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.presentedOfferingContext,
-      googleProductChangeInfo || upgradeInfo,
+      productChangeInfo || upgradeInfo,
       null,
       googleIsPersonalizedPrice == null
         ? null
@@ -687,10 +748,10 @@ export default class Purchases {
    * Google only. Make a purchase of a subscriptionOption
    *
    * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProducts by calling getOfferings
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
@@ -699,7 +760,7 @@ export default class Purchases {
    */
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
-    googleProductChangeInfo?: GoogleProductChangeInfo,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean
   ): Promise<MakePurchaseResult> {
     await Purchases.throwIfNotConfigured();
@@ -707,7 +768,7 @@ export default class Purchases {
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
       subscriptionOption.id,
-      googleProductChangeInfo,
+      productChangeInfo,
       null,
       googleIsPersonalizedPrice == null
         ? null
@@ -844,7 +905,7 @@ export default class Purchases {
   /**
    * Sets a function to be called when a feature event is tracked by RevenueCatUI.
    * This is a debug API for monitoring paywall and customer center events not meant for public use.
-   * Currently only works on Android.
+   * Currently only works on Android and iOS.
    * @internal
    * @param {TrackedEventListener} trackedEventListener TrackedEvent listener
    */
@@ -852,7 +913,7 @@ export default class Purchases {
     trackedEventListener: TrackedEventListener
   ): Promise<void> {
     await Purchases.throwIfNotConfigured();
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
       if (typeof trackedEventListener !== "function") {
         throw new Error("addTrackedEventListener needs a function");
       }
@@ -874,6 +935,41 @@ export default class Purchases {
     trackedEventListener: TrackedEventListener
   ): void {
     trackedEventListeners = trackedEventListeners.filter((listener) => listener !== trackedEventListener);
+  }
+
+  /**
+   * Sets a function to be called when a debug event is tracked by RevenueCat.
+   * This is a debug API for monitoring debug events not meant for public use.
+   * Currently only works on Android.
+   * @internal
+   * @param {DebugEventListener} debugEventListener DebugEvent listener
+   */
+  public static async addDebugEventListener(
+    debugEventListener: DebugEventListener
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    if (Platform.OS === "android") {
+      if (typeof debugEventListener !== "function") {
+        throw new Error("addDebugEventListener needs a function");
+      }
+      const isFirstListener = debugEventListeners.length === 0;
+      debugEventListeners.push(debugEventListener);
+      if (isFirstListener && !usingBrowserMode) {
+        RNPurchases.setDebugEventListener();
+      }
+    }
+  }
+  
+  /**
+   * Removes a given DebugEventListener. 
+   * This is a debug API not meant for public use.
+   * @internal
+   * @param debugEventListener DebugEventListener listener to remove
+   */
+  public static removeDebugEventListener(
+    debugEventListener: DebugEventListener
+  ): void {
+    debugEventListeners = debugEventListeners.filter((listener) => listener !== debugEventListener);
   }
 
   /**
@@ -1761,6 +1857,23 @@ export default class Purchases {
       return Promise.resolve(false);
     }
     return RNPurchases.isConfigured();
+  }
+
+  /**
+   * Tracks an impression of a custom (non-RevenueCat) paywall.
+   * Call this method when your custom paywall is displayed to a user.
+   * This enables RevenueCat to track paywall impressions for analytics.
+   *
+   * @param params - Optional parameters for the impression event.
+   * @param params.paywallId - Optional identifier for the custom paywall being shown.
+   * @param params.offeringId - Optional identifier for the offering associated with the custom paywall.
+   *   If not provided, the SDK will use the current offering identifier from the cache.
+   */
+  public static async trackCustomPaywallImpression(
+    params?: TrackCustomPaywallImpressionOptions
+  ): Promise<void> {
+    await Purchases.throwIfNotConfigured();
+    RNPurchases.trackCustomPaywallImpression(params ?? {});
   }
 
   private static async throwIfNotConfigured() {

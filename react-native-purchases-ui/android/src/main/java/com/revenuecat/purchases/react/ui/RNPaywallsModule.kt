@@ -7,6 +7,9 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableType
+import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
+import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
 import com.revenuecat.purchases.hybridcommon.ui.PaywallSource
 import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
@@ -42,6 +45,7 @@ internal class RNPaywallsModule(
         presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean?,
         fontFamily: String?,
+        customVariables: ReadableMap?,
         promise: Promise
     ) {
         presentPaywall(
@@ -50,6 +54,7 @@ internal class RNPaywallsModule(
             presentedOfferingContext,
             displayCloseButton,
             fontFamily,
+            customVariables,
             promise
         )
     }
@@ -61,6 +66,7 @@ internal class RNPaywallsModule(
         presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean,
         fontFamily: String?,
+        customVariables: ReadableMap?,
         promise: Promise
     ) {
         presentPaywall(
@@ -69,8 +75,19 @@ internal class RNPaywallsModule(
             presentedOfferingContext,
             displayCloseButton,
             fontFamily,
+            customVariables,
             promise
         )
+    }
+
+    @ReactMethod
+    fun resumePurchasePackageInitiated(requestId: String, shouldProceed: Boolean) {
+        PaywallListenerWrapper.resumePurchasePackageInitiated(requestId, shouldProceed)
+    }
+
+    @ReactMethod
+    fun resolvePurchaseLogicResult(requestId: String, result: String, errorMessage: String?) {
+        HybridPurchaseLogicBridge.resolveResult(requestId, result, errorMessage)
     }
 
     @ReactMethod
@@ -89,6 +106,7 @@ internal class RNPaywallsModule(
         presentedOfferingContext: ReadableMap?,
         displayCloseButton: Boolean?,
         fontFamilyName: String?,
+        customVariables: ReadableMap?,
         promise: Promise
     ) {
         val activity = currentFragmentActivity ?: return
@@ -100,6 +118,22 @@ internal class RNPaywallsModule(
             val presentedOfferingContextMap = RNPurchasesConverters.presentedOfferingContext(offeringIdentifier, presentedOfferingContext?.toHashMap())
             PaywallSource.OfferingIdentifierWithPresentedOfferingContext(offeringIdentifier, presentedOfferingContext=presentedOfferingContextMap)
         } ?: PaywallSource.DefaultOffering
+
+        val customVariablesMap = customVariables?.let { cv ->
+            val result = mutableMapOf<String, Any>()
+            val iterator = cv.keySetIterator()
+            while (iterator.hasNextKey()) {
+                val key = iterator.nextKey()
+                when (cv.getType(key)) {
+                    // getString returns String? (nullable), while getDouble/getBoolean return primitives
+                    ReadableType.String -> cv.getString(key)?.let { result[key] = it }
+                    ReadableType.Number -> result[key] = cv.getDouble(key)
+                    ReadableType.Boolean -> result[key] = cv.getBoolean(key)
+                    else -> { /* unsupported type, skip */ }
+                }
+            }
+            result.takeIf { it.isNotEmpty() }
+        }
 
         // @ReactMethod is not guaranteed to run on the main thread
         activity.runOnUiThread {
@@ -114,7 +148,8 @@ internal class RNPaywallsModule(
                             promise.resolve(paywallResult)
                         }
                     },
-                    fontFamily = fontFamily
+                    fontFamily = fontFamily,
+                    customVariables = customVariablesMap
                 )
             )
         }

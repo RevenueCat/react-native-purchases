@@ -180,6 +180,27 @@ describe("Purchases", () => {
     expect(offerings).toEqual(offeringsStub);
   })
 
+  it("setAppstackAttributionParams works", async () => {
+    const data = { appstack_id: "test_id", appstack_campaign: "test_campaign" };
+    NativeModules.RNPurchases.setAppstackAttributionParams.mockResolvedValueOnce(offeringsStub);
+
+    const offerings = await Purchases.setAppstackAttributionParams(data);
+
+    expect(NativeModules.RNPurchases.setAppstackAttributionParams).toBeCalledWith(data);
+    expect(offerings).toEqual(offeringsStub);
+  })
+
+  it("setAppstackAttributionParams rejects when not configured", async () => {
+    NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+    try {
+      await Purchases.setAppstackAttributionParams({ appstack_id: "test_id" });
+      fail("expected error");
+    } catch (error) { }
+
+    expect(NativeModules.RNPurchases.setAppstackAttributionParams).toBeCalledTimes(0);
+  })
+
   it("getProducts works and gets subs by default", async () => {
     NativeModules.RNPurchases.getProductInfo.mockResolvedValueOnce(productsStub);
 
@@ -280,6 +301,118 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
+  it("purchaseStoreProduct forwards StoreProductChangeInfo with replacementMode", async () => {
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      presentedOfferingContext: {offeringIdentifier: "the-offerings"}
+    }
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    }
+
+    await Purchases.purchaseStoreProduct(aProduct, productChangeInfo)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(
+      aProduct.identifier,
+      productChangeInfo,
+      Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
+      null,
+      null,
+      {offeringIdentifier: "the-offerings"}
+    );
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
+  });
+
+  it("purchaseStoreProduct forwards StoreProductChangeInfo with personalized price", async () => {
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      presentedOfferingContext: {offeringIdentifier: "the-offerings"}
+    }
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    }
+
+    await Purchases.purchaseStoreProduct(aProduct, productChangeInfo, true)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(
+      aProduct.identifier,
+      productChangeInfo,
+      Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
+      null,
+      {isPersonalizedPrice: true},
+      {offeringIdentifier: "the-offerings"}
+    );
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
+  });
+
+  it("purchaseStoreProduct still forwards legacy GoogleProductChangeInfo", async () => {
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      presentedOfferingContext: {offeringIdentifier: "the-offerings"}
+    }
+    const googleProductChangeInfo = {
+      oldProductIdentifier: "old_product",
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_WITH_TIME_PRORATION
+    }
+
+    await Purchases.purchaseStoreProduct(aProduct, googleProductChangeInfo)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(
+      aProduct.identifier,
+      googleProductChangeInfo,
+      Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
+      null,
+      null,
+      {offeringIdentifier: "the-offerings"}
+    );
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
+  });
+
+  it("purchaseStoreProduct forwards null productChangeInfo as null", async () => {
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      presentedOfferingContext: {offeringIdentifier: "the-offerings"}
+    }
+
+    await Purchases.purchaseStoreProduct(aProduct, null)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(
+      aProduct.identifier,
+      null,
+      Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
+      null,
+      null,
+      {offeringIdentifier: "the-offerings"}
+    );
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
+  });
+
   it("purchasePackage works", async () => {
     NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
       purchasedProductIdentifier: "123",
@@ -360,6 +493,122 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(3);
   });
 
+  it("purchasePackage forwards StoreProductChangeInfo with replacementMode", async () => {
+    NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aPackage = {
+      identifier: "$rc_onemonth",
+      packageType: Purchases.PACKAGE_TYPE.MONTHLY,
+      product: productStub,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    }
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    }
+
+    await Purchases.purchasePackage(aPackage, null, productChangeInfo)
+
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
+      "$rc_onemonth",
+      {offeringIdentifier: "offering"},
+      productChangeInfo,
+      null,
+      null
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
+  });
+
+  it("purchasePackage forwards StoreProductChangeInfo with personalized price", async () => {
+    NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aPackage = {
+      identifier: "$rc_onemonth",
+      packageType: Purchases.PACKAGE_TYPE.MONTHLY,
+      product: productStub,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    }
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    }
+
+    await Purchases.purchasePackage(aPackage, null, productChangeInfo, true)
+
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
+      "$rc_onemonth",
+      {offeringIdentifier: "offering"},
+      productChangeInfo,
+      null,
+      {isPersonalizedPrice: true}
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
+  });
+
+  it("purchasePackage still forwards legacy GoogleProductChangeInfo", async () => {
+    NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aPackage = {
+      identifier: "$rc_onemonth",
+      packageType: Purchases.PACKAGE_TYPE.MONTHLY,
+      product: productStub,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    }
+    const googleProductChangeInfo = {
+      oldProductIdentifier: "old_product",
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_WITH_TIME_PRORATION
+    }
+
+    await Purchases.purchasePackage(aPackage, null, googleProductChangeInfo)
+
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
+      "$rc_onemonth",
+      {offeringIdentifier: "offering"},
+      googleProductChangeInfo,
+      null,
+      null
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
+  });
+
+  it("purchasePackage forwards null productChangeInfo as null", async () => {
+    NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aPackage = {
+      identifier: "$rc_onemonth",
+      packageType: Purchases.PACKAGE_TYPE.MONTHLY,
+      product: productStub,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    }
+
+    await Purchases.purchasePackage(aPackage, null, null)
+
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
+      "$rc_onemonth",
+      {offeringIdentifier: "offering"},
+      null,
+      null,
+      null
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
+  });
+
   it("purchaseSubscriptionOption works", async () => {
     Platform.OS = "android";
     NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
@@ -431,6 +680,226 @@ describe("Purchases", () => {
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
     }, null, {isPersonalizedPrice: true}, {offeringIdentifier: "offering"});
     expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(2);
+  });
+
+  it("purchaseSubscriptionOption forwards StoreProductChangeInfo with replacementMode", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, productChangeInfo);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      productChangeInfo,
+      null,
+      null,
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+  });
+
+  it("purchaseSubscriptionOption forwards StoreProductChangeInfo with personalized price", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+    const productChangeInfo = {
+      oldProductIdentifier: "old_product",
+      replacementMode: Purchases.STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, productChangeInfo, true);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      productChangeInfo,
+      null,
+      {isPersonalizedPrice: true},
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+  });
+
+  it("purchaseSubscriptionOption still forwards legacy GoogleProductChangeInfo", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+    const googleProductChangeInfo = {
+      oldProductIdentifier: "old_product",
+      prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_WITH_TIME_PRORATION
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, googleProductChangeInfo);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      googleProductChangeInfo,
+      null,
+      null,
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
+  });
+
+  it("purchaseSubscriptionOption forwards null productChangeInfo as null", async () => {
+    Platform.OS = "android";
+    NativeModules.RNPurchases.purchaseSubscriptionOption.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const billingPeriod = {
+      "unit": "MONTH",
+      "value": 1,
+      "iso8601": "P1M"
+    };
+    const phase = {
+      "billingPeriod": billingPeriod,
+      "recurrenceMode": 1,
+      "billingCycleCount": 0,
+      "price": {
+          "formatted": "$4.99",
+          "amountMicros": 49900000,
+          "currencyCode": "USD"
+      },
+      "offerPaymentMode": null
+    };
+    const subscriptionOption = {
+      id: "monthly",
+      storeProductId: "gold:monthly",
+      productId: "gold",
+      pricingPhases: [phase],
+      tags: [],
+      isBasePlan: true,
+      billingPeriod: billingPeriod,
+      isPrePaid: false,
+      fullPricePhase: phase,
+      freePhase: null,
+      introPhase: null,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    };
+
+    await Purchases.purchaseSubscriptionOption(subscriptionOption, null);
+
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledWith(
+      "gold",
+      "monthly",
+      null,
+      null,
+      null,
+      {offeringIdentifier: "offering"}
+    );
+    expect(NativeModules.RNPurchases.purchaseSubscriptionOption).toBeCalledTimes(1);
   });
 
   it("restorePurchases works", async () => {
@@ -1146,6 +1615,7 @@ describe("Purchases", () => {
       "isPurchasesAreCompletedByMyApp",
       "parseAsWebPurchaseRedemption",
       "removeTrackedEventListener",
+      "removeDebugEventListener",
     ];
     const functionsThatRequireAndroidAndInstance = [
       "syncAmazonPurchase",
@@ -1479,5 +1949,56 @@ describe("Purchases", () => {
         });
       });
     });
+  });
+
+  describe("trackCustomPaywallImpression", () => {
+    describe("when Purchases is not configured", () => {
+      it("it rejects", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+        try {
+          await Purchases.trackCustomPaywallImpression();
+          fail("expected error");
+        } catch (error) { }
+
+        expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(0);
+      });
+    });
+
+    it("makes right call with no params", async () => {
+      await Purchases.trackCustomPaywallImpression();
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({});
+    });
+
+    it("makes right call with paywallId", async () => {
+      await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall" });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: "my_paywall" });
+    });
+
+    it("makes right call with null paywallId", async () => {
+      await Purchases.trackCustomPaywallImpression({ paywallId: null });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: null });
+    });
+
+    it("makes right call with offeringId only", async () => {
+      await Purchases.trackCustomPaywallImpression({ offeringId: "my_offering" });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ offeringId: "my_offering" });
+    });
+
+    it("makes right call with paywallId and offeringId", async () => {
+      await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall", offeringId: "my_offering" });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: "my_paywall", offeringId: "my_offering" });
+    });
+
   });
 });

@@ -1,0 +1,7 @@
+# config.yaml
+
+executionOrder:
+  continueOnFailure: false
+
+flows:
+  - e2e_tests/*

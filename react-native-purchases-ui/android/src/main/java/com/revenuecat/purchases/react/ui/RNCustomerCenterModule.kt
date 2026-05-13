@@ -154,6 +154,19 @@ internal class RNCustomerCenterModule(
                 sendEvent("onRestoreStarted", null)
             }
 
+            override fun onPromotionalOfferSucceededWrapper(
+                customerInfo: Map<String, Any?>,
+                transaction: Map<String, Any?>,
+                offerId: String,
+            ) {
+                val params = WritableNativeMap().apply {
+                    putMap("customerInfo", RNPurchasesConverters.convertMapToWriteableMap(customerInfo))
+                    putMap("transaction", RNPurchasesConverters.convertMapToWriteableMap(transaction))
+                    putString("offerId", offerId)
+                }
+                sendEvent("onPromotionalOfferSucceeded", params)
+            }
+
         }
     }
 

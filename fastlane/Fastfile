@@ -48,12 +48,14 @@ lane :bump do |options|
     automatic_release: options[:automatic_release],
     hybrid_common_version: phc_version,
     versions_file_path: versions_path,
-    is_prerelease: options[:is_prerelease]
+    is_prerelease: options[:is_prerelease],
+    include_purchases_js: true
   )
   update_hybrids_versions_file(
     versions_file_path: versions_path,
     new_sdk_version: current_version_number,
-    hybrid_common_version: phc_version
+    hybrid_common_version: phc_version,
+    include_purchases_js: true
   )
   commit_current_changes(commit_message: 'Update VERSIONS.md')
   push_to_git_remote(set_upstream: true)
@@ -207,7 +209,7 @@ lane :generate_docs do
   unless should_update_index
     UI.important("ℹ️  Prerelease or hotfix detected, skipping index update")
   end
-  docs_repo_base_url = "https://github.com/RevenueCat/"
+  docs_repo_base_url = "git@github.com:RevenueCat/"
   docs_repo_name = "react-native-purchases-docs"
   docs_repo_url = File.join(docs_repo_base_url, docs_repo_name)
 
@@ -317,6 +319,35 @@ def check_no_git_tag_exists(version_number)
   if git_tag_exists(tag: version_number, remote: true, remote_name: 'origin')
     raise "git tag with version #{version_number} already exists!"
   end
+end
+
+desc "Run maestro E2E tests on iOS"
+lane :run_maestro_e2e_tests_ios do
+  Dir.chdir("../e2e-tests/MaestroTestApp") do
+    sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
+    sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
+    sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
+    sh("rm -rf ios/Pods && cd ios && pod install --repo-update")
+    sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
+    sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
+  end
+  run_maestro_e2e_tests(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
+end
+
+desc "Build maestro E2E test app for Android"
+lane :build_maestro_app_android do
+  Dir.chdir("../e2e-tests/MaestroTestApp") do
+    sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
+    sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
+    sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
+    sh("cd android && ./gradlew assembleDebug")
+  end
+end
+
+desc "Run maestro E2E tests on Android (emulator must be running)"
+lane :run_maestro_e2e_tests_android do
+  sh("adb install ../e2e-tests/MaestroTestApp/android/app/build/outputs/apk/debug/app-debug.apk")
+  run_maestro_e2e_tests(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
 end
 
 private_lane :update_sample_podfile_lock_with_retry do |options|

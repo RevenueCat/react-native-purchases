@@ -765,6 +765,7 @@ NativeModules.RNPurchases = {
   getOfferings: jest.fn(),
   getCurrentOfferingForPlacement: jest.fn(),
   syncAttributesAndOfferingsIfNeeded: jest.fn(),
+  setAppstackAttributionParams: jest.fn(),
   getProductInfo: jest.fn(),
   makePurchase: jest.fn(),
   restorePurchases: jest.fn(),
@@ -808,7 +809,8 @@ NativeModules.RNPurchases = {
   redeemWebPurchase: jest.fn(),
   getVirtualCurrencies: jest.fn(),
   invalidateVirtualCurrenciesCache: jest.fn(),
-  getCachedVirtualCurrencies: jest.fn()
+  getCachedVirtualCurrencies: jest.fn(),
+  trackCustomPaywallImpression: jest.fn()
 };
 
 jest.mock(

@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { CustomVariablesProvider } from '@/components/CustomVariablesContext';
+import CustomVariablesEditor from '@/components/CustomVariablesEditor';
 import Purchases from 'react-native-purchases';
 import APIKeys from '@/constants/APIKeys';
 
@@ -60,6 +62,10 @@ export default function RootLayout() {
           await Purchases.addTrackedEventListener((event: Record<string, unknown>) => {
             console.log('[RCTrackedEvent]', JSON.stringify(event, null, 2));
           });
+          // @ts-expect-error - addDebugEventListener is internal
+          await Purchases.addDebugEventListener((event: Record<string, unknown>) => {
+            console.log('[RCDebugEvent]', JSON.stringify(event, null, 2));
+          });
           setPurchasesConfigured(true);
           console.log('Purchases configured successfully');
         } else {
@@ -95,11 +101,14 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <CustomVariablesProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+        <CustomVariablesEditor />
+      </ThemeProvider>
+    </CustomVariablesProvider>
   );
 }
