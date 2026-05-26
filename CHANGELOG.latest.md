@@ -1,5 +1,7 @@
 ## RevenueCat SDK
-### ✨ New Features
-* Unified StoreReplacementMode API + Deprecate PRORATION_MODE enum API (#1749) via Will Taylor (@fire-at-will)
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.4.0 (#1760) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.7.0 (#1771) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.6.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.6.0)
+  * [iOS 5.73.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.73.0)
+  * [Web 1.40.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.40.0)
+  * [Web 1.39.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.39.1)

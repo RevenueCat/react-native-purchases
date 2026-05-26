@@ -12,7 +12,7 @@ That will link the local package so that changes are automatically applied to th
 
 To run purchaseTesterTypescript on a device run the following from the root of the repository:
 
-`yarn example android` or `npx example ios`
+`yarn example android` or `yarn example ios`
 
 If you have a connected device, the app will run on that device. If not, it will run on a simulator. If you get issues when running iOS try opening the xcworkspace with xcode and build the project, it might point to what the error is, like for example a missing Team for signing.
 
