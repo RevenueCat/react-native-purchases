@@ -300,15 +300,17 @@ RCT_EXPORT_METHOD(eligibleWinBackOffersForProductIdentifier:(nonnull NSString *)
     if (@available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *)) {
         [RCCommonFunctionality eligibleWinBackOffersForProductIdentifier:productID
                                                          completionBlock:^(NSArray<NSDictionary *> * _Nullable offers, RCErrorContainer * _Nullable errorContainer) {
-            if (errorContainer) {
-                reject(
-                    [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
-                    errorContainer.message,
-                    errorContainer.error
-                );
-            } else {
-                resolve(offers ?: @[]);
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (errorContainer) {
+                    reject(
+                        [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
+                        errorContainer.message,
+                        errorContainer.error
+                    );
+                } else {
+                    resolve(offers ?: @[]);
+                }
+            });
         }];
     } else {
         NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
@@ -515,15 +517,17 @@ RCT_EXPORT_METHOD(showManageSubscriptions:
     #if TARGET_OS_IPHONE && !TARGET_OS_TV
     if (@available(iOS 13.0, macOS 10.15, visionOS 1.0, *)) {
         [RCCommonFunctionality showManageSubscriptions:^(RCErrorContainer * _Nullable errorContainer) {
-            if (errorContainer) {
-                reject(
-                    [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
-                    errorContainer.message,
-                    errorContainer.error
-                );
-            } else {
-                resolve(nil);
-            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (errorContainer) {
+                    reject(
+                        [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
+                        errorContainer.message,
+                        errorContainer.error
+                    );
+                } else {
+                    resolve(nil);
+                }
+            });
         }];
     } else {
         NSLog(@"[Purchases] Warning: tried to showManageSubscriptions in non supported iOS devices. Only available on iOS 13.0 or greater.");
@@ -662,27 +666,34 @@ readyForPromotedProduct:(RCStoreProduct *)product
 
 - (void (^)(NSDictionary *, RCErrorContainer *))getResponseCompletionBlockWithResolve:(RCTPromiseResolveBlock)resolve
                                                                                reject:(RCTPromiseRejectBlock)reject {
+    // RCCommonFunctionality delivers completion blocks on a background thread. In New Architecture's
+    // interop layer, calling resolve/reject off the declared methodQueue (main) causes a use-after-free
+    // in convertNSExceptionToJSError → Hermes memory corruption. Always dispatch back to main queue.
     return ^(NSDictionary *_Nullable responseDictionary, RCErrorContainer *_Nullable error) {
-        if (error) {
-            [self rejectPromiseWithBlock:reject error:error];
-        } else if (responseDictionary) {
-            resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
-        } else {
-            resolve(nil);
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [self rejectPromiseWithBlock:reject error:error];
+            } else if (responseDictionary) {
+                resolve([NSDictionary dictionaryWithDictionary:responseDictionary]);
+            } else {
+                resolve(nil);
+            }
+        });
     };
 }
 
 - (void (^)(RCErrorContainer *))getBeginRefundResponseCompletionBlockWithResolve:(RCTPromiseResolveBlock)resolve
                                                                           reject:(RCTPromiseRejectBlock)reject {
     return ^(RCErrorContainer * _Nullable error) {
-        if (error == nil) {
-            resolve(@0);
-        } else if ([error.info[@"userCancelled"] isEqual:@YES]) {
-            resolve(@1);
-        } else {
-            [self rejectPromiseWithBlock:reject error:error];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error == nil) {
+                resolve(@0);
+            } else if ([error.info[@"userCancelled"] isEqual:@YES]) {
+                resolve(@1);
+            } else {
+                [self rejectPromiseWithBlock:reject error:error];
+            }
+        });
     };
 }
 
