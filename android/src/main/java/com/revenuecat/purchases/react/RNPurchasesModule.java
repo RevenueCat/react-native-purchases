@@ -626,6 +626,31 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         CommonKt.trackCustomPaywallImpression(data.toHashMap());
     }
 
+    @ReactMethod
+    public void trackAdDisplayed(ReadableMap data) {
+        CommonKt.trackAdDisplayed(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdOpened(ReadableMap data) {
+        CommonKt.trackAdOpened(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdLoaded(ReadableMap data) {
+        CommonKt.trackAdLoaded(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdRevenue(ReadableMap data) {
+        CommonKt.trackAdRevenue(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdFailedToLoad(ReadableMap data) {
+        CommonKt.trackAdFailedToLoad(data.toHashMap());
+    }
+
     // endregion
 
     //================================================================================

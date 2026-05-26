@@ -635,6 +635,46 @@ RCT_EXPORT_METHOD(trackCustomPaywallImpression:(NSDictionary *)data) {
     }
 }
 
+RCT_EXPORT_METHOD(trackAdDisplayed:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdDisplayed:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdDisplayed, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdOpened:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdOpened:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdOpened, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdLoaded:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdLoaded:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdLoaded, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdRevenue:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdRevenue:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdRevenue, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdFailedToLoad:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdFailedToLoad:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdFailedToLoad, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases receivedUpdatedCustomerInfo:(RCCustomerInfo *)customerInfo {

@@ -810,7 +810,12 @@ NativeModules.RNPurchases = {
   getVirtualCurrencies: jest.fn(),
   invalidateVirtualCurrenciesCache: jest.fn(),
   getCachedVirtualCurrencies: jest.fn(),
-  trackCustomPaywallImpression: jest.fn()
+  trackCustomPaywallImpression: jest.fn(),
+  trackAdDisplayed: jest.fn(),
+  trackAdOpened: jest.fn(),
+  trackAdLoaded: jest.fn(),
+  trackAdRevenue: jest.fn(),
+  trackAdFailedToLoad: jest.fn()
 };
 
 jest.mock(
