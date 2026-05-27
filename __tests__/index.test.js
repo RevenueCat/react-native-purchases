@@ -2001,4 +2001,116 @@ describe("Purchases", () => {
     });
 
   });
+
+  describe("adTracker", () => {
+    const requiredDisplayedData = {
+      mediatorName: "AdMob",
+      adFormat: "banner",
+      adUnitId: "unit-1",
+      impressionId: "imp-1",
+    };
+
+    describe("when Purchases is not configured", () => {
+      it("trackAdDisplayed rejects", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+        try {
+          await Purchases.adTracker.trackAdDisplayed(requiredDisplayedData);
+          fail("expected error");
+        } catch (error) { }
+        expect(NativeModules.RNPurchases.trackAdDisplayed).toBeCalledTimes(0);
+      });
+    });
+
+    describe("trackAdDisplayed", () => {
+      it("makes right call with required fields", async () => {
+        await Purchases.adTracker.trackAdDisplayed(requiredDisplayedData);
+        expect(NativeModules.RNPurchases.trackAdDisplayed).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackAdDisplayed).toBeCalledWith(requiredDisplayedData);
+      });
+
+      it("makes right call with optional fields", async () => {
+        const data = { ...requiredDisplayedData, networkName: "AdNetwork", placement: "home" };
+        await Purchases.adTracker.trackAdDisplayed(data);
+        expect(NativeModules.RNPurchases.trackAdDisplayed).toBeCalledWith(data);
+      });
+
+      it("passes null optional fields through", async () => {
+        const data = { ...requiredDisplayedData, networkName: null, placement: null };
+        await Purchases.adTracker.trackAdDisplayed(data);
+        expect(NativeModules.RNPurchases.trackAdDisplayed).toBeCalledWith(data);
+      });
+    });
+
+    describe("trackAdOpened", () => {
+      it("makes right call with required fields", async () => {
+        await Purchases.adTracker.trackAdOpened(requiredDisplayedData);
+        expect(NativeModules.RNPurchases.trackAdOpened).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackAdOpened).toBeCalledWith(requiredDisplayedData);
+      });
+    });
+
+    describe("trackAdLoaded", () => {
+      it("makes right call with required fields", async () => {
+        await Purchases.adTracker.trackAdLoaded(requiredDisplayedData);
+        expect(NativeModules.RNPurchases.trackAdLoaded).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackAdLoaded).toBeCalledWith(requiredDisplayedData);
+      });
+    });
+
+    describe("trackAdRevenue", () => {
+      const revenueData = {
+        mediatorName: "AdMob",
+        adFormat: "rewarded",
+        adUnitId: "unit-1",
+        impressionId: "imp-1",
+        revenueMicros: 500000,
+        currency: "USD",
+        precision: "estimated",
+      };
+
+      it("makes right call with required fields", async () => {
+        await Purchases.adTracker.trackAdRevenue(revenueData);
+        expect(NativeModules.RNPurchases.trackAdRevenue).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackAdRevenue).toBeCalledWith(revenueData);
+      });
+
+      it("passes optional fields through", async () => {
+        const data = { ...revenueData, networkName: "AdNetwork", placement: "home" };
+        await Purchases.adTracker.trackAdRevenue(data);
+        expect(NativeModules.RNPurchases.trackAdRevenue).toBeCalledWith(data);
+      });
+    });
+
+    describe("trackAdFailedToLoad", () => {
+      const failedData = {
+        mediatorName: "AdMob",
+        adFormat: "banner",
+        adUnitId: "unit-1",
+      };
+
+      it("makes right call with required fields only", async () => {
+        await Purchases.adTracker.trackAdFailedToLoad(failedData);
+        expect(NativeModules.RNPurchases.trackAdFailedToLoad).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackAdFailedToLoad).toBeCalledWith(failedData);
+      });
+
+      it("passes mediatorErrorCode through", async () => {
+        const data = { ...failedData, mediatorErrorCode: 3 };
+        await Purchases.adTracker.trackAdFailedToLoad(data);
+        expect(NativeModules.RNPurchases.trackAdFailedToLoad).toBeCalledWith(data);
+      });
+
+      it("passes null mediatorErrorCode through", async () => {
+        const data = { ...failedData, mediatorErrorCode: null };
+        await Purchases.adTracker.trackAdFailedToLoad(data);
+        expect(NativeModules.RNPurchases.trackAdFailedToLoad).toBeCalledWith(data);
+      });
+
+      it("passes placement through", async () => {
+        const data = { ...failedData, placement: "home" };
+        await Purchases.adTracker.trackAdFailedToLoad(data);
+        expect(NativeModules.RNPurchases.trackAdFailedToLoad).toBeCalledWith(data);
+      });
+    });
+  });
 });
