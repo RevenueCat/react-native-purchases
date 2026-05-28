@@ -337,4 +337,19 @@ export const browserNativeModuleRNPurchases = {
     const cachedVirtualCurrencies = PurchasesCommon.getInstance().getCachedVirtualCurrencies();
     return cachedVirtualCurrencies ? validateAndTransform(cachedVirtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies') : null;
   },
+  trackAdDisplayed: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdDisplayed');
+  },
+  trackAdOpened: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdOpened');
+  },
+  trackAdLoaded: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdLoaded');
+  },
+  trackAdRevenue: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdRevenue');
+  },
+  trackAdFailedToLoad: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdFailedToLoad');
+  },
 };

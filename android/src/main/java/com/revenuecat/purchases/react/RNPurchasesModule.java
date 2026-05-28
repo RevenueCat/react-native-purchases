@@ -51,7 +51,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "10.1.0";
+    public static final String PLUGIN_VERSION = "10.2.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -624,6 +624,31 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void trackCustomPaywallImpression(ReadableMap data) {
         CommonKt.trackCustomPaywallImpression(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdDisplayed(ReadableMap data) {
+        CommonKt.trackAdDisplayed(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdOpened(ReadableMap data) {
+        CommonKt.trackAdOpened(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdLoaded(ReadableMap data) {
+        CommonKt.trackAdLoaded(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdRevenue(ReadableMap data) {
+        CommonKt.trackAdRevenue(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdFailedToLoad(ReadableMap data) {
+        CommonKt.trackAdFailedToLoad(data.toHashMap());
     }
 
     // endregion
