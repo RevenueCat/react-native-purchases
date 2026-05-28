@@ -55,7 +55,7 @@ NSString *RNPurchasesDebugEvent = @"Purchases-DebugEvent";
 
 RCT_EXPORT_MODULE();
 
-// Required for RN 0.65+ NativeEventEmitter (JavaScript class) support
+// Required for RN 0.79+ NativeEventEmitter (JavaScript class) support
 //
 // In JavaScript: new NativeEventEmitter(RNPurchases)
 // NativeEventEmitter checks if the native module has addListener/removeListeners methods.
