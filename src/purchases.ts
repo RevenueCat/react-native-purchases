@@ -83,6 +83,11 @@ export {
 
 import { Platform } from "react-native";
 
+type StoreConfigurationFields = {
+  store?: "GALAXY";
+  galaxyBillingMode?: "PRODUCTION" | "TEST" | "ALWAYS_FAIL";
+};
+
 const NATIVE_MODULE_ERROR =
   `[RevenueCat] Native module (RNPurchases) not found. This can happen if:\n\n` +
   `- You are running in an environment where native modules are unavailable\n` +
@@ -448,7 +453,9 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
-  }: PurchasesConfiguration): void {
+    store,
+    galaxyBillingMode,
+  }: PurchasesConfiguration & StoreConfigurationFields): void {
     throwIfNativeModuleNotAvailable();
 
     if (!customLogHandler) {
@@ -527,6 +534,8 @@ export default class Purchases {
       userDefaultsSuiteName,
       storeKitVersionToUse,
       useAmazon,
+      store,
+      galaxyBillingMode,
       shouldShowInAppMessagesAutomatically,
       entitlementVerificationMode,
       pendingTransactionsForPrepaidPlansEnabled,

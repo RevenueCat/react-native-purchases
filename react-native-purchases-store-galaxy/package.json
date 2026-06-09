@@ -1,0 +1,120 @@
+{
+  "name": "react-native-purchases-store-galaxy",
+  "title": "React Native Purchases Store Galaxy",
+  "version": "10.2.2",
+  "description": "Galaxy Store add-on for React Native Purchases.",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
+  "scripts": {
+    "test": "jest",
+    "typecheck": "tsc --noEmit",
+    "tslint": "tslint -c tslint.json 'src/*.ts'",
+    "prepare": "bob build",
+    "apitest": "echo \"Running react-native-purchases-store-galaxy API type checks\" && tsc --project apitesters/tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revenuecat/react-native-purchases.git",
+    "baseUrl": "https://github.com/revenuecat/react-native-purchases"
+  },
+  "keywords": [
+    "react-native",
+    "in-app purchase",
+    "subscriptions",
+    "iap",
+    "Android",
+    "Galaxy"
+  ],
+  "author": "RevenueCat, Inc.",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/react": "^18.2.44",
+    "@types/react-dom": "~18.2.0",
+    "babel-plugin-react-native-web": "^0.20.0",
+    "jest": "^29.7.0",
+    "jest-react-native": "^18.0.0",
+    "prettier": "^2.0.5",
+    "react": "18.2.0",
+    "react-native": "0.78.0",
+    "react-native-builder-bob": "^0.20.0",
+    "ts-jest": "^29.1.2",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^5.2.2"
+  },
+  "resolutions": {
+    "@types/react": "^18.2.44",
+    "@types/react-dom": "18.2.0"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": ">= 0.73.0",
+    "react-native-purchases": "10.2.2",
+    "react-native-web": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-native-web": {
+      "optional": true
+    }
+  },
+  "packageManager": "yarn@3.6.1",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/lib/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ],
+    "cacheDirectory": ".jest/cache",
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.test.json"
+      }
+    }
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "@revenuecat/purchases-typescript-internal": "18.11.0"
+  }
+}

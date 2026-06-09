@@ -15,6 +15,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Purchases from 'react-native-purchases';
+import { GalaxyConfiguration, GALAXY_BILLING_MODE } from 'react-native-purchases-store-galaxy';
 
 import HomeScreen from './app/screens/HomeScreen';
 import CustomerInfoScreen from './app/screens/CustomerInfoScreen';
@@ -39,7 +40,10 @@ export const purchasesAreCompletedByMyApp = false;
 
 const App = () => {
   const hasKeys = () => {
-    return APIKeys.apple.length > 0 || APIKeys.google.length > 0 || APIKeys.amazon.length > 0;
+    return APIKeys.apple.length > 0 ||
+      APIKeys.google.length > 0 ||
+      APIKeys.galaxy.length > 0 ||
+      APIKeys.amazon.length > 0;
   }
 
   const [url, setUrl] = useState<string | null>(null);
@@ -76,8 +80,22 @@ const App = () => {
     const verificationMode = Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL;
 
     if (Platform.OS == "android") {
-      const useAmazon = false;
-      if (useAmazon) {
+      const useAmazon = APIKeys.amazon.length > 0;
+      const useGalaxy = APIKeys.galaxy.length > 0;
+      if (useGalaxy) {
+        Purchases.configure(new GalaxyConfiguration({
+          apiKey: APIKeys.galaxy,
+          galaxyBillingMode: GALAXY_BILLING_MODE.TEST,
+          ...(purchasesAreCompletedByMyApp && {
+            purchasesAreCompletedBy: {
+              type: Purchases.PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP,
+            },
+          }),
+          entitlementVerificationMode: verificationMode,
+          pendingTransactionsForPrepaidPlansEnabled: true,
+          diagnosticsEnabled: true,
+        }));
+      } else if (useAmazon) {
         Purchases.configure({
           apiKey: APIKeys.amazon,
           useAmazon: true,

@@ -89,6 +89,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     public void setupPurchases(String apiKey, @Nullable String appUserID,
                                @Nullable String purchasesAreCompletedBy, @Nullable String userDefaultsSuiteName,
                                @Nullable String storeKitVersion, boolean useAmazon,
+                               @Nullable String storeString,
+                               @Nullable String galaxyBillingMode,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled,
@@ -97,7 +99,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                @Nullable String preferredUILocaleOverride) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
-        if (useAmazon) {
+        if ("GALAXY".equals(storeString)) {
+            store = Store.GALAXY;
+        } else if (useAmazon) {
             store = Store.AMAZON;
         }
         CommonKt.configure(
@@ -113,7 +117,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             pendingTransactionsForPrepaidPlansEnabled,
             diagnosticsEnabled,
             automaticDeviceIdentifierCollectionEnabled,
-            preferredUILocaleOverride
+            preferredUILocaleOverride,
+            galaxyBillingMode
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }

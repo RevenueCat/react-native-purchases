@@ -8297,6 +8297,7 @@ __metadata:
     babel-plugin-module-resolver: ^5.0.0
     react: 19.0.0
     react-native: ^0.78.0
+    react-native-purchases-store-galaxy: 10.2.2
     react-native-safe-area-context: ^5.1.0
     react-native-screens: ^4.5.0
   languageName: unknown
@@ -8433,6 +8434,36 @@ __metadata:
   checksum: 4cdf2b2fb5b131f2015c26d2cb7688b4a0c5f3c8474b1bf0ddfa9eabb0263df440c87262ae8f812a6ecab0d5310df0373bddad4b51f53dabb2ffee01e9ef0f44
   languageName: node
   linkType: hard
+
+"react-native-purchases-store-galaxy@10.2.2, react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy":
+  version: 0.0.0-use.local
+  resolution: "react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy"
+  dependencies:
+    "@revenuecat/purchases-typescript-internal": 18.11.0
+    "@types/jest": ^29.5.12
+    "@types/react": ^18.2.44
+    "@types/react-dom": ~18.2.0
+    babel-plugin-react-native-web: ^0.20.0
+    jest: ^29.7.0
+    jest-react-native: ^18.0.0
+    prettier: ^2.0.5
+    react: 18.2.0
+    react-native: 0.78.0
+    react-native-builder-bob: ^0.20.0
+    ts-jest: ^29.1.2
+    tslint: ^5.20.0
+    tslint-config-prettier: ^1.18.0
+    typescript: ^5.2.2
+  peerDependencies:
+    react: "*"
+    react-native: ">= 0.73.0"
+    react-native-purchases: 10.2.2
+    react-native-web: "*"
+  peerDependenciesMeta:
+    react-native-web:
+      optional: true
+  languageName: unknown
+  linkType: soft
 
 "react-native-purchases-ui@workspace:react-native-purchases-ui":
   version: 0.0.0-use.local

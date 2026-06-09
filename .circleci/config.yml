@@ -117,6 +117,10 @@ jobs:
           working_directory: react-native-purchases-ui
           command: yarn prepare
       - run:
+          name: Prepare Galaxy Store package
+          working_directory: react-native-purchases-store-galaxy
+          command: yarn prepare
+      - run:
           name: Tests
           command: yarn test
       - run:
@@ -126,8 +130,14 @@ jobs:
           name: UI API Tests
           command: yarn workspace react-native-purchases-ui apitest
       - run:
+          name: Galaxy Store API Tests
+          command: yarn workspace react-native-purchases-store-galaxy apitest
+      - run:
           name: UI Tests
           command: yarn workspace react-native-purchases-ui test
+      - run:
+          name: Galaxy Store Tests
+          command: yarn workspace react-native-purchases-store-galaxy test
       - run:
           name: Linter
           command: yarn run tslint
