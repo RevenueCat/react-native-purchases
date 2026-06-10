@@ -1,6 +1,4 @@
-import type {
-  PurchasesConfiguration,
-} from "@revenuecat/purchases-typescript-internal";
+import type {} from "react-native-purchases";
 
 export const GALAXY_BILLING_MODE = {
   PRODUCTION: "PRODUCTION",
@@ -8,23 +6,13 @@ export const GALAXY_BILLING_MODE = {
   ALWAYS_FAIL: "ALWAYS_FAIL",
 } as const;
 
-export type GALAXY_BILLING_MODE =
+export type GalaxyBillingMode =
   (typeof GALAXY_BILLING_MODE)[keyof typeof GALAXY_BILLING_MODE];
 
-export interface GalaxyConfigurationParams extends PurchasesConfiguration {
-  galaxyBillingMode?: GALAXY_BILLING_MODE;
-}
-
-export interface GalaxyConfiguration extends GalaxyConfigurationParams {}
-
-export class GalaxyConfiguration {
-  public readonly store = "GALAXY";
-
-  public constructor({
-    galaxyBillingMode = GALAXY_BILLING_MODE.PRODUCTION,
-    ...configuration
-  }: GalaxyConfigurationParams) {
-    Object.assign(this, configuration);
-    this.galaxyBillingMode = galaxyBillingMode;
+declare module "react-native-purchases" {
+  interface ConfigurationsByStore {
+    GALAXY: {
+      galaxyBillingMode?: GalaxyBillingMode;
+    };
   }
 }

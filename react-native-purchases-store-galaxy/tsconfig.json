@@ -2,6 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
+      "react-native-purchases": ["../dist/index"],
       "react-native-purchases-store-galaxy": ["./src/index"]
     },
     "allowUnreachableCode": false,

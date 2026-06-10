@@ -15,7 +15,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Purchases from 'react-native-purchases';
-import { GalaxyConfiguration, GALAXY_BILLING_MODE } from 'react-native-purchases-store-galaxy';
+import { GALAXY_BILLING_MODE } from 'react-native-purchases-store-galaxy';
 
 import HomeScreen from './app/screens/HomeScreen';
 import CustomerInfoScreen from './app/screens/CustomerInfoScreen';
@@ -83,8 +83,9 @@ const App = () => {
       const useAmazon = APIKeys.amazon.length > 0;
       const useGalaxy = APIKeys.galaxy.length > 0;
       if (useGalaxy) {
-        Purchases.configure(new GalaxyConfiguration({
+        Purchases.configure({
           apiKey: APIKeys.galaxy,
+          store: 'GALAXY',
           galaxyBillingMode: GALAXY_BILLING_MODE.TEST,
           ...(purchasesAreCompletedByMyApp && {
             purchasesAreCompletedBy: {
@@ -94,7 +95,7 @@ const App = () => {
           entitlementVerificationMode: verificationMode,
           pendingTransactionsForPrepaidPlansEnabled: true,
           diagnosticsEnabled: true,
-        }));
+        });
       } else if (useAmazon) {
         Purchases.configure({
           apiKey: APIKeys.amazon,
