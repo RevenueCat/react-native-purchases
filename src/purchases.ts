@@ -86,7 +86,7 @@ export interface ConfigurationsByStore {
   PLAY_STORE: {};
 }
 
-export interface BaseConfiguration extends BasePurchasesConfiguration {}
+interface BaseConfiguration extends BasePurchasesConfiguration {}
 
 export type PurchasesConfiguration = {
   [S in keyof ConfigurationsByStore]: BaseConfiguration &
