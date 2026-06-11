@@ -9,6 +9,7 @@ files_with_version_number = {
     ],
     './react-native-purchases-store-galaxy/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
     './react-native-purchases-store-galaxy/android/build.gradle' => ['versionName \'{x}\''],
+    './examples/purchaseTesterTypescript/package.json' => ['"react-native-purchases-store-galaxy": "{x}"'],
     './react-native-purchases-ui/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
     './ios/RNPurchases.m' => ['return @"{x}"'],
     './android/build.gradle' => ['versionName \'{x}\''],

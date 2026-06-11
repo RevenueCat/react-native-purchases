@@ -43,7 +43,7 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     versionCode 1
-    versionName '10.2.2'
+    versionName '10.2.3'
   }
 
   buildTypes {
