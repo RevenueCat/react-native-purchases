@@ -22,6 +22,8 @@ export const browserNativeModuleRNPurchases = {
     _userDefaultsSuiteName: string | null,
     _storeKitVersion: string | null,
     _useAmazon: boolean,
+    _store: string | null,
+    _galaxyBillingMode: string | null,
     _shouldShowInAppMessagesAutomatically: boolean,
     _entitlementVerificationMode: string | null,
     _pendingTransactionsForPrepaidPlansEnabled: boolean,

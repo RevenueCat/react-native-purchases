@@ -23,7 +23,7 @@ import {
   BILLING_FEATURE,
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
-  PurchasesConfiguration,
+  PurchasesConfiguration as BasePurchasesConfiguration,
   CustomerInfoUpdateListener,
   ShouldPurchasePromoProductListener,
   MakePurchaseResult,
@@ -70,7 +70,6 @@ export {
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
   STOREKIT_VERSION,
-  PurchasesConfiguration,
   CustomerInfoUpdateListener,
   ShouldPurchasePromoProductListener,
   MakePurchaseResult,
@@ -82,6 +81,23 @@ export {
 } from "@revenuecat/purchases-typescript-internal";
 
 import { Platform } from "react-native";
+
+export interface ConfigurationsByStore {
+  PLAY_STORE: {};
+}
+
+interface BaseConfiguration extends BasePurchasesConfiguration {}
+
+export type PurchasesConfiguration = {
+  [S in keyof ConfigurationsByStore]: BaseConfiguration &
+    ConfigurationsByStore[S] &
+    (S extends "PLAY_STORE" ? { store?: S } : { store: S })
+}[keyof ConfigurationsByStore];
+
+type InternalStoreConfigurationFields = {
+  store?: string;
+  galaxyBillingMode?: string;
+};
 
 const NATIVE_MODULE_ERROR =
   `[RevenueCat] Native module (RNPurchases) not found. This can happen if:\n\n` +
@@ -435,7 +451,8 @@ export default class Purchases {
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
-  public static configure({
+  public static configure(configuration: PurchasesConfiguration): void {
+    const {
     apiKey,
     appUserID = null,
     purchasesAreCompletedBy = PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
@@ -448,7 +465,12 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
-  }: PurchasesConfiguration): void {
+    } = configuration;
+    const {
+      store,
+      galaxyBillingMode,
+    } = configuration as PurchasesConfiguration & InternalStoreConfigurationFields;
+
     throwIfNativeModuleNotAvailable();
 
     if (!customLogHandler) {
@@ -527,6 +549,8 @@ export default class Purchases {
       userDefaultsSuiteName,
       storeKitVersionToUse,
       useAmazon,
+      store,
+      galaxyBillingMode,
       shouldShowInAppMessagesAutomatically,
       entitlementVerificationMode,
       pendingTransactionsForPrepaidPlansEnabled,

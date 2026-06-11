@@ -82,6 +82,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
                   storeKitVersion:(nullable NSString *)storeKitVersion
                   useAmazon:(BOOL)useAmazon
+                  store:(nullable NSString *)store
+                  galaxyBillingMode:(nullable NSString *)galaxyBillingMode
                   shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 

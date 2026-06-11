@@ -28,6 +28,7 @@
     "!**/*.iml",
     "!**/.DS_Store",
     "!**/.gitignore",
+    "!react-native-purchases-store-galaxy",
     "!react-native-purchases-ui",
     "!scripts/docs/index.html",
     "!scripts/setupJest.js"
@@ -46,6 +47,7 @@
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
+    "react-native-purchases-store-galaxy",
     "react-native-purchases-ui",
     "e2e-tests/MaestroTestApp"
   ],
@@ -103,6 +105,7 @@
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/examples/purchaseTesterTypescript/",
+      "<rootDir>/react-native-purchases-store-galaxy/",
       "<rootDir>/react-native-purchases-ui/",
       "<rootDir>/dir/"
     ],

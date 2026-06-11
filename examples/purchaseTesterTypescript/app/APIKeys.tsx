@@ -3,6 +3,7 @@
 const APIKeys = {
   apple: "",
   google: "",
+  galaxy: "",
   amazon: "",
 };
 
