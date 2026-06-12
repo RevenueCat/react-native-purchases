@@ -27,6 +27,19 @@ async function checkAttributes(purchases: Purchases) {
   await Purchases.setKeyword(stringOrNull);
   await Purchases.setCreative(stringOrNull);
 
+  // Asserts the full AppsFlyer onInstallConversionData callback object is accepted as-is.
+  const conversionData = {
+    status: "success" as const,
+    type: "onInstallConversionDataLoaded" as const,
+    data: {
+      is_first_launch: "true",
+      media_source: "",
+      campaign: "",
+      af_status: "Organic",
+    } as { [key: string]: any },
+  };
+  await Purchases.setAppsFlyerConversionData(conversionData);
+
   await Purchases.collectDeviceIdentifiers();
   await Purchases.enableAdServicesAttributionTokenCollection();
 }

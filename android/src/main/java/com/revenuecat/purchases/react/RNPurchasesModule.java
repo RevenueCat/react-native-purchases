@@ -552,6 +552,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void setAppsFlyerConversionData(ReadableMap data) {
+        SubscriberAttributesKt.setAppsFlyerConversionData(data == null ? null : data.toHashMap());
+    }
+
+    @ReactMethod
     public void canMakePayments(ReadableArray features, final Promise promise) {
         ArrayList<Integer> featureList = new ArrayList<>();
 

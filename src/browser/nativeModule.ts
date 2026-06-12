@@ -295,6 +295,9 @@ export const browserNativeModuleRNPurchases = {
   setCreative: async (_creative: string) => {
     methodNotSupportedOnWeb('setCreative');
   },
+  setAppsFlyerConversionData: async (_data: Record<string, any> | null) => {
+    methodNotSupportedOnWeb('setAppsFlyerConversionData');
+  },
   overridePreferredLocale: async (_locale: string | null) => {
     methodNotSupportedOnWeb('overridePreferredLocale');
   },

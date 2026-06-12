@@ -475,6 +475,10 @@ RCT_EXPORT_METHOD(setCreative:(NSString *)creative) {
     [RCCommonFunctionality setCreative:creative.mappingNSNullToNil];
 }
 
+RCT_EXPORT_METHOD(setAppsFlyerConversionData:(NSDictionary *)data) {
+    [RCCommonFunctionality setAppsFlyerConversionData:data.mappingNSNullToNil];
+}
+
 RCT_EXPORT_METHOD(overridePreferredLocale:(nullable NSString *)locale) {
     [RCCommonFunctionality overridePreferredLocale:locale.mappingNSNullToNil];
 }
