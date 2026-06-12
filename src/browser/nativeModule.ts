@@ -102,6 +102,9 @@ export const browserNativeModuleRNPurchases = {
   setLogHandler: async (handler: (level: string, message: string) => void) => {
     PurchasesCommon.setLogHandler(handler);
   },
+  trackCustomPaywallImpression: async (_data: any) => {
+    methodNotSupportedOnWeb('trackCustomPaywallImpression');
+  },
   getCustomerInfo: async () => {
     ensurePurchasesConfigured();
     const customerInfo = await PurchasesCommon.getInstance().getCustomerInfo();

@@ -602,6 +602,8 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         <Divider />
         <View>
           <TouchableOpacity
+            accessibilityLabel="Custom Paywall Screen"
+            accessibilityRole="button"
             onPress={() => navigation.navigate('CustomPaywall')}>
             <Text style={styles.otherActions}>Custom Paywall Screen (track impression)</Text>
           </TouchableOpacity>

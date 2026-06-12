@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
+  Alert,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,7 +11,10 @@ import {
   View,
 } from 'react-native';
 
-import Purchases from 'react-native-purchases';
+import Purchases, {
+  PurchasesOffering,
+  TrackedEvent,
+} from 'react-native-purchases';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList';
 
@@ -17,23 +22,117 @@ type Props = NativeStackScreenProps<RootStackParamList, 'CustomPaywall'>;
 
 const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
   const [status, setStatus] = useState<string | null>(null);
+  const [lastTrackedEvent, setLastTrackedEvent] = useState<string | null>(null);
+  const [currentOfferingId, setCurrentOfferingId] = useState<string | null>(null);
   const [paywallId, setPaywallId] = useState('');
-  const [offeringId, setOfferingId] = useState('');
 
-  const trackImpression = async () => {
+  const getPaywallId = () => paywallId.trim() || undefined;
+
+  const loadOfferings = async () => {
+    const offerings = await Purchases.getOfferings();
+    setCurrentOfferingId(offerings.current?.identifier ?? null);
+    return offerings;
+  };
+
+  useEffect(() => {
+    const listener = (event: TrackedEvent) => {
+      setLastTrackedEvent(JSON.stringify(event.eventDictionary, null, 2));
+    };
+
+    Purchases.addTrackedEventListener(listener).catch(e => {
+      setStatus(`Error: ${e}`);
+    });
+
+    return () => Purchases.removeTrackedEventListener(listener);
+  }, []);
+
+  useEffect(() => {
+    loadOfferings().catch(e => {
+      console.log('[RCCustomPaywallTester] Could not preload offerings:', e);
+    });
+  }, []);
+
+  const trackImpressionWithoutOffering = async () => {
     try {
-      const trimmedPaywallId = paywallId.trim() || undefined;
-      const trimmedOfferingId = offeringId.trim() || undefined;
+      const trimmedPaywallId = getPaywallId();
+      const offerings = await loadOfferings();
+      const currentOffering = offerings.current;
 
-      if (!trimmedPaywallId && !trimmedOfferingId) {
-        await Purchases.trackCustomPaywallImpression();
-      } else {
+      if (!currentOffering) {
+        setStatus(
+          'No current offering configured. The native SDK cannot infer an offering for this call.',
+        );
+        Alert.alert(
+          'No current offering configured',
+          'The native SDK can only infer an offering when getOfferings().current is non-null. Use Track with Offering for this project.',
+        );
+        return;
+      }
+
+      if (trimmedPaywallId) {
         await Purchases.trackCustomPaywallImpression({
           paywallId: trimmedPaywallId,
-          offeringId: trimmedOfferingId,
         });
+      } else {
+        await Purchases.trackCustomPaywallImpression();
       }
-      setStatus(`Tracked (paywallId: ${trimmedPaywallId ?? 'nil'}, offeringId: ${trimmedOfferingId ?? 'nil'})`);
+
+      setStatus(
+        `Tracked without offering (paywallId: ${trimmedPaywallId ?? 'nil'}, current offering: ${currentOffering.identifier})`,
+      );
+    } catch (e) {
+      setStatus(`Error: ${e}`);
+    }
+  };
+
+  const trackImpressionWithOffering = async (offering: PurchasesOffering) => {
+    try {
+      const trimmedPaywallId = getPaywallId();
+
+      await Purchases.trackCustomPaywallImpression({
+        paywallId: trimmedPaywallId,
+        offering,
+      });
+
+      setStatus(
+        `Tracked with offering: ${offering.identifier} (paywallId: ${trimmedPaywallId ?? 'nil'})`,
+      );
+    } catch (e) {
+      setStatus(`Error: ${e}`);
+    }
+  };
+
+  const showOfferingPicker = async () => {
+    try {
+      setStatus('Loading offerings...');
+
+      const offerings = await loadOfferings();
+      const offeringOptions = Object.values(offerings.all).sort((a, b) =>
+        a.identifier.localeCompare(b.identifier),
+      );
+
+      if (offeringOptions.length === 0) {
+        setStatus('No offerings available');
+        Alert.alert('No offerings available');
+        return;
+      }
+
+      Alert.alert(
+        'Select Offering',
+        'Choose the offering to send with the custom paywall impression.',
+        [
+          ...offeringOptions.map(offering => ({
+            text: offering.identifier,
+            onPress: () => trackImpressionWithOffering(offering),
+          })),
+          {
+            text: 'Cancel',
+            style: 'cancel' as const,
+            onPress: () => setStatus(null),
+          },
+        ],
+        {cancelable: true, onDismiss: () => setStatus(null)},
+      );
     } catch (e) {
       setStatus(`Error: ${e}`);
     }
@@ -41,10 +140,13 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Custom Paywall Impression</Text>
         <Text style={styles.description}>
           Use this screen to test tracking custom paywall impressions.
+        </Text>
+        <Text style={styles.currentOfferingText}>
+          Current offering: {currentOfferingId ?? 'nil'}
         </Text>
 
         <TextInput
@@ -55,19 +157,23 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
           onChangeText={setPaywallId}
         />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Offering ID (optional)"
-          placeholderTextColor="#868e96"
-          value={offeringId}
-          onChangeText={setOfferingId}
-        />
+        <TouchableOpacity
+          accessibilityLabel="Track custom paywall impression without offering"
+          accessibilityRole="button"
+          style={styles.button}
+          onPress={trackImpressionWithoutOffering}>
+          <Text style={styles.buttonText}>
+            Track without Offering
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
+          accessibilityLabel="Track custom paywall impression with offering"
+          accessibilityRole="button"
           style={styles.button}
-          onPress={trackImpression}>
+          onPress={showOfferingPicker}>
           <Text style={styles.buttonText}>
-            Track Custom Paywall Impression
+            Track with Offering
           </Text>
         </TouchableOpacity>
 
@@ -90,12 +196,19 @@ const CustomPaywallScreen: React.FC<Props> = ({navigation}) => {
           </View>
         )}
 
+        {lastTrackedEvent && (
+          <View style={styles.eventContainer}>
+            <Text style={styles.eventTitle}>Last tracked event</Text>
+            <Text style={styles.eventText}>{lastTrackedEvent}</Text>
+          </View>
+        )}
+
         <TouchableOpacity
           style={styles.closeButton}
           onPress={() => navigation.goBack()}>
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -106,7 +219,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -120,6 +233,12 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: '#868e96',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  currentOfferingText: {
+    color: '#495057',
+    fontSize: 13,
     marginBottom: 24,
     textAlign: 'center',
   },
@@ -171,6 +290,26 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#c92a2a',
     fontSize: 14,
+  },
+  eventContainer: {
+    width: '100%',
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    marginBottom: 12,
+  },
+  eventTitle: {
+    color: '#212529',
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  eventText: {
+    color: '#495057',
+    fontFamily: 'Menlo',
+    fontSize: 11,
   },
   closeButton: {
     padding: 12,

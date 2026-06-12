@@ -656,7 +656,8 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
 
 RCT_EXPORT_METHOD(trackCustomPaywallImpression:(NSDictionary *)data) {
     if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
-        [RCCommonFunctionality trackCustomPaywallImpression:data];
+        NSDictionary *eventData = data.mappingNSNullToNil ?: @{};
+        [RCCommonFunctionality trackCustomPaywallImpression:eventData];
     } else {
         NSLog(@"[Purchases] Warning: tried to call trackCustomPaywallImpression, but it's only available on iOS 15.0 or greater.");
     }
