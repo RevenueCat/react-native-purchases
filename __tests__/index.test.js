@@ -1982,6 +1982,15 @@ describe("Purchases", () => {
   });
 
   describe("trackCustomPaywallImpression", () => {
+    const presentedOfferingContext = {
+      offeringIdentifier: "offering",
+      placementIdentifier: "onboarding",
+      targetingContext: {
+        revision: 7,
+        ruleId: "rule_1",
+      },
+    };
+
     describe("when Purchases is not configured", () => {
       it("it rejects", async () => {
         NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
@@ -1999,35 +2008,171 @@ describe("Purchases", () => {
       await Purchases.trackCustomPaywallImpression();
 
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
-      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({});
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: null,
+        offeringId: null,
+        presentedOfferingContext: null,
+      });
+    });
+
+    it("passes null values with empty params", async () => {
+      await Purchases.trackCustomPaywallImpression({});
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: null,
+        offeringId: null,
+        presentedOfferingContext: null,
+      });
     });
 
     it("makes right call with paywallId", async () => {
       await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall" });
 
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
-      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: "my_paywall" });
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: "my_paywall",
+        offeringId: null,
+        presentedOfferingContext: null,
+      });
     });
 
-    it("makes right call with null paywallId", async () => {
+    it("sends null value with null paywallId", async () => {
       await Purchases.trackCustomPaywallImpression({ paywallId: null });
 
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
-      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: null });
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: null,
+        offeringId: null,
+        presentedOfferingContext: null,
+      });
     });
 
     it("makes right call with offeringId only", async () => {
       await Purchases.trackCustomPaywallImpression({ offeringId: "my_offering" });
 
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
-      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ offeringId: "my_offering" });
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: null,
+        offeringId: "my_offering",
+        presentedOfferingContext: null,
+      });
+    });
+
+    it("sends null value with null offeringId", async () => {
+      await Purchases.trackCustomPaywallImpression({ offeringId: null });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: null,
+        offeringId: null,
+        presentedOfferingContext: null,
+      });
     });
 
     it("makes right call with paywallId and offeringId", async () => {
       await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall", offeringId: "my_offering" });
 
       expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
-      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({ paywallId: "my_paywall", offeringId: "my_offering" });
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: "my_paywall",
+        offeringId: "my_offering",
+        presentedOfferingContext: null,
+      });
+    });
+
+    it("derives offering id and context from an offering", async () => {
+      const offering = {
+        identifier: "offering",
+        availablePackages: [
+          {
+            presentedOfferingContext,
+          },
+        ],
+      };
+
+      await Purchases.trackCustomPaywallImpression({
+        paywallId: "paywall",
+        offering,
+      });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: "paywall",
+        offeringId: "offering",
+        presentedOfferingContext,
+      });
+    });
+
+    it("preserves nullable fields in offering-derived presented offering context", async () => {
+      const nullablePresentedOfferingContext = {
+        offeringIdentifier: "offering",
+        placementIdentifier: null,
+        targetingContext: null,
+      };
+      const offering = {
+        identifier: "offering",
+        availablePackages: [
+          {
+            presentedOfferingContext: nullablePresentedOfferingContext,
+          },
+        ],
+      };
+
+      await Purchases.trackCustomPaywallImpression({
+        paywallId: "paywall",
+        offering,
+      });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: "paywall",
+        offeringId: "offering",
+        presentedOfferingContext: nullablePresentedOfferingContext,
+      });
+    });
+
+    it("derives offering id without context from an offering with no available packages", async () => {
+      const offering = {
+        identifier: "offering",
+        availablePackages: [],
+      };
+
+      await Purchases.trackCustomPaywallImpression({
+        paywallId: "paywall",
+        offering,
+      });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: "paywall",
+        offeringId: "offering",
+        presentedOfferingContext: null,
+      });
+    });
+
+    it("prefers offering-derived data over legacy offeringId", async () => {
+      const offering = {
+        identifier: "offering",
+        availablePackages: [
+          {
+            presentedOfferingContext,
+          },
+        ],
+      };
+
+      await Purchases.trackCustomPaywallImpression({
+        paywallId: "paywall",
+        offering,
+        offeringId: "legacy_offering",
+      });
+
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.trackCustomPaywallImpression).toBeCalledWith({
+        paywallId: "paywall",
+        offeringId: "offering",
+        presentedOfferingContext,
+      });
     });
 
   });

@@ -171,8 +171,17 @@ export type DebugEventListener = (event: DebugEvent) => void;
 export interface TrackCustomPaywallImpressionOptions {
   paywallId?: string | null;
   /**
+   * The offering associated with the custom paywall.
+   *
+   * Prefer passing the offering object when available so RevenueCat can track placement
+   * and targeting context for placement-resolved offerings.
+   */
+  offering?: PurchasesOffering | null;
+  /**
    * An optional identifier for the offering associated with the custom paywall.
    * If not provided, the SDK will use the current offering identifier from the cache.
+   *
+   * @deprecated Prefer passing `offering` when available.
    */
   offeringId?: string | null;
 }
@@ -2029,14 +2038,27 @@ export default class Purchases {
    *
    * @param params - Optional parameters for the impression event.
    * @param params.paywallId - Optional identifier for the custom paywall being shown.
-   * @param params.offeringId - Optional identifier for the offering associated with the custom paywall.
-   *   If not provided, the SDK will use the current offering identifier from the cache.
+   * @param params.offering - Optional offering associated with the custom paywall.
+   * @param params.offeringId - Deprecated. Prefer passing `offering` when available.
+   *   Optional identifier for the offering associated with the custom paywall. If not provided,
+   *   the SDK will use the current offering identifier from the cache.
    */
   public static async trackCustomPaywallImpression(
     params?: TrackCustomPaywallImpressionOptions
   ): Promise<void> {
     await throwIfNotConfigured();
-    RNPurchases.trackCustomPaywallImpression(params ?? {});
+
+    const options: TrackCustomPaywallImpressionOptions = params ?? {};
+    const presentedOfferingContext =
+      options.offering?.availablePackages?.[0]?.presentedOfferingContext;
+    const offeringId =
+      options.offering?.identifier ??
+      options.offeringId;
+    RNPurchases.trackCustomPaywallImpression({
+      paywallId: options.paywallId ?? null,
+      offeringId: offeringId ?? null,
+      presentedOfferingContext: presentedOfferingContext ?? null,
+    });
   }
 
   private static async throwIfAndroidPlatform() {

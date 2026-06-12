@@ -145,13 +145,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setAppstackAttributionParams(ReadableMap data, final Promise promise) {
-        HashMap<String, Object> dataMap = new HashMap<>();
-        for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
-            if (entry.getValue() != null) {
-                dataMap.put(entry.getKey(), entry.getValue());
-            }
-        }
-        CommonKt.setAppstackAttributionParams(dataMap, getOnResult(promise));
+        CommonKt.setAppstackAttributionParams(toNonNullHashMap(data), getOnResult(promise));
     }
 
     @ReactMethod
@@ -633,7 +627,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void trackCustomPaywallImpression(ReadableMap data) {
-        CommonKt.trackCustomPaywallImpression(data.toHashMap());
+        CommonKt.trackCustomPaywallImpression(toNonNullHashMap(data));
     }
 
     @ReactMethod
@@ -740,5 +734,15 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             default:
                 return null;
         }
+    }
+
+    private static HashMap<String, Object> toNonNullHashMap(ReadableMap data) {
+        HashMap<String, Object> dataMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
+            if (entry.getValue() != null) {
+                dataMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return dataMap;
     }
 }
