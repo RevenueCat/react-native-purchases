@@ -1763,6 +1763,35 @@ export default class Purchases {
   }
 
   /**
+   * Sets conversion data from AppsFlyer's onInstallConversionData callback. This extracts the
+   * relevant attribution fields from the AppsFlyer conversion data and sets the corresponding
+   * RevenueCat subscriber attributes ($mediaSource, $campaign, $adGroup, $ad, $keyword, $creative).
+   * Note that this method will never unset any attributes.
+   *
+   * Pass the object received in AppsFlyer's onInstallConversionData listener directly; the nested
+   * `data` field holds the conversion data that is forwarded to RevenueCat. The data is only
+   * forwarded when `status` is `"success"`; otherwise it is ignored.
+   *
+   * @param conversionData The object from AppsFlyer's onInstallConversionData callback.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
+   */
+  public static async setAppsFlyerConversionData(conversionData: {
+    status: string;
+    data: { [key: string]: any };
+  }): Promise<void> {
+    await throwIfNotConfigured();
+    if (conversionData?.status !== 'success') {
+      // tslint:disable-next-line:no-console
+      console.warn(
+        `[RevenueCat] Ignoring AppsFlyer conversion data with status "${conversionData?.status}". ` +
+          `Conversion data is only forwarded when status is "success".`,
+      );
+      return;
+    }
+    RNPurchases.setAppsFlyerConversionData(conversionData.data ?? null);
+  }
+
+  /**
    * Overrides the preferred UI locale used by RevenueCat UI components.
    * Pass null to clear the override and use the device's locale.
    *
