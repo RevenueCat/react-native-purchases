@@ -60,6 +60,16 @@ async function checkPurchases(purchases: Purchases) {
 
   await Purchases.presentCodeRedemptionSheet();
   await Purchases.invalidateCustomerInfoCache();
+  await Purchases.trackCustomPaywallImpression();
+  await Purchases.trackCustomPaywallImpression({
+    paywallId: "paywall",
+  });
+  if (currentOfferingForPlacement) {
+    await Purchases.trackCustomPaywallImpression({
+      paywallId: "paywall",
+      offering: currentOfferingForPlacement,
+    });
+  }
 }
 
 async function checkUsers(purchases: Purchases) {
@@ -88,6 +98,10 @@ async function checkPurchasing(
   const features: BILLING_FEATURE[] = [];
   const messageTypes: IN_APP_MESSAGE_TYPE[] = [];
   const googleIsPersonalizedPrice: boolean = false;
+  const customPaywallImpressionParams: TrackCustomPaywallImpressionOptions = {
+    paywallId: "paywall",
+    offeringId: pack.presentedOfferingContext.offeringIdentifier,
+  };
 
   const paymentDiscount2: PurchasesPromotionalOffer | undefined =
     await Purchases.getPromotionalOffer(product, discount);
@@ -175,6 +189,7 @@ async function checkPurchasing(
   await Purchases.showInAppMessages(messageTypes);
 
   const manageSubscriptions: void = await Purchases.showManageSubscriptions();
+  await Purchases.trackCustomPaywallImpression(customPaywallImpressionParams);
 }
 
 async function checkConfigure() {
@@ -484,7 +499,10 @@ async function checkTrackCustomPaywallImpression() {
   await Purchases.trackCustomPaywallImpression({ offeringId: "my_offering" });
   await Purchases.trackCustomPaywallImpression({ offeringId: null });
   await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall", offeringId: "my_offering" });
-  const options: TrackCustomPaywallImpressionOptions = { paywallId: "test", offeringId: "offering" };
+  const options: TrackCustomPaywallImpressionOptions = {
+    paywallId: "test",
+    offeringId: "offering",
+  };
   await Purchases.trackCustomPaywallImpression(options);
 }
 
