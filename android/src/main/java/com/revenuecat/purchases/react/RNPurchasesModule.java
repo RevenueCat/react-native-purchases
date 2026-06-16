@@ -145,7 +145,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setAppstackAttributionParams(ReadableMap data, final Promise promise) {
-        CommonKt.setAppstackAttributionParams(toNonNullHashMap(data), getOnResult(promise));
+        CommonKt.setAppstackAttributionParams(mapWithoutNullValues(data), getOnResult(promise));
     }
 
     @ReactMethod
@@ -736,26 +736,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         }
     }
 
-    private static HashMap<String, Object> toNonNullHashMap(ReadableMap data) {
-        HashMap<String, Object> dataMap = new HashMap<>();
-        for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
-            if (entry.getValue() != null) {
-                dataMap.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return dataMap;
-    }
-
     private static HashMap<String, Object> mapWithoutNullValues(ReadableMap data) {
         return mapWithoutNullValues(data.toHashMap());
     }
 
-    private static HashMap<String, Object> mapWithoutNullValues(Map<String, Object> data) {
+    private static HashMap<String, Object> mapWithoutNullValues(Map<?, ?> data) {
         HashMap<String, Object> dataMap = new HashMap<>();
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
+        for (Map.Entry<?, ?> entry : data.entrySet()) {
             Object value = valueWithoutNullValues(entry.getValue());
-            if (value != null) {
-                dataMap.put(entry.getKey(), value);
+            if (entry.getKey() instanceof String && value != null) {
+                dataMap.put((String) entry.getKey(), value);
             }
         }
         return dataMap;
@@ -763,15 +753,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     private static Object valueWithoutNullValues(@Nullable Object value) {
         if (value instanceof Map) {
-            HashMap<String, Object> dataMap = new HashMap<>();
-            Map<?, ?> originalMap = (Map<?, ?>) value;
-            for (Map.Entry<?, ?> entry : originalMap.entrySet()) {
-                Object filteredValue = valueWithoutNullValues(entry.getValue());
-                if (entry.getKey() instanceof String && filteredValue != null) {
-                    dataMap.put((String) entry.getKey(), filteredValue);
-                }
-            }
-            return dataMap;
+            return mapWithoutNullValues((Map<?, ?>) value);
         }
         if (value instanceof List) {
             ArrayList<Object> filteredList = new ArrayList<>();
