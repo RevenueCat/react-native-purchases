@@ -773,6 +773,7 @@ NativeModules.RNPurchases = {
   setDebugLogsEnabled: jest.fn(),
   setLogLevel: jest.fn(),
   setLogHandler: jest.fn(),
+  trackCustomPaywallImpression: jest.fn(),
   getCustomerInfo: jest.fn(),
   logIn: jest.fn(),
   logOut: jest.fn(),
