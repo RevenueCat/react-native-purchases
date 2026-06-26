@@ -373,21 +373,22 @@ private_lane :update_sample_podfile_lock_with_retry do |options|
   pod_name = options[:pod_name]
 
   retry_attempts = 4 # Total of 4 retries, with the first attempt considered, equals 5 attempts over 20 minutes
-  Dir.chdir(File.expand_path("#{sample_path}/ios", get_root_folder)) do
-    begin
-      UI.message("ℹ️  Updating Podfile.lock with new version for #{pod_name}")
+  ios_dir = File.expand_path("#{sample_path}/ios", get_root_folder)
+  begin
+    UI.message("ℹ️  Updating Podfile.lock with new version for #{pod_name}")
+    Dir.chdir(ios_dir) do
       sh("pod update #{pod_name}")
-      commit_current_changes(commit_message: "Update Podfile.lock for #{pod_name}")
-    rescue => e
-      if retry_attempts > 0
-        UI.message("⚠️  Failed to update Podfile.lock for #{pod_name}: #{e.message}")
-        UI.message("⚠️  Retrying in 5 minutes...")
-        sleep(300) # wait for 5 minutes
-        retry_attempts -= 1
-        retry
-      else
-        UI.message("⚠️  Final attempt to update Podfile.lock for #{pod_name} failed. It's possible the pod has not been distributed yet. Proceeding without update.")
-      end
+    end
+    commit_current_changes(commit_message: "Update Podfile.lock for #{pod_name}")
+  rescue => e
+    if retry_attempts > 0
+      UI.message("⚠️  Failed to update Podfile.lock for #{pod_name}: #{e.message}")
+      UI.message("⚠️  Retrying in 5 minutes...")
+      sleep(300) # wait for 5 minutes
+      retry_attempts -= 1
+      retry
+    else
+      UI.message("⚠️  Final attempt to update Podfile.lock for #{pod_name} failed. It's possible the pod has not been distributed yet. Proceeding without update.")
     end
   end
 end
