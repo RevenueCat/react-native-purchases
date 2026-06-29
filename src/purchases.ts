@@ -278,6 +278,68 @@ export interface AdFailedToLoadData {
   placement?: string | null;
 }
 
+/**
+ * Token generated for a rewarded ad impression. Pass `clientTransactionId` to
+ * the ad network as server-side verification custom data, then to
+ * {@link Purchases.pollRewardVerification} to await the reward.
+ * @beta
+ */
+export interface RewardVerificationToken {
+  customData: string;
+  clientTransactionId: string;
+  appUserID: string;
+}
+
+/**
+ * A reward granted after a verified rewarded ad. Discriminated by `type`.
+ * @beta
+ */
+export type VerifiedReward =
+  | VerifiedVirtualCurrencyReward
+  | VerifiedEntitlementReward
+  | VerifiedNoReward
+  | VerifiedUnsupportedReward;
+
+/** @beta */
+export interface VerifiedVirtualCurrencyReward {
+  type: "virtual_currency";
+  code: string;
+  amount: number;
+}
+
+/** @beta */
+export interface VerifiedEntitlementReward {
+  type: "entitlement";
+  identifier: string;
+  /** ISO 8601 expiration date string. */
+  expiresAt: string;
+  /** Expiration date in milliseconds since epoch. */
+  expiresAtMillis: number;
+}
+
+/** Verification completed but nothing was granted. @beta */
+export interface VerifiedNoReward {
+  type: "no_reward";
+}
+
+/** Verification completed but the reward type isn't modeled by this SDK version. @beta */
+export interface VerifiedUnsupportedReward {
+  type: "unsupported_reward";
+}
+
+/**
+ * Result of polling for reward verification.
+ * @beta
+ */
+export interface RewardVerificationResult {
+  /** The primary reward when verification succeeded; absent on failure. */
+  reward?: VerifiedReward;
+  /** Additional rewards granted alongside the primary; never repeats it; empty on failure. */
+  moreRewards: VerifiedReward[];
+  /** True when verification did not complete (rejected / timeout / network). */
+  failed: boolean;
+}
+
 let debugEventListeners: DebugEventListener[] = [];
 
 eventEmitter?.addListener(
@@ -2059,6 +2121,43 @@ export default class Purchases {
       offeringId: offeringId ?? null,
       presentedOfferingContext: presentedOfferingContext ?? null,
     });
+  }
+
+  /**
+   * Generates a reward verification token for a rewarded ad impression.
+   *
+   * Pass the returned `clientTransactionId` to the ad network as the
+   * server-side verification custom data. After the ad completes, pass the same
+   * id to {@link Purchases.pollRewardVerification} to await the reward.
+   *
+   * @param impressionId - The impression identifier of the rewarded ad.
+   * @returns {Promise<RewardVerificationToken>} promise with the generated token.
+   * @beta
+   */
+  public static async generateRewardVerificationToken(
+    impressionId: string
+  ): Promise<RewardVerificationToken> {
+    await throwIfNotConfigured();
+    return RNPurchases.generateRewardVerificationToken(impressionId);
+  }
+
+  /**
+   * Polls RevenueCat for the reward verification result of a rewarded ad.
+   *
+   * The returned promise stays pending while the native poller runs (up to
+   * ~10-30s) and resolves once verification completes or times out. A timed-out
+   * or rejected verification resolves with `failed: true` rather than rejecting.
+   *
+   * @param clientTransactionId - The `clientTransactionId` from
+   *   {@link Purchases.generateRewardVerificationToken}.
+   * @returns {Promise<RewardVerificationResult>} promise with the verification result.
+   * @beta
+   */
+  public static async pollRewardVerification(
+    clientTransactionId: string
+  ): Promise<RewardVerificationResult> {
+    await throwIfNotConfigured();
+    return RNPurchases.pollRewardVerification(clientTransactionId);
   }
 
   private static async throwIfAndroidPlatform() {

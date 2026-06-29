@@ -655,6 +655,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         CommonKt.trackAdFailedToLoad(data.toHashMap());
     }
 
+    @ReactMethod
+    public void generateRewardVerificationToken(String impressionId, final Promise promise) {
+        promise.resolve(convertMapToWriteableMap(CommonKt.generateRewardVerificationToken(impressionId)));
+    }
+
+    @ReactMethod
+    public void pollRewardVerification(String clientTransactionId, final Promise promise) {
+        CommonKt.pollRewardVerification(clientTransactionId, getOnResult(promise));
+    }
+
     // endregion
 
     //================================================================================

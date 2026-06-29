@@ -2177,6 +2177,82 @@ describe("Purchases", () => {
 
   });
 
+  describe("generateRewardVerificationToken", () => {
+    describe("when Purchases is not configured", () => {
+      it("rejects", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+        try {
+          await Purchases.generateRewardVerificationToken("impression_1");
+          fail("expected error");
+        } catch (error) {}
+
+        expect(NativeModules.RNPurchases.generateRewardVerificationToken).toBeCalledTimes(0);
+      });
+    });
+
+    it("passes the impression id and returns the token", async () => {
+      const token = {
+        customData: "custom_data",
+        clientTransactionId: "client_transaction_1",
+        appUserID: "app_user_1",
+      };
+      NativeModules.RNPurchases.generateRewardVerificationToken.mockResolvedValueOnce(token);
+
+      const result = await Purchases.generateRewardVerificationToken("impression_1");
+
+      expect(NativeModules.RNPurchases.generateRewardVerificationToken).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.generateRewardVerificationToken).toBeCalledWith("impression_1");
+      expect(result).toEqual(token);
+    });
+  });
+
+  describe("pollRewardVerification", () => {
+    describe("when Purchases is not configured", () => {
+      it("rejects", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+
+        try {
+          await Purchases.pollRewardVerification("client_transaction_1");
+          fail("expected error");
+        } catch (error) {}
+
+        expect(NativeModules.RNPurchases.pollRewardVerification).toBeCalledTimes(0);
+      });
+    });
+
+    it("passes the transaction id and returns the verification result", async () => {
+      const verificationResult = {
+        failed: false,
+        reward: { type: "virtual_currency", code: "GOLD", amount: 100 },
+        moreRewards: [
+          {
+            type: "entitlement",
+            identifier: "premium",
+            expiresAt: "2026-07-01T00:00:00Z",
+            expiresAtMillis: 1782518400000,
+          },
+        ],
+      };
+      NativeModules.RNPurchases.pollRewardVerification.mockResolvedValueOnce(verificationResult);
+
+      const result = await Purchases.pollRewardVerification("client_transaction_1");
+
+      expect(NativeModules.RNPurchases.pollRewardVerification).toBeCalledTimes(1);
+      expect(NativeModules.RNPurchases.pollRewardVerification).toBeCalledWith("client_transaction_1");
+      expect(result).toEqual(verificationResult);
+    });
+
+    it("returns a failed result without rejecting", async () => {
+      const verificationResult = { failed: true, moreRewards: [] };
+      NativeModules.RNPurchases.pollRewardVerification.mockResolvedValueOnce(verificationResult);
+
+      const result = await Purchases.pollRewardVerification("client_transaction_1");
+
+      expect(result).toEqual(verificationResult);
+    });
+  });
+
   describe("adTracker", () => {
     const requiredDisplayedData = {
       mediatorName: "AdMob",
