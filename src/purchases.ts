@@ -760,6 +760,7 @@ export default class Purchases {
       type,
       null,
       null,
+      null,
       null
     ).catch((error: PurchasesError) => {
       error.userCancelled =
@@ -777,6 +778,10 @@ export default class Purchases {
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
+   * @param {number} quantity iOS only. Optional number of items to purchase, for consumable / one-time products.
+   * Must be between 1 and 10 (inclusive); defaults to the App Store's default quantity (typically 1) when omitted.
+   * Has no effect on Android — Google Play does not accept a purchase quantity ahead of time (for multi-quantity
+   * products the user selects the quantity in Google Play's purchase UI) — and it is ignored on web.
    * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code,
    * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will
@@ -785,7 +790,8 @@ export default class Purchases {
   public static async purchaseStoreProduct(
     product: PurchasesStoreProduct,
     productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
-    googleIsPersonalizedPrice?: boolean | null
+    googleIsPersonalizedPrice?: boolean | null,
+    quantity?: number | null
   ): Promise<MakePurchaseResult> {
     await throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
@@ -796,7 +802,8 @@ export default class Purchases {
       googleIsPersonalizedPrice == null
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
-      product.presentedOfferingContext
+      product.presentedOfferingContext,
+      quantity == null ? null : quantity
     ).catch((error: PurchasesError) => {
       error.userCancelled =
         error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
@@ -831,7 +838,8 @@ export default class Purchases {
       null,
       discount.timestamp.toString(),
       null,
-      product.presentedOfferingContext
+      product.presentedOfferingContext,
+      null
     ).catch((error: PurchasesError) => {
       error.userCancelled =
         error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
@@ -849,6 +857,10 @@ export default class Purchases {
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
+   * @param {number} quantity iOS only. Optional number of items to purchase, for consumable / one-time products.
+   * Must be between 1 and 10 (inclusive); defaults to the App Store's default quantity (typically 1) when omitted.
+   * Has no effect on Android — Google Play does not accept a purchase quantity ahead of time (for multi-quantity
+   * products the user selects the quantity in Google Play's purchase UI) — and it is ignored on web.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
    * user cancelled the purchase, and an object with more information. The promise will be also be rejected if configure
@@ -858,7 +870,8 @@ export default class Purchases {
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
     productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
-    googleIsPersonalizedPrice?: boolean | null
+    googleIsPersonalizedPrice?: boolean | null,
+    quantity?: number | null
   ): Promise<MakePurchaseResult> {
     await throwIfNotConfigured();
     return RNPurchases.purchasePackage(
@@ -868,7 +881,8 @@ export default class Purchases {
       null,
       googleIsPersonalizedPrice == null
         ? null
-        : { isPersonalizedPrice: googleIsPersonalizedPrice }
+        : { isPersonalizedPrice: googleIsPersonalizedPrice },
+      quantity == null ? null : quantity
     ).catch((error: PurchasesError) => {
       error.userCancelled =
         error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
@@ -936,6 +950,7 @@ export default class Purchases {
       aPackage.presentedOfferingContext,
       null,
       discount.timestamp.toString(),
+      null,
       null
     ).catch((error: PurchasesError) => {
       error.userCancelled =

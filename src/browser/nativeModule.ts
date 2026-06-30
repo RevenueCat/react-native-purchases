@@ -156,7 +156,8 @@ export const browserNativeModuleRNPurchases = {
     _type: string,
     _discountTimestamp: string | null,
     _googleInfo: any,
-    _presentedOfferingContext: any
+    _presentedOfferingContext: any,
+    _quantity?: number | null
   ) => {
     methodNotSupportedOnWeb('purchaseProduct');
   },
@@ -165,7 +166,8 @@ export const browserNativeModuleRNPurchases = {
     presentedOfferingContext: any,
     _googleProductChangeInfo: any,
     _discountTimestamp: string | null,
-    _googleInfo: any
+    _googleInfo: any,
+    _quantity?: number | null
   ): Promise<MakePurchaseResult> => {
     ensurePurchasesConfigured();
 

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -179,6 +180,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final String discountTimestamp,
                                 @Nullable final ReadableMap googleInfo,
                                 @Nullable final ReadableMap presentedOfferingContext,
+                                // `quantity` is iOS-only. Google Play does not accept a purchase quantity ahead of
+                                // time: for multi-quantity products the user picks the quantity in Google Play's
+                                // purchase UI and the app reads it back via Purchase.getQuantity(). Ignored here.
+                                @Nullable final Dynamic quantity,
                                 final Promise promise) {
         UpgradeInfo upgradeInfo = getUpgradeInfo(googleProductChangeInfo);
 
@@ -211,6 +216,10 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                 @Nullable final ReadableMap googleProductChangeInfo,
                                 @Nullable final String discountTimestamp,
                                 @Nullable final ReadableMap googleInfo,
+                                // `quantity` is iOS-only. Google Play does not accept a purchase quantity ahead of
+                                // time: for multi-quantity products the user picks the quantity in Google Play's
+                                // purchase UI and the app reads it back via Purchase.getQuantity(). Ignored here.
+                                @Nullable final Dynamic quantity,
                                 final Promise promise) {
         UpgradeInfo upgradeInfo = getUpgradeInfo(googleProductChangeInfo);
 

@@ -228,14 +228,14 @@ describe("Purchases", () => {
 
     await Purchases.purchaseProduct("onemonth_freetrial")
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", undefined, "subs", null, null, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", undefined, "subs", null, null, null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
       oldSKU: "viejo"
     }, Purchases.PRODUCT_CATEGORY.NON_SUBSCRIPTION)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {oldSKU: "viejo"}, Purchases.PRODUCT_CATEGORY.NON_SUBSCRIPTION, null, null, null);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {oldSKU: "viejo"}, Purchases.PRODUCT_CATEGORY.NON_SUBSCRIPTION, null, null, null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(2);
 
     await Purchases.purchaseProduct("onemonth_freetrial", {
@@ -246,7 +246,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith("onemonth_freetrial", {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
-    }, Purchases.PURCHASE_TYPE.INAPP, null, null, null);
+    }, Purchases.PURCHASE_TYPE.INAPP, null, null, null, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(3);
   });
 
@@ -280,7 +280,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth",{offeringIdentifier: "offering"}, {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
-    }, null, null);
+    }, null, null, null);
   });
 
   it("purchaseStoreProduct works", async () => {
@@ -297,7 +297,7 @@ describe("Purchases", () => {
 
     await Purchases.purchaseStoreProduct(aProduct)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, undefined, Purchases.PRODUCT_CATEGORY.SUBSCRIPTION, null, null, {offeringIdentifier: "the-offerings"});
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, undefined, Purchases.PRODUCT_CATEGORY.SUBSCRIPTION, null, null, {offeringIdentifier: "the-offerings"}, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
@@ -325,7 +325,8 @@ describe("Purchases", () => {
       Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
       null,
       null,
-      {offeringIdentifier: "the-offerings"}
+      {offeringIdentifier: "the-offerings"},
+      null
     );
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
@@ -354,7 +355,8 @@ describe("Purchases", () => {
       Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
       null,
       {isPersonalizedPrice: true},
-      {offeringIdentifier: "the-offerings"}
+      {offeringIdentifier: "the-offerings"},
+      null
     );
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
@@ -383,7 +385,8 @@ describe("Purchases", () => {
       Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
       null,
       null,
-      {offeringIdentifier: "the-offerings"}
+      {offeringIdentifier: "the-offerings"},
+      null
     );
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
@@ -408,7 +411,34 @@ describe("Purchases", () => {
       Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
       null,
       null,
-      {offeringIdentifier: "the-offerings"}
+      {offeringIdentifier: "the-offerings"},
+      null
+    );
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
+  });
+
+  it("purchaseStoreProduct forwards quantity", async () => {
+    NativeModules.RNPurchases.purchaseProduct.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aProduct = {
+      ...productStub,
+      presentedOfferingContext: {offeringIdentifier: "the-offerings"}
+    }
+
+    await Purchases.purchaseStoreProduct(aProduct, null, null, 3)
+
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(
+      aProduct.identifier,
+      null,
+      Purchases.PRODUCT_CATEGORY.SUBSCRIPTION,
+      null,
+      null,
+      {offeringIdentifier: "the-offerings"},
+      3
     );
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
@@ -437,7 +467,7 @@ describe("Purchases", () => {
         presentedOfferingContext: {offeringIdentifier: "offering"},
       });
 
-    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", {offeringIdentifier: "offering"}, undefined, null, null);
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", {offeringIdentifier: "offering"}, undefined, null, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
 
     await Purchases.purchasePackage(
@@ -464,7 +494,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", {offeringIdentifier: "offering"}, {
       oldSKU: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
-    }, null, null);
+    }, null, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(2);
     await Purchases.purchasePackage(
       {
@@ -489,7 +519,7 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith("$rc_onemonth", {offeringIdentifier: "offering"}, {
       oldProductIdentifier: "viejo",
       prorationMode: Purchases.PRORATION_MODE.IMMEDIATE_AND_CHARGE_FULL_PRICE
-    }, null, null);
+    }, null, null, null);
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(3);
   });
 
@@ -517,6 +547,7 @@ describe("Purchases", () => {
       "$rc_onemonth",
       {offeringIdentifier: "offering"},
       productChangeInfo,
+      null,
       null,
       null
     );
@@ -548,7 +579,8 @@ describe("Purchases", () => {
       {offeringIdentifier: "offering"},
       productChangeInfo,
       null,
-      {isPersonalizedPrice: true}
+      {isPersonalizedPrice: true},
+      null
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
   });
@@ -578,6 +610,7 @@ describe("Purchases", () => {
       {offeringIdentifier: "offering"},
       googleProductChangeInfo,
       null,
+      null,
       null
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
@@ -604,7 +637,35 @@ describe("Purchases", () => {
       {offeringIdentifier: "offering"},
       null,
       null,
+      null,
       null
+    );
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
+  });
+
+  it("purchasePackage forwards quantity", async () => {
+    NativeModules.RNPurchases.purchasePackage.mockResolvedValue({
+      purchasedProductIdentifier: "123",
+      customerInfo: customerInfoStub,
+      transaction: transactionStub
+    });
+
+    const aPackage = {
+      identifier: "$rc_onemonth",
+      packageType: Purchases.PACKAGE_TYPE.MONTHLY,
+      product: productStub,
+      presentedOfferingContext: {offeringIdentifier: "offering"},
+    }
+
+    await Purchases.purchasePackage(aPackage, null, null, null, 5)
+
+    expect(NativeModules.RNPurchases.purchasePackage).toBeCalledWith(
+      "$rc_onemonth",
+      {offeringIdentifier: "offering"},
+      null,
+      null,
+      null,
+      5
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);
   });
@@ -1418,7 +1479,7 @@ describe("Purchases", () => {
 
     await Purchases.purchaseDiscountedProduct(aProduct, promotionalOfferStub)
 
-    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, promotionalOfferStub.timestamp.toString(), null, undefined);
+    expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledWith(aProduct.identifier, null, null, promotionalOfferStub.timestamp.toString(), null, undefined, null);
     expect(NativeModules.RNPurchases.purchaseProduct).toBeCalledTimes(1);
   });
 
@@ -1457,6 +1518,7 @@ describe("Purchases", () => {
       aPackage.presentedOfferingContext,
       null,
       promotionalOfferStub.timestamp.toString(),
+      null,
       null
     );
     expect(NativeModules.RNPurchases.purchasePackage).toBeCalledTimes(1);

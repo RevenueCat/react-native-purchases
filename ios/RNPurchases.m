@@ -162,10 +162,12 @@ RCT_REMAP_METHOD(purchaseProduct,
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  googleInfo:(NSDictionary *)googleInfo
                  presentedOfferingContext:(NSDictionary *)presentedOfferingDictionary
+                 quantity:(NSNumber *)quantity
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchaseProduct:productIdentifier.mappingNSNullToNil
                    signedDiscountTimestamp:signedDiscountTimestamp.mappingNSNullToNil
+                                  quantity:quantity.mappingNSNullToNil
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
@@ -176,11 +178,13 @@ RCT_REMAP_METHOD(purchasePackage,
                  upgradeInfo:(NSDictionary *)upgradeInfo
                  signedDiscountTimestamp:(NSString *)signedDiscountTimestamp
                  googleInfo:(NSDictionary *)googleInfo
+                 quantity:(NSNumber *)quantity
                  resolve:(RCTPromiseResolveBlock)resolve
                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality purchasePackage:packageIdentifier.mappingNSNullToNil
                   presentedOfferingContext:presentedOfferingContext.mappingNSNullToNil
                    signedDiscountTimestamp:signedDiscountTimestamp.mappingNSNullToNil
+                                  quantity:quantity.mappingNSNullToNil
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
