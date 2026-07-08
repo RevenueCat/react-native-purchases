@@ -8396,7 +8396,7 @@ __metadata:
     babel-plugin-module-resolver: ^5.0.0
     react: 19.0.0
     react-native: ^0.78.0
-    react-native-purchases-store-galaxy: 10.4.1
+    react-native-purchases-store-galaxy: 10.4.2
     react-native-safe-area-context: ^5.1.0
     react-native-screens: ^4.5.0
   languageName: unknown
@@ -8534,7 +8534,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-purchases-store-galaxy@10.4.1, react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy":
+"react-native-purchases-store-galaxy@10.4.2, react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy":
   version: 0.0.0-use.local
   resolution: "react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy"
   dependencies:
@@ -8556,7 +8556,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 10.4.1
+    react-native-purchases: 10.4.2
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
@@ -8588,7 +8588,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 10.4.1
+    react-native-purchases: 10.4.2
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
