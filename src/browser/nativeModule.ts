@@ -360,4 +360,10 @@ export const browserNativeModuleRNPurchases = {
   trackAdFailedToLoad: async (_data: any) => {
     methodNotSupportedOnWeb('trackAdFailedToLoad');
   },
+  generateRewardVerificationToken: async (_impressionId: string) => {
+    methodNotSupportedOnWeb('generateRewardVerificationToken');
+  },
+  pollRewardVerification: async (_clientTransactionId: string) => {
+    methodNotSupportedOnWeb('pollRewardVerification');
+  },
 };

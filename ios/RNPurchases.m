@@ -703,6 +703,20 @@ RCT_EXPORT_METHOD(trackAdFailedToLoad:(NSDictionary *)data) {
     }
 }
 
+RCT_EXPORT_METHOD(generateRewardVerificationToken:(NSString *)impressionId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    resolve([RCCommonFunctionality generateRewardVerificationTokenWithImpressionId:impressionId]);
+}
+
+RCT_EXPORT_METHOD(pollRewardVerification:(NSString *)clientTransactionId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality pollRewardVerificationWithClientTransactionId:clientTransactionId
+                                                             completion:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                             reject:reject]];
+}
+
 #pragma mark -
 #pragma mark Delegate Methods
 - (void)purchases:(RCPurchases *)purchases receivedUpdatedCustomerInfo:(RCCustomerInfo *)customerInfo {
