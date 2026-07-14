@@ -6,6 +6,12 @@
 
 #import "RNPurchases.h"
 
+#if __has_include("RNPurchases-Swift.h")
+#import "RNPurchases-Swift.h"
+#else
+#import <RNPurchases/RNPurchases-Swift.h>
+#endif
+
 @import StoreKit;
 
 typedef void (^PurchaseCompletedBlock)(RCStoreTransaction *, RCCustomerInfo *, NSError *, BOOL);
@@ -89,7 +95,9 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled 
                   automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled
-                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride) {
+                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride
+                  useWorkflows:(BOOL)useWorkflows) {
+    RCDangerousSettings *dangerousSettings = [RNPurchasesDangerousSettingsFactory makeWithUseWorkflows:useWorkflows];
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -97,7 +105,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
                                               storeKitVersion:storeKitVersion.mappingNSNullToNil
-                                            dangerousSettings:nil
+                                            dangerousSettings:dangerousSettings
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode.mappingNSNullToNil
                                            diagnosticsEnabled:diagnosticsEnabled
