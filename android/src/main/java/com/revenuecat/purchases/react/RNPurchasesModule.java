@@ -106,7 +106,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             store = Store.AMAZON;
         }
         DangerousSettings dangerousSettings = useWorkflows
-            ? DangerousSettings.forWorkflows()
+            ? DangerousSettings.forWorkflows(true)
             : new DangerousSettings();
         CommonKt.configure(
             reactContext,
