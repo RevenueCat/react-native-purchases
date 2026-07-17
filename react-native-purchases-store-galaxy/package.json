@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases-store-galaxy",
   "title": "React Native Purchases Store Galaxy",
-  "version": "10.4.2",
+  "version": "10.4.3",
   "description": "Galaxy Store add-on for React Native Purchases.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -68,7 +68,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": ">= 0.73.0",
-    "react-native-purchases": "10.4.2",
+    "react-native-purchases": "10.4.3",
     "react-native-web": "*"
   },
   "peerDependenciesMeta": {
@@ -115,6 +115,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "18.21.0"
+    "@revenuecat/purchases-typescript-internal": "18.22.1"
   }
 }
