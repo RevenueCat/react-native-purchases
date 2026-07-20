@@ -96,7 +96,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean pendingTransactionsForPrepaidPlansEnabled,
                                boolean diagnosticsEnabled,
                                boolean automaticDeviceIdentifierCollectionEnabled,
-                               @Nullable String preferredUILocaleOverride) {
+                               @Nullable String preferredUILocaleOverride,
+                               boolean useWorkflows) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if ("GALAXY".equals(storeString)) {
@@ -104,6 +105,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
         } else if (useAmazon) {
             store = Store.AMAZON;
         }
+        DangerousSettings dangerousSettings = useWorkflows
+            ? DangerousSettings.forWorkflows(true)
+            : new DangerousSettings();
         CommonKt.configure(
             reactContext,
             apiKey,
@@ -111,7 +115,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             purchasesAreCompletedBy,
             platformInfo,
             store,
-            new DangerousSettings(),
+            dangerousSettings,
             shouldShowInAppMessagesAutomatically,
             entitlementVerificationMode,
             pendingTransactionsForPrepaidPlansEnabled,
