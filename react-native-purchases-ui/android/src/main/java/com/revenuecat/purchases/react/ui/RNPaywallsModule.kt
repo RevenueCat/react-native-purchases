@@ -85,6 +85,20 @@ internal class RNPaywallsModule(
         PaywallListenerWrapper.resumePurchasePackageInitiated(requestId, shouldProceed)
     }
 
+    /**
+     * Forwards a back press to the Activity's OnBackPressedDispatcher so the embedded paywall's
+     * own Compose BackHandler can navigate within a workflow (or dismiss when at the first step).
+     * React Native routes back presses to JS instead of the dispatcher, so the embedded paywall
+     * never receives them unless we forward them explicitly.
+     */
+    @ReactMethod
+    fun handlePaywallBackPress() {
+        val activity = currentFragmentActivity ?: return
+        activity.runOnUiThread {
+            activity.onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
     @ReactMethod
     fun resolvePurchaseLogicResult(requestId: String, result: String, errorMessage: String?) {
         HybridPurchaseLogicBridge.resolveResult(requestId, result, errorMessage)

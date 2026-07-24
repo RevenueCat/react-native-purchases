@@ -1,4 +1,5 @@
 import {
+  BackHandler,
   NativeEventEmitter,
   NativeModules,
   Platform,
@@ -182,6 +183,21 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   onPurchasePackageInitiated,
 }) => {
   const { nativeOptions, handlePerformPurchase, handlePerformRestore } = createPurchaseLogicHandlers(purchaseLogic);
+
+  // On Android, React Native routes the back press to JS (react-navigation) instead of the
+  // Activity's OnBackPressedDispatcher, so the embedded paywall's Compose BackHandler never runs
+  // and multipage workflows can't navigate back. Intercept it here and forward it to the native
+  // paywall so it can navigate within the workflow (or dismiss when at the first step).
+  useEffect(() => {
+    if (Platform.OS !== "android" || !NativePaywall) {
+      return;
+    }
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      RNPaywalls?.handlePaywallBackPress();
+      return true;
+    });
+    return () => subscription.remove();
+  }, []);
 
   if (usingPreviewAPIMode) {
     return (
