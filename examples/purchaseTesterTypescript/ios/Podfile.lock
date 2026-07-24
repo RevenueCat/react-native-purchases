@@ -8,11 +8,11 @@ PODS:
   - hermes-engine (0.78.0):
     - hermes-engine/Pre-built (= 0.78.0)
   - hermes-engine/Pre-built (0.78.0)
-  - PurchasesHybridCommon (18.22.2):
-    - RevenueCat (= 5.81.1)
-  - PurchasesHybridCommonUI (18.22.2):
-    - PurchasesHybridCommon (= 18.22.2)
-    - RevenueCatUI (= 5.81.1)
+  - PurchasesHybridCommon (18.24.0):
+    - RevenueCat (= 5.81.2)
+  - PurchasesHybridCommonUI (18.24.0):
+    - PurchasesHybridCommon (= 18.24.0)
+    - RevenueCatUI (= 5.81.2)
   - RCT-Folly (2024.11.18.00):
     - boost
     - DoubleConversion
@@ -1596,14 +1596,14 @@ PODS:
     - React-logger (= 0.78.0)
     - React-perflogger (= 0.78.0)
     - React-utils (= 0.78.0)
-  - RevenueCat (5.81.1)
-  - RevenueCatUI (5.81.1):
-    - RevenueCat (= 5.81.1)
-  - RNPaywalls (10.4.3):
-    - PurchasesHybridCommonUI (= 18.22.2)
+  - RevenueCat (5.81.2)
+  - RevenueCatUI (5.81.2):
+    - RevenueCat (= 5.81.2)
+  - RNPaywalls (10.4.4):
+    - PurchasesHybridCommonUI (= 18.24.0)
     - React-Core
-  - RNPurchases (10.4.3):
-    - PurchasesHybridCommon (= 18.22.2)
+  - RNPurchases (10.4.4):
+    - PurchasesHybridCommon (= 18.24.0)
     - React-Core
   - RNScreens (4.11.1):
     - DoubleConversion
@@ -1886,8 +1886,8 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: b417d2b2aee3b89b58e63e23a51e02be91dc876d
-  PurchasesHybridCommon: e47bc4f611e86fcf8295bf1c984f187982270f02
-  PurchasesHybridCommonUI: e6756576ad454c6c15a4679f57446115382ff791
+  PurchasesHybridCommon: e1376bf0f86f9ef220f39ab1a90f4db2d0f32304
+  PurchasesHybridCommonUI: b2d46d08eb754e552b92937538c3552668d281b2
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: b2eecf2d60216df56bc5e6be5f063826d3c1ee35
   RCTRequired: 78522de7dc73b81f3ed7890d145fa341f5bb32ea
@@ -1947,10 +1947,10 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: a1fb08dfdc7ebc387b2e54cfc9decd283ed821d8
   ReactCodegen: 008c319179d681a6a00966edfc67fda68f9fbb2e
   ReactCommon: 0c097b53f03d6bf166edbcd0915da32f3015dd90
-  RevenueCat: 693b033863262f9776130cc6c1f9255a74ab23ff
-  RevenueCatUI: 2c7092fa0a485454d2a474e80f241e6db591dd36
-  RNPaywalls: 7b1cd368da8bac757e8e06202a8da6b1684095e0
-  RNPurchases: 15837bf1ae94e3ae9e818260f44a2cdba4746d0b
+  RevenueCat: 20ef951452a36a81f8ade921719c85c4e01d08a9
+  RevenueCatUI: ead343e12f6513d9cc530faa77760ee858d4308e
+  RNPaywalls: 16aed66918e0a00fec18b4e58590b56917d4a569
+  RNPurchases: 500779a3ca047887ad42a1942a2ffe5c324500a8
   RNScreens: 8aec64fb213fd52a64445e2e470f7a9b546c5df3
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
