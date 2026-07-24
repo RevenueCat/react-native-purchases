@@ -72,5 +72,5 @@ dependencies {
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
-  implementation 'com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:18.22.2'
+  implementation 'com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:18.24.0'
 }
