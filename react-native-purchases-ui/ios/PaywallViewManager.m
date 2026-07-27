@@ -33,6 +33,7 @@ RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPurchasePackageInitiated, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPerformPurchase, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPerformRestore, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onWebCheckoutOpened, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(Paywall)
 

@@ -292,4 +292,10 @@ didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
     }
 }
 
+- (void)paywallViewControllerDidOpenWebCheckout:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    if (self.onWebCheckoutOpened) {
+        self.onWebCheckoutOpened(nil);
+    }
+}
+
 @end

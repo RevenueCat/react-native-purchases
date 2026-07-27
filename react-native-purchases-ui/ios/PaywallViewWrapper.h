@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onPurchasePackageInitiated;
 @property (nonatomic, copy) RCTDirectEventBlock onPerformPurchase;
 @property (nonatomic, copy) RCTDirectEventBlock onPerformRestore;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onWebCheckoutOpened;
 
 @property (nonatomic, strong, nullable) HybridPurchaseLogicBridge *purchaseLogicBridge;
 @property (nonatomic, copy, nullable) UIViewController * _Nullable (^createViewController)(HybridPurchaseLogicBridge * _Nonnull);
