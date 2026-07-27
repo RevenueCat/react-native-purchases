@@ -94,14 +94,14 @@ jobs:
   analyse_js:
     executor:
       name: rn/linux_js
-    environment:
-      # This job intentionally tests against an older Node version (matching
-      # react-native's own minimum-supported baseline), not the mise default.
-      MISE_NODE_VERSION: "18.2.0"
+      node_version: '18.2'
     steps:
       - checkout
+      # This job intentionally tests against an older Node version (matching
+      # react-native's own minimum-supported baseline), not the mise default --
+      # version-qualified so install-mise-tools doesn't also fetch the default.
       - revenuecat/install-mise-tools:
-          tools: node
+          tools: node@18.2.0
       - install-dependencies:
           machine: "unix"
       - run:
@@ -144,7 +144,7 @@ jobs:
       - rn/ios_simulator_start:
           device: iPhone 16
       - revenuecat/install-mise-tools:
-          tools: node,ruby
+          tools: node@22.14.0,ruby
       - install-dependencies-ios-build
       - run:
           name: Install Expo CLI
@@ -181,7 +181,7 @@ jobs:
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node,java
+          tools: node@22.14.0,java
       - install-dependencies:
           machine: "unix"
       - run:
@@ -209,10 +209,11 @@ jobs:
   expo_web:
     executor:
       name: rn/linux_js
+      node_version: '22.14.0'
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node
+          tools: node@22.14.0
       - install-dependencies:
           machine: "unix"
       - run:
@@ -235,7 +236,7 @@ jobs:
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node,ruby
+          tools: node@22.14.0,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -259,7 +260,7 @@ jobs:
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node,java
+          tools: node@22.14.0,java
       - install-dependencies:
           machine: "unix"
       - rn/android_build:
@@ -271,7 +272,7 @@ jobs:
       - rn/ios_simulator_start:
           device: iPhone 15
       - revenuecat/install-mise-tools:
-          tools: node,ruby
+          tools: node@22.14.0,ruby
       - install-dependencies-ios-build
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
@@ -293,7 +294,7 @@ jobs:
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node,ruby
+          tools: node@22.14.0,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -312,7 +313,7 @@ jobs:
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node,ruby
+          tools: node@22.14.0,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -339,7 +340,7 @@ jobs:
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node,java,ruby
+          tools: node@22.14.0,java,ruby
       - revenuecat/install-gem-unix-dependencies:
           cache-version: v1
       - install-dependencies:
@@ -371,7 +372,7 @@ jobs:
     steps:
       - checkout
       - revenuecat/install-mise-tools:
-          tools: node,ruby
+          tools: node@22.14.0,ruby
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - revenuecat/trust-github-key
