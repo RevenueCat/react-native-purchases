@@ -180,6 +180,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   onRestoreError,
   onDismiss,
   onPurchasePackageInitiated,
+  onWebCheckoutOpened,
 }) => {
   const { nativeOptions, handlePerformPurchase, handlePerformRestore } = createPurchaseLogicHandlers(purchaseLogic);
 
@@ -228,6 +229,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         }}
         onPerformPurchase={handlePerformPurchase}
         onPerformRestore={handlePerformRestore}
+        onWebCheckoutOpened={() => onWebCheckoutOpened && onWebCheckoutOpened()}
       />
     );
   }
@@ -409,6 +411,7 @@ type FullScreenPaywallViewProps = {
     packageBeingPurchased, 
     resume
   }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
+  onWebCheckoutOpened?: () => void;
 };
 
 type FooterPaywallViewProps = {
@@ -623,6 +626,7 @@ export default class RevenueCatUI {
                                                                    onRestoreError,
                                                                    onDismiss,
                                                                    onPurchasePackageInitiated,
+                                                                   onWebCheckoutOpened,
                                                                  }) => {
     return (
       <InternalPaywall
@@ -638,6 +642,7 @@ export default class RevenueCatUI {
         onRestoreError={onRestoreError}
         onDismiss={onDismiss}
         onPurchasePackageInitiated={onPurchasePackageInitiated}
+        onWebCheckoutOpened={onWebCheckoutOpened}
         style={[{flex: 1}, style]}
       />
     );

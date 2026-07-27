@@ -167,6 +167,8 @@ const onRestoreError = ({ error }: { error: PurchasesError }) => {};
 
 const onDismiss = () => {};
 
+const onWebCheckoutOpened = () => {};
+
 const PaywallScreen = () => {
   return (
     <RevenueCatUI.Paywall
@@ -220,6 +222,7 @@ const PaywallScreenWithOfferingAndEvents = (
       onRestoreError={onRestoreError}
       onDismiss={onDismiss}
       onPurchasePackageInitiated={onPurchasePackageInitiated}
+      onWebCheckoutOpened={onWebCheckoutOpened}
     />
   );
 };
