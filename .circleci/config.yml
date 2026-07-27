@@ -90,23 +90,18 @@ commands:
           name: Copy npmrc sample file to final location
           command: cp .npmrc.SAMPLE .npmrc
 
-  install-ruby-3-2-0:
-    steps:
-      - run:
-          name: Set Ruby 3.2.0
-          command: |
-            eval "$(rbenv init -)"
-            rbenv install -s 3.2.0
-            rbenv global 3.2.0
-            rbenv rehash
-
 jobs:
   analyse_js:
     executor:
       name: rn/linux_js
-      node_version: '18.2'
+    environment:
+      # This job intentionally tests against an older Node version (matching
+      # react-native's own minimum-supported baseline), not the mise default.
+      MISE_NODE_VERSION: "18.2.0"
     steps:
       - checkout
+      - revenuecat/install-mise-tools:
+          tools: node
       - install-dependencies:
           machine: "unix"
       - run:
@@ -148,6 +143,8 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 16
+      - revenuecat/install-mise-tools:
+          tools: node,ruby
       - install-dependencies-ios-build
       - run:
           name: Install Expo CLI
@@ -183,6 +180,8 @@ jobs:
       build_image_version: latest
     steps:
       - checkout
+      - revenuecat/install-mise-tools:
+          tools: node,java
       - install-dependencies:
           machine: "unix"
       - run:
@@ -210,9 +209,10 @@ jobs:
   expo_web:
     executor:
       name: rn/linux_js
-      node_version: '22.14.0'
     steps:
       - checkout
+      - revenuecat/install-mise-tools:
+          tools: node
       - install-dependencies:
           machine: "unix"
       - run:
@@ -234,7 +234,8 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -257,6 +258,8 @@ jobs:
       build_image_version: latest
     steps:
       - checkout
+      - revenuecat/install-mise-tools:
+          tools: node,java
       - install-dependencies:
           machine: "unix"
       - rn/android_build:
@@ -267,7 +270,8 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node,ruby
       - install-dependencies-ios-build
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
@@ -288,7 +292,8 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -306,7 +311,8 @@ jobs:
       xcode_version: '26.3'
     steps:
       - checkout
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -332,11 +338,10 @@ jobs:
     resource_class: xlarge
     steps:
       - checkout
-      - run:
-          name: Install Ruby and Bundler
-          command: |
-            gem install bundler
-            bundle install
+      - revenuecat/install-mise-tools:
+          tools: node,java,ruby
+      - revenuecat/install-gem-unix-dependencies:
+          cache-version: v1
       - install-dependencies:
           machine: "unix"
       - run:
@@ -365,7 +370,8 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node,ruby
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - revenuecat/trust-github-key
@@ -411,6 +417,7 @@ workflows:
             - ios
           <<: *release-branches
       - revenuecat/tag-current-branch:
+          ruby_version: "3.3.0"
           requires:
             - hold
           <<: *release-branches
@@ -422,6 +429,7 @@ workflows:
             - make-release
       - revenuecat/merge-release-pr:
           repo_name: react-native-purchases
+          ruby_version: "3.3.0"
           requires:
             - docs-deploy
           <<: *release-tags
@@ -431,7 +439,8 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - revenuecat/danger
+      - revenuecat/danger:
+          ruby_version: "3.3.0"
 
   weekly-run-workflow:
     when:
@@ -439,13 +448,15 @@ workflows:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
         - equal: [ "release-train", << pipeline.schedule.name >> ]
     jobs:
-      - revenuecat/automatic-bump
+      - revenuecat/automatic-bump:
+          ruby_version: "3.3.0"
 
   manual-trigger-bump:
     when:
       equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
-      - revenuecat/automatic-bump
+      - revenuecat/automatic-bump:
+          ruby_version: "3.3.0"
 
   maestro-e2e-tests-ios:
     when:
