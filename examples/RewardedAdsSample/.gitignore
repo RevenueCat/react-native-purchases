@@ -1,0 +1,23 @@
+# OSX
+.DS_Store
+
+# node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Metro
+.metro-health-check*
+
+# Xcode / CocoaPods
+ios/build/
+ios/Pods/
+ios/Podfile.lock
+ios/.xcode.env.local
+*.xcuserstate
+xcuserdata/
+
+# TypeScript / bundles
+*.jsbundle
+
+.yarn/
