@@ -168,6 +168,7 @@ const onRestoreError = ({ error }: { error: PurchasesError }) => {};
 const onDismiss = () => {};
 
 const onWebCheckoutOpened = () => {};
+const onUrlOpened = (url: string) => {};
 
 const PaywallScreen = () => {
   return (
@@ -223,6 +224,7 @@ const PaywallScreenWithOfferingAndEvents = (
       onDismiss={onDismiss}
       onPurchasePackageInitiated={onPurchasePackageInitiated}
       onWebCheckoutOpened={onWebCheckoutOpened}
+      onUrlOpened={onUrlOpened}
     />
   );
 };

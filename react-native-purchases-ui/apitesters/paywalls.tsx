@@ -60,6 +60,7 @@ const paywallComponentProps: PaywallComponentProps = {
   },
   onDismiss: () => {},
   onWebCheckoutOpened: () => {},
+  onUrlOpened: (url: string) => {},
 };
 
 void paywallComponentProps;
@@ -318,6 +319,7 @@ const onRestoreError = ({ error }: { error: PurchasesError }) => {
 const onDismiss = () => {};
 
 const onWebCheckoutOpened = () => {};
+const onUrlOpened = (url: string) => {};
 
 const PaywallScreen = () => {
   return (
@@ -372,6 +374,7 @@ const PaywallScreenWithOfferingAndEvents = (
       onRestoreError={onRestoreError}
       onDismiss={onDismiss}
       onWebCheckoutOpened={onWebCheckoutOpened}
+      onUrlOpened={onUrlOpened}
     />
   );
 };
