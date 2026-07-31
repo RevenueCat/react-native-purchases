@@ -1,4 +1,7 @@
 ## RevenueCat SDK
+### ✨ New Features
+* Enables support for multipage paywalls
+
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.28.0 (#1879) via RevenueCat Git Bot (@RCGitBot)
   * [Android 10.16.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.16.0)

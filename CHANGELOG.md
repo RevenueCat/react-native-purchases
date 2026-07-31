@@ -1,5 +1,8 @@
 ## 10.6.0
 ## RevenueCat SDK
+### ✨ New Features
+* Enables support for multipage paywalls
+
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.28.0 (#1879) via RevenueCat Git Bot (@RCGitBot)
   * [Android 10.16.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.16.0)
@@ -599,6 +602,8 @@ This release updates to Billing Library 8.3.0 with min SDK supported of Android 
 * Fix issue in iOS with incorrectly configured event (#1566) via Toni Rico (@tonidero)
 
 ## 9.7.4
+> [!CAUTION]
+> This release can cause crashes on app startup on iOS releases. We ask to update to 9.7.5+ instead
 ## RevenueCat SDK
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 17.30.1 (#1560) via RevenueCat Git Bot (@RCGitBot)

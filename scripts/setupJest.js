@@ -800,6 +800,7 @@ NativeModules.RNPurchases = {
   setFirebaseAppInstanceID: jest.fn(),
   setTenjinAnalyticsInstallationID: jest.fn(),
   setKochavaDeviceID: jest.fn(),
+  setOnesignalUserID: jest.fn(),
   canMakePayments: jest.fn(),
   beginRefundRequestForActiveEntitlement: jest.fn(),
   beginRefundRequestForEntitlementId: jest.fn(),
