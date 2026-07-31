@@ -298,9 +298,9 @@ didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
     }
 }
 
-- (void)paywallViewController:(RCPaywallViewController *)controller didOpenURL:(NSURL *)url API_AVAILABLE(ios(15.0)) {
+- (void)paywallViewController:(RCPaywallViewController *)controller didOpenURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
     if (self.onUrlOpened) {
-        self.onUrlOpened(@{@"url": @{@"url": url.absoluteString ?: @""}});
+        self.onUrlOpened(@{@"url": @{@"url": url ?: @""}});
     }
 }
 
