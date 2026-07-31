@@ -1749,6 +1749,21 @@ export default class Purchases {
   }
 
   /**
+   * Subscriber attribute associated with the OneSignal User ID for the user
+   * Required for the RevenueCat OneSignal integration with versions v11.0 and above.
+   *
+   * @param onesignalUserID OneSignal User ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * setting the OneSignal user ID.
+   */
+  public static async setOnesignalUserID(
+    onesignalUserID: string | null
+  ): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.setOnesignalUserID(onesignalUserID);
+  }
+
+  /**
    * Subscriber attribute associated with the Airship Channel Id for the user
    * Required for the RevenueCat Airship integration
    *

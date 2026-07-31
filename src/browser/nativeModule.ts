@@ -275,6 +275,9 @@ export const browserNativeModuleRNPurchases = {
   setOnesignalID: async (_onesignalID: string) => {
     methodNotSupportedOnWeb('setOnesignalID');
   },
+  setOnesignalUserID: async (_onesignalUserID: string) => {
+    methodNotSupportedOnWeb('setOnesignalUserID');
+  },
   setAirshipChannelID: async (_airshipChannelID: string) => {
     methodNotSupportedOnWeb('setAirshipChannelID');
   },

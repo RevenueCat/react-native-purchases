@@ -511,6 +511,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void setOnesignalUserID(String onesignalUserID) {
+        SubscriberAttributesKt.setOnesignalUserID(onesignalUserID);
+    }
+
+    @ReactMethod
     public void setAirshipChannelID(String airshipChannelID) {
         SubscriberAttributesKt.setAirshipChannelID(airshipChannelID);
     }

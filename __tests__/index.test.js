@@ -1745,6 +1745,19 @@ describe("Purchases", () => {
     });
   });
 
+  describe("setOnesignalUserID", () => {
+    describe("when setOnesignalUserID is called", () => {
+      it("makes the right call to Purchases", async () => {
+        const attributionID = "65a1ds56adsgh6954asd";
+
+        await Purchases.setOnesignalUserID(attributionID);
+
+        expect(NativeModules.RNPurchases.setOnesignalUserID).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setOnesignalUserID).toBeCalledWith(attributionID);
+      });
+    });
+  });
+
   describe("showInAppMessages", () => {
     beforeEach(() => {
       Platform.OS = "ios";
