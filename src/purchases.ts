@@ -1735,7 +1735,8 @@ export default class Purchases {
 
   /**
    * Subscriber attribute associated with the OneSignal Player Id for the user
-   * Required for the RevenueCat OneSignal integration
+   * Required for the RevenueCat OneSignal integration with OneSignal SDK v4.0 and below
+   * (OneSignal API v9). For OneSignal SDK v5.0 and above, use {@link setOnesignalUserID} instead.
    *
    * @param onesignalID OneSignal Player ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
@@ -1750,7 +1751,8 @@ export default class Purchases {
 
   /**
    * Subscriber attribute associated with the OneSignal User ID for the user
-   * Required for the RevenueCat OneSignal integration with versions v11.0 and above.
+   * Required for the RevenueCat OneSignal integration with OneSignal SDK v5.0
+   * and above (OneSignal API v11+).
    *
    * @param onesignalUserID OneSignal User ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
