@@ -536,7 +536,6 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
-    dangerousSettings,
     } = configuration;
     const {
       store,
@@ -614,8 +613,6 @@ export default class Purchases {
       }
     }
 
-    const useWorkflows = dangerousSettings?.useWorkflows ?? false;
-
     RNPurchases.setupPurchases(
       apiKey,
       appUserID,
@@ -631,7 +628,6 @@ export default class Purchases {
       diagnosticsEnabled,
       automaticDeviceIdentifierCollectionEnabled,
       preferredUILocaleOverride,
-      useWorkflows,
     );
   }
 

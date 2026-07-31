@@ -6,12 +6,6 @@
 
 #import "RNPurchases.h"
 
-#if __has_include("RNPurchases-Swift.h")
-#import "RNPurchases-Swift.h"
-#else
-#import <RNPurchases/RNPurchases-Swift.h>
-#endif
-
 @import StoreKit;
 
 typedef void (^PurchaseCompletedBlock)(RCStoreTransaction *, RCCustomerInfo *, NSError *, BOOL);
@@ -95,9 +89,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled 
                   automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled
-                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride
-                  useWorkflows:(BOOL)useWorkflows) {
-    RCDangerousSettings *dangerousSettings = [RNPurchasesDangerousSettingsFactory makeWithUseWorkflows:useWorkflows];
+                  preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -105,7 +97,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
                                               storeKitVersion:storeKitVersion.mappingNSNullToNil
-                                            dangerousSettings:dangerousSettings
+                                            dangerousSettings:nil
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode.mappingNSNullToNil
                                            diagnosticsEnabled:diagnosticsEnabled
@@ -791,7 +783,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"10.5.0";
+    return @"10.6.0";
 }
 
 @end
