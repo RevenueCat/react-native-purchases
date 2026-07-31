@@ -19,6 +19,7 @@ async function checkAttributes(purchases: Purchases) {
   await Purchases.setTenjinAnalyticsInstallationID(stringOrNull);
   await Purchases.setKochavaDeviceID(stringOrNull);
   await Purchases.setOnesignalID(stringOrNull);
+  await Purchases.setOnesignalUserID(stringOrNull);
   await Purchases.setAirshipChannelID(stringOrNull);
   await Purchases.setMediaSource(stringOrNull);
   await Purchases.setCampaign(stringOrNull);

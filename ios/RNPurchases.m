@@ -445,6 +445,10 @@ RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID) {
     [RCCommonFunctionality setOnesignalID:onesignalID.mappingNSNullToNil];
 }
 
+RCT_EXPORT_METHOD(setOnesignalUserID:(NSString *)onesignalUserID) {
+    [RCCommonFunctionality setOnesignalUserID:onesignalUserID.mappingNSNullToNil];
+}
+
 RCT_EXPORT_METHOD(setAirshipChannelID:(NSString *)airshipChannelID) {
     [RCCommonFunctionality setAirshipChannelID:airshipChannelID.mappingNSNullToNil];
 }
