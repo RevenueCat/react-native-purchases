@@ -53,6 +53,20 @@ API_AVAILABLE(ios(15.0))
     [super reactSetFrame: frame];
 }
 
+- (void)didMoveToWindow {
+    [super didMoveToWindow];
+
+    // When the view is added to a window, it gains a parentViewController via the
+    // responder chain. If options were already received but the view wasn't in the
+    // hierarchy yet (parentViewController was nil), we need to retry adding the
+    // paywall view controller now.
+    // See: https://github.com/RevenueCat/react-native-purchases/issues/1644
+    if (self.window && self.didReceiveInitialOptions && !self.addedToHierarchy) {
+        [self setNeedsLayout];
+        [self layoutIfNeeded];
+    }
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
 
@@ -130,7 +144,12 @@ API_AVAILABLE(ios(15.0))
         } else {
             // View is not yet in hierarchy, trigger layout to apply options.
             // Custom variables will be applied before adding to hierarchy in layoutSubviews.
+            // Use setNeedsLayout + layoutIfNeeded to force a synchronous layout pass,
+            // because setNeedsLayout alone may not reliably trigger layoutSubviews
+            // (e.g., when the view has a zero frame or under Fabric's layout batching).
+            // See: https://github.com/RevenueCat/react-native-purchases/issues/1644
             [self setNeedsLayout];
+            [self layoutIfNeeded];
         }
     } else {
         NSLog(@"Error: attempted to present paywalls on unsupported iOS version.");
