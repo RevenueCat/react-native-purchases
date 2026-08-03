@@ -231,7 +231,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         onPerformPurchase={handlePerformPurchase}
         onPerformRestore={handlePerformRestore}
         onWebCheckoutOpened={() => onWebCheckoutOpened && onWebCheckoutOpened()}
-        onUrlOpened={(event: any) => onUrlOpened && onUrlOpened(event.nativeEvent.url.url)}
+        onUrlOpened={(event: any) => onUrlOpened && onUrlOpened(event.nativeEvent.url)}
       />
     );
   }

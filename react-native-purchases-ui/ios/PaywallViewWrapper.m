@@ -301,7 +301,7 @@ didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
 
 - (void)paywallViewController:(RCPaywallViewController *)controller didOpenURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
     if (self.onUrlOpened) {
-        self.onUrlOpened(@{KeyUrl: @{KeyUrl: url ?: @""}});
+        self.onUrlOpened(@{KeyUrl: url ?: @""});
     }
 }
 
