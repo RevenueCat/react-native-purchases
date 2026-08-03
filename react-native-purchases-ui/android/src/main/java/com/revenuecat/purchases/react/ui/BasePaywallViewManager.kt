@@ -26,6 +26,8 @@ import com.revenuecat.purchases.react.ui.events.OnPurchaseStartedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
+import com.revenuecat.purchases.react.ui.events.OnUrlOpenedEvent
+import com.revenuecat.purchases.react.ui.events.OnWebCheckoutOpenedEvent
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import java.util.concurrent.ConcurrentHashMap
@@ -70,6 +72,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .putEvent(PaywallEventName.ON_PURCHASE_PACKAGE_INITIATED)
             .putEvent(PaywallEventName.ON_PERFORM_PURCHASE)
             .putEvent(PaywallEventName.ON_PERFORM_RESTORE)
+            .putEvent(PaywallEventName.ON_WEB_CHECKOUT_OPENED)
+            .putEvent(PaywallEventName.ON_URL_OPENED)
             .build()
     }
 
@@ -280,6 +284,23 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 viewTag = view.id,
                 rcPackage,
                 requestId,
+            )
+            emitEvent(themedReactContext, view.id, event)
+        }
+
+        override fun onWebCheckoutOpened() {
+            val event = OnWebCheckoutOpenedEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+            )
+            emitEvent(themedReactContext, view.id, event)
+        }
+
+        override fun onUrlOpened(url: String) {
+            val event = OnUrlOpenedEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+                url = url,
             )
             emitEvent(themedReactContext, view.id, event)
         }
