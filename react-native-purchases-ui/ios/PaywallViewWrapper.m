@@ -17,6 +17,7 @@ static NSString *const KeyCustomerInfo = @"customerInfo";
 static NSString *const KeyStoreTransaction = @"storeTransaction";
 static NSString *const KeyError = @"error";
 static NSString *const KeyPackage = @"packageBeingPurchased";
+static NSString *const KeyUrl = @"url";
 
 API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper ()
@@ -300,7 +301,7 @@ didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
 
 - (void)paywallViewController:(RCPaywallViewController *)controller didOpenURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
     if (self.onUrlOpened) {
-        self.onUrlOpened(@{@"url": @{@"url": url ?: @""}});
+        self.onUrlOpened(@{KeyUrl: @{KeyUrl: url ?: @""}});
     }
 }
 
