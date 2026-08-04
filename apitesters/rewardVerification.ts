@@ -1,11 +1,14 @@
 import Purchases, {
   RewardVerificationToken,
   RewardVerificationResult,
+  RewardedAdTrackingMetadata,
   VerifiedReward,
   VerifiedVirtualCurrencyReward,
   VerifiedEntitlementReward,
   VerifiedNoReward,
   VerifiedUnsupportedReward,
+  AdMediatorName,
+  AdFormat,
 } from "../src";
 
 async function checkGenerateRewardVerificationToken() {
@@ -22,6 +25,22 @@ async function checkPollRewardVerification() {
   const _failed: boolean = result.failed;
   const _reward: VerifiedReward | undefined = result.reward;
   const _moreRewards: VerifiedReward[] = result.moreRewards;
+}
+
+async function checkPollRewardVerificationWithTrackingMetadata() {
+  const trackingMetadata: RewardedAdTrackingMetadata = {
+    mediatorName: AdMediatorName.adMob,
+    adFormat: AdFormat.rewarded,
+    adUnitId: "unit-1",
+    impressionId: "imp-1",
+    networkName: "AdNetwork",
+    placement: "home",
+  };
+  const result: RewardVerificationResult =
+    await Purchases.pollRewardVerification(
+      "client-transaction-id",
+      trackingMetadata
+    );
 }
 
 function checkVerifiedRewardTypes(reward: VerifiedReward) {
