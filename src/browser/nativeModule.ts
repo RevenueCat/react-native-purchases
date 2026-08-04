@@ -366,7 +366,7 @@ export const browserNativeModuleRNPurchases = {
   generateRewardVerificationToken: async (_impressionId: string) => {
     methodNotSupportedOnWeb('generateRewardVerificationToken');
   },
-  pollRewardVerification: async (_clientTransactionId: string) => {
+  pollRewardVerification: async (_clientTransactionId: string, _trackingMetadata?: any) => {
     methodNotSupportedOnWeb('pollRewardVerification');
   },
 };
