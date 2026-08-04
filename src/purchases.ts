@@ -340,6 +340,20 @@ export interface RewardVerificationResult {
   failed: boolean;
 }
 
+/**
+ * Ad metadata for a rewarded ad, passed to {@link Purchases.pollRewardVerification}
+ * to have the SDK automatically track reward-verification events for it.
+ * @beta
+ */
+export interface RewardedAdTrackingMetadata {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  impressionId: string;
+  networkName?: string | null;
+  placement?: string | null;
+}
+
 let debugEventListeners: DebugEventListener[] = [];
 
 eventEmitter?.addListener(
@@ -2167,14 +2181,21 @@ export default class Purchases {
    *
    * @param clientTransactionId - The `clientTransactionId` from
    *   {@link Purchases.generateRewardVerificationToken}.
+   * @param trackingMetadata - Pass to have the SDK automatically track
+   *   reward-verification events for the ad it belongs to; omit to poll
+   *   without tracking.
    * @returns {Promise<RewardVerificationResult>} promise with the verification result.
    * @beta
    */
   public static async pollRewardVerification(
-    clientTransactionId: string
+    clientTransactionId: string,
+    trackingMetadata?: RewardedAdTrackingMetadata
   ): Promise<RewardVerificationResult> {
     await throwIfNotConfigured();
-    return RNPurchases.pollRewardVerification(clientTransactionId);
+    return RNPurchases.pollRewardVerification(
+      clientTransactionId,
+      trackingMetadata
+    );
   }
 
   private static async throwIfAndroidPlatform() {
