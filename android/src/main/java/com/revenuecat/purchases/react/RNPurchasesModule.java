@@ -666,8 +666,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void pollRewardVerification(String clientTransactionId, final Promise promise) {
-        CommonKt.pollRewardVerification(clientTransactionId, getOnResult(promise));
+    public void pollRewardVerification(String clientTransactionId,
+                                       @Nullable ReadableMap trackingMetadata,
+                                       final Promise promise) {
+        Map<String, Object> mapTrackingMetadata = trackingMetadata != null ? trackingMetadata.toHashMap() : null;
+        CommonKt.pollRewardVerification(clientTransactionId, getOnResult(promise), mapTrackingMetadata);
     }
 
     // endregion
