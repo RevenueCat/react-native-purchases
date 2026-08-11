@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import Colors from '../components/Colors';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Purchases from 'react-native-purchases';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RootStackParamList from '../RootStackParamList';

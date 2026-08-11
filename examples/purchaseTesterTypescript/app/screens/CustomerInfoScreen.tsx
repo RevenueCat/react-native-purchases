@@ -2,7 +2,7 @@ import React from 'react';
 
 import {ScrollView, StyleSheet, Text, useColorScheme, View,} from 'react-native';
 
-import Colors from '../components/Colors';
+import {Colors,} from 'react-native/Libraries/NewAppScreen';
 
 import {CustomerInfo} from 'react-native-purchases';
 
