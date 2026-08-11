@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Colors from '../components/Colors';
 import Purchases, {
   PurchasesPackage,
   PurchasesStoreProduct,
