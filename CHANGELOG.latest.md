@@ -1,17 +1,16 @@
 ## RevenueCat SDK
-### ✨ New Features
-* feat: add setOnesignalUserID for OneSignal v11+ (#1877) via Cesar de la Vega (@vegaro)
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.29.0 (#1882) via RevenueCat Git Bot (@RCGitBot)
-
-## RevenueCatUI SDK
-### ✨ New Features
-* Add onWebCheckoutOpened and onUrlOpened to the paywall listener (#1871) via Álvaro Brey (@AlvaroBrey)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.30.0 (#1899) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.16.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.16.1)
+  * [iOS 5.83.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.83.1)
+  * [Web 1.52.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.52.0)
+  * [Web 1.51.2](https://github.com/RevenueCat/purchases-js/releases/tag/1.51.2)
+  * [Web 1.51.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.51.1)
+  * [Web 1.51.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.51.0)
+  * [Web 1.50.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.50.0)
 
 ### 🔄 Other Changes
-* Wire mise into CI for Ruby, Node, and JDK (#1870) via Álvaro Brey (@AlvaroBrey)
-* Bump ip-address from 10.1.0 to 10.4.0 in /examples/MagicWeather (#1889) via dependabot[bot] (@dependabot[bot])
-* Bump fastlane-plugin-revenuecat_internal from `dd577ee` to `b4e1e7f` (#1888) via dependabot[bot] (@dependabot[bot])
-* Bump fastlane-plugin-revenuecat_internal from `3421c88` to `dd577ee` (#1885) via dependabot[bot] (@dependabot[bot])
-* Bump danger from 9.6.0 to 9.6.1 (#1884) via dependabot[bot] (@dependabot[bot])
-* Add multipage to CHANGELOG (#1883) via Cesar de la Vega (@vegaro)
+* Bump nanoid from 3.3.11 to 3.3.18 (#1895) via dependabot[bot] (@dependabot[bot])
+* Bump js-yaml from 3.15.0 to 3.15.1 (#1896) via dependabot[bot] (@dependabot[bot])
+* Bump json from 2.20.0 to 2.21.2 (#1894) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `b4e1e7f` to `7fbbe66` (#1893) via dependabot[bot] (@dependabot[bot])
