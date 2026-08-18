@@ -7,6 +7,7 @@ import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchases
 import { isExpoGo, isRorkSandbox } from '../utils/environment';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
+import type { RewardedAdTrackingMetadata } from '../purchases';
 
 
 const packageVersion = '9.1.0';
@@ -366,7 +367,7 @@ export const browserNativeModuleRNPurchases = {
   generateRewardVerificationToken: async (_impressionId: string) => {
     methodNotSupportedOnWeb('generateRewardVerificationToken');
   },
-  pollRewardVerification: async (_clientTransactionId: string, _trackingMetadata?: any) => {
+  pollRewardVerification: async (_clientTransactionId: string, _trackingMetadata?: RewardedAdTrackingMetadata) => {
     methodNotSupportedOnWeb('pollRewardVerification');
   },
 };
