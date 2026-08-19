@@ -23,6 +23,7 @@
     "!ios/RNPaywalls.xcodeproj/xcuserdata",
     "cpp",
     "*.podspec",
+    "Package.swift",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",

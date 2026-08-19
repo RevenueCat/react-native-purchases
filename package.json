@@ -22,6 +22,7 @@
     "!ios/RNPurchases.xcodeproj/project.xcworkspace",
     "!ios/RNPurchases.xcodeproj/xcuserdata",
     "RNPurchases.podspec",
+    "Package.swift",
     "scripts",
     "!**/__tests__",
     "!**/.idea",
