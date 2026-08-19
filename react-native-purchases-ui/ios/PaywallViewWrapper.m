@@ -7,7 +7,7 @@
 
 #import "PaywallViewWrapper.h"
 #import "UIView+Extensions.h"
-#import "UIView+React.h"
+#import <React/UIView+React.h>
 
 @import PurchasesHybridCommonUI;
 @import RevenueCat;
