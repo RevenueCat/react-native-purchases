@@ -1,16 +1,16 @@
 ## RevenueCat SDK
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.30.0 (#1899) via RevenueCat Git Bot (@RCGitBot)
-  * [Android 10.16.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.16.1)
-  * [iOS 5.83.1](https://github.com/RevenueCat/purchases-ios/releases/tag/5.83.1)
-  * [Web 1.52.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.52.0)
-  * [Web 1.51.2](https://github.com/RevenueCat/purchases-js/releases/tag/1.51.2)
-  * [Web 1.51.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.51.1)
-  * [Web 1.51.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.51.0)
-  * [Web 1.50.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.50.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.31.0 (#1904) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.17.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.17.0)
+  * [Android 10.16.2](https://github.com/RevenueCat/purchases-android/releases/tag/10.16.2)
+  * [iOS 5.84.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.84.0)
+  * [iOS 5.83.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.83.2)
+  * [Web 1.52.3](https://github.com/RevenueCat/purchases-js/releases/tag/1.52.3)
+  * [Web 1.52.2](https://github.com/RevenueCat/purchases-js/releases/tag/1.52.2)
+  * [Web 1.52.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.52.1)
+* [RENOVATE] Update dependency revenuecat to v4.6.0 (#1902) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 18.30.1 (#1901) via RevenueCat Git Bot (@RCGitBot)
 
 ### 🔄 Other Changes
-* Bump nanoid from 3.3.11 to 3.3.18 (#1895) via dependabot[bot] (@dependabot[bot])
-* Bump js-yaml from 3.15.0 to 3.15.1 (#1896) via dependabot[bot] (@dependabot[bot])
-* Bump json from 2.20.0 to 2.21.2 (#1894) via dependabot[bot] (@dependabot[bot])
-* Bump fastlane-plugin-revenuecat_internal from `b4e1e7f` to `7fbbe66` (#1893) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane-plugin-revenuecat_internal from `7fbbe66` to `7dd9ab9` (#1905) via dependabot[bot] (@dependabot[bot])
+* Bump fastlane from 2.237.0 to 2.238.0 (#1903) via dependabot[bot] (@dependabot[bot])
