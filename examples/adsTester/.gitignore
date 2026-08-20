@@ -25,6 +25,8 @@ android/.gradle
 android/local.properties
 *.iml
 *.hprof
+*.keystore
+!debug.keystore
 
 # TypeScript / bundles
 *.jsbundle
