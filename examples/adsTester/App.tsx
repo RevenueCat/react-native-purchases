@@ -1,3 +1,4 @@
+import 'react-native-get-random-values';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   SafeAreaView,
@@ -16,6 +17,7 @@ import mobileAds, {
   RewardedInterstitialAd,
   TestIds,
 } from 'react-native-google-mobile-ads';
+import {v4 as uuidv4} from 'uuid';
 
 // Your RevenueCat public SDK key (a Test Store key works while developing).
 const API_KEY = 'YOUR_REVENUECAT_API_KEY';
@@ -63,7 +65,7 @@ export default function App() {
     // the ad loads (SSV options must be set at request time), so assign your own
     // unique impression ID. Reuse it for your RevenueCat ad-tracking calls to
     // correlate the reward with the impression.
-    const id = `${Date.now()}`;
+    const id = uuidv4();
     setImpressionId(id);
 
     let token;

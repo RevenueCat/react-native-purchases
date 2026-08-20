@@ -13,7 +13,9 @@
   "dependencies": {
     "react": "19.2.6",
     "react-native": "0.86.0",
-    "react-native-google-mobile-ads": "^15.0.0"
+    "react-native-get-random-values": "^2.0.0",
+    "react-native-google-mobile-ads": "^15.0.0",
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.28.6",

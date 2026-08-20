@@ -2278,8 +2278,10 @@ __metadata:
     prettier: 2.8.8
     react: 19.2.6
     react-native: 0.86.0
+    react-native-get-random-values: ^2.0.0
     react-native-google-mobile-ads: ^15.0.0
     typescript: ^5.8.3
+    uuid: ^14.0.2
   languageName: unknown
   linkType: soft
 
@@ -3780,6 +3782,13 @@ __metadata:
   version: 3.1.3
   resolution: "exponential-backoff@npm:3.1.3"
   checksum: 471fdb70fd3d2c08a74a026973bdd4105b7832911f610ca67bbb74e39279411c1eed2f2a110c9d41c2edd89459ba58fdaba1c174beed73e7a42d773882dcff82
+  languageName: node
+  linkType: hard
+
+"fast-base64-decode@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "fast-base64-decode@npm:1.0.0"
+  checksum: 4c59eb1775a7f132333f296c5082476fdcc8f58d023c42ed6d378d2e2da4c328c7a71562f271181a725dd17cdaa8f2805346cc330cdbad3b8e4b9751508bd0a3
   languageName: node
   linkType: hard
 
@@ -6083,6 +6092,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-get-random-values@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "react-native-get-random-values@npm:2.0.0"
+  dependencies:
+    fast-base64-decode: ^1.0.0
+  peerDependencies:
+    react-native: ">=0.81"
+  checksum: 57e80fa836e61d5ff08d31cfb3df45c00a6616651b3f7521af2d4fd6456aefd05e17eb21a269d458ada0dd58bc8c25eef6b43097eefc542ab6186072f6b653a3
+  languageName: node
+  linkType: hard
+
 "react-native-google-mobile-ads@npm:^15.0.0":
   version: 15.8.3
   resolution: "react-native-google-mobile-ads@npm:15.8.3"
@@ -7165,6 +7185,15 @@ __metadata:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^14.0.2":
+  version: 14.0.2
+  resolution: "uuid@npm:14.0.2"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: e6f906b70714a39b687eadd443493eb4fd8b7998fa289a3754af215e84418bbfeadfbc3d72da833556a9c2d6fd902d9d769e9bb6c874cf4d583f7ccd03b2456e
   languageName: node
   linkType: hard
 
