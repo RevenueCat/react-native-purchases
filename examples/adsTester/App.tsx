@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -43,7 +43,6 @@ export default function App() {
   const [impressionId, setImpressionId] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
-  const adRef = useRef<RewardedInterstitialAd | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -75,7 +74,6 @@ export default function App() {
         customData: token.customData,
       },
     });
-    adRef.current = ad;
 
     const unsubLoaded = ad.addAdEventListener(
       RewardedAdEventType.LOADED,
