@@ -4,7 +4,6 @@ files_with_version_number = {
     './yarn.lock' => [
       'react-native-purchases: {x}',
       'react-native-purchases-store-galaxy: {x}',
-      '"react-native-purchases@{x},',
       '"react-native-purchases-store-galaxy@{x},',
     ],
     './react-native-purchases-store-galaxy/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
@@ -15,12 +14,12 @@ files_with_version_number = {
     './android/build.gradle' => ['versionName \'{x}\''],
     './react-native-purchases-ui/android/build.gradle' => ['versionName \'{x}\''],
     './android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java' => ['PLUGIN_VERSION = "{x}"'],
-    './src/browser/nativeModule.ts' => ['packageVersion = "{x}"']
+    './src/browser/nativeModule.ts' => ['packageVersion = \'{x}\'']
 }
 files_to_update_phc_version = {
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
     'react-native-purchases-store-galaxy/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:{x}'],
-    'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommon", \'{x}\'', '"PurchasesHybridCommonUI", \'{x}\''],
+    'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommonUI", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
     'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"', '"@revenuecat/purchases-js-hybrid-mappings": "{x}"'],

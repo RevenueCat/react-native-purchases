@@ -9,7 +9,7 @@ import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
 
 
-const packageVersion = '9.1.0';
+const packageVersion = '10.7.2';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
