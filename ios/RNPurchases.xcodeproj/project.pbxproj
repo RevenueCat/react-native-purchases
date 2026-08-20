@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3552B97D252CF5900098008A /* PurchasesPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3552B97C252CF5900098008A /* PurchasesPlugin.swift */; };
 		B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNPurchases.m */; };
 /* End PBXBuildFile section */
 
@@ -25,8 +24,6 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPurchases.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPurchases.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		3552B97B252CF5900098008A /* RNPurchases-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNPurchases-Bridging-Header.h"; sourceTree = "<group>"; };
-		3552B97C252CF5900098008A /* PurchasesPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesPlugin.swift; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNPurchases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNPurchases.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNPurchases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNPurchases.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,12 +57,10 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				3552B97C252CF5900098008A /* PurchasesPlugin.swift */,
 				B3E7B5881CC2AC0600A0062D /* RNPurchases.h */,
 				B3E7B5891CC2AC0600A0062D /* RNPurchases.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				35493AC8202D4BCD004DFA39 /* Frameworks */,
-				3552B97B252CF5900098008A /* RNPurchases-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -129,7 +124,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNPurchases.m in Sources */,
-				3552B97D252CF5900098008A /* PurchasesPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,7 +230,6 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNPurchases;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "RNPurchases-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -261,7 +254,6 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNPurchases;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "RNPurchases-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
