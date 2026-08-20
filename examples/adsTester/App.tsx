@@ -112,6 +112,7 @@ export default function App() {
     });
 
     const unsubClosed = ad.addAdEventListener(AdEventType.CLOSED, () => {
+      setReady(true);
       unsubLoaded();
       unsubEarned();
       unsubError();
