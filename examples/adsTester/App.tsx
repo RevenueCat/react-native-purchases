@@ -65,7 +65,15 @@ export default function App() {
     // correlate the reward with the impression.
     const id = `${Date.now()}`;
     setImpressionId(id);
-    const token = await Purchases.generateRewardVerificationToken(id);
+
+    let token;
+    try {
+      token = await Purchases.generateRewardVerificationToken(id);
+    } catch (e) {
+      setStatus(`❌ Failed to generate verification token: ${e}`);
+      setReady(true);
+      return;
+    }
 
     // Forward the token to AdMob's server-side verification options.
     const ad = RewardedInterstitialAd.createForAdRequest(AD_UNIT_ID, {
@@ -83,38 +91,53 @@ export default function App() {
       },
     );
 
+    let finished = false;
+
+    const cleanup = () => {
+      unsubLoaded();
+      unsubEarned();
+      unsubError();
+      unsubClosed();
+    };
+
     // When the user earns the reward, poll RevenueCat for the verified result.
     const unsubEarned = ad.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
       async () => {
         setStatus('Reward earned. Verifying…');
-        const res: RewardVerificationResult =
-          await Purchases.pollRewardVerification(token.clientTransactionId);
-        if (res.failed || !res.reward) {
-          setResult('❌ verification failed');
-        } else {
-          const extra =
-            res.moreRewards.length > 0
-              ? ` (+${res.moreRewards.length} more)`
-              : '';
-          setResult(`✅ ${describeReward(res.reward)}${extra}`);
+        try {
+          const res: RewardVerificationResult =
+            await Purchases.pollRewardVerification(token.clientTransactionId);
+          if (res.failed || !res.reward) {
+            setResult('❌ verification failed');
+          } else {
+            const extra =
+              res.moreRewards.length > 0
+                ? ` (+${res.moreRewards.length} more)`
+                : '';
+            setResult(`✅ ${describeReward(res.reward)}${extra}`);
+          }
+          setStatus('Done');
+        } finally {
+          finished = true;
+          setReady(true);
         }
-        setStatus('Done');
-        setReady(true);
       },
     );
 
     const unsubError = ad.addAdEventListener(AdEventType.ERROR, error => {
       setStatus(`❌ Ad error: ${error.message}`);
+      finished = true;
       setReady(true);
+      cleanup();
     });
 
     const unsubClosed = ad.addAdEventListener(AdEventType.CLOSED, () => {
-      setReady(true);
-      unsubLoaded();
-      unsubEarned();
-      unsubError();
-      unsubClosed();
+      if (!finished) {
+        finished = true;
+        setReady(true);
+      }
+      cleanup();
     });
 
     setStatus('Loading ad…');
