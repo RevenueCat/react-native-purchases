@@ -1,3 +1,14 @@
 {
-  "extends": "@react-native/typescript-config"
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "react-native-purchases": ["../../src/index"]
+    },
+    // react-native-purchases resolves straight to ../../src (unbuilt), and the
+    // SDK's own root tsconfig doesn't set isolatedModules either — this only
+    // silences a per-file-transpile check that doesn't apply to this repo's
+    // actual build (whole-program tsc, not per-file).
+    "isolatedModules": false
+  }
 }
