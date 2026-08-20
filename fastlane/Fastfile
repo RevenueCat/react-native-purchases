@@ -4,7 +4,6 @@ files_with_version_number = {
     './yarn.lock' => [
       'react-native-purchases: {x}',
       'react-native-purchases-store-galaxy: {x}',
-      '"react-native-purchases@{x},',
       '"react-native-purchases-store-galaxy@{x},',
     ],
     './react-native-purchases-store-galaxy/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],

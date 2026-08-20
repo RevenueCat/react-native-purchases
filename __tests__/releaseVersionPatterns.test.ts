@@ -13,14 +13,6 @@ const repoRoot = path.resolve(__dirname, '..');
 const read = (relativePath: string): string =>
   fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 
-/**
- * Files the release lanes list but regenerate anyway, so their patterns are
- * allowed not to match: `bump_phc_version` runs `yarn install --no-immutable`
- * right after rewriting, and whether a lockfile key carries an `@<version>`
- * alias depends on the resolution graph rather than on the bump.
- */
-const generatedFiles = ['./yarn.lock'];
-
 const versionCapture = '(\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.]+)*)';
 
 const escapeForRegExp = (value: string): string =>
@@ -79,7 +71,6 @@ interface PatternMatch {
 
 const matchAllPatterns = (hashName: string): PatternMatch[] =>
   Array.from(parseFastfileHash(hashName))
-    .filter(([relativePath]) => !generatedFiles.includes(relativePath))
     .flatMap(([relativePath, patterns]) => {
       const contents = read(relativePath);
       return patterns.map((pattern) => {
