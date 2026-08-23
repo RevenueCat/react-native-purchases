@@ -117,11 +117,11 @@ type NativeFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'option
   options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
 };
 
-const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<NativeFullScreenPaywallViewProps>('Paywall')
+const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('PaywallView') != null
+  ? requireNativeComponent<NativeFullScreenPaywallViewProps>('PaywallView')
   : null;
 
-const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
+const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('RCPaywallFooterView') != null
   ? requireNativeComponent<NativeFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
@@ -410,7 +410,7 @@ type FullScreenPaywallViewProps = {
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
   onPurchasePackageInitiated?: ({
-    packageBeingPurchased, 
+    packageBeingPurchased,
     resume
   }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
   onWebCheckoutOpened?: () => void;
