@@ -331,7 +331,7 @@ RCT_EXPORT_METHOD(eligibleWinBackOffersForProductIdentifier:(nonnull NSString *)
         }];
     } else {
         NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
-        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+        [self rejectPromiseWithBlock:reject unsupportedError:error];
     }
 }
 
@@ -345,7 +345,7 @@ RCT_EXPORT_METHOD(purchaseProductWithWinBackOffer:(nonnull NSString *)productID
                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
     } else {
         NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
-        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+        [self rejectPromiseWithBlock:reject unsupportedError:error];
     }
 }
 
@@ -361,7 +361,7 @@ RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
     } else {
         NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
-        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+        [self rejectPromiseWithBlock:reject unsupportedError:error];
     }
 }
 
@@ -555,12 +555,12 @@ RCT_EXPORT_METHOD(showManageSubscriptions:
     } else {
         NSLog(@"[Purchases] Warning: tried to showManageSubscriptions in non supported iOS devices. Only available on iOS 13.0 or greater.");
         NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS 13.0 or greater."];
-        reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+        [self rejectPromiseWithBlock:reject unsupportedError:error];
     }
     #else
     NSLog(@"[Purchases] Warning: tried to showManageSubscriptions in non-ios devices. That's not supported.");
     NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS devices."];
-    reject([NSString stringWithFormat:@"%ld", (long)error.code], [error localizedDescription], error);
+    [self rejectPromiseWithBlock:reject unsupportedError:error];
     #endif
 }
 
@@ -650,7 +650,7 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
                                                                                                reject:reject]];
     } else {
         NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater."];
-        reject([NSString stringWithFormat:@"%ld", (long) error.code], [error localizedDescription], error);
+        [self rejectPromiseWithBlock:reject unsupportedError:error];
     }
 }
 
@@ -743,7 +743,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 - (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject error:(RCErrorContainer *)error {
     // React Native forwards only the NSError's userInfo to the JS layer, never the error
     // container's info dictionary, so the payload has to travel inside userInfo.
-    NSMutableDictionary *userInfo = [error.error.userInfo mutableCopy] ?: [NSMutableDictionary dictionary];
+    NSMutableDictionary *userInfo = [error.error.userInfo mutableCopy];
     [userInfo addEntriesFromDictionary:error.info];
     NSError *errorWithInfo = [NSError errorWithDomain:error.error.domain
                                                  code:error.error.code
@@ -779,9 +779,17 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSError *)createUnsupportedErrorWithDescription:(NSString *)description {
+    // readable_error_code is ErrorCode.codeName in purchases-ios, and is what
+    // RCErrorContainer reads to populate readableErrorCode for the JS layer.
     return [[NSError alloc] initWithDomain:RCPurchasesErrorCodeDomain
                                       code:RCUnsupportedError
-                                  userInfo:@{NSLocalizedDescriptionKey : description}];
+                                  userInfo:@{NSLocalizedDescriptionKey : description,
+                                             @"readable_error_code" : @"UNSUPPORTED_ERROR"}];
+}
+
+- (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject unsupportedError:(NSError *)error {
+    [self rejectPromiseWithBlock:reject
+                           error:[[RCErrorContainer alloc] initWithError:error extraPayload:@{}]];
 }
 
 - (NSString *)platformFlavor {
