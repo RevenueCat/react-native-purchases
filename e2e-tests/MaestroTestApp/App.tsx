@@ -14,15 +14,27 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const API_KEY = 'MAESTRO_TESTS_REVENUECAT_API_KEY';
 
-export default function App() {
+const TEST_FLOW_SCREEN_MAP: Record<string, keyof RootStackParamList> = {
+  purchase_through_paywall: 'PurchaseThroughPaywall',
+};
+
+type AppProps = {
+  e2e_test_flow?: string;
+};
+
+export default function App(props: AppProps) {
   useEffect(() => {
     Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
     Purchases.configure({apiKey: API_KEY});
   }, []);
 
+  const initialRoute =
+    (props.e2e_test_flow && TEST_FLOW_SCREEN_MAP[props.e2e_test_flow]) ||
+    'TestCases';
+
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen
           name="TestCases"
           component={TestCasesScreen}

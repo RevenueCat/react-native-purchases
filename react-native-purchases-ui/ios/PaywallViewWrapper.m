@@ -7,7 +7,7 @@
 
 #import "PaywallViewWrapper.h"
 #import "UIView+Extensions.h"
-#import "UIView+React.h"
+#import <React/UIView+React.h>
 
 @import PurchasesHybridCommonUI;
 @import RevenueCat;
@@ -17,6 +17,7 @@ static NSString *const KeyCustomerInfo = @"customerInfo";
 static NSString *const KeyStoreTransaction = @"storeTransaction";
 static NSString *const KeyError = @"error";
 static NSString *const KeyPackage = @"packageBeingPurchased";
+static NSString *const KeyUrl = @"url";
 
 API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper ()
@@ -289,6 +290,18 @@ didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
         });
     } else {
         [PaywallProxy resumePurchasePackageInitiatedWithRequestId:requestId shouldProceed:YES];
+    }
+}
+
+- (void)paywallViewControllerDidOpenWebCheckout:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    if (self.onWebCheckoutOpened) {
+        self.onWebCheckoutOpened(nil);
+    }
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller didOpenURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
+    if (self.onUrlOpened) {
+        self.onUrlOpened(@{KeyUrl: url ?: @""});
     }
 }
 

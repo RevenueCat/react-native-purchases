@@ -9,7 +9,7 @@ import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
 
 
-const packageVersion = '9.1.0';
+const packageVersion = '10.7.2';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
@@ -22,6 +22,8 @@ export const browserNativeModuleRNPurchases = {
     _userDefaultsSuiteName: string | null,
     _storeKitVersion: string | null,
     _useAmazon: boolean,
+    _store: string | null,
+    _galaxyBillingMode: string | null,
     _shouldShowInAppMessagesAutomatically: boolean,
     _entitlementVerificationMode: string | null,
     _pendingTransactionsForPrepaidPlansEnabled: boolean,
@@ -99,6 +101,9 @@ export const browserNativeModuleRNPurchases = {
   },
   setLogHandler: async (handler: (level: string, message: string) => void) => {
     PurchasesCommon.setLogHandler(handler);
+  },
+  trackCustomPaywallImpression: async (_data: any) => {
+    methodNotSupportedOnWeb('trackCustomPaywallImpression');
   },
   getCustomerInfo: async () => {
     ensurePurchasesConfigured();
@@ -269,6 +274,9 @@ export const browserNativeModuleRNPurchases = {
   setOnesignalID: async (_onesignalID: string) => {
     methodNotSupportedOnWeb('setOnesignalID');
   },
+  setOnesignalUserID: async (_onesignalUserID: string) => {
+    methodNotSupportedOnWeb('setOnesignalUserID');
+  },
   setAirshipChannelID: async (_airshipChannelID: string) => {
     methodNotSupportedOnWeb('setAirshipChannelID');
   },
@@ -292,6 +300,9 @@ export const browserNativeModuleRNPurchases = {
   },
   setCreative: async (_creative: string) => {
     methodNotSupportedOnWeb('setCreative');
+  },
+  setAppsFlyerConversionData: async (_data: Record<string, any> | null) => {
+    methodNotSupportedOnWeb('setAppsFlyerConversionData');
   },
   overridePreferredLocale: async (_locale: string | null) => {
     methodNotSupportedOnWeb('overridePreferredLocale');
@@ -336,5 +347,26 @@ export const browserNativeModuleRNPurchases = {
     ensurePurchasesConfigured();
     const cachedVirtualCurrencies = PurchasesCommon.getInstance().getCachedVirtualCurrencies();
     return cachedVirtualCurrencies ? validateAndTransform(cachedVirtualCurrencies, isPurchasesVirtualCurrencies, 'PurchasesVirtualCurrencies') : null;
+  },
+  trackAdDisplayed: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdDisplayed');
+  },
+  trackAdOpened: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdOpened');
+  },
+  trackAdLoaded: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdLoaded');
+  },
+  trackAdRevenue: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdRevenue');
+  },
+  trackAdFailedToLoad: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdFailedToLoad');
+  },
+  generateRewardVerificationToken: async (_impressionId: string) => {
+    methodNotSupportedOnWeb('generateRewardVerificationToken');
+  },
+  pollRewardVerification: async (_clientTransactionId: string) => {
+    methodNotSupportedOnWeb('pollRewardVerification');
   },
 };

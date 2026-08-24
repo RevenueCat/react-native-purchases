@@ -1,0 +1,11 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "react-native-purchases": ["../../src/index"]
+    },
+    "isolatedModules": false,
+    "types": []
+  }
+}

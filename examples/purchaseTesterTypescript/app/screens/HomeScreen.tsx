@@ -176,6 +176,31 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
+  const setAppsFlyerConversionData = async () => {
+    try {
+      // Mimics the object AppsFlyer's onInstallConversionData callback returns.
+      const conversionData = {
+        status: 'success',
+        type: 'onInstallConversionDataLoaded',
+        data: {
+          af_status: 'Non-organic',
+          media_source: 'test_media_source',
+          campaign: 'test_campaign',
+          adgroup: 'test_adgroup',
+          af_ad: 'test_ad',
+          af_keywords: 'test_keyword',
+          creative: 'test_creative',
+          is_first_launch: 'true',
+        },
+      };
+      await Purchases.setAppsFlyerConversionData(conversionData);
+      Alert.alert('Success', 'AppsFlyer conversion data set');
+    } catch (error) {
+      console.log('error setting AppsFlyer conversion data', error);
+      Alert.alert('Error', String(error));
+    }
+  };
+
   const setAppstackAttribution = () => {
     setPromptAppstackVisible(true);
   };
@@ -388,6 +413,12 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             </Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={setAppsFlyerConversionData}>
+            <Text style={styles.otherActions}>
+              Set AppsFlyer Conversion Data
+            </Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={makePurchase}>
             <Text style={styles.otherActions}>Purchase by Product ID</Text>
           </TouchableOpacity>
@@ -571,6 +602,8 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         <Divider />
         <View>
           <TouchableOpacity
+            accessibilityLabel="Custom Paywall Screen"
+            accessibilityRole="button"
             onPress={() => navigation.navigate('CustomPaywall')}>
             <Text style={styles.otherActions}>Custom Paywall Screen (track impression)</Text>
           </TouchableOpacity>

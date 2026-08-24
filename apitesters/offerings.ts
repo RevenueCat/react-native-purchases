@@ -22,6 +22,8 @@ import {
   PresentedOfferingContext,
   PresentedOfferingTargetingContext,
   InstallmentsInfo,
+  StoreProductChangeInfo,
+  STORE_REPLACEMENT_MODE,
 } from "../dist";
 
 function checkProduct(product: PurchasesStoreProduct) {
@@ -223,4 +225,21 @@ function checkPresentedOfferingTargetingContext(
 ) {
   const revision: number = targetingContext.revision;
   const ruleId: string = targetingContext.ruleId;
+}
+
+function checkStoreProductChangeInfo(
+  storeProductChangeInfo: StoreProductChangeInfo
+) {
+  const oldProductIdentifier: string =
+    storeProductChangeInfo.oldProductIdentifier;
+  const replacementMode: STORE_REPLACEMENT_MODE | undefined =
+    storeProductChangeInfo.replacementMode;
+}
+
+function checkStoreReplacementMode() {
+  STORE_REPLACEMENT_MODE.CHARGE_FULL_PRICE;
+  STORE_REPLACEMENT_MODE.CHARGE_PRORATED_PRICE;
+  STORE_REPLACEMENT_MODE.DEFERRED;
+  STORE_REPLACEMENT_MODE.WITHOUT_PRORATION;
+  STORE_REPLACEMENT_MODE.WITH_TIME_PRORATION;
 }

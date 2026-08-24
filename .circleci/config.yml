@@ -1,7 +1,8 @@
 version: 2.1
 orbs:
   rn: react-native-community/react-native@8.0.1
-  revenuecat: revenuecat/sdks-common-config@3.16.0
+  android: circleci/android@3.1.0
+  revenuecat: revenuecat/sdks-common-config@4.6.0
 
 aliases:
   release-tags: &release-tags
@@ -89,16 +90,6 @@ commands:
           name: Copy npmrc sample file to final location
           command: cp .npmrc.SAMPLE .npmrc
 
-  install-ruby-3-2-0:
-    steps:
-      - run:
-          name: Set Ruby 3.2.0
-          command: |
-            eval "$(rbenv init -)"
-            rbenv install -s 3.2.0
-            rbenv global 3.2.0
-            rbenv rehash
-
 jobs:
   analyse_js:
     executor:
@@ -106,6 +97,11 @@ jobs:
       node_version: '18.2'
     steps:
       - checkout
+      # This job intentionally tests against an older Node version (matching
+      # react-native's own minimum-supported baseline), not the mise default --
+      # version-qualified so install-mise-tools doesn't also fetch the default.
+      - revenuecat/install-mise-tools:
+          tools: node@18.2.0
       - install-dependencies:
           machine: "unix"
       - run:
@@ -114,6 +110,10 @@ jobs:
       - run:
           name: Prepare UI package
           working_directory: react-native-purchases-ui
+          command: yarn prepare
+      - run:
+          name: Prepare Galaxy Store package
+          working_directory: react-native-purchases-store-galaxy
           command: yarn prepare
       - run:
           name: Tests
@@ -125,8 +125,14 @@ jobs:
           name: UI API Tests
           command: yarn workspace react-native-purchases-ui apitest
       - run:
+          name: Galaxy Store API Tests
+          command: yarn workspace react-native-purchases-store-galaxy apitest
+      - run:
           name: UI Tests
           command: yarn workspace react-native-purchases-ui test
+      - run:
+          name: Galaxy Store Tests
+          command: yarn workspace react-native-purchases-store-galaxy test
       - run:
           name: Linter
           command: yarn run tslint
@@ -137,6 +143,8 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 16
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
       - install-dependencies-ios-build
       - run:
           name: Install Expo CLI
@@ -172,6 +180,8 @@ jobs:
       build_image_version: latest
     steps:
       - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java
       - install-dependencies:
           machine: "unix"
       - run:
@@ -196,12 +206,100 @@ jobs:
             export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
             ./gradlew assembleDebug
 
+  adstester_ios:
+    <<: *base-mac-job-xcode-16
+    steps:
+      - checkout
+      - rn/ios_simulator_start:
+          device: iPhone 16
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
+      # react-native-purchases resolves to ../../src directly,
+      # and src/*.ts has non-peer dependencies that only live in the
+      # root node_modules, not adsTester's own. Needed for both the JS
+      # bundle step below and adsTester's own yarn install/typecheck.
+      - install-dependencies-ios-build
+      - restore_cache:
+          keys:
+            - adstester-yarn-v1-{{ checksum "examples/adsTester/yarn.lock" }}
+      - run:
+          name: Yarn Install (adsTester)
+          working_directory: examples/adsTester
+          command: yarn install
+      - save_cache:
+          key: adstester-yarn-v1-{{ checksum "examples/adsTester/yarn.lock" }}
+          paths:
+            - examples/adsTester/.yarn/cache
+      - run:
+          name: Bundle JS (validates react-native-purchases resolves under Metro)
+          working_directory: examples/adsTester
+          command: |
+            npx react-native bundle --entry-file index.js --platform ios --dev true --bundle-output /tmp/adstester-ios.bundle
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: adstester-v1
+      - run:
+          name: Pod Install
+          working_directory: examples/adsTester/ios
+          command: bundle exec pod install --repo-update
+      - run:
+          name: Build iOS
+          command: |
+            xcodebuild -workspace examples/adsTester/ios/adsTester.xcworkspace -scheme adsTester -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16' -derivedDataPath ~/DerivedData -UseModernBuildSystem=YES
+
+  adstester_android:
+    executor:
+      name: rn/linux_android
+      resource_class: xlarge
+      build_image_version: latest
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java
+      # See the comment on the same step in adstester_ios: adsTester's own
+      # yarn install alone isn't enough, since react-native-purchases
+      # resolves straight to ../../src, whose real dependencies live in root
+      # node_modules.
+      - install-dependencies:
+          machine: "unix"
+      - restore_cache:
+          keys:
+            - adstester-yarn-v1-{{ checksum "examples/adsTester/yarn.lock" }}
+      - run:
+          name: Yarn Install (adsTester)
+          working_directory: examples/adsTester
+          command: yarn install
+      - save_cache:
+          key: adstester-yarn-v1-{{ checksum "examples/adsTester/yarn.lock" }}
+          paths:
+            - examples/adsTester/.yarn/cache
+      - run:
+          name: Typecheck
+          working_directory: examples/adsTester
+          command: yarn build
+      - run:
+          name: Lint
+          working_directory: examples/adsTester
+          command: yarn lint
+      - run:
+          name: Bundle JS (validates react-native-purchases resolves under Metro)
+          working_directory: examples/adsTester
+          command: |
+            npx react-native bundle --entry-file index.js --platform android --dev true --bundle-output /tmp/adstester-android.bundle --assets-dest /tmp/adstester-android-assets
+      - run:
+          name: Build Android app
+          working_directory: examples/adsTester/android
+          command: |
+            export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
+            ./gradlew assembleDebug
+
   expo_web:
     executor:
       name: rn/linux_js
       node_version: '22.14.0'
     steps:
       - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0
       - install-dependencies:
           machine: "unix"
       - run:
@@ -223,7 +321,8 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -246,6 +345,8 @@ jobs:
       build_image_version: latest
     steps:
       - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java
       - install-dependencies:
           machine: "unix"
       - rn/android_build:
@@ -256,7 +357,8 @@ jobs:
       - checkout
       - rn/ios_simulator_start:
           device: iPhone 15
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
       - install-dependencies-ios-build
       - revenuecat/trust-github-key
       - revenuecat/setup-git-credentials
@@ -277,7 +379,8 @@ jobs:
     <<: *base-mac-job
     steps:
       - checkout
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
       - install-dependencies:
           machine: "macos"
       - revenuecat/install-gem-mac-dependencies:
@@ -288,12 +391,74 @@ jobs:
           name: release
           command: bundle exec fastlane release
 
+  run-maestro-e2e-tests-ios:
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.3'
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
+      - install-dependencies:
+          machine: "macos"
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: v2
+      - revenuecat/install-maestro
+      - run:
+          name: Boot iOS Simulator
+          command: |
+            xcrun simctl boot "iPhone 17" || true
+            xcrun simctl bootstatus "iPhone 17" -b
+      - run:
+          name: Run Maestro E2E Tests (iOS)
+          command: bundle exec fastlane run_maestro_e2e_tests_ios
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
+
+  run-maestro-e2e-tests-android:
+    machine:
+      image: android:2024.11.1
+    resource_class: xlarge
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java,ruby
+      - revenuecat/install-gem-unix-dependencies:
+          cache-version: v1
+      - install-dependencies:
+          machine: "unix"
+      - run:
+          name: Build Maestro app (Android)
+          command: bundle exec fastlane build_maestro_app_android
+          no_output_timeout: 15m
+      - android/create_avd:
+          avd_name: test-e2e
+          system_image: system-images;android-34;google_apis;x86_64
+          install: true
+      - android/start_emulator:
+          avd_name: test-e2e
+          post_emulator_launch_assemble_command: ""
+      - revenuecat/install-maestro
+      - run:
+          name: Run Maestro E2E Tests (Android)
+          command: bundle exec fastlane run_maestro_e2e_tests_android
+          no_output_timeout: 15m
+      - store_test_results:
+          path: fastlane/test_output
+      - store_artifacts:
+          path: fastlane/test_output
+
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
     <<: *base-mac-job
     steps:
       - checkout
-      - install-ruby-3-2-0
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - revenuecat/trust-github-key
@@ -321,6 +486,16 @@ workflows:
       - expo_android
       - expo_ios
       - expo_web
+      - adstester_ios
+      - adstester_android
+      - run-maestro-e2e-tests-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-android:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
 
       # Hold and deploy phase - only on release branches
       - hold:
@@ -331,6 +506,7 @@ workflows:
             - ios
           <<: *release-branches
       - revenuecat/tag-current-branch:
+          ruby_version: "3.3.0"
           requires:
             - hold
           <<: *release-branches
@@ -342,6 +518,7 @@ workflows:
             - make-release
       - revenuecat/merge-release-pr:
           repo_name: react-native-purchases
+          ruby_version: "3.3.0"
           requires:
             - docs-deploy
           <<: *release-tags
@@ -351,7 +528,8 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - revenuecat/danger
+      - revenuecat/danger:
+          ruby_version: "3.3.0"
 
   weekly-run-workflow:
     when:
@@ -359,13 +537,35 @@ workflows:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
         - equal: [ "release-train", << pipeline.schedule.name >> ]
     jobs:
-      - revenuecat/automatic-bump
+      - revenuecat/automatic-bump:
+          ruby_version: "3.3.0"
 
   manual-trigger-bump:
     when:
       equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
-      - revenuecat/automatic-bump
+      - revenuecat/automatic-bump:
+          ruby_version: "3.3.0"
+
+  maestro-e2e-tests-ios:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+
+  maestro-e2e-tests-android:
+    when:
+      or:
+        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+    jobs:
+      - run-maestro-e2e-tests-android:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
 
   update-hybrid-common-versions:
      when:

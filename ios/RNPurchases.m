@@ -55,12 +55,35 @@ NSString *RNPurchasesDebugEvent = @"Purchases-DebugEvent";
 
 RCT_EXPORT_MODULE();
 
+// Required for RN 0.79+ NativeEventEmitter (JavaScript class) support
+//
+// In JavaScript: new NativeEventEmitter(RNPurchases)
+// NativeEventEmitter checks if the native module has addListener/removeListeners methods.
+// Without these exported methods, construction throws in RN 0.79+.
+//
+// WHY export them here when our parent class RCTEventEmitter already has them?
+// React Native's bridge only exposes methods that are EXPLICITLY exported with RCT_EXPORT_METHOD.
+// Parent class methods are NOT automatically visible to JavaScript. We must re-export them here
+// to make them callable from JS, then call [super] to use the parent's implementation.
+//
+// See: https://github.com/RevenueCat/react-native-purchases/issues/1298
+// See: https://github.com/facebook/react-native/blob/main/packages/react-native/React/Modules/RCTEventEmitter.m#L101-L125
+RCT_EXPORT_METHOD(addListener:(NSString *)eventName) {
+    [super addListener:eventName];
+}
+
+RCT_EXPORT_METHOD(removeListeners:(double)count) {
+    [super removeListeners:count];
+}
+
 RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   appUserID:(nullable NSString *)appUserID
                   purchasesAreCompletedBy:(nullable NSString *)purchasesAreCompletedBy
                   userDefaultsSuiteName:(nullable NSString *)userDefaultsSuiteName
                   storeKitVersion:(nullable NSString *)storeKitVersion
                   useAmazon:(BOOL)useAmazon
+                  store:(nullable NSString *)store
+                  galaxyBillingMode:(nullable NSString *)galaxyBillingMode
                   shouldShowInAppMessagesAutomatically:(BOOL)shouldShowInAppMessagesAutomatically
                   entitlementVerificationMode:(nullable NSString *)entitlementVerificationMode
                   pendingTransactionsForPrepaidPlansEnabled:(BOOL)pendingTransactionsForPrepaidPlansEnabled 
@@ -422,6 +445,10 @@ RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID) {
     [RCCommonFunctionality setOnesignalID:onesignalID.mappingNSNullToNil];
 }
 
+RCT_EXPORT_METHOD(setOnesignalUserID:(NSString *)onesignalUserID) {
+    [RCCommonFunctionality setOnesignalUserID:onesignalUserID.mappingNSNullToNil];
+}
+
 RCT_EXPORT_METHOD(setAirshipChannelID:(NSString *)airshipChannelID) {
     [RCCommonFunctionality setAirshipChannelID:airshipChannelID.mappingNSNullToNil];
 }
@@ -450,6 +477,10 @@ RCT_EXPORT_METHOD(setKeyword:(NSString *)keyword) {
 
 RCT_EXPORT_METHOD(setCreative:(NSString *)creative) {
     [RCCommonFunctionality setCreative:creative.mappingNSNullToNil];
+}
+
+RCT_EXPORT_METHOD(setAppsFlyerConversionData:(NSDictionary *)data) {
+    [RCCommonFunctionality setAppsFlyerConversionData:data.mappingNSNullToNil];
 }
 
 RCT_EXPORT_METHOD(overridePreferredLocale:(nullable NSString *)locale) {
@@ -629,10 +660,65 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
 
 RCT_EXPORT_METHOD(trackCustomPaywallImpression:(NSDictionary *)data) {
     if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
-        [RCCommonFunctionality trackCustomPaywallImpression:data];
+        NSDictionary *eventData = data.mappingNSNullToNil ?: @{};
+        [RCCommonFunctionality trackCustomPaywallImpression:eventData];
     } else {
         NSLog(@"[Purchases] Warning: tried to call trackCustomPaywallImpression, but it's only available on iOS 15.0 or greater.");
     }
+}
+
+RCT_EXPORT_METHOD(trackAdDisplayed:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdDisplayed:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdDisplayed, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdOpened:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdOpened:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdOpened, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdLoaded:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdLoaded:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdLoaded, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdRevenue:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdRevenue:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdRevenue, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(trackAdFailedToLoad:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdFailedToLoad:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdFailedToLoad, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
+RCT_EXPORT_METHOD(generateRewardVerificationToken:(NSString *)impressionId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    resolve([RCCommonFunctionality generateRewardVerificationTokenWithImpressionId:impressionId]);
+}
+
+RCT_EXPORT_METHOD(pollRewardVerification:(NSString *)clientTransactionId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [RCCommonFunctionality pollRewardVerificationWithClientTransactionId:clientTransactionId
+                                                             completion:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                                             reject:reject]];
 }
 
 #pragma mark -
@@ -697,7 +783,7 @@ readyForPromotedProduct:(RCStoreProduct *)product
 }
 
 - (NSString *)platformFlavorVersion {
-    return @"9.15.2";
+    return @"10.7.2";
 }
 
 @end

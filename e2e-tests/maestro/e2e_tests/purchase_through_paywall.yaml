@@ -8,11 +8,12 @@ name: Purchase through paywall
 ---
 - clearState
 - pressKey: home
-- launchApp
-- assertVisible: "Test Cases"
-- tapOn:
-    text: "Purchase through paywall"
-- assertVisible: "Entitlements: none"
+- launchApp:
+    arguments:
+        e2e_test_flow: purchase_through_paywall
+- extendedWaitUntil:
+    visible: "Entitlements: none"
+    timeout: 30000
 - assertVisible: "Present Paywall"
 - tapOn:
     text: "Present Paywall"

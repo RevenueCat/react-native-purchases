@@ -20,6 +20,17 @@
 
 RCT_EXPORT_MODULE();
 
+// Required for RN 0.79+ NativeEventEmitter (JavaScript class) support.
+// RCT_EXPORT_METHOD must re-export these explicitly; parent class methods are not visible to JS.
+// See: https://github.com/RevenueCat/react-native-purchases/issues/1298
+RCT_EXPORT_METHOD(addListener:(NSString *)eventName) {
+    [super addListener:eventName];
+}
+
+RCT_EXPORT_METHOD(removeListeners:(double)count) {
+    [super removeListeners:count];
+}
+
 - (instancetype)initWithDisabledObservation
 {
     if ((self = [super initWithDisabledObservation])) {

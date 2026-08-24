@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "9.15.2",
+  "version": "10.7.2",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android. ",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -28,6 +28,7 @@
     "!**/*.iml",
     "!**/.DS_Store",
     "!**/.gitignore",
+    "!react-native-purchases-store-galaxy",
     "!react-native-purchases-ui",
     "!scripts/docs/index.html",
     "!scripts/setupJest.js"
@@ -46,10 +47,11 @@
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
+    "react-native-purchases-store-galaxy",
     "react-native-purchases-ui",
     "e2e-tests/MaestroTestApp"
   ],
-  "packageManager": "yarn@3.6.1",
+  "packageManager": "yarn@3.6.1+sha512.de524adec81a6c3d7a26d936d439d2832e351cdfc5728f9d91f3fc85dd20b04391c038e9b4ecab11cae2b0dd9f0d55fd355af766bc5c1a7f8d25d96bb2a0b2ca",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revenuecat/react-native-purchases.git",
@@ -103,6 +105,7 @@
     "preset": "react-native",
     "modulePathIgnorePatterns": [
       "<rootDir>/examples/purchaseTesterTypescript/",
+      "<rootDir>/react-native-purchases-store-galaxy/",
       "<rootDir>/react-native-purchases-ui/",
       "<rootDir>/dir/"
     ],
@@ -115,7 +118,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-js-hybrid-mappings": "17.55.1",
-    "@revenuecat/purchases-typescript-internal": "17.55.1"
+    "@revenuecat/purchases-js-hybrid-mappings": "18.31.0",
+    "@revenuecat/purchases-typescript-internal": "18.31.0"
   }
 }

@@ -23,7 +23,7 @@ import {
   BILLING_FEATURE,
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
-  PurchasesConfiguration,
+  PurchasesConfiguration as BasePurchasesConfiguration,
   CustomerInfoUpdateListener,
   ShouldPurchasePromoProductListener,
   MakePurchaseResult,
@@ -43,6 +43,8 @@ import {
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   Storefront,
+  STORE_REPLACEMENT_MODE,
+  StoreProductChangeInfo,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -68,7 +70,6 @@ export {
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
   STOREKIT_VERSION,
-  PurchasesConfiguration,
   CustomerInfoUpdateListener,
   ShouldPurchasePromoProductListener,
   MakePurchaseResult,
@@ -80,6 +81,23 @@ export {
 } from "@revenuecat/purchases-typescript-internal";
 
 import { Platform } from "react-native";
+
+export interface ConfigurationsByStore {
+  PLAY_STORE: {};
+}
+
+interface BaseConfiguration extends BasePurchasesConfiguration {}
+
+export type PurchasesConfiguration = {
+  [S in keyof ConfigurationsByStore]: BaseConfiguration &
+    ConfigurationsByStore[S] &
+    (S extends "PLAY_STORE" ? { store?: S } : { store: S })
+}[keyof ConfigurationsByStore];
+
+type InternalStoreConfigurationFields = {
+  store?: string;
+  galaxyBillingMode?: string;
+};
 
 const NATIVE_MODULE_ERROR =
   `[RevenueCat] Native module (RNPurchases) not found. This can happen if:\n\n` +
@@ -95,7 +113,13 @@ const NATIVE_MODULE_ERROR =
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
 const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+
 // Only create event emitter if native module is available to avoid crash on import
+//
+// React Native 0.79+ requires native modules to implement addListener() and removeListeners()
+// methods for NativeEventEmitter to work. Both iOS and Android native modules now have these.
+// See: https://github.com/RevenueCat/react-native-purchases/issues/1298
+// See: https://reactnative.dev/blog/2025/04/08/react-native-0.79 (Breaking Changes section)
 const eventEmitter = !usingBrowserMode && RNPurchases ? new NativeEventEmitter(RNPurchases) : null;
 
 // Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
@@ -147,10 +171,173 @@ export type DebugEventListener = (event: DebugEvent) => void;
 export interface TrackCustomPaywallImpressionOptions {
   paywallId?: string | null;
   /**
+   * The offering associated with the custom paywall.
+   *
+   * Prefer passing the offering object when available so RevenueCat can track placement
+   * and targeting context for placement-resolved offerings.
+   */
+  offering?: PurchasesOffering | null;
+  /**
    * An optional identifier for the offering associated with the custom paywall.
    * If not provided, the SDK will use the current offering identifier from the cache.
+   *
+   * @deprecated Prefer passing `offering` when available.
    */
   offeringId?: string | null;
+}
+
+/**
+ * Predefined mediator name constants. Use these or pass any string for unlisted networks.
+ * @beta
+ */
+export const AdMediatorName = {
+  adMob: "AdMob",
+  appLovin: "AppLovin",
+} as const;
+/** @beta */
+export type AdMediatorName = string;
+
+/**
+ * Predefined ad format constants. Use these or pass any string for unlisted formats.
+ * @beta
+ */
+export const AdFormat = {
+  other: "other",
+  banner: "banner",
+  interstitial: "interstitial",
+  rewarded: "rewarded",
+  rewardedInterstitial: "rewarded_interstitial",
+  nativeAd: "native",
+  appOpen: "app_open",
+} as const;
+/** @beta */
+export type AdFormat = string;
+
+/**
+ * Predefined precision constants for ad revenue. Use these or pass any string for unlisted values.
+ * @beta
+ */
+export const AdRevenuePrecision = {
+  exact: "exact",
+  publisherDefined: "publisher_defined",
+  estimated: "estimated",
+  unknown: "unknown",
+} as const;
+/** @beta */
+export type AdRevenuePrecision = string;
+
+/** @beta */
+export interface AdDisplayedData {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  impressionId: string;
+  networkName?: string | null;
+  placement?: string | null;
+}
+
+/** @beta */
+export interface AdOpenedData {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  impressionId: string;
+  networkName?: string | null;
+  placement?: string | null;
+}
+
+/** @beta */
+export interface AdLoadedData {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  impressionId: string;
+  networkName?: string | null;
+  placement?: string | null;
+}
+
+/** @beta */
+export interface AdRevenueData {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  impressionId: string;
+  revenueMicros: number;
+  currency: string;
+  precision: AdRevenuePrecision;
+  networkName?: string | null;
+  placement?: string | null;
+}
+
+/** @beta */
+export interface AdFailedToLoadData {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  mediatorErrorCode?: number | null;
+  placement?: string | null;
+}
+
+/**
+ * Token generated for a rewarded ad impression. Pass `clientTransactionId` to
+ * the ad network as server-side verification custom data, then to
+ * {@link Purchases.pollRewardVerification} to await the reward.
+ * @beta
+ */
+export interface RewardVerificationToken {
+  customData: string;
+  clientTransactionId: string;
+  appUserID: string;
+}
+
+/**
+ * A reward granted after a verified rewarded ad. Discriminated by `type`.
+ * @beta
+ */
+export type VerifiedReward =
+  | VerifiedVirtualCurrencyReward
+  | VerifiedEntitlementReward
+  | VerifiedNoReward
+  | VerifiedUnsupportedReward;
+
+/** @beta */
+export interface VerifiedVirtualCurrencyReward {
+  type: "virtual_currency";
+  code: string;
+  amount: number;
+}
+
+/** @beta */
+export interface VerifiedEntitlementReward {
+  type: "entitlement";
+  identifier: string;
+  /** ISO 8601 expiration date string. */
+  expiresAt: string;
+  /** Expiration date in milliseconds since epoch. */
+  expiresAtMillis: number;
+}
+
+/** Verification completed but nothing was granted. @beta */
+export interface VerifiedNoReward {
+  type: "no_reward";
+}
+
+/** Verification completed but the reward type isn't modeled by this SDK version. @beta */
+export interface VerifiedUnsupportedReward {
+  type: "unsupported_reward";
+}
+
+/**
+ * Result of polling for reward verification.
+ * @beta
+ */
+export interface RewardVerificationResult {
+  /** The primary reward when verification succeeded; absent on failure. */
+  reward?: VerifiedReward;
+  /** Additional rewards granted alongside the primary; never repeats it; empty on failure. */
+  moreRewards: VerifiedReward[];
+  /** True when verification did not complete (rejected / timeout / network). */
+  failed: boolean;
 }
 
 let debugEventListeners: DebugEventListener[] = [];
@@ -195,6 +382,13 @@ eventEmitter?.addListener(
   }
 );
 
+async function throwIfNotConfigured() {
+  const isConfigured = await Purchases.isConfigured();
+  if (!isConfigured) {
+    throw new UninitializedPurchasesError();
+  }
+}
+
 export default class Purchases {
   /**
    * Supported SKU types.
@@ -231,8 +425,16 @@ export default class Purchases {
    * Replace SKU's ProrationMode.
    * @readonly
    * @enum {number}
+   * @deprecated, use STORE_REPLACEMENT_MODE
    */
   public static PRORATION_MODE = PRORATION_MODE;
+
+  /**
+   * Replacement modes for use when changing products.
+   * @readonly
+   * @enum {string}
+   */
+  public static STORE_REPLACEMENT_MODE = STORE_REPLACEMENT_MODE;
 
   /**
    * Enumeration of all possible Package types.
@@ -320,7 +522,8 @@ export default class Purchases {
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
-  public static configure({
+  public static configure(configuration: PurchasesConfiguration): void {
+    const {
     apiKey,
     appUserID = null,
     purchasesAreCompletedBy = PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT,
@@ -333,7 +536,12 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
-  }: PurchasesConfiguration): void {
+    } = configuration;
+    const {
+      store,
+      galaxyBillingMode,
+    } = configuration as PurchasesConfiguration & InternalStoreConfigurationFields;
+
     throwIfNativeModuleNotAvailable();
 
     if (!customLogHandler) {
@@ -412,6 +620,8 @@ export default class Purchases {
       userDefaultsSuiteName,
       storeKitVersionToUse,
       useAmazon,
+      store,
+      galaxyBillingMode,
       shouldShowInAppMessagesAutomatically,
       entitlementVerificationMode,
       pendingTransactionsForPrepaidPlansEnabled,
@@ -434,7 +644,7 @@ export default class Purchases {
   public static async setAllowSharingStoreAccount(
     allowSharing: boolean
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setAllowSharingStoreAccount(allowSharing);
   }
 
@@ -527,7 +737,7 @@ export default class Purchases {
    * has not been called yet.
    */
   public static async getOfferings(): Promise<PurchasesOfferings> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.getOfferings();
   }
 
@@ -541,7 +751,7 @@ export default class Purchases {
   public static async getCurrentOfferingForPlacement(
     placementIdentifier: string
   ): Promise<PurchasesOffering | null> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.getCurrentOfferingForPlacement(placementIdentifier);
   }
 
@@ -553,7 +763,7 @@ export default class Purchases {
    * has not been called yet.
    */
   public static async syncAttributesAndOfferingsIfNeeded(): Promise<PurchasesOfferings> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.syncAttributesAndOfferingsIfNeeded();
   }
 
@@ -570,7 +780,7 @@ export default class Purchases {
   public static async setAppstackAttributionParams(
     data: Record<string, any>
   ): Promise<PurchasesOfferings> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.setAppstackAttributionParams(data);
   }
 
@@ -587,7 +797,7 @@ export default class Purchases {
     productIdentifiers: string[],
     type: PURCHASE_TYPE | PRODUCT_CATEGORY = PRODUCT_CATEGORY.SUBSCRIPTION
   ): Promise<PurchasesStoreProduct[]> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.getProductInfo(productIdentifiers, type);
   }
 
@@ -605,7 +815,7 @@ export default class Purchases {
     upgradeInfo?: UpgradeInfo | null,
     type: PURCHASE_TYPE = PURCHASE_TYPE.SUBS
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
       productIdentifier,
       upgradeInfo,
@@ -624,10 +834,10 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesStoreProduct} product The product you want to purchase
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code,
@@ -636,13 +846,13 @@ export default class Purchases {
    */
   public static async purchaseStoreProduct(
     product: PurchasesStoreProduct,
-    googleProductChangeInfo?: GoogleProductChangeInfo | null,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.purchaseProduct(
       product.identifier,
-      googleProductChangeInfo,
+      productChangeInfo,
       product.productCategory,
       null,
       googleIsPersonalizedPrice == null
@@ -673,7 +883,7 @@ export default class Purchases {
     product: PurchasesStoreProduct,
     discount: PurchasesPromotionalOffer
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (typeof discount === "undefined" || discount == null) {
       throw new Error("A discount is required");
     }
@@ -695,11 +905,11 @@ export default class Purchases {
    * Make a purchase
    *
    * @param {PurchasesPackage} aPackage The Package you wish to purchase. You can get the Packages by calling getOfferings
-   * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use googleProductChangeInfo.
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {UpgradeInfo} upgradeInfo DEPRECATED. Use productChangeInfo.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
@@ -709,14 +919,14 @@ export default class Purchases {
   public static async purchasePackage(
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
-    googleProductChangeInfo?: GoogleProductChangeInfo | null,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean | null
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.presentedOfferingContext,
-      googleProductChangeInfo || upgradeInfo,
+      productChangeInfo || upgradeInfo,
       null,
       googleIsPersonalizedPrice == null
         ? null
@@ -732,10 +942,10 @@ export default class Purchases {
    * Google only. Make a purchase of a subscriptionOption
    *
    * @param {SubscriptionOption} subscriptionOption The SubscriptionOption you wish to purchase. You can get the SubscriptionOption from StoreProducts by calling getOfferings
-   * @param {GoogleProductChangeInfo} googleProductChangeInfo Android only. Optional GoogleProductChangeInfo you
-   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode.
+   * @param {GoogleProductChangeInfo | StoreProductChangeInfo} productChangeInfo Android only. Optional product change info you
+   * wish to upgrade from containing the oldProductIdentifier and the optional prorationMode or replacementMode.
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
-   * For compliance with EU regulations. User will see "This price has been customize for you" in the purchase dialog when true.
+   * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
@@ -744,15 +954,15 @@ export default class Purchases {
    */
   public static async purchaseSubscriptionOption(
     subscriptionOption: SubscriptionOption,
-    googleProductChangeInfo?: GoogleProductChangeInfo,
+    productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
     googleIsPersonalizedPrice?: boolean
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     await Purchases.throwIfIOSPlatform();
     return RNPurchases.purchaseSubscriptionOption(
       subscriptionOption.productId,
       subscriptionOption.id,
-      googleProductChangeInfo,
+      productChangeInfo,
       null,
       googleIsPersonalizedPrice == null
         ? null
@@ -779,7 +989,7 @@ export default class Purchases {
     aPackage: PurchasesPackage,
     discount: PurchasesPromotionalOffer
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (typeof discount === "undefined" || discount == null) {
       throw new Error("A discount is required");
     }
@@ -802,7 +1012,7 @@ export default class Purchases {
    * userInfo object with more information. The promise will be also be rejected if configure has not been called yet.
    */
   public static async restorePurchases(): Promise<CustomerInfo> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.restorePurchases();
   }
 
@@ -811,7 +1021,7 @@ export default class Purchases {
    * @returns {Promise<string>} The app user id in a promise
    */
   public static async getAppUserID(): Promise<string> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.getAppUserID();
   }
 
@@ -820,7 +1030,7 @@ export default class Purchases {
    * @returns {Promise<Storefront | null>} The storefront for the current store account, or null if the storefront is not available.
    */
     public static async getStorefront(): Promise<Storefront | null> {
-      await Purchases.throwIfNotConfigured();
+      await throwIfNotConfigured();
       return RNPurchases.getStorefront();
     }
 
@@ -833,7 +1043,7 @@ export default class Purchases {
    * promise will be rejected if configure has not been called yet or if there's an issue logging in.
    */
   public static async logIn(appUserID: string): Promise<LogInResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     // noinspection SuspiciousTypeOfGuard
     if (typeof appUserID !== "string") {
       throw new Error("appUserID needs to be a string");
@@ -848,7 +1058,7 @@ export default class Purchases {
    * there's an issue logging out.
    */
   public static async logOut(): Promise<CustomerInfo> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.logOut();
   }
 
@@ -896,7 +1106,7 @@ export default class Purchases {
   public static async addTrackedEventListener(
     trackedEventListener: TrackedEventListener
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (Platform.OS === "android" || Platform.OS === "ios") {
       if (typeof trackedEventListener !== "function") {
         throw new Error("addTrackedEventListener needs a function");
@@ -931,7 +1141,7 @@ export default class Purchases {
   public static async addDebugEventListener(
     debugEventListener: DebugEventListener
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (Platform.OS === "android") {
       if (typeof debugEventListener !== "function") {
         throw new Error("addDebugEventListener needs a function");
@@ -963,7 +1173,7 @@ export default class Purchases {
    * there's an issue getting the customer information.
    */
   public static async getCustomerInfo(): Promise<CustomerInfo> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.getCustomerInfo();
   }
 
@@ -977,7 +1187,7 @@ export default class Purchases {
    * syncing purchases.
    */
   public static async syncPurchases(): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.syncPurchases();
   }
 
@@ -990,7 +1200,7 @@ export default class Purchases {
    * be rejected if configure has not been called yet or if there's an error syncing purchases.
    */
   public static async syncPurchasesForResult(): Promise<SyncPurchasesResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     const customerInfo: CustomerInfo = await RNPurchases.syncPurchasesForResult();
     return { customerInfo };
   }
@@ -1017,7 +1227,7 @@ export default class Purchases {
     price?: number | null
   ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.syncAmazonPurchase(
       productID,
       receiptID,
@@ -1051,7 +1261,7 @@ export default class Purchases {
     price?: number | null
   ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.syncObserverModeAmazonPurchase(
       productID,
       receiptID,
@@ -1080,7 +1290,7 @@ export default class Purchases {
     productID: string
   ): Promise<PurchasesStoreTransaction> {
     await Purchases.throwIfAndroidPlatform();
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.recordPurchaseForProductID(productID);
   }
 
@@ -1090,7 +1300,7 @@ export default class Purchases {
    */
   public static async enableAdServicesAttributionTokenCollection(): Promise<void> {
     if (Platform.OS === "ios") {
-      await Purchases.throwIfNotConfigured();
+      await throwIfNotConfigured();
       RNPurchases.enableAdServicesAttributionTokenCollection();
     }
   }
@@ -1100,7 +1310,7 @@ export default class Purchases {
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
    */
   public static async isAnonymous(): Promise<boolean> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.isAnonymous();
   }
 
@@ -1122,7 +1332,7 @@ export default class Purchases {
   public static async checkTrialOrIntroductoryPriceEligibility(
     productIdentifiers: string[]
   ): Promise<{ [productId: string]: IntroEligibility }> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.checkTrialOrIntroductoryPriceEligibility(
       productIdentifiers
     );
@@ -1141,7 +1351,7 @@ export default class Purchases {
     product: PurchasesStoreProduct,
     discount: PurchasesStoreProductDiscount
   ): Promise<PurchasesPromotionalOffer | undefined> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
     }
@@ -1166,7 +1376,7 @@ export default class Purchases {
   public static async getEligibleWinBackOffersForProduct(
     product: PurchasesStoreProduct
   ): Promise<[PurchasesWinBackOffer] | undefined> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
     }
@@ -1188,7 +1398,7 @@ export default class Purchases {
   public static async getEligibleWinBackOffersForPackage(
     aPackage: PurchasesPackage
   ): Promise<[PurchasesWinBackOffer] | undefined> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (Platform.OS === "android") {
       return Promise.resolve(undefined);
     }
@@ -1214,7 +1424,7 @@ export default class Purchases {
     product: PurchasesStoreProduct,
     winBackOffer: PurchasesWinBackOffer
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (typeof winBackOffer === "undefined" || winBackOffer == null) {
       throw new Error("A win-back offer is required");
     }
@@ -1247,7 +1457,7 @@ export default class Purchases {
     aPackage: PurchasesPackage,
     winBackOffer: PurchasesWinBackOffer
   ): Promise<MakePurchaseResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     if (typeof winBackOffer === "undefined" || winBackOffer == null) {
       throw new Error("A win-back offer is required");
     }
@@ -1278,7 +1488,7 @@ export default class Purchases {
    * invalidating the customer info cache.
    */
   public static async invalidateCustomerInfoCache(): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.invalidateCustomerInfoCache();
   }
 
@@ -1290,7 +1500,7 @@ export default class Purchases {
    */
   public static async presentCodeRedemptionSheet(): Promise<void> {
     if (Platform.OS === "ios") {
-      await Purchases.throwIfNotConfigured();
+      await throwIfNotConfigured();
       RNPurchases.presentCodeRedemptionSheet();
     }
   }
@@ -1310,7 +1520,7 @@ export default class Purchases {
   public static async setAttributes(attributes: {
     [key: string]: string | null;
   }): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setAttributes(attributes);
   }
 
@@ -1322,7 +1532,7 @@ export default class Purchases {
    * setting the email.
    */
   public static async setEmail(email: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setEmail(email);
   }
 
@@ -1336,7 +1546,7 @@ export default class Purchases {
   public static async setPhoneNumber(
     phoneNumber: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setPhoneNumber(phoneNumber);
   }
 
@@ -1350,7 +1560,7 @@ export default class Purchases {
   public static async setDisplayName(
     displayName: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setDisplayName(displayName);
   }
 
@@ -1362,7 +1572,7 @@ export default class Purchases {
    * setting the push token.
    */
   public static async setPushToken(pushToken: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setPushToken(pushToken);
   }
 
@@ -1383,7 +1593,7 @@ export default class Purchases {
    * setting collecting the device identifiers.
    */
   public static async collectDeviceIdentifiers(): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.collectDeviceIdentifiers();
   }
 
@@ -1396,7 +1606,7 @@ export default class Purchases {
    * setting Adjust ID.
    */
   public static async setAdjustID(adjustID: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setAdjustID(adjustID);
   }
 
@@ -1410,7 +1620,7 @@ export default class Purchases {
   public static async setAppsflyerID(
     appsflyerID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setAppsflyerID(appsflyerID);
   }
 
@@ -1425,7 +1635,7 @@ export default class Purchases {
   public static async setFBAnonymousID(
     fbAnonymousID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setFBAnonymousID(fbAnonymousID);
   }
 
@@ -1440,7 +1650,7 @@ export default class Purchases {
   public static async setMparticleID(
     mparticleID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setMparticleID(mparticleID);
   }
 
@@ -1455,7 +1665,7 @@ export default class Purchases {
   public static async setCleverTapID(
     cleverTapID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setCleverTapID(cleverTapID);
   }
 
@@ -1470,7 +1680,7 @@ export default class Purchases {
   public static async setMixpanelDistinctID(
     mixpanelDistinctID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setMixpanelDistinctID(mixpanelDistinctID);
   }
 
@@ -1485,7 +1695,7 @@ export default class Purchases {
   public static async setFirebaseAppInstanceID(
     firebaseAppInstanceID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setFirebaseAppInstanceID(firebaseAppInstanceID);
   }
 
@@ -1500,7 +1710,7 @@ export default class Purchases {
   public static async setTenjinAnalyticsInstallationID(
     tenjinAnalyticsInstallationID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setTenjinAnalyticsInstallationID(tenjinAnalyticsInstallationID);
   }
 
@@ -1515,13 +1725,14 @@ export default class Purchases {
   public static async setKochavaDeviceID(
     kochavaDeviceID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setKochavaDeviceID(kochavaDeviceID);
   }
 
   /**
    * Subscriber attribute associated with the OneSignal Player Id for the user
-   * Required for the RevenueCat OneSignal integration
+   * Required for the RevenueCat OneSignal integration with OneSignal SDK v4.0 and below
+   * (OneSignal API v9). For OneSignal SDK v5.0 and above, use {@link setOnesignalUserID} instead.
    *
    * @param onesignalID OneSignal Player ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
@@ -1530,8 +1741,24 @@ export default class Purchases {
   public static async setOnesignalID(
     onesignalID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setOnesignalID(onesignalID);
+  }
+
+  /**
+   * Subscriber attribute associated with the OneSignal User ID for the user
+   * Required for the RevenueCat OneSignal integration with OneSignal SDK v5.0
+   * and above (OneSignal API v11+).
+   *
+   * @param onesignalUserID OneSignal User ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * setting the OneSignal user ID.
+   */
+  public static async setOnesignalUserID(
+    onesignalUserID: string | null
+  ): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.setOnesignalUserID(onesignalUserID);
   }
 
   /**
@@ -1545,7 +1772,7 @@ export default class Purchases {
   public static async setAirshipChannelID(
     airshipChannelID: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setAirshipChannelID(airshipChannelID);
   }
 
@@ -1559,7 +1786,7 @@ export default class Purchases {
   public static async setMediaSource(
     mediaSource: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setMediaSource(mediaSource);
   }
 
@@ -1571,7 +1798,7 @@ export default class Purchases {
    * setting the campaign.
    */
   public static async setCampaign(campaign: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setCampaign(campaign);
   }
 
@@ -1583,7 +1810,7 @@ export default class Purchases {
    * setting ad group.
    */
   public static async setAdGroup(adGroup: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setAdGroup(adGroup);
   }
 
@@ -1595,7 +1822,7 @@ export default class Purchases {
    * setting the ad subscriber attribute.
    */
   public static async setAd(ad: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setAd(ad);
   }
 
@@ -1607,7 +1834,7 @@ export default class Purchases {
    * setting the keyword.
    */
   public static async setKeyword(keyword: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setKeyword(keyword);
   }
 
@@ -1619,8 +1846,37 @@ export default class Purchases {
    * setting the creative subscriber attribute.
    */
   public static async setCreative(creative: string | null): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.setCreative(creative);
+  }
+
+  /**
+   * Sets conversion data from AppsFlyer's onInstallConversionData callback. This extracts the
+   * relevant attribution fields from the AppsFlyer conversion data and sets the corresponding
+   * RevenueCat subscriber attributes ($mediaSource, $campaign, $adGroup, $ad, $keyword, $creative).
+   * Note that this method will never unset any attributes.
+   *
+   * Pass the object received in AppsFlyer's onInstallConversionData listener directly; the nested
+   * `data` field holds the conversion data that is forwarded to RevenueCat. The data is only
+   * forwarded when `status` is `"success"`; otherwise it is ignored.
+   *
+   * @param conversionData The object from AppsFlyer's onInstallConversionData callback.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet.
+   */
+  public static async setAppsFlyerConversionData(conversionData: {
+    status: string;
+    data: { [key: string]: any };
+  }): Promise<void> {
+    await throwIfNotConfigured();
+    if (conversionData?.status !== 'success') {
+      // tslint:disable-next-line:no-console
+      console.warn(
+        `[RevenueCat] Ignoring AppsFlyer conversion data with status "${conversionData?.status}". ` +
+          `Conversion data is only forwarded when status is "success".`,
+      );
+      return;
+    }
+    RNPurchases.setAppsFlyerConversionData(conversionData.data ?? null);
   }
 
   /**
@@ -1633,7 +1889,7 @@ export default class Purchases {
   public static async overridePreferredLocale(
     locale: string | null
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.overridePreferredLocale(locale);
   }
 
@@ -1674,7 +1930,7 @@ export default class Purchases {
    *  refund request. Keep in mind the status could be REFUND_REQUEST_STATUS.USER_CANCELLED
    */
   public static async beginRefundRequestForActiveEntitlement(): Promise<REFUND_REQUEST_STATUS> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     await Purchases.throwIfAndroidPlatform();
     const refundRequestStatusInt =
       await RNPurchases.beginRefundRequestForActiveEntitlement();
@@ -1698,7 +1954,7 @@ export default class Purchases {
   public static async beginRefundRequestForEntitlement(
     entitlementInfo: PurchasesEntitlementInfo
   ): Promise<REFUND_REQUEST_STATUS> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     await Purchases.throwIfAndroidPlatform();
     const refundRequestStatusInt =
       await RNPurchases.beginRefundRequestForEntitlementId(
@@ -1724,7 +1980,7 @@ export default class Purchases {
   public static async beginRefundRequestForProduct(
     storeProduct: PurchasesStoreProduct
   ): Promise<REFUND_REQUEST_STATUS> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     await Purchases.throwIfAndroidPlatform();
     const refundRequestStatusInt =
       await RNPurchases.beginRefundRequestForProductId(storeProduct.identifier);
@@ -1738,7 +1994,7 @@ export default class Purchases {
    * Presents the App Store sheet for managing subscriptions. Only available in iOS 13+ devices.
    */
   public static async showManageSubscriptions(): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     await Purchases.throwIfAndroidPlatform();
     return RNPurchases.showManageSubscriptions();
   }
@@ -1757,7 +2013,7 @@ export default class Purchases {
   public static async showInAppMessages(
     messageTypes?: IN_APP_MESSAGE_TYPE[]
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.showInAppMessages(messageTypes);
   }
 
@@ -1784,7 +2040,7 @@ export default class Purchases {
   public static async redeemWebPurchase(
     webPurchaseRedemption: WebPurchaseRedemption
   ): Promise<WebPurchaseRedemptionResult> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.redeemWebPurchase(webPurchaseRedemption.redemptionLink);
   }
 
@@ -1795,7 +2051,7 @@ export default class Purchases {
    * The promise will be rejected if configure has not been called yet or if an error occurs.
    */
   public static async getVirtualCurrencies(): Promise<PurchasesVirtualCurrencies> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     return RNPurchases.getVirtualCurrencies();
   }
 
@@ -1810,7 +2066,7 @@ export default class Purchases {
    * invalidating the virtual currencies cache.
    */
   public static async invalidateVirtualCurrenciesCache(): Promise<void> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     RNPurchases.invalidateVirtualCurrenciesCache();
   }
 
@@ -1823,7 +2079,7 @@ export default class Purchases {
    * The promise will be rejected if configure has not been called yet or there's an error.
    */
   public static async getCachedVirtualCurrencies(): Promise<PurchasesVirtualCurrencies | null> {
-    await Purchases.throwIfNotConfigured();
+    await throwIfNotConfigured();
     const result = await RNPurchases.getCachedVirtualCurrencies();
     return result ?? null;
   }
@@ -1844,27 +2100,81 @@ export default class Purchases {
   }
 
   /**
+   * Provides access to ad lifecycle tracking methods.
+   * @beta
+   */
+  public static get adTracker(): PurchasesAdTracker {
+    if (!adTrackerSingleton) {
+      adTrackerSingleton = new PurchasesAdTracker();
+    }
+    return adTrackerSingleton;
+  }
+
+  /**
    * Tracks an impression of a custom (non-RevenueCat) paywall.
    * Call this method when your custom paywall is displayed to a user.
    * This enables RevenueCat to track paywall impressions for analytics.
    *
    * @param params - Optional parameters for the impression event.
    * @param params.paywallId - Optional identifier for the custom paywall being shown.
-   * @param params.offeringId - Optional identifier for the offering associated with the custom paywall.
-   *   If not provided, the SDK will use the current offering identifier from the cache.
+   * @param params.offering - Optional offering associated with the custom paywall.
+   * @param params.offeringId - Deprecated. Prefer passing `offering` when available.
+   *   Optional identifier for the offering associated with the custom paywall. If not provided,
+   *   the SDK will use the current offering identifier from the cache.
    */
   public static async trackCustomPaywallImpression(
     params?: TrackCustomPaywallImpressionOptions
   ): Promise<void> {
-    await Purchases.throwIfNotConfigured();
-    RNPurchases.trackCustomPaywallImpression(params ?? {});
+    await throwIfNotConfigured();
+
+    const options: TrackCustomPaywallImpressionOptions = params ?? {};
+    const presentedOfferingContext =
+      options.offering?.availablePackages?.[0]?.presentedOfferingContext;
+    const offeringId =
+      options.offering?.identifier ??
+      options.offeringId;
+    RNPurchases.trackCustomPaywallImpression({
+      paywallId: options.paywallId ?? null,
+      offeringId: offeringId ?? null,
+      presentedOfferingContext: presentedOfferingContext ?? null,
+    });
   }
 
-  private static async throwIfNotConfigured() {
-    const isConfigured = await Purchases.isConfigured();
-    if (!isConfigured) {
-      throw new UninitializedPurchasesError();
-    }
+  /**
+   * Generates a reward verification token for a rewarded ad impression.
+   *
+   * Pass the returned `clientTransactionId` to the ad network as the
+   * server-side verification custom data. After the ad completes, pass the same
+   * id to {@link Purchases.pollRewardVerification} to await the reward.
+   *
+   * @param impressionId - The impression identifier of the rewarded ad.
+   * @returns {Promise<RewardVerificationToken>} promise with the generated token.
+   * @beta
+   */
+  public static async generateRewardVerificationToken(
+    impressionId: string
+  ): Promise<RewardVerificationToken> {
+    await throwIfNotConfigured();
+    return RNPurchases.generateRewardVerificationToken(impressionId);
+  }
+
+  /**
+   * Polls RevenueCat for the reward verification result of a rewarded ad.
+   *
+   * The returned promise stays pending while the native poller runs (up to
+   * ~10-30s) and resolves once verification completes or times out. A timed-out
+   * or rejected verification resolves with `failed: true` rather than rejecting.
+   *
+   * @param clientTransactionId - The `clientTransactionId` from
+   *   {@link Purchases.generateRewardVerificationToken}.
+   * @returns {Promise<RewardVerificationResult>} promise with the verification result.
+   * @beta
+   */
+  public static async pollRewardVerification(
+    clientTransactionId: string
+  ): Promise<RewardVerificationResult> {
+    await throwIfNotConfigured();
+    return RNPurchases.pollRewardVerification(clientTransactionId);
   }
 
   private static async throwIfAndroidPlatform() {
@@ -1903,4 +2213,38 @@ export default class Purchases {
     }
   }
 
+}
+
+let adTrackerSingleton: PurchasesAdTracker | undefined;
+
+/**
+ * Provides methods for tracking ad lifecycle events.
+ * Access via {@link Purchases.adTracker}.
+ * @beta
+ */
+export class PurchasesAdTracker {
+  public async trackAdDisplayed(data: AdDisplayedData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackAdDisplayed(data);
+  }
+
+  public async trackAdOpened(data: AdOpenedData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackAdOpened(data);
+  }
+
+  public async trackAdLoaded(data: AdLoadedData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackAdLoaded(data);
+  }
+
+  public async trackAdRevenue(data: AdRevenueData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackAdRevenue(data);
+  }
+
+  public async trackAdFailedToLoad(data: AdFailedToLoadData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackAdFailedToLoad(data);
+  }
 }

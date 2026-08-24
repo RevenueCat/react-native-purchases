@@ -5,6 +5,7 @@ import {
   PurchasesOffering,
   PurchasesVirtualCurrencies,
   Storefront,
+  StoreProductChangeInfo,
 } from "@revenuecat/purchases-typescript-internal";
 import {
   CustomerInfo,
@@ -59,6 +60,16 @@ async function checkPurchases(purchases: Purchases) {
 
   await Purchases.presentCodeRedemptionSheet();
   await Purchases.invalidateCustomerInfoCache();
+  await Purchases.trackCustomPaywallImpression();
+  await Purchases.trackCustomPaywallImpression({
+    paywallId: "paywall",
+  });
+  if (currentOfferingForPlacement) {
+    await Purchases.trackCustomPaywallImpression({
+      paywallId: "paywall",
+      offering: currentOfferingForPlacement,
+    });
+  }
 }
 
 async function checkUsers(purchases: Purchases) {
@@ -79,13 +90,18 @@ async function checkPurchasing(
   pack: PurchasesPackage,
   subscriptionOption: SubscriptionOption,
   upgradeInfo: UpgradeInfo,
-  googleProductChangeInfo: GoogleProductChangeInfo
+  googleProductChangeInfo: GoogleProductChangeInfo,
+  storeProductChangeInfo: StoreProductChangeInfo,
 ) {
   const productId: string = "";
   const productIds: string[] = [productId];
   const features: BILLING_FEATURE[] = [];
   const messageTypes: IN_APP_MESSAGE_TYPE[] = [];
   const googleIsPersonalizedPrice: boolean = false;
+  const customPaywallImpressionParams: TrackCustomPaywallImpressionOptions = {
+    paywallId: "paywall",
+    offeringId: pack.presentedOfferingContext.offeringIdentifier,
+  };
 
   const paymentDiscount2: PurchasesPromotionalOffer | undefined =
     await Purchases.getPromotionalOffer(product, discount);
@@ -104,6 +120,13 @@ async function checkPurchasing(
       googleProductChangeInfo,
       googleIsPersonalizedPrice
     );
+
+    const storeProductResult3: MakePurchaseResult =
+      await Purchases.purchaseStoreProduct(
+        product,
+        storeProductChangeInfo,
+        googleIsPersonalizedPrice
+      );
 
   const discountedProductResult1: MakePurchaseResult =
     await Purchases.purchaseDiscountedProduct(product, paymentDiscount);
@@ -124,6 +147,12 @@ async function checkPurchasing(
     googleProductChangeInfo,
     googleIsPersonalizedPrice
   );
+  const packageResult4: MakePurchaseResult = await Purchases.purchasePackage(
+    pack,
+    null,
+    storeProductChangeInfo,
+    googleIsPersonalizedPrice
+  );
 
   const discountedPackageResult1: MakePurchaseResult =
     await Purchases.purchaseDiscountedPackage(pack, paymentDiscount);
@@ -137,6 +166,12 @@ async function checkPurchasing(
     await Purchases.purchaseSubscriptionOption(
       subscriptionOption,
       googleProductChangeInfo,
+      googleIsPersonalizedPrice
+    );
+  const subscriptionOptionResult3: MakePurchaseResult =
+    await Purchases.purchaseSubscriptionOption(
+      subscriptionOption,
+      storeProductChangeInfo,
       googleIsPersonalizedPrice
     );
 
@@ -154,6 +189,7 @@ async function checkPurchasing(
   await Purchases.showInAppMessages(messageTypes);
 
   const manageSubscriptions: void = await Purchases.showManageSubscriptions();
+  await Purchases.trackCustomPaywallImpression(customPaywallImpressionParams);
 }
 
 async function checkConfigure() {
@@ -463,7 +499,10 @@ async function checkTrackCustomPaywallImpression() {
   await Purchases.trackCustomPaywallImpression({ offeringId: "my_offering" });
   await Purchases.trackCustomPaywallImpression({ offeringId: null });
   await Purchases.trackCustomPaywallImpression({ paywallId: "my_paywall", offeringId: "my_offering" });
-  const options: TrackCustomPaywallImpressionOptions = { paywallId: "test", offeringId: "offering" };
+  const options: TrackCustomPaywallImpressionOptions = {
+    paywallId: "test",
+    offeringId: "offering",
+  };
   await Purchases.trackCustomPaywallImpression(options);
 }
 

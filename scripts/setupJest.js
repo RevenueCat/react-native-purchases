@@ -773,6 +773,7 @@ NativeModules.RNPurchases = {
   setDebugLogsEnabled: jest.fn(),
   setLogLevel: jest.fn(),
   setLogHandler: jest.fn(),
+  trackCustomPaywallImpression: jest.fn(),
   getCustomerInfo: jest.fn(),
   logIn: jest.fn(),
   logOut: jest.fn(),
@@ -799,6 +800,7 @@ NativeModules.RNPurchases = {
   setFirebaseAppInstanceID: jest.fn(),
   setTenjinAnalyticsInstallationID: jest.fn(),
   setKochavaDeviceID: jest.fn(),
+  setOnesignalUserID: jest.fn(),
   canMakePayments: jest.fn(),
   beginRefundRequestForActiveEntitlement: jest.fn(),
   beginRefundRequestForEntitlementId: jest.fn(),
@@ -810,7 +812,14 @@ NativeModules.RNPurchases = {
   getVirtualCurrencies: jest.fn(),
   invalidateVirtualCurrenciesCache: jest.fn(),
   getCachedVirtualCurrencies: jest.fn(),
-  trackCustomPaywallImpression: jest.fn()
+  trackCustomPaywallImpression: jest.fn(),
+  trackAdDisplayed: jest.fn(),
+  trackAdOpened: jest.fn(),
+  trackAdLoaded: jest.fn(),
+  trackAdRevenue: jest.fn(),
+  trackAdFailedToLoad: jest.fn(),
+  generateRewardVerificationToken: jest.fn(),
+  pollRewardVerification: jest.fn()
 };
 
 jest.mock(
