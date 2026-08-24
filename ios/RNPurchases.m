@@ -324,11 +324,7 @@ RCT_EXPORT_METHOD(eligibleWinBackOffersForProductIdentifier:(nonnull NSString *)
         [RCCommonFunctionality eligibleWinBackOffersForProductIdentifier:productID
                                                          completionBlock:^(NSArray<NSDictionary *> * _Nullable offers, RCErrorContainer * _Nullable errorContainer) {
             if (errorContainer) {
-                reject(
-                    [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
-                    errorContainer.message,
-                    errorContainer.error
-                );
+                [self rejectPromiseWithBlock:reject error:errorContainer];
             } else {
                 resolve(offers ?: @[]);
             }
@@ -551,11 +547,7 @@ RCT_EXPORT_METHOD(showManageSubscriptions:
     if (@available(iOS 13.0, macOS 10.15, visionOS 1.0, *)) {
         [RCCommonFunctionality showManageSubscriptions:^(RCErrorContainer * _Nullable errorContainer) {
             if (errorContainer) {
-                reject(
-                    [NSString stringWithFormat:@"%ld", (long)errorContainer.code],
-                    errorContainer.message,
-                    errorContainer.error
-                );
+                [self rejectPromiseWithBlock:reject error:errorContainer];
             } else {
                 resolve(nil);
             }
@@ -749,7 +741,15 @@ readyForPromotedProduct:(RCStoreProduct *)product
 #pragma mark Helper Methods
 
 - (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject error:(RCErrorContainer *)error {
-    reject([NSString stringWithFormat:@"%ld", (long) error.code], error.message, error.error);
+    // React Native forwards only the NSError's userInfo to the JS layer, never the error
+    // container's info dictionary, so the payload has to travel inside userInfo.
+    NSMutableDictionary *userInfo = [error.error.userInfo mutableCopy] ?: [NSMutableDictionary dictionary];
+    [userInfo addEntriesFromDictionary:error.info];
+    NSError *errorWithInfo = [NSError errorWithDomain:error.error.domain
+                                                 code:error.error.code
+                                             userInfo:userInfo];
+
+    reject([NSString stringWithFormat:@"%ld", (long) error.code], error.message, errorWithInfo);
 }
 
 - (void (^)(NSDictionary *, RCErrorContainer *))getResponseCompletionBlockWithResolve:(RCTPromiseResolveBlock)resolve
