@@ -122,7 +122,7 @@ const RNPurchases = nativeModule ? withNormalizedErrors(nativeModule) : nativeMo
 // methods for NativeEventEmitter to work. Both iOS and Android native modules now have these.
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
 // See: https://reactnative.dev/blog/2025/04/08/react-native-0.79 (Breaking Changes section)
-const eventEmitter = !usingBrowserMode && RNPurchases ? new NativeEventEmitter(RNPurchases) : null;
+const eventEmitter = !usingBrowserMode && nativeModule ? new NativeEventEmitter(nativeModule) : null;
 
 // Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
 function throwIfNativeModuleNotAvailable(): void {

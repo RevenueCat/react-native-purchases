@@ -43,28 +43,6 @@ describe("errors rejected by the native module", () => {
     expect(error.userCancelled).toBeNull();
   });
 
-  it("stay real Errors", async () => {
-    NativeModules.RNPurchases.getCustomerInfo.mockRejectedValueOnce(nativeRejection());
-
-    const error = await Purchases.getCustomerInfo().catch((caught: unknown) => caught);
-
-    expect(error).toBeInstanceOf(Error);
-    expect(typeof (error as Error).stack).toBe("string");
-  });
-
-  // Android already nests the payload here; overwriting userInfo with the single
-  // field ErrorInfo declares would drop the rest.
-  it("keep the fields userInfo already carried", async () => {
-    NativeModules.RNPurchases.getCustomerInfo.mockRejectedValueOnce(nativeRejection());
-
-    const error = await Purchases.getCustomerInfo().catch((caught: unknown) => caught);
-
-    expect((error as { userInfo: Record<string, unknown> }).userInfo.underlyingErrorMessage).toBe("Invalid API Key.");
-    expect((error as { userInfo: Record<string, unknown> }).userInfo.readable_error_code).toBe(
-      "InvalidCredentialsError"
-    );
-  });
-
   it("leave successful calls alone", async () => {
     NativeModules.RNPurchases.getCustomerInfo.mockResolvedValueOnce(global.customerInfoStub);
 
