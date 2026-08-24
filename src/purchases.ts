@@ -45,6 +45,7 @@ import {
   Storefront,
   STORE_REPLACEMENT_MODE,
   StoreProductChangeInfo,
+  withNormalizedErrors,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -112,7 +113,8 @@ const NATIVE_MODULE_ERROR =
 
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
-const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const nativeModule = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const RNPurchases = nativeModule ? withNormalizedErrors(nativeModule) : nativeModule;
 
 // Only create event emitter if native module is available to avoid crash on import
 //

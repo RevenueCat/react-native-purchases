@@ -1184,7 +1184,8 @@ describe("Purchases", () => {
       message: "User cancelled",
       readableErrorCode: "USER_CANCELLED",
       underlyingErrorMessage: "The user cancelled",
-      userCancelled: true
+      userCancelled: true,
+      userInfo: { readableErrorCode: "USER_CANCELLED" }
     });
   });
 
@@ -1203,7 +1204,8 @@ describe("Purchases", () => {
       message: "User cancelled",
       readableErrorCode: "USER_CANCELLED",
       underlyingErrorMessage: "The user cancelled",
-      userCancelled: true
+      userCancelled: true,
+      userInfo: { readableErrorCode: "USER_CANCELLED" }
     });
   });
 
