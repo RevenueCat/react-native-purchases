@@ -714,9 +714,11 @@ RCT_EXPORT_METHOD(generateRewardVerificationToken:(NSString *)impressionId
 }
 
 RCT_EXPORT_METHOD(pollRewardVerification:(NSString *)clientTransactionId
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+                        trackingMetadata:(nullable NSDictionary *)trackingMetadata
+                                 resolve:(RCTPromiseResolveBlock)resolve
+                                  reject:(RCTPromiseRejectBlock)reject) {
     [RCCommonFunctionality pollRewardVerificationWithClientTransactionId:clientTransactionId
+                                                        trackingMetadata:trackingMetadata.mappingNSNullToNil
                                                              completion:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                              reject:reject]];
 }
