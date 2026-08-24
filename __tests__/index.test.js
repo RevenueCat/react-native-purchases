@@ -2252,7 +2252,7 @@ describe("Purchases", () => {
       const result = await Purchases.pollRewardVerification("client_transaction_1");
 
       expect(NativeModules.RNPurchases.pollRewardVerification).toBeCalledTimes(1);
-      expect(NativeModules.RNPurchases.pollRewardVerification).toBeCalledWith("client_transaction_1");
+      expect(NativeModules.RNPurchases.pollRewardVerification).toBeCalledWith("client_transaction_1", undefined);
       expect(result).toEqual(verificationResult);
     });
 
