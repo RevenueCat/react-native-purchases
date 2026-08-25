@@ -180,6 +180,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   onRestoreError,
   onDismiss,
   onPurchasePackageInitiated,
+  onRestoreInitiated,
   onWebCheckoutOpened,
   onUrlOpened,
 }) => {
@@ -226,6 +227,17 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
             onPurchasePackageInitiated({ packageBeingPurchased, resume });
           } else {
             RNPaywalls!.resumePurchasePackageInitiated(requestId, true);
+          }
+        }}
+        onRestoreInitiated={(event: any) => {
+          const { requestId } = event.nativeEvent;
+          if (onRestoreInitiated) {
+            const resume = (shouldProceed: boolean) => {
+              RNPaywalls!.resumeRestoreInitiated(requestId, shouldProceed);
+            };
+            onRestoreInitiated({ resume });
+          } else {
+            RNPaywalls!.resumeRestoreInitiated(requestId, true);
           }
         }}
         onPerformPurchase={handlePerformPurchase}
@@ -413,6 +425,9 @@ type FullScreenPaywallViewProps = {
     packageBeingPurchased,
     resume
   }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
+  onRestoreInitiated?: ({
+    resume
+  }: { resume: (shouldResume: boolean) => void}) => void;
   onWebCheckoutOpened?: () => void;
   onUrlOpened?: (url: string) => void;
 };
@@ -629,6 +644,7 @@ export default class RevenueCatUI {
                                                                    onRestoreError,
                                                                    onDismiss,
                                                                    onPurchasePackageInitiated,
+                                                                   onRestoreInitiated,
                                                                    onWebCheckoutOpened,
                                                                    onUrlOpened,
                                                                  }) => {
@@ -646,6 +662,7 @@ export default class RevenueCatUI {
         onRestoreError={onRestoreError}
         onDismiss={onDismiss}
         onPurchasePackageInitiated={onPurchasePackageInitiated}
+        onRestoreInitiated={onRestoreInitiated}
         onWebCheckoutOpened={onWebCheckoutOpened}
         onUrlOpened={onUrlOpened}
         style={[{flex: 1}, style]}

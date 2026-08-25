@@ -25,6 +25,7 @@ import com.revenuecat.purchases.react.ui.events.OnPurchasePackageInitiatedEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseStartedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
+import com.revenuecat.purchases.react.ui.events.OnRestoreInitiatedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
 import com.revenuecat.purchases.react.ui.events.OnUrlOpenedEvent
 import com.revenuecat.purchases.react.ui.events.OnWebCheckoutOpenedEvent
@@ -70,6 +71,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .putEvent(PaywallEventName.ON_DISMISS)
             .putEvent(PaywallEventName.ON_MEASURE)
             .putEvent(PaywallEventName.ON_PURCHASE_PACKAGE_INITIATED)
+            .putEvent(PaywallEventName.ON_RESTORE_INITIATED)
             .putEvent(PaywallEventName.ON_PERFORM_PURCHASE)
             .putEvent(PaywallEventName.ON_PERFORM_RESTORE)
             .putEvent(PaywallEventName.ON_WEB_CHECKOUT_OPENED)
@@ -283,6 +285,15 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 surfaceId = view.surfaceId,
                 viewTag = view.id,
                 rcPackage,
+                requestId,
+            )
+            emitEvent(themedReactContext, view.id, event)
+        }
+
+        override fun onRestoreInitiated(requestId: String) {
+            val event = OnRestoreInitiatedEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
                 requestId,
             )
             emitEvent(themedReactContext, view.id, event)

@@ -59,6 +59,13 @@ const paywallComponentProps: PaywallComponentProps = {
     void purchasesError;
   },
   onDismiss: () => {},
+  onPurchasePackageInitiated: ({ packageBeingPurchased, resume }) => {
+    void packageBeingPurchased;
+    resume(true);
+  },
+  onRestoreInitiated: ({ resume }) => {
+    resume(true);
+  },
   onWebCheckoutOpened: () => {},
   onUrlOpened: (url: string) => {},
 };
