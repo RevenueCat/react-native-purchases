@@ -530,6 +530,9 @@ workflows:
     jobs:
       - revenuecat/danger:
           ruby_version: "3.3.0"
+          filters:
+            branches:
+              ignore: main
 
   weekly-run-workflow:
     when:
