@@ -9182,7 +9182,7 @@ __metadata:
     typescript: ^5.2.2
   peerDependencies:
     react: "*"
-    react-native: ">= 0.73.0"
+    react-native: ">= 0.80.0"
     react-native-purchases: 10.8.0
     react-native-web: "*"
   peerDependenciesMeta:
@@ -9214,7 +9214,7 @@ __metadata:
     typescript: ^5.2.2
   peerDependencies:
     react: "*"
-    react-native: ">= 0.73.0"
+    react-native: ">= 0.80.0"
     react-native-purchases: 10.8.0
     react-native-web: "*"
   peerDependenciesMeta:
@@ -9246,7 +9246,7 @@ __metadata:
     typescript: ^5.2.2
   peerDependencies:
     react: ">= 16.6.3"
-    react-native: ">= 0.73.0"
+    react-native: ">= 0.80.0"
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
