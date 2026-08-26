@@ -263,6 +263,7 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
   onRestoreCompleted,
   onRestoreError,
   onDismiss,
+  onRestoreInitiated,
   onMeasure,
 }) => {
   if (usingPreviewAPIMode) {
@@ -297,6 +298,17 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
         onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
         onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
         onDismiss={() => onDismiss && onDismiss()}
+        onRestoreInitiated={(event: any) => {
+          const { requestId } = event.nativeEvent;
+          if (onRestoreInitiated) {
+            const resume = (shouldProceed: boolean) => {
+              RNPaywalls!.resumeRestoreInitiated(requestId, shouldProceed);
+            };
+            onRestoreInitiated({ resume });
+          } else {
+            RNPaywalls!.resumeRestoreInitiated(requestId, true);
+          }
+        }}
         onMeasure={onMeasure}
       />
     );
@@ -447,6 +459,9 @@ type FooterPaywallViewProps = {
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
+  onRestoreInitiated?: ({
+    resume
+  }: { resume: (shouldResume: boolean) => void}) => void;
 };
 
 type InternalFooterPaywallViewProps = FooterPaywallViewProps & {
@@ -682,6 +697,7 @@ export default class RevenueCatUI {
                                                                                                   onRestoreCompleted,
                                                                                                   onRestoreError,
                                                                                                   onDismiss,
+                                                                                                  onRestoreInitiated,
                                                                                                 }) => {
     // We use 20 as the default paddingBottom because that's the corner radius in the Android native SDK.
     // We also listen to safeAreaInsetsDidChange which is only sent from iOS and which is triggered when the
@@ -729,6 +745,7 @@ export default class RevenueCatUI {
           onRestoreCompleted={onRestoreCompleted}
           onRestoreError={onRestoreError}
           onDismiss={onDismiss}
+          onRestoreInitiated={onRestoreInitiated}
           onMeasure={(event: any) => setHeight(event.nativeEvent.measurements.height)}
         />
       </View>

@@ -337,6 +337,7 @@ const OriginalTemplateFooterPaywallScreenWithOfferingAndEvents = (
       onRestoreStarted={onRestoreStarted}
       onRestoreCompleted={onRestoreCompleted}
       onDismiss={onDismiss}
+      onRestoreInitiated={onRestoreInitiated}
     ></RevenueCatUI.OriginalTemplatePaywallFooterContainerView>
   );
 };
@@ -358,6 +359,7 @@ const FooterPaywallScreenWithOfferingAndEvents = (
       onRestoreStarted={onRestoreStarted}
       onRestoreCompleted={onRestoreCompleted}
       onDismiss={onDismiss}
+      onRestoreInitiated={onRestoreInitiated}
     ></RevenueCatUI.PaywallFooterContainerView>
   );
 };
