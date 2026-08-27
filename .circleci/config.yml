@@ -163,9 +163,12 @@ jobs:
       - revenuecat/install-gem-mac-dependencies:
           cache-version: expo-v2
           working_directory: examples/purchaseTesterExpo
+      # Plain pod install: this job bundles the Expo-generated Gemfile, which has no
+      # fastlane. wait_for_ios_pods has already confirmed the pod is on the CDN.
       - run:
           name: Pod Install
-          command: scripts/pod-install-with-retries.sh examples/purchaseTesterExpo/ios
+          working_directory: examples/purchaseTesterExpo/ios
+          command: pod install --repo-update
       - run:
           name: Build iOS Expo app
           working_directory: examples/purchaseTesterExpo
@@ -207,13 +210,16 @@ jobs:
 
   wait_for_ios_pods:
     docker:
-      - image: cimg/base:current
+      - image: cimg/ruby:3.3.0
     resource_class: small
+    shell: /bin/bash --login -o pipefail
     steps:
       - checkout
+      - revenuecat/install-gem-unix-dependencies:
+          cache-version: v1
       - run:
           name: Wait for PurchasesHybridCommon on the CocoaPods CDN
-          command: scripts/wait-for-pods-on-cdn.sh
+          command: bundle exec fastlane wait_for_pods_on_cdn
 
   adstester_ios:
     <<: *base-mac-job-xcode-16
@@ -248,7 +254,7 @@ jobs:
           cache-version: adstester-v1
       - run:
           name: Pod Install
-          command: POD_BIN="bundle exec pod" scripts/pod-install-with-retries.sh examples/adsTester/ios
+          command: bundle exec fastlane pod_install_with_retries directory:examples/adsTester/ios
       - run:
           name: Build iOS
           command: |

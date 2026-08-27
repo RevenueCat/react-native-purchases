@@ -1,3 +1,5 @@
+require 'digest'
+require 'net/http'
 require 'shellwords'
 
 files_with_version_number = {
@@ -31,6 +33,11 @@ files_to_update_phc_version = {
 files_to_update_on_latest_stable_releases = {
   './scripts/docs/index.html' => ['react-native-purchases-docs/{x}/']
 }
+# Podspecs whose pinned PurchasesHybridCommon* versions gate the iOS CI jobs.
+phc_podspec_paths = [
+  'RNPurchases.podspec',
+  'react-native-purchases-ui/RNPaywalls.podspec'
+]
 repo_name = 'react-native-purchases'
 package_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
@@ -151,13 +158,44 @@ lane :build_example do |options|
   end
 end
 
+desc "Waits until the PurchasesHybridCommon versions pinned in the podspecs are on the CocoaPods CDN"
+lane :wait_for_pods_on_cdn do |options|
+  timeout = (options[:timeout] || COCOAPODS_CDN_TIMEOUT_SECONDS).to_i
+  poll_interval = (options[:poll_interval] || COCOAPODS_CDN_POLL_INTERVAL_SECONDS).to_i
+  soft_fail = options[:soft_fail].to_s == 'true'
+
+  pods = pinned_phc_pods(get_root_folder, phc_podspec_paths)
+  if pods.empty?
+    UI.user_error!('Found no pinned PurchasesHybridCommon dependency in the podspecs. Has their format changed?')
+  end
+
+  pods.each do |pod_name, version|
+    next if wait_for_pod_on_cdn(pod_name, version, timeout, poll_interval)
+
+    message = "#{pod_name} #{version} still isn't on the CocoaPods CDN after #{timeout / 60}m."
+    UI.user_error!("#{message} Giving up.") unless soft_fail
+    UI.important("#{message} Continuing anyway.")
+  end
+end
+
+desc "Run pod install in the given directory, retrying only if the pod hasn't reached the CocoaPods CDN yet"
+lane :pod_install_with_retries do |options|
+  directory = options[:directory].to_s
+  UI.user_error!('pod_install_with_retries requires a :directory option') if directory.empty?
+  pod_install_with_retries_in(
+    File.expand_path(directory, get_root_folder),
+    options[:pod_command] || 'pod',
+    attempts: (options[:attempts] || POD_INSTALL_ATTEMPTS).to_i,
+    retry_delay: (options[:retry_delay] || POD_INSTALL_RETRY_DELAY_SECONDS).to_i
+  )
+end
+
 desc "Run pod install, and if it fails on a bump-phc branch, attempt pod update and push the fix"
 lane :pod_install_and_update_if_needed do
   ios_dir = File.expand_path("#{sample_path}/ios", get_root_folder)
-  pod_install = pod_install_script
   Dir.chdir(ios_dir) do
     begin
-      sh("#{pod_install} #{ios_dir.shellescape}")
+      pod_install_with_retries_in(ios_dir, 'pod')
     rescue => e
       branch = Actions.git_branch
       unless branch.start_with?("bump-phc/")
@@ -332,16 +370,97 @@ def get_root_folder
   return File.expand_path('../../', __FILE__)
 end
 
-# Waits for the pinned PurchasesHybridCommon* versions to reach the CocoaPods CDN
-# before running `pod install --repo-update`, retrying if it still fails. Right
-# after a PHC release the pods aren't queryable yet, which otherwise fails the
-# bump PR until someone reruns the job by hand.
-#
-# Call this before any Dir.chdir: get_root_folder resolves __FILE__ relative to
-# the current directory, so it only returns the repo root from fastlane's own
-# working directory.
-def pod_install_script
-  File.expand_path('scripts/pod-install-with-retries.sh', get_root_folder).shellescape
+# Three hours. A newly published pod takes a while to propagate to
+# cdn.cocoapods.org, and it has been observed taking over two: 18.33.1 was on
+# trunk at 14:35 UTC and still not on the CDN at 16:35. The iOS jobs are gated on
+# this so a bump PR doesn't spend a mac executor on yarn install, simulator boot
+# and xcodebuild only to fail at pod install.
+COCOAPODS_CDN_TIMEOUT_SECONDS = 10_800
+COCOAPODS_CDN_POLL_INTERVAL_SECONDS = 60
+
+POD_INSTALL_ATTEMPTS = 3
+POD_INSTALL_RETRY_DELAY_SECONDS = 60
+
+# The only failures worth retrying: both mean the pinned version isn't visible to
+# the resolver yet. Every other pod install failure (bad Podfile, missing target,
+# Ruby/gem problems) fails identically on every attempt, so retrying it only
+# buries the real error further up the log.
+RETRIABLE_POD_INSTALL_ERRORS = [
+  'CocoaPods could not find compatible versions for pod',
+  'Unable to find a specification for'
+].freeze
+
+# CocoaPods prints the same "could not find compatible versions" headline when the
+# pinned version is perfectly resolvable and only the checked-in Podfile.lock is
+# stale. That needs `pod update`, not patience, so it must not be retried.
+PODFILE_LOCK_CONFLICT_MARKER = 'In snapshot (Podfile.lock)'
+
+# Returns [pod name, version] for every pinned PurchasesHybridCommon* dependency.
+def pinned_phc_pods(root_folder, podspec_paths)
+  podspec_paths.flat_map do |podspec_path|
+    File.read(File.join(root_folder, podspec_path))
+        .scan(/spec\.dependency\s+"(PurchasesHybridCommon\w*)",\s*'([^']+)'/)
+  end
+end
+
+# The CDN shards its index by the first three hex chars of the MD5 of the pod
+# name, one line per pod: "<name>/<version>/<version>/...".
+def cocoapods_cdn_versions(pod_name)
+  hash = Digest::MD5.hexdigest(pod_name)
+  url = "https://cdn.cocoapods.org/all_pods_versions_#{hash[0]}_#{hash[1]}_#{hash[2]}.txt"
+  line = Net::HTTP.get(URI(url)).each_line.find { |l| l.start_with?("#{pod_name}/") }
+  line ? line.strip.split('/').drop(1) : []
+rescue StandardError => e
+  UI.important("Couldn't read the CocoaPods CDN index: #{e.message}")
+  []
+end
+
+def wait_for_pod_on_cdn(pod_name, version, timeout_seconds, poll_interval_seconds)
+  started = Time.now
+  loop do
+    if cocoapods_cdn_versions(pod_name).include?(version)
+      UI.success("#{pod_name} #{version} is available on the CocoaPods CDN")
+      return true
+    end
+
+    waited = Time.now - started
+    return false if waited >= timeout_seconds
+
+    # Logged on every poll so CircleCI sees output and doesn't hit no_output_timeout.
+    UI.message("Waiting for #{pod_name} #{version} on the CocoaPods CDN " \
+               "(#{(waited / 60).floor}m elapsed of #{timeout_seconds / 60}m)...")
+    sleep(poll_interval_seconds)
+  end
+end
+
+def pod_install_with_retries_in(directory, pod_command, attempts: POD_INSTALL_ATTEMPTS, retry_delay: POD_INSTALL_RETRY_DELAY_SECONDS)
+  attempt = 1
+  loop do
+    UI.message("pod install --repo-update in #{directory} (attempt #{attempt}/#{attempts})")
+
+    failure_output = nil
+    Dir.chdir(directory) do
+      sh("#{pod_command} install --repo-update", error_callback: ->(output) { failure_output = output })
+    end
+    return if failure_output.nil?
+
+    if failure_output.include?(PODFILE_LOCK_CONFLICT_MARKER)
+      UI.user_error!('pod install failed because Podfile.lock still pins an older version, not because of ' \
+                     'CDN propagation. That needs a pod update, so not retrying.')
+    end
+
+    matched_error = RETRIABLE_POD_INSTALL_ERRORS.find { |error| failure_output.include?(error) }
+    if matched_error.nil?
+      UI.user_error!('pod install failed, and not because the pod is missing from the CDN. Not retrying.')
+    end
+    if attempt >= attempts
+      UI.user_error!("pod install still failing with \"#{matched_error}\" after #{attempts} attempts")
+    end
+
+    UI.important("pod install failed with \"#{matched_error}\", retrying in #{retry_delay}s...")
+    sleep(retry_delay)
+    attempt += 1
+  end
 end
 
 def current_version_number
@@ -356,13 +475,13 @@ end
 
 desc "Run maestro E2E tests on iOS"
 lane :run_maestro_e2e_tests_ios do
-  pod_install = pod_install_script
-  Dir.chdir("../e2e-tests/MaestroTestApp") do
+  maestro_app_dir = File.expand_path('e2e-tests/MaestroTestApp', get_root_folder)
+  Dir.chdir(maestro_app_dir) do
     sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
     sh("rm -rf ios/Pods")
-    sh("#{pod_install} ios")
+    pod_install_with_retries_in(File.join(maestro_app_dir, 'ios'), 'pod')
     sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
