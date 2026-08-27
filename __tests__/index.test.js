@@ -1745,6 +1745,19 @@ describe("Purchases", () => {
     });
   });
 
+  describe("setSingularDeviceID", () => {
+    describe("when setSingularDeviceID is called", () => {
+      it("makes the right call to Purchases", async () => {
+        const attributionID = "65a1ds56adsgh6954asd";
+
+        await Purchases.setSingularDeviceID(attributionID);
+
+        expect(NativeModules.RNPurchases.setSingularDeviceID).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.setSingularDeviceID).toBeCalledWith(attributionID);
+      });
+    });
+  });
+
   describe("setOnesignalUserID", () => {
     describe("when setOnesignalUserID is called", () => {
       it("makes the right call to Purchases", async () => {
