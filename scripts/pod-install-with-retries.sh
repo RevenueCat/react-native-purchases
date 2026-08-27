@@ -40,6 +40,12 @@ RETRIABLE_ERRORS=(
   'Unable to find a specification for'
 )
 
+# CocoaPods prints the same "could not find compatible versions" headline when the
+# pinned version is perfectly resolvable and only the checked-in Podfile.lock is
+# stale. That needs `pod update`, not patience, so it must not be retried -- the
+# bump-phc fallback in fastlane/Fastfile is what handles it.
+LOCKFILE_CONFLICT_MARKER='In snapshot (Podfile.lock)'
+
 is_retriable_failure() {
   local log_file="$1" pattern
   for pattern in "${RETRIABLE_ERRORS[@]}"; do
@@ -69,6 +75,11 @@ while true; do
   # shellcheck disable=SC2086 # POD_BIN may be a multi-word command, e.g. "bundle exec pod"
   if $POD_BIN install --repo-update 2>&1 | tee "$pod_install_log"; then
     exit 0
+  fi
+
+  if grep -qF "$LOCKFILE_CONFLICT_MARKER" "$pod_install_log"; then
+    echo "❌ pod install failed because Podfile.lock still pins an older version, not because of CDN propagation. That needs a pod update, so not retrying." >&2
+    exit 1
   fi
 
   matched_error="$(is_retriable_failure "$pod_install_log")" || {
