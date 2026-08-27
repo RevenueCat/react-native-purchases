@@ -1,23 +1,18 @@
 #!/usr/bin/env bash
 #
-# Runs `pod install --repo-update` in the given directory, but first waits for
-# the PurchasesHybridCommon* versions this repo pins to be available on the
-# CocoaPods CDN.
+# Runs `pod install --repo-update` in the given directory, retrying when it fails
+# because the pinned PurchasesHybridCommon* version isn't on the CocoaPods CDN yet.
 #
-# A newly published pod takes a while to propagate to cdn.cocoapods.org, so on
-# PHC bump PRs `pod install` fails with:
-#
-#   [!] CocoaPods could not find compatible versions for pod "PurchasesHybridCommon"
-#
-# Waiting for the CDN (and retrying the install) lets those builds pass on their
-# own instead of needing a manual rerun once the pod shows up.
+# The iOS CI jobs are already gated on scripts/wait-for-pods-on-cdn.sh, so by the
+# time this runs the pod should be published. The short re-check and the retries
+# here cover the gap between the two: the gate job and the mac job can hit
+# different CDN edge nodes, so the pod can be visible to one and not yet the other.
 #
 # Usage: scripts/pod-install-with-retries.sh <directory-containing-Podfile>
 #
 # Environment overrides:
 #   POD_BIN                          command used to invoke CocoaPods (default: pod)
-#   CDN_WAIT_TIMEOUT_SECONDS         how long to wait for the CDN (default: 3600)
-#   CDN_POLL_INTERVAL_SECONDS        delay between CDN checks (default: 30)
+#   CDN_WAIT_TIMEOUT_SECONDS         how long to re-check the CDN first (default: 300)
 #   POD_INSTALL_ATTEMPTS             how many times to run pod install when it
 #                                    fails with a CDN-propagation error (default: 3)
 #   POD_INSTALL_RETRY_DELAY_SECONDS  delay between pod install attempts (default: 60)
@@ -31,66 +26,10 @@ if [ -z "$pod_dir" ]; then
 fi
 
 POD_BIN="${POD_BIN:-pod}"
-CDN_WAIT_TIMEOUT_SECONDS="${CDN_WAIT_TIMEOUT_SECONDS:-3600}"
-CDN_POLL_INTERVAL_SECONDS="${CDN_POLL_INTERVAL_SECONDS:-30}"
 POD_INSTALL_ATTEMPTS="${POD_INSTALL_ATTEMPTS:-3}"
 POD_INSTALL_RETRY_DELAY_SECONDS="${POD_INSTALL_RETRY_DELAY_SECONDS:-60}"
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
-# Emits "<pod name> <version>" for every pinned PurchasesHybridCommon* dependency.
-pinned_phc_dependencies() {
-  sed -nE "s/.*spec\.dependency[[:space:]]+\"(PurchasesHybridCommon[A-Za-z]*)\",[[:space:]]*'([^']+)'.*/\1 \2/p" \
-    "$repo_root/RNPurchases.podspec" \
-    "$repo_root/react-native-purchases-ui/RNPaywalls.podspec"
-}
-
-md5_hex() {
-  if command -v md5 >/dev/null 2>&1; then
-    printf '%s' "$1" | md5
-  else
-    printf '%s' "$1" | md5sum | cut -d ' ' -f 1
-  fi
-}
-
-# The CDN shards its index by the first three hex chars of the MD5 of the pod
-# name, one line per pod: "<name>/<version>/<version>/...".
-cdn_versions_url() {
-  local hash
-  hash="$(md5_hex "$1")"
-  echo "https://cdn.cocoapods.org/all_pods_versions_${hash:0:1}_${hash:1:1}_${hash:2:1}.txt"
-}
-
-pod_version_published() {
-  local pod_name="$1" version="$2"
-  curl -fsSL -H 'Cache-Control: no-cache' "$(cdn_versions_url "$pod_name")" 2>/dev/null \
-    | grep "^${pod_name}/" \
-    | tr '/' '\n' \
-    | grep -qxF "$version"
-}
-
-wait_for_pinned_dependencies() {
-  local started deadline pod_name version waited
-  started=$(date +%s)
-  deadline=$(( started + CDN_WAIT_TIMEOUT_SECONDS ))
-
-  while read -r pod_name version; do
-    [ -n "$pod_name" ] || continue
-
-    while ! pod_version_published "$pod_name" "$version"; do
-      waited=$(( $(date +%s) - started ))
-      if [ "$(date +%s)" -ge "$deadline" ]; then
-        echo "⚠️  ${pod_name} ${version} still isn't on the CocoaPods CDN after $(( waited / 60 ))m. Running pod install anyway."
-        return 0
-      fi
-      # Logged on every poll so CircleCI sees output and doesn't hit no_output_timeout.
-      echo "⏳ Waiting for ${pod_name} ${version} on the CocoaPods CDN ($(( waited / 60 ))m elapsed of $(( CDN_WAIT_TIMEOUT_SECONDS / 60 ))m)..."
-      sleep "$CDN_POLL_INTERVAL_SECONDS"
-    done
-
-    echo "✅ ${pod_name} ${version} is available on the CocoaPods CDN"
-  done < <(pinned_phc_dependencies)
-}
 
 # The only failures worth retrying: both mean the pinned version isn't visible to
 # the resolver yet. Every other pod install failure (bad Podfile, missing target,
@@ -112,7 +51,12 @@ is_retriable_failure() {
   return 1
 }
 
-wait_for_pinned_dependencies
+# Short and soft by design: the gate job already did the long wait, so this only
+# covers an edge node that is still catching up. If it doesn't resolve, fall
+# through and let pod install produce the real error.
+CDN_WAIT_TIMEOUT_SECONDS="${CDN_WAIT_TIMEOUT_SECONDS:-300}" \
+CDN_WAIT_SOFT_FAIL=true \
+  "$repo_root/scripts/wait-for-pods-on-cdn.sh"
 
 cd "$pod_dir"
 

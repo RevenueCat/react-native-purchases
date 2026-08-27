@@ -154,9 +154,10 @@ end
 desc "Run pod install, and if it fails on a bump-phc branch, attempt pod update and push the fix"
 lane :pod_install_and_update_if_needed do
   ios_dir = File.expand_path("#{sample_path}/ios", get_root_folder)
+  pod_install = pod_install_script
   Dir.chdir(ios_dir) do
     begin
-      sh("#{pod_install_script} #{ios_dir.shellescape}")
+      sh("#{pod_install} #{ios_dir.shellescape}")
     rescue => e
       branch = Actions.git_branch
       unless branch.start_with?("bump-phc/")
@@ -335,6 +336,10 @@ end
 # before running `pod install --repo-update`, retrying if it still fails. Right
 # after a PHC release the pods aren't queryable yet, which otherwise fails the
 # bump PR until someone reruns the job by hand.
+#
+# Call this before any Dir.chdir: get_root_folder resolves __FILE__ relative to
+# the current directory, so it only returns the repo root from fastlane's own
+# working directory.
 def pod_install_script
   File.expand_path('scripts/pod-install-with-retries.sh', get_root_folder).shellescape
 end
@@ -351,12 +356,13 @@ end
 
 desc "Run maestro E2E tests on iOS"
 lane :run_maestro_e2e_tests_ios do
+  pod_install = pod_install_script
   Dir.chdir("../e2e-tests/MaestroTestApp") do
     sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
     sh("rm -rf ios/Pods")
-    sh("#{pod_install_script} ios")
+    sh("#{pod_install} ios")
     sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end

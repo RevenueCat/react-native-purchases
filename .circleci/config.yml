@@ -205,6 +205,16 @@ jobs:
             export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
             ./gradlew assembleDebug
 
+  wait_for_ios_pods:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Wait for PurchasesHybridCommon on the CocoaPods CDN
+          command: scripts/wait-for-pods-on-cdn.sh
+
   adstester_ios:
     <<: *base-mac-job-xcode-16
     steps:
@@ -480,13 +490,24 @@ workflows:
       # Testing phase - runs on all branches
       - analyse_js
       - android
-      - ios
+      # The iOS jobs are gated on wait_for_ios_pods so a PHC bump PR doesn't burn
+      # mac executors building against a pod that hasn't reached the CDN yet.
+      - wait_for_ios_pods
+      - ios:
+          requires:
+            - wait_for_ios_pods
       - expo_android
-      - expo_ios
+      - expo_ios:
+          requires:
+            - wait_for_ios_pods
       - expo_web
-      - adstester_ios
+      - adstester_ios:
+          requires:
+            - wait_for_ios_pods
       - adstester_android
       - run-maestro-e2e-tests-ios:
+          requires:
+            - wait_for_ios_pods
           context:
             - maestro-e2e-tests
             - e2e-tests
@@ -553,7 +574,10 @@ workflows:
       or:
         - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
     jobs:
+      - wait_for_ios_pods
       - run-maestro-e2e-tests-ios:
+          requires:
+            - wait_for_ios_pods
           context:
             - maestro-e2e-tests
             - e2e-tests
