@@ -163,10 +163,9 @@ jobs:
       - revenuecat/install-gem-mac-dependencies:
           cache-version: expo-v2
           working_directory: examples/purchaseTesterExpo
-      - rn/pod_install:
-          cache: false
-          pod_install_directory: examples/purchaseTesterExpo/ios
-          pod_install_command: pod install --repo-update
+      - run:
+          name: Pod Install
+          command: scripts/pod-install-with-retries.sh examples/purchaseTesterExpo/ios
       - run:
           name: Build iOS Expo app
           working_directory: examples/purchaseTesterExpo
@@ -239,8 +238,7 @@ jobs:
           cache-version: adstester-v1
       - run:
           name: Pod Install
-          working_directory: examples/adsTester/ios
-          command: bundle exec pod install --repo-update
+          command: POD_BIN="bundle exec pod" scripts/pod-install-with-retries.sh examples/adsTester/ios
       - run:
           name: Build iOS
           command: |

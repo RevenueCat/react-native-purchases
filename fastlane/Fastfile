@@ -1,3 +1,5 @@
+require 'shellwords'
+
 files_with_version_number = {
     './.version' => ['{x}'],
     './package.json' => ['"version": "{x}"'],
@@ -154,7 +156,7 @@ lane :pod_install_and_update_if_needed do
   ios_dir = File.expand_path("#{sample_path}/ios", get_root_folder)
   Dir.chdir(ios_dir) do
     begin
-      sh("pod install --repo-update")
+      sh("#{pod_install_script} #{ios_dir.shellescape}")
     rescue => e
       branch = Actions.git_branch
       unless branch.start_with?("bump-phc/")
@@ -329,6 +331,14 @@ def get_root_folder
   return File.expand_path('../../', __FILE__)
 end
 
+# Waits for the pinned PurchasesHybridCommon* versions to reach the CocoaPods CDN
+# before running `pod install --repo-update`, retrying if it still fails. Right
+# after a PHC release the pods aren't queryable yet, which otherwise fails the
+# bump PR until someone reruns the job by hand.
+def pod_install_script
+  File.expand_path('scripts/pod-install-with-retries.sh', get_root_folder).shellescape
+end
+
 def current_version_number
   File.read("../.version").strip
 end
@@ -345,7 +355,8 @@ lane :run_maestro_e2e_tests_ios do
     sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
-    sh("rm -rf ios/Pods && cd ios && pod install --repo-update")
+    sh("rm -rf ios/Pods")
+    sh("#{pod_install_script} ios")
     sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
