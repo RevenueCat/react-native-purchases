@@ -188,18 +188,15 @@ export interface TrackCustomPaywallImpressionOptions {
 
 /**
  * Predefined mediator name constants. Use these or pass any string for unlisted networks.
- * @beta
  */
 export const AdMediatorName = {
   adMob: "AdMob",
   appLovin: "AppLovin",
 } as const;
-/** @beta */
 export type AdMediatorName = string;
 
 /**
  * Predefined ad format constants. Use these or pass any string for unlisted formats.
- * @beta
  */
 export const AdFormat = {
   other: "other",
@@ -210,12 +207,10 @@ export const AdFormat = {
   nativeAd: "native",
   appOpen: "app_open",
 } as const;
-/** @beta */
 export type AdFormat = string;
 
 /**
  * Predefined precision constants for ad revenue. Use these or pass any string for unlisted values.
- * @beta
  */
 export const AdRevenuePrecision = {
   exact: "exact",
@@ -223,10 +218,8 @@ export const AdRevenuePrecision = {
   estimated: "estimated",
   unknown: "unknown",
 } as const;
-/** @beta */
 export type AdRevenuePrecision = string;
 
-/** @beta */
 export interface AdDisplayedData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -236,7 +229,6 @@ export interface AdDisplayedData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdOpenedData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -246,7 +238,6 @@ export interface AdOpenedData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdLoadedData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -256,7 +247,6 @@ export interface AdLoadedData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdRevenueData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -269,7 +259,6 @@ export interface AdRevenueData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdFailedToLoadData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -282,7 +271,6 @@ export interface AdFailedToLoadData {
  * Token generated for a rewarded ad impression. Pass `clientTransactionId` to
  * the ad network as server-side verification custom data, then to
  * {@link Purchases.pollRewardVerification} to await the reward.
- * @beta
  */
 export interface RewardVerificationToken {
   customData: string;
@@ -292,7 +280,6 @@ export interface RewardVerificationToken {
 
 /**
  * A reward granted after a verified rewarded ad. Discriminated by `type`.
- * @beta
  */
 export type VerifiedReward =
   | VerifiedVirtualCurrencyReward
@@ -300,14 +287,12 @@ export type VerifiedReward =
   | VerifiedNoReward
   | VerifiedUnsupportedReward;
 
-/** @beta */
 export interface VerifiedVirtualCurrencyReward {
   type: "virtual_currency";
   code: string;
   amount: number;
 }
 
-/** @beta */
 export interface VerifiedEntitlementReward {
   type: "entitlement";
   identifier: string;
@@ -317,19 +302,18 @@ export interface VerifiedEntitlementReward {
   expiresAtMillis: number;
 }
 
-/** Verification completed but nothing was granted. @beta */
+/** Verification completed but nothing was granted. */
 export interface VerifiedNoReward {
   type: "no_reward";
 }
 
-/** Verification completed but the reward type isn't modeled by this SDK version. @beta */
+/** Verification completed but the reward type isn't modeled by this SDK version. */
 export interface VerifiedUnsupportedReward {
   type: "unsupported_reward";
 }
 
 /**
  * Result of polling for reward verification.
- * @beta
  */
 export interface RewardVerificationResult {
   /** The primary reward when verification succeeded; absent on failure. */
@@ -343,7 +327,6 @@ export interface RewardVerificationResult {
 /**
  * Ad metadata for a rewarded ad, passed to {@link Purchases.pollRewardVerification}
  * to have the SDK automatically track reward-verification events for it.
- * @beta
  */
 export interface RewardedAdTrackingMetadata {
   mediatorName: AdMediatorName;
@@ -2115,7 +2098,6 @@ export default class Purchases {
 
   /**
    * Provides access to ad lifecycle tracking methods.
-   * @beta
    */
   public static get adTracker(): PurchasesAdTracker {
     if (!adTrackerSingleton) {
@@ -2163,7 +2145,6 @@ export default class Purchases {
    *
    * @param impressionId - The impression identifier of the rewarded ad.
    * @returns {Promise<RewardVerificationToken>} promise with the generated token.
-   * @beta
    */
   public static async generateRewardVerificationToken(
     impressionId: string
@@ -2185,7 +2166,6 @@ export default class Purchases {
    *   reward-verification events for the ad it belongs to; omit to poll
    *   without tracking.
    * @returns {Promise<RewardVerificationResult>} promise with the verification result.
-   * @beta
    */
   public static async pollRewardVerification(
     clientTransactionId: string,
@@ -2241,7 +2221,6 @@ let adTrackerSingleton: PurchasesAdTracker | undefined;
 /**
  * Provides methods for tracking ad lifecycle events.
  * Access via {@link Purchases.adTracker}.
- * @beta
  */
 export class PurchasesAdTracker {
   public async trackAdDisplayed(data: AdDisplayedData): Promise<void> {
