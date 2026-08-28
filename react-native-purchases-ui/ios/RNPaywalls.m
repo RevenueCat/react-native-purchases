@@ -145,6 +145,13 @@ RCT_EXPORT_METHOD(resumePurchasePackageInitiated:(NSString *)requestId
     }
 }
 
+RCT_EXPORT_METHOD(resumeRestoreInitiated:(NSString *)requestId
+                  shouldProceed:(BOOL)shouldProceed) {
+    if (@available(iOS 15.0, *)) {
+        [PaywallProxy resumeRestoreInitiatedWithRequestId:requestId shouldProceed:shouldProceed];
+    }
+}
+
 RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
                   result:(NSString *)result
                   errorMessage:(nullable NSString *)errorMessage) {

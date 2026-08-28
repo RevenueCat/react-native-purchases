@@ -293,6 +293,17 @@ didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
     }
 }
 
+- (void)paywallViewController:(RCPaywallViewController *)controller
+didInitiateRestoreWithRequestId:(NSString *)requestId API_AVAILABLE(ios(15.0)) {
+    if (self.onRestoreInitiated) {
+        self.onRestoreInitiated(@{
+            @"requestId": requestId,
+        });
+    } else {
+        [PaywallProxy resumeRestoreInitiatedWithRequestId:requestId shouldProceed:YES];
+    }
+}
+
 - (void)paywallViewControllerDidOpenWebCheckout:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
     if (self.onWebCheckoutOpened) {
         self.onWebCheckoutOpened(nil);
