@@ -502,6 +502,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void setSingularDeviceID(String singularDeviceID) {
+        SubscriberAttributesKt.setSingularDeviceID(singularDeviceID);
+    }
+
+    @ReactMethod
     public void setOnesignalID(String onesignalID) {
         SubscriberAttributesKt.setOnesignalID(onesignalID);
     }

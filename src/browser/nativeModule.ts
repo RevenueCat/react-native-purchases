@@ -272,6 +272,9 @@ export const browserNativeModuleRNPurchases = {
   setKochavaDeviceID: async (_kochavaDeviceID: string) => {
     methodNotSupportedOnWeb('setKochavaDeviceID');
   },
+  setSingularDeviceID: async (_singularDeviceID: string) => {
+    methodNotSupportedOnWeb('setSingularDeviceID');
+  },
   setOnesignalID: async (_onesignalID: string) => {
     methodNotSupportedOnWeb('setOnesignalID');
   },

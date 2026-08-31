@@ -441,6 +441,10 @@ RCT_EXPORT_METHOD(setKochavaDeviceID:(NSString *)kochavaDeviceID) {
     [RCCommonFunctionality setKochavaDeviceID:kochavaDeviceID.mappingNSNullToNil];
 }
 
+RCT_EXPORT_METHOD(setSingularDeviceID:(NSString *)singularDeviceID) {
+    [RCCommonFunctionality setSingularDeviceID:singularDeviceID.mappingNSNullToNil];
+}
+
 RCT_EXPORT_METHOD(setOnesignalID:(NSString *)onesignalID) {
     [RCCommonFunctionality setOnesignalID:onesignalID.mappingNSNullToNil];
 }
