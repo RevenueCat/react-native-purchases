@@ -3883,10 +3883,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:18.38.0":
-  version: 18.38.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:18.38.0"
-  checksum: 8c49e13370e3d7f933a02ed7373211d7b3f5f2e6a606af9e8bf24394988ea4cc4fcd743fba3363846207f096a77e3a33883a6173a74dd52f3599db22c062b956
+"@revenuecat/purchases-typescript-internal@file:./local-phc/revenuecat-purchases-typescript-internal-18.33.0-local.5.tgz::locator=react-native-purchases%40workspace%3A.":
+  version: 18.33.0-local.5
+  resolution: "@revenuecat/purchases-typescript-internal@file:./local-phc/revenuecat-purchases-typescript-internal-18.33.0-local.5.tgz::locator=react-native-purchases%40workspace%3A."
+  checksum: 23ab2661fee05c0d66c3d7e3bd3115dfd3a04e31abb8bcd8f1a2e753331095551cd0c65faa9e7545248f369014bdc51dfc5b74a424f54eff7b58d262e9f41d2a
+  languageName: node
+  linkType: hard
+
+"@revenuecat/purchases-typescript-internal@npm:18.37.0":
+  version: 18.37.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:18.37.0"
+  checksum: ffc454a23b938ce2931ab6d928fca2ce92e75c74eb7f4e98bdef4d1f5dd0b9d242ed272f54f5592f79b6542b2db946ace2326944b3df9e8e742b785951b0477b
   languageName: node
   linkType: hard
 
@@ -8600,8 +8607,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 18.38.0
-    "@revenuecat/purchases-typescript-internal": 18.38.0
+    "@revenuecat/purchases-js-hybrid-mappings": 18.37.0
+    "@revenuecat/purchases-typescript-internal": "file:./local-phc/revenuecat-purchases-typescript-internal-18.33.0-local.5.tgz"
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
