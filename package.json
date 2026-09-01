@@ -119,6 +119,6 @@
   },
   "dependencies": {
     "@revenuecat/purchases-js-hybrid-mappings": "18.33.1",
-    "@revenuecat/purchases-typescript-internal": "18.33.1"
+    "@revenuecat/purchases-typescript-internal": "file:./local-phc/revenuecat-purchases-typescript-internal-18.33.0-local.5.tgz"
   }
 }
