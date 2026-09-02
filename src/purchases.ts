@@ -822,7 +822,7 @@ export default class Purchases {
       null
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -858,7 +858,7 @@ export default class Purchases {
       product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -893,7 +893,7 @@ export default class Purchases {
       product.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -930,7 +930,7 @@ export default class Purchases {
         : { isPersonalizedPrice: googleIsPersonalizedPrice }
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -967,7 +967,7 @@ export default class Purchases {
       subscriptionOption.presentedOfferingContext
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -998,7 +998,7 @@ export default class Purchases {
       null
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -1433,7 +1433,7 @@ export default class Purchases {
       winBackOffer.identifier
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
@@ -1467,7 +1467,7 @@ export default class Purchases {
       winBackOffer.identifier
     ).catch((error: PurchasesError) => {
       error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
+        String(error.code) === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
       throw error;
     });
   }
