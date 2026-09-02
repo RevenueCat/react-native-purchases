@@ -10,7 +10,7 @@ import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPack
 import type { RewardedAdTrackingMetadata } from '../purchases';
 
 
-const packageVersion = '10.8.1';
+const packageVersion = '10.9.0';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
