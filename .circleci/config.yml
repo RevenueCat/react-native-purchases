@@ -292,6 +292,42 @@ jobs:
             export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
             ./gradlew assembleDebug
 
+  agp9_test_app_android:
+    description: "Compile a stock React Native 0.87 app (AGP 9) with both modules, with and without AGP's built-in Kotlin"
+    executor:
+      name: rn/linux_android
+      resource_class: large
+      build_image_version: latest
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java
+      - restore_cache:
+          keys:
+            - agp9testapp-yarn-v1-{{ checksum "e2e-tests/AGP9TestApp/yarn.lock" }}
+      - run:
+          name: Yarn Install (AGP9TestApp)
+          working_directory: e2e-tests/AGP9TestApp
+          command: yarn install
+      - save_cache:
+          key: agp9testapp-yarn-v1-{{ checksum "e2e-tests/AGP9TestApp/yarn.lock" }}
+          paths:
+            - e2e-tests/AGP9TestApp/.yarn/cache
+      - revenuecat/restore-gradle-user-home-directory-from-cache:
+          cache_prefix: agp9testapp-v1
+      - run:
+          name: Compile (stock template, KGP)
+          working_directory: e2e-tests/AGP9TestApp/android
+          command: ./gradlew :app:compileDebugKotlin
+          no_output_timeout: 20m
+      - run:
+          name: Compile (AGP built-in Kotlin, new DSL)
+          working_directory: e2e-tests/AGP9TestApp/android
+          command: ./gradlew :app:compileDebugKotlin -Pandroid.builtInKotlin=true -Pandroid.newDsl=true
+          no_output_timeout: 20m
+      - revenuecat/save-gradle-user-home-directory-to-cache:
+          cache_prefix: agp9testapp-v1
+
   expo_web:
     executor:
       name: rn/linux_js
@@ -488,6 +524,7 @@ workflows:
       - expo_web
       - adstester_ios
       - adstester_android
+      - agp9_test_app_android
       - run-maestro-e2e-tests-ios:
           context:
             - maestro-e2e-tests
@@ -504,6 +541,7 @@ workflows:
             - analyse_js
             - android
             - ios
+            - agp9_test_app_android
           <<: *release-branches
       - revenuecat/tag-current-branch:
           ruby_version: "3.3.0"
