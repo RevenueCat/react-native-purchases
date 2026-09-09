@@ -6971,15 +6971,15 @@ __metadata:
   linkType: hard
 
 "joi@npm:^17.2.1":
-  version: 17.13.4
-  resolution: "joi@npm:17.13.4"
+  version: 17.13.7
+  resolution: "joi@npm:17.13.7"
   dependencies:
     "@hapi/hoek": ^9.3.0
     "@hapi/topo": ^5.1.0
     "@sideway/address": ^4.1.5
     "@sideway/formula": ^3.0.1
     "@sideway/pinpoint": ^2.0.0
-  checksum: 99e0a784f08cb0b6910bd42df094e4f3f047c2589c61b139b7eb25a21f814478a1d3b5c68134bbcc4153ac216cbae2710a2b7f56605974e5c66a0ebdfab08e8f
+  checksum: 2f9af4cd84c60b9c493184f8eb127454f2577faae8f868c9acb57ac6f0ca80b75f2d5baaa26c14e6a1bdca391738acec8a3e2dd3430dfb500f2f82c042a90071
   languageName: node
   linkType: hard
 
