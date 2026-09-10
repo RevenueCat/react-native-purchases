@@ -40,7 +40,7 @@ describe("errors rejected by the native module", () => {
     expect(error.readableErrorCode).toBe("InvalidCredentialsError");
     expect(error.underlyingErrorMessage).toBe("Invalid API Key.");
     expect(error.userInfo.readableErrorCode).toBe("InvalidCredentialsError");
-    expect(error.userCancelled).toBeNull();
+    expect(error.userCancelled).toBe(false);
   });
 
   it("stay real Errors", async () => {
