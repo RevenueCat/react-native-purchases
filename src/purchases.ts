@@ -44,7 +44,7 @@ import {
   Storefront,
   STORE_REPLACEMENT_MODE,
   StoreProductChangeInfo,
-  withNormalizedErrors,
+  normalizePurchasesError,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -113,7 +113,29 @@ const NATIVE_MODULE_ERROR =
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
 const nativeModule = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
-const RNPurchases = nativeModule ? withNormalizedErrors(nativeModule) : nativeModule;
+const RNPurchases = nativeModule ? normalizingRejections(nativeModule) : nativeModule;
+
+// Wraps the module rather than each call site so no method can skip it. The
+// returned promise is chained, never copied: enumerating a TurboModule promise's
+// own properties throws inside Hermes.
+function normalizingRejections<T extends object>(module: T): T {
+  return new Proxy(module, {
+    get(target, property, receiver) {
+      const value = Reflect.get(target, property, receiver);
+      if (typeof value !== "function") {
+        return value;
+      }
+      return (...args: unknown[]) => {
+        const result = (value as (...callArgs: unknown[]) => unknown).apply(target, args);
+        return result instanceof Promise
+          ? result.then(undefined, (error: unknown) => {
+              throw normalizePurchasesError(error);
+            })
+          : result;
+      };
+    },
+  });
+}
 
 // Only create event emitter if native module is available to avoid crash on import
 //
