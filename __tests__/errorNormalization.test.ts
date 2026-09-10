@@ -52,8 +52,6 @@ describe("errors rejected by the native module", () => {
     expect(typeof (error as Error).stack).toBe("string");
   });
 
-  // Android already nests the payload here; replacing userInfo with the single
-  // field ErrorInfo declares would drop the rest.
   it("keep the fields userInfo already carried", async () => {
     NativeModules.RNPurchases.getCustomerInfo.mockRejectedValueOnce(nativeRejection());
 

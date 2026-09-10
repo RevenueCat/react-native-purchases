@@ -330,8 +330,7 @@ RCT_EXPORT_METHOD(eligibleWinBackOffersForProductIdentifier:(nonnull NSString *)
             }
         }];
     } else {
-        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
-        [self rejectPromiseWithBlock:reject unsupportedError:error];
+        [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
     }
 }
 
@@ -344,8 +343,7 @@ RCT_EXPORT_METHOD(purchaseProductWithWinBackOffer:(nonnull NSString *)productID
                                 winBackOfferID:winBackOfferID
                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
     } else {
-        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
-        [self rejectPromiseWithBlock:reject unsupportedError:error];
+        [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
     }
 }
 
@@ -360,8 +358,7 @@ RCT_EXPORT_METHOD(purchasePackageWithWinBackOffer:(nonnull NSString *)packageID
                                 winBackOfferID:winBackOfferID
                                completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
     } else {
-        NSError *error = [self createUnsupportedErrorWithDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
-        [self rejectPromiseWithBlock:reject unsupportedError:error];
+        [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"iOS win-back offers are only available on iOS 18.0 or greater."];
     }
 }
 
@@ -554,13 +551,11 @@ RCT_EXPORT_METHOD(showManageSubscriptions:
         }];
     } else {
         NSLog(@"[Purchases] Warning: tried to showManageSubscriptions in non supported iOS devices. Only available on iOS 13.0 or greater.");
-        NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS 13.0 or greater."];
-        [self rejectPromiseWithBlock:reject unsupportedError:error];
+        [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS 13.0 or greater."];
     }
     #else
     NSLog(@"[Purchases] Warning: tried to showManageSubscriptions in non-ios devices. That's not supported.");
-    NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS devices."];
-    [self rejectPromiseWithBlock:reject unsupportedError:error];
+    [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"Tried to present manage subscriptions sheet, but this functionality is only available on iOS devices."];
     #endif
 }
 
@@ -649,8 +644,7 @@ RCT_EXPORT_METHOD(recordPurchaseForProductID:(nonnull NSString *)productID
                                                completion:[self getResponseCompletionBlockWithResolve:resolve
                                                                                                reject:reject]];
     } else {
-        NSError *error = [self createUnsupportedErrorWithDescription:@"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater."];
-        [self rejectPromiseWithBlock:reject unsupportedError:error];
+        [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"Tried to handle transaction made by your app, but this functionality is only available on iOS 15.0 or greater."];
     }
 }
 
@@ -778,16 +772,10 @@ readyForPromotedProduct:(RCStoreProduct *)product
     };
 }
 
-- (NSError *)createUnsupportedErrorWithDescription:(NSString *)description {
-    // readable_error_code is ErrorCode.codeName in purchases-ios, and is what
-    // RCErrorContainer reads to populate readableErrorCode for the JS layer.
-    return [[NSError alloc] initWithDomain:RCPurchasesErrorCodeDomain
-                                      code:RCUnsupportedError
-                                  userInfo:@{NSLocalizedDescriptionKey : description,
-                                             @"readable_error_code" : @"UNSUPPORTED_ERROR"}];
-}
-
-- (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject unsupportedError:(NSError *)error {
+- (void)rejectPromiseWithBlock:(RCTPromiseRejectBlock)reject unsupportedErrorDescription:(NSString *)description {
+    NSError *error = [[NSError alloc] initWithDomain:RCPurchasesErrorCodeDomain
+                                                code:RCUnsupportedError
+                                            userInfo:@{NSLocalizedDescriptionKey : description}];
     [self rejectPromiseWithBlock:reject
                            error:[[RCErrorContainer alloc] initWithError:error extraPayload:@{}]];
 }
