@@ -115,9 +115,8 @@ const usingBrowserMode = shouldUseBrowserMode();
 const nativeModule = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
 const RNPurchases = nativeModule ? normalizingRejections(nativeModule) : nativeModule;
 
-// Wraps the module rather than each call site so no method can skip it. The
-// returned promise is chained, never copied: enumerating a TurboModule promise's
-// own properties throws inside Hermes.
+// The returned promise is chained, never copied: enumerating a TurboModule
+// promise's own properties throws inside Hermes.
 function normalizingRejections<T extends object>(module: T): T {
   return new Proxy(module, {
     get(target, property, receiver) {

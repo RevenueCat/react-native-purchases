@@ -55,12 +55,11 @@ describe("errors rejected by the native module", () => {
   it("keep the fields userInfo already carried", async () => {
     NativeModules.RNPurchases.getCustomerInfo.mockRejectedValueOnce(nativeRejection());
 
-    const error = await Purchases.getCustomerInfo().catch((caught: unknown) => caught);
+    const error: PurchasesError = await Purchases.getCustomerInfo().catch((caught: unknown) => caught);
+    const userInfo = error.userInfo as Record<string, unknown>;
 
-    expect((error as { userInfo: Record<string, unknown> }).userInfo.underlyingErrorMessage).toBe("Invalid API Key.");
-    expect((error as { userInfo: Record<string, unknown> }).userInfo.readable_error_code).toBe(
-      "InvalidCredentialsError"
-    );
+    expect(userInfo.underlyingErrorMessage).toBe("Invalid API Key.");
+    expect(userInfo.readable_error_code).toBe("InvalidCredentialsError");
   });
 
   it("leave successful calls alone", async () => {
