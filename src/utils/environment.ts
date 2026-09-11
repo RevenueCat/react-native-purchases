@@ -9,13 +9,13 @@ import { NativeModules, Platform } from "react-native";
  */
 export function shouldUseBrowserMode(): boolean {
   if (isExpoGo()) {
-    console.log('Expo Go app detected. Using RevenueCat in Browser Mode.');
+    console.log('[RevenueCat] Expo Go app detected. Using RevenueCat in Browser Mode.');
     return true;
   } else if (isRorkSandbox()) {
-    console.log('Rork app detected. Using RevenueCat in Preview API Mode.');
+    console.log('[RevenueCat] Rork app detected. Using RevenueCat in Preview API Mode.');
     return true;
   } else if (isWebPlatform()) {
-    console.log('Web platform detected. Using RevenueCat in Browser Mode.');
+    console.log('[RevenueCat] Web platform detected. Using RevenueCat in Browser Mode.');
     return true;
   } else {
     return false;
