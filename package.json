@@ -97,6 +97,7 @@
     "typescript": "^5.2.2"
   },
   "resolutions": {
+    "@revenuecat/purchases-typescript-internal": "file:./local-phc/revenuecat-purchases-typescript-internal-18.38.0-local.9.tgz",
     "@types/react": "18.2.44",
     "@types/react-dom": "18.2.0",
     "fast-xml-parser": "5.5.7"
@@ -118,7 +119,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-js-hybrid-mappings": "18.37.0",
-    "@revenuecat/purchases-typescript-internal": "file:./local-phc/revenuecat-purchases-typescript-internal-18.38.0-local.8.tgz"
+    "@revenuecat/purchases-js-hybrid-mappings": "18.38.0",
+    "@revenuecat/purchases-typescript-internal": "18.38.0"
   }
 }
