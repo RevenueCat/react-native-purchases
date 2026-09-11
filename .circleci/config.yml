@@ -117,7 +117,7 @@ jobs:
           command: yarn prepare
       - run:
           name: Tests
-          command: yarn test
+          command: yarn test --maxWorkers=2
       - run:
           name: API Tests
           command: yarn tsc -p apitesters
