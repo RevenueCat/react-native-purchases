@@ -65,6 +65,13 @@ const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
     resume(true);
   };
 
+  const onRestoreInitiated = ({resume}: {
+    resume: (shouldResume: boolean) => void
+  }) => {
+    console.log('Restore initiated');
+    resume(true);
+  };
+
   const styles = StyleSheet.create({
     flex1: {
       flex: 1,
@@ -89,6 +96,7 @@ const PaywallScreen: React.FC<Props> = ({route, navigation}: Props) => {
         onRestoreError={onRestoreError}
         onDismiss={onDismiss}
         onPurchasePackageInitiated={onPurchasePackageInitiated}
+        onRestoreInitiated={onRestoreInitiated}
       />
     </View>
   );

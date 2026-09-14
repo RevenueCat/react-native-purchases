@@ -86,6 +86,11 @@ internal class RNPaywallsModule(
     }
 
     @ReactMethod
+    fun resumeRestoreInitiated(requestId: String, shouldProceed: Boolean) {
+        PaywallListenerWrapper.resumeRestoreInitiated(requestId, shouldProceed)
+    }
+
+    @ReactMethod
     fun resolvePurchaseLogicResult(requestId: String, result: String, errorMessage: String?) {
         HybridPurchaseLogicBridge.resolveResult(requestId, result, errorMessage)
     }
