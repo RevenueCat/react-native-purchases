@@ -16,6 +16,7 @@ import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.react.ui.events.OnDismissEvent
+import com.revenuecat.purchases.react.ui.events.OnInteractionEvent
 import com.revenuecat.purchases.react.ui.events.OnPerformPurchaseEvent
 import com.revenuecat.purchases.react.ui.events.OnPerformRestoreEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseCancelledEvent
@@ -74,6 +75,7 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .putEvent(PaywallEventName.ON_PERFORM_RESTORE)
             .putEvent(PaywallEventName.ON_WEB_CHECKOUT_OPENED)
             .putEvent(PaywallEventName.ON_URL_OPENED)
+            .putEvent(PaywallEventName.ON_INTERACTION)
             .build()
     }
 
@@ -303,6 +305,15 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 url = url,
             )
             emitEvent(themedReactContext, view.id, event)
+        }
+
+        override fun onInteraction(event: Map<String, Any>) {
+            val interactionEvent = OnInteractionEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+                interaction = event,
+            )
+            emitEvent(themedReactContext, view.id, interactionEvent)
         }
 
     }

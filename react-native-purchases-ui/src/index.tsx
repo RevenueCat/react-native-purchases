@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import {
   type CustomerInfo,
+  type PaywallInteractionEvent,
   PAYWALL_RESULT, type PurchasesError,
   type PurchasesOffering, type PurchasesPackage,
   type PurchasesStoreTransaction,
@@ -27,7 +28,7 @@ import {
   transformOptionsForNative,
 } from "./customVariables";
 
-export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
+export { PAYWALL_RESULT, type PaywallInteractionEvent } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
 // Re-export for testing purposes (marked as @internal)
 export { convertCustomVariablesToNativeMap, convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
@@ -182,6 +183,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   onPurchasePackageInitiated,
   onWebCheckoutOpened,
   onUrlOpened,
+  onInteraction,
 }) => {
   const { nativeOptions, handlePerformPurchase, handlePerformRestore } = createPurchaseLogicHandlers(purchaseLogic);
 
@@ -232,6 +234,12 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         onPerformRestore={handlePerformRestore}
         onWebCheckoutOpened={() => onWebCheckoutOpened && onWebCheckoutOpened()}
         onUrlOpened={(event: any) => onUrlOpened && onUrlOpened(event.nativeEvent.url)}
+        onInteraction={(event: any) => {
+          if (!onInteraction) return;
+          // RCTComponentEvent adds the view tag as `target` to every direct event body on iOS.
+          const { target, ...interaction } = event.nativeEvent;
+          onInteraction(interaction);
+        }}
       />
     );
   }
@@ -415,6 +423,7 @@ type FullScreenPaywallViewProps = {
   }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
   onWebCheckoutOpened?: () => void;
   onUrlOpened?: (url: string) => void;
+  onInteraction?: (event: PaywallInteractionEvent) => void;
 };
 
 type FooterPaywallViewProps = {
@@ -631,6 +640,7 @@ export default class RevenueCatUI {
                                                                    onPurchasePackageInitiated,
                                                                    onWebCheckoutOpened,
                                                                    onUrlOpened,
+                                                                   onInteraction,
                                                                  }) => {
     return (
       <InternalPaywall
@@ -648,6 +658,7 @@ export default class RevenueCatUI {
         onPurchasePackageInitiated={onPurchasePackageInitiated}
         onWebCheckoutOpened={onWebCheckoutOpened}
         onUrlOpened={onUrlOpened}
+        onInteraction={onInteraction}
         style={[{flex: 1}, style]}
       />
     );
