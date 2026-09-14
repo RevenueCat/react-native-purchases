@@ -12,6 +12,10 @@ internal class OnInteractionEvent(
 ) : PaywallEvent<OnInteractionEvent>(surfaceId, viewTag) {
     override fun getPaywallEventName() = PaywallEventName.ON_INTERACTION
 
+    // EventDispatcherImpl merges same-name events staged in one frame unless this is false; every
+    // interaction must reach JS.
+    override fun canCoalesce(): Boolean = false
+
     override fun getPayload(): Map<PaywallEventKey, Map<String, Any?>> = emptyMap()
 
     override fun getEventData(): WritableMap = RNPurchasesConverters.convertMapToWriteableMap(interaction)
