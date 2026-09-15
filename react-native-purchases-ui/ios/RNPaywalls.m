@@ -12,7 +12,7 @@
 @interface RNPaywalls ()
 
 @property (nonatomic, strong) id paywallProxy;
-@property (nonatomic, assign) BOOL presentationHasCallbacks;
+@property (nonatomic, assign) NSUInteger activePresentationsWithCallbacks;
 
 @end
 
@@ -106,7 +106,9 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        self.presentationHasCallbacks = hasCallbacks;
+        if (hasCallbacks) {
+            self.activePresentationsWithCallbacks += 1;
+        }
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
             options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
@@ -124,7 +126,9 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
 
         [self.paywalls presentPaywallWithOptions:options
                             paywallResultHandler:^(NSString *result) {
-            self.presentationHasCallbacks = NO;
+            if (hasCallbacks) {
+                self.activePresentationsWithCallbacks -= 1;
+            }
             resolve(result);
         }];
     } else {
@@ -142,7 +146,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
-        self.presentationHasCallbacks = hasCallbacks;
+        if (hasCallbacks) {
+            self.activePresentationsWithCallbacks += 1;
+        }
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
             options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
@@ -161,7 +167,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
 
         [self.paywalls presentPaywallIfNeededWithOptions:options
                                     paywallResultHandler:^(NSString *result) {
-            self.presentationHasCallbacks = NO;
+            if (hasCallbacks) {
+                self.activePresentationsWithCallbacks -= 1;
+            }
             resolve(result);
         }];
     } else {
@@ -188,7 +196,7 @@ RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
 
 // RCTEventEmitter warns when an event is sent with no listeners registered on the JS side.
 - (void)sendPaywallEvent:(NSString *)callbackName body:(nullable NSDictionary *)body {
-    if (self.presentationHasCallbacks) {
+    if (self.activePresentationsWithCallbacks > 0) {
         [self sendEventWithName:RNPaywallsPresentedEventName(callbackName) body:body];
     }
 }
@@ -234,7 +242,7 @@ didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABL
 - (void)paywallViewController:(RCPaywallViewController *)controller
 didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
                      requestId:(NSString *)requestId API_AVAILABLE(ios(15.0)) {
-    if (self.presentationHasCallbacks) {
+    if (self.activePresentationsWithCallbacks > 0) {
         [self sendEventWithName:RNPaywallsPresentedEventName(@"onPurchasePackageInitiated")
                            body:@{@"packageBeingPurchased": packageDictionary, @"requestId": requestId}];
     } else {
