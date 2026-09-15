@@ -6,9 +6,14 @@ const emit = (eventName: string, body?: unknown) =>
   mockListeners.get(EVENT_PREFIX + eventName)?.forEach(listener => listener(body));
 
 let resolvePresent: (result: string) => void = () => {};
+let rejectPresent: (error: unknown) => void = () => {};
+const presentation = () => new Promise<string>((resolve, reject) => {
+  resolvePresent = resolve;
+  rejectPresent = reject;
+});
 const mockRNPaywalls = {
-  presentPaywall: jest.fn((..._args: unknown[]) => new Promise<string>(resolve => { resolvePresent = resolve; })),
-  presentPaywallIfNeeded: jest.fn((..._args: unknown[]) => new Promise<string>(resolve => { resolvePresent = resolve; })),
+  presentPaywall: jest.fn((..._args: unknown[]) => presentation()),
+  presentPaywallIfNeeded: jest.fn((..._args: unknown[]) => presentation()),
   resumePurchasePackageInitiated: jest.fn(),
 };
 
@@ -82,6 +87,15 @@ describe('presentPaywall callbacks', () => {
 
     resolvePresent('PURCHASED');
     await expect(promise).resolves.toBe('PURCHASED');
+    expect(registeredListenerCount()).toBe(0);
+  });
+
+  it('removes the subscriptions when the presentation fails', async () => {
+    const promise = RevenueCatUI.presentPaywall({ callbacks: { onInteraction: jest.fn() } });
+    expect(registeredListenerCount()).toBeGreaterThan(0);
+
+    rejectPresent(new Error('PAYWALLS_MISSING_WRONG_ACTIVITY'));
+    await expect(promise).rejects.toThrow('PAYWALLS_MISSING_WRONG_ACTIVITY');
     expect(registeredListenerCount()).toBe(0);
   });
 

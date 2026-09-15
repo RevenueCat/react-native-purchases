@@ -29,6 +29,9 @@ internal class RNPaywallsModule(
         // RCTDeviceEventEmitter is global and keyed by event name alone, so these names must not
         // collide with the ones RNCustomerCenter emits.
         private const val PRESENTED_PAYWALL_EVENT_PREFIX = "Paywalls-"
+
+        private const val MISSING_FRAGMENT_ACTIVITY_ERROR =
+            "RevenueCat paywalls require applications to use a FragmentActivity"
     }
 
     private val currentFragmentActivity: FragmentActivity?
@@ -36,7 +39,7 @@ internal class RNPaywallsModule(
             return when (val currentActivity = reactApplicationContext.currentActivity) {
                 is FragmentActivity -> currentActivity
                 else -> {
-                    Log.e(NAME, "RevenueCat paywalls require applications to use a FragmentActivity")
+                    Log.e(NAME, MISSING_FRAGMENT_ACTIVITY_ERROR)
                     null
                 }
             }
@@ -121,7 +124,10 @@ internal class RNPaywallsModule(
         hasCallbacks: Boolean,
         promise: Promise
     ) {
-        val activity = currentFragmentActivity ?: return
+        val activity = currentFragmentActivity ?: run {
+            promise.reject("PAYWALLS_MISSING_WRONG_ACTIVITY", MISSING_FRAGMENT_ACTIVITY_ERROR, null)
+            return
+        }
         val fontFamily = fontFamilyName?.let {
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
         }
