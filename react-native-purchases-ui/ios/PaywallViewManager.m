@@ -35,6 +35,7 @@ RCT_EXPORT_VIEW_PROPERTY(onPerformPurchase, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPerformRestore, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onWebCheckoutOpened, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onUrlOpened, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onInteraction, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(PaywallView)
 
