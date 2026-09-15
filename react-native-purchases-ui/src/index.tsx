@@ -423,6 +423,7 @@ type FullScreenPaywallViewProps = {
   }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
   onWebCheckoutOpened?: () => void;
   onUrlOpened?: (url: string) => void;
+  /** See https://rev.cat/paywall-interaction-events for the keys each component type sends. */
   onInteraction?: (event: PaywallInteractionEvent) => void;
 };
 
