@@ -12,6 +12,7 @@
 @interface RNPaywalls ()
 
 @property (nonatomic, strong) id paywallProxy;
+@property (nonatomic, assign) NSUInteger activePresentationsWithCallbacks;
 
 @end
 
@@ -51,6 +52,7 @@ RCT_EXPORT_METHOD(removeListeners:(double)count) {
 - (void)initializePaywalls {
     if (@available(iOS 15.0, *)) {
         self.paywallProxy = [PaywallProxy new];
+        [(PaywallProxy *)self.paywallProxy setDelegate:self];
     } else {
         self.paywallProxy = nil;
     }
@@ -58,8 +60,31 @@ RCT_EXPORT_METHOD(removeListeners:(double)count) {
 
 // MARK: -
 
+// RCTEventEmitter sends events through the global RCTDeviceEventEmitter, keyed by name alone, so
+// these names must not collide with the ones RNCustomerCenter emits.
+static NSString *RNPaywallsPresentedEventName(NSString *callbackName) {
+    return [@"Paywalls-" stringByAppendingString:callbackName];
+}
+
 - (NSArray<NSString *> *)supportedEvents {
-    return @[safeAreaInsetsDidChangeEvent];
+    NSArray<NSString *> *callbackNames = @[
+        @"onPurchaseStarted",
+        @"onPurchaseCompleted",
+        @"onPurchaseError",
+        @"onPurchaseCancelled",
+        @"onRestoreStarted",
+        @"onRestoreCompleted",
+        @"onRestoreError",
+        @"onPurchasePackageInitiated",
+        @"onWebCheckoutOpened",
+        @"onUrlOpened",
+        @"onInteraction",
+    ];
+    NSMutableArray<NSString *> *events = [NSMutableArray arrayWithObject:safeAreaInsetsDidChangeEvent];
+    for (NSString *callbackName in callbackNames) {
+        [events addObject:RNPaywallsPresentedEventName(callbackName)];
+    }
+    return [events copy];
 }
 
 - (dispatch_queue_t)methodQueue {
@@ -77,9 +102,13 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  hasCallbacks:(BOOL)hasCallbacks
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
+        if (hasCallbacks) {
+            self.activePresentationsWithCallbacks += 1;
+        }
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
             options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
@@ -97,6 +126,9 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
 
         [self.paywalls presentPaywallWithOptions:options
                             paywallResultHandler:^(NSString *result) {
+            if (hasCallbacks) {
+                self.activePresentationsWithCallbacks -= 1;
+            }
             resolve(result);
         }];
     } else {
@@ -110,9 +142,13 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  hasCallbacks:(BOOL)hasCallbacks
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
+        if (hasCallbacks) {
+            self.activePresentationsWithCallbacks += 1;
+        }
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
         if (offeringIdentifier != nil) {
             options[PaywallOptionsKeys.offeringIdentifier] = offeringIdentifier;
@@ -131,6 +167,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
 
         [self.paywalls presentPaywallIfNeededWithOptions:options
                                     paywallResultHandler:^(NSString *result) {
+            if (hasCallbacks) {
+                self.activePresentationsWithCallbacks -= 1;
+            }
             resolve(result);
         }];
     } else {
@@ -151,6 +190,77 @@ RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
     if (@available(iOS 15.0, *)) {
         [HybridPurchaseLogicBridge resolveResultWithRequestId:requestId resultString:result errorMessage:errorMessage];
     }
+}
+
+// MARK: - RCPaywallViewControllerDelegateWrapper
+
+// RCTEventEmitter warns when an event is sent with no listeners registered on the JS side.
+- (void)sendPaywallEvent:(NSString *)callbackName body:(nullable NSDictionary *)body {
+    if (self.activePresentationsWithCallbacks > 0) {
+        [self sendEventWithName:RNPaywallsPresentedEventName(callbackName) body:body];
+    }
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+  didStartPurchaseWithPackage:(NSDictionary *)packageDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onPurchaseStarted" body:@{@"packageBeingPurchased": packageDictionary}];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
+        transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {
+    NSMutableDictionary *body = [NSMutableDictionary dictionaryWithObject:customerInfoDictionary forKey:@"customerInfo"];
+    if (transactionDictionary) {
+        body[@"storeTransaction"] = transactionDictionary;
+    }
+    [self sendPaywallEvent:@"onPurchaseCompleted" body:[body copy]];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+didFailPurchasingWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onPurchaseError" body:@{@"error": errorDictionary}];
+}
+
+- (void)paywallViewControllerDidCancelPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onPurchaseCancelled" body:nil];
+}
+
+- (void)paywallViewControllerDidStartRestore:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onRestoreStarted" body:nil];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+didFinishRestoringWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onRestoreCompleted" body:@{@"customerInfo": customerInfoDictionary}];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onRestoreError" body:@{@"error": errorDictionary}];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
+                     requestId:(NSString *)requestId API_AVAILABLE(ios(15.0)) {
+    if (self.activePresentationsWithCallbacks > 0) {
+        [self sendEventWithName:RNPaywallsPresentedEventName(@"onPurchasePackageInitiated")
+                           body:@{@"packageBeingPurchased": packageDictionary, @"requestId": requestId}];
+    } else {
+        [PaywallProxy resumePurchasePackageInitiatedWithRequestId:requestId shouldProceed:YES];
+    }
+}
+
+- (void)paywallViewControllerDidOpenWebCheckout:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onWebCheckoutOpened" body:nil];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller didOpenURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onUrlOpened" body:@{@"url": url ?: @""}];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller
+          didTrackInteraction:(NSDictionary<NSString *, id> *)eventDictionary API_AVAILABLE(ios(15.0)) {
+    [self sendPaywallEvent:@"onInteraction" body:eventDictionary];
 }
 
 - (void)rejectPaywallsUnsupportedError:(RCTPromiseRejectBlock)reject {

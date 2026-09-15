@@ -8,6 +8,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
@@ -22,6 +25,13 @@ internal class RNPaywallsModule(
 
     companion object {
         const val NAME = "RNPaywalls"
+
+        // RCTDeviceEventEmitter is global and keyed by event name alone, so these names must not
+        // collide with the ones RNCustomerCenter emits.
+        private const val PRESENTED_PAYWALL_EVENT_PREFIX = "Paywalls-"
+
+        private const val MISSING_FRAGMENT_ACTIVITY_ERROR =
+            "RevenueCat paywalls require applications to use a FragmentActivity"
     }
 
     private val currentFragmentActivity: FragmentActivity?
@@ -29,7 +39,7 @@ internal class RNPaywallsModule(
             return when (val currentActivity = reactApplicationContext.currentActivity) {
                 is FragmentActivity -> currentActivity
                 else -> {
-                    Log.e(NAME, "RevenueCat paywalls require applications to use a FragmentActivity")
+                    Log.e(NAME, MISSING_FRAGMENT_ACTIVITY_ERROR)
                     null
                 }
             }
@@ -46,6 +56,7 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        hasCallbacks: Boolean,
         promise: Promise
     ) {
         presentPaywall(
@@ -55,6 +66,7 @@ internal class RNPaywallsModule(
             displayCloseButton,
             fontFamily,
             customVariables,
+            hasCallbacks,
             promise
         )
     }
@@ -67,6 +79,7 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        hasCallbacks: Boolean,
         promise: Promise
     ) {
         presentPaywall(
@@ -76,6 +89,7 @@ internal class RNPaywallsModule(
             displayCloseButton,
             fontFamily,
             customVariables,
+            hasCallbacks,
             promise
         )
     }
@@ -107,9 +121,13 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamilyName: String?,
         customVariables: ReadableMap?,
+        hasCallbacks: Boolean,
         promise: Promise
     ) {
-        val activity = currentFragmentActivity ?: return
+        val activity = currentFragmentActivity ?: run {
+            promise.reject("PAYWALLS_MISSING_WRONG_ACTIVITY", MISSING_FRAGMENT_ACTIVITY_ERROR, null)
+            return
+        }
         val fontFamily = fontFamilyName?.let {
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
         }
@@ -149,9 +167,97 @@ internal class RNPaywallsModule(
                         }
                     },
                     fontFamily = fontFamily,
-                    customVariables = customVariablesMap
+                    customVariables = customVariablesMap,
+                    paywallListener = if (hasCallbacks) createPaywallListener() else null,
                 )
             )
+        }
+    }
+
+    private fun createPaywallListener() = object : PaywallListenerWrapper() {
+        override fun onPurchaseStarted(rcPackage: Map<String, Any?>) {
+            sendEvent(
+                PaywallEventName.ON_PURCHASE_STARTED,
+                WritableNativeMap().apply { putMap(PaywallEventKey.PACKAGE, rcPackage) },
+            )
+        }
+
+        override fun onPurchaseCompleted(customerInfo: Map<String, Any?>, storeTransaction: Map<String, Any?>) {
+            sendEvent(
+                PaywallEventName.ON_PURCHASE_COMPLETED,
+                WritableNativeMap().apply {
+                    putMap(PaywallEventKey.CUSTOMER_INFO, customerInfo)
+                    putMap(PaywallEventKey.STORE_TRANSACTION, storeTransaction)
+                },
+            )
+        }
+
+        override fun onPurchaseError(error: Map<String, Any?>) {
+            sendEvent(
+                PaywallEventName.ON_PURCHASE_ERROR,
+                WritableNativeMap().apply { putMap(PaywallEventKey.ERROR, error) },
+            )
+        }
+
+        override fun onPurchaseCancelled() = sendEvent(PaywallEventName.ON_PURCHASE_CANCELLED, null)
+
+        override fun onRestoreStarted() = sendEvent(PaywallEventName.ON_RESTORE_STARTED, null)
+
+        override fun onRestoreCompleted(customerInfo: Map<String, Any?>) {
+            sendEvent(
+                PaywallEventName.ON_RESTORE_COMPLETED,
+                WritableNativeMap().apply { putMap(PaywallEventKey.CUSTOMER_INFO, customerInfo) },
+            )
+        }
+
+        override fun onRestoreError(error: Map<String, Any?>) {
+            sendEvent(
+                PaywallEventName.ON_RESTORE_ERROR,
+                WritableNativeMap().apply { putMap(PaywallEventKey.ERROR, error) },
+            )
+        }
+
+        override fun onPurchasePackageInitiated(rcPackage: Map<String, Any?>, requestId: String) {
+            sendEvent(
+                PaywallEventName.ON_PURCHASE_PACKAGE_INITIATED,
+                WritableNativeMap().apply {
+                    putMap(PaywallEventKey.PACKAGE, rcPackage)
+                    putString(PaywallEventKey.REQUEST_ID.key, requestId)
+                },
+            )
+        }
+
+        override fun onWebCheckoutOpened() = sendEvent(PaywallEventName.ON_WEB_CHECKOUT_OPENED, null)
+
+        override fun onUrlOpened(url: String) {
+            sendEvent(
+                PaywallEventName.ON_URL_OPENED,
+                WritableNativeMap().apply { putString(PaywallEventKey.URL.key, url) },
+            )
+        }
+
+        override fun onInteraction(event: Map<String, Any>) {
+            sendEvent(PaywallEventName.ON_INTERACTION, RNPurchasesConverters.convertMapToWriteableMap(event))
+        }
+    }
+
+    private fun WritableNativeMap.putMap(key: PaywallEventKey, dictionary: Map<String, Any?>) {
+        putMap(key.key, RNPurchasesConverters.convertMapToWriteableMap(dictionary))
+    }
+
+    private fun sendEvent(event: PaywallEventName, params: WritableMap?) {
+        sendEvent(PRESENTED_PAYWALL_EVENT_PREFIX + event.eventName, params)
+    }
+
+    private fun sendEvent(eventName: String, params: WritableMap?) {
+        reactApplicationContext.runOnUiQueueThread {
+            try {
+                reactApplicationContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit(eventName, params)
+            } catch (e: Exception) {
+                Log.e(NAME, "Error sending event $eventName", e)
+            }
         }
     }
 }
