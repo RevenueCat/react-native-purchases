@@ -130,6 +130,10 @@ const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConf
 const eventEmitter = !usingPreviewAPIMode && RNPaywalls ? new NativeEventEmitter(RNPaywalls) : null;
 const customerCenterEventEmitter = !usingPreviewAPIMode && RNCustomerCenter ? new NativeEventEmitter(RNCustomerCenter) : null;
 
+// NativeEventEmitter routes every event through the global RCTDeviceEventEmitter, keyed by name
+// alone, so these names must not collide with the ones RNCustomerCenter emits.
+const PRESENTED_PAYWALL_EVENT_PREFIX = 'Paywalls-';
+
 function resolveLogicResult(requestId: string, logicResult: PurchaseLogicResult) {
   const errorMessage = logicResult.result === PURCHASE_LOGIC_RESULT.ERROR && logicResult.error
     ? logicResult.error.message
@@ -342,6 +346,12 @@ export interface PresentPaywallParams {
    * ```
    */
   customVariables?: CustomVariables;
+
+  /**
+   * Callbacks for paywall events while the paywall is presented. The same events as
+   * {@link RevenueCatUI.Paywall} receives, except `onDismiss`: the returned promise resolves on dismissal.
+   */
+  callbacks?: PaywallCallbacks;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -401,11 +411,11 @@ export interface FooterPaywallViewOptions extends PaywallViewOptions {
   // Additional properties for FooterPaywallViewOptions can be added here if needed in the future
 }
 
-type FullScreenPaywallViewProps = {
-  style?: StyleProp<ViewStyle>;
-  children?: ReactNode;
-  options?: FullScreenPaywallViewOptions;
-  purchaseLogic?: PurchaseLogic;
+/**
+ * Callbacks for paywall events, shared by {@link RevenueCatUI.Paywall} and
+ * {@link RevenueCatUI.presentPaywall}.
+ */
+export interface PaywallCallbacks {
   onPurchaseStarted?: ({packageBeingPurchased}: { packageBeingPurchased: PurchasesPackage }) => void;
   onPurchaseCompleted?: ({
                            customerInfo,
@@ -416,7 +426,6 @@ type FullScreenPaywallViewProps = {
   onRestoreStarted?: () => void;
   onRestoreCompleted?: ({customerInfo}: { customerInfo: CustomerInfo }) => void;
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
-  onDismiss?: () => void;
   onPurchasePackageInitiated?: ({
     packageBeingPurchased,
     resume
@@ -425,6 +434,14 @@ type FullScreenPaywallViewProps = {
   onUrlOpened?: (url: string) => void;
   /** See https://rev.cat/paywall-interaction-events for the keys each component type sends. */
   onInteraction?: (event: PaywallInteractionEvent) => void;
+}
+
+type FullScreenPaywallViewProps = PaywallCallbacks & {
+  style?: StyleProp<ViewStyle>;
+  children?: ReactNode;
+  options?: FullScreenPaywallViewOptions;
+  purchaseLogic?: PurchaseLogic;
+  onDismiss?: () => void;
 };
 
 type FooterPaywallViewProps = {
@@ -581,16 +598,18 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                  customVariables,
+                                 callbacks,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
-    return RNPaywalls!.presentPaywall(
+    return RevenueCatUI.presentWithCallbacks(callbacks, (hasCallbacks) => RNPaywalls!.presentPaywall(
       offering?.identifier ?? null,
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
       convertCustomVariablesToNativeMap(customVariables),
-    )
+      hasCallbacks,
+    ));
   }
 
   /**
@@ -612,17 +631,57 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                          customVariables,
+                                         callbacks,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
-    return RNPaywalls!.presentPaywallIfNeeded(
+    return RevenueCatUI.presentWithCallbacks(callbacks, (hasCallbacks) => RNPaywalls!.presentPaywallIfNeeded(
       requiredEntitlementIdentifier,
       offering?.identifier ?? null,
       offering?.availablePackages?.[0]?.presentedOfferingContext,
       displayCloseButton,
       fontFamily,
       convertCustomVariablesToNativeMap(customVariables),
-    )
+      hasCallbacks,
+    ));
+  }
+
+  private static presentWithCallbacks(
+    callbacks: PaywallCallbacks | undefined,
+    present: (hasCallbacks: boolean) => Promise<PAYWALL_RESULT>,
+  ): Promise<PAYWALL_RESULT> {
+    const hasCallbacks = !!callbacks && Object.values(callbacks).some(callback => typeof callback === 'function');
+    if (!callbacks || !hasCallbacks || !eventEmitter) {
+      return present(false);
+    }
+    const emitter = eventEmitter;
+    const subscribe = (event: string, handler: (payload: any) => void) =>
+      emitter.addListener(PRESENTED_PAYWALL_EVENT_PREFIX + event, handler);
+    const subscriptions = [
+      subscribe('onPurchaseStarted', (event) => callbacks.onPurchaseStarted?.(event)),
+      subscribe('onPurchaseCompleted', (event) => callbacks.onPurchaseCompleted?.(event)),
+      subscribe('onPurchaseError', (event) => callbacks.onPurchaseError?.(event)),
+      subscribe('onPurchaseCancelled', () => callbacks.onPurchaseCancelled?.()),
+      subscribe('onRestoreStarted', () => callbacks.onRestoreStarted?.()),
+      subscribe('onRestoreCompleted', (event) => callbacks.onRestoreCompleted?.(event)),
+      subscribe('onRestoreError', (event) => callbacks.onRestoreError?.(event)),
+      subscribe('onWebCheckoutOpened', () => callbacks.onWebCheckoutOpened?.()),
+      subscribe('onUrlOpened', (event) => callbacks.onUrlOpened?.(event.url)),
+      subscribe('onInteraction', (event) => callbacks.onInteraction?.(event)),
+      subscribe('onPurchasePackageInitiated', ({ packageBeingPurchased, requestId }) => {
+        const resume = (shouldProceed: boolean) => RNPaywalls!.resumePurchasePackageInitiated(requestId, shouldProceed);
+        callbacks.onPurchasePackageInitiated
+          ? callbacks.onPurchasePackageInitiated({ packageBeingPurchased, resume })
+          : resume(true);
+      }),
+    ];
+    const removeSubscriptions = () => subscriptions.forEach(subscription => subscription.remove());
+    try {
+      return present(true).finally(removeSubscriptions);
+    } catch (error) {
+      removeSubscriptions();
+      throw error;
+    }
   }
 
   public static Paywall: React.FC<FullScreenPaywallViewProps> = ({
