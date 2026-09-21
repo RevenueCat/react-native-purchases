@@ -1,6 +1,5 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
 import {
-  PurchasesError,
   PURCHASES_ERROR_CODE,
   UninitializedPurchasesError,
   UnsupportedPlatformError,
@@ -57,6 +56,7 @@ export interface SyncPurchasesResult {
   customerInfo: CustomerInfo;
 }
 
+import { normalizingRejections } from "./normalizingRejections";
 import { shouldUseBrowserMode } from "./utils/environment";
 import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
@@ -112,7 +112,8 @@ const NATIVE_MODULE_ERROR =
 
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
-const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const nativeModule = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const RNPurchases = nativeModule ? normalizingRejections(nativeModule) : nativeModule;
 
 // Only create event emitter if native module is available to avoid crash on import
 //
@@ -120,7 +121,7 @@ const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeMo
 // methods for NativeEventEmitter to work. Both iOS and Android native modules now have these.
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
 // See: https://reactnative.dev/blog/2025/04/08/react-native-0.79 (Breaking Changes section)
-const eventEmitter = !usingBrowserMode && RNPurchases ? new NativeEventEmitter(RNPurchases) : null;
+const eventEmitter = !usingBrowserMode && nativeModule ? new NativeEventEmitter(nativeModule) : null;
 
 // Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
 function throwIfNativeModuleNotAvailable(): void {
@@ -820,11 +821,7 @@ export default class Purchases {
       null,
       null,
       null
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -856,11 +853,7 @@ export default class Purchases {
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
       product.presentedOfferingContext
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -891,11 +884,7 @@ export default class Purchases {
       discount.timestamp.toString(),
       null,
       product.presentedOfferingContext
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -928,11 +917,7 @@ export default class Purchases {
       googleIsPersonalizedPrice == null
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice }
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -965,11 +950,7 @@ export default class Purchases {
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
       subscriptionOption.presentedOfferingContext
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -996,11 +977,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString(),
       null
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -1431,11 +1408,7 @@ export default class Purchases {
     return RNPurchases.purchaseProductWithWinBackOffer(
       product.identifier,
       winBackOffer.identifier
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -1465,11 +1438,7 @@ export default class Purchases {
       aPackage.identifier,
       aPackage.presentedOfferingContext,
       winBackOffer.identifier
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
