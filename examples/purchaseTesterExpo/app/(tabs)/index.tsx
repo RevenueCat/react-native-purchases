@@ -623,6 +623,11 @@ export default function TabOneScreen() {
               setLastResult(`[${new Date().toLocaleTimeString()}] Purchase package initiated: ${packageBeingPurchased.identifier}`);
               resume(true);
             }}
+            onRestoreInitiated={({ resume }) => {
+              console.log('Restore initiated');
+              setLastResult(`[${new Date().toLocaleTimeString()}] Restore initiated`);
+              resume(true);
+            }}
           />
         </View>
       </Modal>
