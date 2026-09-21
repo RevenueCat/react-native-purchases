@@ -217,7 +217,7 @@ lane :update_hybrid_common do |options|
   # any earlier can drop the Podfile.lock commit pushed above.
   if options[:open_pr] && options[:automatic_release]
     enable_auto_merge_for_pr(
-      github_token: ENV["GITHUB_PULL_REQUEST_API_TOKEN"],
+      github_token: ENV["GITHUB_TOKEN"],
       repo_name: 'react-native-purchases',
       base_branch: 'main',
       merge_method: 'SQUASH'
