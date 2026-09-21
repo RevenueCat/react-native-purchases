@@ -44,7 +44,6 @@ import {
   Storefront,
   STORE_REPLACEMENT_MODE,
   StoreProductChangeInfo,
-  normalizePurchasesError,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -57,6 +56,7 @@ export interface SyncPurchasesResult {
   customerInfo: CustomerInfo;
 }
 
+import { normalizingRejections } from "./normalizingRejections";
 import { shouldUseBrowserMode } from "./utils/environment";
 import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
@@ -114,27 +114,6 @@ const NATIVE_MODULE_ERROR =
 const usingBrowserMode = shouldUseBrowserMode();
 const nativeModule = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
 const RNPurchases = nativeModule ? normalizingRejections(nativeModule) : nativeModule;
-
-// The returned promise is chained, never copied: enumerating a TurboModule
-// promise's own properties throws inside Hermes.
-function normalizingRejections<T extends object>(module: T): T {
-  return new Proxy(module, {
-    get(target, property, receiver) {
-      const value = Reflect.get(target, property, receiver);
-      if (typeof value !== "function") {
-        return value;
-      }
-      return (...args: unknown[]) => {
-        const result = (value as (...callArgs: unknown[]) => unknown).apply(target, args);
-        return result instanceof Promise
-          ? result.catch((error: unknown) => {
-              throw normalizePurchasesError(error);
-            })
-          : result;
-      };
-    },
-  });
-}
 
 // Only create event emitter if native module is available to avoid crash on import
 //
