@@ -9,6 +9,7 @@ import type {
   PresentPaywallIfNeededParams,
   PresentPaywallParams,
   CustomVariables,
+  PaywallPresentationMode,
 } from "react-native-purchases-ui";
 import type {
   CustomerInfo,
@@ -176,6 +177,16 @@ async function checkPresentPaywall(offering: PurchasesOffering) {
       player_name: CustomVariableValue.string("John"),
     },
   });
+  paywallResult = await RevenueCatUI.presentPaywall({
+    presentationMode: "fullScreen",
+  });
+  paywallResult = await RevenueCatUI.presentPaywall({
+    offering,
+    displayCloseButton: false,
+    presentationMode: "formSheet",
+  });
+  const presentationModes: PaywallPresentationMode[] = ["pageSheet", "formSheet", "fullScreen", "automatic"];
+  void presentationModes;
 }
 
 async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
@@ -214,6 +225,11 @@ async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
       player_name: CustomVariableValue.string("John"),
       level: CustomVariableValue.string("5"),
     },
+  });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "pro_access",
+    offering,
+    presentationMode: "fullScreen",
   });
 }
 
