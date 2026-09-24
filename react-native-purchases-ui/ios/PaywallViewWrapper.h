@@ -28,6 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onUrlOpened;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onInteraction;
 
+/// Set this as the `PaywallProxy` delegate. `PaywallProxy.delegate` is weak, so the view keeps it alive.
+@property (nonatomic, strong, readonly) id<RCPaywallViewControllerDelegateWrapper> eventForwarder;
+
 @property (nonatomic, strong, nullable) HybridPurchaseLogicBridge *purchaseLogicBridge;
 @property (nonatomic, copy, nullable) UIViewController * _Nullable (^createViewController)(HybridPurchaseLogicBridge * _Nonnull);
 
