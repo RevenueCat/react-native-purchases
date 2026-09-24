@@ -65,7 +65,7 @@ RCT_EXPORT_MODULE(PaywallView)
             params.purchaseLogicBridge = bridge;
             return [proxy createPaywallViewWithParams:params];
         };
-        self.proxy.delegate = wrapper;
+        self.proxy.delegate = wrapper.eventForwarder;
 
         return wrapper;
     } else {
