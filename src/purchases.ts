@@ -517,6 +517,7 @@ export default class Purchases {
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
+   * @param {boolean} [useExternalPurchaseCustomLinks=false] Experimental. An optional boolean. iOS-only. Set this to true to take part in Apple's external purchase custom link programme.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -534,6 +535,7 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
+    useExternalPurchaseCustomLinks = false,
     } = configuration;
     const {
       store,
@@ -626,6 +628,7 @@ export default class Purchases {
       diagnosticsEnabled,
       automaticDeviceIdentifierCollectionEnabled,
       preferredUILocaleOverride,
+      useExternalPurchaseCustomLinks,
     );
   }
 
