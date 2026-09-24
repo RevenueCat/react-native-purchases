@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
@@ -22,6 +23,11 @@ internal class RNPaywallsModule(
 
     companion object {
         const val NAME = "RNPaywalls"
+
+        // RCTDeviceEventEmitter is global and keyed by event name alone, so these names must not
+        // collide with the ones RNCustomerCenter emits.
+        private const val PRESENTED_PAYWALL_EVENT_PREFIX = "Paywalls-"
+        private const val PRESENTATION_ID_KEY = "presentationId"
     }
 
     private val currentFragmentActivity: FragmentActivity?
@@ -46,6 +52,8 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        presentationId: String?,
+        jsResumesPurchase: Boolean,
         promise: Promise
     ) {
         presentPaywall(
@@ -55,6 +63,8 @@ internal class RNPaywallsModule(
             displayCloseButton,
             fontFamily,
             customVariables,
+            presentationId,
+            jsResumesPurchase,
             promise
         )
     }
@@ -67,6 +77,8 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        presentationId: String?,
+        jsResumesPurchase: Boolean,
         promise: Promise
     ) {
         presentPaywall(
@@ -76,6 +88,8 @@ internal class RNPaywallsModule(
             displayCloseButton,
             fontFamily,
             customVariables,
+            presentationId,
+            jsResumesPurchase,
             promise
         )
     }
@@ -107,6 +121,8 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamilyName: String?,
         customVariables: ReadableMap?,
+        presentationId: String?,
+        jsResumesPurchase: Boolean,
         promise: Promise
     ) {
         val activity = currentFragmentActivity ?: return
@@ -149,9 +165,30 @@ internal class RNPaywallsModule(
                         }
                     },
                     fontFamily = fontFamily,
-                    customVariables = customVariablesMap
+                    customVariables = customVariablesMap,
+                    paywallListener = presentationId?.let { routedPresentationId ->
+                        paywallEventListener(
+                            jsResumesPurchase = {
+                                jsResumesPurchase && reactApplicationContext.hasActiveReactInstance()
+                            },
+                        ) { eventName, payload -> sendEvent(routedPresentationId, eventName, payload) }
+                    },
                 )
             )
+        }
+    }
+
+    private fun sendEvent(presentationId: String, event: PaywallEventName, params: Map<String, Any?>) {
+        val eventName = PRESENTED_PAYWALL_EVENT_PREFIX + event.eventName
+        val payload = RNPurchasesConverters.convertMapToWriteableMap(params + (PRESENTATION_ID_KEY to presentationId))
+        reactApplicationContext.runOnUiQueueThread {
+            try {
+                reactApplicationContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit(eventName, payload)
+            } catch (e: Exception) {
+                Log.e(NAME, "Error sending event $eventName", e)
+            }
         }
     }
 }
