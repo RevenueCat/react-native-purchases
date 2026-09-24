@@ -28,18 +28,12 @@ internal class RNPaywallsModule(
         // collide with the ones RNCustomerCenter emits.
         private const val PRESENTED_PAYWALL_EVENT_PREFIX = "Paywalls-"
         private const val PRESENTATION_ID_KEY = "presentationId"
-    }
 
-    private val currentFragmentActivity: FragmentActivity?
-        get() {
-            return when (val currentActivity = reactApplicationContext.currentActivity) {
-                is FragmentActivity -> currentActivity
-                else -> {
-                    Log.e(NAME, "RevenueCat paywalls require applications to use a FragmentActivity")
-                    null
-                }
-            }
-        }
+        private const val MISSING_ACTIVITY_ERROR =
+            "RevenueCat paywalls can only be presented while there is a current activity"
+        private const val MISSING_FRAGMENT_ACTIVITY_ERROR =
+            "RevenueCat paywalls require applications to use a FragmentActivity"
+    }
 
     override fun getName(): String {
         return NAME
@@ -125,7 +119,15 @@ internal class RNPaywallsModule(
         jsResumesPurchase: Boolean,
         promise: Promise
     ) {
-        val activity = currentFragmentActivity ?: return
+        val activity = when (val currentActivity = reactApplicationContext.currentActivity) {
+            is FragmentActivity -> currentActivity
+            else -> {
+                val message = if (currentActivity == null) MISSING_ACTIVITY_ERROR else MISSING_FRAGMENT_ACTIVITY_ERROR
+                Log.e(NAME, message)
+                promise.reject("PAYWALLS_MISSING_WRONG_ACTIVITY", message, null)
+                return
+            }
+        }
         val fontFamily = fontFamilyName?.let {
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
         }
