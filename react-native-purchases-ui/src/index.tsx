@@ -442,20 +442,6 @@ export interface PaywallCallbacks {
   onInteraction?: (event: PaywallInteractionEvent) => void;
 }
 
-const PAYWALL_CALLBACK_NAMES = Object.keys({
-  onPurchaseStarted: true,
-  onPurchaseCompleted: true,
-  onPurchaseError: true,
-  onPurchaseCancelled: true,
-  onRestoreStarted: true,
-  onRestoreCompleted: true,
-  onRestoreError: true,
-  onPurchasePackageInitiated: true,
-  onWebCheckoutOpened: true,
-  onUrlOpened: true,
-  onInteraction: true,
-} satisfies Record<keyof PaywallCallbacks, true>) as (keyof PaywallCallbacks)[];
-
 type FullScreenPaywallViewProps = PaywallCallbacks & {
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
@@ -672,38 +658,41 @@ export default class RevenueCatUI {
     callbacks: PaywallCallbacks | undefined,
     present: (presentationId: string | null, jsResumesPurchase: boolean) => Promise<PAYWALL_RESULT>,
   ): Promise<PAYWALL_RESULT> {
-    if (!callbacks || !eventEmitter || !PAYWALL_CALLBACK_NAMES.some(name => typeof callbacks[name] === 'function')) {
+    if (!callbacks || !eventEmitter) {
+      return present(null, false);
+    }
+    const handlers: Record<keyof PaywallCallbacks, (event: any) => void> = {
+      onPurchaseStarted: (event) => callbacks.onPurchaseStarted?.(event),
+      onPurchaseCompleted: (event) => callbacks.onPurchaseCompleted?.(event),
+      onPurchaseError: (event) => callbacks.onPurchaseError?.(event),
+      onPurchaseCancelled: () => callbacks.onPurchaseCancelled?.(),
+      onRestoreStarted: () => callbacks.onRestoreStarted?.(),
+      onRestoreCompleted: (event) => callbacks.onRestoreCompleted?.(event),
+      onRestoreError: (event) => callbacks.onRestoreError?.(event),
+      onPurchasePackageInitiated: ({ packageBeingPurchased, requestId }) =>
+        callbacks.onPurchasePackageInitiated?.({
+          packageBeingPurchased,
+          resume: (shouldProceed: boolean) => RNPaywalls!.resumePurchasePackageInitiated(requestId, shouldProceed),
+        }),
+      onWebCheckoutOpened: () => callbacks.onWebCheckoutOpened?.(),
+      onUrlOpened: (event) => callbacks.onUrlOpened?.(event.url),
+      onInteraction: (event) => callbacks.onInteraction?.(event),
+    };
+    const callbackNames = Object.keys(handlers) as (keyof PaywallCallbacks)[];
+    if (!callbackNames.some(name => typeof callbacks[name] === 'function')) {
       return present(null, false);
     }
     const emitter = eventEmitter;
     const presentationId = `${nextPresentationId++}`;
     const jsResumesPurchase = typeof callbacks.onPurchasePackageInitiated === 'function';
-    const subscribe = (event: string, handler: (payload: any) => void) =>
-      emitter.addListener(PRESENTED_PAYWALL_EVENT_PREFIX + event, (payload: any) => {
+    const subscribedNames = callbackNames.filter(name => name !== 'onPurchasePackageInitiated' || jsResumesPurchase);
+    const subscriptions = subscribedNames.map(name =>
+      emitter.addListener(PRESENTED_PAYWALL_EVENT_PREFIX + name, (payload: any) => {
         if (payload?.presentationId !== presentationId) return;
         const eventPayload = { ...payload };
         delete eventPayload.presentationId;
-        handler(eventPayload);
-      });
-    const subscriptions = [
-      subscribe('onPurchaseStarted', (event) => callbacks.onPurchaseStarted?.(event)),
-      subscribe('onPurchaseCompleted', (event) => callbacks.onPurchaseCompleted?.(event)),
-      subscribe('onPurchaseError', (event) => callbacks.onPurchaseError?.(event)),
-      subscribe('onPurchaseCancelled', () => callbacks.onPurchaseCancelled?.()),
-      subscribe('onRestoreStarted', () => callbacks.onRestoreStarted?.()),
-      subscribe('onRestoreCompleted', (event) => callbacks.onRestoreCompleted?.(event)),
-      subscribe('onRestoreError', (event) => callbacks.onRestoreError?.(event)),
-      subscribe('onWebCheckoutOpened', () => callbacks.onWebCheckoutOpened?.()),
-      subscribe('onUrlOpened', (event) => callbacks.onUrlOpened?.(event.url)),
-      subscribe('onInteraction', (event) => callbacks.onInteraction?.(event)),
-    ];
-    if (jsResumesPurchase) {
-      subscriptions.push(subscribe('onPurchasePackageInitiated', ({ packageBeingPurchased, requestId }) =>
-        callbacks.onPurchasePackageInitiated?.({
-          packageBeingPurchased,
-          resume: (shouldProceed: boolean) => RNPaywalls!.resumePurchasePackageInitiated(requestId, shouldProceed),
-        })));
-    }
+        handlers[name](eventPayload);
+      }));
     const removeSubscriptions = () => subscriptions.forEach(subscription => subscription.remove());
     try {
       return present(presentationId, jsResumesPurchase).finally(removeSubscriptions);
