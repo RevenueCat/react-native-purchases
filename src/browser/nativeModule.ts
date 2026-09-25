@@ -7,7 +7,7 @@ import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchases
 import { isExpoGo, isRorkSandbox } from '../utils/environment';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
-import type { RewardedAdTrackingMetadata } from '../purchases';
+import type { RewardedAdTrackingMetadata, SyncAmazonPurchaseOptions } from '../purchases';
 
 
 const packageVersion = '10.10.2';
@@ -127,13 +127,7 @@ export const browserNativeModuleRNPurchases = {
   syncPurchasesForResult: async () => {
     methodNotSupportedOnWeb('syncPurchasesForResult');
   },
-  syncAmazonPurchase: async (
-    _productID: string,
-    _receiptID: string,
-    _amazonUserID: string,
-    _isoCurrencyCode: string | null,
-    _price: number | null
-  ) => {
+  syncAmazonPurchase: async (_options: SyncAmazonPurchaseOptions) => {
     methodNotSupportedOnWeb('syncAmazonPurchase');
   },
   syncObserverModeAmazonPurchase: async (

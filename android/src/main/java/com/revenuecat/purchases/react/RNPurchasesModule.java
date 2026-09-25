@@ -584,20 +584,36 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
-    public void syncAmazonPurchase(String productID, String receiptID,
-                                               String amazonUserID, String isoCurrencyCode,
-                                               Double price, final Promise promise) {
-      Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
-        amazonUserID, isoCurrencyCode, price);
-      promise.resolve(null);
+    public void syncAmazonPurchase(ReadableMap options, final Promise promise) {
+        String productID = options.getString("productID");
+        String receiptID = options.getString("receiptID");
+        String amazonUserID = options.getString("amazonUserID");
+        boolean hasPurchaseTime = options.hasKey("purchaseTime") && !options.isNull("purchaseTime");
+        if (productID == null || receiptID == null || amazonUserID == null || !hasPurchaseTime) {
+            promise.reject("InvalidArguments",
+                "syncAmazonPurchase requires productID, receiptID, amazonUserID and purchaseTime");
+            return;
+        }
+        String isoCurrencyCode = options.hasKey("isoCurrencyCode") && !options.isNull("isoCurrencyCode")
+            ? options.getString("isoCurrencyCode") : null;
+        Double price = options.hasKey("price") && !options.isNull("price")
+            ? options.getDouble("price") : null;
+        // JS numbers cross the bridge as doubles; epoch millis are exactly representable.
+        long purchaseTime = (long) options.getDouble("purchaseTime");
+        Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
+            amazonUserID, isoCurrencyCode, price, purchaseTime);
+        promise.resolve(null);
     }
 
     @ReactMethod
     @Deprecated // Use syncAmazonPurchase instead
+    @SuppressWarnings("deprecation")
     public void syncObserverModeAmazonPurchase(String productID, String receiptID,
                                             String amazonUserID, String isoCurrencyCode,
                                             Double price, final Promise promise) {
-        syncAmazonPurchase(productID, receiptID, amazonUserID, isoCurrencyCode, price, promise);
+        Purchases.getSharedInstance().syncAmazonPurchase(productID, receiptID,
+            amazonUserID, isoCurrencyCode, price);
+        promise.resolve(null);
     }
 
 
