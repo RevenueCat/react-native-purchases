@@ -65,6 +65,12 @@ Optionally, pass an offering object to display a specific offering:
 await RevenueCatUI.presentPaywall({ offering });
 ```
 
+On iOS, you can also choose how the paywall is presented: `pageSheet` (default), `formSheet`, `fullScreen`, or `automatic`. This option is ignored on Android and web.
+
+```tsx
+await RevenueCatUI.presentPaywall({ offering, presentationMode: 'fullScreen' });
+```
+
 #### 2. RevenueCatUI.presentPaywallIfNeeded()
 
 Displays the paywall **only if the required entitlement is not unlocked** (useful for gating access).
