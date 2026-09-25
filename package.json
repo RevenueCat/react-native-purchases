@@ -96,7 +96,9 @@
     "typedoc": "^0.25.11",
     "typescript": "^5.2.2"
   },
+  "//": "TODO: before releasing 11.0.0, drop the purchases-typescript-internal resolution and phc-20.0-dev/ in favor of the published PHC 20 package",
   "resolutions": {
+    "@revenuecat/purchases-typescript-internal": "file:./phc-20.0-dev/purchases-typescript-internal.tgz",
     "@types/react": "18.2.44",
     "@types/react-dom": "18.2.0",
     "fast-xml-parser": "5.5.7"

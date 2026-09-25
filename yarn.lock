@@ -5020,10 +5020,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:19.6.0":
-  version: 19.6.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:19.6.0"
-  checksum: d4c0a7c1373244d4d548df524887f3e6f963ca6f76e3d05d64b63aaa5b09f6af6e0304deea42308d42532a3ad463d4d1160d03c668c44f3040b2aa1df84c9091
+"@revenuecat/purchases-typescript-internal@file:./phc-20.0-dev/purchases-typescript-internal.tgz::locator=react-native-purchases%40workspace%3A.":
+  version: 19.4.0
+  resolution: "@revenuecat/purchases-typescript-internal@file:./phc-20.0-dev/purchases-typescript-internal.tgz::locator=react-native-purchases%40workspace%3A."
+  checksum: 6224cf0907b35f7151514cce941c7fd5775dc2b1901f9242b19e36aaffbf78839977d16f596855b7b447eb42c849e77adf9ec1ea32f8fac4bab8fda04cf90472
   languageName: node
   linkType: hard
 
