@@ -3,6 +3,7 @@ import {
   CustomerInfo,
   PurchasesEntitlementInfo,
   PurchasesEntitlementInfos,
+  PeriodType,
   PurchasesStoreTransaction,
   PurchasesSubscriptionInfo
 } from "../src";
@@ -40,7 +41,7 @@ function checkSubscriptionInfo(info: PurchasesSubscriptionInfo) {
   const billingIssuesDetectedAt: string | null = info.billingIssuesDetectedAt;
   const gracePeriodExpiresDate: string | null = info.gracePeriodExpiresDate;
   const ownershipType: string = info.ownershipType;
-  const periodType: string = info.periodType;
+  const periodType: PeriodType = info.periodType;
   const refundedAt: string | null = info.refundedAt;
   const storeTransactionId: string | null = info.storeTransactionId;
   const isActive: boolean = info.isActive;
@@ -60,7 +61,7 @@ function checkEntitlementInfo(info: PurchasesEntitlementInfo) {
   const identifier: string = info.identifier;
   const isActive: boolean = info.isActive;
   const willRenew: boolean = info.willRenew;
-  const periodType: string = info.periodType;
+  const periodType: PeriodType = info.periodType;
   const latestPurchaseDate: string = info.latestPurchaseDate;
   const originalPurchaseDate: string = info.originalPurchaseDate;
   const expirationDate: string | null = info.expirationDate;

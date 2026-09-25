@@ -3883,10 +3883,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:19.4.1":
-  version: 19.4.1
-  resolution: "@revenuecat/purchases-typescript-internal@npm:19.4.1"
-  checksum: 04b30da2b0ebadacd0645df5f65244f63bfcf0f86006e2cf0f81ebd4d68b6ce35d78ab6d9d07a69047ab89be16326d5d1f63799042fbfa0c9e0a5d3effe7ab98
+"@revenuecat/purchases-typescript-internal@file:./phc-20.0-dev/purchases-typescript-internal.tgz::locator=react-native-purchases%40workspace%3A.":
+  version: 19.4.0
+  resolution: "@revenuecat/purchases-typescript-internal@file:./phc-20.0-dev/purchases-typescript-internal.tgz::locator=react-native-purchases%40workspace%3A."
+  checksum: 6224cf0907b35f7151514cce941c7fd5775dc2b1901f9242b19e36aaffbf78839977d16f596855b7b447eb42c849e77adf9ec1ea32f8fac4bab8fda04cf90472
   languageName: node
   linkType: hard
 
