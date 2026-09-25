@@ -188,6 +188,37 @@ export interface TrackCustomPaywallImpressionOptions {
 }
 
 /**
+ * Options for syncing an Amazon purchase with the RevenueCat backend.
+ */
+export interface SyncAmazonPurchaseOptions {
+  /**
+   * Product ID associated to the purchase.
+   */
+  productID: string;
+  /**
+   * ReceiptId that represents the Amazon purchase.
+   */
+  receiptID: string;
+  /**
+   * Amazon's userID. This parameter will be ignored when syncing a Google purchase.
+   */
+  amazonUserID: string;
+  /**
+   * Product's currency code in ISO 4217 format.
+   */
+  isoCurrencyCode?: string | null;
+  /**
+   * Product's price.
+   */
+  price?: number | null;
+  /**
+   * Time the product was purchased, in milliseconds since the epoch. Can be obtained from Amazon's
+   * PurchaseResponse > Receipt > purchaseTime.
+   */
+  purchaseTime: number;
+}
+
+/**
  * Predefined mediator name constants. Use these or pass any string for unlisted networks.
  */
 export const AdMediatorName = {
@@ -1185,30 +1216,17 @@ export default class Purchases {
    *
    * The receipt IDs are cached if successfully posted so they are not posted more than once.
    *
-   * @param {string} productID Product ID associated to the purchase.
-   * @param {string} receiptID ReceiptId that represents the Amazon purchase.
-   * @param {string} amazonUserID Amazon's userID. This parameter will be ignored when syncing a Google purchase.
-   * @param {(string|null|undefined)} isoCurrencyCode Product's currency code in ISO 4217 format.
-   * @param {(number|null|undefined)} price Product's price.
+   * @param {SyncAmazonPurchaseOptions} options The purchase details. `purchaseTime` is required and can be
+   * obtained from Amazon's PurchaseResponse > Receipt > purchaseTime.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
    * syncing purchases.
    */
   public static async syncAmazonPurchase(
-    productID: string,
-    receiptID: string,
-    amazonUserID: string,
-    isoCurrencyCode?: string | null,
-    price?: number | null
+    options: SyncAmazonPurchaseOptions
   ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
     await throwIfNotConfigured();
-    RNPurchases.syncAmazonPurchase(
-      productID,
-      receiptID,
-      amazonUserID,
-      isoCurrencyCode,
-      price
-    );
+    RNPurchases.syncAmazonPurchase(options);
   }
 
   /**
