@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.hybridcommon.ui.PaywallResultListener
@@ -22,18 +23,17 @@ internal class RNPaywallsModule(
 
     companion object {
         const val NAME = "RNPaywalls"
-    }
 
-    private val currentFragmentActivity: FragmentActivity?
-        get() {
-            return when (val currentActivity = reactApplicationContext.currentActivity) {
-                is FragmentActivity -> currentActivity
-                else -> {
-                    Log.e(NAME, "RevenueCat paywalls require applications to use a FragmentActivity")
-                    null
-                }
-            }
-        }
+        // RCTDeviceEventEmitter is global and keyed by event name alone, so these names must not
+        // collide with the ones RNCustomerCenter emits.
+        private const val PRESENTED_PAYWALL_EVENT_PREFIX = "Paywalls-"
+        private const val PRESENTATION_ID_KEY = "presentationId"
+
+        private const val MISSING_ACTIVITY_ERROR =
+            "RevenueCat paywalls can only be presented while there is a current activity"
+        private const val MISSING_FRAGMENT_ACTIVITY_ERROR =
+            "RevenueCat paywalls require applications to use a FragmentActivity"
+    }
 
     override fun getName(): String {
         return NAME
@@ -46,6 +46,8 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        presentationId: String?,
+        jsResumesPurchase: Boolean,
         promise: Promise
     ) {
         presentPaywall(
@@ -55,6 +57,8 @@ internal class RNPaywallsModule(
             displayCloseButton,
             fontFamily,
             customVariables,
+            presentationId,
+            jsResumesPurchase,
             promise
         )
     }
@@ -67,6 +71,8 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        presentationId: String?,
+        jsResumesPurchase: Boolean,
         promise: Promise
     ) {
         presentPaywall(
@@ -76,6 +82,8 @@ internal class RNPaywallsModule(
             displayCloseButton,
             fontFamily,
             customVariables,
+            presentationId,
+            jsResumesPurchase,
             promise
         )
     }
@@ -107,9 +115,19 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamilyName: String?,
         customVariables: ReadableMap?,
+        presentationId: String?,
+        jsResumesPurchase: Boolean,
         promise: Promise
     ) {
-        val activity = currentFragmentActivity ?: return
+        val activity = when (val currentActivity = reactApplicationContext.currentActivity) {
+            is FragmentActivity -> currentActivity
+            else -> {
+                val message = if (currentActivity == null) MISSING_ACTIVITY_ERROR else MISSING_FRAGMENT_ACTIVITY_ERROR
+                Log.e(NAME, message)
+                promise.reject("PAYWALLS_MISSING_WRONG_ACTIVITY", message, null)
+                return
+            }
+        }
         val fontFamily = fontFamilyName?.let {
             FontAssetManager.getPaywallFontFamily(fontFamilyName = it, activity.resources.assets)
         }
@@ -149,9 +167,30 @@ internal class RNPaywallsModule(
                         }
                     },
                     fontFamily = fontFamily,
-                    customVariables = customVariablesMap
+                    customVariables = customVariablesMap,
+                    paywallListener = presentationId?.let { routedPresentationId ->
+                        paywallEventListener(
+                            jsResumesPurchase = {
+                                jsResumesPurchase && reactApplicationContext.hasActiveReactInstance()
+                            },
+                        ) { eventName, payload -> sendEvent(routedPresentationId, eventName, payload) }
+                    },
                 )
             )
+        }
+    }
+
+    private fun sendEvent(presentationId: String, event: PaywallEventName, params: Map<String, Any?>) {
+        val eventName = PRESENTED_PAYWALL_EVENT_PREFIX + event.eventName
+        val payload = RNPurchasesConverters.convertMapToWriteableMap(params + (PRESENTATION_ID_KEY to presentationId))
+        reactApplicationContext.runOnUiQueueThread {
+            try {
+                reactApplicationContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    .emit(eventName, payload)
+            } catch (e: Exception) {
+                Log.e(NAME, "Error sending event $eventName", e)
+            }
         }
     }
 }
