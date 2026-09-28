@@ -36,7 +36,7 @@ import {
 } from "../dist";
 
 import Purchases from "../dist/purchases";
-import { GoogleProductChangeInfo, SubscriptionOption, TrackCustomPaywallImpressionOptions } from "../src";
+import { GoogleProductChangeInfo, SubscriptionOption, SyncAmazonPurchaseOptions, TrackCustomPaywallImpressionOptions } from "../src";
 
 async function checkPurchases(purchases: Purchases) {
   const productIds: string[] = [];
@@ -404,16 +404,19 @@ async function checkSyncAmazonPurchase(
   productID: string,
   receiptID: string,
   amazonUserID: string,
-  isoCurrencyCode?: string | null,
-  price?: number | null
+  isoCurrencyCode: string | null,
+  price: number | null,
+  purchaseTime: number
 ): Promise<void> {
-  return Purchases.syncAmazonPurchase(
+  const options: SyncAmazonPurchaseOptions = {
     productID,
     receiptID,
     amazonUserID,
     isoCurrencyCode,
-    price
-  );
+    price,
+    purchaseTime,
+  };
+  return Purchases.syncAmazonPurchase(options);
 }
 
 async function checkSyncObserverModeAmazonPurchase(
