@@ -1226,7 +1226,7 @@ export default class Purchases {
   ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
     await throwIfNotConfigured();
-    RNPurchases.syncAmazonPurchase(options);
+    await RNPurchases.syncAmazonPurchase(options);
   }
 
   /**
@@ -1254,7 +1254,7 @@ export default class Purchases {
   ): Promise<void> {
     await Purchases.throwIfIOSPlatform();
     await throwIfNotConfigured();
-    RNPurchases.syncObserverModeAmazonPurchase(
+    await RNPurchases.syncObserverModeAmazonPurchase(
       productID,
       receiptID,
       amazonUserID,

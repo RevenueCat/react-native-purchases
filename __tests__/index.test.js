@@ -1318,6 +1318,19 @@ describe("Purchases", () => {
     expect(NativeModules.RNPurchases.syncAmazonPurchase).toBeCalledWith(syncAmazonPurchaseOptions);
   })
 
+  it("syncAmazonPurchase rejects when the native module rejects", async () => {
+    Platform.OS = "android";
+
+    NativeModules.RNPurchases.syncAmazonPurchase.mockRejectedValueOnce({
+      code: "InvalidArguments",
+      message: "syncAmazonPurchase requires productID, receiptID, amazonUserID and purchaseTime",
+    });
+
+    await expect(Purchases.syncAmazonPurchase(syncAmazonPurchaseOptions)).rejects.toMatchObject({
+      message: "syncAmazonPurchase requires productID, receiptID, amazonUserID and purchaseTime",
+    });
+  });
+
   it("syncAmazonPurchase throws UninitializedError if called before configuring", async () => {
     Platform.OS = "android";
 
