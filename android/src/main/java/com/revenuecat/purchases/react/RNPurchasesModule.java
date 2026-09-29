@@ -97,7 +97,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean diagnosticsEnabled,
                                boolean automaticDeviceIdentifierCollectionEnabled,
                                @Nullable String preferredUILocaleOverride,
-                               boolean useExternalPurchaseCustomLinks) {
+                               boolean useExternalPurchaseCustomLinks,
+                               boolean enableExternalPurchasesInSimulator) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if ("GALAXY".equals(storeString)) {

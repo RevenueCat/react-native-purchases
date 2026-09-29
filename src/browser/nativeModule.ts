@@ -31,7 +31,8 @@ export const browserNativeModuleRNPurchases = {
     _diagnosticsEnabled: boolean,
     _automaticDeviceIdentifierCollectionEnabled: boolean,
     _preferredUILocaleOverride: string | null,
-    _useExternalPurchaseCustomLinks: boolean
+    _useExternalPurchaseCustomLinks: boolean,
+    _enableExternalPurchasesInSimulator: boolean
   ) => {
     try {
       // Make sure that when running in Expo Go or Rork sandbox a web-compatible API key is used, because the underlying purchases-js error message isn't super clear when a non-compatible API key type is used in this case

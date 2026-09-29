@@ -207,6 +207,7 @@ async function checkConfigure() {
   const automaticDeviceIdentifierCollectionEnabled: boolean = true;
   const preferredUILocaleOverride: string = "";
   const useExternalPurchaseCustomLinks: boolean = false;
+  const enableExternalPurchasesInSimulator: boolean = true;
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -298,6 +299,7 @@ async function checkConfigure() {
     automaticDeviceIdentifierCollectionEnabled,
     preferredUILocaleOverride,
     useExternalPurchaseCustomLinks,
+    enableExternalPurchasesInSimulator,
   });
 
   // PurchasesAreCompletedBy == MY_APP

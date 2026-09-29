@@ -90,7 +90,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   diagnosticsEnabled:(BOOL)diagnosticsEnabled 
                   automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled
                   preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride
-                  useExternalPurchaseCustomLinks:(BOOL)useExternalPurchaseCustomLinks) {
+                  useExternalPurchaseCustomLinks:(BOOL)useExternalPurchaseCustomLinks
+                  enableExternalPurchasesInSimulator:(BOOL)enableExternalPurchasesInSimulator) {
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -104,7 +105,8 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                            diagnosticsEnabled:diagnosticsEnabled
                    automaticDeviceIdentifierCollectionEnabled:automaticDeviceIdentifierCollectionEnabled
                                               preferredLocale:preferredUILocaleOverride.mappingNSNullToNil
-                               useExternalPurchaseCustomLinks:useExternalPurchaseCustomLinks];
+                               useExternalPurchaseCustomLinks:useExternalPurchaseCustomLinks
+                           enableExternalPurchasesInSimulator:enableExternalPurchasesInSimulator];
     purchases.delegate = self;
 }
 
