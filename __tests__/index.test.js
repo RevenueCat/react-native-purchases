@@ -1300,26 +1300,36 @@ describe("Purchases", () => {
     }
   });
 
+  const syncAmazonPurchaseOptions = {
+    productID: "productID_test",
+    receiptID: "receiptID_test",
+    amazonUserID: "amazonUserID_test",
+    isoCurrencyCode: "isoCurrencyCode_test",
+    price: 3.4,
+    purchaseTime: 1700000000000,
+  };
+
   it("syncAmazonPurchase works for android", async () => {
     Platform.OS = "android";
 
-    await Purchases.syncAmazonPurchase(
-      "productID_test",
-      "receiptID_test",
-      "amazonUserID_test",
-      "isoCurrencyCode_test",
-      3.4
-    );
+    await Purchases.syncAmazonPurchase(syncAmazonPurchaseOptions);
 
     expect(NativeModules.RNPurchases.syncAmazonPurchase).toBeCalledTimes(1);
-    expect(NativeModules.RNPurchases.syncAmazonPurchase).toBeCalledWith(
-      "productID_test",
-      "receiptID_test",
-      "amazonUserID_test",
-      "isoCurrencyCode_test",
-      3.4
-    );
+    expect(NativeModules.RNPurchases.syncAmazonPurchase).toBeCalledWith(syncAmazonPurchaseOptions);
   })
+
+  it("syncAmazonPurchase rejects when the native module rejects", async () => {
+    Platform.OS = "android";
+
+    NativeModules.RNPurchases.syncAmazonPurchase.mockRejectedValueOnce({
+      code: "InvalidArguments",
+      message: "syncAmazonPurchase requires productID, receiptID, amazonUserID and purchaseTime",
+    });
+
+    await expect(Purchases.syncAmazonPurchase(syncAmazonPurchaseOptions)).rejects.toMatchObject({
+      message: "syncAmazonPurchase requires productID, receiptID, amazonUserID and purchaseTime",
+    });
+  });
 
   it("syncAmazonPurchase throws UninitializedError if called before configuring", async () => {
     Platform.OS = "android";
@@ -1328,13 +1338,7 @@ describe("Purchases", () => {
 
     const expected = new Purchases.UninitializedPurchasesError();
 
-    await Purchases.syncAmazonPurchase(
-      "productID_test",
-      "receiptID_test",
-      "amazonUserID_test",
-      "isoCurrencyCode_test",
-      3.4
-    )
+    await Purchases.syncAmazonPurchase(syncAmazonPurchaseOptions)
       .then(() => {
         fail(`${allPropertyNames[i]} should have failed`);
       })
@@ -1348,13 +1352,7 @@ describe("Purchases", () => {
     Platform.OS = "ios";
 
     try {
-      await Purchases.syncAmazonPurchase(
-        "productID_test",
-        "receiptID_test",
-        "amazonUserID_test",
-        "isoCurrencyCode_test",
-        3.4
-      );
+      await Purchases.syncAmazonPurchase(syncAmazonPurchaseOptions);
       fail("expected error");
     } catch (error) {
       if (!(error instanceof UnsupportedPlatformError)) {
