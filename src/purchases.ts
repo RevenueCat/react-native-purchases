@@ -517,7 +517,7 @@ export default class Purchases {
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
-   * @param {boolean} [useExternalPurchaseCustomLinks=false] Experimental. An optional boolean. iOS-only. Set this to true to take part in Apple's external purchase custom link programme.
+   * @param {boolean} [useExternalPurchaseCustomLinks=false] Experimental. An optional boolean. iOS-only. Set this to true to make web purchase buttons that open in the external browser go through Apple's external purchase custom link flow.
    * @param {boolean} [enableExternalPurchasesInSimulator=true] Experimental. An optional boolean. iOS-only. Set this to false to make the simulator behave as a device does for a customer who is not eligible for external purchases.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
