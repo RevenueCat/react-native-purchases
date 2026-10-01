@@ -206,6 +206,8 @@ async function checkConfigure() {
   const diagnosticsEnabled: boolean = true;
   const automaticDeviceIdentifierCollectionEnabled: boolean = true;
   const preferredUILocaleOverride: string = "";
+  const useExternalPurchaseCustomLinks: boolean = false;
+  const enableExternalPurchasesInSimulator: boolean = true;
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -284,6 +286,20 @@ async function checkConfigure() {
     diagnosticsEnabled,
     automaticDeviceIdentifierCollectionEnabled,
     preferredUILocaleOverride,
+  });
+  Purchases.configure({
+    apiKey,
+    appUserID,
+    purchasesAreCompletedBy,
+    userDefaultsSuiteName,
+    storeKitVersion,
+    useAmazon,
+    shouldShowInAppMessagesAutomatically,
+    diagnosticsEnabled,
+    automaticDeviceIdentifierCollectionEnabled,
+    preferredUILocaleOverride,
+    useExternalPurchaseCustomLinks,
+    enableExternalPurchasesInSimulator,
   });
 
   // PurchasesAreCompletedBy == MY_APP
