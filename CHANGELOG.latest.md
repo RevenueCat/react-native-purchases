@@ -1,11 +1,24 @@
 ## RevenueCat SDK
-### 🐞 Bugfixes
-* Bump PHC to 19.3.0 and fix errors not matching PurchasesError (#1919) via Álvaro Brey (@AlvaroBrey)
+### ✨ New Features
+* Allow opting in to external purchase custom links on iOS (experimental) (#1976) via Antonio Pallares (@ajpallares)
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.3.1 (#1973) via RevenueCat Git Bot (@RCGitBot)
-  * [iOS 5.90.2](https://github.com/RevenueCat/purchases-ios/releases/tag/5.90.2)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.5.0 (#1984) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.24.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.24.0)
+  * [Android 10.23.4](https://github.com/RevenueCat/purchases-android/releases/tag/10.23.4)
+  * [Android 10.23.3](https://github.com/RevenueCat/purchases-android/releases/tag/10.23.3)
+  * [Android 10.23.2](https://github.com/RevenueCat/purchases-android/releases/tag/10.23.2)
+  * [Android 10.23.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.23.1)
+  * [Android 10.23.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.23.0)
+  * [iOS 5.92.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.92.0)
+  * [iOS 5.91.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.91.0)
+  * [Web 1.67.1](https://github.com/RevenueCat/purchases-js/releases/tag/1.67.1)
+  * [Web 1.67.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.67.0)
+  * [Web 1.66.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.66.0)
+  * [Web 1.65.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.65.0)
+  * [Web 1.64.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.64.0)
+* [RENOVATE] Update dependency revenuecat to v4.6.2 (#1981) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.4.1 (#1979) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.4.0 (#1977) via RevenueCat Git Bot (@RCGitBot)
 
 ### 🔄 Other Changes
-* Auto-merge PHC bump PRs (#1972) via Álvaro Brey (@AlvaroBrey)
-* chore(deps): bump fastlane-plugin-revenuecat_internal from `6db1da0` to `9f7a03e` (#1970) via dependabot[bot] (@dependabot[bot])
-* chore(deps): bump fastlane from 2.240.0 to 2.240.1 (#1971) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump ip-address from 10.4.0 to 10.7.2 in /examples/MagicWeather (#1982) via dependabot[bot] (@dependabot[bot])
