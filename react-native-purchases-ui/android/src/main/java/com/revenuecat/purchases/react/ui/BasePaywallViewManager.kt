@@ -16,6 +16,7 @@ import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
 import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.react.ui.events.OnDismissEvent
+import com.revenuecat.purchases.react.ui.events.OnInteractionEvent
 import com.revenuecat.purchases.react.ui.events.OnPerformPurchaseEvent
 import com.revenuecat.purchases.react.ui.events.OnPerformRestoreEvent
 import com.revenuecat.purchases.react.ui.events.OnPurchaseCancelledEvent
@@ -26,6 +27,8 @@ import com.revenuecat.purchases.react.ui.events.OnPurchaseStartedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreCompletedEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
 import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
+import com.revenuecat.purchases.react.ui.events.OnUrlOpenedEvent
+import com.revenuecat.purchases.react.ui.events.OnWebCheckoutOpenedEvent
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import java.util.concurrent.ConcurrentHashMap
@@ -70,6 +73,9 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
             .putEvent(PaywallEventName.ON_PURCHASE_PACKAGE_INITIATED)
             .putEvent(PaywallEventName.ON_PERFORM_PURCHASE)
             .putEvent(PaywallEventName.ON_PERFORM_RESTORE)
+            .putEvent(PaywallEventName.ON_WEB_CHECKOUT_OPENED)
+            .putEvent(PaywallEventName.ON_URL_OPENED)
+            .putEvent(PaywallEventName.ON_INTERACTION)
             .build()
     }
 
@@ -282,6 +288,32 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
                 requestId,
             )
             emitEvent(themedReactContext, view.id, event)
+        }
+
+        override fun onWebCheckoutOpened() {
+            val event = OnWebCheckoutOpenedEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+            )
+            emitEvent(themedReactContext, view.id, event)
+        }
+
+        override fun onUrlOpened(url: String) {
+            val event = OnUrlOpenedEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+                url = url,
+            )
+            emitEvent(themedReactContext, view.id, event)
+        }
+
+        override fun onInteraction(event: Map<String, Any>) {
+            val interactionEvent = OnInteractionEvent(
+                surfaceId = view.surfaceId,
+                viewTag = view.id,
+                interaction = event,
+            )
+            emitEvent(themedReactContext, view.id, interactionEvent)
         }
 
     }

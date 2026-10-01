@@ -6,7 +6,7 @@
 
 #import "CustomerCenterViewWrapper.h"
 #import "UIView+Extensions.h"
-#import "UIView+React.h"
+#import <React/UIView+React.h>
 
 @import RevenueCatUI;
 

@@ -1,6 +1,5 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
 import {
-  PurchasesError,
   PURCHASES_ERROR_CODE,
   UninitializedPurchasesError,
   UnsupportedPlatformError,
@@ -57,6 +56,7 @@ export interface SyncPurchasesResult {
   customerInfo: CustomerInfo;
 }
 
+import { normalizingRejections } from "./normalizingRejections";
 import { shouldUseBrowserMode } from "./utils/environment";
 import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
@@ -112,7 +112,8 @@ const NATIVE_MODULE_ERROR =
 
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
-const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const nativeModule = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const RNPurchases = nativeModule ? normalizingRejections(nativeModule) : nativeModule;
 
 // Only create event emitter if native module is available to avoid crash on import
 //
@@ -120,7 +121,7 @@ const RNPurchases = usingBrowserMode ? browserNativeModuleRNPurchases : NativeMo
 // methods for NativeEventEmitter to work. Both iOS and Android native modules now have these.
 // See: https://github.com/RevenueCat/react-native-purchases/issues/1298
 // See: https://reactnative.dev/blog/2025/04/08/react-native-0.79 (Breaking Changes section)
-const eventEmitter = !usingBrowserMode && RNPurchases ? new NativeEventEmitter(RNPurchases) : null;
+const eventEmitter = !usingBrowserMode && nativeModule ? new NativeEventEmitter(nativeModule) : null;
 
 // Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
 function throwIfNativeModuleNotAvailable(): void {
@@ -188,18 +189,15 @@ export interface TrackCustomPaywallImpressionOptions {
 
 /**
  * Predefined mediator name constants. Use these or pass any string for unlisted networks.
- * @beta
  */
 export const AdMediatorName = {
   adMob: "AdMob",
   appLovin: "AppLovin",
 } as const;
-/** @beta */
 export type AdMediatorName = string;
 
 /**
  * Predefined ad format constants. Use these or pass any string for unlisted formats.
- * @beta
  */
 export const AdFormat = {
   other: "other",
@@ -210,12 +208,10 @@ export const AdFormat = {
   nativeAd: "native",
   appOpen: "app_open",
 } as const;
-/** @beta */
 export type AdFormat = string;
 
 /**
  * Predefined precision constants for ad revenue. Use these or pass any string for unlisted values.
- * @beta
  */
 export const AdRevenuePrecision = {
   exact: "exact",
@@ -223,10 +219,8 @@ export const AdRevenuePrecision = {
   estimated: "estimated",
   unknown: "unknown",
 } as const;
-/** @beta */
 export type AdRevenuePrecision = string;
 
-/** @beta */
 export interface AdDisplayedData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -236,7 +230,6 @@ export interface AdDisplayedData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdOpenedData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -246,7 +239,6 @@ export interface AdOpenedData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdLoadedData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -256,7 +248,6 @@ export interface AdLoadedData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdRevenueData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -269,12 +260,81 @@ export interface AdRevenueData {
   placement?: string | null;
 }
 
-/** @beta */
 export interface AdFailedToLoadData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
   adUnitId: string;
   mediatorErrorCode?: number | null;
+  placement?: string | null;
+}
+
+/**
+ * Token generated for a rewarded ad impression. Pass `clientTransactionId` to
+ * the ad network as server-side verification custom data, then to
+ * {@link Purchases.pollRewardVerification} to await the reward.
+ */
+export interface RewardVerificationToken {
+  customData: string;
+  clientTransactionId: string;
+  appUserID: string;
+}
+
+/**
+ * A reward granted after a verified rewarded ad. Discriminated by `type`.
+ */
+export type VerifiedReward =
+  | VerifiedVirtualCurrencyReward
+  | VerifiedEntitlementReward
+  | VerifiedNoReward
+  | VerifiedUnsupportedReward;
+
+export interface VerifiedVirtualCurrencyReward {
+  type: "virtual_currency";
+  code: string;
+  amount: number;
+}
+
+export interface VerifiedEntitlementReward {
+  type: "entitlement";
+  identifier: string;
+  /** ISO 8601 expiration date string. */
+  expiresAt: string;
+  /** Expiration date in milliseconds since epoch. */
+  expiresAtMillis: number;
+}
+
+/** Verification completed but nothing was granted. */
+export interface VerifiedNoReward {
+  type: "no_reward";
+}
+
+/** Verification completed but the reward type isn't modeled by this SDK version. */
+export interface VerifiedUnsupportedReward {
+  type: "unsupported_reward";
+}
+
+/**
+ * Result of polling for reward verification.
+ */
+export interface RewardVerificationResult {
+  /** The primary reward when verification succeeded; absent on failure. */
+  reward?: VerifiedReward;
+  /** Additional rewards granted alongside the primary; never repeats it; empty on failure. */
+  moreRewards: VerifiedReward[];
+  /** True when verification did not complete (rejected / timeout / network). */
+  failed: boolean;
+}
+
+/**
+ * Ad metadata for a rewarded ad, passed to {@link Purchases.pollRewardVerification}
+ * to have the SDK automatically track reward-verification events for it.
+ */
+export interface RewardedAdTrackingMetadata {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  impressionId: string;
+  networkName?: string | null;
   placement?: string | null;
 }
 
@@ -457,6 +517,8 @@ export default class Purchases {
    * @param {boolean} [diagnosticsEnabled=false] An optional boolean. Set this to true to enable SDK diagnostics.
    * @param {boolean} [automaticDeviceIdentifierCollectionEnabled=true] An optional boolean. Set this to true to allow the collection of identifiers when setting the identifier for an attribution network.
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
+   * @param {boolean} [useExternalPurchaseCustomLinks=false] Experimental. An optional boolean. iOS-only. Set this to true to make web purchase buttons that open in the external browser go through Apple's external purchase custom link flow.
+   * @param {boolean} [enableExternalPurchasesInSimulator=true] Experimental. An optional boolean. iOS-only. Set this to false to make the simulator behave as a device does for a customer who is not eligible for external purchases.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -474,6 +536,8 @@ export default class Purchases {
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,
     preferredUILocaleOverride,
+    useExternalPurchaseCustomLinks = false,
+    enableExternalPurchasesInSimulator = true,
     } = configuration;
     const {
       store,
@@ -566,6 +630,8 @@ export default class Purchases {
       diagnosticsEnabled,
       automaticDeviceIdentifierCollectionEnabled,
       preferredUILocaleOverride,
+      useExternalPurchaseCustomLinks,
+      enableExternalPurchasesInSimulator,
     );
   }
 
@@ -761,11 +827,7 @@ export default class Purchases {
       null,
       null,
       null
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -797,11 +859,7 @@ export default class Purchases {
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
       product.presentedOfferingContext
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -832,11 +890,7 @@ export default class Purchases {
       discount.timestamp.toString(),
       null,
       product.presentedOfferingContext
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -869,11 +923,7 @@ export default class Purchases {
       googleIsPersonalizedPrice == null
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice }
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -906,11 +956,7 @@ export default class Purchases {
         ? null
         : { isPersonalizedPrice: googleIsPersonalizedPrice },
       subscriptionOption.presentedOfferingContext
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -937,11 +983,7 @@ export default class Purchases {
       null,
       discount.timestamp.toString(),
       null
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -1372,11 +1414,7 @@ export default class Purchases {
     return RNPurchases.purchaseProductWithWinBackOffer(
       product.identifier,
       winBackOffer.identifier
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -1406,11 +1444,7 @@ export default class Purchases {
       aPackage.identifier,
       aPackage.presentedOfferingContext,
       winBackOffer.identifier
-    ).catch((error: PurchasesError) => {
-      error.userCancelled =
-        error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR;
-      throw error;
-    });
+    );
   }
 
   /**
@@ -1668,8 +1702,28 @@ export default class Purchases {
   }
 
   /**
+   * Subscriber attribute associated with the Singular Device ID (SDID) for the user.
+   * Required for the RevenueCat Singular integration when using Singular's Event
+   * Endpoint V2.
+   *
+   * The SDID is generated by the Singular SDK and cannot be collected by
+   * collectDeviceIdentifiers, so it has to be forwarded by the app.
+   *
+   * @param singularDeviceID Singular device ID to use in the Singular integration. Empty String or null will delete the subscriber attribute.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * setting the Singular Device ID.
+   */
+  public static async setSingularDeviceID(
+    singularDeviceID: string | null
+  ): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.setSingularDeviceID(singularDeviceID);
+  }
+
+  /**
    * Subscriber attribute associated with the OneSignal Player Id for the user
-   * Required for the RevenueCat OneSignal integration
+   * Required for the RevenueCat OneSignal integration with OneSignal SDK v4.0 and below
+   * (OneSignal API v9). For OneSignal SDK v5.0 and above, use {@link setOnesignalUserID} instead.
    *
    * @param onesignalID OneSignal Player ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
    * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
@@ -1680,6 +1734,22 @@ export default class Purchases {
   ): Promise<void> {
     await throwIfNotConfigured();
     RNPurchases.setOnesignalID(onesignalID);
+  }
+
+  /**
+   * Subscriber attribute associated with the OneSignal User ID for the user
+   * Required for the RevenueCat OneSignal integration with OneSignal SDK v5.0
+   * and above (OneSignal API v11+).
+   *
+   * @param onesignalUserID OneSignal User ID to use in OneSignal integration. Empty String or null will delete the subscriber attribute.
+   * @returns {Promise<void>} The promise will be rejected if configure has not been called yet or if there's an error
+   * setting the OneSignal user ID.
+   */
+  public static async setOnesignalUserID(
+    onesignalUserID: string | null
+  ): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.setOnesignalUserID(onesignalUserID);
   }
 
   /**
@@ -2022,7 +2092,6 @@ export default class Purchases {
 
   /**
    * Provides access to ad lifecycle tracking methods.
-   * @beta
    */
   public static get adTracker(): PurchasesAdTracker {
     if (!adTrackerSingleton) {
@@ -2059,6 +2128,48 @@ export default class Purchases {
       offeringId: offeringId ?? null,
       presentedOfferingContext: presentedOfferingContext ?? null,
     });
+  }
+
+  /**
+   * Generates a reward verification token for a rewarded ad impression.
+   *
+   * Pass the returned `clientTransactionId` to the ad network as the
+   * server-side verification custom data. After the ad completes, pass the same
+   * id to {@link Purchases.pollRewardVerification} to await the reward.
+   *
+   * @param impressionId - The impression identifier of the rewarded ad.
+   * @returns {Promise<RewardVerificationToken>} promise with the generated token.
+   */
+  public static async generateRewardVerificationToken(
+    impressionId: string
+  ): Promise<RewardVerificationToken> {
+    await throwIfNotConfigured();
+    return RNPurchases.generateRewardVerificationToken(impressionId);
+  }
+
+  /**
+   * Polls RevenueCat for the reward verification result of a rewarded ad.
+   *
+   * The returned promise stays pending while the native poller runs (up to
+   * ~10-30s) and resolves once verification completes or times out. A timed-out
+   * or rejected verification resolves with `failed: true` rather than rejecting.
+   *
+   * @param clientTransactionId - The `clientTransactionId` from
+   *   {@link Purchases.generateRewardVerificationToken}.
+   * @param trackingMetadata - Pass to have the SDK automatically track
+   *   reward-verification events for the ad it belongs to; omit to poll
+   *   without tracking.
+   * @returns {Promise<RewardVerificationResult>} promise with the verification result.
+   */
+  public static async pollRewardVerification(
+    clientTransactionId: string,
+    trackingMetadata?: RewardedAdTrackingMetadata
+  ): Promise<RewardVerificationResult> {
+    await throwIfNotConfigured();
+    return RNPurchases.pollRewardVerification(
+      clientTransactionId,
+      trackingMetadata
+    );
   }
 
   private static async throwIfAndroidPlatform() {
@@ -2104,7 +2215,6 @@ let adTrackerSingleton: PurchasesAdTracker | undefined;
 /**
  * Provides methods for tracking ad lifecycle events.
  * Access via {@link Purchases.adTracker}.
- * @beta
  */
 export class PurchasesAdTracker {
   public async trackAdDisplayed(data: AdDisplayedData): Promise<void> {

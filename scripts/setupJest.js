@@ -800,6 +800,8 @@ NativeModules.RNPurchases = {
   setFirebaseAppInstanceID: jest.fn(),
   setTenjinAnalyticsInstallationID: jest.fn(),
   setKochavaDeviceID: jest.fn(),
+  setSingularDeviceID: jest.fn(),
+  setOnesignalUserID: jest.fn(),
   canMakePayments: jest.fn(),
   beginRefundRequestForActiveEntitlement: jest.fn(),
   beginRefundRequestForEntitlementId: jest.fn(),
@@ -816,7 +818,9 @@ NativeModules.RNPurchases = {
   trackAdOpened: jest.fn(),
   trackAdLoaded: jest.fn(),
   trackAdRevenue: jest.fn(),
-  trackAdFailedToLoad: jest.fn()
+  trackAdFailedToLoad: jest.fn(),
+  generateRewardVerificationToken: jest.fn(),
+  pollRewardVerification: jest.fn()
 };
 
 jest.mock(
