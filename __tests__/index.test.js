@@ -2399,5 +2399,73 @@ describe("Purchases", () => {
         expect(NativeModules.RNPurchases.trackAdFailedToLoad).toBeCalledWith(data);
       });
     });
+
+    describe("trackRewardedAdPromptShown", () => {
+      const promptData = {
+        mediatorName: "AdMob",
+        adUnitId: "unit-1",
+      };
+
+      it("makes right call with required fields only", async () => {
+        await Purchases.adTracker.trackRewardedAdPromptShown(promptData);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptShown).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptShown).toBeCalledWith(promptData);
+      });
+
+      it("passes placement through", async () => {
+        const data = { ...promptData, placement: "home" };
+        await Purchases.adTracker.trackRewardedAdPromptShown(data);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptShown).toBeCalledWith(data);
+      });
+
+      it("passes null placement through", async () => {
+        const data = { ...promptData, placement: null };
+        await Purchases.adTracker.trackRewardedAdPromptShown(data);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptShown).toBeCalledWith(data);
+      });
+
+      it("rejects when Purchases is not configured", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+        try {
+          await Purchases.adTracker.trackRewardedAdPromptShown(promptData);
+          fail("expected error");
+        } catch (error) { }
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptShown).toBeCalledTimes(0);
+      });
+    });
+
+    describe("trackRewardedAdPromptAccepted", () => {
+      const promptData = {
+        mediatorName: "AdMob",
+        adUnitId: "unit-1",
+      };
+
+      it("makes right call with required fields only", async () => {
+        await Purchases.adTracker.trackRewardedAdPromptAccepted(promptData);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptAccepted).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptAccepted).toBeCalledWith(promptData);
+      });
+
+      it("passes placement through", async () => {
+        const data = { ...promptData, placement: "home" };
+        await Purchases.adTracker.trackRewardedAdPromptAccepted(data);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptAccepted).toBeCalledWith(data);
+      });
+
+      it("passes null placement through", async () => {
+        const data = { ...promptData, placement: null };
+        await Purchases.adTracker.trackRewardedAdPromptAccepted(data);
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptAccepted).toBeCalledWith(data);
+      });
+
+      it("rejects when Purchases is not configured", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+        try {
+          await Purchases.adTracker.trackRewardedAdPromptAccepted(promptData);
+          fail("expected error");
+        } catch (error) { }
+        expect(NativeModules.RNPurchases.trackRewardedAdPromptAccepted).toBeCalledTimes(0);
+      });
+    });
   });
 });
