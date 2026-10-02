@@ -268,6 +268,18 @@ export interface AdFailedToLoadData {
   placement?: string | null;
 }
 
+export interface AdRewardPromptShownData {
+  mediatorName: AdMediatorName;
+  adUnitId: string;
+  placement?: string | null;
+}
+
+export interface AdRewardPromptAcceptedData {
+  mediatorName: AdMediatorName;
+  adUnitId: string;
+  placement?: string | null;
+}
+
 /**
  * Token generated for a rewarded ad impression. Pass `clientTransactionId` to
  * the ad network as server-side verification custom data, then to
@@ -2240,5 +2252,15 @@ export class PurchasesAdTracker {
   public async trackAdFailedToLoad(data: AdFailedToLoadData): Promise<void> {
     await throwIfNotConfigured();
     RNPurchases.trackAdFailedToLoad(data);
+  }
+
+  public async trackRewardedAdPromptShown(data: AdRewardPromptShownData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackRewardedAdPromptShown(data);
+  }
+
+  public async trackRewardedAdPromptAccepted(data: AdRewardPromptAcceptedData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackRewardedAdPromptAccepted(data);
   }
 }
