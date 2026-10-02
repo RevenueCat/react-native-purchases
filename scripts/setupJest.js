@@ -819,6 +819,8 @@ NativeModules.RNPurchases = {
   trackAdLoaded: jest.fn(),
   trackAdRevenue: jest.fn(),
   trackAdFailedToLoad: jest.fn(),
+  trackRewardedAdPromptShown: jest.fn(),
+  trackRewardedAdPromptAccepted: jest.fn(),
   generateRewardVerificationToken: jest.fn(),
   pollRewardVerification: jest.fn()
 };

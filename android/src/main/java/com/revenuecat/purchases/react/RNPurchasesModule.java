@@ -668,6 +668,16 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void trackRewardedAdPromptShown(ReadableMap data) {
+        CommonKt.trackRewardedAdPromptShown(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackRewardedAdPromptAccepted(ReadableMap data) {
+        CommonKt.trackRewardedAdPromptAccepted(data.toHashMap());
+    }
+
+    @ReactMethod
     public void generateRewardVerificationToken(String impressionId, final Promise promise) {
         promise.resolve(convertMapToWriteableMap(CommonKt.generateRewardVerificationToken(impressionId)));
     }
