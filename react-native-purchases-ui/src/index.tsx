@@ -301,6 +301,18 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
   throw new Error(NATIVE_MODULE_NOT_FOUND_ERROR);
 };
 
+/**
+ * The modal presentation style used by `presentPaywall` and `presentPaywallIfNeeded`.
+ * iOS only. Ignored on Android and web.
+ *
+ * - `pageSheet` (default): a sheet covering most of the screen. On iPad this is a large sheet.
+ * - `formSheet`: on iPad, a smaller centered modal. On iPhone it behaves like `pageSheet`.
+ * - `fullScreen`: covers the whole screen. A fullscreen paywall can't be swiped down to
+ *   dismiss, so make sure the paywall includes a close button.
+ * - `automatic`: the system default, which is `formSheet` on iOS 18+ and `pageSheet` earlier.
+ */
+export type PaywallPresentationMode = 'pageSheet' | 'formSheet' | 'fullScreen' | 'automatic';
+
 export interface PresentPaywallParams {
   /**
    * Whether to display the close button or not.
@@ -342,6 +354,11 @@ export interface PresentPaywallParams {
    * ```
    */
   customVariables?: CustomVariables;
+  /**
+   * The modal presentation style to present the paywall with. Defaults to `pageSheet`.
+   * Only available on iOS. Ignored on Android and web.
+   */
+  presentationMode?: PaywallPresentationMode;
 }
 
 export type PresentPaywallIfNeededParams = PresentPaywallParams & {
@@ -581,6 +598,7 @@ export default class RevenueCatUI {
                                  displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                  fontFamily,
                                  customVariables,
+                                 presentationMode,
                                }: PresentPaywallParams = {}): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywall");
@@ -590,6 +608,7 @@ export default class RevenueCatUI {
       displayCloseButton,
       fontFamily,
       convertCustomVariablesToNativeMap(customVariables),
+      presentationMode ?? null,
     )
   }
 
@@ -612,6 +631,7 @@ export default class RevenueCatUI {
                                          displayCloseButton = RevenueCatUI.Defaults.PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON,
                                          fontFamily,
                                          customVariables,
+                                         presentationMode,
                                        }: PresentPaywallIfNeededParams): Promise<PAYWALL_RESULT> {
     throwIfNativeModulesNotAvailable();
     RevenueCatUI.logWarningIfPreviewAPIMode("presentPaywallIfNeeded");
@@ -622,6 +642,7 @@ export default class RevenueCatUI {
       displayCloseButton,
       fontFamily,
       convertCustomVariablesToNativeMap(customVariables),
+      presentationMode ?? null,
     )
   }
 

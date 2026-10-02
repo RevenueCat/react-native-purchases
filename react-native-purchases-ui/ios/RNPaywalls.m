@@ -77,6 +77,7 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  presentationMode:(nullable NSString *)presentationMode
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
@@ -88,6 +89,9 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
             options[PaywallOptionsKeys.presentedOfferingContext] = presentedOfferingContext;
         }
         options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
+        if (presentationMode) {
+            options[PaywallOptionsKeys.presentationMode] = presentationMode;
+        }
         if (fontFamily) {
             options[PaywallOptionsKeys.fontName] = fontFamily;
         }
@@ -110,6 +114,7 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  presentationMode:(nullable NSString *)presentationMode
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
@@ -122,6 +127,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
         }
         options[PaywallOptionsKeys.requiredEntitlementIdentifier] = requiredEntitlementIdentifier;
         options[PaywallOptionsKeys.displayCloseButton] = @(displayCloseButton);
+        if (presentationMode) {
+            options[PaywallOptionsKeys.presentationMode] = presentationMode;
+        }
         if (fontFamily) {
             options[PaywallOptionsKeys.fontName] = fontFamily;
         }

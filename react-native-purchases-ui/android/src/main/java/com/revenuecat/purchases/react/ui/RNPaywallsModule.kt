@@ -46,6 +46,8 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean?,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        // iOS-only. Accepted so the method arity matches the JS call.
+        presentationMode: String?,
         promise: Promise
     ) {
         presentPaywall(
@@ -67,6 +69,8 @@ internal class RNPaywallsModule(
         displayCloseButton: Boolean,
         fontFamily: String?,
         customVariables: ReadableMap?,
+        // iOS-only. Accepted so the method arity matches the JS call.
+        presentationMode: String?,
         promise: Promise
     ) {
         presentPaywall(
