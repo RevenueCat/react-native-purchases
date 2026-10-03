@@ -60,6 +60,13 @@ const paywallComponentProps: PaywallComponentProps = {
     void purchasesError;
   },
   onDismiss: () => {},
+  onPurchasePackageInitiated: ({ packageBeingPurchased, resume }) => {
+    void packageBeingPurchased;
+    resume(true);
+  },
+  onRestoreInitiated: ({ resume }) => {
+    resume(true);
+  },
   onWebCheckoutOpened: () => {},
   onUrlOpened: (url: string) => {},
   onInteraction: (event: PaywallInteractionEvent) => {},
@@ -104,6 +111,9 @@ const footerComponentProps: FooterComponentProps = {
     void purchasesError;
   },
   onDismiss: () => {},
+  onRestoreInitiated: ({ resume }) => {
+    resume(true);
+  },
 };
 
 void footerComponentProps;
@@ -142,6 +152,9 @@ const deprecatedFooterComponentProps: DeprecatedFooterComponentProps = {
     void purchasesError;
   },
   onDismiss: () => {},
+  onRestoreInitiated: ({ resume }) => {
+    resume(true);
+  },
 };
 
 void deprecatedFooterComponentProps;
@@ -320,6 +333,14 @@ const onRestoreError = ({ error }: { error: PurchasesError }) => {
 
 const onDismiss = () => {};
 
+const onRestoreInitiated = ({
+  resume,
+}: {
+  resume: (shouldResume: boolean) => void;
+}) => {
+  resume(true);
+};
+
 const onWebCheckoutOpened = () => {};
 const onUrlOpened = (url: string) => {};
 const onInteraction = (event: PaywallInteractionEvent) => {};
@@ -486,6 +507,7 @@ const OriginalTemplateFooterPaywallScreenWithOfferingAndEvents = (
       onRestoreCompleted={onRestoreCompleted}
       onRestoreError={onRestoreError}
       onDismiss={onDismiss}
+      onRestoreInitiated={onRestoreInitiated}
     />
   );
 };
@@ -508,6 +530,7 @@ const FooterPaywallScreenWithOfferingAndEvents = (
       onRestoreCompleted={onRestoreCompleted}
       onRestoreError={onRestoreError}
       onDismiss={onDismiss}
+      onRestoreInitiated={onRestoreInitiated}
     />
   );
 };
