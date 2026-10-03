@@ -38,7 +38,7 @@ parameters:
   action:
     type: enum
     enum: [build, upgrade-hybrid-common, bump, sdk-update-tests]
-    default: sdk-update-tests
+    default: build
   version:
     type: string
     default: ''
