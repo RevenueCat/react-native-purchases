@@ -107,7 +107,9 @@
       "<rootDir>/examples/purchaseTesterTypescript/",
       "<rootDir>/react-native-purchases-store-galaxy/",
       "<rootDir>/react-native-purchases-ui/",
-      "<rootDir>/dir/"
+      "<rootDir>/dir/",
+      "<rootDir>/build/",
+      "<rootDir>/e2e-tests/SDKUpdateTester/"
     ],
     "cacheDirectory": ".jest/cache",
     "setupFiles": [

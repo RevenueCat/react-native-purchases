@@ -37,7 +37,7 @@ aliases:
 parameters:
   action:
     type: enum
-    enum: [build, upgrade-hybrid-common, bump]
+    enum: [build, upgrade-hybrid-common, bump, sdk-update-tests]
     default: build
   version:
     type: string
@@ -47,6 +47,51 @@ parameters:
     default: false
 
 commands:
+  collect-sdk-update-build-diagnostics:
+    parameters:
+      platform:
+        type: string
+    steps:
+      - run:
+          name: Collect SDK update build diagnostics
+          when: always
+          command: |
+            output=fastlane/test_output/sdk_update_tests/<< parameters.platform >>/builds
+            mkdir -p "$output"
+            for variant in release local; do
+              mkdir -p "$output/$variant"
+              for report in version.txt source.txt resolved-sdk.json package-lock.json Podfile.lock autolinking.json pods.log resolved-native-dependencies.txt build.log; do
+                cp build/sdk_update_tests/<< parameters.platform >>/$variant/$report \
+                  "$output/$variant/" 2>/dev/null || true
+              done
+            done
+      - store_artifacts:
+          path: fastlane/test_output/sdk_update_tests/<< parameters.platform >>/builds
+
+  collect-sdk-update-test-diagnostics:
+    parameters:
+      platform:
+        type: string
+    steps:
+      - run:
+          name: Collect SDK update test diagnostics
+          when: always
+          command: |
+            output=fastlane/test_output/sdk_update_tests/<< parameters.platform >>
+            mkdir -p "$output"
+            if [ "<< parameters.platform >>" = ios ]; then
+              xcrun simctl spawn booted log show --last 20m --style compact \
+                --predicate 'process == "MaestroTestApp"' > "$output/app.log" 2>&1 || true
+            else
+              adb logcat -d > "$output/logcat.txt" 2>&1 || true
+            fi
+      - store_test_results:
+          path: fastlane/test_output/sdk_update_tests/<< parameters.platform >>/anonymous_user/junit
+      - store_test_results:
+          path: fastlane/test_output/sdk_update_tests/<< parameters.platform >>/logged_in_user/junit
+      - store_artifacts:
+          path: fastlane/test_output/sdk_update_tests/<< parameters.platform >>
+
   # rn/ios_build depends on a specific cache key, so we need to create a custom step to install dependencies
   # we could use rn/yarn_install but that's not compatible with yarn 2
   install-dependencies-ios-build:
@@ -427,6 +472,128 @@ jobs:
           name: release
           command: bundle exec fastlane release
 
+  build-sdk-update-test-apps-ios:
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.3'
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: sdk-update-v1
+      - install-dependencies:
+          machine: "macos"
+      - run:
+          name: Build released and local React Native SDK update apps
+          command: bundle exec fastlane build_sdk_update_test_apps platform:ios
+          no_output_timeout: 20m
+      - collect-sdk-update-build-diagnostics:
+          platform: ios
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/sdk_update_tests/ios/release/SDKUpdateTester.app
+            - build/sdk_update_tests/ios/local/SDKUpdateTester.app
+            - build/sdk_update_tests/ios/release/version.txt
+            - build/sdk_update_tests/ios/local/version.txt
+            - build/sdk_update_tests/ios/release/source.txt
+            - build/sdk_update_tests/ios/local/source.txt
+
+  run-sdk-update-tests-ios:
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.3'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - revenuecat/install-mise-tools:
+          tools: java,ruby
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: sdk-update-v1
+      - revenuecat/install-maestro
+      - run:
+          name: Boot iOS Simulator
+          command: |
+            xcrun simctl boot "iPhone 17"
+            xcrun simctl bootstatus "iPhone 17" -b
+      - run:
+          name: SDK update — anonymous_user
+          command: bundle exec fastlane run_sdk_update_test platform:ios test_case:anonymous_user
+          no_output_timeout: 15m
+      - run:
+          name: SDK update — logged_in_user
+          command: bundle exec fastlane run_sdk_update_test platform:ios test_case:logged_in_user
+          no_output_timeout: 15m
+          when: always
+      - collect-sdk-update-test-diagnostics:
+          platform: ios
+
+  build-sdk-update-test-apps-android:
+    machine:
+      image: android:2026.05.1
+    resource_class: xlarge
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java,ruby
+      - revenuecat/install-gem-unix-dependencies:
+          cache-version: sdk-update-v1
+      - install-dependencies:
+          machine: "unix"
+      - run:
+          name: Build released and local React Native SDK update apps
+          command: bundle exec fastlane build_sdk_update_test_apps platform:android
+          no_output_timeout: 20m
+      - collect-sdk-update-build-diagnostics:
+          platform: android
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/sdk_update_tests/android/release/SDKUpdateTester.apk
+            - build/sdk_update_tests/android/local/SDKUpdateTester.apk
+            - build/sdk_update_tests/android/release/version.txt
+            - build/sdk_update_tests/android/local/version.txt
+            - build/sdk_update_tests/android/release/source.txt
+            - build/sdk_update_tests/android/local/source.txt
+
+  run-sdk-update-tests-android:
+    machine:
+      image: android:2026.05.1
+    resource_class: xlarge
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - revenuecat/install-mise-tools:
+          tools: java,ruby
+      - revenuecat/install-gem-unix-dependencies:
+          cache-version: sdk-update-v1
+      - android/create_avd:
+          avd_name: sdk-update-tests
+          system_image: system-images;android-34;google_apis;x86_64
+          install: true
+      - android/start_emulator:
+          avd_name: sdk-update-tests
+          post_emulator_launch_assemble_command: "true"
+      - revenuecat/install-maestro
+      - run:
+          name: SDK update — anonymous_user
+          command: bundle exec fastlane run_sdk_update_test platform:android test_case:anonymous_user
+          no_output_timeout: 15m
+      - run:
+          name: SDK update — logged_in_user
+          command: bundle exec fastlane run_sdk_update_test platform:android test_case:logged_in_user
+          no_output_timeout: 15m
+          when: always
+      - collect-sdk-update-test-diagnostics:
+          platform: android
+
   run-maestro-e2e-tests-ios:
     executor:
       name: rn/macos
@@ -514,6 +681,8 @@ workflows:
           equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
       - not:
           equal: [ bump, << pipeline.parameters.action >> ]
+      - not:
+          equal: [ sdk-update-tests, << pipeline.parameters.action >> ]
     jobs:
       # Testing phase - runs on all branches
       - analyse_js
@@ -534,6 +703,27 @@ workflows:
             - maestro-e2e-tests
             - e2e-tests
 
+      - build-sdk-update-test-apps-ios:
+          context: maestro
+          filters:
+            tags:
+              only: /.*/
+      - build-sdk-update-test-apps-android:
+          context: maestro
+          filters:
+            tags:
+              only: /.*/
+      - run-sdk-update-tests-ios:
+          requires: [build-sdk-update-test-apps-ios]
+          filters:
+            tags:
+              only: /.*/
+      - run-sdk-update-tests-android:
+          requires: [build-sdk-update-test-apps-android]
+          filters:
+            tags:
+              only: /.*/
+
       # Hold and deploy phase - only on release branches
       - wait-for-pr-approval:
           type: approval
@@ -546,8 +736,13 @@ workflows:
             - android
             - ios
             - agp9_test_app_android
+            - run-sdk-update-tests-ios
+            - run-sdk-update-tests-android
           <<: *release-branches
       - make-release:
+          requires:
+            - run-sdk-update-tests-ios
+            - run-sdk-update-tests-android
           <<: *release-tags
       - docs-deploy:
           <<: *release-tags
@@ -562,8 +757,11 @@ workflows:
 
   danger:
     when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      and:
+        - not:
+            equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - not:
+            equal: [ sdk-update-tests, << pipeline.parameters.action >> ]
     jobs:
       - revenuecat/danger:
           ruby_version: "3.3.0"
@@ -586,6 +784,21 @@ workflows:
     jobs:
       - revenuecat/automatic-bump:
           ruby_version: "3.3.0"
+
+  sdk-update-tests:
+    when:
+      or:
+        - equal: [sdk-update-tests, << pipeline.parameters.action >>]
+        - equal: [maestro_e2e_tests, << pipeline.schedule.name >>]
+    jobs:
+      - build-sdk-update-test-apps-ios:
+          context: maestro
+      - build-sdk-update-test-apps-android:
+          context: maestro
+      - run-sdk-update-tests-ios:
+          requires: [build-sdk-update-test-apps-ios]
+      - run-sdk-update-tests-android:
+          requires: [build-sdk-update-test-apps-android]
 
   maestro-e2e-tests-ios:
     when:

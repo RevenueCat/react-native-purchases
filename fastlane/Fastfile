@@ -401,3 +401,171 @@ private_lane :update_sample_podfile_lock_with_retry do |options|
     end
   end
 end
+
+desc "Build released and local React Native SDK update test apps"
+lane :build_sdk_update_test_apps do |options|
+  require 'json'
+  require 'fileutils'
+  root = get_root_folder
+  platform = sdk_update_test_platform(options)
+  output = sdk_update_test_apps_dir(platform, options)
+  template = "#{root}/e2e-tests/SDKUpdateTester"
+  api_key = ENV['WORKFLOWS_TEST_STORE_API_KEY']
+  UI.user_error!('WORKFLOWS_TEST_STORE_API_KEY must contain a Test Store key') unless api_key&.start_with?('test_')
+  release_version = options[:release_version] || get_latest_release_before_version(
+    repo_name: 'react-native-purchases', version: Gem::Version.new(current_version_number).bump.to_s
+  )
+  Dir.chdir(root) do
+    sh('yarn', 'install', '--immutable')
+    sh('yarn', 'build')
+  end
+  FileUtils.rm_rf(output)
+  FileUtils.mkdir_p(output)
+  archive = "#{output}/local-sdk.tgz"
+  Dir.chdir(root) { sh('yarn', 'pack', '--out', archive) }
+  %w[release local].each_with_index do |variant, index|
+    dir = "#{output}/#{variant}"
+    project = "#{dir}/project"
+    FileUtils.mkdir_p(project)
+    %w[package.json package-lock.json app.json tsconfig.json index.js App.tsx babel.config.js metro.config.js].each do |name|
+      FileUtils.cp("#{template}/#{name}", project)
+    end
+    version = variant == 'release' ? release_version : current_version_number
+    metadata = nil
+    Dir.chdir(project) do
+      dependency = variant == 'release' ? "react-native-purchases@#{release_version}" : archive
+      sh('npm', 'install', dependency, '--save-exact', '--package-lock-only', '--no-audit', '--no-fund')
+      sh('npm', 'ci', '--no-audit', '--no-fund')
+      metadata = sdk_update_test_dependency(project, platform, variant, version, root, archive)
+      File.write('build-config.json', JSON.generate(apiKey: api_key, sdkVersion: "#{version} #{metadata[:source]}"))
+      sh('npm', 'run', 'typecheck')
+    end
+    File.write("#{dir}/version.txt", metadata[:version])
+    File.write("#{dir}/source.txt", metadata[:source])
+    File.write("#{dir}/resolved-sdk.json", JSON.pretty_generate(metadata))
+    FileUtils.cp("#{project}/package-lock.json", "#{dir}/package-lock.json")
+    FileUtils.cp_r("#{root}/e2e-tests/MaestroTestApp/#{platform}", project)
+    sdk_update_test_build(['npx', 'react-native', 'config'], "#{dir}/autolinking.json", api_key, directory: project)
+    linking = JSON.parse(File.read("#{dir}/autolinking.json"))
+    UI.user_error!('React Native is not autolinking the selected SDK') unless
+      File.realpath(linking.fetch('dependencies').fetch('react-native-purchases').fetch('root')) == metadata[:path]
+    if platform == 'ios'
+      FileUtils.rm_rf("#{project}/ios/Pods")
+      FileUtils.rm_f("#{project}/ios/Podfile.lock")
+      FileUtils.cp("#{template}/AppDelegate.swift", "#{project}/ios/MaestroTestApp/AppDelegate.swift")
+      pbx = "#{project}/ios/MaestroTestApp.xcodeproj/project.pbxproj"
+      File.write(pbx, File.read(pbx).gsub('com.revenuecat.automatedsdktests', 'com.revenuecat.SDKUpdateTester'))
+      sdk_update_test_build(['bundle', 'exec', 'pod', 'install', '--repo-update'], "#{dir}/pods.log", api_key,
+        directory: "#{project}/ios", environment: {'BUNDLE_GEMFILE' => "#{root}/Gemfile"})
+      require 'yaml'
+      pods = YAML.safe_load(File.read("#{project}/ios/Podfile.lock"), permitted_classes: [Symbol])
+      sources = pods.fetch('EXTERNAL SOURCES').fetch('RNPurchases')
+      UI.user_error!('CocoaPods is not compiling the selected SDK') unless
+        File.realpath(File.expand_path(sources.fetch(:path), "#{project}/ios")) == metadata[:path]
+      UI.user_error!('iOS resolved an unexpected hybrid-common version') unless pods.fetch('PODS').any? do |pod|
+        name = pod.is_a?(Hash) ? pod.keys.first : pod
+        name == "PurchasesHybridCommon (#{metadata[:hybrid_common]})"
+      end
+      FileUtils.cp("#{project}/ios/Podfile.lock", "#{dir}/Podfile.lock")
+      args = ['xcodebuild', '-workspace', "#{project}/ios/MaestroTestApp.xcworkspace", '-scheme', 'MaestroTestApp',
+        '-configuration', 'Debug', '-sdk', 'iphonesimulator', '-destination', 'generic/platform=iOS Simulator',
+        '-derivedDataPath', "#{dir}/derived_data", 'ARCHS=arm64', 'CODE_SIGNING_ALLOWED=NO']
+      sdk_update_test_build(args, "#{dir}/build.log", api_key, environment: {'FORCE_BUNDLING' => '1', 'RCT_NO_LAUNCH_PACKAGER' => 'true'})
+      FileUtils.cp_r("#{dir}/derived_data/Build/Products/Debug-iphonesimulator/MaestroTestApp.app", "#{dir}/SDKUpdateTester.app")
+    else
+      FileUtils.cp("#{template}/MainActivity.kt", "#{project}/android/app/src/main/java/com/revenuecat/automatedsdktests/MainActivity.kt")
+      main = "#{project}/android/app/src/main/java/com/revenuecat/automatedsdktests/MainApplication.kt"
+      File.write(main, File.read(main).sub('getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG', 'getUseDeveloperSupport(): Boolean = false'))
+      settings = "#{project}/android/settings.gradle"
+      File.write(settings, File.read(settings).sub(/include ':react-native-purchases'\n.*?\n\ninclude ':react-native-purchases-ui'\n.*?\n/m, ''))
+      build = "#{project}/android/app/build.gradle"
+      contents = File.read(build).sub('applicationId "com.revenuecat.automatedsdktests"', 'applicationId "com.revenuecat.SDKUpdateTester"')
+        .sub('versionCode 1', "versionCode #{index + 1}")
+      File.write(build, contents + "\n" + File.read("#{template}/verify-dependencies.gradle"))
+      architecture = options[:android_architectures] || (RUBY_PLATFORM.include?('arm64') ? 'arm64-v8a' : 'x86_64')
+      sdk_update_test_build(['./gradlew', 'assembleDebug', 'verifySdkUpdateDependencies', "-PreactNativeArchitectures=#{architecture}", '--max-workers=2'],
+        "#{dir}/build.log", api_key, directory: "#{project}/android")
+      FileUtils.cp("#{project}/android/app/build/outputs/apk/debug/app-debug.apk", "#{dir}/SDKUpdateTester.apk")
+    end
+    UI.success("Built #{platform} #{variant}: #{version} #{metadata[:source]} (hybrid-common #{metadata[:hybrid_common]})")
+  end
+end
+
+desc "Run a React Native SDK update Maestro test case"
+lane :run_sdk_update_test do |options|
+  platform = sdk_update_test_platform(options)
+  test_case = options[:test_case]
+  UI.user_error!('test_case must be anonymous_user or logged_in_user') unless %w[anonymous_user logged_in_user].include?(test_case)
+  apps = sdk_update_test_apps_dir(platform, options)
+  steps = %w[release local].each_with_index.map do |variant, index|
+    dir = "#{apps}/#{variant}"
+    UI.user_error!("#{dir}/version.txt not found. Build both apps first.") unless File.file?("#{dir}/version.txt")
+    {
+      app_path: "#{dir}/SDKUpdateTester.#{platform == 'ios' ? 'app' : 'apk'}",
+      sdk_version: "#{File.read("#{dir}/version.txt").strip} #{File.read("#{dir}/source.txt").strip}",
+      flow: "#{get_root_folder}/e2e-tests/maestro/sdk_update_tests/#{test_case}/#{index.zero? ? 'before' : 'after'}_update.yaml"
+    }
+  end
+  run_sdk_update_maestro_test(
+    platform: platform, app_id: 'com.revenuecat.SDKUpdateTester', steps: steps,
+    output_dir: "#{get_root_folder}/fastlane/test_output/sdk_update_tests/#{platform}/#{test_case}",
+    max_attempts: Integer(options.fetch(:max_attempts, 3))
+  )
+end
+
+def sdk_update_test_platform(options)
+  platform = options[:platform].to_s
+  UI.user_error!('platform must be ios or android') unless %w[ios android].include?(platform)
+  platform
+end
+
+def sdk_update_test_apps_dir(platform, options)
+  File.expand_path(options[:output_dir] || "build/sdk_update_tests/#{platform}", get_root_folder)
+end
+
+def sdk_update_test_dependency(project, platform, variant, expected_version, root, archive)
+  require 'digest'
+  sdk = File.realpath("#{project}/node_modules/react-native-purchases")
+  manifest = JSON.parse(File.read("#{sdk}/package.json"))
+  lock = JSON.parse(File.read("#{project}/package-lock.json")).fetch('packages').fetch('node_modules/react-native-purchases')
+  UI.user_error!('Installed SDK version differs from the selected version') unless manifest['version'] == expected_version
+  if variant == 'release'
+    UI.user_error!('Released app must resolve the published npm artifact') unless
+      !lock['link'] && lock['version'] == expected_version && lock['resolved']&.start_with?('https://registry.npmjs.org/react-native-purchases/-/') && lock['integrity']
+  else
+    integrity = "sha512-#{[Digest::SHA512.file(archive).digest].pack('m0')}"
+    UI.user_error!('Local app must resolve the SDK packed from this checkout') unless lock['integrity'] == integrity
+    %w[dist/index.js dist/purchases.js ios/RNPurchases.m android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java].each do |file|
+      UI.user_error!("Local SDK differs from the checkout: #{file}") unless
+        Digest::SHA256.file("#{sdk}/#{file}").hexdigest == Digest::SHA256.file("#{root}/#{file}").hexdigest
+    end
+  end
+  objc = File.read("#{sdk}/ios/RNPurchases.m")
+  java = File.read("#{sdk}/android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java")
+  UI.user_error!('Native React Native wrapper versions differ from the selected SDK') unless
+    objc.include?("return @\"#{expected_version}\";") && java.include?("PLUGIN_VERSION = \"#{expected_version}\"")
+  phc = if platform == 'ios'
+    File.read("#{sdk}/RNPurchases.podspec").match(/"PurchasesHybridCommon", '([^']+)'/)[1]
+  else
+    File.read("#{sdk}/android/build.gradle").match(/purchases-hybrid-common:([^'\"]+)/)[1]
+  end
+  {version: expected_version, source: variant == 'release' ? 'Registry' : 'Local', path: sdk,
+    hybrid_common: phc, resolved: lock['resolved'], integrity: lock['integrity'],
+    javascript_sha256: Digest::SHA256.file("#{sdk}/#{manifest.fetch('react-native')}").hexdigest,
+    objc_sha256: Digest::SHA256.hexdigest(objc), java_sha256: Digest::SHA256.hexdigest(java)}
+end
+
+def sdk_update_test_build(args, log, api_key, directory: get_root_folder, environment: {})
+  require 'open3'
+  status = nil
+  File.open(log, 'w') do |file|
+    Open3.popen2e(environment, *args, chdir: directory) do |input, output, process|
+      input.close
+      IO.copy_stream(output, file)
+      status = process.value
+    end
+  end
+  return if status.success?
+  UI.error(File.readlines(log).last(120).join.gsub(api_key, '[redacted]'))
+  UI.user_error!("SDK update app build failed; see #{log}")
+end

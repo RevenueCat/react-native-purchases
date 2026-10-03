@@ -2,4 +2,4 @@
 #
 # Ensure this file is checked in to source control!
 
-gem "fastlane-plugin-revenuecat_internal", git: "https://github.com/RevenueCat/fastlane-plugin-revenuecat_internal"
+gem "fastlane-plugin-revenuecat_internal", git: "https://github.com/RevenueCat/fastlane-plugin-revenuecat_internal", ref: "7d5341f8485c486ce855f55333253cb77a716985"
