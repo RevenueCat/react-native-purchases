@@ -19,11 +19,11 @@ hybrid-common dependency. Each SDK keeps its declared native dependencies.
 compiled; the app displays the verified React Native SDK version and source.
 
 The test host uses React Native 0.85.3 and its minimum iOS version, 15.1. The lane
-reuses the existing MaestroTestApp
-native project scaffolding, with startup and Android build configuration matching
-the 0.85.3 template, and replaces its UI with `App.tsx`. The two native entry points
-only pass the current launch's `app_user_id_to_log_in` argument to React. Purchases and state are handled
-through `react-native-purchases`. There is no automatic login after an update.
+reuses the existing MaestroTestApp native project scaffolding, with startup and
+Android build configuration matching the 0.85.3 template, and replaces its UI
+with `App.tsx`. The two native entry points only pass the current launch's
+`app_user_id_to_log_in` argument to React. Purchases and state are handled through
+`react-native-purchases`. There is no automatic login after an update.
 Customer info is fetched when opening the purchase screen, and purchase/login
 results update it without a customer-info listener.
 
