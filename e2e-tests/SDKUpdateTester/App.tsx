@@ -16,7 +16,7 @@ import config from "./build-config.json";
 type Props = { app_user_id_to_log_in?: string };
 
 export default function App(props: Props) {
-  const [appUserID, setAppUserID] = useState("Loading...");
+  const [appUserID, setAppUserID] = useState<string | null>(null);
   const [entitlements, setEntitlements] = useState("Loading...");
   const [purchaseScreen, setPurchaseScreen] = useState(false);
   const [monthly, setMonthly] = useState<PurchasesPackage | null>(null);
@@ -109,12 +109,14 @@ export default function App(props: Props) {
           </>
         ) : (
           <>
-            <Text testID="sdk_version" style={styles.label}>
-              RevenueCat SDK {config.sdkVersion}
-            </Text>
+            {appUserID !== null && (
+              <Text testID="sdk_version" style={styles.label}>
+                RevenueCat SDK {config.sdkVersion}
+              </Text>
+            )}
             <Text style={styles.label}>App User ID</Text>
             <Text testID="app_user_id" style={styles.label}>
-              {appUserID}
+              {appUserID ?? "Loading..."}
             </Text>
             {props.app_user_id_to_log_in &&
               button("Log in", "log_in_button", async () => {
