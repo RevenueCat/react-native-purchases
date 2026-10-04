@@ -469,13 +469,14 @@ lane :build_sdk_update_test_apps do |options|
       FileUtils.cp("#{project}/ios/Podfile.lock", "#{dir}/Podfile.lock")
       args = ['xcodebuild', '-workspace', "#{project}/ios/MaestroTestApp.xcworkspace", '-scheme', 'MaestroTestApp',
         '-configuration', 'Debug', '-sdk', 'iphonesimulator', '-destination', 'generic/platform=iOS Simulator',
-        '-derivedDataPath', "#{dir}/derived_data", 'ARCHS=arm64', 'CODE_SIGNING_ALLOWED=NO']
+        '-derivedDataPath', "#{dir}/derived_data", 'ARCHS=arm64', 'IPHONEOS_DEPLOYMENT_TARGET=15.1', 'CODE_SIGNING_ALLOWED=NO']
       sdk_update_test_build(args, "#{dir}/build.log", api_key, environment: {'FORCE_BUNDLING' => '1', 'RCT_NO_LAUNCH_PACKAGER' => 'true'})
       FileUtils.cp_r("#{dir}/derived_data/Build/Products/Debug-iphonesimulator/MaestroTestApp.app", "#{dir}/SDKUpdateTester.app")
     else
       FileUtils.cp("#{template}/MainActivity.kt", "#{project}/android/app/src/main/java/com/revenuecat/automatedsdktests/MainActivity.kt")
-      main = "#{project}/android/app/src/main/java/com/revenuecat/automatedsdktests/MainApplication.kt"
-      File.write(main, File.read(main).sub('getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG', 'getUseDeveloperSupport(): Boolean = false'))
+      FileUtils.cp("#{template}/MainApplication.kt", "#{project}/android/app/src/main/java/com/revenuecat/automatedsdktests/MainApplication.kt")
+      FileUtils.cp("#{template}/build.gradle", "#{project}/android/build.gradle")
+      FileUtils.cp("#{template}/gradle-wrapper.properties", "#{project}/android/gradle/wrapper/gradle-wrapper.properties")
       settings = "#{project}/android/settings.gradle"
       File.write(settings, File.read(settings).sub(/include ':react-native-purchases'\n.*?\n\ninclude ':react-native-purchases-ui'\n.*?\n/m, ''))
       build = "#{project}/android/app/build.gradle"

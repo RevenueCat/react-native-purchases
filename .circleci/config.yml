@@ -38,7 +38,7 @@ parameters:
   action:
     type: enum
     enum: [build, upgrade-hybrid-common, bump, sdk-update-tests]
-    default: build
+    default: sdk-update-tests
   version:
     type: string
     default: ''
@@ -476,7 +476,7 @@ jobs:
     executor:
       name: rn/macos
       resource_class: m4pro.medium
-      xcode_version: '26.3'
+      xcode_version: '27.0'
     steps:
       - checkout
       - revenuecat/install-mise-tools:
@@ -505,7 +505,7 @@ jobs:
     executor:
       name: rn/macos
       resource_class: m4pro.medium
-      xcode_version: '26.3'
+      xcode_version: '27.0'
     steps:
       - checkout
       - attach_workspace:
@@ -518,8 +518,9 @@ jobs:
       - run:
           name: Boot iOS Simulator
           command: |
-            xcrun simctl boot "iPhone 17"
-            xcrun simctl bootstatus "iPhone 17" -b
+            simulator=$(xcrun simctl create "SDKUpdateTester" com.apple.CoreSimulator.SimDeviceType.iPhone-17 com.apple.CoreSimulator.SimRuntime.iOS-27-0)
+            xcrun simctl boot "$simulator"
+            xcrun simctl bootstatus "$simulator" -b
       - run:
           name: SDK update — anonymous_user
           command: bundle exec fastlane run_sdk_update_test platform:ios test_case:anonymous_user

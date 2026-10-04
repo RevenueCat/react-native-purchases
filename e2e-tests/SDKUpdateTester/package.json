@@ -7,19 +7,19 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "19.0.0",
-    "react-native": "0.78.0",
+    "react": "19.2.3",
+    "react-native": "0.85.3",
     "react-native-purchases": "10.11.0"
   },
   "devDependencies": {
     "@babel/core": "7.25.2",
     "@babel/runtime": "7.25.0",
-    "@react-native-community/cli": "15.0.1",
-    "@react-native-community/cli-platform-android": "15.0.1",
-    "@react-native-community/cli-platform-ios": "15.0.1",
-    "@react-native/babel-preset": "0.78.0",
-    "@react-native/metro-config": "0.78.0",
-    "@types/react": "19.0.0",
-    "typescript": "5.2.2"
+    "@react-native-community/cli": "20.1.0",
+    "@react-native-community/cli-platform-android": "20.1.0",
+    "@react-native-community/cli-platform-ios": "20.1.0",
+    "@react-native/babel-preset": "0.85.3",
+    "@react-native/metro-config": "0.85.3",
+    "@types/react": "19.2.0",
+    "typescript": "5.8.3"
   }
 }

@@ -18,9 +18,11 @@ hybrid-common dependency. Each SDK keeps its declared native dependencies.
 `version.txt`, `source.txt`, dependency reports and build logs record what was
 compiled; the app displays the verified React Native SDK version and source.
 
-The lane reuses the existing MaestroTestApp native project scaffolding and
-replaces its UI with `App.tsx`. The two native entry points only pass the current
-launch's `app_user_id_to_log_in` argument to React. Purchases and state are handled
+The test host uses React Native 0.85.3 and its minimum iOS version, 15.1. The lane
+reuses the existing MaestroTestApp
+native project scaffolding, with startup and Android build configuration matching
+the 0.85.3 template, and replaces its UI with `App.tsx`. The two native entry points
+only pass the current launch's `app_user_id_to_log_in` argument to React. Purchases and state are handled
 through `react-native-purchases`. There is no automatic login after an update.
 Customer info is fetched when opening the purchase screen, and purchase/login
 results update it without a customer-info listener.
@@ -47,9 +49,8 @@ bundle exec fastlane run_sdk_update_test platform:android test_case:logged_in_us
 Boot only the target simulator/emulator. Android defaults to arm64 on an Apple
 Silicon host and x86_64 elsewhere; `android_architectures` can override this.
 `release_version` can select a particular published version.
-Use Xcode 26.3, as in the existing Maestro jobs: React Native 0.78's `fmt`
-dependency fails to compile with Xcode 26.4 or newer
-([upstream issue](https://github.com/react/react-native/issues/55601)).
+Use Xcode 27.0, as in the SDK update CI jobs. React Native 0.85.3 includes the
+updated `fmt` dependency required by newer Xcode compilers.
 
 The seven YAML files in `../maestro/sdk_update_tests` are identical to the native
 implementations. The shared runner installs the released app, purchases, installs
