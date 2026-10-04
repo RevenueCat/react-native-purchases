@@ -50,7 +50,8 @@ Boot only the target simulator/emulator. Android defaults to arm64 on an Apple
 Silicon host and x86_64 elsewhere; `android_architectures` can override this.
 `release_version` can select a particular published version.
 Use Xcode 27.0, as in the SDK update CI jobs. React Native 0.85.3 includes the
-updated `fmt` dependency required by newer Xcode compilers.
+updated `fmt` dependency required by newer Xcode compilers. The iOS host uses
+UIKit's scene lifecycle, which is required when building for iOS 27.
 
 The seven YAML files in `../maestro/sdk_update_tests` are identical to the native
 implementations. The shared runner installs the released app, purchases, installs

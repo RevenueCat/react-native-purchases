@@ -453,6 +453,7 @@ lane :build_sdk_update_test_apps do |options|
       FileUtils.rm_rf("#{project}/ios/Pods")
       FileUtils.rm_f("#{project}/ios/Podfile.lock")
       FileUtils.cp("#{template}/AppDelegate.swift", "#{project}/ios/MaestroTestApp/AppDelegate.swift")
+      FileUtils.cp("#{template}/Info.plist", "#{project}/ios/MaestroTestApp/Info.plist")
       pbx = "#{project}/ios/MaestroTestApp.xcodeproj/project.pbxproj"
       File.write(pbx, File.read(pbx).gsub('com.revenuecat.automatedsdktests', 'com.revenuecat.SDKUpdateTester'))
       sdk_update_test_build(['bundle', 'exec', 'pod', 'install', '--repo-update'], "#{dir}/pods.log", api_key,

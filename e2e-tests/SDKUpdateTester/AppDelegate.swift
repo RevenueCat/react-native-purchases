@@ -6,7 +6,6 @@ import ReactAppDependencyProvider
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-  var window: UIWindow?
   var reactNativeDelegate: ReactNativeDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
 
@@ -19,7 +18,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     delegate.dependencyProvider = RCTAppDependencyProvider()
     reactNativeDelegate = delegate
     reactNativeFactory = factory
-    window = UIWindow(frame: UIScreen.main.bounds)
+    return true
+  }
+}
+
+class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+  var window: UIWindow?
+
+  func scene(
+    _ scene: UIScene,
+    willConnectTo session: UISceneSession,
+    options connectionOptions: UIScene.ConnectionOptions
+  ) {
+    guard let windowScene = scene as? UIWindowScene,
+          let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+          let factory = appDelegate.reactNativeFactory else {
+      fatalError("React Native factory was not initialized")
+    }
+    window = UIWindow(windowScene: windowScene)
     let arguments = ProcessInfo.processInfo.arguments
     var props: [String: Any] = [:]
     if let index = arguments.firstIndex(of: "-app_user_id_to_log_in"), index + 1 < arguments.count {
@@ -29,9 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       withModuleName: "MaestroTestApp",
       in: window,
       initialProperties: props,
-      launchOptions: launchOptions
+      launchOptions: nil
     )
-    return true
   }
 }
 
