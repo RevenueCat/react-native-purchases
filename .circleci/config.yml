@@ -388,11 +388,11 @@ jobs:
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
-    <<: *base-mac-job
+    <<: *base-mac-job-xcode-16
     steps:
       - checkout
       - rn/ios_simulator_start:
-          device: iPhone 15
+          device: iPhone 16
       - revenuecat/install-mise-tools:
           tools: node@22.14.0,ruby
       - install-dependencies-ios-build
@@ -408,7 +408,7 @@ jobs:
           # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
           command: |
             export RCT_NO_LAUNCH_PACKAGER=true \
-            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
+            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
   make-release:
     description: "Publishes the new version and creates a github release"
