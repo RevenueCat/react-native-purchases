@@ -522,7 +522,10 @@ def sdk_update_test_platform(options)
 end
 
 def sdk_update_test_apps_dir(platform, options)
-  File.expand_path(options[:output_dir] || "build/sdk_update_tests/#{platform}", get_root_folder)
+  base = "#{get_root_folder}/build/sdk_update_tests"
+  output = File.expand_path(options[:apps_dir] || options[:output_dir] || platform, base)
+  UI.user_error!("SDK update app outputs must be inside #{base}") unless output.start_with?("#{base}/")
+  output
 end
 
 def sdk_update_test_dependency(project, platform, variant, expected_version, root, archive)
