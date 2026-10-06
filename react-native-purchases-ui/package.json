@@ -29,6 +29,9 @@
     "!**/__mocks__",
     "!**/.*"
   ],
+  "swiftpmConfig": {
+    "name": "ReactNativePurchasesUi"
+  },
   "scripts": {
     "test": "jest",
     "typecheck": "tsc --noEmit",

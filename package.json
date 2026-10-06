@@ -34,6 +34,9 @@
     "!scripts/docs/index.html",
     "!scripts/setupJest.js"
   ],
+  "swiftpmConfig": {
+    "name": "ReactNativePurchases"
+  },
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc --watch",

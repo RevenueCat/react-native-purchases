@@ -47,15 +47,25 @@ const spmPackages: SpmPackage[] = [
 ];
 
 /**
- * React Native's SwiftPM autolinker turns the npm package name into an upper
- * camel case identifier and expects the package, product and target to use it.
- * A mismatch makes autolinking silently skip the library.
+ * React Native resolves a library's SwiftPM name from `swiftpmConfig.name` in
+ * its package.json, falling back to the podspec's module name, header dir or
+ * pod name. Declaring it is what decouples the name from the podspec, which
+ * would otherwise make React Native look for a package named after the pod.
  */
-const autolinkedSwiftName = (npmName: string): string =>
-  npmName
-    .split('-')
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1).toLowerCase())
-    .join('');
+const validSwiftName = /^[A-Za-z_][A-Za-z0-9_-]*$/;
+
+/**
+ * React Native's own MIN_IOS_VERSION_SUPPORTED. A dependency below the floor
+ * cannot be linked into an app built against React Native's prebuilt artifacts.
+ */
+const reactNativeIosFloor = '15.1';
+
+/** The products React Native's SwiftPM package exposes for library headers. */
+const reactNativeHeaderProducts = [
+  'ReactHeaders',
+  'ReactNativeHeaders',
+  'ReactNativeDependenciesHeaders',
+];
 
 const phcVersionInPodspec = (podspec: string): string => {
   const match = podspec.match(
@@ -110,14 +120,43 @@ describe.each(spmPackages)('$npmName Package.swift', (spmPackage) => {
     expect(podspec).toContain(`spec.dependency   "${spmPackage.phcProduct}"`);
   });
 
-  it('names the package, product and target after the npm package', () => {
-    const expectedName = autolinkedSwiftName(spmPackage.npmName);
+  it('declares a valid SwiftPM name in package.json', () => {
+    expect(packageJson.swiftpmConfig?.name).toMatch(validSwiftName);
+  });
 
-    expect(manifest).toContain(`name: "${expectedName}",`);
+  it('names the package, product and target after the declared SwiftPM name', () => {
+    const declaredName = packageJson.swiftpmConfig.name;
+
+    expect(manifest).toContain(`name: "${declaredName}",`);
     expect(manifest).toContain(
-      `.library(name: "${expectedName}", targets: ["${expectedName}"])`
+      `.library(name: "${declaredName}", targets: ["${declaredName}"])`
     );
     expect(packageJson.name).toBe(spmPackage.npmName);
+  });
+
+  it("meets React Native's iOS deployment floor", () => {
+    expect(manifest).toContain(`platforms: [.iOS("${reactNativeIosFloor}")]`);
+  });
+
+  it('reaches React Native through the autolinked package', () => {
+    // SwiftPM resolves this against the `libs/<SwiftPM name>` symlink the
+    // autolinker creates, where four levels up is always the app's `ios/build`.
+    expect(manifest).toContain(
+      '.package(name: "ReactNative", path: "../../../../xcframeworks")'
+    );
+
+    reactNativeHeaderProducts.forEach((product) => {
+      expect(manifest).toContain(
+        `.product(name: "${product}", package: "ReactNative")`
+      );
+    });
+  });
+
+  it('uses no unsafe flags', () => {
+    // React Native's SwiftPM integration requires manifests to stay free of
+    // them, and SwiftPM refuses to resolve such a package as a versioned
+    // dependency at all.
+    expect(manifest).not.toContain('unsafeFlags');
   });
 
   it('builds the same directory the podspec compiles', () => {
