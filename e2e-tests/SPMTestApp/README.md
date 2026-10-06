@@ -3,8 +3,10 @@
 A minimal iOS app based on the React Native 0.88 RC3 community template, with
 its Xcode project already configured for Swift Package Manager. This version
 includes React Native's fix for preserving library symlinks during autolinking
-resyncs. The app imports both SDKs so Metro bundles their JavaScript; it does not
-configure purchases or require an API key.
+resyncs. The app imports the same test UI as `MaestroTestApp` from
+[`../maestro/app`](../maestro/README.md). Build-only jobs leave the API key
+placeholder intact; the separate Maestro job configures RevenueCat Test Store
+and exercises the paywall purchase flow.
 
 React Native CLI 21.0.0-alpha.1 discovers the SPM-configured project directly,
 so the app has no Podfile. The CLI version is pinned alongside React Native.
@@ -47,3 +49,17 @@ The `spm_ios` CircleCI job builds Debug and Release, rebuilds after touching
 JavaScript bundles and all six SDK bridge/view-manager classes in the app binaries.
 To run interactively, open `ios/SPMTestApp.xcodeproj` after preparing dependencies.
 Avoid CocoaPods in this app; the existing iOS CI jobs cover that integration.
+
+The `run-maestro-e2e-tests-spm-ios` job uses the same preparation command as
+`spm_ios`, injects the CI Test Store API key, builds Debug with bundled
+JavaScript, installs the app on an iPhone 17 simulator, and runs the shared flows
+with `APP_ID=org.reactjs.native.example.SPMTestApp`. It uploads JUnit results and
+Maestro debug artifacts. Test Store keys require Debug because the SDK blocks
+them in Release. React Native loads the bundled JavaScript when Metro is not
+running; the separate `spm_ios` job continues checking both build configurations.
+Keep injected keys out of commits.
+
+This is a temporary native host. The CocoaPods removal PR after December 2, 2026
+must move its SPM setup into `MaestroTestApp` and delete this directory, preserving
+the existing Android tests. See the required consolidation steps in
+[`../maestro/README.md`](../maestro/README.md#required-consolidation-when-cocoapods-support-is-removed).

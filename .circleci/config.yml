@@ -90,6 +90,33 @@ commands:
           name: Copy npmrc sample file to final location
           command: cp .npmrc.SAMPLE .npmrc
 
+  prepare-spm-test-app:
+    steps:
+      - restore_cache:
+          keys:
+            - spm-ios-v2-{{ checksum "e2e-tests/SPMTestApp/package-lock.json" }}
+      - run:
+          name: Prepare SDK packages
+          command: |
+            mkdir -p build/spm-ci
+            yarn build
+            yarn workspace react-native-purchases-ui prepare
+            yarn pack --out build/spm-ci/react-native-purchases.tgz
+            yarn workspace react-native-purchases-ui pack --out "$PWD/build/spm-ci/react-native-purchases-ui.tgz"
+      - run:
+          name: Install SPMTestApp dependencies and packed SDKs
+          working_directory: e2e-tests/SPMTestApp
+          command: |
+            npm ci --ignore-scripts --no-audit --no-fund
+            # Keep the SDK tarballs out of the lockfile: their contents change on every SDK commit.
+            # The existing RN peer range excludes prereleases, so this install needs legacy peer resolution.
+            npm install --no-save --package-lock=false --legacy-peer-deps --ignore-scripts --no-audit --no-fund \
+              ../../build/spm-ci/react-native-purchases.tgz ../../build/spm-ci/react-native-purchases-ui.tgz
+      - run:
+          name: Prepare SwiftPM dependencies
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: node ../node_modules/react-native/scripts/setup-apple-spm.js update --yes
+
 jobs:
   analyse_js:
     executor:
@@ -425,30 +452,7 @@ jobs:
           tools: node@22.14.0
       - install-dependencies:
           machine: "macos"
-      - restore_cache:
-          keys:
-            - spm-ios-v2-{{ checksum "e2e-tests/SPMTestApp/package-lock.json" }}
-      - run:
-          name: Prepare SDK packages
-          command: |
-            mkdir -p build/spm-ci
-            yarn build
-            yarn workspace react-native-purchases-ui prepare
-            yarn pack --out build/spm-ci/react-native-purchases.tgz
-            yarn workspace react-native-purchases-ui pack --out "$PWD/build/spm-ci/react-native-purchases-ui.tgz"
-      - run:
-          name: Install SPMTestApp dependencies and packed SDKs
-          working_directory: e2e-tests/SPMTestApp
-          command: |
-            npm ci --ignore-scripts --no-audit --no-fund
-            # Keep the SDK tarballs out of the lockfile: their contents change on every SDK commit.
-            # The existing RN peer range excludes prereleases, so this install needs legacy peer resolution.
-            npm install --no-save --package-lock=false --legacy-peer-deps --ignore-scripts --no-audit --no-fund \
-              ../../build/spm-ci/react-native-purchases.tgz ../../build/spm-ci/react-native-purchases-ui.tgz
-      - run:
-          name: Prepare SwiftPM dependencies
-          working_directory: e2e-tests/SPMTestApp/ios
-          command: node ../node_modules/react-native/scripts/setup-apple-spm.js update --yes
+      - prepare-spm-test-app
       - run:
           name: Build SPMTestApp (Debug and Release)
           working_directory: e2e-tests/SPMTestApp/ios
@@ -554,6 +558,80 @@ jobs:
       - store_artifacts:
           path: fastlane/test_output
 
+  run-maestro-e2e-tests-spm-ios:
+    description: "Run the shared Test Store paywall purchase flow with packaged SDKs and SwiftPM"
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.6'
+    environment:
+      RCT_NO_LAUNCH_PACKAGER: "1"
+      FORCE_BUNDLING: "1"
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java
+      - install-dependencies:
+          machine: "macos"
+      - revenuecat/install-maestro
+      - prepare-spm-test-app
+      - run:
+          name: Configure Test Store API key
+          command: |
+            node \<<'NODE'
+            const fs = require('fs');
+            const apiKey = process.env.RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE;
+            if (!apiKey || !apiKey.startsWith('test_')) {
+              throw new Error('RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE must contain a Test Store key');
+            }
+            const file = 'e2e-tests/SPMTestApp/App.tsx';
+            const source = fs.readFileSync(file, 'utf8');
+            const placeholder = "'MAESTRO_TESTS_REVENUECAT_API_KEY'";
+            if (!source.includes(placeholder)) {
+              throw new Error('Test Store API key placeholder was not found');
+            }
+            fs.writeFileSync(file, source.replace(placeholder, JSON.stringify(apiKey)));
+            NODE
+      - run:
+          name: Build SPM Maestro app (Debug)
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: |
+            mkdir -p ../../../build/spm-maestro
+            # Test Store keys require Debug; spm_ios separately checks Debug and Release.
+            xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
+              -configuration Debug -sdk iphonesimulator \
+              -destination 'platform=iOS Simulator,name=iPhone 17' \
+              -derivedDataPath ../build/DerivedData \
+              -resultBundlePath ../../../build/spm-maestro/Debug.xcresult \
+              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
+              | tee ../../../build/spm-maestro/Debug.log
+            test -s ../build/DerivedData/Build/Products/Debug-iphonesimulator/SPMTestApp.app/main.jsbundle
+          no_output_timeout: 20m
+      - run:
+          name: Boot simulator and install SPM Maestro app
+          command: |
+            xcrun simctl boot "iPhone 17" || true
+            xcrun simctl bootstatus "iPhone 17" -b
+            xcrun simctl install booted e2e-tests/SPMTestApp/build/DerivedData/Build/Products/Debug-iphonesimulator/SPMTestApp.app
+      - run:
+          name: Run Maestro E2E Tests (SPM iOS)
+          command: |
+            mkdir -p build/spm-maestro/test_output
+            maestro test -e APP_ID=org.reactjs.native.example.SPMTestApp \
+              --format junit --output build/spm-maestro/test_output/report.xml \
+              --debug-output build/spm-maestro/test_output e2e-tests/maestro/
+          no_output_timeout: 15m
+      - save_cache:
+          key: spm-ios-v2-{{ checksum "e2e-tests/SPMTestApp/package-lock.json" }}
+          paths:
+            - ~/.npm
+            - ~/Library/Caches/ReactNative/spm-artifacts
+            - ~/Library/Caches/org.swift.swiftpm
+      - store_test_results:
+          path: build/spm-maestro/test_output
+      - store_artifacts:
+          path: build/spm-maestro
+
   run-maestro-e2e-tests-android:
     machine:
       image: android:2024.11.1
@@ -629,6 +707,10 @@ workflows:
           context:
             - maestro-e2e-tests
             - e2e-tests
+      - run-maestro-e2e-tests-spm-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
       - run-maestro-e2e-tests-android:
           context:
             - maestro-e2e-tests
@@ -646,6 +728,7 @@ workflows:
             - android
             - ios
             - spm_ios
+            - run-maestro-e2e-tests-spm-ios
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
@@ -694,6 +777,10 @@ workflows:
         - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
     jobs:
       - run-maestro-e2e-tests-ios:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-spm-ios:
           context:
             - maestro-e2e-tests
             - e2e-tests
