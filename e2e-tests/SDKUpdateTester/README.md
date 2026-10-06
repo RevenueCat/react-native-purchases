@@ -53,8 +53,7 @@ Use Xcode 27.0, as in the SDK update CI jobs. React Native 0.85.3 includes the
 updated `fmt` dependency required by newer Xcode compilers. The iOS host uses
 UIKit's scene lifecycle, which is required when building for iOS 27.
 
-The seven YAML files in `../maestro/sdk_update_tests` are identical to the native
-implementations. The shared runner installs the released app, purchases, installs
+The shared runner installs the released app, purchases, installs
 the local app over it, and compares cropped screenshots of the app user ID and
 active entitlements. It starts each case/retry with clean app state, retries up to
 three times, and records diagnostics for every attempt. Only the final attempt's
