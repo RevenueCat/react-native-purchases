@@ -81,7 +81,7 @@ commands:
             mkdir -p "$output"
             if [ "<< parameters.platform >>" = ios ]; then
               xcrun simctl spawn booted log show --last 20m --style compact \
-                --predicate 'process == "MaestroTestApp"' > "$output/app.log" 2>&1 || true
+                --predicate 'process == "SDKUpdateTester"' > "$output/app.log" 2>&1 || true
             else
               adb logcat -d > "$output/logcat.txt" 2>&1 || true
             fi

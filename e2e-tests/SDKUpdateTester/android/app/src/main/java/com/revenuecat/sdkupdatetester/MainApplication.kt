@@ -1,5 +1,5 @@
 // Created by Antonio Pallares. Copyright (c) 2026 RevenueCat, Inc.
-package com.revenuecat.automatedsdktests
+package com.revenuecat.sdkupdatetester
 
 import android.app.Application
 import com.facebook.react.PackageList

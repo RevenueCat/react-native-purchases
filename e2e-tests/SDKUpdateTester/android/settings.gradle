@@ -1,0 +1,7 @@
+// Created by Antonio Pallares. Copyright (c) 2026 RevenueCat, Inc.
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex -> ex.autolinkLibrariesFromCommand() }
+rootProject.name = 'SDKUpdateTester'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')

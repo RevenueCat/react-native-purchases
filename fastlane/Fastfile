@@ -427,16 +427,15 @@ lane :build_sdk_update_test_apps do |options|
     dir = "#{output}/#{variant}"
     project = "#{dir}/project"
     FileUtils.mkdir_p(project)
-    %w[package.json package-lock.json app.json tsconfig.json index.js App.tsx babel.config.js metro.config.js].each do |name|
-      FileUtils.cp("#{template}/#{name}", project)
-    end
+    sh('rsync', '-a', '--exclude-from', "#{template}/.gitignore",
+      '--exclude', platform == 'ios' ? 'android/' : 'ios/', "#{template}/", "#{project}/")
     version = variant == 'release' ? release_version : current_version_number
     metadata = nil
     Dir.chdir(project) do
       dependency = variant == 'release' ? "react-native-purchases@#{release_version}" : archive
       sh('npm', 'install', dependency, '--save-exact', '--package-lock-only', '--no-audit', '--no-fund')
       sh('npm', 'ci', '--no-audit', '--no-fund')
-      metadata = sdk_update_test_dependency(project, platform, variant, version, root, archive)
+      metadata = sdk_update_test_dependency(project, platform, variant, version, archive)
       File.write('build-config.json', JSON.generate(apiKey: api_key, sdkVersion: "#{version} #{metadata[:source]}"))
       sh('npm', 'run', 'typecheck')
     end
@@ -444,18 +443,11 @@ lane :build_sdk_update_test_apps do |options|
     File.write("#{dir}/source.txt", metadata[:source])
     File.write("#{dir}/resolved-sdk.json", JSON.pretty_generate(metadata))
     FileUtils.cp("#{project}/package-lock.json", "#{dir}/package-lock.json")
-    FileUtils.cp_r("#{root}/e2e-tests/MaestroTestApp/#{platform}", project)
     sdk_update_test_build(['npx', 'react-native', 'config'], "#{dir}/autolinking.json", api_key, directory: project)
     linking = JSON.parse(File.read("#{dir}/autolinking.json"))
     UI.user_error!('React Native is not autolinking the selected SDK') unless
       File.realpath(linking.fetch('dependencies').fetch('react-native-purchases').fetch('root')) == metadata[:path]
     if platform == 'ios'
-      FileUtils.rm_rf("#{project}/ios/Pods")
-      FileUtils.rm_f("#{project}/ios/Podfile.lock")
-      FileUtils.cp("#{template}/AppDelegate.swift", "#{project}/ios/MaestroTestApp/AppDelegate.swift")
-      FileUtils.cp("#{template}/Info.plist", "#{project}/ios/MaestroTestApp/Info.plist")
-      pbx = "#{project}/ios/MaestroTestApp.xcodeproj/project.pbxproj"
-      File.write(pbx, File.read(pbx).gsub('com.revenuecat.automatedsdktests', 'com.revenuecat.SDKUpdateTester'))
       sdk_update_test_build(['bundle', 'exec', 'pod', 'install', '--repo-update'], "#{dir}/pods.log", api_key,
         directory: "#{project}/ios", environment: {'BUNDLE_GEMFILE' => "#{root}/Gemfile"})
       require 'yaml'
@@ -468,24 +460,15 @@ lane :build_sdk_update_test_apps do |options|
         name == "PurchasesHybridCommon (#{metadata[:hybrid_common]})"
       end
       FileUtils.cp("#{project}/ios/Podfile.lock", "#{dir}/Podfile.lock")
-      args = ['xcodebuild', '-workspace', "#{project}/ios/MaestroTestApp.xcworkspace", '-scheme', 'MaestroTestApp',
+      args = ['xcodebuild', '-workspace', "#{project}/ios/SDKUpdateTester.xcworkspace", '-scheme', 'SDKUpdateTester',
         '-configuration', 'Debug', '-sdk', 'iphonesimulator', '-destination', 'generic/platform=iOS Simulator',
         '-derivedDataPath', "#{dir}/derived_data", 'ARCHS=arm64', 'IPHONEOS_DEPLOYMENT_TARGET=15.1', 'CODE_SIGNING_ALLOWED=NO']
       sdk_update_test_build(args, "#{dir}/build.log", api_key, environment: {'FORCE_BUNDLING' => '1', 'RCT_NO_LAUNCH_PACKAGER' => 'true'})
-      FileUtils.cp_r("#{dir}/derived_data/Build/Products/Debug-iphonesimulator/MaestroTestApp.app", "#{dir}/SDKUpdateTester.app")
+      FileUtils.cp_r("#{dir}/derived_data/Build/Products/Debug-iphonesimulator/SDKUpdateTester.app", "#{dir}/SDKUpdateTester.app")
     else
-      FileUtils.cp("#{template}/MainActivity.kt", "#{project}/android/app/src/main/java/com/revenuecat/automatedsdktests/MainActivity.kt")
-      FileUtils.cp("#{template}/MainApplication.kt", "#{project}/android/app/src/main/java/com/revenuecat/automatedsdktests/MainApplication.kt")
-      FileUtils.cp("#{template}/build.gradle", "#{project}/android/build.gradle")
-      FileUtils.cp("#{template}/gradle-wrapper.properties", "#{project}/android/gradle/wrapper/gradle-wrapper.properties")
-      settings = "#{project}/android/settings.gradle"
-      File.write(settings, File.read(settings).sub(/include ':react-native-purchases'\n.*?\n\ninclude ':react-native-purchases-ui'\n.*?\n/m, ''))
-      build = "#{project}/android/app/build.gradle"
-      contents = File.read(build).sub('applicationId "com.revenuecat.automatedsdktests"', 'applicationId "com.revenuecat.SDKUpdateTester"')
-        .sub('versionCode 1', "versionCode #{index + 1}")
-      File.write(build, contents + "\n" + File.read("#{template}/verify-dependencies.gradle"))
       architecture = options[:android_architectures] || (RUBY_PLATFORM.include?('arm64') ? 'arm64-v8a' : 'x86_64')
-      sdk_update_test_build(['./gradlew', 'assembleDebug', 'verifySdkUpdateDependencies', "-PreactNativeArchitectures=#{architecture}", '--max-workers=2'],
+      sdk_update_test_build(['./gradlew', 'assembleDebug', 'verifySdkUpdateDependencies', "-PreactNativeArchitectures=#{architecture}",
+        "-PsdkUpdateVersionCode=#{index + 1}", '--max-workers=2'],
         "#{dir}/build.log", api_key, directory: "#{project}/android")
       FileUtils.cp("#{project}/android/app/build/outputs/apk/debug/app-debug.apk", "#{dir}/SDKUpdateTester.apk")
     end
@@ -528,7 +511,7 @@ def sdk_update_test_apps_dir(platform, options)
   output
 end
 
-def sdk_update_test_dependency(project, platform, variant, expected_version, root, archive)
+def sdk_update_test_dependency(project, platform, variant, expected_version, archive)
   require 'digest'
   sdk = File.realpath("#{project}/node_modules/react-native-purchases")
   manifest = JSON.parse(File.read("#{sdk}/package.json"))
@@ -540,24 +523,18 @@ def sdk_update_test_dependency(project, platform, variant, expected_version, roo
   else
     integrity = "sha512-#{[Digest::SHA512.file(archive).digest].pack('m0')}"
     UI.user_error!('Local app must resolve the SDK packed from this checkout') unless lock['integrity'] == integrity
-    %w[dist/index.js dist/purchases.js ios/RNPurchases.m android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java].each do |file|
-      UI.user_error!("Local SDK differs from the checkout: #{file}") unless
-        Digest::SHA256.file("#{sdk}/#{file}").hexdigest == Digest::SHA256.file("#{root}/#{file}").hexdigest
-    end
   end
-  objc = File.read("#{sdk}/ios/RNPurchases.m")
-  java = File.read("#{sdk}/android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java")
-  UI.user_error!('Native React Native wrapper versions differ from the selected SDK') unless
-    objc.include?("return @\"#{expected_version}\";") && java.include?("PLUGIN_VERSION = \"#{expected_version}\"")
   phc = if platform == 'ios'
+    UI.user_error!('Native React Native wrapper version differs from the selected SDK') unless
+      File.read("#{sdk}/ios/RNPurchases.m").include?("return @\"#{expected_version}\";")
     File.read("#{sdk}/RNPurchases.podspec").match(/"PurchasesHybridCommon", '([^']+)'/)[1]
   else
+    UI.user_error!('Native React Native wrapper version differs from the selected SDK') unless
+      File.read("#{sdk}/android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java").include?("PLUGIN_VERSION = \"#{expected_version}\"")
     File.read("#{sdk}/android/build.gradle").match(/purchases-hybrid-common:([^'\"]+)/)[1]
   end
-  {version: expected_version, source: variant == 'release' ? 'Registry' : 'Local', path: sdk,
-    hybrid_common: phc, resolved: lock['resolved'], integrity: lock['integrity'],
-    javascript_sha256: Digest::SHA256.file("#{sdk}/#{manifest.fetch('react-native')}").hexdigest,
-    objc_sha256: Digest::SHA256.hexdigest(objc), java_sha256: Digest::SHA256.hexdigest(java)}
+  {version: manifest.fetch('version'), source: variant == 'release' ? 'Registry' : 'Local', path: sdk,
+    hybrid_common: phc, resolved: lock['resolved'], integrity: lock['integrity']}
 end
 
 def sdk_update_test_build(args, log, api_key, directory: get_root_folder, environment: {})

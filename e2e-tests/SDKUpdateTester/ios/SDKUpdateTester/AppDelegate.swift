@@ -42,7 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       props["app_user_id_to_log_in"] = arguments[index + 1]
     }
     factory.startReactNative(
-      withModuleName: "MaestroTestApp",
+      withModuleName: "SDKUpdateTester",
       in: window,
       initialProperties: props,
       launchOptions: nil

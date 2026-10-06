@@ -1,5 +1,5 @@
 // Created by Antonio Pallares. Copyright (c) 2026 RevenueCat, Inc.
-package com.revenuecat.automatedsdktests
+package com.revenuecat.sdkupdatetester
 
 import android.os.Bundle
 import com.facebook.react.ReactActivity
@@ -8,7 +8,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnable
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 
 class MainActivity : ReactActivity() {
-  override fun getMainComponentName(): String = "MaestroTestApp"
+  override fun getMainComponentName(): String = "SDKUpdateTester"
 
   override fun createReactActivityDelegate(): ReactActivityDelegate =
       object : DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled) {
