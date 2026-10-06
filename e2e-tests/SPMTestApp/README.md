@@ -51,10 +51,13 @@ To run interactively, open `ios/SPMTestApp.xcodeproj` after preparing dependenci
 Avoid CocoaPods in this app; the existing iOS CI jobs cover that integration.
 
 The `run-maestro-e2e-tests-spm-ios` job uses the same preparation command as
-`spm_ios`, injects the CI Test Store API key, builds Release with bundled
+`spm_ios`, injects the CI Test Store API key, builds Debug with bundled
 JavaScript, installs the app on an iPhone 17 simulator, and runs the shared flows
 with `APP_ID=org.reactjs.native.example.SPMTestApp`. It uploads JUnit results and
-Maestro debug artifacts. Keep injected keys out of commits.
+Maestro debug artifacts. Test Store keys require Debug because the SDK blocks
+them in Release. React Native loads the bundled JavaScript when Metro is not
+running; the separate `spm_ios` job continues checking both build configurations.
+Keep injected keys out of commits.
 
 This is a temporary native host. The CocoaPods removal PR after December 2, 2026
 must move its SPM setup into `MaestroTestApp` and delete this directory, preserving
