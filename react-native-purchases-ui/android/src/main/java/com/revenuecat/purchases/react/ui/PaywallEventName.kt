@@ -14,7 +14,8 @@ internal enum class PaywallEventName(val eventName: String) {
     ON_PERFORM_PURCHASE("onPerformPurchase"),
     ON_PERFORM_RESTORE("onPerformRestore"),
     ON_WEB_CHECKOUT_OPENED("onWebCheckoutOpened"),
-    ON_URL_OPENED("onUrlOpened");
+    ON_URL_OPENED("onUrlOpened"),
+    ON_INTERACTION("onInteraction");
 }
 
 internal enum class PaywallEventKey(val key: String) {

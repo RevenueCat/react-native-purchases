@@ -7,9 +7,10 @@ import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchases
 import { isExpoGo, isRorkSandbox } from '../utils/environment';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
+import type { RewardedAdTrackingMetadata } from '../purchases';
 
 
-const packageVersion = '9.1.0';
+const packageVersion = '10.11.0';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
@@ -29,7 +30,9 @@ export const browserNativeModuleRNPurchases = {
     _pendingTransactionsForPrepaidPlansEnabled: boolean,
     _diagnosticsEnabled: boolean,
     _automaticDeviceIdentifierCollectionEnabled: boolean,
-    _preferredUILocaleOverride: string | null
+    _preferredUILocaleOverride: string | null,
+    _useExternalPurchaseCustomLinks: boolean,
+    _enableExternalPurchasesInSimulator: boolean
   ) => {
     try {
       // Make sure that when running in Expo Go or Rork sandbox a web-compatible API key is used, because the underlying purchases-js error message isn't super clear when a non-compatible API key type is used in this case
@@ -271,6 +274,9 @@ export const browserNativeModuleRNPurchases = {
   setKochavaDeviceID: async (_kochavaDeviceID: string) => {
     methodNotSupportedOnWeb('setKochavaDeviceID');
   },
+  setSingularDeviceID: async (_singularDeviceID: string) => {
+    methodNotSupportedOnWeb('setSingularDeviceID');
+  },
   setOnesignalID: async (_onesignalID: string) => {
     methodNotSupportedOnWeb('setOnesignalID');
   },
@@ -363,10 +369,16 @@ export const browserNativeModuleRNPurchases = {
   trackAdFailedToLoad: async (_data: any) => {
     methodNotSupportedOnWeb('trackAdFailedToLoad');
   },
+  trackRewardedAdPromptShown: async (_data: any) => {
+    methodNotSupportedOnWeb('trackRewardedAdPromptShown');
+  },
+  trackRewardedAdPromptAccepted: async (_data: any) => {
+    methodNotSupportedOnWeb('trackRewardedAdPromptAccepted');
+  },
   generateRewardVerificationToken: async (_impressionId: string) => {
     methodNotSupportedOnWeb('generateRewardVerificationToken');
   },
-  pollRewardVerification: async (_clientTransactionId: string) => {
+  pollRewardVerification: async (_clientTransactionId: string, _trackingMetadata?: RewardedAdTrackingMetadata) => {
     methodNotSupportedOnWeb('pollRewardVerification');
   },
 };

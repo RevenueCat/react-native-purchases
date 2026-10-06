@@ -3867,26 +3867,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:18.31.0":
-  version: 18.31.0
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:18.31.0"
+"@revenuecat/purchases-js-hybrid-mappings@npm:19.6.0":
+  version: 19.6.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:19.6.0"
   dependencies:
-    "@revenuecat/purchases-js": 1.52.3
-  checksum: 2d0db3868dae8151f5284fcc5cf01660acc85663ca0569a4814909854388291d8376032a1241fa176e7b749f0fbb0a0d2bbf9c867e4edd56acb9dd99ba346693
+    "@revenuecat/purchases-js": 1.67.1
+  checksum: 94b39dc9db49d0f5f0eba17682bb17a5a81996b95ca28aff50e2cf1d0bf0304f5858cca746c9655679c23fa43235cb290161a6fcc9b630a93b8ffb9d2ab9f6be
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js@npm:1.52.3":
-  version: 1.52.3
-  resolution: "@revenuecat/purchases-js@npm:1.52.3"
-  checksum: 92b01c2bb84d3cffc6658ca5cd09a07d1cde5f84e3660086435b9e091d50a86d246160c71856c4e5ec9ff2349c2fdc8808c22ed7738d7efc1c634992c37d64c5
+"@revenuecat/purchases-js@npm:1.67.1":
+  version: 1.67.1
+  resolution: "@revenuecat/purchases-js@npm:1.67.1"
+  checksum: 4d91d9d18f6f4ccb97b17d16c41142a02237b5691d7c69fc68afef49b5bcfafe9cd51bf9c954ca1df51cea2fda6ef0a90f8ffeaae3ee40913395248e871c80d3
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:18.31.0":
-  version: 18.31.0
-  resolution: "@revenuecat/purchases-typescript-internal@npm:18.31.0"
-  checksum: 06f78998649763eb8c843725a080a6ae27035c3c353f52d5d03d090c8627e0f660ae262f004c1ca18645bd4e4ddd4677012bb1feb9b9bc503a0066e2a66aa014
+"@revenuecat/purchases-typescript-internal@npm:19.6.0":
+  version: 19.6.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:19.6.0"
+  checksum: d4c0a7c1373244d4d548df524887f3e6f963ca6f76e3d05d64b63aaa5b09f6af6e0304deea42308d42532a3ad463d4d1160d03c668c44f3040b2aa1df84c9091
   languageName: node
   linkType: hard
 
@@ -4579,11 +4579,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.10.12":
-  version: 2.10.16
-  resolution: "baseline-browser-mapping@npm:2.10.16"
+  version: 2.11.21
+  resolution: "baseline-browser-mapping@npm:2.11.21"
   bin:
     baseline-browser-mapping: dist/cli.cjs
-  checksum: b4e66b471a974eb1f145ace36c92f91a9ca0bb189e246613174965f4c05c2a51d110d970bdf1f077e1ca24b6d4da48cb63874ccc0056b0b15c9a59f62ef21eeb
+  checksum: 686840029c0130aa93e103d9fa8a47dc888e81b08a00f6a02a085b7c4568d188a250e7da6bd3b18b6e4cf424ef35061f3827551442d07dda386fb75c544e2e29
   languageName: node
   linkType: hard
 
@@ -4599,12 +4599,12 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^1.1.7":
-  version: 1.1.16
-  resolution: "brace-expansion@npm:1.1.16"
+  version: 1.1.21
+  resolution: "brace-expansion@npm:1.1.21"
   dependencies:
     balanced-match: ^1.0.0
     concat-map: 0.0.1
-  checksum: 11ab2d5b39d61bc0d0de9240a5d08a5f210a5650885ca4876271ef5996b4c5d172d697b501d673fe099ab721aa8bf0348507ad23a6148e169856209d2f9cab94
+  checksum: b841b4198a0ab8a1b433920ed65b46a9b4368c0ad1f95b2ed229a682c7d7d5b5839620204b5644a05c967d29e66bdf0a59b1115e74e0f27761d0dc02f5e0d835
   languageName: node
   linkType: hard
 
@@ -6971,15 +6971,15 @@ __metadata:
   linkType: hard
 
 "joi@npm:^17.2.1":
-  version: 17.13.4
-  resolution: "joi@npm:17.13.4"
+  version: 17.13.7
+  resolution: "joi@npm:17.13.7"
   dependencies:
     "@hapi/hoek": ^9.3.0
     "@hapi/topo": ^5.1.0
     "@sideway/address": ^4.1.5
     "@sideway/formula": ^3.0.1
     "@sideway/pinpoint": ^2.0.0
-  checksum: 99e0a784f08cb0b6910bd42df094e4f3f047c2589c61b139b7eb25a21f814478a1d3b5c68134bbcc4153ac216cbae2710a2b7f56605974e5c66a0ebdfab08e8f
+  checksum: 2f9af4cd84c60b9c493184f8eb127454f2577faae8f868c9acb57ac6f0ca80b75f2d5baaa26c14e6a1bdca391738acec8a3e2dd3430dfb500f2f82c042a90071
   languageName: node
   linkType: hard
 
@@ -6991,14 +6991,14 @@ __metadata:
   linkType: hard
 
 "js-yaml@npm:^3.13.1":
-  version: 3.15.1
-  resolution: "js-yaml@npm:3.15.1"
+  version: 3.15.2
+  resolution: "js-yaml@npm:3.15.2"
   dependencies:
     argparse: ^1.0.7
     esprima: ^4.0.0
   bin:
     js-yaml: bin/js-yaml.js
-  checksum: 536cfb984b61d1544dbdbe394254dd13481a94171cb3a61608572d9112a63cbace9dd900cb83a4e530ac36427fff77d9e1cb6734917c6fea951d00b4f7bbb163
+  checksum: 774d62285fa9aad3883603a7186c58619b582f0257ccf4d7b518dc2dc5c7f88f14b649c1149112b4494da832ba824c35a3e2fda776a12dbe02e99f7adc3a8a47
   languageName: node
   linkType: hard
 
@@ -8396,7 +8396,7 @@ __metadata:
     babel-plugin-module-resolver: ^5.0.0
     react: 19.0.0
     react-native: ^0.78.0
-    react-native-purchases-store-galaxy: 10.7.2
+    react-native-purchases-store-galaxy: 10.11.0
     react-native-safe-area-context: ^5.1.0
     react-native-screens: ^4.5.0
   languageName: unknown
@@ -8534,11 +8534,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-purchases-store-galaxy@10.7.2, react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy":
+"react-native-purchases-store-galaxy@10.11.0, react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy":
   version: 0.0.0-use.local
   resolution: "react-native-purchases-store-galaxy@workspace:react-native-purchases-store-galaxy"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 18.31.0
+    "@revenuecat/purchases-typescript-internal": 19.6.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -8556,7 +8556,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 10.7.2
+    react-native-purchases: 10.11.0
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
@@ -8568,7 +8568,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases-ui@workspace:react-native-purchases-ui"
   dependencies:
-    "@revenuecat/purchases-typescript-internal": 18.31.0
+    "@revenuecat/purchases-typescript-internal": 19.6.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
@@ -8588,7 +8588,7 @@ __metadata:
   peerDependencies:
     react: "*"
     react-native: ">= 0.73.0"
-    react-native-purchases: 10.7.2
+    react-native-purchases: 10.11.0
     react-native-web: "*"
   peerDependenciesMeta:
     react-native-web:
@@ -8600,8 +8600,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 18.31.0
-    "@revenuecat/purchases-typescript-internal": 18.31.0
+    "@revenuecat/purchases-js-hybrid-mappings": 19.6.0
+    "@revenuecat/purchases-typescript-internal": 19.6.0
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import {
   type CustomerInfo,
+  type PaywallInteractionEvent,
   PAYWALL_RESULT, type PurchasesError,
   type PurchasesOffering, type PurchasesPackage,
   type PurchasesStoreTransaction,
@@ -27,7 +28,7 @@ import {
   transformOptionsForNative,
 } from "./customVariables";
 
-export { PAYWALL_RESULT } from "@revenuecat/purchases-typescript-internal";
+export { PAYWALL_RESULT, type PaywallInteractionEvent } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
 // Re-export for testing purposes (marked as @internal)
 export { convertCustomVariablesToNativeMap, convertCustomVariablesToStringMap, transformOptionsForNative } from "./customVariables";
@@ -117,11 +118,11 @@ type NativeFooterPaywallViewProps = Omit<InternalFooterPaywallViewProps, 'option
   options?: WithNativeCustomVariables<FooterPaywallViewOptions>;
 };
 
-const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
-  ? requireNativeComponent<NativeFullScreenPaywallViewProps>('Paywall')
+const NativePaywall = !usingPreviewAPIMode && UIManager.getViewManagerConfig('PaywallView') != null
+  ? requireNativeComponent<NativeFullScreenPaywallViewProps>('PaywallView')
   : null;
 
-const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('Paywall') != null
+const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConfig('RCPaywallFooterView') != null
   ? requireNativeComponent<NativeFooterPaywallViewProps>('RCPaywallFooterView')
   : null;
 
@@ -182,6 +183,7 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
   onPurchasePackageInitiated,
   onWebCheckoutOpened,
   onUrlOpened,
+  onInteraction,
 }) => {
   const { nativeOptions, handlePerformPurchase, handlePerformRestore } = createPurchaseLogicHandlers(purchaseLogic);
 
@@ -232,6 +234,12 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         onPerformRestore={handlePerformRestore}
         onWebCheckoutOpened={() => onWebCheckoutOpened && onWebCheckoutOpened()}
         onUrlOpened={(event: any) => onUrlOpened && onUrlOpened(event.nativeEvent.url)}
+        onInteraction={(event: any) => {
+          if (!onInteraction) return;
+          // RCTComponentEvent adds the view tag as `target` to every direct event body on iOS.
+          const { target, ...interaction } = event.nativeEvent;
+          onInteraction(interaction);
+        }}
       />
     );
   }
@@ -410,11 +418,13 @@ type FullScreenPaywallViewProps = {
   onRestoreError?: ({error}: { error: PurchasesError }) => void;
   onDismiss?: () => void;
   onPurchasePackageInitiated?: ({
-    packageBeingPurchased, 
+    packageBeingPurchased,
     resume
   }: { packageBeingPurchased: PurchasesPackage, resume: (shouldResume: boolean) => void}) => void;
   onWebCheckoutOpened?: () => void;
   onUrlOpened?: (url: string) => void;
+  /** See https://rev.cat/paywall-interaction-events for the keys each component type sends. */
+  onInteraction?: (event: PaywallInteractionEvent) => void;
 };
 
 type FooterPaywallViewProps = {
@@ -631,6 +641,7 @@ export default class RevenueCatUI {
                                                                    onPurchasePackageInitiated,
                                                                    onWebCheckoutOpened,
                                                                    onUrlOpened,
+                                                                   onInteraction,
                                                                  }) => {
     return (
       <InternalPaywall
@@ -648,6 +659,7 @@ export default class RevenueCatUI {
         onPurchasePackageInitiated={onPurchasePackageInitiated}
         onWebCheckoutOpened={onWebCheckoutOpened}
         onUrlOpened={onUrlOpened}
+        onInteraction={onInteraction}
         style={[{flex: 1}, style]}
       />
     );

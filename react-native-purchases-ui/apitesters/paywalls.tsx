@@ -12,6 +12,7 @@ import type {
 } from "react-native-purchases-ui";
 import type {
   CustomerInfo,
+  PaywallInteractionEvent,
   PurchasesError,
   PurchasesOffering,
   PurchasesPackage,
@@ -61,6 +62,7 @@ const paywallComponentProps: PaywallComponentProps = {
   onDismiss: () => {},
   onWebCheckoutOpened: () => {},
   onUrlOpened: (url: string) => {},
+  onInteraction: (event: PaywallInteractionEvent) => {},
 };
 
 void paywallComponentProps;
@@ -320,6 +322,7 @@ const onDismiss = () => {};
 
 const onWebCheckoutOpened = () => {};
 const onUrlOpened = (url: string) => {};
+const onInteraction = (event: PaywallInteractionEvent) => {};
 
 const PaywallScreen = () => {
   return (
@@ -375,6 +378,7 @@ const PaywallScreenWithOfferingAndEvents = (
       onDismiss={onDismiss}
       onWebCheckoutOpened={onWebCheckoutOpened}
       onUrlOpened={onUrlOpened}
+      onInteraction={onInteraction}
     />
   );
 };

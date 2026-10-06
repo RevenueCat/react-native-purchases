@@ -1,0 +1,33 @@
+apply plugin: "com.android.application"
+// The React Native template applies KGP unconditionally, which fails under
+// AGP's built-in Kotlin. Expo SDK 58 apps build with built-in Kotlin on, so CI
+// covers that too.
+if (project.extensions.findByName("kotlin") == null) {
+    apply plugin: "org.jetbrains.kotlin.android"
+}
+apply plugin: "com.facebook.react"
+
+react {
+    autolinkLibrariesWithApp()
+}
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "com.agp9testapp"
+    defaultConfig {
+        applicationId "com.agp9testapp"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+    // The version of react-native is set by the React Native Gradle Plugin
+    implementation("com.facebook.react:react-android")
+    implementation("com.facebook.react:hermes-android")
+}

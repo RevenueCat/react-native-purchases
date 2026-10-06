@@ -35,8 +35,9 @@ RCT_EXPORT_VIEW_PROPERTY(onPerformPurchase, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPerformRestore, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onWebCheckoutOpened, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onUrlOpened, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onInteraction, RCTDirectEventBlock)
 
-RCT_EXPORT_MODULE(Paywall)
+RCT_EXPORT_MODULE(PaywallView)
 
 - (instancetype)init {
     if ((self = [super init])) {

@@ -7,6 +7,8 @@ import Purchases, {
   AdLoadedData,
   AdRevenueData,
   AdFailedToLoadData,
+  AdRewardPromptShownData,
+  AdRewardPromptAcceptedData,
 } from "../src";
 
 function checkAdTrackingTypes() {
@@ -99,5 +101,29 @@ async function checkTrackAdFailedToLoad() {
   await Purchases.adTracker.trackAdFailedToLoad({
     ...data,
     mediatorErrorCode: null,
+  });
+}
+
+async function checkTrackRewardedAdPromptShown() {
+  const data: AdRewardPromptShownData = {
+    mediatorName: AdMediatorName.adMob,
+    adUnitId: "unit-1",
+  };
+  await Purchases.adTracker.trackRewardedAdPromptShown(data);
+  await Purchases.adTracker.trackRewardedAdPromptShown({
+    ...data,
+    placement: "home",
+  });
+}
+
+async function checkTrackRewardedAdPromptAccepted() {
+  const data: AdRewardPromptAcceptedData = {
+    mediatorName: AdMediatorName.adMob,
+    adUnitId: "unit-1",
+  };
+  await Purchases.adTracker.trackRewardedAdPromptAccepted(data);
+  await Purchases.adTracker.trackRewardedAdPromptAccepted({
+    ...data,
+    placement: "home",
   });
 }

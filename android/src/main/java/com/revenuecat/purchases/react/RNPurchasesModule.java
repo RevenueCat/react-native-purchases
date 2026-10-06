@@ -51,7 +51,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "10.7.2";
+    public static final String PLUGIN_VERSION = "10.11.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -96,7 +96,9 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean pendingTransactionsForPrepaidPlansEnabled,
                                boolean diagnosticsEnabled,
                                boolean automaticDeviceIdentifierCollectionEnabled,
-                               @Nullable String preferredUILocaleOverride) {
+                               @Nullable String preferredUILocaleOverride,
+                               boolean useExternalPurchaseCustomLinks,
+                               boolean enableExternalPurchasesInSimulator) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if ("GALAXY".equals(storeString)) {
@@ -502,6 +504,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void setSingularDeviceID(String singularDeviceID) {
+        SubscriberAttributesKt.setSingularDeviceID(singularDeviceID);
+    }
+
+    @ReactMethod
     public void setOnesignalID(String onesignalID) {
         SubscriberAttributesKt.setOnesignalID(onesignalID);
     }
@@ -661,13 +668,26 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void trackRewardedAdPromptShown(ReadableMap data) {
+        CommonKt.trackRewardedAdPromptShown(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackRewardedAdPromptAccepted(ReadableMap data) {
+        CommonKt.trackRewardedAdPromptAccepted(data.toHashMap());
+    }
+
+    @ReactMethod
     public void generateRewardVerificationToken(String impressionId, final Promise promise) {
         promise.resolve(convertMapToWriteableMap(CommonKt.generateRewardVerificationToken(impressionId)));
     }
 
     @ReactMethod
-    public void pollRewardVerification(String clientTransactionId, final Promise promise) {
-        CommonKt.pollRewardVerification(clientTransactionId, getOnResult(promise));
+    public void pollRewardVerification(String clientTransactionId,
+                                       @Nullable ReadableMap trackingMetadata,
+                                       final Promise promise) {
+        Map<String, Object> mapTrackingMetadata = trackingMetadata != null ? mapWithoutNullValues(trackingMetadata) : null;
+        CommonKt.pollRewardVerification(clientTransactionId, getOnResult(promise), mapTrackingMetadata);
     }
 
     // endregion

@@ -12,6 +12,7 @@ import RevenueCatUI, {
 } from "../react-native-purchases-ui";
 import {
   CustomerInfo,
+  PaywallInteractionEvent,
   PurchasesError,
   PurchasesOffering,
   PurchasesOfferings,
@@ -169,6 +170,7 @@ const onDismiss = () => {};
 
 const onWebCheckoutOpened = () => {};
 const onUrlOpened = (url: string) => {};
+const onInteraction = (event: PaywallInteractionEvent) => {};
 
 const PaywallScreen = () => {
   return (
@@ -225,6 +227,7 @@ const PaywallScreenWithOfferingAndEvents = (
       onPurchasePackageInitiated={onPurchasePackageInitiated}
       onWebCheckoutOpened={onWebCheckoutOpened}
       onUrlOpened={onUrlOpened}
+      onInteraction={onInteraction}
     />
   );
 };
