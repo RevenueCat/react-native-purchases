@@ -1,4 +1,5 @@
 import {
+  BILLING_PLAN_TYPE,
   INTRO_ELIGIBILITY_STATUS,
   IntroEligibility,
   PACKAGE_TYPE,
@@ -50,6 +51,7 @@ function checkProduct(product: PurchasesStoreProduct) {
     product.presentedOfferingIdentifier;
   const presentedOfferingContext: PresentedOfferingContext | null =
     product.presentedOfferingContext;
+  const installmentsInfo: InstallmentsInfo | null = product.installmentsInfo;
 }
 
 function checkDiscount(discount: PurchasesStoreProductDiscount) {
@@ -144,6 +146,30 @@ function checkInstallmentsInfo(installmentsInfo: InstallmentsInfo) {
     installmentsInfo.commitmentPaymentsCount;
   const renewalCommitmentPaymentsCount: number =
     installmentsInfo.renewalCommitmentPaymentsCount;
+  // iOS only
+  const commitmentInstallmentPeriod: string | undefined =
+    installmentsInfo.commitmentInstallmentPeriod;
+  const installmentBillingPrice: number | undefined =
+    installmentsInfo.installmentBillingPrice;
+  const installmentBillingPriceString: string | undefined =
+    installmentsInfo.installmentBillingPriceString;
+  const commitmentTotalPeriod: string | undefined =
+    installmentsInfo.commitmentTotalPeriod;
+  const commitmentTotalPrice: number | undefined =
+    installmentsInfo.commitmentTotalPrice;
+  const commitmentTotalPriceString: string | undefined =
+    installmentsInfo.commitmentTotalPriceString;
+  const billingPlanType: BILLING_PLAN_TYPE | undefined =
+    installmentsInfo.billingPlanType;
+}
+
+function checkBillingPlanType(billingPlanType: BILLING_PLAN_TYPE) {
+  switch (billingPlanType) {
+    case BILLING_PLAN_TYPE.UP_FRONT:
+    case BILLING_PLAN_TYPE.MONTHLY:
+    case BILLING_PLAN_TYPE.UNKNOWN:
+      break;
+  }
 }
 
 function checkPricingPhase(pricePhase: PricingPhase) {
