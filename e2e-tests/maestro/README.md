@@ -30,7 +30,8 @@ Both hosts keep an API key placeholder in their `App.tsx` entry point. CI inject
 Do not commit an injected key. The shared UI configures Purchases before mounting
 the purchase screen; build-only jobs can leave the placeholder intact.
 
-The separate SPM Maestro job runs on branch builds and the existing Maestro
+The SPM Maestro job uses Debug with bundled JavaScript because the SDK blocks
+Test Store keys in Release. It runs on branch builds and the existing Maestro
 schedule, uploads JUnit results and debug artifacts, and is required before
 release tagging. The SPM compile/link/resync job remains separate.
 

@@ -593,25 +593,26 @@ jobs:
             fs.writeFileSync(file, source.replace(placeholder, JSON.stringify(apiKey)));
             NODE
       - run:
-          name: Build SPM Maestro app (Release)
+          name: Build SPM Maestro app (Debug)
           working_directory: e2e-tests/SPMTestApp/ios
           command: |
             mkdir -p ../../../build/spm-maestro
+            # Test Store keys require Debug; spm_ios separately checks Debug and Release.
             xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
-              -configuration Release -sdk iphonesimulator \
+              -configuration Debug -sdk iphonesimulator \
               -destination 'platform=iOS Simulator,name=iPhone 17' \
               -derivedDataPath ../build/DerivedData \
-              -resultBundlePath ../../../build/spm-maestro/Release.xcresult \
+              -resultBundlePath ../../../build/spm-maestro/Debug.xcresult \
               -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
-              | tee ../../../build/spm-maestro/Release.log
-            test -s ../build/DerivedData/Build/Products/Release-iphonesimulator/SPMTestApp.app/main.jsbundle
+              | tee ../../../build/spm-maestro/Debug.log
+            test -s ../build/DerivedData/Build/Products/Debug-iphonesimulator/SPMTestApp.app/main.jsbundle
           no_output_timeout: 20m
       - run:
           name: Boot simulator and install SPM Maestro app
           command: |
             xcrun simctl boot "iPhone 17" || true
             xcrun simctl bootstatus "iPhone 17" -b
-            xcrun simctl install booted e2e-tests/SPMTestApp/build/DerivedData/Build/Products/Release-iphonesimulator/SPMTestApp.app
+            xcrun simctl install booted e2e-tests/SPMTestApp/build/DerivedData/Build/Products/Debug-iphonesimulator/SPMTestApp.app
       - run:
           name: Run Maestro E2E Tests (SPM iOS)
           command: |
