@@ -2,7 +2,7 @@
 # It navigates to the purchase screen, verifies initial entitlements,
 # presents the paywall, makes a purchase, and verifies entitlements update.
 
-appId: com.revenuecat.automatedsdktests
+appId: ${APP_ID || 'com.revenuecat.automatedsdktests'}
 name: Purchase through paywall
 
 ---

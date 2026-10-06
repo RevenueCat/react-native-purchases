@@ -2,6 +2,10 @@
 
 A minimal React Native app used by Maestro end-to-end tests to verify RevenueCat SDK integration.
 
+The test UI and flows are shared with the temporary iOS `SPMTestApp` host in
+[`../maestro`](../maestro/README.md). The shared UI uses React state for its test
+menu and configures Purchases before mounting the purchase screen.
+
 ## Prerequisites
 
 - Node.js & Yarn
@@ -57,3 +61,14 @@ local dependency mechanism as `examples/purchaseTesterTypescript`:
 
 This ensures E2E tests always exercise the code on the current branch, not a
 published npm version.
+
+Type checking uses the SDKs' generated declarations. From the repository root,
+run `yarn build` and `yarn workspace react-native-purchases-ui prepare` before
+`yarn workspace MaestroTestApp build`.
+
+## After CocoaPods removal
+
+`MaestroTestApp` is the single long-term host, retaining Android and adopting
+SwiftPM on iOS. The CocoaPods removal PR after December 2, 2026 must consolidate
+the native hosts and delete `SPMTestApp`. Follow the required consolidation steps
+in [`../maestro/README.md`](../maestro/README.md#required-consolidation-when-cocoapods-support-is-removed).
