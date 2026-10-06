@@ -410,6 +410,34 @@ jobs:
             export RCT_NO_LAUNCH_PACKAGER=true \
             && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
+  spm_ios:
+    description: "Build both packaged SDKs in a stock React Native 0.88 SwiftPM app"
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.6'
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0
+      - install-dependencies:
+          machine: "macos"
+      - restore_cache:
+          keys:
+            - spm-ios-v1-{{ checksum ".circleci/scripts/build-spm-app.sh" }}
+      - run:
+          name: Build SwiftPM app (Debug, Release, and autolinking resync)
+          command: bash .circleci/scripts/build-spm-app.sh
+          no_output_timeout: 20m
+      - save_cache:
+          key: spm-ios-v1-{{ checksum ".circleci/scripts/build-spm-app.sh" }}
+          paths:
+            - ~/.npm
+            - ~/Library/Caches/ReactNative/spm-artifacts
+            - ~/Library/Caches/org.swift.swiftpm
+      - store_artifacts:
+          path: build/spm-ci
+
   make-release:
     description: "Publishes the new version and creates a github release"
     <<: *base-mac-job
@@ -519,6 +547,7 @@ workflows:
       - analyse_js
       - android
       - ios
+      - spm_ios
       - expo_android
       - expo_ios
       - expo_web
@@ -545,6 +574,7 @@ workflows:
             - analyse_js
             - android
             - ios
+            - spm_ios
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
