@@ -6,8 +6,10 @@ includes React Native's fix for preserving library symlinks during autolinking
 resyncs. The app imports both SDKs so Metro bundles their JavaScript; it does not
 configure purchases or require an API key.
 
-The comment-only `ios/Podfile` is retained for React Native CLI's iOS project
-discovery. It declares no dependencies and is not used to install pods.
+React Native CLI 21.0.0-alpha.1 discovers the SPM-configured project directly,
+so the app has no Podfile. The CLI version is pinned alongside React Native.
+This app is installed independently of the root Yarn workspace; the alpha CLI
+is used only by this fixture.
 
 The committed npm lockfile pins the app's React Native and tooling dependencies.
 The SDKs are installed separately from freshly packed tarballs, so SDK changes
