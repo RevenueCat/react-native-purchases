@@ -410,6 +410,105 @@ jobs:
             export RCT_NO_LAUNCH_PACKAGER=true \
             && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
+  spm_ios:
+    description: "Build both packaged SDKs in SPMTestApp (React Native 0.88)"
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.6'
+    environment:
+      RCT_NO_LAUNCH_PACKAGER: "1"
+      FORCE_BUNDLING: "1"
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0
+      - install-dependencies:
+          machine: "macos"
+      - restore_cache:
+          keys:
+            - spm-ios-v2-{{ checksum "e2e-tests/SPMTestApp/package-lock.json" }}
+      - run:
+          name: Prepare SDK packages
+          command: |
+            mkdir -p build/spm-ci
+            yarn build
+            yarn workspace react-native-purchases-ui prepare
+            yarn pack --out build/spm-ci/react-native-purchases.tgz
+            yarn workspace react-native-purchases-ui pack --out "$PWD/build/spm-ci/react-native-purchases-ui.tgz"
+      - run:
+          name: Install SPMTestApp dependencies and packed SDKs
+          working_directory: e2e-tests/SPMTestApp
+          command: |
+            npm ci --ignore-scripts --no-audit --no-fund
+            # Keep the SDK tarballs out of the lockfile: their contents change on every SDK commit.
+            # The existing RN peer range excludes prereleases, so this install needs legacy peer resolution.
+            npm install --no-save --package-lock=false --legacy-peer-deps --ignore-scripts --no-audit --no-fund \
+              ../../build/spm-ci/react-native-purchases.tgz ../../build/spm-ci/react-native-purchases-ui.tgz
+      - run:
+          name: Prepare SwiftPM dependencies
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: node ../node_modules/react-native/scripts/setup-apple-spm.js update --yes
+      - run:
+          name: Build SPMTestApp (Debug and Release)
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: |
+            for configuration in Debug Release; do
+              xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
+                -configuration "$configuration" -sdk iphonesimulator \
+                -destination 'generic/platform=iOS Simulator' \
+                -derivedDataPath ../build/DerivedData \
+                -resultBundlePath "../../../build/spm-ci/$configuration.xcresult" \
+                -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
+                | tee "../../../build/spm-ci/$configuration.log"
+              test -s "../build/DerivedData/Build/Products/$configuration-iphonesimulator/SPMTestApp.app/main.jsbundle"
+            done
+          no_output_timeout: 20m
+      - run:
+          name: Rebuild after an autolinking resync
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: |
+            stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
+              build/generated/autolinking/libs/ReactNativePurchasesUi > ../../../build/spm-ci/symlinks-before.txt
+            touch ../package.json
+            xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
+              -configuration Debug -sdk iphonesimulator \
+              -destination 'generic/platform=iOS Simulator' \
+              -derivedDataPath ../build/DerivedData \
+              -resultBundlePath ../../../build/spm-ci/debug-resync.xcresult \
+              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
+              | tee ../../../build/spm-ci/debug-resync.log
+            grep -F 'SPM sync inputs changed' ../../../build/spm-ci/debug-resync.log
+            stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
+              build/generated/autolinking/libs/ReactNativePurchasesUi > ../../../build/spm-ci/symlinks-after.txt
+            diff -u ../../../build/spm-ci/symlinks-before.txt ../../../build/spm-ci/symlinks-after.txt
+          no_output_timeout: 20m
+      - run:
+          name: Verify JavaScript bundles and linked native modules
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: |
+            for configuration in Debug Release; do
+              app_bundle="../build/DerivedData/Build/Products/$configuration-iphonesimulator/SPMTestApp.app"
+              test -s "$app_bundle/main.jsbundle"
+              binary="$app_bundle/SPMTestApp"
+              if [ -f "$app_bundle/SPMTestApp.debug.dylib" ]; then
+                binary="$app_bundle/SPMTestApp.debug.dylib"
+              fi
+              xcrun nm -gj "$binary" > "../../../build/spm-ci/$configuration-symbols.txt"
+              for native_class in RNPurchases RNPaywalls RNCustomerCenter PaywallViewManager \
+                CustomerCenterViewManager RCPaywallFooterViewManager; do
+                grep -Fx "_OBJC_CLASS_\$_$native_class" "../../../build/spm-ci/$configuration-symbols.txt"
+              done
+            done
+      - save_cache:
+          key: spm-ios-v2-{{ checksum "e2e-tests/SPMTestApp/package-lock.json" }}
+          paths:
+            - ~/.npm
+            - ~/Library/Caches/ReactNative/spm-artifacts
+            - ~/Library/Caches/org.swift.swiftpm
+      - store_artifacts:
+          path: build/spm-ci
+
   make-release:
     description: "Publishes the new version and creates a github release"
     <<: *base-mac-job
@@ -519,6 +618,7 @@ workflows:
       - analyse_js
       - android
       - ios
+      - spm_ios
       - expo_android
       - expo_ios
       - expo_web
@@ -545,6 +645,7 @@ workflows:
             - analyse_js
             - android
             - ios
+            - spm_ios
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
