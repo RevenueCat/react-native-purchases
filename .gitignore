@@ -43,10 +43,6 @@ android/gradle/wrapper/gradle-wrapper.jar
 android/gradle/wrapper/gradle-wrapper.properties
 android/.settings/org.eclipse.buildship.core.prefs
 examples/MagicWeather/android/.settings/org.eclipse.buildship.core.prefs
-!examples/oldArchTester/android/gradlew
-!examples/oldArchTester/android/gradlew.bat
-!examples/oldArchTester/android/gradle/wrapper/gradle-wrapper.jar
-!examples/oldArchTester/android/gradle/wrapper/gradle-wrapper.properties
 
 # VSCode
 .vscode/launch.json
