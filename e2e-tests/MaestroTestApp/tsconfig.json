@@ -9,6 +9,11 @@
     "isolatedModules": true,
     "strict": true,
     "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "react-native-purchases": ["../../dist/index.d.ts"],
+      "react-native-purchases-ui": ["../../react-native-purchases-ui/lib/typescript/src/index.d.ts"]
+    },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
