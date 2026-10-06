@@ -1,0 +1,10 @@
+appId: com.oldarchtestapp
+name: Old architecture bridge smoke test
+
+---
+- clearState
+- launchApp
+- extendedWaitUntil:
+    visible: "Old architecture bridge ready"
+    timeout: 30000
+- assertVisible: "Old architecture bridge ready"

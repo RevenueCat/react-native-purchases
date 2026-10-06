@@ -84,6 +84,20 @@ commands:
           paths:
             - .yarn/cache
 
+  install-old-arch-dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - old-arch-tester-yarn-v1-{{ checksum "examples/oldArchTester/yarn.lock" }}
+      - run:
+          name: Yarn Install (oldArchTester)
+          working_directory: examples/oldArchTester
+          command: yarn install --immutable
+      - save_cache:
+          key: old-arch-tester-yarn-v1-{{ checksum "examples/oldArchTester/yarn.lock" }}
+          paths:
+            - examples/oldArchTester/.yarn/cache
+
   copy-npm-rc:
     steps:
       - run:
@@ -410,6 +424,78 @@ jobs:
             export RCT_NO_LAUNCH_PACKAGER=true \
             && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
+  old_arch_android:
+    machine:
+      image: android:2024.11.1
+    resource_class: xlarge
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,java
+      - install-dependencies:
+          machine: "unix"
+      - install-old-arch-dependencies
+      - run:
+          name: Build Android app with the old architecture
+          working_directory: examples/oldArchTester/android
+          command: |
+            export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
+            ./gradlew assembleRelease -PnewArchEnabled=false -PreactNativeArchitectures=x86_64
+      - android/create_avd:
+          avd_name: old-arch-test
+          system_image: system-images;android-34;google_apis;x86_64
+          install: true
+      - android/start_emulator:
+          avd_name: old-arch-test
+          post_emulator_launch_assemble_command: ""
+      - revenuecat/install-maestro
+      - run:
+          name: Run old architecture bridge smoke test
+          working_directory: examples/oldArchTester
+          command: |
+            adb install android/app/build/outputs/apk/release/app-release.apk
+            mkdir -p test_output/debug
+            maestro test --format JUNIT --output test_output/maestro.xml --debug-output test_output/debug --flatten-debug-output maestro/bridge_smoke.yaml
+      - store_test_results:
+          path: examples/oldArchTester/test_output
+      - store_artifacts:
+          path: examples/oldArchTester/test_output/debug
+
+  old_arch_ios:
+    <<: *base-mac-job-xcode-16
+    steps:
+      - checkout
+      - rn/ios_simulator_start:
+          device: iPhone 16
+      - revenuecat/install-mise-tools:
+          tools: node@22.14.0,ruby
+      - install-dependencies-ios-build
+      - install-old-arch-dependencies
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: old-arch-tester-v1
+          working_directory: examples/oldArchTester
+      - rn/pod_install:
+          cache: false
+          pod_install_directory: examples/oldArchTester/ios
+          pod_install_command: RCT_NEW_ARCH_ENABLED=0 bundle exec pod install --repo-update
+      - run:
+          name: Build iOS app with the old architecture
+          command: |
+            export RCT_NO_LAUNCH_PACKAGER=true
+            xcodebuild -workspace examples/oldArchTester/ios/OldArchTestApp.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'OldArchTestApp' -configuration Release -derivedDataPath ~/DerivedData -UseModernBuildSystem=YES
+      - revenuecat/install-maestro
+      - run:
+          name: Run old architecture bridge smoke test
+          working_directory: examples/oldArchTester
+          command: |
+            xcrun simctl install booted ~/DerivedData/Build/Products/Release-iphonesimulator/OldArchTestApp.app
+            mkdir -p test_output/debug
+            maestro test --format JUNIT --output test_output/maestro.xml --debug-output test_output/debug --flatten-debug-output maestro/bridge_smoke.yaml
+      - store_test_results:
+          path: examples/oldArchTester/test_output
+      - store_artifacts:
+          path: examples/oldArchTester/test_output/debug
+
   make-release:
     description: "Publishes the new version and creates a github release"
     <<: *base-mac-job
@@ -519,6 +605,8 @@ workflows:
       - analyse_js
       - android
       - ios
+      - old_arch_android
+      - old_arch_ios
       - expo_android
       - expo_ios
       - expo_web
