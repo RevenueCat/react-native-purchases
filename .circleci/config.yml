@@ -17,6 +17,13 @@ aliases:
         ignore: /.*/
       branches:
         only: /^release\/.*/
+  release-branches-and-tags: &release-branches-and-tags
+    filters:
+      tags:
+        only: /.*/
+        ignore: /^.*-SNAPSHOT/
+      branches:
+        only: /^release\/.*/
   only-main-branch: &only-main-branch
     filters:
       tags:
@@ -706,24 +713,16 @@ workflows:
 
       - build-sdk-update-test-apps-ios:
           context: maestro
-          filters:
-            tags:
-              only: /.*/
+          <<: *release-branches-and-tags
       - build-sdk-update-test-apps-android:
           context: maestro
-          filters:
-            tags:
-              only: /.*/
+          <<: *release-branches-and-tags
       - run-sdk-update-tests-ios:
           requires: [build-sdk-update-test-apps-ios]
-          filters:
-            tags:
-              only: /.*/
+          <<: *release-branches-and-tags
       - run-sdk-update-tests-android:
           requires: [build-sdk-update-test-apps-android]
-          filters:
-            tags:
-              only: /.*/
+          <<: *release-branches-and-tags
 
       # Hold and deploy phase - only on release branches
       - wait-for-pr-approval:
@@ -788,9 +787,7 @@ workflows:
 
   sdk-update-tests:
     when:
-      or:
-        - equal: [sdk-update-tests, << pipeline.parameters.action >>]
-        - equal: [maestro_e2e_tests, << pipeline.schedule.name >>]
+      equal: [sdk-update-tests, << pipeline.parameters.action >>]
     jobs:
       - build-sdk-update-test-apps-ios:
           context: maestro
