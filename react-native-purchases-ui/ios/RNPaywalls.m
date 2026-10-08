@@ -13,6 +13,8 @@
 @interface RNPaywalls ()
 
 @property (nonatomic, strong) id paywallProxy;
+// A presented paywall outlives a JS reload, so events must stop once React Native tears this module down.
+@property (atomic) BOOL invalidated;
 
 - (void)emitPaywallEvent:(NSString *)callbackName
           presentationId:(NSString *)presentationId
@@ -204,13 +206,22 @@ RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
     return [[RNPaywallEventForwarder alloc] initWithEmitter:^(NSString *eventName, NSDictionary *body) {
         [weakSelf emitPaywallEvent:eventName presentationId:routedPresentationId body:body];
     } jsResumesPurchase:^BOOL {
-        return jsResumesPurchase && weakSelf != nil;
+        typeof(self) strongSelf = weakSelf;
+        return jsResumesPurchase && strongSelf != nil && !strongSelf.invalidated;
     }];
+}
+
+- (void)invalidate {
+    self.invalidated = YES;
+    [super invalidate];
 }
 
 - (void)emitPaywallEvent:(NSString *)callbackName
           presentationId:(NSString *)presentationId
                     body:(nullable NSDictionary *)body {
+    if (self.invalidated) {
+        return;
+    }
     NSMutableDictionary *payload = body ? [body mutableCopy] : [NSMutableDictionary dictionary];
     payload[@"presentationId"] = presentationId;
     [self sendEventWithName:RNPaywallsPresentedEventName(callbackName) body:[payload copy]];

@@ -35,8 +35,18 @@ internal class RNPaywallsModule(
             "RevenueCat paywalls require applications to use a FragmentActivity"
     }
 
+    // A presented paywall outlives a JS reload. On the New Architecture the old context reports the new
+    // runtime as active and routes events into it, so liveness has to come from this module's own teardown.
+    @Volatile
+    private var isInvalidated = false
+
     override fun getName(): String {
         return NAME
+    }
+
+    override fun invalidate() {
+        isInvalidated = true
+        super.invalidate()
     }
 
     @ReactMethod
@@ -170,9 +180,7 @@ internal class RNPaywallsModule(
                     customVariables = customVariablesMap,
                     paywallListener = presentationId?.let { routedPresentationId ->
                         paywallEventListener(
-                            jsResumesPurchase = {
-                                jsResumesPurchase && reactApplicationContext.hasActiveReactInstance()
-                            },
+                            jsResumesPurchase = { jsResumesPurchase && !isInvalidated },
                         ) { eventName, payload -> sendEvent(routedPresentationId, eventName, payload) }
                     },
                 )
@@ -181,6 +189,7 @@ internal class RNPaywallsModule(
     }
 
     private fun sendEvent(presentationId: String, event: PaywallEventName, params: Map<String, Any?>) {
+        if (isInvalidated) return
         val eventName = PRESENTED_PAYWALL_EVENT_PREFIX + event.eventName
         val payload = RNPurchasesConverters.convertMapToWriteableMap(params + (PRESENTATION_ID_KEY to presentationId))
         reactApplicationContext.runOnUiQueueThread {
