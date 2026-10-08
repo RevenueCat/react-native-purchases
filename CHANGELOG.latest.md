@@ -1,4 +1,6 @@
 ## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix iOS ignoring `automaticDeviceIdentifierCollectionEnabled` in `configure` (RevenueCat/purchases-hybrid-common#1956) via Álvaro Brey (@AlvaroBrey)
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.8.0 (#2007) via RevenueCat Git Bot (@RCGitBot)
   * [Android 10.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.26.0)
