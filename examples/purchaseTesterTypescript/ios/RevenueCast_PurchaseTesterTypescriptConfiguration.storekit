@@ -365,14 +365,9 @@
           ],
           "localizations" : [
             {
-              "description" : "Upfront",
-              "displayName" : "Upfront",
+              "description" : "12mo Commitment Subscription",
+              "displayName" : "12mo Commitment Subscription",
               "locale" : "en_US"
-            },
-            {
-              "description" : "12mo Commitment",
-              "displayName" : "12mo Commitment",
-              "locale" : "ar"
             }
           ],
           "productID" : "com.revenuecat.sampleapp.monthly.12mocommitment",
