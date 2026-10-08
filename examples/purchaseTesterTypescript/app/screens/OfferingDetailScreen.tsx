@@ -287,19 +287,31 @@ const OfferingDetailScreen: React.FC<Props> = ({ route, navigation }: Props) => 
                         <>
                           <Text style={styles.packageHeader}>InstallmentsInfo</Text>
                           <Text style={styles.packageText}>
-                            Commitment payments: { pkg.product.installmentsInfo.commitmentPaymentsCount }
+                            commitmentPaymentsCount: { String(pkg.product.installmentsInfo.commitmentPaymentsCount) }
                           </Text>
                           <Text style={styles.packageText}>
-                            Renewal commitment payments: { pkg.product.installmentsInfo.renewalCommitmentPaymentsCount }
+                            renewalCommitmentPaymentsCount: { String(pkg.product.installmentsInfo.renewalCommitmentPaymentsCount) }
                           </Text>
                           <Text style={styles.packageText}>
-                            Billing plan: { pkg.product.installmentsInfo.billingPlanType }
+                            commitmentInstallmentPeriod: { String(pkg.product.installmentsInfo.commitmentInstallmentPeriod) }
                           </Text>
                           <Text style={styles.packageText}>
-                            Installment: { pkg.product.installmentsInfo.installmentBillingPriceString } every { pkg.product.installmentsInfo.commitmentInstallmentPeriod }
+                            installmentBillingPrice: { String(pkg.product.installmentsInfo.installmentBillingPrice) }
                           </Text>
                           <Text style={styles.packageText}>
-                            Total: { pkg.product.installmentsInfo.commitmentTotalPriceString } over { pkg.product.installmentsInfo.commitmentTotalPeriod }
+                            installmentBillingPriceString: { String(pkg.product.installmentsInfo.installmentBillingPriceString) }
+                          </Text>
+                          <Text style={styles.packageText}>
+                            commitmentTotalPeriod: { String(pkg.product.installmentsInfo.commitmentTotalPeriod) }
+                          </Text>
+                          <Text style={styles.packageText}>
+                            commitmentTotalPrice: { String(pkg.product.installmentsInfo.commitmentTotalPrice) }
+                          </Text>
+                          <Text style={styles.packageText}>
+                            commitmentTotalPriceString: { String(pkg.product.installmentsInfo.commitmentTotalPriceString) }
+                          </Text>
+                          <Text style={styles.packageText}>
+                            billingPlanType: { String(pkg.product.installmentsInfo.billingPlanType) }
                           </Text>
                         </>
                       )}
