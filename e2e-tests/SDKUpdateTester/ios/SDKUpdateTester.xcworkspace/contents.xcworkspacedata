@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by Antonio Pallares. Copyright (c) 2026 RevenueCat, Inc. -->
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:SDKUpdateTester.xcodeproj">
+   </FileRef>
+</Workspace>

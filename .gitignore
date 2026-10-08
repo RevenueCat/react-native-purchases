@@ -93,3 +93,7 @@ package.tgz
 
 # Claude Code
 .claude/
+
+!e2e-tests/SDKUpdateTester/package-lock.json
+!e2e-tests/SDKUpdateTester/android/app/debug.keystore
+fastlane/test_output/
