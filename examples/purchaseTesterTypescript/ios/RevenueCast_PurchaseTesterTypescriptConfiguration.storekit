@@ -347,8 +347,8 @@
             },
             {
               "billingPlanType" : "MONTHLY",
-              "commitmentDisplayPrice" : "1.00",
-              "displayPrice" : "1.00",
+              "commitmentDisplayPrice" : "12.00",
+              "displayPrice" : "12.00",
               "internalID" : "AD44308F",
               "isEnabled" : true
             }
