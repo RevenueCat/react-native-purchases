@@ -16,7 +16,7 @@
     "@react-navigation/native-stack": "^6.0",
     "react": "19.2.3",
     "react-native": "0.87.1",
-    "react-native-purchases-store-galaxy": "10.11.0",
+    "react-native-purchases-store-galaxy": "10.12.0",
     "react-native-safe-area-context": "^5.10.1",
     "react-native-screens": "^4.28.0"
   },
