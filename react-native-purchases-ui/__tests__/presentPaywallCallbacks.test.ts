@@ -120,6 +120,51 @@ describe('presentPaywall callbacks', () => {
     expect(registeredListenerCount()).toBe(0);
   });
 
+  it('removes the subscriptions when the native call throws synchronously', () => {
+    mockRNPaywalls.presentPaywall.mockImplementationOnce(() => {
+      throw new Error('native module unavailable');
+    });
+    expect(() => RevenueCatUI.presentPaywall({ callbacks: { onInteraction: jest.fn() } }))
+      .toThrow('native module unavailable');
+    expect(registeredListenerCount()).toBe(0);
+  });
+
+  it('delivers each event payload without the presentation id', async () => {
+    const callbacks = {
+      onPurchaseCompleted: jest.fn(),
+      onPurchaseError: jest.fn(),
+      onPurchaseCancelled: jest.fn(),
+      onRestoreStarted: jest.fn(),
+      onRestoreCompleted: jest.fn(),
+      onRestoreError: jest.fn(),
+      onWebCheckoutOpened: jest.fn(),
+    };
+    const promise = RevenueCatUI.presentPaywall({ callbacks });
+    const presentationId = presentationIdArg(mockRNPaywalls.presentPaywall);
+    const customerInfo = { originalAppUserId: 'user' };
+    const storeTransaction = { transactionIdentifier: 'transaction' };
+    const error = { code: '1', message: 'failed' };
+
+    emitTo(presentationId, 'onPurchaseCompleted', { customerInfo, storeTransaction });
+    emitTo(presentationId, 'onPurchaseError', { error });
+    emitTo(presentationId, 'onPurchaseCancelled');
+    emitTo(presentationId, 'onRestoreStarted');
+    emitTo(presentationId, 'onRestoreCompleted', { customerInfo });
+    emitTo(presentationId, 'onRestoreError', { error });
+    emitTo(presentationId, 'onWebCheckoutOpened');
+
+    expect(callbacks.onPurchaseCompleted).toHaveBeenCalledWith({ customerInfo, storeTransaction });
+    expect(callbacks.onPurchaseError).toHaveBeenCalledWith({ error });
+    expect(callbacks.onPurchaseCancelled).toHaveBeenCalledWith();
+    expect(callbacks.onRestoreStarted).toHaveBeenCalledWith();
+    expect(callbacks.onRestoreCompleted).toHaveBeenCalledWith({ customerInfo });
+    expect(callbacks.onRestoreError).toHaveBeenCalledWith({ error });
+    expect(callbacks.onWebCheckoutOpened).toHaveBeenCalledWith();
+
+    resolvePresent('CANCELLED');
+    await expect(promise).resolves.toBe('CANCELLED');
+  });
+
   it('delivers an event only to the presentation that produced it', async () => {
     const firstCancelled = jest.fn();
     const secondCancelled = jest.fn();
