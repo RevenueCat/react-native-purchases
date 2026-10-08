@@ -147,19 +147,19 @@ function checkInstallmentsInfo(installmentsInfo: InstallmentsInfo) {
   const renewalCommitmentPaymentsCount: number =
     installmentsInfo.renewalCommitmentPaymentsCount;
   // iOS only
-  const commitmentInstallmentPeriod: string | undefined =
+  const commitmentInstallmentPeriod: string | null =
     installmentsInfo.commitmentInstallmentPeriod;
-  const installmentBillingPrice: number | undefined =
+  const installmentBillingPrice: number | null =
     installmentsInfo.installmentBillingPrice;
-  const installmentBillingPriceString: string | undefined =
+  const installmentBillingPriceString: string | null =
     installmentsInfo.installmentBillingPriceString;
-  const commitmentTotalPeriod: string | undefined =
+  const commitmentTotalPeriod: string | null =
     installmentsInfo.commitmentTotalPeriod;
-  const commitmentTotalPrice: number | undefined =
+  const commitmentTotalPrice: number | null =
     installmentsInfo.commitmentTotalPrice;
-  const commitmentTotalPriceString: string | undefined =
+  const commitmentTotalPriceString: string | null =
     installmentsInfo.commitmentTotalPriceString;
-  const billingPlanType: BILLING_PLAN_TYPE | undefined =
+  const billingPlanType: BILLING_PLAN_TYPE | null =
     installmentsInfo.billingPlanType;
 }
 
