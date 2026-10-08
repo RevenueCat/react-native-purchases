@@ -1,5 +1,6 @@
 ## RevenueCat SDK
 ### ✨ New Features
+* Expose manual tracking for unverified rewarded-ad rewards
 * Track rewarded ad prompt shown and accepted (#1988) via Drago Crnjac (@popcorn)
 ### 📦 Dependency Updates
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.6.0 (#1989) via RevenueCat Git Bot (@RCGitBot)

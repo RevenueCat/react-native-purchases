@@ -369,6 +369,9 @@ export const browserNativeModuleRNPurchases = {
   trackAdFailedToLoad: async (_data: any) => {
     methodNotSupportedOnWeb('trackAdFailedToLoad');
   },
+  trackAdRewardEarnedUnverified: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdRewardEarnedUnverified');
+  },
   trackRewardedAdPromptShown: async (_data: any) => {
     methodNotSupportedOnWeb('trackRewardedAdPromptShown');
   },

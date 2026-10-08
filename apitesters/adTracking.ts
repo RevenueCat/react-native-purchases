@@ -7,6 +7,7 @@ import Purchases, {
   AdLoadedData,
   AdRevenueData,
   AdFailedToLoadData,
+  AdRewardEarnedUnverifiedData,
   AdRewardPromptShownData,
   AdRewardPromptAcceptedData,
 } from "../src";
@@ -101,6 +102,21 @@ async function checkTrackAdFailedToLoad() {
   await Purchases.adTracker.trackAdFailedToLoad({
     ...data,
     mediatorErrorCode: null,
+  });
+}
+
+async function checkTrackAdRewardEarnedUnverified() {
+  const data: AdRewardEarnedUnverifiedData = {
+    mediatorName: AdMediatorName.adMob,
+    adFormat: AdFormat.rewarded,
+    adUnitId: "unit-1",
+    impressionId: "imp-1",
+  };
+  await Purchases.adTracker.trackAdRewardEarnedUnverified(data);
+  await Purchases.adTracker.trackAdRewardEarnedUnverified({
+    ...data,
+    networkName: "AdNetwork",
+    placement: "home",
   });
 }
 

@@ -668,6 +668,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void trackAdRewardEarnedUnverified(ReadableMap data) {
+        CommonKt.trackAdRewardEarnedUnverified(data.toHashMap());
+    }
+
+    @ReactMethod
     public void trackRewardedAdPromptShown(ReadableMap data) {
         CommonKt.trackRewardedAdPromptShown(data.toHashMap());
     }

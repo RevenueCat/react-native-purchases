@@ -268,6 +268,15 @@ export interface AdFailedToLoadData {
   placement?: string | null;
 }
 
+export interface AdRewardEarnedUnverifiedData {
+  mediatorName: AdMediatorName;
+  adFormat: AdFormat;
+  adUnitId: string;
+  impressionId: string;
+  networkName?: string | null;
+  placement?: string | null;
+}
+
 export interface AdRewardPromptShownData {
   mediatorName: AdMediatorName;
   adUnitId: string;
@@ -2252,6 +2261,11 @@ export class PurchasesAdTracker {
   public async trackAdFailedToLoad(data: AdFailedToLoadData): Promise<void> {
     await throwIfNotConfigured();
     RNPurchases.trackAdFailedToLoad(data);
+  }
+
+  public async trackAdRewardEarnedUnverified(data: AdRewardEarnedUnverifiedData): Promise<void> {
+    await throwIfNotConfigured();
+    RNPurchases.trackAdRewardEarnedUnverified(data);
   }
 
   public async trackRewardedAdPromptShown(data: AdRewardPromptShownData): Promise<void> {
