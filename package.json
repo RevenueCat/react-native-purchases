@@ -10,6 +10,7 @@
   "browser": "dist/index.js",
   "react-native": "src/index",
   "files": [
+    "src",
     "dist",
     "android",
     "!android/gradlew*",
