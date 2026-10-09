@@ -5,6 +5,7 @@
 //
 
 #import "RNPaywalls.h"
+#import "RNPaywallEventForwarder.h"
 
 @import PurchasesHybridCommonUI;
 @import RevenueCat;
@@ -12,6 +13,12 @@
 @interface RNPaywalls ()
 
 @property (nonatomic, strong) id paywallProxy;
+// A presented paywall outlives a JS reload, so events must stop once React Native tears this module down.
+@property (atomic) BOOL invalidated;
+
+- (void)emitPaywallEvent:(NSString *)callbackName
+          presentationId:(NSString *)presentationId
+                    body:(nullable NSDictionary *)body;
 
 @end
 
@@ -58,8 +65,31 @@ RCT_EXPORT_METHOD(removeListeners:(double)count) {
 
 // MARK: -
 
+// RCTEventEmitter sends events through the global RCTDeviceEventEmitter, keyed by name alone, so
+// these names must not collide with the ones RNCustomerCenter emits.
+static NSString *RNPaywallsPresentedEventName(NSString *callbackName) {
+    return [@"Paywalls-" stringByAppendingString:callbackName];
+}
+
 - (NSArray<NSString *> *)supportedEvents {
-    return @[safeAreaInsetsDidChangeEvent];
+    NSArray<NSString *> *callbackNames = @[
+        @"onPurchaseStarted",
+        @"onPurchaseCompleted",
+        @"onPurchaseError",
+        @"onPurchaseCancelled",
+        @"onRestoreStarted",
+        @"onRestoreCompleted",
+        @"onRestoreError",
+        @"onPurchasePackageInitiated",
+        @"onWebCheckoutOpened",
+        @"onUrlOpened",
+        @"onInteraction",
+    ];
+    NSMutableArray<NSString *> *events = [NSMutableArray arrayWithObject:safeAreaInsetsDidChangeEvent];
+    for (NSString *callbackName in callbackNames) {
+        [events addObject:RNPaywallsPresentedEventName(callbackName)];
+    }
+    return [events copy];
 }
 
 - (dispatch_queue_t)methodQueue {
@@ -77,6 +107,8 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  presentationId:(nullable NSString *)presentationId
+                  jsResumesPurchase:(BOOL)jsResumesPurchase
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
@@ -96,6 +128,9 @@ RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
         }
 
         [self.paywalls presentPaywallWithOptions:options
+                             purchaseLogicBridge:nil
+                                        delegate:[self presentationDelegateWithId:presentationId
+                                                   jsResumesPurchase:jsResumesPurchase]
                             paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
@@ -110,6 +145,8 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
                   shouldDisplayCloseButton:(BOOL)displayCloseButton
                   withFontFamily:(nullable NSString *)fontFamily
                   customVariables:(nullable NSDictionary *)customVariables
+                  presentationId:(nullable NSString *)presentationId
+                  jsResumesPurchase:(BOOL)jsResumesPurchase
                   withResolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 15.0, *)) {
@@ -130,6 +167,9 @@ RCT_EXPORT_METHOD(presentPaywallIfNeeded:(NSString *)requiredEntitlementIdentifi
         }
 
         [self.paywalls presentPaywallIfNeededWithOptions:options
+                                     purchaseLogicBridge:nil
+                                                delegate:[self presentationDelegateWithId:presentationId
+                                                   jsResumesPurchase:jsResumesPurchase]
                                     paywallResultHandler:^(NSString *result) {
             resolve(result);
         }];
@@ -151,6 +191,40 @@ RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
     if (@available(iOS 15.0, *)) {
         [HybridPurchaseLogicBridge resolveResultWithRequestId:requestId resultString:result errorMessage:errorMessage];
     }
+}
+
+// MARK: -
+
+// PHC retains the delegate until the paywall is dismissed, so it must only hold the module weakly.
+- (nullable id)presentationDelegateWithId:(nullable NSString *)presentationId
+                jsResumesPurchase:(BOOL)jsResumesPurchase API_AVAILABLE(ios(15.0)) {
+    if (presentationId == nil) {
+        return nil;
+    }
+    NSString *routedPresentationId = [presentationId copy];
+    __weak typeof(self) weakSelf = self;
+    return [[RNPaywallEventForwarder alloc] initWithEmitter:^(NSString *eventName, NSDictionary *body) {
+        [weakSelf emitPaywallEvent:eventName presentationId:routedPresentationId body:body];
+    } jsResumesPurchase:^BOOL {
+        typeof(self) strongSelf = weakSelf;
+        return jsResumesPurchase && strongSelf != nil && !strongSelf.invalidated;
+    }];
+}
+
+- (void)invalidate {
+    self.invalidated = YES;
+    [super invalidate];
+}
+
+- (void)emitPaywallEvent:(NSString *)callbackName
+          presentationId:(NSString *)presentationId
+                    body:(nullable NSDictionary *)body {
+    if (self.invalidated) {
+        return;
+    }
+    NSMutableDictionary *payload = body ? [body mutableCopy] : [NSMutableDictionary dictionary];
+    payload[@"presentationId"] = presentationId;
+    [self sendEventWithName:RNPaywallsPresentedEventName(callbackName) body:[payload copy]];
 }
 
 - (void)rejectPaywallsUnsupportedError:(RCTPromiseRejectBlock)reject {

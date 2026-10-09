@@ -5,6 +5,8 @@
 
 #import <React/RCTEventEmitter.h>
 
+@import PurchasesHybridCommonUI;
+
 static NSString *const safeAreaInsetsDidChangeEvent = @"safeAreaInsetsDidChange";
 
 @interface RNPaywalls : RCTEventEmitter <RCTBridgeModule>
