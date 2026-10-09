@@ -428,6 +428,10 @@ jobs:
           command: bundle exec fastlane release
 
   run-maestro-e2e-tests-ios:
+    parameters:
+      new_arch_enabled:
+        type: boolean
+        default: true
     executor:
       name: rn/macos
       resource_class: m4pro.medium
@@ -448,7 +452,7 @@ jobs:
             xcrun simctl bootstatus "iPhone 17" -b
       - run:
           name: Run Maestro E2E Tests (iOS)
-          command: bundle exec fastlane run_maestro_e2e_tests_ios
+          command: bundle exec fastlane run_maestro_e2e_tests_ios new_arch_enabled:<< parameters.new_arch_enabled >>
           no_output_timeout: 15m
       - store_test_results:
           path: fastlane/test_output
@@ -456,6 +460,10 @@ jobs:
           path: fastlane/test_output
 
   run-maestro-e2e-tests-android:
+    parameters:
+      new_arch_enabled:
+        type: boolean
+        default: true
     machine:
       image: android:2024.11.1
     resource_class: xlarge
@@ -469,7 +477,7 @@ jobs:
           machine: "unix"
       - run:
           name: Build Maestro app (Android)
-          command: bundle exec fastlane build_maestro_app_android
+          command: bundle exec fastlane build_maestro_app_android new_arch_enabled:<< parameters.new_arch_enabled >>
           no_output_timeout: 15m
       - android/create_avd:
           avd_name: test-e2e
@@ -530,6 +538,18 @@ workflows:
             - maestro-e2e-tests
             - e2e-tests
       - run-maestro-e2e-tests-android:
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: run-maestro-e2e-tests-ios-old-architecture
+          new_arch_enabled: false
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-android:
+          name: run-maestro-e2e-tests-android-old-architecture
+          new_arch_enabled: false
           context:
             - maestro-e2e-tests
             - e2e-tests
