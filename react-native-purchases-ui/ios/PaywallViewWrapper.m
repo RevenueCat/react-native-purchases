@@ -26,6 +26,12 @@ API_AVAILABLE(ios(15.0))
 @property(nonatomic) BOOL addedToHierarchy;
 @property(nonatomic) BOOL didReceiveInitialOptions;
 @property(strong, nonatomic) NSDictionary *pendingOptions;
+// Last values sent to the paywall. Repeating an update rebuilds the hosting controller.
+@property(copy, nonatomic) NSString *appliedOfferingIdentifier;
+@property(strong, nonatomic) RCPresentedOfferingContext *appliedPresentedOfferingContext;
+@property(copy, nonatomic) NSString *appliedFontFamily;
+// Matches PaywallViewController's default (hidden) so an unchanged false does not update.
+@property(nonatomic) BOOL appliedDisplayCloseButton;
 
 @end
 
@@ -117,6 +123,11 @@ API_AVAILABLE(ios(15.0))
             self.purchaseLogicBridge = bridge;
 
             self.paywallViewController = self.createViewController(bridge);
+            // The replacement controller has not received the previous updates.
+            self.appliedOfferingIdentifier = nil;
+            self.appliedPresentedOfferingContext = nil;
+            self.appliedFontFamily = nil;
+            self.appliedDisplayCloseButton = NO;
         }
 
         self.pendingOptions = options ?: @{};
@@ -167,22 +178,82 @@ API_AVAILABLE(ios(15.0))
             NSString *identifier = offering[@"identifier"];
             if (identifier) {
                 RCPresentedOfferingContext *presentedOfferingContext = [self presentedOfferingContextFromOffering:offering];
-                [self.paywallViewController updateWithOfferingIdentifier:identifier
-                                                presentedOfferingContext:presentedOfferingContext];
+                if (![self appliedOfferingMatchesIdentifier:identifier
+                                   presentedOfferingContext:presentedOfferingContext]) {
+                    [self.paywallViewController updateWithOfferingIdentifier:identifier
+                                                    presentedOfferingContext:presentedOfferingContext];
+                    if ([identifier isKindOfClass:[NSString class]]) {
+                        self.appliedOfferingIdentifier = identifier;
+                        self.appliedPresentedOfferingContext = presentedOfferingContext;
+                    }
+                }
             }
         }
 
         NSString *fontFamily = self.pendingOptions[@"fontFamily"];
-        if (fontFamily && [fontFamily isKindOfClass:[NSString class]] && fontFamily.length > 0) {
+        if (fontFamily && [fontFamily isKindOfClass:[NSString class]] && fontFamily.length > 0
+            && ![fontFamily isEqualToString:self.appliedFontFamily]) {
             [self.paywallViewController updateFontWithFontName:fontFamily];
+            self.appliedFontFamily = fontFamily;
         }
 
         NSNumber *displayCloseButtonValue = self.pendingOptions[@"displayCloseButton"];
-        BOOL displayCloseButton = [displayCloseButtonValue isKindOfClass:[NSNumber class]] ? [displayCloseButtonValue boolValue] : NO;
-        if (displayCloseButton) {
-            [self.paywallViewController updateWithDisplayCloseButton:displayCloseButton];
+        if ([displayCloseButtonValue isKindOfClass:[NSNumber class]]) {
+            BOOL displayCloseButton = [displayCloseButtonValue boolValue];
+            if (displayCloseButton != self.appliedDisplayCloseButton) {
+                [self.paywallViewController updateWithDisplayCloseButton:displayCloseButton];
+                self.appliedDisplayCloseButton = displayCloseButton;
+            }
         }
     }
+}
+
+- (BOOL)appliedOfferingMatchesIdentifier:(NSString *)identifier
+                presentedOfferingContext:(RCPresentedOfferingContext *)presentedOfferingContext {
+    if (![identifier isKindOfClass:[NSString class]] || ![self.appliedOfferingIdentifier isEqualToString:identifier]) {
+        return NO;
+    }
+
+    return [self presentedOfferingContext:self.appliedPresentedOfferingContext
+                   isEquivalentToContext:presentedOfferingContext];
+}
+
+// RCPresentedOfferingContext's isEqual: only compares the offering identifier.
+- (BOOL)presentedOfferingContext:(RCPresentedOfferingContext *)context
+         isEquivalentToContext:(RCPresentedOfferingContext *)otherContext {
+    if (context == otherContext) {
+        return YES;
+    }
+    if (context == nil || otherContext == nil || ![context isEqual:otherContext]) {
+        return NO;
+    }
+    if (![self string:context.placementIdentifier isEqualToNullableString:otherContext.placementIdentifier]) {
+        return NO;
+    }
+
+    return [self targetingContext:context.targetingContext
+        isEquivalentToTargetingContext:otherContext.targetingContext];
+}
+
+// RCTargetingContext does not implement isEqual:, so compare its fields directly.
+- (BOOL)targetingContext:(RCTargetingContext *)targetingContext
+isEquivalentToTargetingContext:(RCTargetingContext *)otherTargetingContext {
+    if (targetingContext == otherTargetingContext) {
+        return YES;
+    }
+    if (targetingContext == nil || otherTargetingContext == nil) {
+        return NO;
+    }
+
+    return targetingContext.revision == otherTargetingContext.revision
+        && [targetingContext.ruleId isEqualToString:otherTargetingContext.ruleId];
+}
+
+- (BOOL)string:(NSString *)string isEqualToNullableString:(NSString *)otherString {
+    if (string == otherString) {
+        return YES;
+    }
+    return [string isEqualToString:otherString];
 }
 
 - (RCPresentedOfferingContext *)presentedOfferingContextFromOffering:(NSDictionary *)offering {
