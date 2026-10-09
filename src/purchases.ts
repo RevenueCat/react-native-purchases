@@ -44,6 +44,7 @@ import {
   Storefront,
   STORE_REPLACEMENT_MODE,
   StoreProductChangeInfo,
+  BILLING_PLAN_TYPE,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -452,6 +453,13 @@ export default class Purchases {
    * @enum {string}
    */
   public static PACKAGE_TYPE = PACKAGE_TYPE;
+
+  /**
+   * Enum of billing plan types for subscriptions with billing plans on iOS.
+   * @readonly
+   * @enum {string}
+   */
+  public static BILLING_PLAN_TYPE = BILLING_PLAN_TYPE;
 
   /**
    * Enum of different possible states for intro price eligibility status.

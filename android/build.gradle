@@ -35,7 +35,7 @@ android {
         minSdkVersion getExtOrIntegerDefault('minSdkVersion')
         targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
         versionCode 1
-        versionName '10.11.0'
+        versionName '10.12.2'
     }
 
     buildTypes {
@@ -127,6 +127,6 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 dependencies {
     //noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
-    implementation 'com.revenuecat.purchases:purchases-hybrid-common:19.6.0'
+    implementation 'com.revenuecat.purchases:purchases-hybrid-common:19.10.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

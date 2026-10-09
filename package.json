@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "10.11.0",
+  "version": "10.12.2",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android. ",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -118,7 +118,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-js-hybrid-mappings": "19.6.0",
-    "@revenuecat/purchases-typescript-internal": "19.6.0"
+    "@revenuecat/purchases-js-hybrid-mappings": "19.10.0",
+    "@revenuecat/purchases-typescript-internal": "19.10.0"
   }
 }
