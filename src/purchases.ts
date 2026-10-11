@@ -222,6 +222,16 @@ export const AdRevenuePrecision = {
 } as const;
 export type AdRevenuePrecision = string;
 
+/**
+ * Identifies the integration that emitted an ad event. Reserved for the
+ * official RevenueCat ad-network adapters (for example
+ * `react-native-purchases-admob`); leave it unset when tracking manually.
+ */
+export const AdCaptureMethod = {
+  reactNativeAdMobAdapter: "react_native_admob_adapter",
+} as const;
+export type AdCaptureMethod = string;
+
 export interface AdDisplayedData {
   mediatorName: AdMediatorName;
   adFormat: AdFormat;
@@ -229,6 +239,8 @@ export interface AdDisplayedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
+  /** Reserved for the official RevenueCat ad-network adapters. */
+  captureMethod?: AdCaptureMethod | null;
 }
 
 export interface AdOpenedData {
@@ -238,6 +250,8 @@ export interface AdOpenedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
+  /** Reserved for the official RevenueCat ad-network adapters. */
+  captureMethod?: AdCaptureMethod | null;
 }
 
 export interface AdLoadedData {
@@ -247,6 +261,8 @@ export interface AdLoadedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
+  /** Reserved for the official RevenueCat ad-network adapters. */
+  captureMethod?: AdCaptureMethod | null;
 }
 
 export interface AdRevenueData {
@@ -259,6 +275,8 @@ export interface AdRevenueData {
   precision: AdRevenuePrecision;
   networkName?: string | null;
   placement?: string | null;
+  /** Reserved for the official RevenueCat ad-network adapters. */
+  captureMethod?: AdCaptureMethod | null;
 }
 
 export interface AdFailedToLoadData {
@@ -267,6 +285,8 @@ export interface AdFailedToLoadData {
   adUnitId: string;
   mediatorErrorCode?: number | null;
   placement?: string | null;
+  /** Reserved for the official RevenueCat ad-network adapters. */
+  captureMethod?: AdCaptureMethod | null;
 }
 
 export interface AdRewardEarnedUnverifiedData {
@@ -358,6 +378,8 @@ export interface RewardedAdTrackingMetadata {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
+  /** Reserved for the official RevenueCat ad-network adapters. */
+  captureMethod?: AdCaptureMethod | null;
 }
 
 let debugEventListeners: DebugEventListener[] = [];

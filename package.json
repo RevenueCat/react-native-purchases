@@ -28,6 +28,7 @@
     "!**/*.iml",
     "!**/.DS_Store",
     "!**/.gitignore",
+    "!react-native-purchases-admob",
     "!react-native-purchases-store-galaxy",
     "!react-native-purchases-ui",
     "!scripts/docs/index.html",
@@ -47,6 +48,7 @@
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
+    "react-native-purchases-admob",
     "react-native-purchases-store-galaxy",
     "react-native-purchases-ui",
     "e2e-tests/MaestroTestApp"
@@ -108,6 +110,7 @@
     "preset": "@react-native/jest-preset",
     "modulePathIgnorePatterns": [
       "<rootDir>/examples/purchaseTesterTypescript/",
+      "<rootDir>/react-native-purchases-admob/",
       "<rootDir>/react-native-purchases-store-galaxy/",
       "<rootDir>/react-native-purchases-ui/",
       "<rootDir>/dir/"
