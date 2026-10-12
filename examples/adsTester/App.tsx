@@ -151,11 +151,6 @@ export default function App() {
   useEffect(() => {
     (async () => {
       Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
-      // Mirror the native SDK log into Metro so tracked ad events are visible
-      // without attaching a native log viewer.
-      Purchases.setLogHandler((logLevel, message) =>
-        console.log(`[Purchases ${logLevel}] ${message}`),
-      );
       Purchases.configure({apiKey: API_KEY});
       await mobileAds().initialize();
       setConfigured(true);

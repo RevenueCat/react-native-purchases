@@ -2278,7 +2278,7 @@ __metadata:
     prettier: 2.8.8
     react: 19.2.6
     react-native: 0.86.0
-    react-native-google-mobile-ads: ^17.2.0
+    react-native-google-mobile-ads: ^17.0.0
     typescript: ^5.8.3
   languageName: unknown
   linkType: soft
@@ -6084,7 +6084,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-google-mobile-ads@npm:^17.2.0":
+"react-native-google-mobile-ads@npm:^17.0.0":
   version: 17.2.0
   resolution: "react-native-google-mobile-ads@npm:17.2.0"
   dependencies:

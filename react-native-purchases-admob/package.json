@@ -49,7 +49,7 @@
     "react": "18.2.0",
     "react-native": "0.78.0",
     "react-native-builder-bob": "^0.20.0",
-    "react-native-google-mobile-ads": "^17.2.0",
+    "react-native-google-mobile-ads": "^17.0.0",
     "ts-jest": "^29.1.2",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
