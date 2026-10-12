@@ -1,9 +1,9 @@
 ## RevenueCat SDK
 ### 📦 Dependency Updates
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.10.0 (#2014) via RevenueCat Git Bot (@RCGitBot)
-  * [iOS 5.94.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.94.0)
-* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.9.0 (#2013) via RevenueCat Git Bot (@RCGitBot)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.11.0 (#2024) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.27.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.27.0)
+  * [iOS 5.95.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.95.0)
 
-### 🔄 Other Changes
-* other: extras to support InstallmentsInfo on iOS (#2002) via Will Taylor (@fire-at-will)
-* Bump CI to Ruby 3.3 (#2012) via Josh Holtz (@joshdholtz)
+## RevenueCatUI SDK
+### ✨ New Features
+* feat(paywalls): Add callbacks to presentPaywall and presentPaywallIfNeeded (#1958) via Álvaro Brey (@AlvaroBrey)
