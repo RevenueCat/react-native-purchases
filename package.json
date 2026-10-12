@@ -22,6 +22,7 @@
     "!ios/RNPurchases.xcodeproj/project.xcworkspace",
     "!ios/RNPurchases.xcodeproj/xcuserdata",
     "RNPurchases.podspec",
+    "Package.swift",
     "scripts",
     "!**/__tests__",
     "!**/.idea",
@@ -33,6 +34,9 @@
     "!scripts/docs/index.html",
     "!scripts/setupJest.js"
   ],
+  "swiftpmConfig": {
+    "name": "ReactNativePurchases"
+  },
   "scripts": {
     "build": "tsc",
     "build-watch": "tsc --watch",
