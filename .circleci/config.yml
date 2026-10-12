@@ -116,6 +116,10 @@ jobs:
           working_directory: react-native-purchases-store-galaxy
           command: yarn prepare
       - run:
+          name: Prepare AdMob package
+          working_directory: react-native-purchases-admob
+          command: yarn prepare
+      - run:
           name: Tests
           command: yarn test --maxWorkers=2
       - run:
@@ -128,11 +132,17 @@ jobs:
           name: Galaxy Store API Tests
           command: yarn workspace react-native-purchases-store-galaxy apitest
       - run:
+          name: AdMob API Tests
+          command: yarn workspace react-native-purchases-admob apitest
+      - run:
           name: UI Tests
           command: yarn workspace react-native-purchases-ui test
       - run:
           name: Galaxy Store Tests
           command: yarn workspace react-native-purchases-store-galaxy test
+      - run:
+          name: AdMob Tests
+          command: yarn workspace react-native-purchases-admob test
       - run:
           name: Linter
           command: yarn run tslint
