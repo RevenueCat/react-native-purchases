@@ -29,6 +29,10 @@ if (project.extensions.findByName('kotlin') == null) {
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
+  // Codegen scans the package root by default. In this monorepo that includes the workspace's own
+  // node_modules/react-native, which generates React Native's core specs into this library and
+  // shadows the app's. Only our sources can contain specs.
+  react { jsRootDir = file("../src") }
 }
 
 def getExtOrDefault(name) {
