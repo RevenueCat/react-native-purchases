@@ -6,6 +6,7 @@
 //
 
 #import "PaywallViewWrapper.h"
+#import "RNPaywallEventForwarder.h"
 #import "UIView+Extensions.h"
 #import <React/UIView+React.h>
 
@@ -13,11 +14,42 @@
 @import RevenueCat;
 @import RevenueCatUI;
 
-static NSString *const KeyCustomerInfo = @"customerInfo";
-static NSString *const KeyStoreTransaction = @"storeTransaction";
-static NSString *const KeyError = @"error";
-static NSString *const KeyPackage = @"packageBeingPurchased";
-static NSString *const KeyUrl = @"url";
+// Event names are the view's event block property names, so each one is looked up by key.
+@interface PaywallViewEventForwarder : RNPaywallEventForwarder
+
+- (instancetype)initWithView:(PaywallViewWrapper *)view;
+
+@end
+
+@implementation PaywallViewEventForwarder {
+    __weak PaywallViewWrapper *_view;
+}
+
+- (instancetype)initWithView:(PaywallViewWrapper *)view {
+    __weak PaywallViewWrapper *weakView = view;
+    self = [super initWithEmitter:^(NSString *eventName, NSDictionary *body) {
+        RCTDirectEventBlock eventBlock = [weakView valueForKey:eventName];
+        if (eventBlock) {
+            eventBlock(body);
+        }
+    } jsResumesPurchase:^BOOL {
+        return weakView.onPurchasePackageInitiated != nil;
+    }];
+    if (self) {
+        _view = view;
+    }
+    return self;
+}
+
+- (void)paywallViewControllerRequestedDismissal:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
+    [_view paywallViewControllerRequestedDismissal:controller];
+}
+
+- (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)) {
+    [_view paywallViewController:controller didChangeSizeTo:size];
+}
+
+@end
 
 API_AVAILABLE(ios(15.0))
 @interface PaywallViewWrapper ()
@@ -43,6 +75,7 @@ API_AVAILABLE(ios(15.0))
     // See: https://github.com/RevenueCat/react-native-purchases/issues/1622
     if ((self = [super initWithFrame:CGRectZero])) {
         _paywallViewController = paywallViewController;
+        _eventForwarder = [[PaywallViewEventForwarder alloc] initWithView:self];
     }
 
     return self;
@@ -226,89 +259,11 @@ API_AVAILABLE(ios(15.0))
                                                          targetingContext:targetingContext];
 }
 
-- (void)paywallViewController:(RCPaywallViewController *)controller
-  didStartPurchaseWithPackage:(NSDictionary *)packageDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseStarted(@{
-        KeyPackage: packageDictionary,
-    });
-}
-
-- (void)paywallViewController:(RCPaywallViewController *)controller
-didFinishPurchasingWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary
-        transactionDictionary:(NSDictionary *)transactionDictionary API_AVAILABLE(ios(15.0)) {
-    NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObject:customerInfoDictionary
-                                                                   forKey:KeyCustomerInfo];
-    if (transactionDictionary) {
-        event[KeyStoreTransaction] = transactionDictionary;
-    }
-    self.onPurchaseCompleted([event copy]);
-}
-
-- (void)paywallViewControllerDidCancelPurchase:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseCancelled(nil);
-}
-
-- (void)paywallViewControllerDidStartRestore:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    self.onRestoreStarted(nil);
-}
-
-- (void)paywallViewController:(RCPaywallViewController *)controller
-didFailPurchasingWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onPurchaseError(@{
-        KeyError: errorDictionary
-    });
-}
-
-- (void)paywallViewController:(RCPaywallViewController *)controller
-didFinishRestoringWithCustomerInfoDictionary:(NSDictionary *)customerInfoDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreCompleted(@{
-        KeyCustomerInfo: customerInfoDictionary
-    });
-}
-
-- (void)paywallViewController:(RCPaywallViewController *)controller
-didFailRestoringWithErrorDictionary:(NSDictionary *)errorDictionary API_AVAILABLE(ios(15.0)) {
-    self.onRestoreError(@{
-        KeyError: errorDictionary
-    });
-}
-
 - (void)paywallViewControllerRequestedDismissal:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
     self.onDismiss(nil);
 }
 
 - (void)paywallViewController:(RCPaywallViewController *)controller didChangeSizeTo:(CGSize)size API_AVAILABLE(ios(15.0)) {
-}
-
-- (void)paywallViewController:(RCPaywallViewController *)controller
-didInitiatePurchaseWithPackageDictionary:(NSDictionary *)packageDictionary
-                     requestId:(NSString *)requestId API_AVAILABLE(ios(15.0)) {
-    if (self.onPurchasePackageInitiated) {
-        self.onPurchasePackageInitiated(@{
-            KeyPackage: packageDictionary,
-            @"requestId": requestId,
-        });
-    } else {
-        [PaywallProxy resumePurchasePackageInitiatedWithRequestId:requestId shouldProceed:YES];
-    }
-}
-
-- (void)paywallViewControllerDidOpenWebCheckout:(RCPaywallViewController *)controller API_AVAILABLE(ios(15.0)) {
-    if (self.onWebCheckoutOpened) {
-        self.onWebCheckoutOpened(nil);
-    }
-}
-
-- (void)paywallViewController:(RCPaywallViewController *)controller didOpenURL:(NSString *)url API_AVAILABLE(ios(15.0)) {
-    if (self.onUrlOpened) {
-        self.onUrlOpened(@{KeyUrl: url ?: @""});
-    }
-}
-
-- (void)paywallViewController:(RCPaywallViewController *)controller didTrackInteraction:(NSDictionary<NSString *, id> *)eventDictionary API_AVAILABLE(ios(15.0)) {
-    if (self.onInteraction) {
-        self.onInteraction(eventDictionary);
-    }
 }
 
 @end
