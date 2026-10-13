@@ -6,7 +6,7 @@
 
 ## react-native-purchases-admob
 
-*react-native-purchases-admob* connects [react-native-google-mobile-ads](https://github.com/invertase/react-native-google-mobile-ads) to [RevenueCat](https://www.revenuecat.com/)'s ad tracking and reward verification. Create your ads through the adapter and it reports loaded, failed-to-load, displayed, opened and revenue events for you; rewarded ads can additionally have their rewards verified server-side. See the [AdMob integration docs](https://www.revenuecat.com/docs/ad-monetization/admob) for the full picture.
+_react-native-purchases-admob_ connects [react-native-google-mobile-ads](https://github.com/invertase/react-native-google-mobile-ads) to [RevenueCat](https://www.revenuecat.com/)'s ad tracking and reward verification. Create your ads through the adapter and it reports loaded, failed-to-load, displayed, opened and revenue events for you; rewarded ads can additionally have their rewards verified server-side. See the [AdMob integration docs](https://www.revenuecat.com/docs/ad-monetization/admob) for the full picture.
 
 ## Installation
 
@@ -21,17 +21,19 @@ Requires `react-native-google-mobile-ads` 17 or newer (the first version that ex
 Replace `InterstitialAd.createForAdRequest(...)` with the matching `RevenueCatAdMob.create...` call. The returned object is the same `InterstitialAd`, so `load()`, listeners and `destroy()` work as before; `placement` is a free-form label for where the ad is shown.
 
 ```ts
-import { RevenueCatAdMob } from 'react-native-purchases-admob';
+import { RevenueCatAdMob } from "react-native-purchases-admob";
 
 const interstitial = RevenueCatAdMob.createInterstitialAd(adUnitId, {
-  placement: 'level_complete',
-  requestOptions: { keywords: ['game'] },
+  placement: "level_complete",
+  requestOptions: { keywords: ["game"] },
 });
 interstitial.addAdEventListener(AdEventType.LOADED, () => setReady(true));
 interstitial.load();
 
 // Later. The placement given here overrides the load-time one for this impression.
-await RevenueCatAdMob.showAndTrack(interstitial, { placement: 'level_complete_retry' });
+await RevenueCatAdMob.showAndTrack(interstitial, {
+  placement: "level_complete_retry",
+});
 ```
 
 `createAppOpenAd` works the same way. For an ad you created yourself, call `RevenueCatAdMob.trackAd(ad, { placement })` before `load()`.
@@ -39,13 +41,23 @@ await RevenueCatAdMob.showAndTrack(interstitial, { placement: 'level_complete_re
 ## Banner and native ads
 
 ```tsx
-<BannerAd {...RevenueCatAdMob.bannerAdProps({ unitId, size: BannerAdSize.BANNER, placement: 'home_bottom' })} />
+import { useTrackingBannerAdProps } from "react-native-purchases-admob";
+
+function HomeBanner() {
+  const bannerProps = useTrackingBannerAdProps({
+    unitId,
+    size: BannerAdSize.BANNER,
+    placement: "home_bottom",
+    onPaid: (paid) => console.log(paid.value),
+  });
+  return <BannerAd {...bannerProps} />;
+}
 
 const nativeAd = await NativeAd.createForAdRequest(adUnitId);
-RevenueCatAdMob.trackNativeAd(nativeAd, { placement: 'feed' });
+RevenueCatAdMob.trackNativeAd(nativeAd, { placement: "feed" });
 ```
 
-Your own banner callbacks (`onAdLoaded`, `onPaid`, ...) can be passed into `bannerAdProps` and are forwarded.
+Banners are a component, not an ad object, and their events arrive through props that React re-evaluates on every render, which is why they get a hook while every other format does not. Your own banner callbacks (`onAdLoaded`, `onPaid`, ...) are forwarded. Class components can use `RevenueCatAdMob.trackingBannerAdProps(...)` instead; it returns the same props but starts a new tracking state on every call, so call it once per banner instance (for example in the constructor), not inside `render`.
 
 ## Reward verification
 
@@ -53,7 +65,7 @@ Your own banner callbacks (`onAdLoaded`, `onPaid`, ...) can be passed into `bann
 
 ```ts
 const rewarded = await RevenueCatAdMob.createRewardedAd(adUnitId, {
-  placement: 'extra_life',
+  placement: "extra_life",
   enableRewardVerification: true,
 });
 rewarded.load();
@@ -75,6 +87,6 @@ The `useInterstitialAd` / `useRewardedAd` hooks create their ads internally and 
 
 ## Requirements
 
-* iOS 15.0+ (ad tracking is unavailable below that; calls are ignored with a warning)
-* `react-native-google-mobile-ads` 17.x, which itself needs React Native 0.86+ and the New Architecture
-* `react-native-purchases` 10.12.2+
+- iOS 15.0+ (ad tracking is unavailable below that; calls are ignored with a warning)
+- `react-native-google-mobile-ads` 17.x, which itself needs React Native 0.86+ and the New Architecture
+- `react-native-purchases` 10.12.2+

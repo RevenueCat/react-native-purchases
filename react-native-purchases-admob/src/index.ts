@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import Purchases, { AdFormat } from "react-native-purchases";
 import type { RewardVerificationResult } from "react-native-purchases";
 import {
@@ -75,6 +76,10 @@ export interface ShowOptions {
   showOptions?: AdShowOptions;
 }
 
+export type BannerAdTrackingProps = BannerAdProps & {
+  placement?: string | null;
+};
+
 export type RewardVerificationStartedCallback = () => void;
 export type RewardVerificationCompletedCallback = (
   result: RewardVerificationResult
@@ -86,8 +91,10 @@ export interface ShowWithRewardVerificationOptions extends ShowOptions {
   onRewardVerificationCompleted: RewardVerificationCompletedCallback;
 }
 
-
-const failedResult: RewardVerificationResult = { failed: true, moreRewards: [] };
+const failedResult: RewardVerificationResult = {
+  failed: true,
+  moreRewards: [],
+};
 
 function formatOf(ad: TrackableAd): AdFormat | null {
   if (ad instanceof InterstitialAd) {
@@ -119,7 +126,8 @@ function trackAd(
     ad,
     new TrackedAdState(adFormat, ad.adUnitId, placement, pinnedImpressionId)
   );
-  const rewarded = ad instanceof RewardedAd || ad instanceof RewardedInterstitialAd;
+  const rewarded =
+    ad instanceof RewardedAd || ad instanceof RewardedInterstitialAd;
 
   ad.addAdEventsListener(({ type, payload }) => {
     switch (type) {
@@ -132,7 +140,9 @@ function trackAd(
         AdMobTracker.trackLoaded(state);
         return;
       case AdEventType.ERROR: {
-        const error = payload as { phase?: string; reason?: string } | undefined;
+        const error = payload as
+          | { phase?: string; reason?: string }
+          | undefined;
         if (error?.phase === "show") {
           return;
         }
@@ -195,10 +205,71 @@ async function createRewarded<T extends TrackableAd>(
   return ad;
 }
 
-function prepareShow(ad: TrackableAd, placement?: string | null): TrackedAdState | undefined {
+function trackedBannerProps(
+  state: TrackedAdState,
+  props: BannerAdProps
+): BannerAdProps {
+  return {
+    ...props,
+    onAdLoaded: (dimensions) => {
+      state.updateFromResponse(dimensions.responseInfo);
+      AdMobTracker.trackLoaded(state);
+      props.onAdLoaded?.(dimensions);
+    },
+    onAdFailedToLoad: (error) => {
+      AdMobTracker.trackFailedToLoad(
+        props.unitId,
+        AdFormat.banner,
+        state.loadPlacement,
+        error.reason
+      );
+      props.onAdFailedToLoad?.(error);
+    },
+    onAdImpression: () => {
+      AdMobTracker.trackDisplayed(state);
+      props.onAdImpression?.();
+    },
+    onAdClicked: () => {
+      AdMobTracker.trackOpened(state);
+      props.onAdClicked?.();
+    },
+    onPaid: (paid) => {
+      AdMobTracker.trackRevenue(state, paid);
+      props.onPaid?.(paid);
+    },
+  };
+}
+
+/**
+ * Returns `BannerAd` props that report to RevenueCat, forwarding to the
+ * props you pass in. Spread the result into `<BannerAd {...props} />`.
+ * The tracking state lives for the lifetime of the calling component, so
+ * rerenders keep the impression id of the banner that loaded.
+ */
+export function useTrackingBannerAdProps(
+  props: BannerAdTrackingProps
+): BannerAdProps {
+  const { placement, ...rest } = props;
+  const state = useRef<TrackedAdState | null>(null);
+  if (state.current === null) {
+    state.current = new TrackedAdState(
+      AdFormat.banner,
+      props.unitId,
+      placement
+    );
+  }
+  return trackedBannerProps(state.current, rest);
+}
+
+function prepareShow(
+  ad: TrackableAd,
+  placement?: string | null
+): TrackedAdState | undefined {
   const state = stateFor(ad);
   if (!state) {
-    logWarning("This ad was not created through RevenueCatAdMob; it will not be tracked.");
+    logWarning(
+      "This ad was not created through RevenueCatAdMob; it will not be tracked."
+    );
     return undefined;
   }
   if (placement != null) {
@@ -213,11 +284,17 @@ function prepareShow(ad: TrackableAd, placement?: string | null): TrackedAdState
  * Create full-screen ads through `create...` instead of
  * `createForAdRequest`, then `load()` and show them through
  * `showAndTrack` / `showWithRewardVerification`. Banner components spread
- * `bannerAdProps(...)`; native ads go through `trackNativeAd`.
+ * `useTrackingBannerAdProps(...)`; native ads go through `trackNativeAd`.
  */
 export const RevenueCatAdMob = {
-  createInterstitialAd(adUnitId: string, options: TrackingOptions = {}): InterstitialAd {
-    const ad = InterstitialAd.createForAdRequest(adUnitId, options.requestOptions);
+  createInterstitialAd(
+    adUnitId: string,
+    options: TrackingOptions = {}
+  ): InterstitialAd {
+    const ad = InterstitialAd.createForAdRequest(
+      adUnitId,
+      options.requestOptions
+    );
     trackAd(ad, AdFormat.interstitial, options.placement);
     return ad;
   },
@@ -233,7 +310,8 @@ export const RevenueCatAdMob = {
     options: RewardedTrackingOptions = {}
   ): Promise<RewardedAd> {
     return createRewarded(
-      (requestOptions) => RewardedAd.createForAdRequest(adUnitId, requestOptions),
+      (requestOptions) =>
+        RewardedAd.createForAdRequest(adUnitId, requestOptions),
       AdFormat.rewarded,
       options
     );
@@ -311,7 +389,10 @@ export const RevenueCatAdMob = {
           deliver(failedResult);
           return;
         }
-        Purchases.pollRewardVerification(clientTransactionId, state.trackingMetadata)
+        Purchases.pollRewardVerification(
+          clientTransactionId,
+          state.trackingMetadata
+        )
           .then(deliver)
           .catch((e) => {
             logWarning(`Reward verification failed: ${e}`);
@@ -319,58 +400,48 @@ export const RevenueCatAdMob = {
           });
       }
     );
-    const unsubscribeOnClose = ad.addAdEventListener(AdEventType.CLOSED, () => {
+    const unsubscribeAll = () => {
       unsubscribe();
       unsubscribeOnClose();
-    });
-    return ad.show(options.showOptions);
+      unsubscribeOnError();
+    };
+    const unsubscribeOnClose = ad.addAdEventListener(
+      AdEventType.CLOSED,
+      unsubscribeAll
+    );
+    const unsubscribeOnError = ad.addAdEventListener(
+      AdEventType.ERROR,
+      unsubscribeAll
+    );
+    const shown = ad.show(options.showOptions);
+    // A rejected show never emits CLOSED, so the listeners would outlive it.
+    shown.catch(unsubscribeAll);
+    return shown;
   },
 
   /**
    * Returns `BannerAd` props that report to RevenueCat, forwarding to the
    * props you pass in. Spread the result into `<BannerAd {...props} />`.
+   * Each call starts a new tracking state, so call it once per banner
+   * instance (for example in a class component's constructor), never inside
+   * `render`. Function components should use `useTrackingBannerAdProps` instead.
    */
-  bannerAdProps(
-    props: BannerAdProps & { placement?: string | null }
-  ): BannerAdProps {
+  trackingBannerAdProps(props: BannerAdTrackingProps): BannerAdProps {
     const { placement, ...rest } = props;
-    const state = new TrackedAdState(AdFormat.banner, props.unitId, placement);
-    return {
-      ...rest,
-      onAdLoaded: (dimensions) => {
-        state.updateFromResponse(dimensions.responseInfo);
-        AdMobTracker.trackLoaded(state);
-        rest.onAdLoaded?.(dimensions);
-      },
-      onAdFailedToLoad: (error) => {
-        AdMobTracker.trackFailedToLoad(
-          props.unitId,
-          AdFormat.banner,
-          state.loadPlacement,
-          error.reason
-        );
-        rest.onAdFailedToLoad?.(error);
-      },
-      onAdImpression: () => {
-        AdMobTracker.trackDisplayed(state);
-        rest.onAdImpression?.();
-      },
-      onAdClicked: () => {
-        AdMobTracker.trackOpened(state);
-        rest.onAdClicked?.();
-      },
-      onPaid: (paid) => {
-        AdMobTracker.trackRevenue(state, paid);
-        rest.onPaid?.(paid);
-      },
-    };
+    return trackedBannerProps(
+      new TrackedAdState(AdFormat.banner, props.unitId, placement),
+      rest
+    );
   },
 
   /**
    * Tracks a loaded native ad. `NativeAd.createForAdRequest` resolves with a
    * loaded ad, so the loaded event is reported immediately.
    */
-  trackNativeAd(ad: NativeAd, options: { placement?: string | null } = {}): void {
+  trackNativeAd(
+    ad: NativeAd,
+    options: { placement?: string | null } = {}
+  ): void {
     const state = setState(
       ad,
       new TrackedAdState(AdFormat.nativeAd, ad.adUnitId, options.placement)

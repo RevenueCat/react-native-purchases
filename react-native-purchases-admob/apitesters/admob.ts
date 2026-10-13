@@ -7,11 +7,15 @@ import type {
   RewardedInterstitialAd,
 } from "react-native-google-mobile-ads";
 import type { RewardVerificationResult } from "react-native-purchases";
-import RevenueCatAdMob, { RevenueCatAdMob as Named } from "react-native-purchases-admob";
+import RevenueCatAdMob, {
+  RevenueCatAdMob as Named,
+  useTrackingBannerAdProps,
+} from "react-native-purchases-admob";
 import type {
   RewardedTrackingOptions,
   ShowWithRewardVerificationOptions,
   TrackableAd,
+  BannerAdTrackingProps,
   TrackingOptions,
 } from "react-native-purchases-admob";
 
@@ -21,9 +25,15 @@ async function checkApi(nativeAd: NativeAd) {
     ...options,
     enableRewardVerification: true,
   };
-  const interstitial: InterstitialAd = RevenueCatAdMob.createInterstitialAd("u", options);
+  const interstitial: InterstitialAd = RevenueCatAdMob.createInterstitialAd(
+    "u",
+    options
+  );
   const appOpen: AppOpenAd = Named.createAppOpenAd("u");
-  const rewarded: RewardedAd = await RevenueCatAdMob.createRewardedAd("u", rewardedOptions);
+  const rewarded: RewardedAd = await RevenueCatAdMob.createRewardedAd(
+    "u",
+    rewardedOptions
+  );
   const rewardedInterstitial: RewardedInterstitialAd =
     await RevenueCatAdMob.createRewardedInterstitialAd("u");
   RevenueCatAdMob.trackAd(appOpen, { placement: "x" });
@@ -32,19 +42,35 @@ async function checkApi(nativeAd: NativeAd) {
     placement: "z",
     onUserEarnedReward: (reward) => reward.amount,
     onRewardVerificationStarted: () => undefined,
-    onRewardVerificationCompleted: (result: RewardVerificationResult) => result.failed,
+    onRewardVerificationCompleted: (result: RewardVerificationResult) =>
+      result.failed,
   };
   await RevenueCatAdMob.showWithRewardVerification(rewarded, showOptions);
-  await RevenueCatAdMob.showWithRewardVerification(rewardedInterstitial, showOptions);
-  const bannerProps: BannerAdProps = RevenueCatAdMob.bannerAdProps({
+  await RevenueCatAdMob.showWithRewardVerification(
+    rewardedInterstitial,
+    showOptions
+  );
+  const trackedBannerProps: BannerAdTrackingProps = {
     unitId: "u",
     size: "BANNER",
     placement: "b",
-  });
+  };
+  const bannerProps: BannerAdProps =
+    RevenueCatAdMob.trackingBannerAdProps(trackedBannerProps);
   RevenueCatAdMob.trackNativeAd(nativeAd, { placement: "n" });
   const impressionId: string | null = RevenueCatAdMob.impressionIdOf(rewarded);
   const trackable: TrackableAd = interstitial;
   return { bannerProps, impressionId, trackable };
 }
 
-export { checkApi };
+function checkHooks() {
+  const bannerProps: BannerAdProps = useTrackingBannerAdProps({
+    unitId: "u",
+    size: "BANNER",
+    placement: "b",
+    onPaid: (paid) => paid.value,
+  });
+  return bannerProps;
+}
+
+export { checkApi, checkHooks };

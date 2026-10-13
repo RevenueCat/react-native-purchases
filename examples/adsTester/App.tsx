@@ -19,7 +19,11 @@ import mobileAds, {
   RewardedAdEventType,
   TestIds,
 } from 'react-native-google-mobile-ads';
-import {RevenueCatAdMob, TrackableAd} from 'react-native-purchases-admob';
+import {
+  RevenueCatAdMob,
+  TrackableAd,
+  useTrackingBannerAdProps,
+} from 'react-native-purchases-admob';
 
 /**
  * Configuration. Everything ships with placeholder / Google test values that
@@ -157,7 +161,7 @@ export default function App() {
     })();
   }, []);
 
-  const bannerProps = RevenueCatAdMob.bannerAdProps({
+  const bannerProps = useTrackingBannerAdProps({
     unitId: AD_UNITS.banner,
     size: BannerAdSize.BANNER,
     placement: 'banner_bottom',
