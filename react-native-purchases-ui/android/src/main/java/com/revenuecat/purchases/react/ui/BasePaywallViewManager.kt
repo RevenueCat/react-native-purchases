@@ -4,7 +4,6 @@ import android.view.View
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
-import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
@@ -14,21 +13,10 @@ import com.facebook.react.uimanager.events.Event
 import com.revenuecat.purchases.Package
 import com.revenuecat.purchases.PresentedOfferingContext
 import com.revenuecat.purchases.hybridcommon.ui.HybridPurchaseLogicBridge
-import com.revenuecat.purchases.hybridcommon.ui.PaywallListenerWrapper
 import com.revenuecat.purchases.react.ui.events.OnDismissEvent
-import com.revenuecat.purchases.react.ui.events.OnInteractionEvent
 import com.revenuecat.purchases.react.ui.events.OnPerformPurchaseEvent
 import com.revenuecat.purchases.react.ui.events.OnPerformRestoreEvent
-import com.revenuecat.purchases.react.ui.events.OnPurchaseCancelledEvent
-import com.revenuecat.purchases.react.ui.events.OnPurchaseCompletedEvent
-import com.revenuecat.purchases.react.ui.events.OnPurchaseErrorEvent
-import com.revenuecat.purchases.react.ui.events.OnPurchasePackageInitiatedEvent
-import com.revenuecat.purchases.react.ui.events.OnPurchaseStartedEvent
-import com.revenuecat.purchases.react.ui.events.OnRestoreCompletedEvent
-import com.revenuecat.purchases.react.ui.events.OnRestoreErrorEvent
-import com.revenuecat.purchases.react.ui.events.OnRestoreStartedEvent
-import com.revenuecat.purchases.react.ui.events.OnUrlOpenedEvent
-import com.revenuecat.purchases.react.ui.events.OnWebCheckoutOpenedEvent
+import com.revenuecat.purchases.react.ui.events.PaywallViewEvent
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 import java.util.concurrent.ConcurrentHashMap
@@ -214,108 +202,8 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     internal fun createPaywallListenerWrapper(
         themedReactContext: ThemedReactContext,
         view: View
-    ) = object : PaywallListenerWrapper() {
-        override fun onPurchaseStarted(rcPackage: Map<String, Any?>) {
-            val event = OnPurchaseStartedEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                rcPackage
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onPurchaseCompleted(
-            customerInfo: Map<String, Any?>,
-            storeTransaction: Map<String, Any?>
-        ) {
-            val event = OnPurchaseCompletedEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                customerInfo,
-                storeTransaction
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onPurchaseError(error: Map<String, Any?>) {
-            val event = OnPurchaseErrorEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                error
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onPurchaseCancelled() {
-            val event = OnPurchaseCancelledEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onRestoreStarted() {
-            val event = OnRestoreStartedEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onRestoreCompleted(customerInfo: Map<String, Any?>) {
-            val event = OnRestoreCompletedEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                customerInfo,
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onRestoreError(error: Map<String, Any?>) {
-            val event = OnRestoreErrorEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                error,
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onPurchasePackageInitiated(rcPackage: Map<String, Any?>, requestId: String) {
-            val event = OnPurchasePackageInitiatedEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                rcPackage,
-                requestId,
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onWebCheckoutOpened() {
-            val event = OnWebCheckoutOpenedEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onUrlOpened(url: String) {
-            val event = OnUrlOpenedEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                url = url,
-            )
-            emitEvent(themedReactContext, view.id, event)
-        }
-
-        override fun onInteraction(event: Map<String, Any>) {
-            val interactionEvent = OnInteractionEvent(
-                surfaceId = view.surfaceId,
-                viewTag = view.id,
-                interaction = event,
-            )
-            emitEvent(themedReactContext, view.id, interactionEvent)
-        }
-
+    ) = paywallEventListener(jsResumesPurchase = { true }) { eventName, payload ->
+        emitEvent(themedReactContext, view.id, PaywallViewEvent(view.surfaceId, view.id, eventName, payload))
     }
 
     internal fun getDismissHandler(
@@ -331,13 +219,6 @@ internal abstract class BasePaywallViewManager<T : View> : SimpleViewManager<T>(
     ): MapBuilder.Builder<String, Any> {
         val registrationName = MapBuilder.of("registrationName", paywallEvent.eventName)
         return this.put(paywallEvent.eventName, registrationName)
-    }
-
-    private fun WritableNativeMap.putMap(keyMap: PaywallEventKey, dictionary: Map<String, Any?>) {
-        putMap(
-            keyMap.key,
-            RNPurchasesConverters.convertMapToWriteableMap(dictionary)
-        )
     }
 
     protected fun emitEvent(
