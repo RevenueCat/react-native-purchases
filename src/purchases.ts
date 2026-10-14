@@ -355,14 +355,16 @@ let debugEventListeners: DebugEventListener[] = [];
 
 eventEmitter?.addListener(
   "Purchases-CustomerInfoUpdated",
-  (customerInfo: CustomerInfo) => {
+  (event: unknown) => {
+    const customerInfo = event as CustomerInfo;
     customerInfoUpdateListeners.forEach((listener) => listener(customerInfo));
   }
 );
 
 eventEmitter?.addListener(
   "Purchases-ShouldPurchasePromoProduct",
-  ({ callbackID }: { callbackID: number }) => {
+  (event: unknown) => {
+    const { callbackID } = event as { callbackID: number };
     shouldPurchasePromoProductListeners.forEach((listener) =>
       listener(() => RNPurchases.makeDeferredPurchase(callbackID))
     );
@@ -371,7 +373,11 @@ eventEmitter?.addListener(
 
 eventEmitter?.addListener(
   "Purchases-LogHandlerEvent",
-  ({ logLevel, message }: { logLevel: LOG_LEVEL; message: string }) => {
+  (event: unknown) => {
+    const { logLevel, message } = event as {
+      logLevel: LOG_LEVEL;
+      message: string;
+    };
     if (customLogHandler) {
       const logLevelEnum = LOG_LEVEL[logLevel];
       customLogHandler(logLevelEnum, message);
@@ -381,14 +387,16 @@ eventEmitter?.addListener(
 
 eventEmitter?.addListener(
   "Purchases-TrackedEvent",
-  (eventDictionary: Record<string, unknown>) => {
+  (event: unknown) => {
+    const eventDictionary = event as Record<string, unknown>;
     trackedEventListeners.forEach((listener) => listener({ eventDictionary }));
   }
 );
 
 eventEmitter?.addListener(
   "Purchases-DebugEvent",
-  (eventDictionary: Record<string, unknown>) => {
+  (event: unknown) => {
+    const eventDictionary = event as Record<string, unknown>;
     debugEventListeners.forEach((listener) => listener({ eventDictionary }));
   }
 );
