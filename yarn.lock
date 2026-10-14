@@ -3718,7 +3718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/create-cache-key-function@npm:^29.6.3":
+"@jest/create-cache-key-function@npm:^29.6.3, @jest/create-cache-key-function@npm:^29.7.0":
   version: 29.7.0
   resolution: "@jest/create-cache-key-function@npm:29.7.0"
   dependencies:
@@ -4714,6 +4714,21 @@ __metadata:
   version: 0.87.1
   resolution: "@react-native/gradle-plugin@npm:0.87.1"
   checksum: 196b0942383fd8e0c254993a0b9d48444e0ff6b36af947df4f2871bce1a40368fc1dddc9eac31c5364fff55df31eaefe2ded647beb52df73e66272742b5f36c0
+  languageName: node
+  linkType: hard
+
+"@react-native/jest-preset@npm:0.87.1":
+  version: 0.87.1
+  resolution: "@react-native/jest-preset@npm:0.87.1"
+  dependencies:
+    "@jest/create-cache-key-function": ^29.7.0
+    "@react-native/js-polyfills": 0.87.1
+    babel-jest: ^29.7.0
+    jest-environment-node: ^29.7.0
+    regenerator-runtime: ^0.13.2
+  peerDependencies:
+    react: ^19.2.3
+  checksum: 6c69fcd6659fad633d5ed46636bcb5530d4833221c5e7c243ab7cd2fb633b497f8c8b88883494c36e278e1ec91aa950c29dab4ffb5e39518bead71781aa86394
   languageName: node
   linkType: hard
 
@@ -10312,6 +10327,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "react-native-purchases@workspace:."
   dependencies:
+    "@babel/core": ^7.25.2
+    "@react-native/babel-preset": 0.87.1
+    "@react-native/jest-preset": 0.87.1
     "@revenuecat/purchases-js-hybrid-mappings": 19.12.0
     "@revenuecat/purchases-typescript-internal": 19.12.0
     "@types/jest": ^29.5.12
@@ -10323,7 +10341,7 @@ __metadata:
     pod-install: ^0.1.0
     prettier: ^2.0.5
     react: 18.2.0
-    react-native: 0.78.0
+    react-native: 0.87.1
     ts-jest: ^29.1.2
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0

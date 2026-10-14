@@ -4,7 +4,7 @@ const {
   PURCHASES_ARE_COMPLETED_BY_TYPE, REFUND_REQUEST_STATUS, STOREKIT_VERSION
 } = require("../dist/purchases");
 
-const nativeEmitter = new NativeEventEmitter();
+const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
 
 describe("Purchases", () => {
   var Purchases;
@@ -46,7 +46,7 @@ describe("Purchases", () => {
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
+    const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
     const eventInfo = {
       callbackID: 1,
     };
@@ -62,7 +62,7 @@ describe("Purchases", () => {
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
+    const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
     const eventInfo = {
       callbackID: 1,
     };
@@ -85,7 +85,7 @@ describe("Purchases", () => {
     Purchases.addShouldPurchasePromoProductListener(listener);
     Purchases.removeShouldPurchasePromoProductListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
+    const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
 
     const eventInfo = {
       callbackID: 1,
