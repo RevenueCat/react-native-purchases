@@ -1,6 +1,16 @@
 package com.revenuecat.purchases.react.ui
 
 import android.util.Log
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.UiThreadUtil
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.ui.revenuecatui.InviteOnlyCheckpointsAPI
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointParams
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.ErrorPresenter
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.FlowPresentationMode
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.checkpoint
+import java.lang.ref.WeakReference
+import java.util.UUID
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -17,6 +27,7 @@ import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
 import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
 
 
+@OptIn(InviteOnlyCheckpointsAPI::class)
 internal class RNPaywallsModule(
     reactContext: ReactApplicationContext
 ) : ReactContextBaseJavaModule(reactContext) {
@@ -46,7 +57,114 @@ internal class RNPaywallsModule(
 
     override fun invalidate() {
         isInvalidated = true
+        UiThreadUtil.runOnUiThread {
+            val outstanding = checkpointRequests.toMap()
+            checkpointRequests.clear()
+            // Explicit reload policy, not SDK behavior: navigate back after releasing retained requests.
+            // A multi-step flow may remain on the previous step; there is no public cancel-flow hook.
+            outstanding.forEach { (requestId, request) ->
+                checkpointCompletionCount++
+                Log.i(NAME, "[CheckpointTest native] invalidate requestId=$requestId action=NAVIGATE_BACK pending=0 completionCount=$checkpointCompletionCount")
+                request.completion.complete(ErrorPresenter.Completion.Result.NavigateBack)
+            }
+        }
         super.invalidate()
+    }
+
+    @ReactMethod
+    fun logCheckpointForTest(message: String) {
+        Log.i(NAME, "[CheckpointTest JS] $message")
+    }
+
+    // Throwaway runtime adapter. None of these entry points is a public TypeScript API.
+    private data class CheckpointRequest(val flowId: String, val completion: ErrorPresenter.Completion)
+    private val checkpointRequests = mutableMapOf<String, CheckpointRequest>()
+    private var checkpointCompletionCount = 0
+
+    @ReactMethod
+    fun checkpointForTest(identifier: String, mode: String) = checkpointTest(identifier, mode, false)
+
+    @ReactMethod
+    fun checkpointDefaultForTest(identifier: String, mode: String) = checkpointTest(identifier, mode, true)
+
+    private fun checkpointTest(identifier: String, mode: String, useDefaultPresenter: Boolean) {
+        UiThreadUtil.runOnUiThread {
+            if (isInvalidated || (mode != "sheet" && mode != "fullscreen")) return@runOnUiThread
+            val flowId = UUID.randomUUID().toString()
+            val weakModule = WeakReference(this)
+            val builder = CheckpointParams.Builder().setPresentationMode(
+                if (mode == "fullscreen") FlowPresentationMode.MODAL_FULL_SCREEN else FlowPresentationMode.MODAL_SHEET
+            )
+            if (!useDefaultPresenter) {
+                builder.setErrorPresenter(ErrorPresenter { params, completion ->
+                    UiThreadUtil.runOnUiThread {
+                        val module = weakModule.get()
+                        if (module == null || module.isInvalidated) {
+                            completion.complete(ErrorPresenter.Completion.Result.NavigateBack)
+                        } else {
+                            val requestId = UUID.randomUUID().toString()
+                            module.checkpointRequests[requestId] = CheckpointRequest(flowId, completion)
+                            Log.i(NAME, "[CheckpointTest native] presenter requestId=$requestId flowCanContinue=${params.flowCanContinue} pending=${module.checkpointRequests.size} completionCount=${module.checkpointCompletionCount}")
+                            val error = Arguments.createMap().apply {
+                                putString("message", params.error.message)
+                                putInt("code", params.error.code.code)
+                            }
+                            val event = Arguments.createMap().apply {
+                                putString("requestId", requestId)
+                                putString("checkpointIdentifier", params.checkpointIdentifier)
+                                putMap("error", error)
+                                putBoolean("flowCanContinue", params.flowCanContinue)
+                            }
+                            module.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                                .emit("checkpointErrorForTest", event)
+                        }
+                    }
+                })
+            }
+            Log.i(NAME, "[CheckpointTest native] start mode=$mode defaultPresenter=$useDefaultPresenter")
+            Purchases.sharedInstance.checkpoint(identifier, builder.build()) { result ->
+                UiThreadUtil.runOnUiThread {
+                    val module = weakModule.get()
+                    if (module != null && !module.isInvalidated) {
+                        // Back suppresses onPassed: this is not a complete terminal lifecycle observer.
+                        module.checkpointRequests.entries.removeAll { it.value.flowId == flowId }
+                        Log.i(NAME, "[CheckpointTest native] onPassed resultIsNull=${result == null} pending=${module.checkpointRequests.size} completionCount=${module.checkpointCompletionCount}")
+                        val event = Arguments.createMap().apply {
+                            putString("checkpointIdentifier", identifier)
+                            if (result == null) putNull("obtainedEntitlementIdentifiers")
+                            else putArray("obtainedEntitlementIdentifiers", Arguments.fromList(
+                                result.obtainedEntitlements.map { it.entitlementInfo.identifier }.sorted()
+                            ))
+                        }
+                        module.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                            .emit("checkpointPassedForTest", event)
+                    }
+                }
+            }
+        }
+    }
+
+    @ReactMethod
+    fun completeCheckpointErrorForTest(requestId: String, action: String) {
+        UiThreadUtil.runOnUiThread {
+            val result = when (action) {
+                "RETRY" -> ErrorPresenter.Completion.Result.Retry
+                "CONTINUE" -> ErrorPresenter.Completion.Result.Continue
+                "NAVIGATE_BACK" -> ErrorPresenter.Completion.Result.NavigateBack
+                else -> {
+                    Log.w(NAME, "[CheckpointTest native] rejected unknown action requestId=$requestId pending=${checkpointRequests.size}")
+                    return@runOnUiThread
+                }
+            }
+            val request = checkpointRequests.remove(requestId)
+            if (request == null) {
+                Log.i(NAME, "[CheckpointTest native] ignored unknown requestId=$requestId pending=${checkpointRequests.size} completionCount=$checkpointCompletionCount")
+                return@runOnUiThread
+            }
+            checkpointCompletionCount++
+            Log.i(NAME, "[CheckpointTest native] completion requestId=$requestId action=$action pending=${checkpointRequests.size} completionCount=$checkpointCompletionCount")
+            request.completion.complete(result)
+        }
     }
 
     @ReactMethod
