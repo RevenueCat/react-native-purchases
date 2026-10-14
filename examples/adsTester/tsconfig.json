@@ -3,8 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "react-native-purchases": ["../../src/index"],
-      "react-native-purchases-admob": ["../../react-native-purchases-admob/src/index"]
+      "react-native-purchases": ["../../src/index"]
     },
     "isolatedModules": false,
     "types": []

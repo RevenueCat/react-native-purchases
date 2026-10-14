@@ -14,10 +14,6 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js', '.json'],
         alias: {
           [pak.name]: path.join(__dirname, '../..', pak.source),
-          'react-native-purchases-admob': path.join(
-            __dirname,
-            '../../react-native-purchases-admob/src/index',
-          ),
         },
       },
     ],
