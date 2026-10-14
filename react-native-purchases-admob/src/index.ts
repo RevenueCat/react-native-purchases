@@ -351,9 +351,10 @@ export const RevenueCatAdMob = {
 
   /**
    * Shows a rewarded ad and verifies the earned reward with RevenueCat.
-   * `onRewardVerificationCompleted` is called exactly once per show; it
-   * receives a failed result when the ad was created without
-   * `enableRewardVerification`.
+   * `onRewardVerificationCompleted` is called at most once per show, after
+   * the user earns the reward; it is not called when the ad is dismissed or
+   * fails before a reward. It receives a failed result when the ad was
+   * created without `enableRewardVerification`.
    */
   showWithRewardVerification(
     ad: TrackableAd,
