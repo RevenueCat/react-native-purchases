@@ -701,6 +701,14 @@ RCT_EXPORT_METHOD(trackAdFailedToLoad:(NSDictionary *)data) {
     }
 }
 
+RCT_EXPORT_METHOD(trackAdRewardEarnedUnverified:(NSDictionary *)data) {
+    if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
+        [RCCommonFunctionality trackAdRewardEarnedUnverified:data];
+    } else {
+        NSLog(@"[Purchases] Warning: tried to call trackAdRewardEarnedUnverified, but it's only available on iOS 15.0 or greater.");
+    }
+}
+
 RCT_EXPORT_METHOD(trackRewardedAdPromptShown:(NSDictionary *)data) {
     if (@available(iOS 15.0, tvOS 15.0, macOS 12.0, watchOS 8.0, *)) {
         [RCCommonFunctionality trackRewardedAdPromptShown:data];
