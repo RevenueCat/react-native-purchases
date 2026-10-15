@@ -6,7 +6,7 @@
 
 ## react-native-purchases-admob
 
-_react-native-purchases-admob_ connects [react-native-google-mobile-ads](https://github.com/invertase/react-native-google-mobile-ads) to [RevenueCat](https://www.revenuecat.com/)'s ad tracking and reward verification. Create your ads through the adapter and it reports loaded, failed-to-load, displayed, opened and revenue events for you; rewarded ads can additionally have their rewards verified server-side. See the [AdMob integration docs](https://www.revenuecat.com/docs/ad-monetization/admob) for the full picture.
+_react-native-purchases-admob_ connects [react-native-google-mobile-ads](https://github.com/invertase/react-native-google-mobile-ads) to [RevenueCat](https://www.revenuecat.com/)'s ad tracking and reward verification. Create your ads through the adapter and it reports loaded, failed-to-load, displayed, opened, revenue and earned-reward events for you; rewarded ads can additionally have their rewards verified server-side. See the [AdMob integration docs](https://www.revenuecat.com/docs/ad-monetization/admob) for the full picture.
 
 ## Installation
 
@@ -89,4 +89,4 @@ The `useInterstitialAd` / `useRewardedAd` hooks create their ads internally and 
 
 - iOS 15.0+ (ad tracking is unavailable below that; calls are ignored with a warning)
 - `react-native-google-mobile-ads` 17.x (17.0.0 needs React Native 0.76+, 17.1.0+ needs 0.86+) and the New Architecture
-- `react-native-purchases` 10.12.2+
+- `react-native-purchases` 10.14.0

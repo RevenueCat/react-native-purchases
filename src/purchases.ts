@@ -296,6 +296,7 @@ export interface AdRewardEarnedUnverifiedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
+  captureMethod?: AdCaptureMethod | null;
 }
 
 export interface AdRewardPromptShownData {
@@ -556,7 +557,7 @@ export default class Purchases {
    */
   public static PURCHASES_ARE_COMPLETED_BY_TYPE =
     PURCHASES_ARE_COMPLETED_BY_TYPE;
- 
+
   public static UninitializedPurchasesError = UninitializedPurchasesError;
 
   public static UnsupportedPlatformError = UnsupportedPlatformError;
@@ -1159,7 +1160,7 @@ export default class Purchases {
   }
 
   /**
-   * Removes a given TrackedEventListener. 
+   * Removes a given TrackedEventListener.
    * This is a debug API not meant for public use.
    * @internal
    * @param trackedEventListener TrackedEvent listener to remove
@@ -1192,9 +1193,9 @@ export default class Purchases {
       }
     }
   }
-  
+
   /**
-   * Removes a given DebugEventListener. 
+   * Removes a given DebugEventListener.
    * This is a debug API not meant for public use.
    * @internal
    * @param debugEventListener DebugEventListener listener to remove

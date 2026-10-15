@@ -136,6 +136,21 @@ export const AdMobTracker = {
     );
   },
 
+  trackRewardEarnedUnverified(state: TrackedAdState): void {
+    swallow(
+      "reward earned",
+      Purchases.adTracker.trackAdRewardEarnedUnverified({
+        networkName: state.networkName,
+        mediatorName: AdMediatorName.adMob,
+        adFormat: state.adFormat,
+        placement: state.placement,
+        adUnitId: state.adUnitId,
+        impressionId: state.impressionId,
+        captureMethod,
+      })
+    );
+  },
+
   trackRevenue(state: TrackedAdState, paid: PaidEvent): void {
     swallow(
       "ad revenue",

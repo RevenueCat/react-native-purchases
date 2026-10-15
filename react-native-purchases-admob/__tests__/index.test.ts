@@ -49,6 +49,7 @@ const adTracker = {
   trackAdDisplayed: jest.fn(() => Promise.resolve()),
   trackAdOpened: jest.fn(() => Promise.resolve()),
   trackAdRevenue: jest.fn(() => Promise.resolve()),
+  trackAdRewardEarnedUnverified: jest.fn(() => Promise.resolve()),
 };
 const generateRewardVerificationToken = jest.fn();
 const pollRewardVerification = jest.fn();
@@ -293,6 +294,30 @@ describe("reward verification", () => {
     ad.emit("closed");
     ad.emit("rewarded_earned_reward", { type: "coin", amount: 1 });
     expect(rewards).toHaveLength(2);
+    expect(adTracker.trackAdRewardEarnedUnverified).not.toHaveBeenCalled();
+  });
+
+  it("tracks the earned reward itself when verification is not enabled", async () => {
+    const ad = (await RevenueCatAdMob.createRewardedAd("r-2", {
+      placement: "bonus",
+    })) as unknown as FakeAd;
+    ad.responseInfo = responseInfo("r2-resp");
+    ad.emit("rewarded_loaded");
+    await RevenueCatAdMob.showAndTrack(ad as never, {
+      placement: "bonus_shown",
+    });
+    ad.emit("rewarded_earned_reward", { type: "coin", amount: 1 });
+
+    expect(adTracker.trackAdRewardEarnedUnverified).toHaveBeenCalledTimes(1);
+    expect(adTracker.trackAdRewardEarnedUnverified).toHaveBeenCalledWith({
+      networkName: "com.google.Adapter",
+      mediatorName: "AdMob",
+      adFormat: "rewarded",
+      placement: "bonus_shown",
+      adUnitId: "r-2",
+      impressionId: "r2-resp",
+      captureMethod: "react_native_admob_adapter",
+    });
   });
 
   it("fails fast when verification was not enabled", async () => {

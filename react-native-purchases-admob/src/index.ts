@@ -163,6 +163,12 @@ function trackAd(
       case AdEventType.PAID:
         AdMobTracker.trackRevenue(state, payload as PaidEvent);
         return;
+      case RewardedAdEventType.EARNED_REWARD:
+        // With verification enabled the core SDK reports earning from the poll.
+        if (!state.clientTransactionId) {
+          AdMobTracker.trackRewardEarnedUnverified(state);
+        }
+        return;
       default:
         return;
     }
