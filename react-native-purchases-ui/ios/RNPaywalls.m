@@ -91,7 +91,7 @@ static NSString *RNPaywallsPresentedEventName(NSString *callbackName) {
     for (NSString *callbackName in callbackNames) {
         [events addObject:RNPaywallsPresentedEventName(callbackName)];
     }
-    [events addObjectsFromArray:@[@"checkpointErrorForTest", @"checkpointPassedForTest"]];
+    [events addObjectsFromArray:@[@"checkpointErrorForTest", @"checkpointPassedForTest", @"checkpointErrorCancelledForTest"]];
     return [events copy];
 }
 
@@ -141,6 +141,14 @@ RCT_EXPORT_METHOD(completeCheckpointErrorForTest:(NSString *)requestId action:(N
     if (self.invalidated) { return; }
     if (@available(iOS 15.0, *)) {
         [[self checkpointAdapter] complete:requestId action:action];
+    }
+}
+
+RCT_EXPORT_METHOD(closeCheckpointFlowForTest) {
+    if (!self.invalidated) {
+        if (@available(iOS 15.0, *)) {
+            [[self checkpointAdapter] closeFlowForTest];
+        }
     }
 }
 

@@ -1,7 +1,8 @@
 // Throwaway runtime experiment. These methods are not public RevenueCat APIs.
 import React, {useEffect, useRef, useState} from 'react';
-import {Alert, Button, Modal, NativeEventEmitter, NativeModules, ScrollView, Text, View} from 'react-native';
+import {Alert, Button, Modal, NativeEventEmitter, NativeModules, Platform, ScrollView, Text, View} from 'react-native';
 import Purchases from 'react-native-purchases';
+import {ErrorPresentationHost} from './ErrorPresentationHost';
 
 type Action = 'RETRY' | 'CONTINUE' | 'NAVIGATE_BACK';
 type ErrorRequest = {
@@ -15,7 +16,7 @@ const actions: Action[] = ['RETRY', 'CONTINUE', 'NAVIGATE_BACK'];
 const identifier = 'rn_error_presenter_test';
 
 export default function CheckpointErrorPresenterScreen() {
-  const [ui, setUI] = useState<'alert' | 'modal' | 'overlay'>('alert');
+  const [ui, setUI] = useState<'alert' | 'modal' | 'overlay' | 'host' | 'auto'>('alert');
   const uiRef = useRef(ui);
   uiRef.current = ui;
   const [requests, setRequests] = useState<ErrorRequest[]>([]);
@@ -39,6 +40,11 @@ export default function CheckpointErrorPresenterScreen() {
     const errorSubscription = emitter.addListener('checkpointErrorForTest', payload => {
       const request = payload as ErrorRequest;
       log(`event requestId=${request.requestId} flowCanContinue=${request.flowCanContinue}`);
+      if (uiRef.current === 'auto') {
+        log('No UI: answering Continue immediately');
+        complete(request, 'CONTINUE');
+        return;
+      }
       setRequests(previous => [...previous, request]);
       if (uiRef.current === 'alert') {
         Alert.alert('Checkpoint SDK error', request.error.message,
@@ -50,7 +56,13 @@ export default function CheckpointErrorPresenterScreen() {
       setPassed(count => count + 1);
       log(`onPassed ${JSON.stringify(result)}`);
     });
+    const cancelledSubscription = emitter.addListener('checkpointErrorCancelledForTest', payload => {
+      const event = payload as {requestId: string};
+      log(`cancelled requestId=${event.requestId}`);
+      setRequests(current => current.filter(item => item.requestId !== event.requestId));
+    });
     return () => {
+      cancelledSubscription.remove();
       errorSubscription.remove();
       passedSubscription.remove();
       // Unmount does not invent a completion decision. Reload policy is native-owned.
@@ -85,7 +97,7 @@ export default function CheckpointErrorPresenterScreen() {
           const offerings = await Purchases.getOfferings();
           log(`Fresh test customer configured; offerings=${Object.keys(offerings.all).length} golfPresent=${!!offerings.all.golf}`);
         }} />
-        {(['alert', 'modal', 'overlay'] as const).map(choice =>
+        {(['alert', 'modal', 'overlay', 'auto', ...(Platform.OS === 'ios' ? ['host' as const] : [])] as const).map(choice =>
           <Button key={choice} title={`${ui === choice ? '✓ ' : ''}${choice}`} onPress={() => setUI(choice)} disabled={requests.length > 0} />)}
         <Button title="Default presenter baseline (sheet)" onPress={() => start('sheet', true)} />
         <Button title="Checkpoint sheet" onPress={() => start('sheet')} />
@@ -101,6 +113,26 @@ export default function CheckpointErrorPresenterScreen() {
         onRequestClose={() => { if (request) complete(request, 'NAVIGATE_BACK'); }}>
         <View style={{flex: 1, justifyContent: 'center', backgroundColor: '#0008'}}>{errorContent}</View>
       </Modal>
+      {ui === 'host' && request && (
+        <ErrorPresentationHost key={request.requestId} request={request} onLog={log}
+          onClosed={requestId => setRequests(current => current.filter(item => item.requestId !== requestId))}>
+          {({respond}) => (
+            <View style={{flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#0008'}}>
+              <View style={{padding: 24, backgroundColor: 'white', gap: 12}}>
+                <Text>Custom React error panel</Text>
+                <Text>{request.error.message}</Text>
+                <Text>Request: {request.requestId}</Text>
+                {actions.map(action => <Button key={action} title={action} onPress={() => {
+                  lastDecision.current = {requestId: request.requestId, action};
+                  respond(action);
+                }} />)}
+                <Button title="Close native flow (lifecycle probe)"
+                  onPress={() => native.closeCheckpointFlowForTest()} />
+              </View>
+            </View>
+          )}
+        </ErrorPresentationHost>
+      )}
       {ui === 'overlay' && request && <View style={{position: 'absolute', inset: 0, justifyContent: 'center', backgroundColor: '#0008'}}>{errorContent}</View>}
     </View>
   );

@@ -15,7 +15,14 @@ if linkage != nil
 end
 
 target 'PurchaseTester' do
-  config = use_native_modules!
+  # Scope CLI discovery to iOS; the experiment checkout contains unrelated native projects.
+  config = use_native_modules!(['node', '-e', "process.argv=['', '', 'config', '--platform', 'ios'];require('@react-native-community/cli').run()"])
+
+  # Throwaway error-host experiment. Both pods must come from the patched 5.95.0 checkout.
+  if ENV['RC_ERROR_HOST_IOS_PATH']
+    pod 'RevenueCat', :path => ENV['RC_ERROR_HOST_IOS_PATH']
+    pod 'RevenueCatUI', :path => ENV['RC_ERROR_HOST_IOS_PATH']
+  end
 
 #  # Uncomment these to use a local version of `purchases-ios` and `purchases-hybrid-common`:
 #  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'

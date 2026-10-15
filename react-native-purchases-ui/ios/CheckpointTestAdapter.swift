@@ -1,15 +1,29 @@
 // Throwaway checkpoint ErrorPresenter runtime experiment. Not a public RN API.
 import Foundation
+import UIKit
 import RevenueCat
-@_spi(InviteOnlyCheckpointsApi) import RevenueCatUI
+@_spi(InviteOnlyCheckpointsApi) @_spi(Internal) import RevenueCatUI
+
+@objc public protocol CheckpointErrorHostForTest: AnyObject {
+    func present(from controller: UIViewController)
+    func dismiss(completion: @escaping () -> Void)
+}
 
 @available(iOS 15.0, *)
 @MainActor
 @objc(CheckpointTestAdapter)
 public final class CheckpointTestAdapter: NSObject {
-    private struct Request {
+    private final class Request {
         let flowID: UUID
         let completion: ErrorPresentationCompletion
+        let context: ErrorPresentationContext?
+        weak var host: CheckpointErrorHostForTest?
+
+        init(flowID: UUID, completion: ErrorPresentationCompletion, context: ErrorPresentationContext?) {
+            self.flowID = flowID
+            self.completion = completion
+            self.context = context
+        }
     }
     private var requests: [String: Request] = [:]
     private var completionCount = 0
@@ -35,7 +49,10 @@ public final class CheckpointTestAdapter: NSObject {
                     return
                 }
                 let requestID = UUID().uuidString
-                self.requests[requestID] = Request(flowID: flowID, completion: completion)
+                self.requests[requestID] = Request(flowID: flowID, completion: completion, context: params.presentationContext)
+                params.presentationContext?.onInvalidated = { [weak self] in
+                    self?.cancel(requestID)
+                }
                 NSLog("[CheckpointTest native] presenter requestId=%@ flowCanContinue=%@ pending=%d completionCount=%d",
                       requestID, String(params.flowCanContinue), self.requests.count, self.completionCount)
                 self.emit?("checkpointErrorForTest", [
@@ -64,6 +81,32 @@ public final class CheckpointTestAdapter: NSObject {
         }
     }
 
+    @objc(attachHost:requestID:)
+    public func attachHost(_ host: CheckpointErrorHostForTest, requestID: String) -> Bool {
+        guard let request = requests[requestID], let context = request.context,
+              context.isValid, let controller = context.viewController,
+              controller.viewIfLoaded?.window != nil, request.host == nil else {
+            NSLog("[CheckpointHost native] rejected requestId=%@", requestID)
+            return false
+        }
+        request.host = host
+        NSLog("[CheckpointHost native] present requestId=%@ from=%@", requestID, String(describing: type(of: controller)))
+        host.present(from: controller)
+        return true
+    }
+
+    private func cancel(_ requestID: String) {
+        guard let request = requests.removeValue(forKey: requestID) else { return }
+        NSLog("[CheckpointHost native] cancelled requestId=%@ pending=%d", requestID, requests.count)
+        request.host?.dismiss(completion: {})
+        emit?("checkpointErrorCancelledForTest", ["requestId": requestID])
+    }
+
+    // Lifecycle probe: emulate the app dismissing its native flow before an error is answered.
+    @objc public func closeFlowForTest() {
+        requests.values.first?.context?.viewController?.presentingViewController?.dismiss(animated: true)
+    }
+
     @objc(complete:action:)
     public func complete(_ requestID: String, action: String) {
         let result: ErrorPresentationCompletion.Result
@@ -82,7 +125,20 @@ public final class CheckpointTestAdapter: NSObject {
         completionCount += 1
         NSLog("[CheckpointTest native] completion requestId=%@ action=%@ pending=%d completionCount=%d",
               requestID, action, requests.count, completionCount)
-        request.completion.complete(result)
+        let finish = { [weak self] in
+            guard request.context?.isValid != false else {
+                NSLog("[CheckpointHost native] ignored ended requestId=%@", requestID)
+                return
+            }
+            NSLog("[CheckpointHost native] complete after dismissal requestId=%@ action=%@", requestID, action)
+            // The bridge may invalidate while native dismissal is in flight.
+            request.completion.complete(self?.invalidated == false ? result : .navigateBack)
+        }
+        if let host = request.host {
+            host.dismiss(completion: finish)
+        } else {
+            finish()
+        }
     }
 
     @objc public func invalidate() {
@@ -94,10 +150,16 @@ public final class CheckpointTestAdapter: NSObject {
         // Explicit experiment policy: release requests first, then navigate back once per original completion.
         // This may leave a multi-step flow on its previous step; it is not a general flow-cancellation API.
         for (requestID, request) in outstanding {
+            request.context?.onInvalidated = nil
             completionCount += 1
             NSLog("[CheckpointTest native] invalidate requestId=%@ action=NAVIGATE_BACK pending=0 completionCount=%d",
                   requestID, completionCount)
-            request.completion.complete(.navigateBack)
+            let finish = { request.completion.complete(.navigateBack) }
+            if let host = request.host {
+                host.dismiss(completion: finish)
+            } else {
+                finish()
+            }
         }
     }
 }
