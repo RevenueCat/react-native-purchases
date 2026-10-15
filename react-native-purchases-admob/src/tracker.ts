@@ -56,12 +56,12 @@ export function revenueMicrosFrom(paid: PaidEvent): number {
 
 export function precisionFrom(precision: number): AdRevenuePrecision {
   switch (precision) {
-    case 3:
-      return AdRevenuePrecision.exact;
-    case 2:
-      return AdRevenuePrecision.publisherDefined;
     case 1:
       return AdRevenuePrecision.estimated;
+    case 2:
+      return AdRevenuePrecision.publisherDefined;
+    case 3:
+      return AdRevenuePrecision.exact;
     default:
       return AdRevenuePrecision.unknown;
   }
