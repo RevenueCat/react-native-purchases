@@ -245,6 +245,18 @@ function trackedBannerProps(
  * props you pass in. Spread the result into `<BannerAd {...props} />`.
  * The tracking state lives for the lifetime of the calling component, so
  * rerenders keep the impression id of the banner that loaded.
+ *
+ * @example
+ * ```tsx
+ * function HomeBanner() {
+ *   const bannerProps = useTrackingBannerAdProps({
+ *     unitId,
+ *     size: BannerAdSize.BANNER,
+ *     placement: "home_bottom",
+ *   });
+ *   return <BannerAd {...bannerProps} />;
+ * }
+ * ```
  */
 export function useTrackingBannerAdProps(
   props: BannerAdTrackingProps
@@ -287,6 +299,23 @@ function prepareShow(
  * `useTrackingBannerAdProps(...)`; native ads go through `trackNativeAd`.
  */
 export const RevenueCatAdMob = {
+  /**
+   * Creates an interstitial ad whose loaded, displayed, opened, revenue and
+   * failed-to-load events are reported to RevenueCat. Use it in place of
+   * `InterstitialAd.createForAdRequest`, then `load()` and show it through
+   * `showAndTrack`.
+   *
+   * @example
+   * ```typescript
+   * const interstitial = RevenueCatAdMob.createInterstitialAd(adUnitId, {
+   *   placement: "level_complete",
+   * });
+   * interstitial.addAdEventListener(AdEventType.LOADED, () => setReady(true));
+   * interstitial.load();
+   * // Later
+   * await RevenueCatAdMob.showAndTrack(interstitial);
+   * ```
+   */
   createInterstitialAd(
     adUnitId: string,
     options: TrackingOptions = {}
@@ -299,12 +328,48 @@ export const RevenueCatAdMob = {
     return ad;
   },
 
+  /**
+   * Creates an app open ad tracked by RevenueCat. Use it in place of
+   * `AppOpenAd.createForAdRequest`, then `load()` and show it through
+   * `showAndTrack`.
+   *
+   * @example
+   * ```typescript
+   * const appOpen = RevenueCatAdMob.createAppOpenAd(adUnitId, {
+   *   placement: "cold_start",
+   * });
+   * appOpen.load();
+   * // When the app comes to the foreground
+   * await RevenueCatAdMob.showAndTrack(appOpen);
+   * ```
+   */
   createAppOpenAd(adUnitId: string, options: TrackingOptions = {}): AppOpenAd {
     const ad = AppOpenAd.createForAdRequest(adUnitId, options.requestOptions);
     trackAd(ad, AdFormat.appOpen, options.placement);
     return ad;
   },
 
+  /**
+   * Creates a rewarded ad tracked by RevenueCat. Use it in place of
+   * `RewardedAd.createForAdRequest`. With `enableRewardVerification` the
+   * adapter requests a verification token first, which is why this resolves
+   * asynchronously; show such ads through `showWithRewardVerification`.
+   *
+   * @example
+   * ```typescript
+   * const rewarded = await RevenueCatAdMob.createRewardedAd(adUnitId, {
+   *   placement: "extra_life",
+   *   enableRewardVerification: true,
+   * });
+   * rewarded.load();
+   * // Later
+   * await RevenueCatAdMob.showWithRewardVerification(rewarded, {
+   *   onRewardVerificationCompleted: (result) => {
+   *     if (!result.failed) grant(result.reward);
+   *   },
+   * });
+   * ```
+   */
   createRewardedAd(
     adUnitId: string,
     options: RewardedTrackingOptions = {}
@@ -317,6 +382,21 @@ export const RevenueCatAdMob = {
     );
   },
 
+  /**
+   * Creates a rewarded interstitial ad tracked by RevenueCat. Use it in place
+   * of `RewardedInterstitialAd.createForAdRequest`; otherwise identical to
+   * `createRewardedAd`.
+   *
+   * @example
+   * ```typescript
+   * const ad = await RevenueCatAdMob.createRewardedInterstitialAd(adUnitId, {
+   *   placement: "chapter_end",
+   * });
+   * ad.load();
+   * // Later
+   * await RevenueCatAdMob.showAndTrack(ad);
+   * ```
+   */
   createRewardedInterstitialAd(
     adUnitId: string,
     options: RewardedTrackingOptions = {}
@@ -343,7 +423,16 @@ export const RevenueCatAdMob = {
     trackAd(ad, adFormat, options.placement);
   },
 
-  /** Shows a tracked full-screen ad, optionally overriding its placement. */
+  /**
+   * Shows a tracked full-screen ad, optionally overriding its placement.
+   *
+   * @example
+   * ```typescript
+   * await RevenueCatAdMob.showAndTrack(interstitial, {
+   *   placement: "level_complete_retry",
+   * });
+   * ```
+   */
   showAndTrack(ad: TrackableAd, options: ShowOptions = {}): Promise<void> {
     prepareShow(ad, options.placement);
     return ad.show(options.showOptions);
@@ -355,6 +444,17 @@ export const RevenueCatAdMob = {
    * the user earns the reward; it is not called when the ad is dismissed or
    * fails before a reward. It receives a failed result when the ad was
    * created without `enableRewardVerification`.
+   *
+   * @example
+   * ```typescript
+   * await RevenueCatAdMob.showWithRewardVerification(rewarded, {
+   *   onRewardVerificationStarted: () => showSpinner(),
+   *   onRewardVerificationCompleted: (result) => {
+   *     if (result.failed) return showError();
+   *     grant(result.reward);
+   *   },
+   * });
+   * ```
    */
   showWithRewardVerification(
     ad: TrackableAd,
@@ -426,6 +526,20 @@ export const RevenueCatAdMob = {
    * Each call starts a new tracking state, so call it once per banner
    * instance (for example in a class component's constructor), never inside
    * `render`. Function components should use `useTrackingBannerAdProps` instead.
+   *
+   * @example
+   * ```tsx
+   * class HomeBanner extends React.Component {
+   *   bannerProps = RevenueCatAdMob.trackingBannerAdProps({
+   *     unitId,
+   *     size: BannerAdSize.BANNER,
+   *     placement: "home_bottom",
+   *   });
+   *   render() {
+   *     return <BannerAd {...this.bannerProps} />;
+   *   }
+   * }
+   * ```
    */
   trackingBannerAdProps(props: BannerAdTrackingProps): BannerAdProps {
     const { placement, ...rest } = props;
@@ -438,6 +552,12 @@ export const RevenueCatAdMob = {
   /**
    * Tracks a loaded native ad. `NativeAd.createForAdRequest` resolves with a
    * loaded ad, so the loaded event is reported immediately.
+   *
+   * @example
+   * ```typescript
+   * const nativeAd = await NativeAd.createForAdRequest(adUnitId);
+   * RevenueCatAdMob.trackNativeAd(nativeAd, { placement: "feed" });
+   * ```
    */
   trackNativeAd(
     ad: NativeAd,
