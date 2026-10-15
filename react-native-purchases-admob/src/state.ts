@@ -10,23 +10,23 @@ import type { ResponseInfo } from "react-native-google-mobile-ads";
  * the lifetime of the `react-native-google-mobile-ads` objects it tracks.
  */
 export class TrackedAdState {
-  public loadPlacement: string | null;
-  public showPlacement: string | null = null;
+  loadPlacement: string | null;
+  showPlacement: string | null = null;
   /**
    * Either AdMob's response id (read once the ad loads) or, for ads created
    * with reward verification, the id generated before the request so the SSV
    * token and every tracking event share one impression id.
    */
-  public impressionId: string = "";
-  public networkName: string | null = null;
-  public clientTransactionId: string | null = null;
-  public rewardVerificationDelivered = false;
+  impressionId: string = "";
+  networkName: string | null = null;
+  clientTransactionId: string | null = null;
+  rewardVerificationDelivered = false;
 
   constructor(
-    public readonly adFormat: AdFormat,
-    public readonly adUnitId: string,
+    readonly adFormat: AdFormat,
+    readonly adUnitId: string,
     placement?: string | null,
-    public readonly pinnedImpressionId: string | null = null
+    readonly pinnedImpressionId: string | null = null
   ) {
     this.loadPlacement = placement ?? null;
     if (pinnedImpressionId) {
@@ -34,11 +34,11 @@ export class TrackedAdState {
     }
   }
 
-  public get placement(): string | null {
+  get placement(): string | null {
     return this.showPlacement ?? this.loadPlacement;
   }
 
-  public updateFromResponse(info: ResponseInfo | null | undefined): void {
+  updateFromResponse(info: ResponseInfo | null | undefined): void {
     if (!this.pinnedImpressionId) {
       this.impressionId = info?.responseId ?? "";
     }
@@ -48,7 +48,7 @@ export class TrackedAdState {
       null;
   }
 
-  public get trackingMetadata(): RewardedAdTrackingMetadata {
+  get trackingMetadata(): RewardedAdTrackingMetadata {
     return {
       networkName: this.networkName,
       mediatorName: AdMediatorName.adMob,
