@@ -56,9 +56,9 @@ On Android, the returned promise now rejects with code `InvalidArguments` if `pr
 
 On iOS, paywalls no longer call `onPurchaseCompleted` for purchases that complete without a store transaction, such as purchases made by your own purchase logic. Previously it was called with `storeTransaction` missing. This matches Android. If you relied on it for those purchases, handle them in your purchase logic instead.
 
-### Jetpack Compose and `material-icons-core` on Android
+### Jetpack Compose on Android
 
-If your app has native Android code that uses Jetpack Compose, `react-native-purchases-ui` raises your Compose libraries to BOM 2026.06.01. Those versions no longer bring in `material-icons-core`, so declare it if your native code uses `Icons`. See the [Android guide](https://github.com/RevenueCat/purchases-android/blob/main/migrations/v11-MIGRATION.md#jetpack-compose-revenuecatui).
+If your app has native Android code that uses Jetpack Compose, `react-native-purchases-ui` raises your Compose libraries to BOM 2026.06.01. See the [Android guide](https://github.com/RevenueCat/purchases-android/blob/main/migrations/v11-MIGRATION.md#jetpack-compose-revenuecatui).
 
 ### Blocked Play Store reports `PURCHASE_NOT_ALLOWED_ERROR`
 
