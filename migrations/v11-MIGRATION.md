@@ -52,6 +52,10 @@ On Android, the returned promise now rejects with code `InvalidArguments` if `pr
 
 `periodType` was typed as `string`. It is now the `PeriodType` union: `"NORMAL" | "INTRO" | "TRIAL" | "PREPAID"`. Values at runtime do not change. Comparisons against any other string, such as lowercase `"trial"`, no longer compile. They never matched, so once you fix the comparison, the code behind it runs for the first time. Check it before shipping.
 
+### Paywalls on iOS skip `onPurchaseCompleted` for purchases without a transaction
+
+On iOS, paywalls no longer call `onPurchaseCompleted` for purchases that complete without a store transaction, such as purchases made by your own purchase logic. Previously it was called with `storeTransaction` missing. This matches Android. If you relied on it for those purchases, handle them in your purchase logic instead.
+
 ### Jetpack Compose and `material-icons-core` on Android
 
 If your app has native Android code that uses Jetpack Compose, `react-native-purchases-ui` raises your Compose libraries to BOM 2026.06.01. Those versions no longer bring in `material-icons-core`, so declare it if your native code uses `Icons`. See the [Android guide](https://github.com/RevenueCat/purchases-android/blob/main/migrations/v11-MIGRATION.md#jetpack-compose-revenuecatui).
