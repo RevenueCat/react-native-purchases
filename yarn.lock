@@ -10339,7 +10339,7 @@ __metadata:
     react: "*"
     react-native: ">= 0.76.0"
     react-native-google-mobile-ads: ">= 17.0.0 < 18.0.0"
-    react-native-purchases: 10.13.0
+    react-native-purchases: 10.14.0
   languageName: unknown
   linkType: soft
 
