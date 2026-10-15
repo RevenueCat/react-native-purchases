@@ -21,12 +21,13 @@ export class TrackedAdState {
   networkName: string | null = null;
   clientTransactionId: string | null = null;
   rewardVerificationDelivered = false;
+  loadedOnce = false;
 
   constructor(
     readonly adFormat: AdFormat,
     readonly adUnitId: string,
     placement?: string | null,
-    readonly pinnedImpressionId: string | null = null
+    public pinnedImpressionId: string | null = null
   ) {
     this.loadPlacement = placement ?? null;
     if (pinnedImpressionId) {

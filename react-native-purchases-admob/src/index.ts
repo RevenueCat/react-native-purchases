@@ -65,7 +65,8 @@ export interface RewardedTrackingOptions extends TrackingOptions {
    * Attach a RevenueCat reward-verification token to AdMob's server-side
    * verification options. The token has to exist before the ad request is
    * created, so the adapter generates the impression id itself and uses it for
-   * every tracking event of this ad.
+   * every tracking event of this ad. Tokens are single-use: create a new ad
+   * for each verified show instead of calling `load()` again on this one.
    */
   enableRewardVerification?: boolean;
 }
@@ -136,6 +137,18 @@ function trackAd(
         if (type === AdEventType.LOADED && rewarded) {
           return;
         }
+        // The SSV token travels with the request options, which a reload
+        // reuses, so a second impression cannot be verified separately.
+        if (state.loadedOnce && state.pinnedImpressionId) {
+          logWarning(
+            "Reward verification tokens are single-use; this reload is tracked " +
+              "without verification. Create a new ad through createRewardedAd " +
+              "for each verified show."
+          );
+          state.pinnedImpressionId = null;
+          state.clientTransactionId = null;
+        }
+        state.loadedOnce = true;
         state.updateFromResponse(ad.responseInfo);
         AdMobTracker.trackLoaded(state);
         return;

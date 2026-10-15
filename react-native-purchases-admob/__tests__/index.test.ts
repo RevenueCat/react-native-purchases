@@ -320,6 +320,40 @@ describe("reward verification", () => {
     });
   });
 
+  it("drops verification when a verified ad is reloaded", async () => {
+    const warn = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    const ad = (await RevenueCatAdMob.createRewardedAd("r-3", {
+      enableRewardVerification: true,
+    })) as unknown as FakeAd;
+    const pinned = RevenueCatAdMob.impressionIdOf(ad)!;
+    ad.responseInfo = responseInfo("first");
+    ad.emit("rewarded_loaded");
+    ad.emit("closed");
+
+    ad.responseInfo = responseInfo("second");
+    ad.emit("rewarded_loaded");
+    expect(adTracker.trackAdLoaded).toHaveBeenLastCalledWith(
+      expect.objectContaining({ impressionId: "second" })
+    );
+    expect(RevenueCatAdMob.impressionIdOf(ad)).not.toBe(pinned);
+
+    const results: unknown[] = [];
+    await RevenueCatAdMob.showWithRewardVerification(ad as never, {
+      onRewardVerificationCompleted: (r) => results.push(r),
+    });
+    ad.emit("rewarded_earned_reward", { type: "coin", amount: 1 });
+    await flush();
+    expect(results).toEqual([{ failed: true, moreRewards: [] }]);
+    expect(pollRewardVerification).not.toHaveBeenCalled();
+    expect(adTracker.trackAdRewardEarnedUnverified).toHaveBeenCalledWith(
+      expect.objectContaining({ impressionId: "second" })
+    );
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("single-use"));
+    warn.mockRestore();
+  });
+
   it("fails fast when verification was not enabled", async () => {
     const warn = jest
       .spyOn(console, "warn")
