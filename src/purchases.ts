@@ -239,7 +239,7 @@ export interface AdDisplayedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
-  /** Reserved for the official RevenueCat ad-network adapters. */
+  /** @internal Reserved for the official RevenueCat ad-network adapters. */
   captureMethod?: AdCaptureMethod | null;
 }
 
@@ -250,7 +250,7 @@ export interface AdOpenedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
-  /** Reserved for the official RevenueCat ad-network adapters. */
+  /** @internal Reserved for the official RevenueCat ad-network adapters. */
   captureMethod?: AdCaptureMethod | null;
 }
 
@@ -261,7 +261,7 @@ export interface AdLoadedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
-  /** Reserved for the official RevenueCat ad-network adapters. */
+  /** @internal Reserved for the official RevenueCat ad-network adapters. */
   captureMethod?: AdCaptureMethod | null;
 }
 
@@ -275,7 +275,7 @@ export interface AdRevenueData {
   precision: AdRevenuePrecision;
   networkName?: string | null;
   placement?: string | null;
-  /** Reserved for the official RevenueCat ad-network adapters. */
+  /** @internal Reserved for the official RevenueCat ad-network adapters. */
   captureMethod?: AdCaptureMethod | null;
 }
 
@@ -285,7 +285,7 @@ export interface AdFailedToLoadData {
   adUnitId: string;
   mediatorErrorCode?: number | null;
   placement?: string | null;
-  /** Reserved for the official RevenueCat ad-network adapters. */
+  /** @internal Reserved for the official RevenueCat ad-network adapters. */
   captureMethod?: AdCaptureMethod | null;
 }
 
@@ -296,6 +296,7 @@ export interface AdRewardEarnedUnverifiedData {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
+  /** @internal Reserved for the official RevenueCat ad-network adapters. */
   captureMethod?: AdCaptureMethod | null;
 }
 
@@ -379,7 +380,7 @@ export interface RewardedAdTrackingMetadata {
   impressionId: string;
   networkName?: string | null;
   placement?: string | null;
-  /** Reserved for the official RevenueCat ad-network adapters. */
+  /** @internal Reserved for the official RevenueCat ad-network adapters. */
   captureMethod?: AdCaptureMethod | null;
 }
 

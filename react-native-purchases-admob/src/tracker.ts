@@ -3,7 +3,15 @@ import Purchases, {
   AdMediatorName,
   AdRevenuePrecision,
 } from "react-native-purchases";
-import type { AdFormat } from "react-native-purchases";
+import type {
+  AdDisplayedData,
+  AdFailedToLoadData,
+  AdFormat,
+  AdLoadedData,
+  AdOpenedData,
+  AdRevenueData,
+  AdRewardEarnedUnverifiedData,
+} from "react-native-purchases";
 import type { PaidEvent } from "react-native-google-mobile-ads";
 
 import { TrackedAdState } from "./state";
@@ -13,6 +21,7 @@ export function logWarning(message: string): void {
   console.warn(`[react-native-purchases-admob] ${message}`);
 }
 
+// The data types mark this field @internal, hence the assertions below.
 const captureMethod = AdCaptureMethod.reactNativeAdMobAdapter;
 
 /**
@@ -83,7 +92,7 @@ export const AdMobTracker = {
         adUnitId: state.adUnitId,
         impressionId: state.impressionId,
         captureMethod,
-      })
+      } as AdLoadedData)
     );
   },
 
@@ -102,7 +111,7 @@ export const AdMobTracker = {
         adUnitId,
         mediatorErrorCode: mediatorErrorCode(reason),
         captureMethod,
-      })
+      } as AdFailedToLoadData)
     );
   },
 
@@ -117,7 +126,7 @@ export const AdMobTracker = {
         adUnitId: state.adUnitId,
         impressionId: state.impressionId,
         captureMethod,
-      })
+      } as AdDisplayedData)
     );
   },
 
@@ -132,7 +141,7 @@ export const AdMobTracker = {
         adUnitId: state.adUnitId,
         impressionId: state.impressionId,
         captureMethod,
-      })
+      } as AdOpenedData)
     );
   },
 
@@ -147,7 +156,7 @@ export const AdMobTracker = {
         adUnitId: state.adUnitId,
         impressionId: state.impressionId,
         captureMethod,
-      })
+      } as AdRewardEarnedUnverifiedData)
     );
   },
 
@@ -165,7 +174,7 @@ export const AdMobTracker = {
         currency: paid.currency,
         precision: precisionFrom(paid.precision),
         captureMethod,
-      })
+      } as AdRevenueData)
     );
   },
 };

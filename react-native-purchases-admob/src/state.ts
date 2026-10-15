@@ -58,7 +58,7 @@ export class TrackedAdState {
       adUnitId: this.adUnitId,
       impressionId: this.impressionId,
       captureMethod: AdCaptureMethod.reactNativeAdMobAdapter,
-    };
+    } as RewardedAdTrackingMetadata;
   }
 }
 
