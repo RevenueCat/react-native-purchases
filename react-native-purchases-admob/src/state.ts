@@ -78,8 +78,13 @@ export function setState(ad: object, state: TrackedAdState): TrackedAdState {
  * `react-native-get-random-values` provides it; Hermes has none by default,
  * so it falls back to `Math.random`, which is enough for a correlation key.
  */
+interface CryptoLike {
+  randomUUID?: () => string;
+  getRandomValues?: (array: Uint8Array) => Uint8Array;
+}
+
 export function generateImpressionId(): string {
-  const cryptoObj = globalThis.crypto;
+  const cryptoObj = (globalThis as { crypto?: CryptoLike }).crypto;
   if (cryptoObj?.randomUUID) {
     return cryptoObj.randomUUID();
   }
