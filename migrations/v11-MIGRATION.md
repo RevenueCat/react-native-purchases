@@ -46,7 +46,7 @@ await Purchases.syncAmazonPurchase({
 });
 ```
 
-On Android, the returned promise now rejects with code `InvalidArguments` if `productID`, `receiptID`, `amazonUserID` or `purchaseTime` is missing. The deprecated `syncObserverModeAmazonPurchase` keeps its previous signature.
+On Android, the returned promise now rejects with code `InvalidArguments` if `productID`, `receiptID`, `amazonUserID` or `purchaseTime` is missing.
 
 ### `PurchasesEntitlementInfo.periodType` is typed as `PeriodType`
 
