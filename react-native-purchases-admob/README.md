@@ -79,7 +79,7 @@ await RevenueCatAdMob.showWithRewardVerification(rewarded, {
 });
 ```
 
-Verification tokens are single-use, so create a new ad for every verified show rather than calling `load()` again on the same instance; a reloaded instance is tracked without verification and logs a warning. `onRewardVerificationCompleted` is called at most once per show, after the user earns the reward; it is not called when the ad is dismissed or fails before a reward. The ad unit's server-side verification URL must point at RevenueCat and a reward must be configured for it in the RevenueCat dashboard; see the [rewards docs](https://www.revenuecat.com/docs/ad-monetization/rewards).
+Verification tokens are single-use, so create a new ad for every verified show rather than calling `load()` again on the same instance; after it has loaded, a second `load()` on a verified instance logs a warning and does nothing (a retry after a load error still works). `onRewardVerificationCompleted` is called at most once per show, after the user earns the reward; it is not called when the ad is dismissed or fails before a reward. The ad unit's server-side verification URL must point at RevenueCat and a reward must be configured for it in the RevenueCat dashboard; see the [rewards docs](https://www.revenuecat.com/docs/ad-monetization/rewards).
 
 ## Not covered
 

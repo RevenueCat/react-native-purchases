@@ -7,6 +7,7 @@ class FakeAd {
   public listeners: Listener[] = [];
   public typed: Array<{ type: string; listener: (p: unknown) => void }> = [];
   public shown: unknown[] = [];
+  public loads = 0;
   constructor(public adUnitId: string, public requestOptions: unknown) {
     FakeAd.created.push(this);
   }
@@ -26,6 +27,9 @@ class FakeAd {
     return () => {
       this.typed = this.typed.filter((e) => e !== entry);
     };
+  }
+  load() {
+    this.loads++;
   }
   show(options?: unknown) {
     this.shown.push(options);
@@ -107,10 +111,15 @@ jest.mock("react-native-google-mobile-ads", () => ({
   NativeAd: class {},
 }));
 
+jest.mock("react-native", () => ({ Platform: { OS: "android" } }));
+
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 
+import { Platform } from "react-native";
+
 import { RevenueCatAdMob, useTrackingBannerAdProps } from "../src";
+import { mediatorErrorCode } from "../src/tracker";
 import type { BannerAdTrackingProps } from "../src";
 
 (
@@ -320,7 +329,7 @@ describe("reward verification", () => {
     });
   });
 
-  it("drops verification when a verified ad is reloaded", async () => {
+  it("ignores a second load() on a verified ad", async () => {
     const warn = jest
       .spyOn(console, "warn")
       .mockImplementation(() => undefined);
@@ -328,30 +337,43 @@ describe("reward verification", () => {
       enableRewardVerification: true,
     })) as unknown as FakeAd;
     const pinned = RevenueCatAdMob.impressionIdOf(ad)!;
+    ad.load();
     ad.responseInfo = responseInfo("first");
     ad.emit("rewarded_loaded");
     ad.emit("closed");
+    expect(ad.loads).toBe(1);
+    expect(warn).not.toHaveBeenCalled();
 
-    ad.responseInfo = responseInfo("second");
-    ad.emit("rewarded_loaded");
-    expect(adTracker.trackAdLoaded).toHaveBeenLastCalledWith(
-      expect.objectContaining({ impressionId: "second" })
-    );
-    expect(RevenueCatAdMob.impressionIdOf(ad)).not.toBe(pinned);
-
-    const results: unknown[] = [];
-    await RevenueCatAdMob.showWithRewardVerification(ad as never, {
-      onRewardVerificationCompleted: (r) => results.push(r),
-    });
-    ad.emit("rewarded_earned_reward", { type: "coin", amount: 1 });
-    await flush();
-    expect(results).toEqual([{ failed: true, moreRewards: [] }]);
-    expect(pollRewardVerification).not.toHaveBeenCalled();
-    expect(adTracker.trackAdRewardEarnedUnverified).toHaveBeenCalledWith(
-      expect.objectContaining({ impressionId: "second" })
-    );
+    ad.load();
+    expect(ad.loads).toBe(1);
+    expect(adTracker.trackAdLoaded).toHaveBeenCalledTimes(1);
+    expect(RevenueCatAdMob.impressionIdOf(ad)).toBe(pinned);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("single-use"));
     warn.mockRestore();
+  });
+
+  it("allows load() again after a load error on a verified ad", async () => {
+    const warn = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+    const ad = (await RevenueCatAdMob.createRewardedAd("r-5", {
+      enableRewardVerification: true,
+    })) as unknown as FakeAd;
+    ad.load();
+    ad.emit("error", { phase: "load", reason: "no-fill" });
+    ad.load();
+    expect(ad.loads).toBe(2);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("does not restrict load() on an unverified rewarded ad", async () => {
+    const ad = (await RevenueCatAdMob.createRewardedAd(
+      "r-4"
+    )) as unknown as FakeAd;
+    ad.load();
+    ad.load();
+    expect(ad.loads).toBe(2);
   });
 
   it("fails fast when verification was not enabled", async () => {
@@ -554,5 +576,100 @@ describe("banner", () => {
     act(() => {
       renderer.unmount();
     });
+  });
+});
+
+describe("error codes", () => {
+  const platform = Platform as { OS: string };
+
+  afterEach(() => {
+    platform.OS = "android";
+  });
+
+  it("maps reasons onto AdRequest error codes on Android", () => {
+    platform.OS = "android";
+    expect(
+      Object.fromEntries(
+        [
+          "internal-error",
+          "invalid-request",
+          "network-error",
+          "no-fill",
+          "app-id-missing",
+          "mediation-no-fill",
+          "request-id-mismatch",
+          "invalid-ad-string",
+          "timeout",
+          "mediation-adapter-error",
+        ].map((reason) => [reason, mediatorErrorCode(reason)])
+      )
+    ).toEqual({
+      "internal-error": 0,
+      "invalid-request": 1,
+      "network-error": 2,
+      "no-fill": 3,
+      "app-id-missing": 8,
+      "mediation-no-fill": 9,
+      "request-id-mismatch": 10,
+      "invalid-ad-string": 11,
+      timeout: null,
+      "mediation-adapter-error": null,
+    });
+  });
+
+  it("maps reasons onto GADErrorCode on iOS", () => {
+    platform.OS = "ios";
+    expect(
+      Object.fromEntries(
+        [
+          "invalid-request",
+          "no-fill",
+          "network-error",
+          "server-error",
+          "timeout",
+          "mediation-data-error",
+          "mediation-adapter-error",
+          "mediation-invalid-ad-size",
+          "internal-error",
+          "invalid-argument",
+          "ad-already-used",
+          "app-id-missing",
+          "invalid-ad-string",
+          "request-id-mismatch",
+        ].map((reason) => [reason, mediatorErrorCode(reason)])
+      )
+    ).toEqual({
+      "invalid-request": 0,
+      "no-fill": 1,
+      "network-error": 2,
+      "server-error": 3,
+      timeout: 5,
+      "mediation-data-error": 7,
+      "mediation-adapter-error": 8,
+      "mediation-invalid-ad-size": 10,
+      "internal-error": 11,
+      "invalid-argument": 12,
+      "ad-already-used": 19,
+      "app-id-missing": 20,
+      "invalid-ad-string": 21,
+      "request-id-mismatch": null,
+    });
+  });
+
+  it("falls back to numeric reasons and null otherwise", () => {
+    expect(mediatorErrorCode("7")).toBe(7);
+    expect(mediatorErrorCode("unknown")).toBeNull();
+    expect(mediatorErrorCode(undefined)).toBeNull();
+  });
+
+  it("reports the platform's code for a load failure", () => {
+    platform.OS = "ios";
+    const ad = RevenueCatAdMob.createInterstitialAd(
+      "unit-ios"
+    ) as unknown as FakeAd;
+    ad.emit("error", { phase: "load", reason: "no-fill" });
+    expect(adTracker.trackAdFailedToLoad).toHaveBeenCalledWith(
+      expect.objectContaining({ mediatorErrorCode: 1 })
+    );
   });
 });

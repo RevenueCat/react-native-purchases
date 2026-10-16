@@ -137,17 +137,6 @@ function trackAd(
         if (type === AdEventType.LOADED && rewarded) {
           return;
         }
-        // The SSV token travels with the request options, which a reload
-        // reuses, so a second impression cannot be verified separately.
-        if (state.loadedOnce && state.pinnedImpressionId) {
-          logWarning(
-            "Reward verification tokens are single-use; this reload is tracked " +
-              "without verification. Create a new ad through createRewardedAd " +
-              "for each verified show."
-          );
-          state.pinnedImpressionId = null;
-          state.clientTransactionId = null;
-        }
         state.loadedOnce = true;
         state.updateFromResponse(ad.responseInfo);
         AdMobTracker.trackLoaded(state);
@@ -221,7 +210,31 @@ async function createRewarded<T extends TrackableAd>(
   const ad = create(requestOptions);
   const state = trackAd(ad, adFormat, options.placement, pinnedImpressionId);
   state.clientTransactionId = clientTransactionId;
+  if (pinnedImpressionId) {
+    preventReload(ad, state);
+  }
   return ad;
+}
+
+/**
+ * The SSV token travels with the request options, which the library reuses
+ * and attaches natively on every successful load, so a reload after the ad
+ * has loaded would send the already used token to AdMob. Shadow `load` on
+ * the instance so it is ignored once the ad has loaded; a retry after a load
+ * error never consumed the token and still goes through.
+ */
+function preventReload(ad: TrackableAd, state: TrackedAdState): void {
+  const load = ad.load.bind(ad);
+  ad.load = () => {
+    if (state.loadedOnce) {
+      logWarning(
+        "Reward verification tokens are single-use; load() was ignored. " +
+          "Create a new ad through createRewardedAd for each verified show."
+      );
+      return;
+    }
+    load();
+  };
 }
 
 function trackedBannerProps(

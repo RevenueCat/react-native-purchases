@@ -13,6 +13,7 @@ import type {
   AdRewardEarnedUnverifiedData,
 } from "react-native-purchases";
 import type { PaidEvent } from "react-native-google-mobile-ads";
+import { Platform } from "react-native";
 
 import { TrackedAdState } from "./state";
 
@@ -26,26 +27,45 @@ const captureMethod = AdCaptureMethod.reactNativeAdMobAdapter;
 
 /**
  * `react-native-google-mobile-ads` reports load failures with a string reason
- * rather than AdMob's numeric error code. The common ones map back onto the
- * AdMob codes so the dashboard groups them with native integrations.
+ * rather than the platform SDK's numeric error code, and the two SDKs number
+ * their codes differently. Each table inverts the library's own native mapping
+ * for that platform (ReactNativeGoogleMobileAdsCommon.java and
+ * RNGoogleMobileAdsOwnedMappers.m), so the emitted number matches what the
+ * native integration on the same platform reports.
  */
-const mediatorErrorCodes: Record<string, number> = {
+const androidErrorCodes: Record<string, number> = {
   "internal-error": 0,
   "invalid-request": 1,
   "network-error": 2,
   "no-fill": 3,
   "app-id-missing": 8,
   "mediation-no-fill": 9,
-  "mediation-adapter-error": 10,
-  "invalid-argument": 11,
-  "invalid-ad-string": 13,
+  "request-id-mismatch": 10,
+  "invalid-ad-string": 11,
+};
+
+const iosErrorCodes: Record<string, number> = {
+  "invalid-request": 0,
+  "no-fill": 1,
+  "network-error": 2,
+  "server-error": 3,
+  timeout: 5,
+  "mediation-data-error": 7,
+  "mediation-adapter-error": 8,
+  "mediation-invalid-ad-size": 10,
+  "internal-error": 11,
+  "invalid-argument": 12,
+  "ad-already-used": 19,
+  "app-id-missing": 20,
+  "invalid-ad-string": 21,
 };
 
 export function mediatorErrorCode(reason: string | undefined): number | null {
   if (!reason) {
     return null;
   }
-  const mapped = mediatorErrorCodes[reason];
+  const table = Platform.OS === "ios" ? iosErrorCodes : androidErrorCodes;
+  const mapped = table[reason];
   if (mapped !== undefined) {
     return mapped;
   }
