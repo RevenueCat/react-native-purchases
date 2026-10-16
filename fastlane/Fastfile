@@ -10,6 +10,7 @@ files_with_version_number = {
     './react-native-purchases-store-galaxy/android/build.gradle' => ['versionName \'{x}\''],
     './examples/purchaseTesterTypescript/package.json' => ['"react-native-purchases-store-galaxy": "{x}"'],
     './react-native-purchases-ui/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
+    './react-native-purchases-admob/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
     './ios/RNPurchases.m' => ['return @"{x}"'],
     './android/build.gradle' => ['versionName \'{x}\''],
     './react-native-purchases-ui/android/build.gradle' => ['versionName \'{x}\''],
@@ -110,7 +111,7 @@ lane :github_release do |options|
   )
 end
 
-desc "Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui"
+desc "Creates GitHub release and publishes react-native-purchases, react-native-purchases-ui, react-native-purchases-store-galaxy and react-native-purchases-admob"
 lane :release do |options|
   version_number = current_version_number
   is_prerelease = prerelease?
@@ -134,6 +135,9 @@ lane :release do |options|
       sh(args)
   end
   Dir.chdir(File.expand_path('react-native-purchases-store-galaxy', get_root_folder)) do
+      sh(args)
+  end
+  Dir.chdir(File.expand_path('react-native-purchases-admob', get_root_folder)) do
       sh(args)
   end
   github_release(version: version_number)
