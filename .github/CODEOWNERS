@@ -6,12 +6,14 @@
 # Fallback for anything not matched below (build config, samples, e2e apps, CI, release files)
 * @RevenueCat/sdk
 
-# Core SDK (react-native-purchases and the Galaxy store add-on)
+# Core SDK
 /src/ @RevenueCat/coresdk
 /android/ @RevenueCat/coresdk
 /ios/ @RevenueCat/coresdk
 /__tests__/ @RevenueCat/coresdk
-/react-native-purchases-store-galaxy/ @RevenueCat/coresdk
+
+# Galaxy store add-on
+/react-native-purchases-store-galaxy/ @RevenueCat/catforms
 
 # Paywalls (react-native-purchases-ui)
 /react-native-purchases-ui/ @RevenueCat/paywalls
