@@ -126,10 +126,10 @@ RCT_EXPORT_METHOD(checkpointForTest:(NSString *)identifier mode:(NSString *)mode
     }
 }
 
-RCT_EXPORT_METHOD(completeCheckpointErrorForTest:(NSString *)requestId action:(NSString *)action) {
+RCT_EXPORT_METHOD(completeCheckpointErrorForTest:(NSString *)requestId) {
     if (self.invalidated) { return; }
     if (@available(iOS 15.0, *)) {
-        [[self checkpointAdapter] complete:requestId action:action];
+        [[self checkpointAdapter] complete:requestId];
     }
 }
 

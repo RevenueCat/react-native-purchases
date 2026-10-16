@@ -1,11 +1,10 @@
-// Prototype-only component. Requires the native SDK context patch on this branch.
+// Prototype-only component. Requires the companion purchases-ios context branch.
 import React, {type ReactNode, useEffect, useRef} from 'react';
 import {
   NativeModules, Platform, requireNativeComponent, UIManager,
   useWindowDimensions, type NativeSyntheticEvent, type ViewProps,
 } from 'react-native';
 
-export type ErrorAction = 'RETRY' | 'CONTINUE' | 'NAVIGATE_BACK';
 export type HostedErrorRequest = {requestId: string};
 type HostEvent = NativeSyntheticEvent<{requestId: string; message?: string}>;
 type NativeProps = ViewProps & {
@@ -18,23 +17,23 @@ const NativeHost = Platform.OS === 'ios' && UIManager.getViewManagerConfig('Chec
 
 export function ErrorPresentationHost({request, children, onClosed, onError}: {
   request: HostedErrorRequest;
-  children: (api: {respond: (action: ErrorAction) => void}) => ReactNode;
+  children: (api: {complete: () => void}) => ReactNode;
   onClosed: (requestId: string) => void;
   onError: (message: string) => void;
 }) {
   const {width, height} = useWindowDimensions();
-  const responded = useRef(false);
+  const completed = useRef(false);
   useEffect(() => () => {
-    // Explicit prototype unmount policy. A normal response already consumed this ID.
-    NativeModules.RNPaywalls.completeCheckpointErrorForTest(request.requestId, 'NAVIGATE_BACK');
+    // Release the retained presentation if the consumer unmounts.
+    NativeModules.RNPaywalls.completeCheckpointErrorForTest(request.requestId);
   }, [request.requestId]);
 
   if (!NativeHost) throw new Error('Prototype native error host is not installed');
-  const respond = (action: ErrorAction) => {
-    if (responded.current) return;
-    responded.current = true;
+  const complete = () => {
+    if (completed.current) return;
+    completed.current = true;
     // Native owns dismissal sequencing and calls the original completion afterward.
-    NativeModules.RNPaywalls.completeCheckpointErrorForTest(request.requestId, action);
+    NativeModules.RNPaywalls.completeCheckpointErrorForTest(request.requestId);
   };
 
   return (
@@ -43,7 +42,7 @@ export function ErrorPresentationHost({request, children, onClosed, onError}: {
         onClosed(event.nativeEvent.requestId);
       }}
       onFailure={event => onError(event.nativeEvent.message ?? 'Unable to present error content')}>
-      {children({respond})}
+      {children({complete})}
     </NativeHost>
   );
 }

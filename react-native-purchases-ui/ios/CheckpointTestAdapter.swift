@@ -1,4 +1,4 @@
-// Throwaway checkpoint ErrorPresenter runtime experiment. Not a public RN API.
+// Prototype bridge for the current checkpoint ErrorPresenter API.
 import Foundation
 import UIKit
 import RevenueCat
@@ -40,9 +40,8 @@ public final class CheckpointTestAdapter: NSObject {
         guard !invalidated, mode == "sheet" || mode == "fullscreen" else { return }
         let flowID = UUID()
         let handler: ErrorPresentationHandler = { [weak self] params, completion in
-            guard let self, !self.invalidated else {
-                // Explicit teardown policy: no JS runtime means navigate back, never Continue.
-                completion.complete(.navigateBack)
+            guard let self, !self.invalidated, params.presentationContext?.isValid != false else {
+                completion.complete()
                 return
             }
             let requestID = UUID().uuidString
@@ -50,22 +49,24 @@ public final class CheckpointTestAdapter: NSObject {
             params.presentationContext?.onInvalidated = { [weak self] in
                 self?.cancel(requestID)
             }
+            let kind = params.kind == .flowActionFailed ? "flowActionFailed"
+                : params.kind == .flowResultSyncFailed ? "flowResultSyncFailed" : "flowCouldNotBeShown"
             self.emit?("checkpointErrorForTest", [
                 "requestId": requestID,
                 "checkpointIdentifier": params.checkpointIdentifier,
                 "error": ["message": params.error.localizedDescription, "code": (params.error as NSError).code],
-                "flowCanContinue": params.flowCanContinue
+                "kind": kind,
+                "canHost": params.presentationContext?.viewController?.viewIfLoaded?.window != nil
             ])
         }
         Purchases.shared.checkpoint(identifier,
                                    presentationMode: mode == "fullscreen" ? .modalFullScreen : .modalSheet,
                                    errorPresenter: handler) { [weak self] result in
             guard let self, !self.invalidated else { return }
-            // Native context invalidation also handles terminal paths that suppress this callback.
             self.requests = self.requests.filter { $0.value.flowID != flowID }
             self.emit?("checkpointPassedForTest", [
                 "checkpointIdentifier": identifier,
-                "obtainedEntitlementIdentifiers": result.map {
+                "obtainedEntitlementIdentifiers": result.flow.map {
                     $0.obtainedEntitlements.map { $0.entitlementInfo.identifier }.sorted() as Any
                 } ?? NSNull()
             ])
@@ -86,34 +87,23 @@ public final class CheckpointTestAdapter: NSObject {
 
     private func cancel(_ requestID: String) {
         guard let request = requests.removeValue(forKey: requestID) else { return }
-        request.host?.dismiss(completion: {})
         emit?("checkpointErrorCancelledForTest", ["requestId": requestID])
+        finish(request)
     }
 
-    @objc(complete:action:)
-    public func complete(_ requestID: String, action: String) {
-        let result: ErrorPresentationCompletion.Result
-        switch action {
-        case "RETRY": result = .retry
-        case "CONTINUE": result = .continue
-        case "NAVIGATE_BACK": result = .navigateBack
-        default:
-            return
-        }
-        guard let request = requests.removeValue(forKey: requestID) else {
-            return
-        }
-        let finish = { [weak self] in
-            guard request.context?.isValid != false else {
-                return
-            }
-            // The bridge may invalidate while native dismissal is in flight.
-            request.completion.complete(self?.invalidated == false ? result : .navigateBack)
-        }
+    @objc(complete:)
+    public func complete(_ requestID: String) {
+        guard let request = requests.removeValue(forKey: requestID) else { return }
+        finish(request)
+    }
+
+    private func finish(_ request: Request) {
+        // Even a stale request must complete its queue entry. The SDK ignores its old presentation ID.
+        let complete = { request.completion.complete() }
         if let host = request.host {
-            host.dismiss(completion: finish)
+            host.dismiss(completion: complete)
         } else {
-            finish()
+            complete()
         }
     }
 
@@ -122,17 +112,9 @@ public final class CheckpointTestAdapter: NSObject {
         emit = nil
         let outstanding = requests
         requests.removeAll()
-        // No global presenter is registered. Per-call closures capture this adapter weakly.
-        // Explicit experiment policy: release requests first, then navigate back once per original completion.
-        // This may leave a multi-step flow on its previous step; it is not a general flow-cancellation API.
         for request in outstanding.values {
             request.context?.onInvalidated = nil
-            let finish = { request.completion.complete(.navigateBack) }
-            if let host = request.host {
-                host.dismiss(completion: finish)
-            } else {
-                finish()
-            }
+            finish(request)
         }
     }
 }

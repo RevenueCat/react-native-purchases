@@ -2,10 +2,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Alert, Button, Modal, NativeEventEmitter, NativeModules, Platform, ScrollView, Text, View} from 'react-native';
 import Purchases from 'react-native-purchases';
-import {ErrorPresentationHost, type ErrorAction} from './ErrorPresentationHost';
+import {ErrorPresentationHost} from './ErrorPresentationHost';
+
+type ErrorAction = 'RETRY' | 'CONTINUE' | 'NAVIGATE_BACK';
 
 type ErrorRequest = {
   requestId: string;
+  canHost?: boolean;
   error: {message: string};
 };
 type ErrorUI = 'host' | 'alert' | 'modal' | 'overlay' | 'auto';
@@ -16,17 +19,19 @@ const choices: {value: ErrorUI; label: string}[] = [
   {value: 'alert', label: 'Alert'},
   {value: 'modal', label: 'React Native Modal'},
   {value: 'overlay', label: 'In-tree overlay'},
-  {value: 'auto', label: 'Continue without UI'},
+  {value: 'auto', label: 'Complete without UI'},
 ];
 const identifier = 'rn_error_presenter_test';
 
-function ErrorPanel({request, respond}: {request: ErrorRequest; respond: (action: ErrorAction) => void}) {
+function ErrorPanel({request, respond}: {request: ErrorRequest; respond: (action?: ErrorAction) => void}) {
   return (
     <View style={{flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#0008'}}>
       <View style={{padding: 24, backgroundColor: 'white', gap: 12}}>
         <Text>Purchase failed</Text>
         <Text>{request.error.message}</Text>
-        {actions.map(action => <Button key={action} title={action} onPress={() => respond(action)} />)}
+        {Platform.OS === 'ios'
+          ? <Button title="Done" onPress={() => respond()} />
+          : actions.map(action => <Button key={action} title={action} onPress={() => respond(action)} />)}
       </View>
     </View>
   );
@@ -41,9 +46,10 @@ export default function CheckpointErrorPresenterScreen() {
   const removeRequest = (requestId: string) => {
     setRequests(current => current.filter(item => item.requestId !== requestId));
   };
-  const complete = (request: ErrorRequest, action: ErrorAction) => {
+  const complete = (request: ErrorRequest, action: ErrorAction = 'NAVIGATE_BACK') => {
     removeRequest(request.requestId);
-    native.completeCheckpointErrorForTest(request.requestId, action);
+    if (Platform.OS === 'ios') native.completeCheckpointErrorForTest(request.requestId);
+    else native.completeCheckpointErrorForTest(request.requestId, action);
   };
 
   useEffect(() => {
@@ -55,9 +61,10 @@ export default function CheckpointErrorPresenterScreen() {
         return;
       }
       setRequests(current => [...current, request]);
-      if (uiRef.current === 'alert') {
+      if (uiRef.current === 'alert' || (uiRef.current === 'host' && request.canHost === false)) {
         Alert.alert('Purchase failed', request.error.message,
-          actions.map(action => ({text: action, onPress: () => complete(request, action)})),
+          Platform.OS === 'ios' ? [{text: 'Done', onPress: () => complete(request)}]
+            : actions.map(action => ({text: action, onPress: () => complete(request, action)})),
           {cancelable: false});
       }
     });
@@ -106,9 +113,9 @@ export default function CheckpointErrorPresenterScreen() {
         onRequestClose={() => { if (request) complete(request, 'NAVIGATE_BACK'); }}>
         {request && <ErrorPanel request={request} respond={action => complete(request, action)} />}
       </Modal>
-      {ui === 'host' && request && (
+      {ui === 'host' && request && request.canHost !== false && (
         <ErrorPresentationHost key={request.requestId} request={request} onClosed={removeRequest} onError={setStatus}>
-          {({respond}) => <ErrorPanel request={request} respond={respond} />}
+          {({complete}) => <ErrorPanel request={request} respond={complete} />}
         </ErrorPresentationHost>
       )}
       {ui === 'overlay' && request && (

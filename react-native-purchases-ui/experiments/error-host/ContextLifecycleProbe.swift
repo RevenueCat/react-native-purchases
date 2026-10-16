@@ -1,4 +1,4 @@
-// Standalone simulator probe. Compile together with the patched native context source.
+// Standalone simulator probe. Compile together with the companion SDK context source.
 import UIKit
 
 @main
