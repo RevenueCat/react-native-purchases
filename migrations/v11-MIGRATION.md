@@ -52,9 +52,9 @@ On Android, the returned promise now rejects with code `InvalidArguments` if `pr
 
 `periodType` was typed as `string`. It is now the `PeriodType` union: `"NORMAL" | "INTRO" | "TRIAL" | "PREPAID"`. Values at runtime do not change. Comparisons against any other string, such as lowercase `"trial"`, no longer compile. They never matched, so once you fix the comparison, the code behind it runs for the first time. Check it before shipping.
 
-### Paywalls on iOS skip `onPurchaseCompleted` for purchases without a transaction
+### Only if using `PURCHASES_ARE_COMPLETED_BY_TYPE.MY_APP`: iOS paywalls no longer call `onPurchaseCompleted`
 
-On iOS, paywalls no longer call `onPurchaseCompleted` for purchases that complete without a store transaction, such as purchases made by your own purchase logic. Previously it was called with `storeTransaction` missing. This matches Android. If you relied on it for those purchases, handle them in your purchase logic instead.
+When your `purchaseLogic` completes a paywall purchase, iOS paywalls no longer call `onPurchaseCompleted` for it. Previously it was called with `storeTransaction` missing. This matches Android. Handle the purchase result in your `purchaseLogic` instead.
 
 ### Jetpack Compose on Android
 
