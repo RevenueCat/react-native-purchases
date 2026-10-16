@@ -81,7 +81,14 @@ function FormatCard({title, create, show}: FormatProps) {
     setBusy(true);
     setResult(null);
     setStatus('Loading…');
-    const created = await create();
+    let created: FullScreenAd;
+    try {
+      created = await create();
+    } catch (e) {
+      setBusy(false);
+      setStatus(`Error: ${(e as Error).message}`);
+      return;
+    }
     created.addAdEventsListener(({type, payload}) => {
       switch (type) {
         case AdEventType.LOADED:
@@ -111,10 +118,17 @@ function FormatCard({title, create, show}: FormatProps) {
   const onPress = useCallback(async () => {
     if (ad) {
       setBusy(true);
-      await show(ad, text => {
-        setStatus('Done');
-        setResult(text);
-      });
+      try {
+        await show(ad, text => {
+          setStatus('Done');
+          setResult(text);
+        });
+      } catch (e) {
+        // show() rejects without an ERROR event when the ad is not loaded.
+        setAd(null);
+        setBusy(false);
+        setStatus(`Error: ${(e as Error).message}`);
+      }
     } else {
       await load();
     }
