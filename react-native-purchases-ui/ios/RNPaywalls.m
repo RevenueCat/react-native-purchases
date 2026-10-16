@@ -106,10 +106,6 @@ static NSString *RNPaywallsPresentedEventName(NSString *callbackName) {
 // MARK: -
 
 // Throwaway test entry points, intentionally absent from the public TypeScript API.
-RCT_EXPORT_METHOD(logCheckpointForTest:(NSString *)message) {
-    NSLog(@"[CheckpointTest JS] %@", message);
-}
-
 - (CheckpointTestAdapter *)checkpointAdapter API_AVAILABLE(ios(15.0)) {
     if (!self.checkpointTestAdapter) {
         __weak RNPaywalls *weakSelf = self;
@@ -126,14 +122,7 @@ RCT_EXPORT_METHOD(logCheckpointForTest:(NSString *)message) {
 RCT_EXPORT_METHOD(checkpointForTest:(NSString *)identifier mode:(NSString *)mode) {
     if (self.invalidated) { return; }
     if (@available(iOS 15.0, *)) {
-        [[self checkpointAdapter] checkpoint:identifier mode:mode useDefaultPresenter:NO];
-    }
-}
-
-RCT_EXPORT_METHOD(checkpointDefaultForTest:(NSString *)identifier mode:(NSString *)mode) {
-    if (self.invalidated) { return; }
-    if (@available(iOS 15.0, *)) {
-        [[self checkpointAdapter] checkpoint:identifier mode:mode useDefaultPresenter:YES];
+        [[self checkpointAdapter] checkpoint:identifier mode:mode];
     }
 }
 
@@ -141,14 +130,6 @@ RCT_EXPORT_METHOD(completeCheckpointErrorForTest:(NSString *)requestId action:(N
     if (self.invalidated) { return; }
     if (@available(iOS 15.0, *)) {
         [[self checkpointAdapter] complete:requestId action:action];
-    }
-}
-
-RCT_EXPORT_METHOD(closeCheckpointFlowForTest) {
-    if (!self.invalidated) {
-        if (@available(iOS 15.0, *)) {
-            [[self checkpointAdapter] closeFlowForTest];
-        }
     }
 }
 

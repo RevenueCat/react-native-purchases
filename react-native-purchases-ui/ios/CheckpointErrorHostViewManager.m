@@ -13,7 +13,6 @@
 API_AVAILABLE(ios(15.0))
 @interface CheckpointErrorHostView : RCTView <CheckpointErrorHostForTest>
 @property(nonatomic, copy) NSString *requestId;
-@property(nonatomic, copy) RCTDirectEventBlock onShow;
 @property(nonatomic, copy) RCTDirectEventBlock onDismiss;
 @property(nonatomic, copy) RCTDirectEventBlock onFailure;
 @property(nonatomic, weak) CheckpointTestAdapter *adapter;
@@ -83,9 +82,6 @@ API_AVAILABLE(ios(15.0))
     [controller presentViewController:self.contentController animated:NO completion:^{
         CheckpointErrorHostView *host = weakSelf;
         if (!host || host.closing) return;
-        NSLog(@"[CheckpointHost native] shown requestId=%@ window=%@", host.requestId,
-              host.contentController.view.window ? @"attached" : @"nil");
-        if (host.onShow) host.onShow(@{@"requestId": host.requestId});
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, host.contentController.view);
     }];
 }
@@ -97,7 +93,6 @@ API_AVAILABLE(ios(15.0))
     // UIKit retains this completion until dismissal finishes, even if React unmounts meanwhile.
     CheckpointErrorHostView *host = self;
     void (^finished)(void) = ^{
-        NSLog(@"[CheckpointHost native] dismissed requestId=%@", host.requestId);
         // Notify JS only after the native dismissal, then release the SDK completion.
         if (host.onDismiss) host.onDismiss(@{@"requestId": host.requestId});
         dispatch_block_t finish = host.finishDismissal;
@@ -127,7 +122,6 @@ API_AVAILABLE(ios(15.0))
 @implementation CheckpointErrorHostViewManager
 RCT_EXPORT_MODULE(CheckpointErrorHostForTest)
 RCT_EXPORT_VIEW_PROPERTY(requestId, NSString)
-RCT_EXPORT_VIEW_PROPERTY(onShow, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onFailure, RCTDirectEventBlock)
 

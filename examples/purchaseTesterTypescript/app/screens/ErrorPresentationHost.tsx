@@ -10,18 +10,17 @@ export type HostedErrorRequest = {requestId: string};
 type HostEvent = NativeSyntheticEvent<{requestId: string; message?: string}>;
 type NativeProps = ViewProps & {
   requestId: string;
-  onShow: (event: HostEvent) => void;
   onDismiss: (event: HostEvent) => void;
   onFailure: (event: HostEvent) => void;
 };
 const NativeHost = Platform.OS === 'ios' && UIManager.getViewManagerConfig('CheckpointErrorHostForTest')
   ? requireNativeComponent<NativeProps>('CheckpointErrorHostForTest') : null;
 
-export function ErrorPresentationHost({request, children, onClosed, onLog}: {
+export function ErrorPresentationHost({request, children, onClosed, onError}: {
   request: HostedErrorRequest;
   children: (api: {respond: (action: ErrorAction) => void}) => ReactNode;
   onClosed: (requestId: string) => void;
-  onLog: (message: string) => void;
+  onError: (message: string) => void;
 }) {
   const {width, height} = useWindowDimensions();
   const responded = useRef(false);
@@ -34,19 +33,16 @@ export function ErrorPresentationHost({request, children, onClosed, onLog}: {
   const respond = (action: ErrorAction) => {
     if (responded.current) return;
     responded.current = true;
-    onLog(`Host selection requestId=${request.requestId} action=${action}`);
     // Native owns dismissal sequencing and calls the original completion afterward.
     NativeModules.RNPaywalls.completeCheckpointErrorForTest(request.requestId, action);
   };
 
   return (
     <NativeHost requestId={request.requestId} style={{position: 'absolute', width, height}}
-      onShow={() => onLog(`Host onShow requestId=${request.requestId}`)}
       onDismiss={event => {
-        onLog(`Host onDismiss requestId=${event.nativeEvent.requestId}`);
         onClosed(event.nativeEvent.requestId);
       }}
-      onFailure={event => onLog(`Host failure: ${event.nativeEvent.message}`)}>
+      onFailure={event => onError(event.nativeEvent.message ?? 'Unable to present error content')}>
       {children({respond})}
     </NativeHost>
   );
