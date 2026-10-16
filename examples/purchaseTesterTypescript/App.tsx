@@ -17,6 +17,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Purchases from 'react-native-purchases';
 import { GALAXY_BILLING_MODE } from 'react-native-purchases-store-galaxy';
 
+import CheckpointErrorPresenterScreen from './app/screens/CheckpointErrorPresenterScreen';
 import HomeScreen from './app/screens/HomeScreen';
 import CustomerInfoScreen from './app/screens/CustomerInfoScreen';
 import OfferingDetailScreen from './app/screens/OfferingDetailScreen';
@@ -153,7 +154,8 @@ const App = () => {
     ) : (
       <CustomVariablesProvider>
       <NavigationContainer>
-        <Stack.Navigator  initialRouteName="Home">
+        <Stack.Navigator  initialRouteName="CheckpointErrorPresenter">
+          <Stack.Screen name="CheckpointErrorPresenter" component={CheckpointErrorPresenterScreen} />
           <Stack.Screen
             name="Home"
             component={HomeScreen}
