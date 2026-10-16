@@ -1,6 +1,6 @@
 ## RevenueCat SDK
 ### ✨ New Features
-* Expose unverified rewarded ad tracking (#2009) via Pol Miro (@polmiro)
+* feat(ads): admob adapter (#2023) via Peter Porfy (@peterporfy)
 
 ### 🔄 Other Changes
-* chore(deps): bump fastlane from 2.240.1 to 2.241.0 (#2036) via dependabot[bot] (@dependabot[bot])
+* feat(ads): use the AdMob adapter in adsTester (#2033) via Peter Porfy (@peterporfy)
