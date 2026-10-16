@@ -2425,26 +2425,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js-hybrid-mappings@npm:18.32.1":
-  version: 18.32.1
-  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:18.32.1"
+"@revenuecat/purchases-js-hybrid-mappings@npm:19.12.0":
+  version: 19.12.0
+  resolution: "@revenuecat/purchases-js-hybrid-mappings@npm:19.12.0"
   dependencies:
-    "@revenuecat/purchases-js": 1.53.1
-  checksum: ecf72676db1ed1234587e19d24876ffc48bbc43db9bee2848bf3e608d5c80dfbc1e9043876d1c08ed9e4315d8107ec79e37239f107a3083e25a086981a523530
+    "@revenuecat/purchases-js": 1.70.0
+  checksum: 953fbbc1fd25acf4704221c24d2c742e776818481b061611aa5a7ac94cd5f21afd27de20c3e0f764158043ab389a8d378482c47b5090ad0c16524cfee40ad340
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-js@npm:1.53.1":
-  version: 1.53.1
-  resolution: "@revenuecat/purchases-js@npm:1.53.1"
-  checksum: a06e213c3e34d8e097a3bcdf394e7374a18be9ee8532e57ef8be3e84e13e9386b6cb670d73425bd9bbc839d10c87d5f5dfd533c24cf334d3409489cd7f2d6cd7
+"@revenuecat/purchases-js@npm:1.70.0":
+  version: 1.70.0
+  resolution: "@revenuecat/purchases-js@npm:1.70.0"
+  checksum: 125a9c88c984a2b0ced0efe2b063d89e2e1790c9f09b8e8183534085ff57fa110d917c3297a5db86f1c0c928e9894ecbb179810d4101babaeca739ff43dd31b0
   languageName: node
   linkType: hard
 
-"@revenuecat/purchases-typescript-internal@npm:18.32.1":
-  version: 18.32.1
-  resolution: "@revenuecat/purchases-typescript-internal@npm:18.32.1"
-  checksum: 593e5df5ab1a73b3fffe6884b4aa2e52d593bae13888543e9d89c61fb252f42c0da6b70ec6f08232e5ff987ae339b02220d4cc6697ee5cec22c910577e444a7a
+"@revenuecat/purchases-typescript-internal@npm:19.12.0":
+  version: 19.12.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:19.12.0"
+  checksum: f9139183f6242cb67510cb72fac863d0accac2f811893272626eeb957a9cc8619823e086eb9733187d9da9b1d5956c981d4a6c5857889d75e26e35eccc9fc730
   languageName: node
   linkType: hard
 
@@ -2886,7 +2886,7 @@ __metadata:
     prettier: 2.8.8
     react: 19.3.0
     react-native: 0.88.0
-    react-native-purchases: ^10.8.0
+    react-native-purchases: ^10.14.0
     react-native-safe-area-context: ^5.8.0
     react-test-renderer: 19.3.0
     typescript: ^6.0.3
@@ -7533,12 +7533,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-purchases@npm:^10.8.0":
-  version: 10.8.0
-  resolution: "react-native-purchases@npm:10.8.0"
+"react-native-purchases@npm:^10.14.0":
+  version: 10.14.0
+  resolution: "react-native-purchases@npm:10.14.0"
   dependencies:
-    "@revenuecat/purchases-js-hybrid-mappings": 18.32.1
-    "@revenuecat/purchases-typescript-internal": 18.32.1
+    "@revenuecat/purchases-js-hybrid-mappings": 19.12.0
+    "@revenuecat/purchases-typescript-internal": 19.12.0
   peerDependencies:
     react: ">= 16.6.3"
     react-native: ">= 0.73.0"
@@ -7546,7 +7546,7 @@ __metadata:
   peerDependenciesMeta:
     react-native-web:
       optional: true
-  checksum: 8c6d5aa72f59625ae14e9e2428e2a4b87a5d41610b734354216b764095e83428caa435dfa8dc06d3ce87b0c4ff5e1f9cd5802b27f964887a49a53f96a8fdc49c
+  checksum: 0f615676f54d891396902bea92622acd580131da35b1694bb2ce41fe395eef2a0fc21653011ac61c6271be8c1eda8d2e3eeae41227d0461dde3a9cf59e4206a8
   languageName: node
   linkType: hard
 
