@@ -602,6 +602,10 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         <Divider />
         <View>
           <TouchableOpacity
+            onPress={() => navigation.navigate('PaywallPortal')}>
+            <Text style={styles.otherActions}>Go to Paywall Portal Screen</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             accessibilityLabel="Custom Paywall Screen"
             accessibilityRole="button"
             onPress={() => navigation.navigate('CustomPaywall')}>
