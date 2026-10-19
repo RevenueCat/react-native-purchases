@@ -28,6 +28,7 @@
 
 # Version and dependency manifests, bumped by release and purchases-hybrid-common update automation
 /android/build.gradle @RevenueCat/sdk
+/react-native-purchases-admob/package.json @RevenueCat/sdk
 /react-native-purchases-ui/package.json @RevenueCat/sdk
 /react-native-purchases-ui/RNPaywalls.podspec @RevenueCat/sdk
 /react-native-purchases-ui/android/build.gradle @RevenueCat/sdk
@@ -36,5 +37,6 @@
 
 # Public API surface: changes here should stay visible to the whole SDK team
 /apitesters/ @RevenueCat/sdk
+/react-native-purchases-admob/apitesters/ @RevenueCat/sdk
 /react-native-purchases-ui/apitesters/ @RevenueCat/sdk
 /react-native-purchases-store-galaxy/apitesters/ @RevenueCat/sdk
