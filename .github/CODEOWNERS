@@ -23,6 +23,7 @@
 /react-native-purchases-ui/android/src/**/customercenter/ @RevenueCat/customer-center
 
 # Ads
+/react-native-purchases-admob/ @RevenueCat/ads
 /examples/adsTester/ @RevenueCat/ads
 
 # Version and dependency manifests, bumped by release and purchases-hybrid-common update automation
