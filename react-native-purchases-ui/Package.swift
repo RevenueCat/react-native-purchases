@@ -33,7 +33,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "ReactNative", path: "../../../../xcframeworks"),
-        .package(url: "https://github.com/RevenueCat/purchases-hybrid-common", exact: "19.6.0"),
+        .package(url: "https://github.com/RevenueCat/purchases-hybrid-common", exact: "19.12.0"),
     ],
     targets: [
         .target(
