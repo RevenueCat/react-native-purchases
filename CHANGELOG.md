@@ -1,3 +1,95 @@
+## 10.15.0
+## RevenueCat SDK
+### ✨ New Features
+* feat(ads): admob adapter (#2023) via Peter Porfy (@peterporfy)
+
+### 🔄 Other Changes
+* feat(ads): use the AdMob adapter in adsTester (#2033) via Peter Porfy (@peterporfy)
+
+## 10.14.0
+## RevenueCat SDK
+### ✨ New Features
+* Expose unverified rewarded ad tracking (#2009) via Pol Miro (@polmiro)
+
+### 🔄 Other Changes
+* chore(deps): bump fastlane from 2.240.1 to 2.241.0 (#2036) via dependabot[bot] (@dependabot[bot])
+
+## 10.13.1
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.12.0 (#2029) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* Align React Native dev dependency with purchase tester (#2032) via Cesar de la Vega (@vegaro)
+* chore: bump purchaseTesterTypescript to Ruby 3.3.0 (#2016) via Cesar de la Vega (@vegaro)
+* other: add .purr.local.json to .gitignore (#2020) via Will Taylor (@fire-at-will)
+* Run Maestro purchase flow on old architecture (#2000) via Cesar de la Vega (@vegaro)
+* Only scan src/ for codegen specs in react-native-purchases-ui and galaxy (#2017) via Cesar de la Vega (@vegaro)
+* chore(deps): bump compression from 1.8.1 to 1.8.2 in /e2e-tests/AGP9TestApp (#2025) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump shell-quote from 1.10.0 to 1.12.0 in /examples/adsTester (#2026) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump joi from 17.13.4 to 17.13.8 in /examples/adsTester (#2027) via dependabot[bot] (@dependabot[bot])
+
+## 10.13.0
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.11.0 (#2024) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.27.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.27.0)
+  * [iOS 5.95.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.95.0)
+
+## RevenueCatUI SDK
+### ✨ New Features
+* feat(paywalls): Add callbacks to presentPaywall and presentPaywallIfNeeded (#1958) via Álvaro Brey (@AlvaroBrey)
+
+## 10.12.2
+## RevenueCat SDK
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.10.0 (#2014) via RevenueCat Git Bot (@RCGitBot)
+  * [iOS 5.94.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.94.0)
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.9.0 (#2013) via RevenueCat Git Bot (@RCGitBot)
+
+### 🔄 Other Changes
+* other: extras to support InstallmentsInfo on iOS (#2002) via Will Taylor (@fire-at-will)
+* Bump CI to Ruby 3.3 (#2012) via Josh Holtz (@joshdholtz)
+
+## 10.12.1
+## RevenueCat SDK
+### 🐞 Bugfixes
+* Fix iOS ignoring `automaticDeviceIdentifierCollectionEnabled` in `configure` (RevenueCat/purchases-hybrid-common#1956) via Álvaro Brey (@AlvaroBrey)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.8.0 (#2007) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.26.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.26.0)
+  * [Android 10.25.0](https://github.com/RevenueCat/purchases-android/releases/tag/10.25.0)
+  * [Android 10.24.2](https://github.com/RevenueCat/purchases-android/releases/tag/10.24.2)
+  * [iOS 5.93.0](https://github.com/RevenueCat/purchases-ios/releases/tag/5.93.0)
+  * [Web 1.70.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.70.0)
+  * [Web 1.69.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.69.0)
+  * [Web 1.68.0](https://github.com/RevenueCat/purchases-js/releases/tag/1.68.0)
+
+### 🔄 Other Changes
+* chore(deps): bump shell-quote from 1.10.0 to 1.12.0 in /examples/MagicWeather (#2006) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump joi from 17.13.7 to 17.13.8 (#2005) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump compression from 1.8.1 to 1.8.2 in /examples/adsTester (#2004) via dependabot[bot] (@dependabot[bot])
+
+## 10.12.0
+## RevenueCat SDK
+### ✨ New Features
+* Track rewarded ad prompt shown and accepted (#1988) via Drago Crnjac (@popcorn)
+### 📦 Dependency Updates
+* [AUTOMATIC BUMP] Updates purchases-hybrid-common to 19.6.0 (#1989) via RevenueCat Git Bot (@RCGitBot)
+  * [Android 10.24.1](https://github.com/RevenueCat/purchases-android/releases/tag/10.24.1)
+
+### 🔄 Other Changes
+* chore(deps): bump shell-quote from 1.10.0 to 1.12.0 (#2001) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump joi from 17.13.7 to 17.13.8 in /examples/MagicWeather (#1995) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump fastlane-plugin-revenuecat_internal from `c3e3afe` to `4c49d48` (#1998) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump compression from 1.8.0 to 1.8.2 (#1996) via dependabot[bot] (@dependabot[bot])
+* Bump purchaseTesterTypescript to React Native 0.87.1 (#1992) via Cesar de la Vega (@vegaro)
+* chore(deps): bump brace-expansion from 1.1.18 to 1.1.21 in /examples/adsTester (#1994) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump fastlane-plugin-revenuecat_internal from `9f7a03e` to `c3e3afe` (#1993) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump brace-expansion from 1.1.16 to 1.1.21 (#1990) via dependabot[bot] (@dependabot[bot])
+* chore(deps): bump brace-expansion from 1.1.16 to 1.1.21 in /examples/MagicWeather (#1985) via dependabot[bot] (@dependabot[bot])
+* chore: bump sample app to Android target SDK 36 (#1856) via Toni Rico (@tonidero)
+
 ## 10.11.0
 ## RevenueCat SDK
 ### ✨ New Features

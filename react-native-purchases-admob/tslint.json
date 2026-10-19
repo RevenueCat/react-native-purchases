@@ -1,0 +1,21 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "jsRules": {},
+  "rules": {
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    "arrow-parens": false,
+    "interface-name": false,
+    "no-empty": false,
+    "jsx-no-lambda": false,
+    "jsx-boolean-value": false,
+    "no-empty-interface": false,
+    "interface-over-type-literal": false,
+    "trailing-comma": true
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["**/*.test.ts"]
+  }
+}

@@ -93,3 +93,6 @@ package.tgz
 
 # Claude Code
 .claude/
+
+# Dev tools
+.purr.local.json

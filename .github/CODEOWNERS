@@ -1,4 +1,42 @@
 # CODEOWNERS for react-native-purchases
+#
+# The last matching pattern takes precedence, so rules go from broadest to most specific.
+# Code owner review is not required to merge: these rules only decide who gets a review request.
 
-# Default owners
+# Fallback for anything not matched below (build config, samples, e2e apps, CI, release files)
 * @RevenueCat/sdk
+
+# Core SDK
+/src/ @RevenueCat/coresdk
+/android/ @RevenueCat/coresdk
+/ios/ @RevenueCat/coresdk
+/__tests__/ @RevenueCat/coresdk
+
+# Galaxy store add-on
+/react-native-purchases-store-galaxy/ @RevenueCat/catforms
+
+# Paywalls (react-native-purchases-ui)
+/react-native-purchases-ui/ @RevenueCat/paywalls
+
+# Customer Center
+/react-native-purchases-ui/**/*CustomerCenter* @RevenueCat/customer-center
+/react-native-purchases-ui/android/src/**/customercenter/ @RevenueCat/customer-center
+
+# Ads
+/react-native-purchases-admob/ @RevenueCat/ads
+/examples/adsTester/ @RevenueCat/ads
+
+# Version and dependency manifests, bumped by release and purchases-hybrid-common update automation
+/android/build.gradle @RevenueCat/sdk
+/react-native-purchases-admob/package.json @RevenueCat/sdk
+/react-native-purchases-ui/package.json @RevenueCat/sdk
+/react-native-purchases-ui/RNPaywalls.podspec @RevenueCat/sdk
+/react-native-purchases-ui/android/build.gradle @RevenueCat/sdk
+/react-native-purchases-store-galaxy/package.json @RevenueCat/sdk
+/react-native-purchases-store-galaxy/android/build.gradle @RevenueCat/sdk
+
+# Public API surface: changes here should stay visible to the whole SDK team
+/apitesters/ @RevenueCat/sdk
+/react-native-purchases-admob/apitesters/ @RevenueCat/sdk
+/react-native-purchases-ui/apitesters/ @RevenueCat/sdk
+/react-native-purchases-store-galaxy/apitesters/ @RevenueCat/sdk

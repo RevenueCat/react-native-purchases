@@ -1,6 +1,6 @@
 # SPMTestApp
 
-A minimal iOS app based on the React Native 0.88 RC3 community template, with
+A minimal iOS app based on the React Native 0.88.0 community template, with
 its Xcode project already configured for Swift Package Manager. This version
 includes React Native's fix for preserving library symlinks during autolinking
 resyncs. The app imports the same test UI as `MaestroTestApp` from
@@ -30,7 +30,7 @@ yarn workspace react-native-purchases-ui pack --out "$PWD/build/spm-ci/react-nat
 
 cd e2e-tests/SPMTestApp
 npm ci --ignore-scripts --no-audit --no-fund
-npm install --no-save --package-lock=false --legacy-peer-deps --ignore-scripts --no-audit --no-fund \
+npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund \
   ../../build/spm-ci/react-native-purchases.tgz ../../build/spm-ci/react-native-purchases-ui.tgz
 cd ios
 node ../node_modules/react-native/scripts/setup-apple-spm.js update --yes
@@ -40,9 +40,9 @@ FORCE_BUNDLING=1 RCT_NO_LAUNCH_PACKAGER=1 xcodebuild \
   -derivedDataPath ../build/DerivedData CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
 ```
 
-`--legacy-peer-deps` is needed only when installing the SDKs because their existing
-React Native peer range excludes prereleases. Install scripts are disabled
-because the tarballs already contain the SDKs' compiled JavaScript.
+Install scripts are disabled because the tarballs already contain the SDKs'
+compiled JavaScript. The stable React Native version satisfies the SDKs' peer
+dependencies without legacy peer resolution.
 
 The `spm_ios` CircleCI job builds Debug and Release, rebuilds after touching
 `package.json` to verify that autolinking preserves the SDK links, and checks the
