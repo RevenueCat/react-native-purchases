@@ -578,6 +578,7 @@ workflows:
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
+          context: npm-publishing
           <<: *release-tags
       - docs-deploy:
           <<: *release-tags
