@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   rn: react-native-community/react-native@8.0.1
   android: circleci/android@3.1.0
-  revenuecat: revenuecat/sdks-common-config@4.6.2
+  revenuecat: revenuecat/sdks-common-config@4.7.0
 
 aliases:
   release-tags: &release-tags
@@ -116,6 +116,10 @@ jobs:
           working_directory: react-native-purchases-store-galaxy
           command: yarn prepare
       - run:
+          name: Prepare AdMob package
+          working_directory: react-native-purchases-admob
+          command: yarn prepare
+      - run:
           name: Tests
           command: yarn test --maxWorkers=2
       - run:
@@ -128,11 +132,17 @@ jobs:
           name: Galaxy Store API Tests
           command: yarn workspace react-native-purchases-store-galaxy apitest
       - run:
+          name: AdMob API Tests
+          command: yarn workspace react-native-purchases-admob apitest
+      - run:
           name: UI Tests
           command: yarn workspace react-native-purchases-ui test
       - run:
           name: Galaxy Store Tests
           command: yarn workspace react-native-purchases-store-galaxy test
+      - run:
+          name: AdMob Tests
+          command: yarn workspace react-native-purchases-admob test
       - run:
           name: Linter
           command: yarn run tslint
@@ -388,11 +398,11 @@ jobs:
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
   ios:
-    <<: *base-mac-job
+    <<: *base-mac-job-xcode-16
     steps:
       - checkout
       - rn/ios_simulator_start:
-          device: iPhone 15
+          device: iPhone 16
       - revenuecat/install-mise-tools:
           tools: node@22.14.0,ruby
       - install-dependencies-ios-build
@@ -408,7 +418,7 @@ jobs:
           # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
           command: |
             export RCT_NO_LAUNCH_PACKAGER=true \
-            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 15' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
+            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
   spm_ios:
     description: "Build both packaged SDKs in SPMTestApp (React Native 0.88)"
@@ -442,8 +452,7 @@ jobs:
           command: |
             npm ci --ignore-scripts --no-audit --no-fund
             # Keep the SDK tarballs out of the lockfile: their contents change on every SDK commit.
-            # The existing RN peer range excludes prereleases, so this install needs legacy peer resolution.
-            npm install --no-save --package-lock=false --legacy-peer-deps --ignore-scripts --no-audit --no-fund \
+            npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund \
               ../../build/spm-ci/react-native-purchases.tgz ../../build/spm-ci/react-native-purchases-ui.tgz
       - run:
           name: Prepare SwiftPM dependencies
@@ -527,6 +536,10 @@ jobs:
           command: bundle exec fastlane release
 
   run-maestro-e2e-tests-ios:
+    parameters:
+      new_arch_enabled:
+        type: boolean
+        default: true
     executor:
       name: rn/macos
       resource_class: m4pro.medium
@@ -547,7 +560,7 @@ jobs:
             xcrun simctl bootstatus "iPhone 17" -b
       - run:
           name: Run Maestro E2E Tests (iOS)
-          command: bundle exec fastlane run_maestro_e2e_tests_ios
+          command: bundle exec fastlane run_maestro_e2e_tests_ios new_arch_enabled:<< parameters.new_arch_enabled >>
           no_output_timeout: 15m
       - store_test_results:
           path: fastlane/test_output
@@ -555,6 +568,10 @@ jobs:
           path: fastlane/test_output
 
   run-maestro-e2e-tests-android:
+    parameters:
+      new_arch_enabled:
+        type: boolean
+        default: true
     machine:
       image: android:2024.11.1
     resource_class: xlarge
@@ -568,7 +585,7 @@ jobs:
           machine: "unix"
       - run:
           name: Build Maestro app (Android)
-          command: bundle exec fastlane build_maestro_app_android
+          command: bundle exec fastlane build_maestro_app_android new_arch_enabled:<< parameters.new_arch_enabled >>
           no_output_timeout: 15m
       - android/create_avd:
           avd_name: test-e2e
@@ -633,6 +650,18 @@ workflows:
           context:
             - maestro-e2e-tests
             - e2e-tests
+      - run-maestro-e2e-tests-ios:
+          name: run-maestro-e2e-tests-ios-old-architecture
+          new_arch_enabled: false
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
+      - run-maestro-e2e-tests-android:
+          name: run-maestro-e2e-tests-android-old-architecture
+          new_arch_enabled: false
+          context:
+            - maestro-e2e-tests
+            - e2e-tests
 
       # Hold and deploy phase - only on release branches
       - wait-for-pr-approval:
@@ -649,6 +678,7 @@ workflows:
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
+          context: npm-publishing
           <<: *release-tags
       - docs-deploy:
           <<: *release-tags

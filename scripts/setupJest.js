@@ -759,6 +759,8 @@ global.entitlementInfoStub = {
 };
 
 NativeModules.RNPurchases = {
+  addListener: jest.fn(),
+  removeListeners: jest.fn(),
   setupPurchases: jest.fn(),
   setAllowSharingStoreAccount: jest.fn(),
   addAttributionData: jest.fn(),
@@ -819,6 +821,7 @@ NativeModules.RNPurchases = {
   trackAdLoaded: jest.fn(),
   trackAdRevenue: jest.fn(),
   trackAdFailedToLoad: jest.fn(),
+  trackAdRewardEarnedUnverified: jest.fn(),
   trackRewardedAdPromptShown: jest.fn(),
   trackRewardedAdPromptAccepted: jest.fn(),
   generateRewardVerificationToken: jest.fn(),
@@ -827,4 +830,5 @@ NativeModules.RNPurchases = {
 
 jest.mock(
   'react-native/Libraries/EventEmitter/NativeEventEmitter',
- );
+  () => jest.requireActual('react-native/Libraries/EventEmitter/NativeEventEmitter'),
+);

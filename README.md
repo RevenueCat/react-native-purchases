@@ -54,6 +54,24 @@ Our full SDK reference [can be found here](https://revenuecat.github.io/react-na
 
 ## Installation
 
+### Experimental Swift Package Manager support (iOS)
+
+Both `react-native-purchases` and `react-native-purchases-ui` include Swift package
+manifests for React Native's experimental Swift Package Manager integration.
+This integration requires React Native **0.88.0 or later**. CocoaPods remains
+supported, and its minimum React Native version remains **0.73.0**.
+
+Follow [React Native's SwiftPM setup instructions](https://reactnative.dev/blog/2026/08/11/react-native-0.87#experimental-swift-package-manager-support-for-ios)
+to configure your app, then install the SDK packages normally. Their manifests
+are provided by the packages; you do not need to scaffold them.
+
+For apps without a Podfile, React Native Community CLI **21.0.0-alpha.1** is
+currently required for project discovery. Library podspecs are still required
+for React Native's dependency discovery,
+including when the app uses SwiftPM.
+
+### Expo
+
 Expo supports in-app payments and is compatible with `react-native-purchases`. To use the SDK, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). Development builds enable native code and provide a complete environment for testing purchases.
 
 ```
@@ -62,6 +80,6 @@ $ npx expo install react-native-purchases
 
 In Expo Go, the SDK automatically runs in **Preview API Mode**, replacing native calls with JavaScript mocks so your app loads without errors. Real purchases, however, require a development build.
 
-### Using development builds
+#### Using development builds
 
 To fully test in-app purchases, you’ll need to create a [custom development build](https://docs.expo.dev/develop/development-builds/introduction/) with EAS. This ensures that all native dependencies, including `react-native-purchases`, are properly included.

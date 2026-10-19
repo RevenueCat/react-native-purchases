@@ -6,6 +6,7 @@ import RevenueCatUI, {
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
   PAYWALL_RESULT,
+  PaywallCallbacks,
   PaywallViewOptions,
   PresentPaywallIfNeededParams,
   PresentPaywallParams,
@@ -95,9 +96,38 @@ async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
   });
 }
 
+async function checkPresentPaywallWithCallbacks(callbacks: PaywallCallbacks) {
+  let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({ callbacks });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement",
+    callbacks,
+  });
+}
+
+const paywallCallbacks: PaywallCallbacks = {
+  onPurchaseStarted: ({ packageBeingPurchased }: { packageBeingPurchased: PurchasesPackage }) => {},
+  onPurchaseCompleted: ({ customerInfo, storeTransaction }: {
+    customerInfo: CustomerInfo;
+    storeTransaction: PurchasesStoreTransaction;
+  }) => {},
+  onPurchaseError: ({ error }: { error: PurchasesError }) => {},
+  onPurchaseCancelled: () => {},
+  onRestoreStarted: () => {},
+  onRestoreCompleted: ({ customerInfo }: { customerInfo: CustomerInfo }) => {},
+  onRestoreError: ({ error }: { error: PurchasesError }) => {},
+  onPurchasePackageInitiated: ({ packageBeingPurchased, resume }: {
+    packageBeingPurchased: PurchasesPackage;
+    resume: (shouldResume: boolean) => void;
+  }) => {},
+  onWebCheckoutOpened: () => {},
+  onUrlOpened: (url: string) => {},
+  onInteraction: (event: PaywallInteractionEvent) => {},
+};
+
 function checkPresentPaywallParams(params: PresentPaywallParams) {
   const offeringIdentifier: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
+  const callbacks: PaywallCallbacks | undefined = params.callbacks;
   const customVariables: CustomVariables | undefined = params.customVariables;
 }
 

@@ -4,7 +4,7 @@ const {
   PURCHASES_ARE_COMPLETED_BY_TYPE, REFUND_REQUEST_STATUS, STOREKIT_VERSION
 } = require("../dist/purchases");
 
-const nativeEmitter = new NativeEventEmitter();
+const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
 
 describe("Purchases", () => {
   var Purchases;
@@ -46,7 +46,7 @@ describe("Purchases", () => {
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
+    const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
     const eventInfo = {
       callbackID: 1,
     };
@@ -62,7 +62,7 @@ describe("Purchases", () => {
 
     Purchases.addShouldPurchasePromoProductListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
+    const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
     const eventInfo = {
       callbackID: 1,
     };
@@ -85,7 +85,7 @@ describe("Purchases", () => {
     Purchases.addShouldPurchasePromoProductListener(listener);
     Purchases.removeShouldPurchasePromoProductListener(listener);
 
-    const nativeEmitter = new NativeEventEmitter();
+    const nativeEmitter = new NativeEventEmitter(NativeModules.RNPurchases);
 
     const eventInfo = {
       callbackID: 1,
@@ -2397,6 +2397,42 @@ describe("Purchases", () => {
         const data = { ...failedData, placement: "home" };
         await Purchases.adTracker.trackAdFailedToLoad(data);
         expect(NativeModules.RNPurchases.trackAdFailedToLoad).toBeCalledWith(data);
+      });
+    });
+
+    describe("trackAdRewardEarnedUnverified", () => {
+      const rewardEarnedData = {
+        mediatorName: "AdMob",
+        adFormat: "rewarded",
+        adUnitId: "unit-1",
+        impressionId: "imp-1",
+      };
+
+      it("makes right call with required fields", async () => {
+        await Purchases.adTracker.trackAdRewardEarnedUnverified(rewardEarnedData);
+        expect(NativeModules.RNPurchases.trackAdRewardEarnedUnverified).toBeCalledTimes(1);
+        expect(NativeModules.RNPurchases.trackAdRewardEarnedUnverified).toBeCalledWith(rewardEarnedData);
+      });
+
+      it("makes right call with optional fields", async () => {
+        const data = { ...rewardEarnedData, networkName: "AdNetwork", placement: "home" };
+        await Purchases.adTracker.trackAdRewardEarnedUnverified(data);
+        expect(NativeModules.RNPurchases.trackAdRewardEarnedUnverified).toBeCalledWith(data);
+      });
+
+      it("passes null optional fields through", async () => {
+        const data = { ...rewardEarnedData, networkName: null, placement: null };
+        await Purchases.adTracker.trackAdRewardEarnedUnverified(data);
+        expect(NativeModules.RNPurchases.trackAdRewardEarnedUnverified).toBeCalledWith(data);
+      });
+
+      it("rejects when Purchases is not configured", async () => {
+        NativeModules.RNPurchases.isConfigured.mockResolvedValueOnce(false);
+        try {
+          await Purchases.adTracker.trackAdRewardEarnedUnverified(rewardEarnedData);
+          fail("expected error");
+        } catch (error) { }
+        expect(NativeModules.RNPurchases.trackAdRewardEarnedUnverified).toBeCalledTimes(0);
       });
     });
 
