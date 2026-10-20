@@ -1,7 +1,5 @@
 import React, {useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-// Keep PagerView pinned to 6.9.1 so this test supports both architectures.
-// Version 7+ requires the new architecture; 6.9.1 still uses ViewPager2 on Android.
 import PagerView from 'react-native-pager-view';
 import RevenueCatUI from 'react-native-purchases-ui';
 
