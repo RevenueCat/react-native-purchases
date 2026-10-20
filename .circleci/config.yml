@@ -478,7 +478,7 @@ jobs:
           working_directory: e2e-tests/SPMTestApp/ios
           command: |
             stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
-              build/generated/autolinking/libs/ReactNativePurchasesUi > ../../../build/spm-ci/symlinks-before.txt
+              build/generated/autolinking/libs/ReactNativePurchasesUI > ../../../build/spm-ci/symlinks-before.txt
             touch ../package.json
             xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
               -configuration Debug -sdk iphonesimulator \
@@ -489,7 +489,7 @@ jobs:
               | tee ../../../build/spm-ci/debug-resync.log
             grep -F 'SPM sync inputs changed' ../../../build/spm-ci/debug-resync.log
             stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
-              build/generated/autolinking/libs/ReactNativePurchasesUi > ../../../build/spm-ci/symlinks-after.txt
+              build/generated/autolinking/libs/ReactNativePurchasesUI > ../../../build/spm-ci/symlinks-after.txt
             diff -u ../../../build/spm-ci/symlinks-before.txt ../../../build/spm-ci/symlinks-after.txt
           no_output_timeout: 20m
       - run:
