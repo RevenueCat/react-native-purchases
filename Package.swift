@@ -5,33 +5,20 @@
 //
 //  Created by Antonio Pallares.
 //
-// Swift Package Manager support for React Native's experimental SwiftPM
-// integration, which requires React Native 0.88 or later: 0.87 recreated a
-// library's package root on every sync, breaking the Xcode build of any app
-// using a library that ships its own manifest. CocoaPods remains the supported
-// default; see RNPurchases.podspec.
-//
-// `ReactNative` is the package React Native's autolinker generates into the
-// consuming app at `ios/build/xcframeworks`. The autolinker reaches a library
-// that manages its own manifest through a symlink at
-// `ios/build/generated/autolinking/libs/<SwiftPM name>`, and SwiftPM resolves
-// relative package paths against that symlink rather than against
-// `node_modules`. Four levels up is always `ios/build`, so this path holds
-// whatever layout the app uses.
-//
-// The SwiftPM name below is declared in package.json as `swiftpmConfig.name`.
-// Without it React Native would derive the name from RNPurchases.podspec and
-// look for a package named after the pod instead.
+// Experimental SwiftPM integration requires React Native 0.88 or later.
 
 import PackageDescription
 
 let package = Package(
+    // Must match `swiftpmConfig.name` in package.json.
     name: "ReactNativePurchases",
     platforms: [.iOS("15.1")],
     products: [
         .library(name: "ReactNativePurchases", targets: ["ReactNativePurchases"]),
     ],
     dependencies: [
+        // Resolved from the autolinker's ios/build/generated/autolinking/libs/<SwiftPM name>
+        // symlink: four levels up reaches ios/build, where RN generates xcframeworks.
         .package(name: "ReactNative", path: "../../../../xcframeworks"),
         .package(url: "https://github.com/RevenueCat/purchases-hybrid-common", exact: "19.6.0"),
     ],
