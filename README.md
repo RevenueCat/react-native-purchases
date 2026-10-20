@@ -63,8 +63,8 @@ supported, and its minimum React Native version remains **0.73.0**.
 
 Install or upgrade the SDK packages first, then follow
 [React Native's SwiftPM setup instructions](https://github.com/react/react-native/blob/v0.88.0/packages/react-native/scripts/spm/__docs__/spm-scripts.md#quick-start)
-to configure your app. Both packages provide their own manifests; you do not need
-to scaffold them.
+to configure your app. Both SDK packages include the required SwiftPM manifests,
+so you don't need to scaffold them.
 
 For apps without a Podfile, React Native Community CLI **21.0.0-alpha.1** is
 currently required for project discovery. Library podspecs are still required
