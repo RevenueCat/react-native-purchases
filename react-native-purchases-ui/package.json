@@ -30,7 +30,7 @@
     "!**/.*"
   ],
   "swiftpmConfig": {
-    "name": "ReactNativePurchasesUi"
+    "name": "ReactNativePurchasesUI"
   },
   "scripts": {
     "test": "jest",

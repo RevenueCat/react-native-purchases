@@ -6,10 +6,10 @@ import PackageDescription
 
 let package = Package(
     // Must match `swiftpmConfig.name` in package.json.
-    name: "ReactNativePurchasesUi",
+    name: "ReactNativePurchasesUI",
     platforms: [.iOS("15.1")],
     products: [
-        .library(name: "ReactNativePurchasesUi", targets: ["ReactNativePurchasesUi"]),
+        .library(name: "ReactNativePurchasesUI", targets: ["ReactNativePurchasesUI"]),
     ],
     dependencies: [
         // Resolved from the autolinker's ios/build/generated/autolinking/libs/<SwiftPM name>
@@ -19,7 +19,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "ReactNativePurchasesUi",
+            name: "ReactNativePurchasesUI",
             dependencies: [
                 .product(name: "ReactHeaders", package: "ReactNative"),
                 .product(name: "ReactNativeHeaders", package: "ReactNative"),
