@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""Execute unmodified production Objective-C method bodies with callback-provider shims.
-This is a host boundary regression, NOT a full SDK/app/network reproduction.
-"""
+"""Exercise the native placement callback with controlled provider results."""
 import pathlib,subprocess,json,sys,hashlib,os
 import tempfile
 repo=pathlib.Path(__file__).resolve().parents[1]
