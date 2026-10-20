@@ -52,6 +52,16 @@ android {
     }
 }
 
+// TODO: remove with the purchases-hybrid-common 20.0.0-SNAPSHOT pin, before merging.
+rootProject.allprojects {
+    repositories {
+        maven {
+            url 'https://central.sonatype.com/repository/maven-snapshots/'
+            content { includeGroup 'com.revenuecat.purchases' }
+        }
+    }
+}
+
 repositories {
     mavenCentral()
     google()
@@ -127,6 +137,6 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 dependencies {
     //noinspection GradleDynamicVersion
     api 'com.facebook.react:react-native:+'
-    implementation 'com.revenuecat.purchases:purchases-hybrid-common:19.14.1'
+    implementation 'com.revenuecat.purchases:purchases-hybrid-common:20.0.0-SNAPSHOT'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
