@@ -1,10 +1,5 @@
 // swift-tools-version: 5.9
-//
-//  Package.swift
-//  react-native-purchases
-//
-//  Created by Antonio Pallares.
-//
+
 // Experimental SwiftPM integration requires React Native 0.88 or later.
 
 import PackageDescription
