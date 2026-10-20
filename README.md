@@ -61,9 +61,10 @@ manifests for React Native's experimental Swift Package Manager integration.
 This integration requires React Native **0.88.0 or later**. CocoaPods remains
 supported, and its minimum React Native version remains **0.73.0**.
 
-Follow [React Native's SwiftPM setup instructions](https://reactnative.dev/blog/2026/08/11/react-native-0.87#experimental-swift-package-manager-support-for-ios)
-to configure your app, then install the SDK packages normally. Their manifests
-are provided by the packages; you do not need to scaffold them.
+Install or upgrade the SDK packages first, then follow
+[React Native's SwiftPM setup instructions](https://github.com/react/react-native/blob/v0.88.0/packages/react-native/scripts/spm/__docs__/spm-scripts.md#quick-start)
+to configure your app. Both packages provide their own manifests; you do not need
+to scaffold them.
 
 For apps without a Podfile, React Native Community CLI **21.0.0-alpha.1** is
 currently required for project discovery. Library podspecs are still required
