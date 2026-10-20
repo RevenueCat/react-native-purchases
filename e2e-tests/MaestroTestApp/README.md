@@ -46,6 +46,9 @@ The test uses a RevenueCat project configured with:
 
 ## Dependencies
 
+`react-native-pager-view` is pinned to 6.9.1 so the pager regression test runs on
+both architectures. Version 7 and later only support the new architecture.
+
 This app is part of the `react-native-purchases` Yarn workspace. It uses the same
 local dependency mechanism as `examples/purchaseTesterTypescript`:
 - **Babel module-resolver** aliases `react-native-purchases` and
