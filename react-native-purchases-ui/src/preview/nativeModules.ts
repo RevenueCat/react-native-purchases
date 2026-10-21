@@ -43,8 +43,8 @@ export const previewNativeModuleRNPaywalls = {
 
 export const previewNativeModuleRNCustomerCenter = {
 
-    presentCustomerCenter: () => {
-        return null
+    presentCustomerCenter: async (): Promise<void> => {
+        return
     }
 
 }
