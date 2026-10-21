@@ -445,7 +445,7 @@ jobs:
     executor:
       name: rn/macos
       resource_class: m4pro.medium
-      xcode_version: '26.5'
+      xcode_version: '26.6'
     steps:
       - checkout
       - revenuecat/install-mise-tools:
