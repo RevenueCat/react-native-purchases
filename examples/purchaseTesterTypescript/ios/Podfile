@@ -16,6 +16,7 @@ end
 
 target 'PurchaseTester' do
   config = use_native_modules!
+  pod 'RNPurchases', :path => '../../..', :testspecs => ['UnitTests']
 
 #  # Uncomment these to use a local version of `purchases-ios` and `purchases-hybrid-common`:
 #  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'

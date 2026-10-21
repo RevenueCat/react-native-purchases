@@ -420,6 +420,13 @@ jobs:
             export RCT_NO_LAUNCH_PACKAGER=true \
             && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
+      - run:
+          name: iOS native unit tests
+          command: |
+            xcodebuild test -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -scheme RNPurchases-Unit-UnitTests -destination 'platform=iOS Simulator,name=iPhone 16' -configuration Release -derivedDataPath ~/DerivedData -resultBundlePath /tmp/native-unit-tests.xcresult CODE_SIGNING_ALLOWED=NO
+      - store_artifacts:
+          path: /tmp/native-unit-tests.xcresult
+
   make-release:
     description: "Publishes the new version and creates a github release"
     <<: *base-mac-job

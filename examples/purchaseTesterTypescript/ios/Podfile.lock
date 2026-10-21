@@ -14,6 +14,7 @@ PODS:
   - hermes-engine (250829098.0.17):
     - hermes-engine/Pre-built (= 250829098.0.17)
   - hermes-engine/Pre-built (250829098.0.17)
+  - OCMock (3.9.4)
   - PurchasesHybridCommon (19.14.0):
     - RevenueCat (= 5.96.0)
   - PurchasesHybridCommonUI (19.14.0):
@@ -1687,6 +1688,11 @@ PODS:
   - RNPurchases (10.15.0):
     - PurchasesHybridCommon (= 19.14.0)
     - React-Core
+  - RNPurchases/UnitTests (10.15.0):
+    - hermes-engine
+    - OCMock (~> 3.9)
+    - PurchasesHybridCommon (= 19.14.0)
+    - React-Core
   - RNScreens (4.28.0):
     - hermes-engine
     - RCTRequired
@@ -1827,12 +1833,14 @@ DEPENDENCIES:
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
   - RNPaywalls (from `../../../react-native-purchases-ui`)
   - RNPurchases (from `../../..`)
+  - RNPurchases/UnitTests (from `../../..`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - SocketRocket (from `build/rndeps-facades/SocketRocket`)
   - Yoga (from `build/rncore-facades/Yoga`)
 
 SPEC REPOS:
   trunk:
+    - OCMock
     - PurchasesHybridCommon
     - PurchasesHybridCommonUI
     - RevenueCat
@@ -2027,6 +2035,7 @@ SPEC CHECKSUMS:
   fmt: ba0886e864ebb21d14c98b2e12e164b8002f5b93
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 63c5db7d529c36335fada6582fd293ae2a105d77
+  OCMock: 589f2c84dacb1f5aaf6e4cec1f292551fe748e74
   PurchasesHybridCommon: 788352edd488fbae596bdacfe8ee3e0d32a65362
   PurchasesHybridCommonUI: 9bd120586e566bfe3799e1b616270885e4c25982
   RCT-Folly: 82921e585c0400eda46fac1068297aa9dfb035e4
@@ -2109,11 +2118,11 @@ SPEC CHECKSUMS:
   RevenueCat: 8c42ebba42490dc7da8499541ab4d27187c8a480
   RevenueCatUI: 03d28bd025c78bcf783c85d5472c656a95824add
   RNPaywalls: b75f33facb0bc612c570d30624b84136cdd2effc
-  RNPurchases: e14056633b7d90d391901f68eac9c7981bbc48a5
+  RNPurchases: e978249a7948555eb49e046885783828155dc67a
   RNScreens: 038dc998fe1ab34778d9e8f4a33318a6c7a5bde8
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
 
-PODFILE CHECKSUM: 4eab8fc1513ec2caaabc2a6dca9d2d5e550ff3ad
+PODFILE CHECKSUM: c2dafe38f95e9f4dd40f200540ec95621820e40e
 
 COCOAPODS: 1.17.0
