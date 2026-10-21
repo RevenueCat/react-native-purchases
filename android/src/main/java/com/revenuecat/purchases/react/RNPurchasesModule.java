@@ -51,7 +51,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "10.2.0";
+    public static final String PLUGIN_VERSION = "10.15.0";
 
     private final ReactApplicationContext reactContext;
 
@@ -89,15 +89,21 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     public void setupPurchases(String apiKey, @Nullable String appUserID,
                                @Nullable String purchasesAreCompletedBy, @Nullable String userDefaultsSuiteName,
                                @Nullable String storeKitVersion, boolean useAmazon,
+                               @Nullable String storeString,
+                               @Nullable String galaxyBillingMode,
                                boolean shouldShowInAppMessagesAutomatically,
                                @Nullable String entitlementVerificationMode,
                                boolean pendingTransactionsForPrepaidPlansEnabled,
                                boolean diagnosticsEnabled,
                                boolean automaticDeviceIdentifierCollectionEnabled,
-                               @Nullable String preferredUILocaleOverride) {
+                               @Nullable String preferredUILocaleOverride,
+                               boolean useExternalPurchaseCustomLinks,
+                               boolean enableExternalPurchasesInSimulator) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
-        if (useAmazon) {
+        if ("GALAXY".equals(storeString)) {
+            store = Store.GALAXY;
+        } else if (useAmazon) {
             store = Store.AMAZON;
         }
         CommonKt.configure(
@@ -113,7 +119,8 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             pendingTransactionsForPrepaidPlansEnabled,
             diagnosticsEnabled,
             automaticDeviceIdentifierCollectionEnabled,
-            preferredUILocaleOverride
+            preferredUILocaleOverride,
+            galaxyBillingMode
         );
         Purchases.getSharedInstance().setUpdatedCustomerInfoListener(this);
     }
@@ -140,13 +147,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void setAppstackAttributionParams(ReadableMap data, final Promise promise) {
-        HashMap<String, Object> dataMap = new HashMap<>();
-        for (Map.Entry<String, Object> entry : data.toHashMap().entrySet()) {
-            if (entry.getValue() != null) {
-                dataMap.put(entry.getKey(), entry.getValue());
-            }
-        }
-        CommonKt.setAppstackAttributionParams(dataMap, getOnResult(promise));
+        CommonKt.setAppstackAttributionParams(mapWithoutNullValues(data), getOnResult(promise));
     }
 
     @ReactMethod
@@ -503,8 +504,18 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     }
 
     @ReactMethod
+    public void setSingularDeviceID(String singularDeviceID) {
+        SubscriberAttributesKt.setSingularDeviceID(singularDeviceID);
+    }
+
+    @ReactMethod
     public void setOnesignalID(String onesignalID) {
         SubscriberAttributesKt.setOnesignalID(onesignalID);
+    }
+
+    @ReactMethod
+    public void setOnesignalUserID(String onesignalUserID) {
+        SubscriberAttributesKt.setOnesignalUserID(onesignalUserID);
     }
 
     @ReactMethod
@@ -544,6 +555,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void setCreative(String creative) {
         SubscriberAttributesKt.setCreative(creative);
+    }
+
+    @ReactMethod
+    public void setAppsFlyerConversionData(ReadableMap data) {
+        SubscriberAttributesKt.setAppsFlyerConversionData(data == null ? null : data.toHashMap());
     }
 
     @ReactMethod
@@ -623,7 +639,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
 
     @ReactMethod
     public void trackCustomPaywallImpression(ReadableMap data) {
-        CommonKt.trackCustomPaywallImpression(data.toHashMap());
+        CommonKt.trackCustomPaywallImpression(mapWithoutNullValues(data));
     }
 
     @ReactMethod
@@ -649,6 +665,34 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void trackAdFailedToLoad(ReadableMap data) {
         CommonKt.trackAdFailedToLoad(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdRewardEarnedUnverified(ReadableMap data) {
+        CommonKt.trackAdRewardEarnedUnverified(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackRewardedAdPromptShown(ReadableMap data) {
+        CommonKt.trackRewardedAdPromptShown(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackRewardedAdPromptAccepted(ReadableMap data) {
+        CommonKt.trackRewardedAdPromptAccepted(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void generateRewardVerificationToken(String impressionId, final Promise promise) {
+        promise.resolve(convertMapToWriteableMap(CommonKt.generateRewardVerificationToken(impressionId)));
+    }
+
+    @ReactMethod
+    public void pollRewardVerification(String clientTransactionId,
+                                       @Nullable ReadableMap trackingMetadata,
+                                       final Promise promise) {
+        Map<String, Object> mapTrackingMetadata = trackingMetadata != null ? mapWithoutNullValues(trackingMetadata) : null;
+        CommonKt.pollRewardVerification(clientTransactionId, getOnResult(promise), mapTrackingMetadata);
     }
 
     // endregion
@@ -730,5 +774,37 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             default:
                 return null;
         }
+    }
+
+    private static HashMap<String, Object> mapWithoutNullValues(ReadableMap data) {
+        return mapWithoutNullValues(data.toHashMap());
+    }
+
+    private static HashMap<String, Object> mapWithoutNullValues(Map<?, ?> data) {
+        HashMap<String, Object> dataMap = new HashMap<>();
+        for (Map.Entry<?, ?> entry : data.entrySet()) {
+            Object value = valueWithoutNullValues(entry.getValue());
+            if (entry.getKey() instanceof String && value != null) {
+                dataMap.put((String) entry.getKey(), value);
+            }
+        }
+        return dataMap;
+    }
+
+    private static Object valueWithoutNullValues(@Nullable Object value) {
+        if (value instanceof Map) {
+            return mapWithoutNullValues((Map<?, ?>) value);
+        }
+        if (value instanceof List) {
+            ArrayList<Object> filteredList = new ArrayList<>();
+            for (Object item : (List<?>) value) {
+                Object filteredItem = valueWithoutNullValues(item);
+                if (filteredItem != null) {
+                    filteredList.add(filteredItem);
+                }
+            }
+            return filteredList;
+        }
+        return value;
     }
 }

@@ -3,7 +3,8 @@ import {
   CustomerInfo,
   PurchasesEntitlementInfo,
   PurchasesEntitlementInfos,
-  PurchasesStoreTransaction
+  PurchasesStoreTransaction,
+  PurchasesSubscriptionInfo
 } from "../src";
 
 function checkLoginResult(result: LogInResult) {
@@ -25,6 +26,29 @@ function checkCustomerInfo(info: CustomerInfo) {
   const originalPurchaseDate: string | null = info.originalPurchaseDate;
   const managementURL: string | null = info.managementURL;
   const nonSubscriptionTransactions: PurchasesStoreTransaction[] = info.nonSubscriptionTransactions;
+  const subscriptionsByProductIdentifier: { [p: string]: PurchasesSubscriptionInfo } = info.subscriptionsByProductIdentifier;
+}
+
+function checkSubscriptionInfo(info: PurchasesSubscriptionInfo) {
+  const productIdentifier: string = info.productIdentifier;
+  const purchaseDate: string = info.purchaseDate;
+  const originalPurchaseDate: string | null = info.originalPurchaseDate;
+  const expiresDate: string | null = info.expiresDate;
+  const store: string = info.store;
+  const unsubscribeDetectedAt: string | null = info.unsubscribeDetectedAt;
+  const isSandbox: boolean = info.isSandbox;
+  const billingIssuesDetectedAt: string | null = info.billingIssuesDetectedAt;
+  const gracePeriodExpiresDate: string | null = info.gracePeriodExpiresDate;
+  const ownershipType: string = info.ownershipType;
+  const periodType: string = info.periodType;
+  const refundedAt: string | null = info.refundedAt;
+  const storeTransactionId: string | null = info.storeTransactionId;
+  const isActive: boolean = info.isActive;
+  const willRenew: boolean = info.willRenew;
+  const autoResumeDate: string | null = info.autoResumeDate;
+  const displayName: string | null = info.displayName;
+  const managementURL: string | null = info.managementURL;
+  const productPlanIdentifier: string | null = info.productPlanIdentifier;
 }
 
 function checkEntitlementInfos(infos: PurchasesEntitlementInfos) {

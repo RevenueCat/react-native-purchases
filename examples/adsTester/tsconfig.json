@@ -1,0 +1,12 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "react-native-purchases": ["../../src/index"],
+      "react-native-purchases-admob": ["../../react-native-purchases-admob/src/index"]
+    },
+    "isolatedModules": false,
+    "types": []
+  }
+}

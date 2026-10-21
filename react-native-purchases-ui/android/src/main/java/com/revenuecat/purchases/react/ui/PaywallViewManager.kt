@@ -11,7 +11,7 @@ import com.revenuecat.purchases.ui.revenuecatui.fonts.CustomFontProvider
 internal class PaywallViewManager : BasePaywallViewManager<WrappedPaywallComposeView>() {
 
     companion object {
-        const val REACT_CLASS = "Paywall"
+        const val REACT_CLASS = "PaywallView"
     }
 
     override fun getName(): String {

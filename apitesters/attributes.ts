@@ -18,7 +18,9 @@ async function checkAttributes(purchases: Purchases) {
   await Purchases.setFirebaseAppInstanceID(stringOrNull);
   await Purchases.setTenjinAnalyticsInstallationID(stringOrNull);
   await Purchases.setKochavaDeviceID(stringOrNull);
+  await Purchases.setSingularDeviceID(stringOrNull);
   await Purchases.setOnesignalID(stringOrNull);
+  await Purchases.setOnesignalUserID(stringOrNull);
   await Purchases.setAirshipChannelID(stringOrNull);
   await Purchases.setMediaSource(stringOrNull);
   await Purchases.setCampaign(stringOrNull);
@@ -26,6 +28,19 @@ async function checkAttributes(purchases: Purchases) {
   await Purchases.setAd(stringOrNull);
   await Purchases.setKeyword(stringOrNull);
   await Purchases.setCreative(stringOrNull);
+
+  // Asserts the full AppsFlyer onInstallConversionData callback object is accepted as-is.
+  const conversionData = {
+    status: "success" as const,
+    type: "onInstallConversionDataLoaded" as const,
+    data: {
+      is_first_launch: "true",
+      media_source: "",
+      campaign: "",
+      af_status: "Organic",
+    } as { [key: string]: any },
+  };
+  await Purchases.setAppsFlyerConversionData(conversionData);
 
   await Purchases.collectDeviceIdentifiers();
   await Purchases.enableAdServicesAttributionTokenCollection();

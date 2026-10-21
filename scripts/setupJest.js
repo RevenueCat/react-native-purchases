@@ -759,6 +759,8 @@ global.entitlementInfoStub = {
 };
 
 NativeModules.RNPurchases = {
+  addListener: jest.fn(),
+  removeListeners: jest.fn(),
   setupPurchases: jest.fn(),
   setAllowSharingStoreAccount: jest.fn(),
   addAttributionData: jest.fn(),
@@ -773,6 +775,7 @@ NativeModules.RNPurchases = {
   setDebugLogsEnabled: jest.fn(),
   setLogLevel: jest.fn(),
   setLogHandler: jest.fn(),
+  trackCustomPaywallImpression: jest.fn(),
   getCustomerInfo: jest.fn(),
   logIn: jest.fn(),
   logOut: jest.fn(),
@@ -799,6 +802,8 @@ NativeModules.RNPurchases = {
   setFirebaseAppInstanceID: jest.fn(),
   setTenjinAnalyticsInstallationID: jest.fn(),
   setKochavaDeviceID: jest.fn(),
+  setSingularDeviceID: jest.fn(),
+  setOnesignalUserID: jest.fn(),
   canMakePayments: jest.fn(),
   beginRefundRequestForActiveEntitlement: jest.fn(),
   beginRefundRequestForEntitlementId: jest.fn(),
@@ -815,9 +820,15 @@ NativeModules.RNPurchases = {
   trackAdOpened: jest.fn(),
   trackAdLoaded: jest.fn(),
   trackAdRevenue: jest.fn(),
-  trackAdFailedToLoad: jest.fn()
+  trackAdFailedToLoad: jest.fn(),
+  trackAdRewardEarnedUnverified: jest.fn(),
+  trackRewardedAdPromptShown: jest.fn(),
+  trackRewardedAdPromptAccepted: jest.fn(),
+  generateRewardVerificationToken: jest.fn(),
+  pollRewardVerification: jest.fn()
 };
 
 jest.mock(
   'react-native/Libraries/EventEmitter/NativeEventEmitter',
- );
+  () => jest.requireActual('react-native/Libraries/EventEmitter/NativeEventEmitter'),
+);

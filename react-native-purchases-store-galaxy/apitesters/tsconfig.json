@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "react-native-purchases": ["../dist/index"],
+      "react-native-purchases-store-galaxy": ["./src/index"]
+    },
+    "noEmit": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["./**/*"],
+  "exclude": ["../node_modules", "../lib"]
+}

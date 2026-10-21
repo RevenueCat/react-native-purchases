@@ -94,12 +94,12 @@ describe('alertHelper', () => {
       expect(mockLoadSimulatedPurchaseData).toHaveBeenCalledWith('test-package', 'test-offering');
 
       expect(mockAlert).toHaveBeenCalledWith(
-        'Test Purchase',
+        'Test Store Purchase',
         expect.stringContaining('⚠️ This is a test purchase'),
         expect.arrayContaining([
           expect.objectContaining({ text: 'Cancel' }),
-          expect.objectContaining({ text: 'Test Failed Purchase' }),
-          expect.objectContaining({ text: 'Test Valid Purchase' })
+          expect.objectContaining({ text: 'Test failed purchase' }),
+          expect.objectContaining({ text: 'Test valid purchase' })
         ]),
         { cancelable: true, onDismiss: expect.any(Function) }
       );
@@ -114,7 +114,7 @@ describe('alertHelper', () => {
       expect(alertMessage).toContain('• Intro: $0.99 for 1 month(s)');
       expect(alertMessage).toContain('• Discount: $4.99 for 2 week(s)');
 
-      // Simulate user clicking Test Valid Purchase (now at index 2)
+      // Simulate user clicking Test valid purchase (now at index 2)
       const testPurchaseButton = mockAlert.mock.calls[0]!![2]!![2];
       await testPurchaseButton.onPress!!();
 
@@ -245,7 +245,7 @@ describe('alertHelper', () => {
       // Wait for async operations to complete
       await new Promise(setImmediate);
 
-      // Simulate user clicking Test Valid Purchase (now at index 2)
+      // Simulate user clicking Test valid purchase (now at index 2)
       const testPurchaseButton = mockAlert.mock.calls[0]!![2]!![2];
       // Don't await this since it will reject
       testPurchaseButton.onPress!!();
@@ -291,7 +291,7 @@ describe('alertHelper', () => {
       // Wait for async operations to complete
       await new Promise(setImmediate);
 
-      // Simulate user clicking Test Failed Purchase (at index 1)
+      // Simulate user clicking Test failed purchase (at index 1)
       const testFailedPurchaseButton = mockAlert.mock.calls[0]!![2]!![1];
       testFailedPurchaseButton.onPress!!();
 

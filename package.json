@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases",
   "title": "React Native Purchases",
-  "version": "10.2.0",
+  "version": "10.15.0",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android. ",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -28,6 +28,8 @@
     "!**/*.iml",
     "!**/.DS_Store",
     "!**/.gitignore",
+    "!react-native-purchases-admob",
+    "!react-native-purchases-store-galaxy",
     "!react-native-purchases-ui",
     "!scripts/docs/index.html",
     "!scripts/setupJest.js"
@@ -46,10 +48,12 @@
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
+    "react-native-purchases-admob",
+    "react-native-purchases-store-galaxy",
     "react-native-purchases-ui",
     "e2e-tests/MaestroTestApp"
   ],
-  "packageManager": "yarn@3.6.1",
+  "packageManager": "yarn@3.6.1+sha512.de524adec81a6c3d7a26d936d439d2832e351cdfc5728f9d91f3fc85dd20b04391c038e9b4ecab11cae2b0dd9f0d55fd355af766bc5c1a7f8d25d96bb2a0b2ca",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/revenuecat/react-native-purchases.git",
@@ -78,6 +82,9 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@react-native/babel-preset": "0.87.1",
+    "@react-native/jest-preset": "0.87.1",
     "@types/jest": "^29.5.12",
     "@types/react": "^18.2.44",
     "@types/react-dom": "~18.2.0",
@@ -87,7 +94,7 @@
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
     "react": "18.2.0",
-    "react-native": "0.78.0",
+    "react-native": "0.87.1",
     "ts-jest": "^29.1.2",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
@@ -100,9 +107,11 @@
     "fast-xml-parser": "5.5.7"
   },
   "jest": {
-    "preset": "react-native",
+    "preset": "@react-native/jest-preset",
     "modulePathIgnorePatterns": [
       "<rootDir>/examples/purchaseTesterTypescript/",
+      "<rootDir>/react-native-purchases-admob/",
+      "<rootDir>/react-native-purchases-store-galaxy/",
       "<rootDir>/react-native-purchases-ui/",
       "<rootDir>/dir/"
     ],
@@ -115,7 +124,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-js-hybrid-mappings": "18.9.1",
-    "@revenuecat/purchases-typescript-internal": "18.9.1"
+    "@revenuecat/purchases-js-hybrid-mappings": "19.14.0",
+    "@revenuecat/purchases-typescript-internal": "19.14.0"
   }
 }

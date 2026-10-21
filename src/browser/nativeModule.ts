@@ -7,9 +7,10 @@ import { validateAndTransform, isCustomerInfo, isPurchasesOfferings, isPurchases
 import { isExpoGo, isRorkSandbox } from '../utils/environment';
 import { ensurePurchasesConfigured, methodNotSupportedOnWeb } from './utils';
 import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPackageHelper';
+import type { RewardedAdTrackingMetadata } from '../purchases';
 
 
-const packageVersion = '9.1.0';
+const packageVersion = '10.15.0';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
@@ -22,12 +23,16 @@ export const browserNativeModuleRNPurchases = {
     _userDefaultsSuiteName: string | null,
     _storeKitVersion: string | null,
     _useAmazon: boolean,
+    _store: string | null,
+    _galaxyBillingMode: string | null,
     _shouldShowInAppMessagesAutomatically: boolean,
     _entitlementVerificationMode: string | null,
     _pendingTransactionsForPrepaidPlansEnabled: boolean,
     _diagnosticsEnabled: boolean,
     _automaticDeviceIdentifierCollectionEnabled: boolean,
-    _preferredUILocaleOverride: string | null
+    _preferredUILocaleOverride: string | null,
+    _useExternalPurchaseCustomLinks: boolean,
+    _enableExternalPurchasesInSimulator: boolean
   ) => {
     try {
       // Make sure that when running in Expo Go or Rork sandbox a web-compatible API key is used, because the underlying purchases-js error message isn't super clear when a non-compatible API key type is used in this case
@@ -99,6 +104,9 @@ export const browserNativeModuleRNPurchases = {
   },
   setLogHandler: async (handler: (level: string, message: string) => void) => {
     PurchasesCommon.setLogHandler(handler);
+  },
+  trackCustomPaywallImpression: async (_data: any) => {
+    methodNotSupportedOnWeb('trackCustomPaywallImpression');
   },
   getCustomerInfo: async () => {
     ensurePurchasesConfigured();
@@ -266,8 +274,14 @@ export const browserNativeModuleRNPurchases = {
   setKochavaDeviceID: async (_kochavaDeviceID: string) => {
     methodNotSupportedOnWeb('setKochavaDeviceID');
   },
+  setSingularDeviceID: async (_singularDeviceID: string) => {
+    methodNotSupportedOnWeb('setSingularDeviceID');
+  },
   setOnesignalID: async (_onesignalID: string) => {
     methodNotSupportedOnWeb('setOnesignalID');
+  },
+  setOnesignalUserID: async (_onesignalUserID: string) => {
+    methodNotSupportedOnWeb('setOnesignalUserID');
   },
   setAirshipChannelID: async (_airshipChannelID: string) => {
     methodNotSupportedOnWeb('setAirshipChannelID');
@@ -292,6 +306,9 @@ export const browserNativeModuleRNPurchases = {
   },
   setCreative: async (_creative: string) => {
     methodNotSupportedOnWeb('setCreative');
+  },
+  setAppsFlyerConversionData: async (_data: Record<string, any> | null) => {
+    methodNotSupportedOnWeb('setAppsFlyerConversionData');
   },
   overridePreferredLocale: async (_locale: string | null) => {
     methodNotSupportedOnWeb('overridePreferredLocale');
@@ -351,5 +368,20 @@ export const browserNativeModuleRNPurchases = {
   },
   trackAdFailedToLoad: async (_data: any) => {
     methodNotSupportedOnWeb('trackAdFailedToLoad');
+  },
+  trackAdRewardEarnedUnverified: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdRewardEarnedUnverified');
+  },
+  trackRewardedAdPromptShown: async (_data: any) => {
+    methodNotSupportedOnWeb('trackRewardedAdPromptShown');
+  },
+  trackRewardedAdPromptAccepted: async (_data: any) => {
+    methodNotSupportedOnWeb('trackRewardedAdPromptAccepted');
+  },
+  generateRewardVerificationToken: async (_impressionId: string) => {
+    methodNotSupportedOnWeb('generateRewardVerificationToken');
+  },
+  pollRewardVerification: async (_clientTransactionId: string, _trackingMetadata?: RewardedAdTrackingMetadata) => {
+    methodNotSupportedOnWeb('pollRewardVerification');
   },
 };

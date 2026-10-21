@@ -1,20 +1,30 @@
 files_with_version_number = {
     './.version' => ['{x}'],
     './package.json' => ['"version": "{x}"'],
-    './yarn.lock' => ['react-native-purchases: {x}', '"react-native-purchases@{x},'],
+    './yarn.lock' => [
+      'react-native-purchases: {x}',
+      'react-native-purchases-store-galaxy: {x}',
+      '"react-native-purchases-store-galaxy@{x},',
+    ],
+    './react-native-purchases-store-galaxy/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
+    './react-native-purchases-store-galaxy/android/build.gradle' => ['versionName \'{x}\''],
+    './examples/purchaseTesterTypescript/package.json' => ['"react-native-purchases-store-galaxy": "{x}"'],
     './react-native-purchases-ui/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
+    './react-native-purchases-admob/package.json' => ['"version": "{x}"', '"react-native-purchases": "{x}"'],
     './ios/RNPurchases.m' => ['return @"{x}"'],
     './android/build.gradle' => ['versionName \'{x}\''],
     './react-native-purchases-ui/android/build.gradle' => ['versionName \'{x}\''],
     './android/src/main/java/com/revenuecat/purchases/react/RNPurchasesModule.java' => ['PLUGIN_VERSION = "{x}"'],
-    './src/browser/nativeModule.ts' => ['packageVersion = "{x}"']
+    './src/browser/nativeModule.ts' => ['packageVersion = \'{x}\'']
 }
 files_to_update_phc_version = {
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
-    'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommon", \'{x}\'', '"PurchasesHybridCommonUI", \'{x}\''],
+    'react-native-purchases-store-galaxy/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:{x}'],
+    'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommonUI", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
     'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"', '"@revenuecat/purchases-js-hybrid-mappings": "{x}"'],
+    'react-native-purchases-store-galaxy/package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"'],
     'react-native-purchases-ui/package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']
 }
 files_to_update_on_latest_stable_releases = {
@@ -101,7 +111,7 @@ lane :github_release do |options|
   )
 end
 
-desc "Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui"
+desc "Creates GitHub release and publishes react-native-purchases, react-native-purchases-ui, react-native-purchases-store-galaxy and react-native-purchases-admob"
 lane :release do |options|
   version_number = current_version_number
   is_prerelease = prerelease?
@@ -122,6 +132,12 @@ lane :release do |options|
     sh(args)
   end
   Dir.chdir(File.expand_path('react-native-purchases-ui', get_root_folder)) do
+      sh(args)
+  end
+  Dir.chdir(File.expand_path('react-native-purchases-store-galaxy', get_root_folder)) do
+      sh(args)
+  end
+  Dir.chdir(File.expand_path('react-native-purchases-admob', get_root_folder)) do
       sh(args)
   end
   github_release(version: version_number)
@@ -200,6 +216,17 @@ lane :update_hybrid_common do |options|
   update_sample_podfile_lock_with_retry(pod_name: 'PurchasesHybridCommonUI')
 
   push_to_git_remote(set_upstream: true)
+
+  # GitHub merges as soon as the required checks are green, so arming auto-merge
+  # any earlier can drop the Podfile.lock commit pushed above.
+  if options[:open_pr] && options[:automatic_release]
+    enable_auto_merge_for_pr(
+      github_token: ENV["GITHUB_TOKEN"],
+      repo_name: 'react-native-purchases',
+      base_branch: 'main',
+      merge_method: 'SQUASH'
+    )
+  end
 end
 
 desc "Generate docs"
@@ -287,6 +314,11 @@ def get_phc_version
       .captures[0]
     UI.user_error!("Android PHC UI version not found.") if android_phc_ui_version.nil?
 
+    android_phc_store_galaxy_version = File.read("react-native-purchases-store-galaxy/android/build.gradle")
+      .match("[\"']com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:(.*)[\"']")
+      .captures[0]
+    UI.user_error!("Android PHC Store Galaxy version not found.") if android_phc_store_galaxy_version.nil?
+
     ios_phc_version = File.read("RNPurchases.podspec")
       .match("\"PurchasesHybridCommon\", '(.*)'")
       .captures[0]
@@ -300,6 +332,7 @@ def get_phc_version
     versions_match =
       android_phc_version == ios_phc_version &&
       android_phc_version == android_phc_ui_version &&
+      android_phc_version == android_phc_store_galaxy_version &&
       ios_phc_version == ios_phc_ui_version
     UI.user_error!("Android and iOS PHC (UI) versions don't match. Please make sure they match.") unless versions_match
 
@@ -321,26 +354,34 @@ def check_no_git_tag_exists(version_number)
   end
 end
 
+def is_new_arch_enabled(options)
+  options.fetch(:new_arch_enabled, true).to_s != "false"
+end
+
 desc "Run maestro E2E tests on iOS"
-lane :run_maestro_e2e_tests_ios do
+lane :run_maestro_e2e_tests_ios do |options|
+  architecture_environment = is_new_arch_enabled(options) ? "" : "RCT_NEW_ARCH_ENABLED=0 "
+
   Dir.chdir("../e2e-tests/MaestroTestApp") do
     sh("sed -i '' 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
-    sh("rm -rf ios/Pods && cd ios && pod install --repo-update")
-    sh("FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
+    sh("rm -rf ios/Pods && cd ios && #{architecture_environment}pod install --repo-update")
+    sh("#{architecture_environment}FORCE_BUNDLING=1 xcodebuild -workspace ios/MaestroTestApp.xcworkspace -scheme MaestroTestApp -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' -derivedDataPath build")
     sh("xcrun simctl install booted build/Build/Products/Debug-iphonesimulator/MaestroTestApp.app")
   end
   run_maestro_e2e_tests(flow_dir: "../e2e-tests/maestro/", output_dir: "test_output")
 end
 
 desc "Build maestro E2E test app for Android"
-lane :build_maestro_app_android do
+lane :build_maestro_app_android do |options|
+  architecture_option = is_new_arch_enabled(options) ? "" : " -PnewArchEnabled=false"
+
   Dir.chdir("../e2e-tests/MaestroTestApp") do
     sh("sed -i 's/MAESTRO_TESTS_REVENUECAT_API_KEY/'\"$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE\"'/g' App.tsx")
     sh("grep -q MAESTRO_TESTS_REVENUECAT_API_KEY App.tsx && echo 'ERROR: API key placeholder was not replaced' && exit 1 || true")
     sh("YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install")
-    sh("cd android && ./gradlew assembleDebug")
+    sh("cd android && ./gradlew assembleDebug#{architecture_option}")
   end
 end
 

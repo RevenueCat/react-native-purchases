@@ -51,7 +51,7 @@ Make github release
 [bundle exec] fastlane release
 ```
 
-Creates GitHub release and publishes react-native-purchases and react-native-purchases-ui
+Creates GitHub release and publishes react-native-purchases, react-native-purchases-ui, react-native-purchases-store-galaxy and react-native-purchases-admob
 
 ### build_example
 

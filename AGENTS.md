@@ -54,9 +54,9 @@ react-native-purchases/
 │       ├── RNPurchasesConverters.kt
 │       ├── RNPurchasesPackage.java
 │       └── GoogleUpgradeInfo.java
-├── ios/                      # iOS native module (Obj-C/Swift)
-│   ├── RNPurchases.m
-│   └── PurchasesPlugin.swift
+├── ios/                      # iOS native module (Obj-C)
+│   ├── RNPurchases.h
+│   └── RNPurchases.m
 ├── __tests__/                # Jest test suites
 ├── examples/
 │   ├── MagicWeather/         # Complete example app
@@ -105,7 +105,7 @@ yarn prepare-expo
 1. **TypeScript Wrapper** (`src/purchases.ts`) — Type-safe public API
 2. **Native Bridge** (`PurchasesHybridCommon`) — iOS/Android hybrid mappings come from the corresponding PHC libraries
 3. **Native Modules**:
-   - iOS: `ios/RNPurchases.m`, `ios/PurchasesPlugin.swift`
+   - iOS: `ios/RNPurchases.m`
    - Android: `android/.../RNPurchasesModule.java`
 4. **Browser Fallback** (`src/browser/`) — For web/Expo Go/Rork Sandbox environments
 

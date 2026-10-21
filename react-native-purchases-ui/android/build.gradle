@@ -19,10 +19,20 @@ def isNewArchitectureEnabled() {
 }
 
 apply plugin: "com.android.library"
-apply plugin: "kotlin-android"
+// AGP 9 ships built-in Kotlin support and registers the `kotlin` extension
+// itself. Applying kotlin-android on top of it fails with
+// "Cannot add extension with name 'kotlin'". Only apply it when nothing
+// has registered that extension yet.
+if (project.extensions.findByName('kotlin') == null) {
+    apply plugin: "kotlin-android"
+}
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
+  // Codegen scans the package root by default. In this monorepo that includes the workspace's own
+  // node_modules/react-native, which generates React Native's core specs into this library and
+  // shadows the app's. Only our sources can contain specs.
+  react { jsRootDir = file("../src") }
 }
 
 def getExtOrDefault(name) {
@@ -59,7 +69,7 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     versionCode 1
-    versionName '10.2.0'
+    versionName '10.15.0'
   }
 
   buildTypes {
@@ -91,7 +101,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'com.revenuecat.purchases:purchases-hybrid-common-ui:18.9.1'
+  implementation 'com.revenuecat.purchases:purchases-hybrid-common-ui:19.14.0'
   implementation 'androidx.compose.ui:ui-android:1.5.4'
   implementation "androidx.appcompat:appcompat:1.6.1"
 }
