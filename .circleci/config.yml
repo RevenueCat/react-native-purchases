@@ -138,6 +138,9 @@ jobs:
           working_directory: react-native-purchases-ui
           command: yarn prepare
       - run:
+          name: Type check Maestro app and shared UI
+          command: yarn workspace MaestroTestApp build
+      - run:
           name: Prepare Galaxy Store package
           working_directory: react-native-purchases-store-galaxy
           command: yarn prepare
