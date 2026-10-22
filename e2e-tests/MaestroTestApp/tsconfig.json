@@ -11,6 +11,8 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
+      "react": ["node_modules/@types/react"],
+      "react-native": ["node_modules/react-native"],
       "react-native-purchases": ["../../dist/index.d.ts"],
       "react-native-purchases-ui": ["../../react-native-purchases-ui/lib/typescript/src/index.d.ts"]
     },
