@@ -68,3 +68,46 @@ describe("errors rejected by the native module", () => {
     await expect(Purchases.getCustomerInfo()).resolves.toBeTruthy();
   });
 });
+
+describe("errors delivered in a resolved web redemption result", () => {
+  const redemption = { redemptionLink: "https://pay.rev.cat/redeem/abc" };
+
+  beforeEach(() => {
+    NativeModules.RNPurchases.isConfigured.mockResolvedValue(true);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("match the PurchasesError interface", async () => {
+    NativeModules.RNPurchases.redeemWebPurchase.mockResolvedValueOnce({
+      result: "ERROR",
+      error: {
+        code: 1,
+        message: "Purchase was cancelled.",
+        readableErrorCode: "PURCHASE_CANCELLED",
+        underlyingErrorMessage: "",
+      },
+    });
+
+    const result = await Purchases.redeemWebPurchase(redemption);
+
+    const error: PurchasesError = (result as { error: PurchasesError }).error;
+    expect(error.code).toBe("1");
+    expect(error.userInfo.readableErrorCode).toBe("PURCHASE_CANCELLED");
+    expect(error.readableErrorCode).toBe("PURCHASE_CANCELLED");
+    expect(error.message).toBe("Purchase was cancelled.");
+    expect(error.userCancelled).toBe(true);
+  });
+
+  it("leave results without an error alone", async () => {
+    const expired = { result: "EXPIRED", obfuscatedEmail: "a***@example.com" };
+    NativeModules.RNPurchases.redeemWebPurchase.mockResolvedValueOnce(expired);
+
+    await expect(Purchases.redeemWebPurchase(redemption)).resolves.toEqual({
+      result: "EXPIRED",
+      obfuscatedEmail: "a***@example.com",
+    });
+  });
+});
