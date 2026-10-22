@@ -478,6 +478,8 @@ jobs:
           name: Rebuild after an autolinking resync
           working_directory: e2e-tests/SPMTestApp/ios
           command: |
+            sync_stamp=build/generated/autolinking/.spm-sync-stamp
+            test -s "$sync_stamp"
             stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
               build/generated/autolinking/libs/ReactNativePurchasesUI > ../../../build/spm-ci/symlinks-before.txt
             touch ../package.json
@@ -489,6 +491,8 @@ jobs:
               -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
               | tee ../../../build/spm-ci/debug-resync.log
             grep -F 'SPM sync inputs changed' ../../../build/spm-ci/debug-resync.log
+            grep -F 'SPM autolinking sync complete.' ../../../build/spm-ci/debug-resync.log
+            test "$sync_stamp" -nt ../package.json
             stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
               build/generated/autolinking/libs/ReactNativePurchasesUI > ../../../build/spm-ci/symlinks-after.txt
             diff -u ../../../build/spm-ci/symlinks-before.txt ../../../build/spm-ci/symlinks-after.txt
