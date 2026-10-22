@@ -508,7 +508,7 @@ jobs:
 
   update-hybrid-common-versions:
     description: "Creates a PR updating purchases-hybrid-common to latest release"
-    <<: *base-mac-job
+    <<: *base-mac-job-xcode-16
     steps:
       - checkout
       - revenuecat/install-mise-tools:
