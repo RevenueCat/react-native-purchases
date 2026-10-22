@@ -5036,9 +5036,9 @@ __metadata:
   linkType: hard
 
 "@revenuecat/purchases-typescript-internal@file:./phc-20.0-dev/purchases-typescript-internal.tgz::locator=react-native-purchases%40workspace%3A.":
-  version: 19.11.0
+  version: 20.0.0-SNAPSHOT
   resolution: "@revenuecat/purchases-typescript-internal@file:./phc-20.0-dev/purchases-typescript-internal.tgz::locator=react-native-purchases%40workspace%3A."
-  checksum: 94dfc7274196f873d90a5f223ac455f9df5ac5a7f8c0c8e3f8ce5eacd692b2f9b9927d52b4075f4bd5378096754533fd131e4489006b3dbb45aa3c5766bc5a58
+  checksum: b4a4a5c2cd4628d05d319d97a9f32190a03619fb49d3dad086af28c2038a290724757f6fa7b39dddd15e2d3fad4d065cc3da4aa4c7569c426bf44934f920a4e4
   languageName: node
   linkType: hard
 
