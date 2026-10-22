@@ -1,4 +1,5 @@
 import { NativeModules } from "react-native";
+import { WebPurchaseRedemptionResultType } from "@revenuecat/purchases-typescript-internal";
 import type { PurchasesError } from "@revenuecat/purchases-typescript-internal";
 
 import Purchases from "../src/purchases";
@@ -93,7 +94,10 @@ describe("errors delivered in a resolved web redemption result", () => {
 
     const result = await Purchases.redeemWebPurchase(redemption);
 
-    const error: PurchasesError = (result as { error: PurchasesError }).error;
+    if (result.result !== WebPurchaseRedemptionResultType.ERROR) {
+      throw new Error(`Expected an ERROR result, got ${result.result}`);
+    }
+    const error: PurchasesError = result.error;
     expect(error.code).toBe("1");
     expect(error.userInfo.readableErrorCode).toBe("PURCHASE_CANCELLED");
     expect(error.readableErrorCode).toBe("PURCHASE_CANCELLED");
