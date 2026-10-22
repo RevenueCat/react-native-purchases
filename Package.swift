@@ -29,13 +29,7 @@ let package = Package(
             path: "ios",
             exclude: ["RNPurchases.xcodeproj", "strip-frameworks.sh"],
             publicHeadersPath: ".",
-            cSettings: [.headerSearchPath(".")],
-            linkerSettings: [
-                .linkedFramework("Foundation"),
-                .linkedFramework("UIKit"),
-                .linkedFramework("CoreGraphics"),
-                .linkedFramework("StoreKit"),
-            ]
+            cSettings: [.headerSearchPath(".")]
         ),
     ]
 )

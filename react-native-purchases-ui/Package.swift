@@ -29,13 +29,7 @@ let package = Package(
             path: "ios",
             exclude: ["RNPaywalls.xcodeproj"],
             publicHeadersPath: ".",
-            cSettings: [.headerSearchPath(".")],
-            linkerSettings: [
-                .linkedFramework("Foundation"),
-                .linkedFramework("UIKit"),
-                .linkedFramework("CoreGraphics"),
-                .linkedFramework("SwiftUI"),
-            ]
+            cSettings: [.headerSearchPath(".")]
         ),
     ]
 )
