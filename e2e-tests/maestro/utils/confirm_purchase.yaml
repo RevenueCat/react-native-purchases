@@ -1,6 +1,6 @@
 # This flow handles the Test Store purchase confirmation.
 
-appId: com.revenuecat.automatedsdktests
+appId: ${APP_ID || 'com.revenuecat.automatedsdktests'}
 name: Confirm purchase - Test Store Purchase Alert
 
 ---
