@@ -45,6 +45,7 @@ import {
   STORE_REPLACEMENT_MODE,
   StoreProductChangeInfo,
   BILLING_PLAN_TYPE,
+  normalizePurchasesError,
 } from "@revenuecat/purchases-typescript-internal";
 
 /**
@@ -2093,7 +2094,9 @@ export default class Purchases {
     webPurchaseRedemption: WebPurchaseRedemption
   ): Promise<WebPurchaseRedemptionResult> {
     await throwIfNotConfigured();
-    return RNPurchases.redeemWebPurchase(webPurchaseRedemption.redemptionLink);
+    const result = await RNPurchases.redeemWebPurchase(webPurchaseRedemption.redemptionLink);
+    normalizePurchasesError(result?.error);
+    return result;
   }
 
   /**
