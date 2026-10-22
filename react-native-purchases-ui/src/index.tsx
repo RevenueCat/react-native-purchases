@@ -15,7 +15,8 @@ import {
   PAYWALL_RESULT, type PurchasesError,
   type PurchasesOffering, type PurchasesPackage,
   type PurchasesStoreTransaction,
-  REFUND_REQUEST_STATUS
+  REFUND_REQUEST_STATUS,
+  normalizePurchasesError,
 } from "@revenuecat/purchases-typescript-internal";
 import React, { type ReactNode, useEffect, useState } from "react";
 import { shouldUsePreviewAPIMode } from "./utils/environment";
@@ -130,6 +131,12 @@ const NativePaywallFooter = !usingPreviewAPIMode && UIManager.getViewManagerConf
 const eventEmitter = !usingPreviewAPIMode && RNPaywalls ? new NativeEventEmitter(RNPaywalls) : null;
 const customerCenterEventEmitter = !usingPreviewAPIMode && RNCustomerCenter ? new NativeEventEmitter(RNCustomerCenter) : null;
 
+// Native error events carry the flat ErrorContainer.info dictionary, whose code is a number.
+function withNormalizedError(event: any): { error: PurchasesError } {
+  normalizePurchasesError(event?.error);
+  return event;
+}
+
 // NativeEventEmitter routes every event through the global RCTDeviceEventEmitter, keyed by name
 // alone, so these names must not collide with the ones RNCustomerCenter emits, and every event
 // carries the id of the presentation that produced it so concurrent presentations stay separate.
@@ -219,11 +226,11 @@ const InternalPaywall: React.FC<FullScreenPaywallViewProps> = ({
         options={{ ...transformedOptions, ...nativeOptions }}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(withNormalizedError(event.nativeEvent))}
         onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
         onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
         onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-        onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        onRestoreError={(event: any) => onRestoreError && onRestoreError(withNormalizedError(event.nativeEvent))}
         onDismiss={() => onDismiss && onDismiss()}
         onPurchasePackageInitiated={(event: any) => {
           const { packageBeingPurchased, requestId } = event.nativeEvent;
@@ -293,11 +300,11 @@ const InternalPaywallFooterView: React.FC<InternalFooterPaywallViewProps> = ({
         options={transformedOptions}
         onPurchaseStarted={(event: any) => onPurchaseStarted && onPurchaseStarted(event.nativeEvent)}
         onPurchaseCompleted={(event: any) => onPurchaseCompleted && onPurchaseCompleted(event.nativeEvent)}
-        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(event.nativeEvent)}
+        onPurchaseError={(event: any) => onPurchaseError && onPurchaseError(withNormalizedError(event.nativeEvent))}
         onPurchaseCancelled={() => onPurchaseCancelled && onPurchaseCancelled()}
         onRestoreStarted={() => onRestoreStarted && onRestoreStarted()}
         onRestoreCompleted={(event: any) => onRestoreCompleted && onRestoreCompleted(event.nativeEvent)}
-        onRestoreError={(event: any) => onRestoreError && onRestoreError(event.nativeEvent)}
+        onRestoreError={(event: any) => onRestoreError && onRestoreError(withNormalizedError(event.nativeEvent))}
         onDismiss={() => onDismiss && onDismiss()}
         onMeasure={onMeasure}
       />
@@ -664,11 +671,11 @@ export default class RevenueCatUI {
     const handlers: Record<keyof PaywallCallbacks, (event: any) => void> = {
       onPurchaseStarted: (event) => callbacks.onPurchaseStarted?.(event),
       onPurchaseCompleted: (event) => callbacks.onPurchaseCompleted?.(event),
-      onPurchaseError: (event) => callbacks.onPurchaseError?.(event),
+      onPurchaseError: (event) => callbacks.onPurchaseError?.(withNormalizedError(event)),
       onPurchaseCancelled: () => callbacks.onPurchaseCancelled?.(),
       onRestoreStarted: () => callbacks.onRestoreStarted?.(),
       onRestoreCompleted: (event) => callbacks.onRestoreCompleted?.(event),
-      onRestoreError: (event) => callbacks.onRestoreError?.(event),
+      onRestoreError: (event) => callbacks.onRestoreError?.(withNormalizedError(event)),
       onPurchasePackageInitiated: ({ packageBeingPurchased, requestId }) =>
         callbacks.onPurchasePackageInitiated?.({
           packageBeingPurchased,
@@ -873,7 +880,7 @@ export default class RevenueCatUI {
         onFeedbackSurveyCompleted={onFeedbackSurveyCompleted ? (event: any) => onFeedbackSurveyCompleted(event.nativeEvent) : undefined}
         onShowingManageSubscriptions={onShowingManageSubscriptions ? () => onShowingManageSubscriptions() : undefined}
         onRestoreCompleted={onRestoreCompleted ? (event: any) => onRestoreCompleted(event.nativeEvent) : undefined}
-        onRestoreFailed={onRestoreFailed ? (event: any) => onRestoreFailed(event.nativeEvent) : undefined}
+        onRestoreFailed={onRestoreFailed ? (event: any) => onRestoreFailed(withNormalizedError(event.nativeEvent)) : undefined}
         onRestoreStarted={onRestoreStarted ? () => onRestoreStarted() : undefined}
         onRefundRequestStarted={onRefundRequestStarted ? (event: any) => onRefundRequestStarted(event.nativeEvent) : undefined}
         onRefundRequestCompleted={onRefundRequestCompleted ? (event: any) => onRefundRequestCompleted(event.nativeEvent) : undefined}
@@ -933,7 +940,7 @@ export default class RevenueCatUI {
         const subscription = customerCenterEventEmitter?.addListener(
           'onRestoreFailed',
           (event: { error: PurchasesError }) => callbacks.onRestoreFailed &&
-            callbacks.onRestoreFailed(event)
+            callbacks.onRestoreFailed(withNormalizedError(event))
         );
         if (subscription) {
           subscriptions.push(subscription);
