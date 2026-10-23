@@ -5239,7 +5239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-test-renderer@npm:^18.0.7":
+"@types/react-test-renderer@npm:18.3.1, @types/react-test-renderer@npm:^18.0.7":
   version: 18.3.1
   resolution: "@types/react-test-renderer@npm:18.3.1"
   dependencies:
@@ -10381,6 +10381,7 @@ __metadata:
     "@types/jest": ^29.5.12
     "@types/react": ^18.2.44
     "@types/react-dom": ~18.2.0
+    "@types/react-test-renderer": 18.3.1
     babel-plugin-react-native-web: ^0.20.0
     jest: ^29.7.0
     jest-react-native: ^18.0.0
@@ -10389,6 +10390,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.78.0
     react-native-builder-bob: ^0.20.0
+    react-test-renderer: 18.2.0
     ts-jest: ^29.1.2
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
