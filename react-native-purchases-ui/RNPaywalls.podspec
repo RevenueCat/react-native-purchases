@@ -18,5 +18,6 @@ Pod::Spec.new do |spec|
 
   spec.dependency   "React-Core"
   spec.dependency   "PurchasesHybridCommonUI", '19.16.0'
+  spec.dependency   "PurchasesHybridCommon", '19.16.0'
   spec.swift_version    = '5.7'
 end

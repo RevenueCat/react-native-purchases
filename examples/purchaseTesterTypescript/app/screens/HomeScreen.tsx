@@ -607,6 +607,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
             onPress={() => navigation.navigate('CustomPaywall')}>
             <Text style={styles.otherActions}>Custom Paywall Screen (track impression)</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Checkpoints')}>
+            <Text style={styles.otherActions}>Checkpoints</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('WinBackTesting', {})}>
             <Text style={styles.otherActions}>Win-Back Offer Testing</Text>
