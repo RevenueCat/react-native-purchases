@@ -15,13 +15,23 @@ if linkage != nil
 end
 
 target 'PurchaseTester' do
-  config = use_native_modules!
+  # Local development pods contain symlinks back to this repository. Limit CLI discovery
+  # to iOS so Android descriptor discovery does not recursively scan those symlinks.
+  config = if ENV['RC_CHECKPOINT_LOCAL_DEPS'] == '1'
+    use_native_modules!(['node', '-e',
+      "process.argv=['', '', 'config', '--platform', 'ios'];require('@react-native-community/cli').run()"])
+  else
+    use_native_modules!
+  end
 
-#  # Uncomment these to use a local version of `purchases-ios` and `purchases-hybrid-common`:
-#  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'
-#  pod 'RevenueCatUI',  :path => '../../../../../purchases-ios/'
-#  pod 'PurchasesHybridCommon', :path => '../../../../../purchases-hybrid-common/'
-#  pod 'PurchasesHybridCommonUI', :path => '../../../../../purchases-hybrid-common/'
+  # Opt in to the isolated checkpoint SDK sources for this workspace only.
+  if ENV['RC_CHECKPOINT_LOCAL_DEPS'] == '1'
+    checkpoint_deps = File.expand_path('../../../.context/deps', __dir__)
+    pod 'RevenueCat', :path => File.join(checkpoint_deps, 'purchases-ios')
+    pod 'RevenueCatUI', :path => File.join(checkpoint_deps, 'purchases-ios')
+    pod 'PurchasesHybridCommon', :path => File.join(checkpoint_deps, 'purchases-hybrid-common')
+    pod 'PurchasesHybridCommonUI', :path => File.join(checkpoint_deps, 'purchases-hybrid-common')
+  end
 
   use_react_native!(
     :path => config[:reactNativePath],

@@ -1,3 +1,7 @@
+import { checkpoint } from './checkpoints/coordinator';
+import { CheckpointHost } from './checkpoints/CheckpointHost';
+export { CheckpointHost, type CheckpointHostProps } from './checkpoints/CheckpointHost';
+export { CheckpointCancellationError, type CheckpointOptions, type CheckpointResult, type CheckpointErrorRequest } from './checkpoints/types';
 import {
   NativeEventEmitter,
   NativeModules,
@@ -584,6 +588,10 @@ export interface PresentCustomerCenterParams {
 }
 
 export default class RevenueCatUI {
+  /** Experimental: run a native checkpoint through the mounted iOS host. */
+  public static checkpoint = checkpoint;
+  public static CheckpointHost = CheckpointHost;
+
 
   private static Defaults = {
     PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON: true

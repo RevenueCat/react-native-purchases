@@ -593,3 +593,15 @@ export {
   PaywallScreenWithOffering,
   PaywallScreenWithOfferingAndEvents,
 };
+
+// Experimental hosted checkpoints: completion belongs to the error Modal's onDismiss.
+const checkpointHost = <RevenueCatUI.CheckpointHost renderError={request => {
+  const error: PurchasesError = request.error;
+  const complete: () => void = request.complete;
+  void error; void complete;
+  return null;
+}} />;
+const checkpointPromise: Promise<void> = RevenueCatUI.checkpoint('example_checkpoint', {
+  presentationMode: 'pageSheet', customVariables: { level: CustomVariableValue.number(42) },
+}, result => { void result.flow?.obtainedEntitlements; });
+void checkpointHost; void checkpointPromise;
