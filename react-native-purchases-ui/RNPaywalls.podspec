@@ -17,7 +17,8 @@ Pod::Spec.new do |spec|
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   if ENV['RC_CHECKPOINT_LOCAL_DEPS'] == '1'
     spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES',
-      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) RC_CHECKPOINT_HOST_ENABLED=1' }
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) RC_CHECKPOINT_HOST_ENABLED=1',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) RC_CHECKPOINT_HOST_ENABLED' }
   end
 
   spec.dependency   "React-Core"
