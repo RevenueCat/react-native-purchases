@@ -5300,6 +5300,7 @@ __metadata:
     babel-plugin-module-resolver: ^5.0.0
     react: 19.3.0
     react-native: 0.88.0
+    react-native-pager-view: 8.0.5
     react-native-safe-area-context: ^5.10.1
     react-native-screens: ^4.30.0
     typescript: ~5.2.0
@@ -10301,6 +10302,16 @@ __metadata:
     expo:
       optional: true
   checksum: 62e676f0d139320198b44d38796b98ec29aa56fdfa206b1fc372af34e5f947b2fd281d9740ab6cfea8231d78e43dbf1af2eed68de9a25f9c51fdd0e1c58051e7
+  languageName: node
+  linkType: hard
+
+"react-native-pager-view@npm:8.0.5":
+  version: 8.0.5
+  resolution: "react-native-pager-view@npm:8.0.5"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 9b5e23fe801d1c1abafb85e070d7dd93c194b9cc430113cf5b41f4cbe13dbcb2535ae9811546409df2c6d9ab63560a06fc9f4bdf681db7393c0169748e051c13
   languageName: node
   linkType: hard
 

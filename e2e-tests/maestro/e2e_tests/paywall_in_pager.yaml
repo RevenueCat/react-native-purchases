@@ -1,0 +1,28 @@
+# Regression test for https://github.com/RevenueCat/react-native-purchases/issues/1836.
+# Shows a paywall on the first page of a PagerView, moves one page away and changes a paywall prop.
+# On Android this recomposed the paywall while it was detached and crashed with
+# "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner".
+
+appId: com.revenuecat.automatedsdktests
+name: Paywall in pager
+
+---
+- clearState
+- pressKey: home
+- launchApp:
+    arguments:
+        e2e_test_flow: paywall_in_pager
+- extendedWaitUntil:
+    visible: "Paywall V2"
+    timeout: 30000
+- tapOn:
+    id: "next-page-button"
+- extendedWaitUntil:
+    visible: "Filler page 2"
+    timeout: 10000
+- assertVisible: "Page 2/3 · displayCloseButton: true"
+- tapOn:
+    id: "toggle-close-button"
+- waitForAnimationToEnd
+- assertVisible: "Page 2/3 · displayCloseButton: false"
+- assertVisible: "Filler page 2"

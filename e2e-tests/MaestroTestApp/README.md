@@ -46,6 +46,9 @@ The test uses a RevenueCat project configured with:
 
 ## Dependencies
 
+`react-native-pager-view` is pinned to 8.0.5 because version 9 and later use a
+Compose pager on Android, which does not exercise the ViewPager2 detach regression.
+
 This app is part of the `react-native-purchases` Yarn workspace. It uses the same
 local dependency mechanism as `examples/purchaseTesterTypescript`:
 - **Babel module-resolver** aliases `react-native-purchases` and

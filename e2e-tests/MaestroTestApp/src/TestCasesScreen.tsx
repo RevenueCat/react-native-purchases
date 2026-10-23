@@ -14,6 +14,12 @@ export default function TestCasesScreen({navigation}: Props) {
         testID="purchase-through-paywall-button">
         <Text style={styles.buttonText}>Purchase through paywall</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('PaywallInPager')}
+        testID="paywall-in-pager-button">
+        <Text style={styles.buttonText}>Paywall in pager</Text>
+      </TouchableOpacity>
     </View>
   );
 }
