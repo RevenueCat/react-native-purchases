@@ -3,6 +3,7 @@ import { CustomVariables } from 'react-native-purchases-ui';
 
 type RootStackParamList = {
   Home: undefined;
+  CheckpointErrorPresenter: undefined;
   CustomerInfo: {appUserID: String | null, customerInfo: CustomerInfo | null};
   OfferingDetail: {offering: PurchasesOffering | null};
   WinBackTesting: {};

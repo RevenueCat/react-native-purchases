@@ -361,6 +361,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         </View>
       </Modal>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <TouchableOpacity onPress={() => navigation.navigate('CheckpointErrorPresenter')}>
+          <Text>Checkpoint ErrorPresenter experiment</Text>
+        </TouchableOpacity>
         <View>
           <TouchableOpacity
             onPress={() =>

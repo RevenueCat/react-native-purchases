@@ -5,6 +5,7 @@
 //
 
 #import "RNPaywalls.h"
+#import "RNPaywalls-Swift.h"
 #import "RNPaywallEventForwarder.h"
 
 @import PurchasesHybridCommonUI;
@@ -13,6 +14,7 @@
 @interface RNPaywalls ()
 
 @property (nonatomic, strong) id paywallProxy;
+@property (nonatomic, strong) id checkpointTestAdapter;
 // A presented paywall outlives a JS reload, so events must stop once React Native tears this module down.
 @property (atomic) BOOL invalidated;
 
@@ -89,6 +91,7 @@ static NSString *RNPaywallsPresentedEventName(NSString *callbackName) {
     for (NSString *callbackName in callbackNames) {
         [events addObject:RNPaywallsPresentedEventName(callbackName)];
     }
+    [events addObjectsFromArray:@[@"checkpointErrorForTest", @"checkpointPassedForTest", @"checkpointErrorCancelledForTest"]];
     return [events copy];
 }
 
@@ -101,6 +104,34 @@ static NSString *RNPaywallsPresentedEventName(NSString *callbackName) {
 }
 
 // MARK: -
+
+// Throwaway test entry points, intentionally absent from the public TypeScript API.
+- (CheckpointTestAdapter *)checkpointAdapter API_AVAILABLE(ios(15.0)) {
+    if (!self.checkpointTestAdapter) {
+        __weak RNPaywalls *weakSelf = self;
+        self.checkpointTestAdapter = [[CheckpointTestAdapter alloc] initWithEmit:^(NSString *name, NSDictionary *body) {
+            RNPaywalls *strongSelf = weakSelf;
+            if (strongSelf && !strongSelf.invalidated) {
+                [strongSelf sendEventWithName:name body:body];
+            }
+        }];
+    }
+    return self.checkpointTestAdapter;
+}
+
+RCT_EXPORT_METHOD(checkpointForTest:(NSString *)identifier mode:(NSString *)mode) {
+    if (self.invalidated) { return; }
+    if (@available(iOS 15.0, *)) {
+        [[self checkpointAdapter] checkpoint:identifier mode:mode];
+    }
+}
+
+RCT_EXPORT_METHOD(completeCheckpointErrorForTest:(NSString *)requestId) {
+    if (self.invalidated) { return; }
+    if (@available(iOS 15.0, *)) {
+        [[self checkpointAdapter] complete:requestId];
+    }
+}
 
 RCT_EXPORT_METHOD(presentPaywall:(nullable NSString *)offeringIdentifier
                   presentedOfferingContext:(nullable NSDictionary *)presentedOfferingContext
@@ -213,6 +244,12 @@ RCT_EXPORT_METHOD(resolvePurchaseLogicResult:(NSString *)requestId
 
 - (void)invalidate {
     self.invalidated = YES;
+    id adapter = self.checkpointTestAdapter;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (@available(iOS 15.0, *)) {
+            [(CheckpointTestAdapter *)adapter invalidate];
+        }
+    });
     [super invalidate];
 }
 

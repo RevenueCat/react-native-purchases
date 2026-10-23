@@ -1,6 +1,16 @@
 package com.revenuecat.purchases.react.ui
 
 import android.util.Log
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.UiThreadUtil
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.ui.revenuecatui.InviteOnlyCheckpointsAPI
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointParams
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.ErrorPresenter
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.FlowPresentationMode
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.checkpoint
+import java.lang.ref.WeakReference
+import java.util.UUID
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -17,6 +27,7 @@ import com.revenuecat.purchases.hybridcommon.ui.PresentPaywallOptions
 import com.revenuecat.purchases.hybridcommon.ui.presentPaywallFromFragment
 
 
+@OptIn(InviteOnlyCheckpointsAPI::class)
 internal class RNPaywallsModule(
     reactContext: ReactApplicationContext
 ) : ReactContextBaseJavaModule(reactContext) {
@@ -46,7 +57,92 @@ internal class RNPaywallsModule(
 
     override fun invalidate() {
         isInvalidated = true
+        UiThreadUtil.runOnUiThread {
+            val outstanding = checkpointRequests.toMap()
+            checkpointRequests.clear()
+            // Explicit reload policy, not SDK behavior: navigate back after releasing retained requests.
+            // A multi-step flow may remain on the previous step; there is no public cancel-flow hook.
+            outstanding.values.forEach { request ->
+                request.completion.complete(ErrorPresenter.Completion.Result.NavigateBack)
+            }
+        }
         super.invalidate()
+    }
+
+    // Throwaway runtime adapter. None of these entry points is a public TypeScript API.
+    private data class CheckpointRequest(val flowId: String, val completion: ErrorPresenter.Completion)
+    private val checkpointRequests = mutableMapOf<String, CheckpointRequest>()
+
+    @ReactMethod
+    fun checkpointForTest(identifier: String, mode: String) {
+        UiThreadUtil.runOnUiThread {
+            if (isInvalidated || (mode != "sheet" && mode != "fullscreen")) return@runOnUiThread
+            val flowId = UUID.randomUUID().toString()
+            val weakModule = WeakReference(this)
+            val builder = CheckpointParams.Builder().setPresentationMode(
+                if (mode == "fullscreen") FlowPresentationMode.MODAL_FULL_SCREEN else FlowPresentationMode.MODAL_SHEET
+            )
+            builder.setErrorPresenter(ErrorPresenter { params, completion ->
+                UiThreadUtil.runOnUiThread {
+                    val module = weakModule.get()
+                    if (module == null || module.isInvalidated) {
+                        completion.complete(ErrorPresenter.Completion.Result.NavigateBack)
+                    } else {
+                        val requestId = UUID.randomUUID().toString()
+                        module.checkpointRequests[requestId] = CheckpointRequest(flowId, completion)
+                        val error = Arguments.createMap().apply {
+                            putString("message", params.error.message)
+                            putInt("code", params.error.code.code)
+                        }
+                        val event = Arguments.createMap().apply {
+                            putString("requestId", requestId)
+                            putString("checkpointIdentifier", params.checkpointIdentifier)
+                            putMap("error", error)
+                            putBoolean("flowCanContinue", params.flowCanContinue)
+                        }
+                        module.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                            .emit("checkpointErrorForTest", event)
+                    }
+                }
+            })
+            Purchases.sharedInstance.checkpoint(identifier, builder.build()) { result ->
+                UiThreadUtil.runOnUiThread {
+                    val module = weakModule.get()
+                    if (module != null && !module.isInvalidated) {
+                        // Back suppresses onPassed: this is not a complete terminal lifecycle observer.
+                        module.checkpointRequests.entries.removeAll { it.value.flowId == flowId }
+                        val event = Arguments.createMap().apply {
+                            putString("checkpointIdentifier", identifier)
+                            if (result == null) putNull("obtainedEntitlementIdentifiers")
+                            else putArray("obtainedEntitlementIdentifiers", Arguments.fromList(
+                                result.obtainedEntitlements.map { it.entitlementInfo.identifier }.sorted()
+                            ))
+                        }
+                        module.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                            .emit("checkpointPassedForTest", event)
+                    }
+                }
+            }
+        }
+    }
+
+    @ReactMethod
+    fun completeCheckpointErrorForTest(requestId: String, action: String) {
+        UiThreadUtil.runOnUiThread {
+            val result = when (action) {
+                "RETRY" -> ErrorPresenter.Completion.Result.Retry
+                "CONTINUE" -> ErrorPresenter.Completion.Result.Continue
+                "NAVIGATE_BACK" -> ErrorPresenter.Completion.Result.NavigateBack
+                else -> {
+                    return@runOnUiThread
+                }
+            }
+            val request = checkpointRequests.remove(requestId)
+            if (request == null) {
+                return@runOnUiThread
+            }
+            request.completion.complete(result)
+        }
     }
 
     @ReactMethod
