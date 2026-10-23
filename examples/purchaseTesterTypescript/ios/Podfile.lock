@@ -14,11 +14,11 @@ PODS:
   - hermes-engine (250829098.0.17):
     - hermes-engine/Pre-built (= 250829098.0.17)
   - hermes-engine/Pre-built (250829098.0.17)
-  - PurchasesHybridCommon (19.14.1):
-    - RevenueCat (= 5.96.1)
-  - PurchasesHybridCommonUI (19.14.1):
-    - PurchasesHybridCommon (= 19.14.1)
-    - RevenueCatUI (= 5.96.1)
+  - PurchasesHybridCommon (19.15.1):
+    - RevenueCat (= 5.98.0)
+  - PurchasesHybridCommonUI (19.15.1):
+    - PurchasesHybridCommon (= 19.15.1)
+    - RevenueCatUI (= 5.98.0)
   - RCT-Folly (2024.11.18.00):
     - RCT-Folly/Default (= 2024.11.18.00)
     - ReactNativeDependencies
@@ -1678,14 +1678,14 @@ PODS:
     - React-utils (= 0.87.1)
     - ReactNativeDependencies
   - ReactNativeDependencies (0.87.1)
-  - RevenueCat (5.96.1)
-  - RevenueCatUI (5.96.1):
-    - RevenueCat (= 5.96.1)
-  - RNPaywalls (10.15.0):
-    - PurchasesHybridCommonUI (= 19.14.1)
+  - RevenueCat (5.98.0)
+  - RevenueCatUI (5.98.0):
+    - RevenueCat (= 5.98.0)
+  - RNPaywalls (10.15.1):
+    - PurchasesHybridCommonUI (= 19.15.1)
     - React-Core
-  - RNPurchases (10.15.0):
-    - PurchasesHybridCommon (= 19.14.1)
+  - RNPurchases (10.15.1):
+    - PurchasesHybridCommon (= 19.15.1)
     - React-Core
   - RNScreens (4.28.0):
     - hermes-engine
@@ -2027,8 +2027,8 @@ SPEC CHECKSUMS:
   fmt: ba0886e864ebb21d14c98b2e12e164b8002f5b93
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 63c5db7d529c36335fada6582fd293ae2a105d77
-  PurchasesHybridCommon: 81e6091516e7b1b1a980fc3a5c1cacc38e7249c2
-  PurchasesHybridCommonUI: ce92788c58a601b0632f8b77e3cb2f059943807b
+  PurchasesHybridCommon: e82119e518315df961a864ec1f066e9ba207c7d4
+  PurchasesHybridCommonUI: f9ff642838228a46994ac07a1d1543567534a7bd
   RCT-Folly: 82921e585c0400eda46fac1068297aa9dfb035e4
   RCTDeprecation: 5cc865306ce4974b7a57ddbc575fd1f3fef41957
   RCTRequired: ea6f2c41f2670961ce9a48a4bf17a190dd53e493
@@ -2106,10 +2106,10 @@ SPEC CHECKSUMS:
   ReactCodegen: 13d2ebfe2d8f1200052509b4fc4abf7a6825a7fc
   ReactCommon: 749169e12aa3461a3df3656a00e48dbe0456b2d6
   ReactNativeDependencies: 94c922c39e0e6150ee9ad05e2ca1946e0ef55783
-  RevenueCat: 443ec5cf3d378f2f1d4b09f94f7395277e9229b4
-  RevenueCatUI: f1ca5a24d46f022bb8aa8c375b47bd614ecf5fb6
-  RNPaywalls: c7cd57b7e3249a1edfac02c1ad2c502148e6a211
-  RNPurchases: 0f2f0cc9782c5c6505c4616eaef5496e5beb0913
+  RevenueCat: d2d6a98d8e1d53cc1c6362cc1fdfb64ca99b8735
+  RevenueCatUI: 8f089ba531a2393465cb5062e2009eb3a6e42927
+  RNPaywalls: c005635a86239a581ff3cdb2af32255d68350d10
+  RNPurchases: 80539ec3bb396e9dcba6acf5b4956fb50fc5e9e5
   RNScreens: 038dc998fe1ab34778d9e8f4a33318a6c7a5bde8
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
