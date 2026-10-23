@@ -6,6 +6,78 @@ import {
   emit,
   Platform,
 } from "../testutils/checkpointHarness";
+import { PURCHASES_ERROR_CODE } from "@revenuecat/purchases-typescript-internal";
+import type { CheckpointErrorRequest } from "../src/checkpoints/types";
+
+it("normalizes the actual PHC Test Store error into the public PurchasesError contract", async () => {
+  let request: CheckpointErrorRequest | undefined;
+  mount((value) => {
+    request = value;
+    return null;
+  });
+  const promise = api.checkpoint("rn_error_presenter_test");
+  const nativeError = {
+    code: 42,
+    message: "Purchase failure simulated successfully in Test Store.",
+    readableErrorCode: "TEST_STORE_SIMULATED_PURCHASE_ERROR",
+    readable_error_code: "TEST_STORE_SIMULATED_PURCHASE_ERROR",
+    underlyingErrorMessage: "",
+    storeError: { code: 1, domain: "TestStore", message: "test detail" },
+  };
+  emit("error", {
+    requestId: "actual-error",
+    kind: "flowActionFailed",
+    error: nativeError,
+  });
+  try {
+    expect(request!.error.code).toBe(
+      PURCHASES_ERROR_CODE.TEST_STORE_SIMULATED_PURCHASE_ERROR
+    );
+    expect(request!.error.message).toBe(nativeError.message);
+    expect(request!.error.userInfo).toEqual(nativeError);
+    expect(request!.error.userInfo.readableErrorCode).toBe(
+      nativeError.readableErrorCode
+    );
+    expect(request!.error.readableErrorCode).toBe(nativeError.readableErrorCode);
+    expect(request!.error.underlyingErrorMessage).toBe("");
+    expect(request!.error.userCancelled).toBe(false);
+    request!.complete();
+    request!.complete();
+    expect(mockNative.completeError).toHaveBeenCalledTimes(1);
+  } finally {
+    request!.complete();
+    emit("finished");
+    await promise;
+  }
+});
+
+it("supplies required error fields when PHC optional metadata is absent", async () => {
+  let request: CheckpointErrorRequest | undefined;
+  mount((value) => {
+    request = value;
+    return null;
+  });
+  const promise = api.checkpoint("test");
+  emit("error", {
+    requestId: "cancel",
+    kind: "flowActionFailed",
+    error: { code: 1, message: "Cancelled" },
+  });
+  try {
+    expect(request!.error).toEqual({
+      code: PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
+      message: "Cancelled",
+      readableErrorCode: "",
+      underlyingErrorMessage: "",
+      userCancelled: true,
+      userInfo: { code: 1, message: "Cancelled", readableErrorCode: "" },
+    });
+  } finally {
+    request!.complete();
+    emit("finished");
+    await promise;
+  }
+});
 
 it("rejects missing host before starting native work", async () => {
   expect(typeof api.checkpoint).toBe("function");

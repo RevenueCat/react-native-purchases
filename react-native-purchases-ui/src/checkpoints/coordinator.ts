@@ -5,6 +5,7 @@ import {
   UIManager,
 } from "react-native";
 import { convertCustomVariablesToNativeMap } from "../customVariables";
+import { PURCHASES_ERROR_CODE } from "@revenuecat/purchases-typescript-internal";
 import { CheckpointCancellationError } from "./types";
 import type {
   CheckpointErrorRequest,
@@ -25,6 +26,15 @@ export const emptyHostState: HostState = {
   presentationMode: "fullScreen",
 };
 type Host = (state: HostState) => void;
+// PHC ErrorContainer.info is a flat dictionary, unlike RN promise errors.
+interface NativeErrorInfo {
+  code: number;
+  message: string;
+  readableErrorCode?: string;
+  underlyingErrorMessage?: string;
+  userCancelled?: boolean | null;
+  [key: string]: unknown;
+}
 type NativeEvent = {
   sessionId: string;
   type: string;
@@ -32,7 +42,7 @@ type NativeEvent = {
   flow?: CheckpointResult["flow"];
   requestId?: string;
   kind?: CheckpointErrorRequest["kind"];
-  error?: CheckpointErrorRequest["error"];
+  error?: NativeErrorInfo;
 };
 interface Session {
   id: string;
@@ -156,7 +166,7 @@ export function checkpoint(
               sessionId: session.id,
               requestId: event.requestId,
               kind: event.kind,
-              error: event.error,
+              error: normalizeError(event.error),
               complete: () => completeError(session, request),
             };
             session.errors.push(request);
@@ -202,6 +212,19 @@ export function checkpoint(
       reject(session.failure);
     }
   });
+}
+function normalizeError(error: NativeErrorInfo): CheckpointErrorRequest["error"] {
+  const code = String(error.code) as PURCHASES_ERROR_CODE;
+  const readableErrorCode = error.readableErrorCode ?? "";
+  return {
+    code,
+    message: error.message,
+    readableErrorCode,
+    underlyingErrorMessage: error.underlyingErrorMessage ?? "",
+    userCancelled:
+      error.userCancelled ?? code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
+    userInfo: { ...error, readableErrorCode },
+  };
 }
 function completeError(session: Session, request: CheckpointErrorRequest) {
   if (active !== session || session.errors[0] !== request) return;
