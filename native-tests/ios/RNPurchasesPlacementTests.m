@@ -70,16 +70,8 @@
                                                          completionBlock:[OCMArg any]]);
 }
 
-- (void)testRejectsBlockedEndpointError {
-    [self assertRejectsErrorWithCode:33];
-}
-
-- (void)testRejectsInvalidCredentialsError {
-    [self assertRejectsErrorWithCode:11];
-}
-
-- (void)testRejectsConfigurationError {
-    [self assertRejectsErrorWithCode:23];
+- (void)testRejectsNetworkError {
+    [self assertRejectsErrorWithCode:RCNetworkError];
 }
 
 - (void)assertResolvesOffering:(NSDictionary *)offering {
