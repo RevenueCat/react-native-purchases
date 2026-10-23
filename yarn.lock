@@ -5300,7 +5300,7 @@ __metadata:
     babel-plugin-module-resolver: ^5.0.0
     react: 19.3.0
     react-native: 0.88.0
-    react-native-pager-view: 6.9.1
+    react-native-pager-view: 8.0.5
     react-native-safe-area-context: ^5.10.1
     react-native-screens: ^4.30.0
     typescript: ~5.2.0
@@ -10305,13 +10305,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-pager-view@npm:6.9.1":
-  version: 6.9.1
-  resolution: "react-native-pager-view@npm:6.9.1"
+"react-native-pager-view@npm:8.0.5":
+  version: 8.0.5
+  resolution: "react-native-pager-view@npm:8.0.5"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 64f4f1b05173217ee5bb288c6c1e396ceaf686fd1ef9458a6ab9c9da44e5ee76c2a091e95b756c78bbcddd30caf37965ef37e0eabe54331f385fdcb87b5d5ab6
+  checksum: 9b5e23fe801d1c1abafb85e070d7dd93c194b9cc430113cf5b41f4cbe13dbcb2535ae9811546409df2c6d9ab63560a06fc9f4bdf681db7393c0169748e051c13
   languageName: node
   linkType: hard
 
@@ -11273,8 +11273,8 @@ __metadata:
   linkType: hard
 
 "socks-proxy-agent@npm:^8.0.3":
-  version: 6.9.1
-  resolution: "socks-proxy-agent@npm:6.9.1"
+  version: 8.0.5
+  resolution: "socks-proxy-agent@npm:8.0.5"
   dependencies:
     agent-base: ^7.1.2
     debug: ^4.3.4
