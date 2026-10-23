@@ -380,6 +380,10 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
 
         <Divider />
 
+        <TouchableOpacity onPress={() => navigation.navigate('PaywallModalHost')}>
+          <Text style={styles.otherActions}>Real Checkpoint Host (experimental)</Text>
+        </TouchableOpacity>
+
         <View>{displayOfferings()}</View>
 
         <PromptWithTextInput

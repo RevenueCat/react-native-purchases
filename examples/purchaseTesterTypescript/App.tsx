@@ -29,6 +29,7 @@ import CustomVariablesScreen from "./app/screens/CustomVariablesScreen";
 import { CustomVariablesProvider } from "./app/context/CustomVariablesContext";
 import PurchaseLogicPaywallScreen from "./app/screens/PurchaseLogicPaywallScreen";
 import CustomPaywallScreen from "./app/screens/CustomPaywallScreen";
+import PaywallModalHostScreen from './app/screens/PaywallModalHostScreen';
 
 import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -180,6 +181,7 @@ const App = () => {
             <Stack.Screen name="CustomerCenterModalWithHeader" component={CustomerCenterScreen} />
           </Stack.Group>
           <Stack.Screen name="Paywall" component={PaywallScreen} />
+          <Stack.Screen name="PaywallModalHost" component={PaywallModalHostScreen} />
           <Stack.Screen name="FooterPaywall" component={FooterPaywallScreen} />
           <Stack.Screen name="WinBackTesting" component={WinBackTestingScreen} />
           <Stack.Screen
