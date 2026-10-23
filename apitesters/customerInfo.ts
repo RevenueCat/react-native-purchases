@@ -1,6 +1,7 @@
 import {
   LogInResult,
   CustomerInfo,
+  OwnershipType,
   PurchasesEntitlementInfo,
   PurchasesEntitlementInfos,
   PurchasesStoreTransaction,
@@ -75,4 +76,8 @@ function checkTransaction(transaction: PurchasesStoreTransaction) {
   const transactionIdentifier: string = transaction.transactionIdentifier;
   const productIdentifier: string = transaction.productIdentifier;
   const purchaseDate: string = transaction.purchaseDate;
+}
+
+function checkOwnershipTypes() {
+  const ownershipTypes: OwnershipType[] = ["PURCHASED", "FAMILY_SHARED", "ASSIGNED", "UNKNOWN"];
 }
