@@ -28,6 +28,11 @@ import {
   convertCustomVariablesToNativeMap,
   transformOptionsForNative,
 } from "./customVariables";
+import { checkpoint, setErrorPresenter } from "./checkpoints";
+import { PaywallPortal } from "./PaywallPortal";
+
+export * from "./checkpoints";
+export { PaywallPortal, type PaywallPortalProps } from "./PaywallPortal";
 
 export { PAYWALL_RESULT, type PaywallInteractionEvent } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
@@ -584,6 +589,10 @@ export interface PresentCustomerCenterParams {
 }
 
 export default class RevenueCatUI {
+  public static checkpoint = checkpoint;
+  public static setErrorPresenter = setErrorPresenter;
+  public static PaywallPortal = PaywallPortal;
+
 
   private static Defaults = {
     PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON: true

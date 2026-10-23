@@ -8,7 +8,7 @@ import com.facebook.react.uimanager.ViewManager
 
 class RevenueCatUIPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-        return listOf(RNPaywallsModule(reactContext), RNCustomerCenterModule(reactContext))
+        return listOf(RNPaywallsModule(reactContext), RNCustomerCenterModule(reactContext), RNCheckpointsModule(reactContext))
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
