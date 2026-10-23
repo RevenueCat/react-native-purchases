@@ -1,73 +1,12 @@
-type Event = { sessionId: string; type: string; [key: string]: unknown };
-const mockListeners = new Set<(event: Event) => void>();
-const mockNative = {
-  start: jest.fn(),
-  cancel: jest.fn(),
-  releaseSession: jest.fn(),
-  didPresent: jest.fn(),
-  didFailToPresent: jest.fn(),
-  didDismiss: jest.fn(),
-  completeError: jest.fn(),
-};
-jest.mock("react-native", () => ({
-  NativeModules: {
-    RNCheckpoints: mockNative,
-    RNPaywalls: {},
-    RNCustomerCenter: {},
-  },
-  NativeEventEmitter: class {
-    addListener(_name: string, cb: (event: Event) => void) {
-      mockListeners.add(cb);
-      return { remove: () => mockListeners.delete(cb) };
-    }
-  },
-  Platform: { OS: "ios" },
-  UIManager: { getViewManagerConfig: () => ({}) },
-  requireNativeComponent: () => "CheckpointView",
-  Modal: "Modal",
-  View: "View",
-  ScrollView: "ScrollView",
-}));
-jest.mock("../src/preview/nativeModules", () => ({}));
-jest.mock("../src/preview/previewComponents", () => ({}));
-import React from "react";
-import renderer, { act } from "react-test-renderer";
-import { Platform } from "react-native";
-import RevenueCatUI from "../src";
-const api = RevenueCatUI as unknown as {
-  checkpoint: (
-    id: string,
-    options?: object,
-    passed?: (result: unknown) => void
-  ) => Promise<void>;
-  CheckpointHost: React.ComponentType<{
-    renderError: (request: any) => React.ReactNode;
-  }>;
-};
-let tree: renderer.ReactTestRenderer | undefined;
-const mount = () =>
-  act(() => {
-    tree = renderer.create(
-      React.createElement(api.CheckpointHost, { renderError: () => null })
-    );
-  });
-const emit = (
-  type: string,
-  values = {},
-  id = mockNative.start.mock.calls[0]![0]
-) =>
-  act(() =>
-    mockListeners.forEach((cb) => cb({ sessionId: id, type, ...values }))
-  );
-beforeEach(() => {
-  jest.clearAllMocks();
-  (Platform as any).OS = "ios";
-});
-afterEach(() => {
-  act(() => tree?.unmount());
-  tree = undefined;
-  expect(mockListeners.size).toBe(0);
-});
+import {
+  api,
+  mockListeners,
+  mockNative,
+  mount,
+  emit,
+  Platform,
+} from "../testutils/checkpointHarness";
+
 it("rejects missing host before starting native work", async () => {
   expect(typeof api.checkpoint).toBe("function");
   await expect(api.checkpoint("test")).rejects.toThrow(/host/i);

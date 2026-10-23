@@ -1,76 +1,17 @@
-type Event = { sessionId: string; type: string; [key: string]: unknown };
-const mockListeners = new Set<(event: Event) => void>();
-const mockNative = {
-  start: jest.fn(),
-  cancel: jest.fn(),
-  releaseSession: jest.fn(),
-  didPresent: jest.fn(),
-  didFailToPresent: jest.fn(),
-  didDismiss: jest.fn(),
-  completeError: jest.fn(),
-};
-jest.mock("react-native", () => ({
-  NativeModules: {
-    RNCheckpoints: mockNative,
-    RNPaywalls: {},
-    RNCustomerCenter: {},
-  },
-  NativeEventEmitter: class {
-    addListener(_name: string, cb: (event: Event) => void) {
-      mockListeners.add(cb);
-      return { remove: () => mockListeners.delete(cb) };
-    }
-  },
-  Platform: { OS: "ios" },
-  UIManager: { getViewManagerConfig: () => ({}) },
-  requireNativeComponent: () => "CheckpointView",
-  Modal: "Modal",
-  View: "View",
-  ScrollView: "ScrollView",
-}));
-jest.mock("../src/preview/nativeModules", () => ({}));
-jest.mock("../src/preview/previewComponents", () => ({}));
 import React from "react";
 import renderer, { act } from "react-test-renderer";
-import { Platform } from "react-native";
-import RevenueCatUI from "../src";
-const api = RevenueCatUI as unknown as {
-  checkpoint: (
-    id: string,
-    options?: object,
-    passed?: (result: unknown) => void
-  ) => Promise<void>;
-  CheckpointHost: React.ComponentType<{
-    renderError: (request: any) => React.ReactNode;
-  }>;
-};
-let tree: renderer.ReactTestRenderer | undefined;
-const mount = () =>
-  act(() => {
-    tree = renderer.create(
-      React.createElement(api.CheckpointHost, { renderError: () => null })
-    );
-  });
-const emit = (
-  type: string,
-  values = {},
-  id = mockNative.start.mock.calls[0]![0]
-) =>
-  act(() =>
-    mockListeners.forEach((cb) => cb({ sessionId: id, type, ...values }))
-  );
-beforeEach(() => {
-  jest.clearAllMocks();
-  (Platform as any).OS = "ios";
-});
-afterEach(() => {
-  act(() => tree?.unmount());
-  tree = undefined;
-  expect(mockListeners.size).toBe(0);
-});
+import {
+  api,
+  mockListeners,
+  mockNative,
+  harness,
+  mount,
+  unmount,
+  emit,
+} from "../testutils/checkpointHarness";
 
-const modal = () => tree!.root.findByType("Modal" as any);
-const child = () => tree!.root.findByType("CheckpointView" as any);
+const modal = () => harness.tree!.root.findByType("Modal" as any);
+const child = () => harness.tree!.root.findByType("CheckpointView" as any);
 it.each(["shown-first", "attached-first"])(
   "acknowledges presentation only after both gates: %s",
   async (order) => {
@@ -121,8 +62,7 @@ it.each(["loading", "presented", "error"])(
         kind: "flowActionFailed",
         error: { message: "bad" },
       });
-    act(() => tree!.unmount());
-    tree = undefined;
+    unmount();
     await rejected;
     expect(mockNative.releaseSession).toHaveBeenCalledTimes(1);
     expect(mockListeners.size).toBe(0);
@@ -130,15 +70,9 @@ it.each(["loading", "presented", "error"])(
 );
 it("keeps nested errors in the outer modal and completes error A once before hiding flow", async () => {
   let request: any;
-  act(() => {
-    tree = renderer.create(
-      React.createElement(api.CheckpointHost, {
-        renderError: (r) => {
-          request = r;
-          return React.createElement("ErrorUI");
-        },
-      })
-    );
+  mount((r) => {
+    request = r;
+    return React.createElement("ErrorUI");
   });
   const promise = api.checkpoint("test");
   emit("present", { presentationMode: "fullScreen" });
@@ -158,7 +92,7 @@ it("keeps nested errors in the outer modal and completes error A once before hid
     kind: "flowActionFailed",
     error: { message: "duplicate" },
   });
-  expect(tree!.root.findAllByType("ErrorUI" as any)).toHaveLength(0);
+  expect(harness.tree!.root.findAllByType("ErrorUI" as any)).toHaveLength(0);
   expect(mockNative.completeError).toHaveBeenCalledTimes(1);
   expect(modal().props.visible).toBe(false);
   act(() => modal().props.onDismiss());
@@ -169,15 +103,9 @@ it.each(["before", "after"])(
   "renders root errors %s paywall presentation",
   async (phase) => {
     let request: any;
-    act(() => {
-      tree = renderer.create(
-        React.createElement(api.CheckpointHost, {
-          renderError: (r) => {
-            request = r;
-            return React.createElement("ErrorUI");
-          },
-        })
-      );
+    mount((r) => {
+      request = r;
+      return React.createElement("ErrorUI");
     });
     const promise = api.checkpoint("test");
     if (phase === "after") {
@@ -190,8 +118,8 @@ it.each(["before", "after"])(
       kind: "flowCouldNotBeShown",
       error: { message: "bad" },
     });
-    expect(tree!.root.findByType("ErrorUI" as any)).toBeTruthy();
-    expect(tree!.root.findAllByType("Modal" as any)).toHaveLength(0);
+    expect(harness.tree!.root.findByType("ErrorUI" as any)).toBeTruthy();
+    expect(harness.tree!.root.findAllByType("Modal" as any)).toHaveLength(0);
     act(() => request.complete());
     emit("finished");
     await promise;
@@ -199,15 +127,9 @@ it.each(["before", "after"])(
 );
 it("stale callbacks cannot close a replacement session or complete its error", async () => {
   let request: any;
-  act(() => {
-    tree = renderer.create(
-      React.createElement(api.CheckpointHost, {
-        renderError: (r) => {
-          request = r;
-          return null;
-        },
-      })
-    );
+  mount((r) => {
+    request = r;
+    return null;
   });
   const passed = jest.fn();
   const first = api.checkpoint("first", {}, passed);
@@ -216,7 +138,7 @@ it("stale callbacks cannot close a replacement session or complete its error", a
   const stale = request.complete;
   const oldId = mockNative.start.mock.calls[0]![0];
   const oldListeners = [...mockListeners];
-  act(() => tree!.unmount());
+  unmount();
   await rejected;
   mount();
   const replacementPassed = jest.fn();
@@ -277,14 +199,7 @@ it("gives successive native error requests fresh consumer UI state", async () =>
       });
     }
   }
-  act(() => {
-    tree = renderer.create(
-      React.createElement(api.CheckpointHost, {
-        renderError: (request) =>
-          React.createElement(ErrorContent, { request }),
-      })
-    );
-  });
+  mount((request) => React.createElement(ErrorContent, { request }));
   const promise = api.checkpoint("test");
   void promise.catch(() => {});
   emit("error", {
@@ -292,7 +207,7 @@ it("gives successive native error requests fresh consumer UI state", async () =>
     kind: "flowCouldNotBeShown",
     error: { message: "first" },
   });
-  const first = tree!.root.findByType("ErrorModal" as any);
+  const first = harness.tree!.root.findByType("ErrorModal" as any);
   const completeA = first.props.onDismiss;
   emit("error", {
     requestId: "B",
@@ -301,10 +216,14 @@ it("gives successive native error requests fresh consumer UI state", async () =>
   });
   act(() => first.props.hide());
   act(() => completeA());
-  expect(tree!.root.findByType("ErrorModal" as any).props.visible).toBe(true);
+  expect(harness.tree!.root.findByType("ErrorModal" as any).props.visible).toBe(
+    true
+  );
   act(() => completeA());
   expect(mockNative.completeError).toHaveBeenCalledTimes(1);
-  act(() => tree!.root.findByType("ErrorModal" as any).props.onDismiss());
+  act(() =>
+    harness.tree!.root.findByType("ErrorModal" as any).props.onDismiss()
+  );
   emit("finished");
   await promise;
 });
