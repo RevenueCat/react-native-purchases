@@ -8,6 +8,11 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+# Preserve React Native's installation options and share the native pod test schemes for CI.
+install! 'cocoapods', :deterministic_uuids => false,
+                     :warn_for_unused_master_specs_repo => false,
+                     :share_schemes_for_development_pods => ['RNPurchases']
+
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -16,6 +21,7 @@ end
 
 target 'PurchaseTester' do
   config = use_native_modules!
+  pod 'RNPurchases', :path => '../../..', :testspecs => ['UnitTests']
 
 #  # Uncomment these to use a local version of `purchases-ios` and `purchases-hybrid-common`:
 #  pod 'RevenueCat',  :path => '../../../../../purchases-ios/'

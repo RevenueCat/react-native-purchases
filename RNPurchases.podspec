@@ -27,4 +27,14 @@ Pod::Spec.new do |spec|
   spec.dependency   "React-Core"
   spec.dependency   "PurchasesHybridCommon", '19.15.1'
   spec.swift_version    = '5.7'
+
+  spec.test_spec 'UnitTests' do |tests|
+    tests.source_files = 'native-tests/ios/*Tests.m'
+    tests.frameworks = 'XCTest'
+    # React's prebuilt module imports public headers outside its module map.
+    tests.pod_target_xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }
+    tests.dependency 'OCMock', '~> 3.9'
+    # The standalone XCTest bundle must embed Hermes to load the prebuilt React framework.
+    tests.dependency 'hermes-engine'
+  end
 end
