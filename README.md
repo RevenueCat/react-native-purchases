@@ -71,6 +71,9 @@ currently required for project discovery. Library podspecs are still required
 for React Native's dependency discovery,
 including when the app uses SwiftPM.
 
+To convert an existing app, follow the
+[CocoaPods to SwiftPM migration guide](migrations/COCOAPODS-TO-SPM.md).
+
 ### Expo
 
 Expo supports in-app payments and is compatible with `react-native-purchases`. To use the SDK, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). Development builds enable native code and provide a complete environment for testing purchases.
