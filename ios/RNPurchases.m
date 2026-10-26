@@ -143,9 +143,9 @@ RCT_EXPORT_METHOD(getCurrentOfferingForPlacement:(NSString *)placementIdentifier
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
 
-    [RCCommonFunctionality getCurrentOfferingForPlacement:placementIdentifier.mappingNSNullToNil completionBlock:^(NSDictionary *offeringObject, RCErrorContainer *error) {
-        resolve(offeringObject);
-    }];
+    [RCCommonFunctionality getCurrentOfferingForPlacement:placementIdentifier.mappingNSNullToNil
+                                         completionBlock:[self getResponseCompletionBlockWithResolve:resolve
+                                                                                              reject:reject]];
 }
 
 //syncAttributesAndOfferingsIfNeeded
