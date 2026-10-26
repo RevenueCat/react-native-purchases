@@ -13,22 +13,25 @@
   "dependencies": {
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/native-stack": "^7.0.0",
-    "react": "19.0.0",
-    "react-native": "^0.78.0",
-    "react-native-safe-area-context": "^5.1.0",
-    "react-native-screens": "~4.11.0"
+    "react": "19.3.0",
+    "react-native": "0.88.0",
+    "react-native-safe-area-context": "^5.10.1",
+    "react-native-screens": "^4.30.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
     "@babel/preset-env": "^7.25.0",
     "@babel/runtime": "^7.25.0",
-    "@react-native-community/cli": "^15.0.0",
-    "@react-native-community/cli-platform-android": "^15.0.0",
-    "@react-native-community/cli-platform-ios": "^15.0.0",
-    "@react-native/babel-preset": "^0.78.0",
-    "@react-native/metro-config": "^0.78.0",
-    "@types/react": "^19.0.0",
+    "@react-native-community/cli": "20.2.0",
+    "@react-native-community/cli-platform-android": "20.2.0",
+    "@react-native-community/cli-platform-ios": "20.2.0",
+    "@react-native/babel-preset": "0.88.0",
+    "@react-native/metro-config": "0.88.0",
+    "@types/react": "^19.2.0",
     "babel-plugin-module-resolver": "^5.0.0",
     "typescript": "~5.2.0"
+  },
+  "engines": {
+    "node": "^22.13.0 || ^24.3.0 || >= 26.0.0"
   }
 }

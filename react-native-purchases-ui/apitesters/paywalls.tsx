@@ -5,6 +5,7 @@ import RevenueCatUI, { PAYWALL_RESULT, CustomVariableValue } from "react-native-
 import type {
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
+  PaywallCallbacks,
   PaywallViewOptions,
   PresentPaywallIfNeededParams,
   PresentPaywallParams,
@@ -217,16 +218,68 @@ async function checkPresentPaywallIfNeeded(offering: PurchasesOffering) {
   });
 }
 
+async function checkPresentPaywallWithCallbacks(callbacks: PaywallCallbacks) {
+  let paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({ callbacks });
+  paywallResult = await RevenueCatUI.presentPaywallIfNeeded({
+    requiredEntitlementIdentifier: "entitlement",
+    callbacks,
+  });
+  void paywallResult;
+}
+
+const paywallCallbacks: PaywallCallbacks = {
+  onPurchaseStarted: ({ packageBeingPurchased }) => {
+    const purchasedPackage: PurchasesPackage = packageBeingPurchased;
+    void purchasedPackage;
+  },
+  onPurchaseCompleted: ({ customerInfo, storeTransaction }) => {
+    const info: CustomerInfo = customerInfo;
+    const transaction: PurchasesStoreTransaction = storeTransaction;
+    void info;
+    void transaction;
+  },
+  onPurchaseError: ({ error }) => {
+    const purchasesError: PurchasesError = error;
+    void purchasesError;
+  },
+  onPurchaseCancelled: () => {},
+  onRestoreStarted: () => {},
+  onRestoreCompleted: ({ customerInfo }) => {
+    const info: CustomerInfo = customerInfo;
+    void info;
+  },
+  onRestoreError: ({ error }) => {
+    const purchasesError: PurchasesError = error;
+    void purchasesError;
+  },
+  onPurchasePackageInitiated: ({ packageBeingPurchased, resume }) => {
+    const purchasedPackage: PurchasesPackage = packageBeingPurchased;
+    void purchasedPackage;
+    resume(true);
+  },
+  onWebCheckoutOpened: () => {},
+  onUrlOpened: (url) => {
+    const opened: string = url;
+    void opened;
+  },
+  onInteraction: (event) => {
+    const interaction: PaywallInteractionEvent = event;
+    void interaction;
+  },
+};
+
 function checkPresentPaywallParams(params: PresentPaywallParams) {
   const offering: PurchasesOffering | undefined = params.offering;
   const displayCloseButton: boolean | undefined = params.displayCloseButton;
   const fontFamily: string | null | undefined = params.fontFamily;
   const customVariables: CustomVariables | undefined = params.customVariables;
+  const callbacks: PaywallCallbacks | undefined = params.callbacks;
 
   void offering;
   void displayCloseButton;
   void fontFamily;
   void customVariables;
+  void callbacks;
 }
 
 function checkPresentPaywallIfNeededParams(params: PresentPaywallIfNeededParams) {
@@ -521,6 +574,8 @@ const FooterPaywallScreenNoOptions = () => {
 };
 
 export {
+  checkPresentPaywallWithCallbacks,
+  paywallCallbacks,
   FooterPaywallScreen,
   FooterPaywallScreenNoOptions,
   FooterPaywallScreenWithFontFamily,

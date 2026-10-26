@@ -51,7 +51,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "10.11.0";
+    public static final String PLUGIN_VERSION = "10.15.1";
 
     private final ReactApplicationContext reactContext;
 
@@ -665,6 +665,11 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     @ReactMethod
     public void trackAdFailedToLoad(ReadableMap data) {
         CommonKt.trackAdFailedToLoad(data.toHashMap());
+    }
+
+    @ReactMethod
+    public void trackAdRewardEarnedUnverified(ReadableMap data) {
+        CommonKt.trackAdRewardEarnedUnverified(data.toHashMap());
     }
 
     @ReactMethod

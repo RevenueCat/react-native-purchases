@@ -10,7 +10,7 @@ import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPack
 import type { RewardedAdTrackingMetadata } from '../purchases';
 
 
-const packageVersion = '10.11.0';
+const packageVersion = '10.15.1';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
@@ -368,6 +368,9 @@ export const browserNativeModuleRNPurchases = {
   },
   trackAdFailedToLoad: async (_data: any) => {
     methodNotSupportedOnWeb('trackAdFailedToLoad');
+  },
+  trackAdRewardEarnedUnverified: async (_data: any) => {
+    methodNotSupportedOnWeb('trackAdRewardEarnedUnverified');
   },
   trackRewardedAdPromptShown: async (_data: any) => {
     methodNotSupportedOnWeb('trackRewardedAdPromptShown');

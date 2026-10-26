@@ -33,5 +33,14 @@ target 'MaestroTestApp' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false,
     )
+
+    # The fmt version bundled with React Native < 0.83.5 doesn't compile with Xcode 26.4+
+    # in C++20 mode: https://github.com/facebook/react-native/issues/55601
+    installer.pods_project.targets.each do |target|
+      next unless target.name == 'fmt'
+      target.build_configurations.each do |build_config|
+        build_config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+      end
+    end
   end
 end

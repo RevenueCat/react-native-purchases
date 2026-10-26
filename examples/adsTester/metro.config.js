@@ -6,9 +6,13 @@ const pak = require('../../package.json');
 
 const root = path.resolve(__dirname, '../..');
 
-const modules = Object.keys({
-  ...pak.peerDependencies,
-});
+// react-native-purchases-admob is aliased to its source (babel.config.js) and
+// lists react-native-google-mobile-ads as a dev dependency, so force every
+// import of it onto this app's single copy (the one with the native module).
+const modules = [
+  ...Object.keys({...pak.peerDependencies}),
+  'react-native-google-mobile-ads',
+];
 
 const config = {
   watchFolders: [root],
@@ -18,6 +22,11 @@ const config = {
       ...modules.map(
         m =>
           new RegExp(`^${escape(path.join(root, 'node_modules', m))}\\/.*$`),
+      ),
+      // The adapter workspace keeps its own dev dependencies (react-native,
+      // react-native-google-mobile-ads, ...); never let Metro pick those up.
+      new RegExp(
+        `^${escape(path.join(root, 'react-native-purchases-admob', 'node_modules'))}\\/.*$`,
       ),
     ]),
 
