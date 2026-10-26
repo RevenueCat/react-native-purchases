@@ -8,8 +8,8 @@
 Both hosts import the same components. The test menu uses React state, so sharing
 the UI does not add navigation libraries or native dependencies to the SPM host.
 Each host's Metro configuration resolves React, React Native, and the SDKs from
-that host's own dependencies. The RN 0.88/CLI 21 prereleases remain isolated to
-`SPMTestApp`.
+that host's own dependencies. The CLI 21 prerelease remains isolated to
+`SPMTestApp`; each host keeps its own React Native dependencies.
 
 ## Coverage
 
