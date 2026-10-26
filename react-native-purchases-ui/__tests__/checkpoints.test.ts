@@ -2,6 +2,8 @@ type Listener = (event: any) => void;
 const mockListeners = new Map<string, Set<Listener>>();
 const mockNative = {
   checkpoint: jest.fn(),
+  setErrorPresenterEnabled: jest.fn(),
+  completeErrorPresentation: jest.fn(),
 };
 let mockPreview = false;
 const mockPlatform = { OS: 'ios', Version: '18.0' };
@@ -19,7 +21,7 @@ jest.mock('react-native', () => ({
 }));
 jest.mock('../src/utils/environment', () => ({ shouldUsePreviewAPIMode: () => mockPreview }));
 
-import { checkpoint, FLOW_PRESENTATION_MODE } from '../src/checkpoints';
+import { checkpoint, CHECKPOINT_FAILURE_KIND, FLOW_PRESENTATION_MODE, setErrorPresenter } from '../src/checkpoints';
 import { CustomVariableValue } from '../src/customVariables';
 
 const emit = (name: string, event: any) => mockListeners.get(name)?.forEach(listener => listener(event));
@@ -31,6 +33,7 @@ beforeEach(() => {
   mockPlatform.OS = 'ios';
   mockPlatform.Version = '18.0';
   mockPreview = false;
+  setErrorPresenter(null);
   mockListeners.clear();
   jest.clearAllMocks();
 });
@@ -98,4 +101,54 @@ it.each(['web', 'preview', 'ios13'])('rejects unsupported environment %s without
   expect(() => checkpoint('upgrade', jest.fn())).toThrow(/Checkpoints require/);
   expect(mockNative.checkpoint).not.toHaveBeenCalled();
   expect(listenerCount('Checkpoints-onPassed')).toBe(0);
+});
+
+const errorEvent = () => ({
+  requestId: 'error-1', checkpointIdentifier: 'upgrade',
+  error: { code: 2, message: 'Store unavailable' },
+  kind: CHECKPOINT_FAILURE_KIND.FLOW_ACTION_FAILED,
+  customVariables: { level: 12 },
+});
+
+it('normalizes errors, preserves context and completes exactly once after the app asks', () => {
+  const presenter = jest.fn();
+  setErrorPresenter(presenter);
+  expect(mockNative.setErrorPresenterEnabled).toHaveBeenLastCalledWith(true);
+  emit('Checkpoints-onError', errorEvent());
+  expect(presenter).toHaveBeenCalledWith({
+    checkpointIdentifier: 'upgrade', error: expect.objectContaining({ code: '2', message: 'Store unavailable' }),
+    kind: 'FLOW_ACTION_FAILED', customVariables: { level: CustomVariableValue.number(12) },
+  }, expect.objectContaining({ complete: expect.any(Function) }));
+  expect(mockNative.completeErrorPresentation).not.toHaveBeenCalled();
+  const completion = presenter.mock.calls[0]![1];
+  completion.complete();
+  completion.complete();
+  expect(mockNative.completeErrorPresentation).toHaveBeenCalledTimes(1);
+  expect(mockNative.completeErrorPresentation).toHaveBeenCalledWith('error-1');
+});
+
+it('replaces and removes presenters without retaining listeners', () => {
+  const first = jest.fn();
+  const second = jest.fn();
+  setErrorPresenter(first);
+  setErrorPresenter(second);
+  expect(listenerCount('Checkpoints-onError')).toBe(1);
+  emit('Checkpoints-onError', errorEvent());
+  expect(first).not.toHaveBeenCalled();
+  expect(second).toHaveBeenCalledTimes(1);
+  setErrorPresenter(null);
+  expect(mockNative.setErrorPresenterEnabled).toHaveBeenLastCalledWith(false);
+  expect(listenerCount('Checkpoints-onError')).toBe(0);
+});
+
+it('releases native error handling when the app presenter throws', () => {
+  setErrorPresenter(() => { throw new Error('app error'); });
+  expect(() => emit('Checkpoints-onError', errorEvent())).toThrow('app error');
+  expect(mockNative.completeErrorPresentation).toHaveBeenCalledWith('error-1');
+});
+
+it('removes the error listener if registering the native presenter fails', () => {
+  mockNative.setErrorPresenterEnabled.mockImplementationOnce(() => { throw new Error('bridge unavailable'); });
+  expect(() => setErrorPresenter(jest.fn())).toThrow('bridge unavailable');
+  expect(listenerCount('Checkpoints-onError')).toBe(0);
 });

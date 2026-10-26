@@ -170,4 +170,46 @@ The callback is called at most once, only when the checkpoint passes. `result.fl
 when there was nothing to present, such as an unconfigured identifier or no matching rule.
 Backing out, a blocking failure, or another checkpoint owning presentation does not invoke
 the callback. Treat a checkpoint as a callback rather than a pending operation to await.
-The SDK handles error presentation.
+The SDK presents its own errors by default.
+
+To present errors in React, install `RevenueCatUI.setErrorPresenter((params, completion) => ...)`.
+The presenter receives the checkpoint identifier, a `PurchasesError`, custom variables, and a
+`CHECKPOINT_FAILURE_KIND`. Call `completion.complete()` after your error UI finishes dismissing.
+Completing an error presentation does not choose whether the checkpoint passes. Pass `null`
+to restore native error presentation; replacing or removing a presenter completes pending errors.
+The presenter applies to subsequent checkpoint calls.
+
+On iOS, render custom error UI inside `RevenueCatUI.PaywallPortal` so a React Native `Modal`
+can present above the native flow. Mount the error children when an error arrives. A modal
+mounted in the app's root tree cannot reliably present above a native paywall on iOS.
+
+```tsx
+// In a component, pendingError holds { params, completion } from your error presenter.
+<RevenueCatUI.PaywallPortal onHostDismissed={() => setPendingError(null)}>
+  {pendingError && (
+    <Modal
+      visible={errorVisible}
+      transparent
+      onRequestClose={() => setErrorVisible(false)}
+      onDismiss={() => {
+        pendingError.completion.complete();
+        setPendingError(null);
+      }}
+    >
+      <YourErrorView error={pendingError.params.error} onClose={() => setErrorVisible(false)} />
+    </Modal>
+  )}
+</RevenueCatUI.PaywallPortal>
+```
+
+Use the same `PaywallPortal` and `Modal` code on iOS and Android. Android's `Modal` and `Alert`
+already open their own native windows above the flow, so the Android portal leaves children
+in the React tree. `Alert.alert(...)` can also be called directly from an error presenter;
+complete its presentation after the alert dismisses. Hosting inline React views above the
+native flow is currently iOS-only.
+
+`Modal.onDismiss` and `PaywallPortal.onHostDismissed` are iOS-only. On Android, complete after
+hiding your error UI. The purchase
+tester includes a Checkpoints screen demonstrating both platforms, native and custom errors,
+and full-screen and sheet presentation. Unregister the presenter on unmount; if you manage
+error UI separately, also clear it when the portal reports `onHostDismissed`.

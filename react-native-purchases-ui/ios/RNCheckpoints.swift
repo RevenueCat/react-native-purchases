@@ -13,13 +13,15 @@ final class RNCheckpoints: RCTEventEmitter {
         defer { self.invalidationLock.unlock() }
         return self.didInvalidate
     }
+    private var errorPresenterEnabled = false
+    private var errorCompletions: [String: () -> Void] = [:]
 
     override static func requiresMainQueueSetup() -> Bool { true }
 
     override var methodQueue: DispatchQueue! { DispatchQueue.main }
 
     override func supportedEvents() -> [String]! {
-        ["Checkpoints-onPassed"]
+        ["Checkpoints-onPassed", "Checkpoints-onError"]
     }
 
     @objc override func addListener(_ eventName: String!) {
@@ -53,7 +55,33 @@ final class RNCheckpoints: RCTEventEmitter {
             case "MODAL_SHEET": mode = .modalSheet
             default: mode = .default
             }
-            Purchases.shared.checkpoint(identifier, customVariables: variables, presentationMode: mode) { [weak self] result in
+            var errorHandler: ErrorPresentationHandler?
+            if self.errorPresenterEnabled {
+                errorHandler = { [weak self] (params: ErrorPresentationParams, completion: ErrorPresentationCompletion) in
+                    guard let self, !self.invalidated, self.errorPresenterEnabled else {
+                        completion.complete()
+                        return
+                    }
+                    let requestId = UUID().uuidString
+                    self.errorCompletions[requestId] = { completion.complete() }
+                    let kind: String
+                    switch params.kind {
+                    case .flowActionFailed: kind = "FLOW_ACTION_FAILED"
+                    case .flowResultSyncFailed: kind = "FLOW_RESULT_SYNC_FAILED"
+                    default: kind = "FLOW_COULD_NOT_BE_SHOWN"
+                    }
+                    let variables = (customVariables ?? [:]).filter { params.customVariables[$0.key] != nil }
+                    self.sendEvent(withName: "Checkpoints-onError", body: [
+                        "requestId": requestId,
+                        "checkpointIdentifier": params.checkpointIdentifier,
+                        "error": ErrorContainer(error: params.error, extraPayload: [:]).info,
+                        "customVariables": variables,
+                        "kind": kind
+                    ])
+                }
+            }
+            Purchases.shared.checkpoint(identifier, customVariables: variables, presentationMode: mode,
+                                        errorPresenter: errorHandler) { [weak self] result in
                 guard let self, !self.invalidated else { return }
                 let customer = result.customer.dictionary
                 let entitlements = (customer["entitlements"] as? [String: Any])?["all"] as? [String: Any] ?? [:]
@@ -78,13 +106,30 @@ final class RNCheckpoints: RCTEventEmitter {
         }
     }
 
+    @MainActor @objc func setErrorPresenterEnabled(_ enabled: Bool) {
+        self.errorPresenterEnabled = enabled && !self.invalidated
+        self.completePendingErrors()
+    }
+
+    @MainActor @objc func completeErrorPresentation(_ requestId: String) {
+        self.errorCompletions.removeValue(forKey: requestId)?()
+    }
     override func invalidate() {
         // Native UI can outlive a JS reload. Stop events immediately, even when teardown
-        // starts off the main queue.
+        // starts off the main queue, before releasing main-actor error completions.
         self.invalidationLock.lock()
         self.didInvalidate = true
         self.invalidationLock.unlock()
+        Task { @MainActor in
+            self.errorPresenterEnabled = false
+            self.completePendingErrors()
+        }
         super.invalidate()
     }
 
+    @MainActor private func completePendingErrors() {
+        let completions = Array(self.errorCompletions.values)
+        self.errorCompletions.removeAll()
+        completions.forEach { $0() }
+    }
 }
