@@ -59,7 +59,7 @@ Our full SDK reference [can be found here](https://revenuecat.github.io/react-na
 Both `react-native-purchases` and `react-native-purchases-ui` include Swift package
 manifests for React Native's experimental Swift Package Manager integration.
 This integration requires React Native **0.88.0 or later**. CocoaPods remains
-supported, and its minimum React Native version remains **0.73.0**.
+supported, with a minimum React Native version of **0.80.0**.
 
 Install or upgrade the SDK packages first, then follow
 [React Native's SwiftPM setup instructions](https://github.com/react/react-native/blob/v0.88.0/packages/react-native/scripts/spm/__docs__/spm-scripts.md#quick-start)
@@ -81,6 +81,6 @@ $ npx expo install react-native-purchases
 
 In Expo Go, the SDK automatically runs in **Preview API Mode**, replacing native calls with JavaScript mocks so your app loads without errors. Real purchases, however, require a development build.
 
-### Using development builds
+#### Using development builds
 
 To fully test in-app purchases, you’ll need to create a [custom development build](https://docs.expo.dev/develop/development-builds/introduction/) with EAS. This ensures that all native dependencies, including `react-native-purchases`, are properly included.
