@@ -11,12 +11,15 @@
 /android/ @RevenueCat/coresdk
 /ios/ @RevenueCat/coresdk
 /__tests__/ @RevenueCat/coresdk
+# Shared UI code and features without a more specific owner below
+/react-native-purchases-ui/ @RevenueCat/coresdk
 
 # Galaxy store add-on
 /react-native-purchases-store-galaxy/ @RevenueCat/catforms
 
 # Paywalls (react-native-purchases-ui)
-/react-native-purchases-ui/ @RevenueCat/paywalls
+/react-native-purchases-ui/**/*Paywall* @RevenueCat/paywalls
+/react-native-purchases-ui/**/*paywall* @RevenueCat/paywalls
 
 # Customer Center
 /react-native-purchases-ui/**/*CustomerCenter* @RevenueCat/customer-center
