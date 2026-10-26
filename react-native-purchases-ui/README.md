@@ -146,7 +146,9 @@ The `<Paywall />` component supports the following lifecycle listeners:
 
 Use these callbacks to respond to user actions such as purchase initiation, completion, dismissal, and error handling.
 
-### Checkpoints (invite-only)
+### Checkpoints (experimental, invite-only)
+
+> **Experimental:** The checkpoints API is experimental and may change or be removed in a future release without a major version bump.
 
 Checkpoints require access to the native SDK's invite-only checkpoints API, iOS 15+ or Android,
 and a native development build. Configure Purchases before calling a checkpoint.
