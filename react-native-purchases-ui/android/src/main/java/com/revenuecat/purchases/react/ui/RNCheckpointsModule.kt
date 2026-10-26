@@ -13,16 +13,12 @@ import com.revenuecat.purchases.hybridcommon.mappers.map
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.InviteOnlyCheckpointsAPI
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointParams
-import com.revenuecat.purchases.ui.revenuecatui.checkpoints.ErrorPresenter
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.FlowPresentationMode
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.checkpoint
-import java.util.UUID
 
 @OptIn(InviteOnlyCheckpointsAPI::class, InternalRevenueCatAPI::class)
 internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     @Volatile private var invalidated = false
-    private var errorPresenterEnabled = false
-    private val errorCompletions = mutableMapOf<String, ErrorPresenter.Completion>()
 
     override fun getName(): String = "RNCheckpoints"
 
@@ -49,25 +45,9 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
                 "MODAL_SHEET" -> FlowPresentationMode.MODAL_SHEET
                 else -> FlowPresentationMode.DEFAULT
             }
-            val presenter = if (errorPresenterEnabled) ErrorPresenter { params, completion ->
-                if (invalidated || !errorPresenterEnabled) {
-                    completion.complete()
-                } else {
-                    val requestId = UUID.randomUUID().toString()
-                    errorCompletions[requestId] = completion
-                    emit("Checkpoints-onError", mapOf(
-                        "requestId" to requestId,
-                        "checkpointIdentifier" to params.checkpointIdentifier,
-                        "error" to params.error.map().info,
-                        "kind" to params.kind.toString(),
-                        "customVariables" to rawVariables.filterKeys { it in params.customVariables },
-                    ))
-                }
-            } else null
             val params = CheckpointParams.Builder()
                 .setCustomVariables(variables)
                 .setPresentationMode(mode)
-                .setErrorPresenter(presenter)
                 .build()
             Purchases.sharedInstance.checkpoint(identifier, params) { result ->
                 emit("Checkpoints-onPassed", mapOf(
@@ -86,35 +66,12 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
         }
     }
 
-    @ReactMethod
-    fun setErrorPresenterEnabled(enabled: Boolean) {
-        UiThreadUtil.runOnUiThread {
-            errorPresenterEnabled = enabled && !invalidated
-            completePendingErrors()
-        }
-    }
-
-    @ReactMethod
-    fun completeErrorPresentation(requestId: String) {
-        UiThreadUtil.runOnUiThread { errorCompletions.remove(requestId)?.complete() }
-    }
-
     @ReactMethod fun addListener(eventName: String) { /* Required by NativeEventEmitter. */ }
     @ReactMethod fun removeListeners(count: Int) { /* Required by NativeEventEmitter. */ }
 
     override fun invalidate() {
         invalidated = true
-        UiThreadUtil.runOnUiThread {
-            errorPresenterEnabled = false
-            completePendingErrors()
-        }
         super.invalidate()
-    }
-
-    private fun completePendingErrors() {
-        val completions = errorCompletions.values.toList()
-        errorCompletions.clear()
-        completions.forEach { it.complete() }
     }
 
     private fun emit(name: String, body: Map<String, Any?>) {
