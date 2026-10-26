@@ -1,10 +1,9 @@
 import React from "react";
 import type { ComponentProps } from "react";
 
-import RevenueCatUI, { PAYWALL_RESULT, CustomVariableValue, FLOW_PRESENTATION_MODE, CHECKPOINT_FAILURE_KIND } from "react-native-purchases-ui";
+import RevenueCatUI, { PAYWALL_RESULT, CustomVariableValue, FLOW_PRESENTATION_MODE } from "react-native-purchases-ui";
 import type {
   CheckpointResult,
-  ErrorPresenter,
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
   PaywallCallbacks,
@@ -26,13 +25,7 @@ const paywallResultEnum: typeof PAYWALL_RESULT = RevenueCatUI.PAYWALL_RESULT;
 
 void paywallResultEnum;
 
-const errorPresenter: ErrorPresenter = (params, completion) => {
-  const kind: CHECKPOINT_FAILURE_KIND = params.kind;
-  void kind;
-  completion.complete();
-};
 const checkpointAPI = () => {
-  RevenueCatUI.setErrorPresenter(errorPresenter);
   const remove = RevenueCatUI.checkpoint('upgrade', (result: CheckpointResult) => {
     void result.customer.entitlements.active;
     result.flow?.obtainedEntitlements.forEach(value => { void value.entitlementInfo.identifier; });
@@ -42,8 +35,6 @@ const checkpointAPI = () => {
     customVariables: {level: CustomVariableValue.number(12)},
   });
   remove();
-  RevenueCatUI.setErrorPresenter(null);
-  return <RevenueCatUI.PaywallPortal onHostDismissed={() => {}}><></></RevenueCatUI.PaywallPortal>;
 };
 void checkpointAPI;
 

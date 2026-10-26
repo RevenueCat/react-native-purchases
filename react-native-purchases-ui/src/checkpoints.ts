@@ -1,12 +1,10 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 import {
-  normalizePurchasesError,
   type CustomerInfo,
   type PurchasesEntitlementInfo,
-  type PurchasesError,
   type PurchasesStoreProduct,
 } from '@revenuecat/purchases-typescript-internal';
-import { CustomVariableValue, convertCustomVariablesToNativeMap, type CustomVariables } from './customVariables';
+import { convertCustomVariablesToNativeMap, type CustomVariables } from './customVariables';
 import { shouldUsePreviewAPIMode } from './utils/environment';
 
 /** How the SDK presents the flow selected by a checkpoint. */
@@ -41,32 +39,9 @@ export interface CheckpointParams {
   presentationMode?: FLOW_PRESENTATION_MODE;
 }
 
-export enum CHECKPOINT_FAILURE_KIND {
-  FLOW_COULD_NOT_BE_SHOWN = 'FLOW_COULD_NOT_BE_SHOWN',
-  FLOW_ACTION_FAILED = 'FLOW_ACTION_FAILED',
-  FLOW_RESULT_SYNC_FAILED = 'FLOW_RESULT_SYNC_FAILED',
-}
-
-export interface ErrorPresentationParams {
-  checkpointIdentifier: string;
-  error: PurchasesError;
-  customVariables: CustomVariables;
-  kind: CHECKPOINT_FAILURE_KIND;
-}
-
-export interface ErrorPresentationCompletion {
-  /** Call after the error UI has finished dismissing. Later calls are ignored. */
-  complete(): void;
-}
-
-/** The SDK chooses how the flow proceeds after error presentation completes. */
-export type ErrorPresenter = (params: ErrorPresentationParams, completion: ErrorPresentationCompletion) => void;
-
 const PASSED_EVENT = 'Checkpoints-onPassed';
-const ERROR_EVENT = 'Checkpoints-onError';
 let nextCallId = 0;
 const callIdPrefix = `${Date.now()}-${Math.random()}`;
-let errorSubscription: { remove(): void } | undefined;
 
 function nativeCheckpoints() {
   if (shouldUsePreviewAPIMode() || (Platform.OS !== 'ios' && Platform.OS !== 'android')) {
@@ -113,57 +88,4 @@ export function checkpoint(
     throw error;
   }
   return () => subscription.remove();
-}
-
-/**
- * Installs an error presenter for subsequent checkpoint calls. Pass null to restore native
- * error UI. Replacing or removing a presenter completes its pending error presentation.
- * Render custom iOS error UI inside PaywallPortal so it can appear above the native flow.
- */
-export function setErrorPresenter(presenter: ErrorPresenter | null): void {
-  const native = nativeCheckpoints();
-  errorSubscription?.remove();
-  errorSubscription = undefined;
-  if (presenter) {
-    errorSubscription = new NativeEventEmitter(native).addListener(ERROR_EVENT, event => {
-      const { requestId, ...params } = event;
-      normalizePurchasesError(params.error);
-      const customVariables: CustomVariables = {};
-      for (const key of Object.keys(params.customVariables)) {
-        const value = params.customVariables[key];
-        if (typeof value === 'string') {
-          customVariables[key] = CustomVariableValue.string(value);
-        }
-        if (typeof value === 'number') {
-          customVariables[key] = CustomVariableValue.number(value);
-        }
-        if (typeof value === 'boolean') {
-          customVariables[key] = CustomVariableValue.boolean(value);
-        }
-      }
-      let completed = false;
-      const completion = {
-        complete: () => {
-          if (completed) {
-            return;
-          }
-          completed = true;
-          native.completeErrorPresentation(requestId);
-        },
-      };
-      try {
-        presenter({ ...params, customVariables }, completion);
-      } catch (error) {
-        completion.complete();
-        throw error;
-      }
-    });
-  }
-  try {
-    native.setErrorPresenterEnabled(presenter !== null);
-  } catch (error) {
-    errorSubscription?.remove();
-    errorSubscription = undefined;
-    throw error;
-  }
 }
