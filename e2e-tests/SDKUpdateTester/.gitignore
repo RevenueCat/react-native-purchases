@@ -1,0 +1,15 @@
+node_modules/
+build-config.json
+build/
+.gradle/
+.cxx/
+local.properties
+Pods/
+Podfile.lock
+DerivedData/
+xcuserdata/
+.xcode.env.local
+*.xcuserstate
+project.xcworkspace/
+.DS_Store
+npm-debug.log
