@@ -1,0 +1,5 @@
+!package-lock.json
+.xcode.env.local
+ios/Pods/
+ios/Package.resolved
+ios/.build/
