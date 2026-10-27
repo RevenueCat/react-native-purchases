@@ -75,6 +75,8 @@ final class RNCheckpoints: RCTEventEmitter {
                     "callId": callId, "result": ["flow": flow, "customer": customer]
                 ])
             }
+        } else {
+            NSLog("[RevenueCatUI] Checkpoints require iOS 15 or later.")
         }
     }
 
