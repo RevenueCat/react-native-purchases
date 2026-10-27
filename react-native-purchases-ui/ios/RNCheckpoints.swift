@@ -1,9 +1,7 @@
 import Foundation
 import React
 import PurchasesHybridCommon
-#if RC_CHECKPOINT_EMBED_ENABLED
 import PurchasesHybridCommonUI
-#endif
 @_spi(Internal) import RevenueCat
 @_spi(InviteOnlyCheckpointsApi) import RevenueCatUI
 
@@ -89,13 +87,11 @@ final class RNCheckpoints: RCTEventEmitter {
         self.invalidationLock.lock()
         self.didInvalidate = true
         self.invalidationLock.unlock()
-#if RC_CHECKPOINT_EMBED_ENABLED
         if Thread.isMainThread {
             MainActor.assumeIsolated { self.cancelAllEmbedded() }
         } else {
             DispatchQueue.main.async { self.cancelAllEmbedded() }
         }
-#endif
         super.invalidate()
     }
 
@@ -105,7 +101,6 @@ final class RNCheckpoints: RCTEventEmitter {
     // PurchasesHybridCommonUI's EmbeddedCheckpointProxy owns sessions, error acknowledgements, and
     // serialization; purchases-ios owns the UIKit containment.
 
-#if RC_CHECKPOINT_EMBED_ENABLED
     @MainActor private var embeddedProxy: AnyObject?
 
     @MainActor
@@ -145,6 +140,5 @@ final class RNCheckpoints: RCTEventEmitter {
     private func cancelAllEmbedded() {
         if #available(iOS 15.0, *) { (self.embeddedProxy as? EmbeddedCheckpointProxy)?.cancelAll() }
     }
-#endif
 
 }
