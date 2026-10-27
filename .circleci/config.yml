@@ -397,7 +397,7 @@ jobs:
           machine: "unix"
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
-  ios:
+  ios_cocoapods_build:
     <<: *base-mac-job-xcode-16
     steps:
       - checkout
@@ -628,28 +628,33 @@ workflows:
       # Testing phase - runs on all branches
       - analyse_js
       - android
-      - ios
+      # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+      # - ios_cocoapods_build
       - ios_spm_build
       - expo_android
-      - expo_ios
+      # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+      # - expo_ios
       - expo_web
-      - adstester_ios
+      # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+      # - adstester_ios
       - adstester_android
       - agp9_test_app_android
-      - run-maestro-e2e-tests-ios:
-          context:
-            - maestro-e2e-tests
-            - e2e-tests
+      # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+      # - run-maestro-e2e-tests-ios:
+      #     context:
+      #       - maestro-e2e-tests
+      #       - e2e-tests
       - run-maestro-e2e-tests-android:
           context:
             - maestro-e2e-tests
             - e2e-tests
-      - run-maestro-e2e-tests-ios:
-          name: run-maestro-e2e-tests-ios-old-architecture
-          new_arch_enabled: false
-          context:
-            - maestro-e2e-tests
-            - e2e-tests
+      # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+      # - run-maestro-e2e-tests-ios:
+      #     name: run-maestro-e2e-tests-ios-old-architecture
+      #     new_arch_enabled: false
+      #     context:
+      #       - maestro-e2e-tests
+      #       - e2e-tests
       - run-maestro-e2e-tests-android:
           name: run-maestro-e2e-tests-android-old-architecture
           new_arch_enabled: false
@@ -667,7 +672,8 @@ workflows:
             - wait-for-pr-approval
             - analyse_js
             - android
-            - ios
+            # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+            # - ios_cocoapods_build
             - ios_spm_build
             - agp9_test_app_android
           <<: *release-branches
@@ -712,15 +718,16 @@ workflows:
       - revenuecat/automatic-bump:
           ruby_version: "3.3.0"
 
-  maestro-e2e-tests-ios:
-    when:
-      or:
-        - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
-    jobs:
-      - run-maestro-e2e-tests-ios:
-          context:
-            - maestro-e2e-tests
-            - e2e-tests
+  # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+  # maestro-e2e-tests-ios:
+  #   when:
+  #     or:
+  #       - equal: ["maestro_e2e_tests", << pipeline.schedule.name >>]
+  #   jobs:
+  #     - run-maestro-e2e-tests-ios:
+  #         context:
+  #           - maestro-e2e-tests
+  #           - e2e-tests
 
   maestro-e2e-tests-android:
     when:
