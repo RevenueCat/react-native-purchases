@@ -8,6 +8,9 @@ resyncs. The app imports the same test UI as `MaestroTestApp` from
 placeholder intact; the separate Maestro job configures RevenueCat Test Store
 and exercises the paywall purchase flow.
 
+React Native generates the Xcode scheme's autolinking pre-action and the matching
+build phase. Keep these scripts generated; `spm update` refreshes them.
+
 React Native CLI 21.0.0-alpha.1 discovers the SPM-configured project directly,
 so the app has no Podfile. The CLI version is pinned alongside React Native.
 This app is installed independently of the root Yarn workspace; the alpha CLI
@@ -44,19 +47,21 @@ Install scripts are disabled because the tarballs already contain the SDKs'
 compiled JavaScript. The stable React Native version satisfies the SDKs' peer
 dependencies without legacy peer resolution.
 
-The `spm_ios` CircleCI job builds Debug and Release, rebuilds after touching
-`package.json` to verify that autolinking preserves the SDK links, and checks the
-JavaScript bundles and all six SDK bridge/view-manager classes in the app binaries.
-To run interactively, open `ios/SPMTestApp.xcodeproj` after preparing dependencies.
+The `ios_spm_build` CircleCI job builds Debug for the simulator, explicitly resyncs
+autolinking, then builds unsigned Release for devices. It checks the JavaScript
+bundles and all six SDK bridge/view-manager classes in both app binaries.
+
+To run interactively, start Metro with `npx react-native start` from
+`e2e-tests/SPMTestApp`, then open `ios/SPMTestApp.xcodeproj` and run on a simulator.
 Avoid CocoaPods in this app; the existing iOS CI jobs cover that integration.
 
 The `run-maestro-e2e-tests-spm-ios` job uses the same preparation command as
-`spm_ios`, injects the CI Test Store API key, builds Debug with bundled
+`ios_spm_build`, injects the CI Test Store API key, builds Debug with bundled
 JavaScript, installs the app on an iPhone 17 simulator, and runs the shared flows
 with `APP_ID=org.reactjs.native.example.SPMTestApp`. It uploads JUnit results and
 Maestro debug artifacts. Test Store keys require Debug because the SDK blocks
 them in Release. React Native loads the bundled JavaScript when Metro is not
-running; the separate `spm_ios` job continues checking both build configurations.
+running; the separate `ios_spm_build` job continues checking both build configurations.
 Keep injected keys out of commits.
 
 This is a temporary native host. The CocoaPods removal PR after December 2, 2026
