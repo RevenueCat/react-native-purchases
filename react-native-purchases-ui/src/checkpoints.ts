@@ -54,13 +54,20 @@ export interface CheckpointErrorRequest {
 
 export interface CheckpointParams {
   customVariables?: CustomVariables;
-  /** How the SDK presents the flow. Ignored when `errorPresenter` is set: the flow is then embedded. */
+  /**
+   * How the SDK presents the flow when it presents it itself. Not used with `errorPresenter`: the flow is then
+   * embedded in the container the app provides, which decides how it reads on screen.
+   */
   presentationMode?: FLOW_PRESENTATION_MODE;
   /**
-   * EXPERIMENTAL, iOS only. Presents the errors of the flow with app-owned UI. Setting it makes the native SDK
-   * embed the flow as a child of the view controller React Native is currently showing (the screen's root or an
-   * open `<Modal>`) instead of presenting its own modal, so an ordinary React Native `<Modal>` rendered by the
-   * app appears above the flow. Throws on other platforms.
+   * EXPERIMENTAL, iOS only. Presents the errors of the flow with app-owned UI. Throws on other platforms.
+   *
+   * Without it the SDK presents the flow modally, which keeps React Native `<Modal>`s rendered by the app from
+   * appearing above it: they present from the controller owning their React tree, which is already presenting
+   * the flow. With it, the native SDK instead embeds the flow as a child of the view controller React Native is
+   * currently showing: the screen's root, or an open `<Modal>`. Nothing is presented natively, so the app's
+   * error `<Modal>` appears above the flow. The app owns the container: open an RN `<Modal>` with the wanted
+   * `presentationStyle`, call `checkpoint` after its `onShow`, and render the error `<Modal>` inside it.
    *
    * The flow waits for the error to be acknowledged: return a promise that settles once the app's error UI is
    * gone, or call `request.complete()`. Requires a build against a local purchases-ios with the embedded

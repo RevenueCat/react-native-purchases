@@ -173,3 +173,9 @@ when there was nothing to present, such as an unconfigured identifier or no matc
 Backing out, a blocking failure, or another checkpoint owning presentation does not invoke
 the callback. Treat a checkpoint as a callback rather than a pending operation to await.
 The SDK handles error presentation.
+
+On iOS, `errorPresenter` (experimental) lets the app show errors with its own `<Modal>`. The SDK then
+embeds the flow in the view controller React Native is showing instead of presenting a modal, so the
+app provides the container: open an RN `<Modal>` with the wanted `presentationStyle`, call `checkpoint`
+after its `onShow`, and render the error `<Modal>` inside it. `presentationMode` does not apply then.
+`onFinished` reports the end of the flow, and the returned function also removes the embedded flow.
