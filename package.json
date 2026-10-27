@@ -115,6 +115,7 @@
   "jest": {
     "preset": "@react-native/jest-preset",
     "modulePathIgnorePatterns": [
+      "<rootDir>/e2e-tests/",
       "<rootDir>/examples/purchaseTesterTypescript/",
       "<rootDir>/react-native-purchases-admob/",
       "<rootDir>/react-native-purchases-store-galaxy/",
