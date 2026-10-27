@@ -131,10 +131,10 @@ const EmbeddedCheckpointTester: React.FC<{unmountAfter: (ms: number) => void}> =
     setContainerShown(false);
   }, [append, container]);
 
-  // The app owns cancellation when its container goes away: the SDK never finishes on disappearance alone.
+  // The SDK notices its parent being torn down (dismissed, popped, or released) and cancels the flow itself;
+  // the tester only logs so that onFinished below proves the SDK path. Cancel on unmount stays app-owned.
   const onContainerDismissed = useCallback(() => {
-    append(`Container dismissed; cancelling ${handles.current.size} execution(s)`);
-    handles.current.forEach(handle => handle.cancel());
+    append(`Container dismissed with ${handles.current.size} execution(s) still owned`);
   }, [append]);
 
   const controls = (
