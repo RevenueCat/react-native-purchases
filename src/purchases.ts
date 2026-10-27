@@ -818,7 +818,8 @@ export default class Purchases {
     placementIdentifier: string
   ): Promise<PurchasesOffering | null> {
     await throwIfNotConfigured();
-    return RNPurchases.getCurrentOfferingForPlacement(placementIdentifier);
+    const offering = await RNPurchases.getCurrentOfferingForPlacement(placementIdentifier);
+    return offering ?? null;
   }
 
   /**
