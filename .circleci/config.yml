@@ -397,7 +397,7 @@ jobs:
           machine: "unix"
       - rn/android_build:
           project_path: examples/purchaseTesterTypescript/android
-  ios_cocoapods:
+  ios_cocoapods_build:
     <<: *base-mac-job-xcode-16
     steps:
       - checkout
@@ -629,7 +629,7 @@ workflows:
       - analyse_js
       - android
       # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
-      # - ios_cocoapods
+      # - ios_cocoapods_build
       - ios_spm_build
       - expo_android
       # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
@@ -673,7 +673,7 @@ workflows:
             - analyse_js
             - android
             # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
-            # - ios_cocoapods
+            # - ios_cocoapods_build
             - ios_spm_build
             - agp9_test_app_android
           <<: *release-branches
