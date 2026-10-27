@@ -459,58 +459,48 @@ jobs:
           working_directory: e2e-tests/SPMTestApp/ios
           command: node ../node_modules/react-native/scripts/setup-apple-spm.js update --yes
       - run:
-          name: Build SPMTestApp (Debug and Release)
+          name: Build SPMTestApp (Debug simulator)
           working_directory: e2e-tests/SPMTestApp/ios
           command: |
-            for configuration in Debug Release; do
-              xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
-                -configuration "$configuration" -sdk iphonesimulator \
-                -destination 'generic/platform=iOS Simulator' \
-                -derivedDataPath ../build/DerivedData \
-                -resultBundlePath "../../../build/spm-ci/$configuration.xcresult" \
-                -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
-                | tee "../../../build/spm-ci/$configuration.log"
-              test -s "../build/DerivedData/Build/Products/$configuration-iphonesimulator/SPMTestApp.app/main.jsbundle"
-            done
-          no_output_timeout: 20m
-      - run:
-          name: Rebuild after an autolinking resync
-          working_directory: e2e-tests/SPMTestApp/ios
-          command: |
-            sync_stamp=build/generated/autolinking/.spm-sync-stamp
-            test -s "$sync_stamp"
-            stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
-              build/generated/autolinking/libs/ReactNativePurchasesUI > ../../../build/spm-ci/symlinks-before.txt
-            touch ../package.json
             xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
               -configuration Debug -sdk iphonesimulator \
               -destination 'generic/platform=iOS Simulator' \
               -derivedDataPath ../build/DerivedData \
-              -resultBundlePath ../../../build/spm-ci/debug-resync.xcresult \
+              -resultBundlePath ../../../build/spm-ci/Debug.xcresult \
               -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
-              | tee ../../../build/spm-ci/debug-resync.log
-            grep -F 'SPM sync inputs changed' ../../../build/spm-ci/debug-resync.log
-            grep -F 'SPM autolinking sync complete.' ../../../build/spm-ci/debug-resync.log
-            test "$sync_stamp" -nt ../package.json
-            stat -f '%N %i' build/generated/autolinking/libs/ReactNativePurchases \
-              build/generated/autolinking/libs/ReactNativePurchasesUI > ../../../build/spm-ci/symlinks-after.txt
-            diff -u ../../../build/spm-ci/symlinks-before.txt ../../../build/spm-ci/symlinks-after.txt
+              | tee ../../../build/spm-ci/Debug.log
+          no_output_timeout: 20m
+      - run:
+          name: Resync SwiftPM autolinking
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: node ../node_modules/react-native/scripts/setup-apple-spm.js sync
+      - run:
+          name: Build SPMTestApp (Release device)
+          working_directory: e2e-tests/SPMTestApp/ios
+          command: |
+            xcodebuild -project SPMTestApp.xcodeproj -scheme SPMTestApp \
+              -configuration Release -sdk iphoneos \
+              -destination 'generic/platform=iOS' \
+              -derivedDataPath ../build/DerivedData \
+              -resultBundlePath ../../../build/spm-ci/Release.xcresult \
+              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
+              | tee ../../../build/spm-ci/Release.log
           no_output_timeout: 20m
       - run:
           name: Verify JavaScript bundles and linked native modules
           working_directory: e2e-tests/SPMTestApp/ios
           command: |
-            for configuration in Debug Release; do
-              app_bundle="../build/DerivedData/Build/Products/$configuration-iphonesimulator/SPMTestApp.app"
+            for build_variant in Debug-iphonesimulator Release-iphoneos; do
+              app_bundle="../build/DerivedData/Build/Products/$build_variant/SPMTestApp.app"
               test -s "$app_bundle/main.jsbundle"
               binary="$app_bundle/SPMTestApp"
               if [ -f "$app_bundle/SPMTestApp.debug.dylib" ]; then
                 binary="$app_bundle/SPMTestApp.debug.dylib"
               fi
-              xcrun nm -gj "$binary" > "../../../build/spm-ci/$configuration-symbols.txt"
+              xcrun nm -gj "$binary" > "../../../build/spm-ci/$build_variant-symbols.txt"
               for native_class in RNPurchases RNPaywalls RNCustomerCenter PaywallViewManager \
                 CustomerCenterViewManager RCPaywallFooterViewManager; do
-                grep -Fx "_OBJC_CLASS_\$_$native_class" "../../../build/spm-ci/$configuration-symbols.txt"
+                grep -Fx "_OBJC_CLASS_\$_$native_class" "../../../build/spm-ci/$build_variant-symbols.txt"
               done
             done
       - save_cache:

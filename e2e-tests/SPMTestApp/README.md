@@ -6,6 +6,9 @@ includes React Native's fix for preserving library symlinks during autolinking
 resyncs. The app imports both SDKs so Metro bundles their JavaScript; it does not
 configure purchases or require an API key.
 
+React Native generates the Xcode scheme's autolinking pre-action and the matching
+build phase. Keep these scripts generated; `spm update` refreshes them.
+
 React Native CLI 21.0.0-alpha.1 discovers the SPM-configured project directly,
 so the app has no Podfile. The CLI version is pinned alongside React Native.
 This app is installed independently of the root Yarn workspace; the alpha CLI
@@ -42,8 +45,10 @@ Install scripts are disabled because the tarballs already contain the SDKs'
 compiled JavaScript. The stable React Native version satisfies the SDKs' peer
 dependencies without legacy peer resolution.
 
-The `spm_ios` CircleCI job builds Debug and Release, rebuilds after touching
-`package.json` to verify that autolinking preserves the SDK links, and checks the
-JavaScript bundles and all six SDK bridge/view-manager classes in the app binaries.
-To run interactively, open `ios/SPMTestApp.xcodeproj` after preparing dependencies.
+The `spm_ios` CircleCI job builds Debug for the simulator, explicitly resyncs
+autolinking, then builds unsigned Release for devices. It checks the JavaScript
+bundles and all six SDK bridge/view-manager classes in both app binaries.
+
+To run interactively, start Metro with `npx react-native start` from
+`e2e-tests/SPMTestApp`, then open `ios/SPMTestApp.xcodeproj` and run on a simulator.
 Avoid CocoaPods in this app; the existing iOS CI jobs cover that integration.
