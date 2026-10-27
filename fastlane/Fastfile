@@ -212,6 +212,9 @@ lane :update_hybrid_common do |options|
   commit_current_changes(commit_message: 'Update yarn.lock')
 
   # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
+  # Pushing now in case updating podfile fails and needs to retry
+  # push_to_git_remote(set_upstream: true)
+
   # This updates both PurchasesHybridCommonUI and PurchasesHybridCommon.
   # update_sample_podfile_lock_with_retry(pod_name: 'PurchasesHybridCommonUI')
 
