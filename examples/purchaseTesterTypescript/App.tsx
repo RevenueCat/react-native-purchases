@@ -30,6 +30,7 @@ import { CustomVariablesProvider } from "./app/context/CustomVariablesContext";
 import PurchaseLogicPaywallScreen from "./app/screens/PurchaseLogicPaywallScreen";
 import CustomPaywallScreen from "./app/screens/CustomPaywallScreen";
 import CheckpointsScreen from './app/screens/CheckpointsScreen';
+import { CheckpointHost } from 'react-native-purchases-ui';
 import EmbeddedCheckpointScreen from './app/screens/EmbeddedCheckpointScreen';
 
 import APIKeys from './app/APIKeys';
@@ -209,6 +210,7 @@ const App = () => {
           <Stack.Screen name="EmbeddedCheckpoint" component={EmbeddedCheckpointScreen} options={{ title: 'Embedded Checkpoint' }} />
         </Stack.Navigator>
       </NavigationContainer>
+      <CheckpointHost />
       </CustomVariablesProvider>
     );
 };

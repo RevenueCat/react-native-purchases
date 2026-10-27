@@ -174,8 +174,29 @@ Backing out, a blocking failure, or another checkpoint owning presentation does 
 the callback. Treat a checkpoint as a callback rather than a pending operation to await.
 The SDK handles error presentation.
 
-On iOS, `errorPresenter` (experimental) lets the app show errors with its own `<Modal>`. The SDK then
-embeds the flow in the view controller React Native is showing instead of presenting a modal, so the
-app provides the container: open an RN `<Modal>` with the wanted `presentationStyle`, call `checkpoint`
-after its `onShow`, and render the error `<Modal>` inside it. `presentationMode` does not apply then.
-`onFinished` reports the end of the flow, and the returned function also removes the embedded flow.
+To show errors with your own UI instead of the SDK's dialog (experimental), mount `<CheckpointHost />`
+once near the root of your app and pass `errorPresenter`. It returns the element to render, usually a
+transparent `<Modal>`, which calls `request.complete()` once it has gone away:
+
+```tsx
+// App.tsx
+<NavigationContainer>...</NavigationContainer>
+<CheckpointHost />
+
+// anywhere
+RevenueCatUI.checkpoint('upgrade', onPassed, {
+  presentationMode: FLOW_PRESENTATION_MODE.MODAL_SHEET,
+  errorPresenter: request => (
+    <Modal transparent onDismiss={request.complete}>
+      <Text>{request.error.message}</Text>
+      <Button title="OK" onPress={/* hide the modal */} />
+    </Modal>
+  ),
+});
+```
+
+The call is the same on both platforms. On Android the SDK presents the flow as usual and the host renders
+the error UI above it. On iOS a React Native `<Modal>` cannot present over a modal the SDK presents, so the
+host opens a `<Modal>` matching `presentationMode` and the native SDK embeds the flow in it; the error UI is
+rendered inside that container. The returned function then also removes the embedded flow. The iOS path
+requires a build against a local purchases-ios with the embedded checkpoint SPI.

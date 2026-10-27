@@ -6,6 +6,7 @@ import RevenueCatUI, {
   CustomVariableValue,
   FLOW_PRESENTATION_MODE,
   checkpoint,
+  CheckpointHost,
 } from "react-native-purchases-ui";
 import type {
   CheckpointErrorKind,
@@ -648,25 +649,25 @@ export {
   PaywallScreenWithOfferingAndEvents,
 };
 
-const embeddedCheckpointAPI = () => {
-  const cancel: () => void = checkpoint('upgrade', (result: CheckpointResult) => {
+const errorPresenterCheckpointAPI = () => {
+  const host: React.JSX.Element = <CheckpointHost />;
+  const staticHost: React.JSX.Element = <RevenueCatUI.CheckpointHost />;
+  void host; void staticHost;
+  const remove: () => void = checkpoint('upgrade', (result: CheckpointResult) => {
     const flow: CheckpointResult['flow'] = result.flow;
     void flow;
   }, {
     customVariables: { source: CustomVariableValue.string('api') },
-    errorPresenter: (request: CheckpointErrorRequest) => {
+    presentationMode: FLOW_PRESENTATION_MODE.MODAL_FULL_SCREEN,
+    errorPresenter: (request: CheckpointErrorRequest): React.ReactNode => {
       const requestId: string = request.requestId;
       const kind: CheckpointErrorKind = request.kind;
       const message: string = request.error.message;
       void requestId; void kind; void message;
       request.complete();
+      return null;
     },
-    onFinished: () => {},
   });
-  const cancelWithPromise: () => void = RevenueCatUI.checkpoint('upgrade', () => {}, {
-    errorPresenter: async (request: CheckpointErrorRequest) => { void request.error; },
-  });
-  cancel();
-  cancelWithPromise();
+  remove();
 };
-void embeddedCheckpointAPI;
+void errorPresenterCheckpointAPI;

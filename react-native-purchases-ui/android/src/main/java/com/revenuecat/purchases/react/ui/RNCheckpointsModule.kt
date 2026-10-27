@@ -12,18 +12,53 @@ import com.revenuecat.purchases.InternalRevenueCatAPI
 import com.revenuecat.purchases.hybridcommon.mappers.map
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
 import com.revenuecat.purchases.ui.revenuecatui.InviteOnlyCheckpointsAPI
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointFailureKind
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointParams
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.ErrorPresenter
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.FlowPresentationMode
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.checkpoint
+import java.util.UUID
 
 @OptIn(InviteOnlyCheckpointsAPI::class, InternalRevenueCatAPI::class)
 internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     @Volatile private var invalidated = false
 
+    // Error presentations waiting for JS to acknowledge them, by request id. Main thread only.
+    private val pendingErrors = mutableMapOf<String, ErrorPresenter.Completion>()
+
     override fun getName(): String = "RNCheckpoints"
 
     @ReactMethod
     fun checkpoint(identifier: String, customVariables: ReadableMap?, presentationMode: String, callId: String) {
+        start(identifier, customVariables, presentationMode, callId, presentsErrors = false)
+    }
+
+    /**
+     * Experimental: like [checkpoint], but the errors of the flow are sent to JS as `Checkpoints-onError` events
+     * instead of the SDK's dialog. The flow stays blocked until [completeError] acknowledges the request.
+     */
+    @ReactMethod
+    fun checkpointWithErrorPresenter(
+        identifier: String,
+        customVariables: ReadableMap?,
+        presentationMode: String,
+        callId: String,
+    ) {
+        start(identifier, customVariables, presentationMode, callId, presentsErrors = true)
+    }
+
+    @ReactMethod
+    fun completeError(callId: String, requestId: String) {
+        UiThreadUtil.runOnUiThread { pendingErrors.remove(requestId)?.complete() }
+    }
+
+    private fun start(
+        identifier: String,
+        customVariables: ReadableMap?,
+        presentationMode: String,
+        callId: String,
+        presentsErrors: Boolean,
+    ) {
         UiThreadUtil.runOnUiThread {
             if (invalidated) return@runOnUiThread
             if (!Purchases.isConfigured) {
@@ -45,9 +80,28 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
                 "MODAL_SHEET" -> FlowPresentationMode.MODAL_SHEET
                 else -> FlowPresentationMode.DEFAULT
             }
+            val errorPresenter = if (presentsErrors) {
+                ErrorPresenter { params, completion ->
+                    val requestId = UUID.randomUUID().toString()
+                    pendingErrors[requestId] = completion
+                    emit("Checkpoints-onError", mapOf(
+                        "callId" to callId,
+                        "requestId" to requestId,
+                        "kind" to when (params.kind) {
+                            CheckpointFailureKind.FLOW_COULD_NOT_BE_SHOWN -> "flowCouldNotBeShown"
+                            CheckpointFailureKind.FLOW_RESULT_SYNC_FAILED -> "flowResultSyncFailed"
+                            else -> "flowActionFailed"
+                        },
+                        "error" to params.error.map().info,
+                    ))
+                }
+            } else {
+                null
+            }
             val params = CheckpointParams.Builder()
                 .setCustomVariables(variables)
                 .setPresentationMode(mode)
+                .setErrorPresenter(errorPresenter)
                 .build()
             Purchases.sharedInstance.checkpoint(identifier, params) { result ->
                 emit("Checkpoints-onPassed", mapOf(
@@ -71,6 +125,11 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
 
     override fun invalidate() {
         invalidated = true
+        // Nothing can acknowledge anymore (JS reload): let the SDK go on rather than stay blocked.
+        UiThreadUtil.runOnUiThread {
+            pendingErrors.values.toList().forEach { it.complete() }
+            pendingErrors.clear()
+        }
         super.invalidate()
     }
 

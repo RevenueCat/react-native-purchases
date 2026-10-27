@@ -1,26 +1,15 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-  Button,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Button, Modal, ScrollView, StyleSheet, Switch, Text, TextInput, View} from 'react-native';
 import RevenueCatUI, {
   CustomVariableValue,
+  FLOW_PRESENTATION_MODE,
   type CheckpointErrorRequest,
 } from 'react-native-purchases-ui';
 
-type Container = 'none' | 'sheet' | 'fullScreen';
-
-// The ordinary React Native error modal. It stays mounted while hiding so onDismiss can acknowledge
-// the native error only after the modal has really gone away.
-const EmbeddedErrorModal: React.FC<{
-  request: CheckpointErrorRequest;
-  append: (message: string) => void;
-}> = ({request, append}) => {
+// The app's error UI: an ordinary transparent <Modal>. <CheckpointHost /> (mounted in App.tsx) renders it
+// where it can present above the flow. It stays mounted while hiding so onDismiss acknowledges the native
+// error only after the modal has really gone away.
+const ErrorModal: React.FC<{request: CheckpointErrorRequest; append: (message: string) => void}> = ({request, append}) => {
   const [visible, setVisible] = useState(true);
   return (
     <Modal
@@ -34,7 +23,7 @@ const EmbeddedErrorModal: React.FC<{
         request.complete();
       }}>
       <View style={styles.backdrop}>
-        <View style={styles.panel} testID="embedded-error-modal">
+        <View style={styles.panel} testID="checkpoint-error-modal">
           <Text style={styles.heading}>Checkpoint error (RN Modal)</Text>
           <Text>{request.kind}</Text>
           <Text>{request.error.message}</Text>
@@ -49,124 +38,65 @@ const EmbeddedErrorModal: React.FC<{
 };
 
 const EmbeddedCheckpointScreen: React.FC = () => {
-  const [mounted, setMounted] = useState(true);
-  const [remount, setRemount] = useState(0);
-  return (
-    <View style={styles.flex}>
-      {mounted ? (
-        <EmbeddedCheckpointTester
-          key={remount}
-          unmountAfter={ms => setTimeout(() => setMounted(false), ms)}
-        />
-      ) : (
-        <View style={styles.screen}>
-          <Text>Tester unmounted (executions cancelled on unmount).</Text>
-          <Button title="Mount tester again" onPress={() => { setRemount(r => r + 1); setMounted(true); }} />
-        </View>
-      )}
-    </View>
-  );
-};
-
-const EmbeddedCheckpointTester: React.FC<{unmountAfter: (ms: number) => void}> = ({unmountAfter}) => {
   const [identifier, setIdentifier] = useState('rn_error_presenter_test');
-  const [container, setContainer] = useState<Container>('none');
-  const [containerShown, setContainerShown] = useState(false);
-  const [running, setRunning] = useState(0);
-  const [errors, setErrors] = useState<CheckpointErrorRequest[]>([]);
+  const [fullScreen, setFullScreen] = useState(false);
   const [log, setLog] = useState<string[]>([]);
-  const handles = useRef(new Set<() => void>());
+  const removers = useRef(new Set<() => void>());
 
   const append = useCallback((message: string) => {
     const stamp = new Date().toISOString().slice(11, 23);
     setLog(current => [`${stamp} ${message}`, ...current].slice(0, 40));
-    console.info(`[Embedded checkpoint tester] ${message}`);
+    console.info(`[Checkpoint error presenter tester] ${message}`);
   }, []);
 
-  // Cancel every execution owned by this screen when it unmounts.
+  // Detach every call owned by this screen when it unmounts. On iOS this also removes the embedded flow.
   useEffect(
     () => () => {
-      handles.current.forEach(cancel => cancel());
-      handles.current.clear();
+      removers.current.forEach(remove => remove());
+      removers.current.clear();
     },
     [],
   );
 
   const run = useCallback(() => {
     const name = identifier.trim();
-    append(`Start ${name} in ${container === 'none' ? 'screen' : container}`);
+    append(`Start ${name} (${fullScreen ? 'full screen' : 'sheet'})`);
     try {
-      const cancel = RevenueCatUI.checkpoint(
+      const remove = RevenueCatUI.checkpoint(
         name,
-        result => append(`onPassed flow=${JSON.stringify(result.flow)}`),
+        result => {
+          append(`onPassed flow=${JSON.stringify(result.flow)}`);
+          removers.current.delete(remove);
+        },
         {
-          customVariables: {source: CustomVariableValue.string('rn_embedded_tester')},
+          customVariables: {source: CustomVariableValue.string('rn_error_presenter_tester')},
+          presentationMode: fullScreen
+            ? FLOW_PRESENTATION_MODE.MODAL_FULL_SCREEN
+            : FLOW_PRESENTATION_MODE.MODAL_SHEET,
           errorPresenter: request => {
             append(`errorPresenter ${request.kind}: ${request.error.message}`);
-            setErrors(current => [...current, request]);
-          },
-          onFinished: () => {
-            append('onFinished');
-            handles.current.delete(cancel);
-            setRunning(current => Math.max(0, current - 1));
+            return <ErrorModal key={request.requestId} request={request} append={append} />;
           },
         },
       );
-      handles.current.add(cancel);
-      setRunning(current => current + 1);
+      removers.current.add(remove);
     } catch (error) {
       append(`Start rejected: ${String(error)}`);
     }
-  }, [append, container, identifier]);
+  }, [append, fullScreen, identifier]);
 
-  const cancelAll = useCallback(() => {
-    append(`Cancel ${handles.current.size} execution(s)`);
-    handles.current.forEach(cancel => cancel());
+  const removeAll = useCallback(() => {
+    append(`Remove ${removers.current.size} call(s)`);
+    removers.current.forEach(remove => remove());
+    removers.current.clear();
   }, [append]);
-
-  const closeContainer = useCallback(() => {
-    append(`Close ${container} container`);
-    setContainer('none');
-    setContainerShown(false);
-  }, [append, container]);
-
-  // The SDK notices its parent being torn down (dismissed, popped, or released) and cancels the flow itself;
-  // the tester only logs so that onFinished below proves the SDK path. Cancel on unmount stays app-owned.
-  const onContainerDismissed = useCallback(() => {
-    append(`Container dismissed with ${handles.current.size} execution(s) still owned`);
-  }, [append]);
-
-  const controls = (
-    <View style={styles.controls}>
-      <Button title={`Run checkpoint (${running} running)`} onPress={run} disabled={container !== 'none' && !containerShown} />
-      <Button title="Run twice (concurrent)" onPress={() => { run(); run(); }} disabled={container !== 'none' && !containerShown} />
-      <Button title="Cancel all" onPress={cancelAll} />
-      <Button title="Run, cancel after 8s" onPress={() => { run(); setTimeout(cancelAll, 8000); }} />
-      <Button title="Run, unmount tester after 8s" onPress={() => { run(); append('Unmount scheduled'); unmountAfter(8000); }} />
-      {container !== 'none' && <Button title="Close container while running" onPress={closeContainer} />}
-    </View>
-  );
-
-  const errorModal = errors[0] ? (
-    <EmbeddedErrorModal
-      key={errors[0].requestId}
-      request={{
-        ...errors[0],
-        complete: () => {
-          errors[0]?.complete();
-          setErrors(current => current.slice(1));
-        },
-      }}
-      append={append}
-    />
-  ) : null;
 
   return (
     <ScrollView contentContainerStyle={styles.screen} keyboardShouldPersistTaps="handled">
-      <Text style={styles.heading}>SDK-owned embedded checkpoint</Text>
+      <Text style={styles.heading}>Checkpoint with errorPresenter</Text>
       <Text>
-        The native SDK embeds the flow in the React Native view controller on screen. Errors are shown by an
-        ordinary RN Modal rendered from this screen.
+        Same call on both platforms. On iOS the host opens the container and the SDK embeds the flow in it; on
+        Android the SDK presents the flow itself. Errors are shown by an ordinary RN Modal.
       </Text>
       <TextInput
         accessibilityLabel="Checkpoint identifier"
@@ -176,39 +106,24 @@ const EmbeddedCheckpointTester: React.FC<{unmountAfter: (ms: number) => void}> =
         autoCapitalize="none"
         autoCorrect={false}
       />
-      {controls}
-      <Button title="Open RN sheet" onPress={() => { append('Open sheet'); setContainer('sheet'); }} />
-      <Button title="Open RN full-screen modal" onPress={() => { append('Open fullScreen'); setContainer('fullScreen'); }} />
+      <View style={styles.row}>
+        <Text>Full screen</Text>
+        <Switch value={fullScreen} onValueChange={setFullScreen} />
+      </View>
+      <Button title="Run checkpoint" onPress={run} />
+      <Button title="Run twice (concurrent)" onPress={() => { run(); run(); }} />
+      <Button title="Remove all (cancels on iOS)" onPress={removeAll} />
+      <Button title="Run, remove after 8s" onPress={() => { run(); setTimeout(removeAll, 8000); }} />
       {log.map((message, index) => (
         <Text key={index} style={styles.log}>{message}</Text>
       ))}
-      <Modal
-        visible={container !== 'none'}
-        presentationStyle={container === 'sheet' ? 'pageSheet' : 'fullScreen'}
-        animationType="slide"
-        onShow={() => { append(`${container} container shown`); setContainerShown(true); }}
-        onRequestClose={closeContainer}
-        onDismiss={onContainerDismissed}>
-        <View style={styles.container}>
-          <Text style={styles.heading}>RN {container} container</Text>
-          <Text>Launch after onShow so the modal controller is on screen.</Text>
-          {controls}
-          {log.slice(0, 12).map((message, index) => (
-            <Text key={index} style={styles.log}>{message}</Text>
-          ))}
-        </View>
-        {errorModal}
-      </Modal>
-      {container === 'none' && errorModal}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  flex: {flex: 1},
   screen: {padding: 16, gap: 12},
-  container: {flex: 1, padding: 24, gap: 12, backgroundColor: 'white'},
-  controls: {gap: 8},
+  row: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'},
   heading: {fontSize: 20, fontWeight: '600'},
   input: {borderWidth: 1, borderColor: '#888', borderRadius: 6, padding: 12},
   log: {fontSize: 12, color: '#555'},

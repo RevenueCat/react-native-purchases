@@ -29,8 +29,10 @@ import {
   transformOptionsForNative,
 } from "./customVariables";
 import { checkpoint } from "./checkpoints";
+import { CheckpointHost } from "./checkpointHost";
 
 export * from "./checkpoints";
+export { CheckpointHost } from "./checkpointHost";
 
 export { PAYWALL_RESULT, type PaywallInteractionEvent } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
@@ -588,6 +590,9 @@ export interface PresentCustomerCenterParams {
 
 export default class RevenueCatUI {
   public static checkpoint = checkpoint;
+
+  /** Renders the containers and error UI of checkpoints called with `errorPresenter`. Mount once at the root. */
+  public static CheckpointHost = CheckpointHost;
 
 
   private static Defaults = {
