@@ -587,21 +587,15 @@ jobs:
       - prepare-spm-test-app
       - run:
           name: Configure Test Store API key
+          working_directory: e2e-tests/SPMTestApp
           command: |
-            node \<<'NODE'
-            const fs = require('fs');
-            const apiKey = process.env.RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE;
-            if (!apiKey || !apiKey.startsWith('test_')) {
-              throw new Error('RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE must contain a Test Store key');
-            }
-            const file = 'e2e-tests/SPMTestApp/App.tsx';
-            const source = fs.readFileSync(file, 'utf8');
-            const placeholder = "'MAESTRO_TESTS_REVENUECAT_API_KEY'";
-            if (!source.includes(placeholder)) {
-              throw new Error('Test Store API key placeholder was not found');
-            }
-            fs.writeFileSync(file, source.replace(placeholder, JSON.stringify(apiKey)));
-            NODE
+            if [[ ! "${RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE:-}" =~ ^test_[a-zA-Z0-9_-]+$ ]]; then
+              echo 'RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE must contain a Test Store key'
+              exit 1
+            fi
+            grep -q 'MAESTRO_TESTS_REVENUECAT_API_KEY' App.tsx
+            sed -i '' "s/MAESTRO_TESTS_REVENUECAT_API_KEY/$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE/g" App.tsx
+            grep -Fq "$RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE" App.tsx
       - run:
           name: Build SPM Maestro app (Debug)
           working_directory: e2e-tests/SPMTestApp/ios
