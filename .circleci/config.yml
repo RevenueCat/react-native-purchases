@@ -420,7 +420,7 @@ jobs:
             export RCT_NO_LAUNCH_PACKAGER=true \
             && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
-  ios_spm:
+  ios_spm_build:
     description: "Build both packaged SDKs in SPMTestApp (React Native 0.88)"
     executor:
       name: rn/macos
@@ -630,7 +630,7 @@ workflows:
       - android
       # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
       # - ios_cocoapods
-      - ios_spm
+      - ios_spm_build
       - expo_android
       # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
       # - expo_ios
@@ -674,7 +674,7 @@ workflows:
             - android
             # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
             # - ios_cocoapods
-            - ios_spm
+            - ios_spm_build
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
