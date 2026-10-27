@@ -6,13 +6,10 @@ import RevenueCatUI, {
   CustomVariableValue,
   FLOW_PRESENTATION_MODE,
   checkpoint,
-  checkpointEmbedded,
-  EmbeddedCheckpointCallbacks,
-  EmbeddedCheckpointErrorRequest,
-  EmbeddedCheckpointHandle,
-  EmbeddedCheckpointParams,
 } from "react-native-purchases-ui";
 import type {
+  CheckpointErrorKind,
+  CheckpointErrorRequest,
   CheckpointParams,
   CheckpointResult,
   FlowResult,
@@ -652,24 +649,24 @@ export {
 };
 
 const embeddedCheckpointAPI = () => {
-  const callbacks: EmbeddedCheckpointCallbacks = {
-    onPassed: (result: CheckpointResult) => {
-      const flow: CheckpointResult['flow'] = result.flow;
-      void flow;
-    },
-    onError: (request: EmbeddedCheckpointErrorRequest) => {
+  const cancel: () => void = checkpoint('upgrade', (result: CheckpointResult) => {
+    const flow: CheckpointResult['flow'] = result.flow;
+    void flow;
+  }, {
+    customVariables: { source: CustomVariableValue.string('api') },
+    errorPresenter: (request: CheckpointErrorRequest) => {
       const requestId: string = request.requestId;
-      const kind: 'flowCouldNotBeShown' | 'flowActionFailed' | 'flowResultSyncFailed' = request.kind;
+      const kind: CheckpointErrorKind = request.kind;
       const message: string = request.error.message;
       void requestId; void kind; void message;
       request.complete();
     },
     onFinished: () => {},
-  };
-  const params: EmbeddedCheckpointParams = { customVariables: { source: CustomVariableValue.string('api') } };
-  const handle: EmbeddedCheckpointHandle = checkpointEmbedded('upgrade', callbacks, params);
-  const staticHandle: EmbeddedCheckpointHandle = RevenueCatUI.checkpointEmbedded('upgrade', callbacks);
-  handle.cancel();
-  staticHandle.cancel();
+  });
+  const cancelWithPromise: () => void = RevenueCatUI.checkpoint('upgrade', () => {}, {
+    errorPresenter: async (request: CheckpointErrorRequest) => { void request.error; },
+  });
+  cancel();
+  cancelWithPromise();
 };
 void embeddedCheckpointAPI;

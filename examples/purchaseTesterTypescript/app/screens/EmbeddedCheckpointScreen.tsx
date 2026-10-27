@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 import RevenueCatUI, {
   CustomVariableValue,
-  type EmbeddedCheckpointErrorRequest,
-  type EmbeddedCheckpointHandle,
+  type CheckpointErrorRequest,
 } from 'react-native-purchases-ui';
 
 type Container = 'none' | 'sheet' | 'fullScreen';
@@ -19,7 +18,7 @@ type Container = 'none' | 'sheet' | 'fullScreen';
 // The ordinary React Native error modal. It stays mounted while hiding so onDismiss can acknowledge
 // the native error only after the modal has really gone away.
 const EmbeddedErrorModal: React.FC<{
-  request: EmbeddedCheckpointErrorRequest;
+  request: CheckpointErrorRequest;
   append: (message: string) => void;
 }> = ({request, append}) => {
   const [visible, setVisible] = useState(true);
@@ -74,9 +73,9 @@ const EmbeddedCheckpointTester: React.FC<{unmountAfter: (ms: number) => void}> =
   const [container, setContainer] = useState<Container>('none');
   const [containerShown, setContainerShown] = useState(false);
   const [running, setRunning] = useState(0);
-  const [errors, setErrors] = useState<EmbeddedCheckpointErrorRequest[]>([]);
+  const [errors, setErrors] = useState<CheckpointErrorRequest[]>([]);
   const [log, setLog] = useState<string[]>([]);
-  const handles = useRef(new Set<EmbeddedCheckpointHandle>());
+  const handles = useRef(new Set<() => void>());
 
   const append = useCallback((message: string) => {
     const stamp = new Date().toISOString().slice(11, 23);
@@ -87,7 +86,7 @@ const EmbeddedCheckpointTester: React.FC<{unmountAfter: (ms: number) => void}> =
   // Cancel every execution owned by this screen when it unmounts.
   useEffect(
     () => () => {
-      handles.current.forEach(handle => handle.cancel());
+      handles.current.forEach(cancel => cancel());
       handles.current.clear();
     },
     [],
@@ -97,23 +96,23 @@ const EmbeddedCheckpointTester: React.FC<{unmountAfter: (ms: number) => void}> =
     const name = identifier.trim();
     append(`Start ${name} in ${container === 'none' ? 'screen' : container}`);
     try {
-      const handle = RevenueCatUI.checkpointEmbedded(
+      const cancel = RevenueCatUI.checkpoint(
         name,
+        result => append(`onPassed flow=${JSON.stringify(result.flow)}`),
         {
-          onPassed: result => append(`onPassed flow=${JSON.stringify(result.flow)}`),
-          onError: request => {
-            append(`onError ${request.kind}: ${request.error.message}`);
+          customVariables: {source: CustomVariableValue.string('rn_embedded_tester')},
+          errorPresenter: request => {
+            append(`errorPresenter ${request.kind}: ${request.error.message}`);
             setErrors(current => [...current, request]);
           },
           onFinished: () => {
             append('onFinished');
-            handles.current.delete(handle);
+            handles.current.delete(cancel);
             setRunning(current => Math.max(0, current - 1));
           },
         },
-        {customVariables: {source: CustomVariableValue.string('rn_embedded_tester')}},
       );
-      handles.current.add(handle);
+      handles.current.add(cancel);
       setRunning(current => current + 1);
     } catch (error) {
       append(`Start rejected: ${String(error)}`);
@@ -122,7 +121,7 @@ const EmbeddedCheckpointTester: React.FC<{unmountAfter: (ms: number) => void}> =
 
   const cancelAll = useCallback(() => {
     append(`Cancel ${handles.current.size} execution(s)`);
-    handles.current.forEach(handle => handle.cancel());
+    handles.current.forEach(cancel => cancel());
   }, [append]);
 
   const closeContainer = useCallback(() => {

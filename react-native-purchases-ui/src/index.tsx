@@ -28,7 +28,7 @@ import {
   convertCustomVariablesToNativeMap,
   transformOptionsForNative,
 } from "./customVariables";
-import { checkpoint, checkpointEmbedded } from "./checkpoints";
+import { checkpoint } from "./checkpoints";
 
 export * from "./checkpoints";
 
@@ -588,9 +588,6 @@ export interface PresentCustomerCenterParams {
 
 export default class RevenueCatUI {
   public static checkpoint = checkpoint;
-
-  /** EXPERIMENTAL, iOS only. See `checkpointEmbedded`. */
-  public static checkpointEmbedded = checkpointEmbedded;
 
 
   private static Defaults = {

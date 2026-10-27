@@ -36,9 +36,42 @@ export interface CheckpointResult {
   customer: CustomerInfo;
 }
 
+/** Why the native SDK asked the app to show an error. */
+export type CheckpointErrorKind = 'flowCouldNotBeShown' | 'flowActionFailed' | 'flowResultSyncFailed';
+
+/**
+ * An error the native checkpoint wants shown by the app. The flow stays on screen (and blocked) until it is
+ * completed: return a promise from the error presenter, or call `complete` once the app's error UI has fully
+ * dismissed.
+ */
+export interface CheckpointErrorRequest {
+  requestId: string;
+  kind: CheckpointErrorKind;
+  error: PurchasesError;
+  /** Acknowledges the error natively. Idempotent. */
+  complete: () => void;
+}
+
 export interface CheckpointParams {
   customVariables?: CustomVariables;
+  /** How the SDK presents the flow. Ignored when `errorPresenter` is set: the flow is then embedded. */
   presentationMode?: FLOW_PRESENTATION_MODE;
+  /**
+   * EXPERIMENTAL, iOS only. Presents the errors of the flow with app-owned UI. Setting it makes the native SDK
+   * embed the flow as a child of the view controller React Native is currently showing (the screen's root or an
+   * open `<Modal>`) instead of presenting its own modal, so an ordinary React Native `<Modal>` rendered by the
+   * app appears above the flow. Throws on other platforms.
+   *
+   * The flow waits for the error to be acknowledged: return a promise that settles once the app's error UI is
+   * gone, or call `request.complete()`. Requires a build against a local purchases-ios with the embedded
+   * checkpoint SPI.
+   */
+  errorPresenter?: (request: CheckpointErrorRequest) => void | Promise<unknown>;
+  /**
+   * Called exactly once on every terminal path, after `onPassed` when it ran. Only called when `errorPresenter`
+   * is set: a modal checkpoint has no native signal for the end of its flow.
+   */
+  onFinished?: () => void;
 }
 
 const PASSED_EVENT = 'Checkpoints-onPassed';
@@ -64,13 +97,24 @@ function nativeCheckpoints() {
  * the user backs out, a blocking error occurs, or another checkpoint owns presentation.
  * Requires iOS 15+ or Android. Checkpoints are an invite-only API.
  *
- * Returns a function that removes the callback. Call it when the owning screen unmounts;
- * removing the callback does not dismiss a flow already on screen.
+ * Returns a function that stops the call. Call it when the owning screen unmounts. For a modal checkpoint it
+ * removes the callback and does not dismiss a flow already on screen. When `params.errorPresenter` is set it
+ * also cancels the embedded flow: `onPassed` is suppressed and `onFinished` still fires.
  */
 export function checkpoint(
   identifier: string,
   onPassed: (result: CheckpointResult) => void,
   params: CheckpointParams = {},
+): () => void {
+  return params.errorPresenter
+    ? embeddedCheckpoint(identifier, onPassed, params, params.errorPresenter)
+    : modalCheckpoint(identifier, onPassed, params);
+}
+
+function modalCheckpoint(
+  identifier: string,
+  onPassed: (result: CheckpointResult) => void,
+  params: CheckpointParams,
 ): () => void {
   const native = nativeCheckpoints();
   const callId = `${callIdPrefix}-${++nextCallId}`;
@@ -94,39 +138,6 @@ export function checkpoint(
 
 // MARK: - Experimental: SDK-owned embedded checkpoints (iOS only)
 
-/** Why the native SDK asked the app to show an error. */
-export type EmbeddedCheckpointErrorKind = 'flowCouldNotBeShown' | 'flowActionFailed' | 'flowResultSyncFailed';
-
-/**
- * An error the native checkpoint wants shown by the app. The flow stays on screen (and blocked) until
- * `complete` is called, so call it only after the app's error UI has fully dismissed.
- */
-export interface EmbeddedCheckpointErrorRequest {
-  requestId: string;
-  kind: EmbeddedCheckpointErrorKind;
-  error: PurchasesError;
-  /** Acknowledges the error natively. Idempotent. */
-  complete: () => void;
-}
-
-export interface EmbeddedCheckpointCallbacks {
-  /** Same semantics as `checkpoint`'s callback: called only when the app can continue. */
-  onPassed: (result: CheckpointResult) => void;
-  /** Called for each native error that the app must present above the embedded flow. */
-  onError: (request: EmbeddedCheckpointErrorRequest) => void;
-  /** Called exactly once on every terminal path, after `onPassed` when it ran. */
-  onFinished?: () => void;
-}
-
-export interface EmbeddedCheckpointParams {
-  customVariables?: CustomVariables;
-}
-
-export interface EmbeddedCheckpointHandle {
-  /** Cancels resolution or removes the embedded flow. `onPassed` is suppressed; `onFinished` still fires. */
-  cancel: () => void;
-}
-
 const EMBEDDED_EVENT = 'Checkpoints-embedded';
 
 // PHC ErrorContainer.info is a flat dictionary, unlike RN promise errors.
@@ -143,7 +154,7 @@ interface EmbeddedNativeEvent {
   callId: string;
   type: 'error' | 'passed' | 'finished';
   requestId?: string;
-  kind?: EmbeddedCheckpointErrorKind;
+  kind?: CheckpointErrorKind;
   error?: NativeErrorInfo;
   result?: CheckpointResult;
 }
@@ -161,28 +172,18 @@ function toPurchasesError(error: NativeErrorInfo): PurchasesError {
   };
 }
 
-/**
- * EXPERIMENTAL, iOS only, requires a build against a local purchases-ios with the embedded checkpoint SPI.
- *
- * Runs a checkpoint whose flow the native SDK embeds as a child of the view controller React Native is
- * currently showing (the screen's root or an open `<Modal>`), instead of presenting its own modal. Because no
- * native modal is created, ordinary React Native `<Modal>`s rendered by the app appear above the flow.
- *
- * Workflow execution, purchases, restores, and synchronization stay native. Native close and back navigation
- * remove the child; they never dismiss the containing React Native modal. Cancel from the owning screen's
- * unmount effect.
- */
-export function checkpointEmbedded(
+function embeddedCheckpoint(
   identifier: string,
-  callbacks: EmbeddedCheckpointCallbacks,
-  params: EmbeddedCheckpointParams = {},
-): EmbeddedCheckpointHandle {
+  onPassed: (result: CheckpointResult) => void,
+  params: CheckpointParams,
+  errorPresenter: NonNullable<CheckpointParams['errorPresenter']>,
+): () => void {
   if (Platform.OS !== 'ios') {
-    throw new Error('[RevenueCatUI] Embedded checkpoints require iOS.');
+    throw new Error('[RevenueCatUI] Checkpoints with an errorPresenter require iOS.');
   }
   const native = nativeCheckpoints();
   if (typeof native.checkpointEmbedded !== 'function') {
-    throw new Error('[RevenueCatUI] Embedded checkpoints require a build against a local purchases-ios with the experimental SPI.');
+    throw new Error('[RevenueCatUI] Checkpoints with an errorPresenter require a build against a local purchases-ios with the experimental SPI.');
   }
   const callId = `${callIdPrefix}-${++nextCallId}`;
   const seenRequests = new Set<string>();
@@ -199,7 +200,7 @@ export function checkpointEmbedded(
           return;
         }
         seenRequests.add('passed');
-        callbacks.onPassed(event.result as CheckpointResult);
+        onPassed(event.result as CheckpointResult);
         break;
       case 'error': {
         const requestId = event.requestId;
@@ -208,24 +209,37 @@ export function checkpointEmbedded(
         }
         seenRequests.add(requestId);
         let completed = false;
-        callbacks.onError({
-          requestId,
-          kind: event.kind,
-          error: toPurchasesError(event.error),
-          complete: () => {
-            if (completed || finished) {
-              return;
-            }
-            completed = true;
-            native.completeEmbeddedError(callId, requestId);
-          },
-        });
+        const complete = () => {
+          if (completed || finished) {
+            return;
+          }
+          completed = true;
+          native.completeEmbeddedError(callId, requestId);
+        };
+        // Whatever the presenter does, never leave the flow blocked: a throw or a rejection acknowledges too.
+        try {
+          const pending = errorPresenter({
+            requestId,
+            kind: event.kind,
+            error: toPurchasesError(event.error),
+            complete,
+          });
+          if (pending && typeof pending.then === 'function') {
+            pending.then(complete, error => {
+              console.warn('[RevenueCatUI] The checkpoint errorPresenter rejected:', error);
+              complete();
+            });
+          }
+        } catch (error) {
+          console.warn('[RevenueCatUI] The checkpoint errorPresenter threw:', error);
+          complete();
+        }
         break;
       }
       case 'finished':
         finished = true;
         subscription.remove();
-        callbacks.onFinished?.();
+        params.onFinished?.();
         break;
     }
   });
@@ -235,13 +249,11 @@ export function checkpointEmbedded(
     subscription.remove();
     throw error;
   }
-  return {
-    cancel: () => {
-      if (finished || cancelled) {
-        return;
-      }
-      cancelled = true;
-      native.cancelEmbedded(callId);
-    },
+  return () => {
+    if (finished || cancelled) {
+      return;
+    }
+    cancelled = true;
+    native.cancelEmbedded(callId);
   };
 }

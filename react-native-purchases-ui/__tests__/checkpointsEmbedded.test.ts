@@ -27,7 +27,7 @@ jest.mock('react-native', () => ({
 }));
 jest.mock('../src/utils/environment', () => ({ shouldUsePreviewAPIMode: () => mockPreview }));
 
-import { checkpointEmbedded, type EmbeddedCheckpointErrorRequest } from '../src/checkpoints';
+import { checkpoint, type CheckpointErrorRequest } from '../src/checkpoints';
 import { CustomVariableValue } from '../src/customVariables';
 
 const EVENT = 'Checkpoints-embedded';
@@ -37,12 +37,15 @@ const callId = (index: number) => mockNative.checkpointEmbedded!.mock.calls[inde
 const result = { flow: null, customer: { originalAppUserId: 'user' } };
 const nativeError = { code: 42, message: 'Simulated', readableErrorCode: 'TEST_STORE_SIMULATED_PURCHASE_ERROR' };
 
-function start(identifier = 'upgrade') {
-  const callbacks = { onPassed: jest.fn(), onError: jest.fn(), onFinished: jest.fn() };
-  const handle = checkpointEmbedded(identifier, callbacks, {
+function start(identifier = 'upgrade', errorPresenter: jest.Mock = jest.fn()) {
+  const onPassed = jest.fn();
+  const onFinished = jest.fn();
+  const cancel = checkpoint(identifier, onPassed, {
     customVariables: { name: CustomVariableValue.string('Taylor'), level: CustomVariableValue.number(2) },
+    errorPresenter,
+    onFinished,
   });
-  return { handle, ...callbacks };
+  return { cancel, onPassed, onError: errorPresenter, onFinished };
 }
 
 beforeEach(() => {
@@ -84,7 +87,7 @@ it('surfaces each native error once and acknowledges it natively only when the a
   emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
   emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
   expect(onError).toHaveBeenCalledTimes(1);
-  const request: EmbeddedCheckpointErrorRequest = onError.mock.calls[0]![0];
+  const request: CheckpointErrorRequest = onError.mock.calls[0]![0];
   expect(request.requestId).toBe('r1');
   expect(request.kind).toBe('flowActionFailed');
   expect(request.error.code).toBe('42');
@@ -100,7 +103,7 @@ it('surfaces each native error once and acknowledges it natively only when the a
 it('ignores stale replies and events after the call finished', () => {
   const { onError, onPassed, onFinished } = start();
   emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowCouldNotBeShown', error: nativeError });
-  const request: EmbeddedCheckpointErrorRequest = onError.mock.calls[0]![0];
+  const request: CheckpointErrorRequest = onError.mock.calls[0]![0];
   emit({ callId: callId(0), type: 'finished' });
   request.complete();
   emit({ callId: callId(0), type: 'passed', result });
@@ -112,9 +115,9 @@ it('ignores stale replies and events after the call finished', () => {
 });
 
 it('cancels natively once and still waits for the native finished event', () => {
-  const { handle, onFinished } = start();
-  handle.cancel();
-  handle.cancel();
+  const { cancel, onFinished } = start();
+  cancel();
+  cancel();
   expect(mockNative.cancelEmbedded).toHaveBeenCalledTimes(1);
   expect(mockNative.cancelEmbedded).toHaveBeenCalledWith(callId(0));
   expect(onFinished).not.toHaveBeenCalled();
@@ -122,7 +125,7 @@ it('cancels natively once and still waits for the native finished event', () => 
   emit({ callId: callId(0), type: 'finished' });
   expect(onFinished).toHaveBeenCalledTimes(1);
   expect(listenerCount()).toBe(0);
-  handle.cancel();
+  cancel();
   expect(mockNative.cancelEmbedded).toHaveBeenCalledTimes(1);
 });
 
@@ -150,4 +153,43 @@ it.each(['web', 'android', 'preview', 'ios13'])('rejects unsupported environment
   expect(() => start()).toThrow(/require/);
   expect(mockNative.checkpointEmbedded).not.toHaveBeenCalled();
   expect(listenerCount()).toBe(0);
+});
+
+it('does not use the embedded path without an errorPresenter', () => {
+  checkpoint('upgrade', jest.fn());
+  expect(mockNative.checkpoint).toHaveBeenCalledTimes(1);
+  expect(mockNative.checkpointEmbedded).not.toHaveBeenCalled();
+});
+
+it('acknowledges the error when the promise returned by the presenter settles', async () => {
+  let resolve!: () => void;
+  const { onError } = start('upgrade', jest.fn(() => new Promise<void>(r => { resolve = r; })));
+  emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
+  expect(onError).toHaveBeenCalledTimes(1);
+  expect(mockNative.completeEmbeddedError).not.toHaveBeenCalled();
+  resolve();
+  await Promise.resolve();
+  expect(mockNative.completeEmbeddedError).toHaveBeenCalledTimes(1);
+  expect(mockNative.completeEmbeddedError).toHaveBeenCalledWith(callId(0), 'r1');
+});
+
+it('still acknowledges when the presenter rejects or throws, so the flow is never left blocked', async () => {
+  const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+  start('rejects', jest.fn(() => Promise.reject(new Error('boom'))));
+  emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(mockNative.completeEmbeddedError).toHaveBeenCalledWith(callId(0), 'r1');
+
+  start('throws', jest.fn(() => { throw new Error('boom'); }));
+  emit({ callId: callId(1), type: 'error', requestId: 'r2', kind: 'flowActionFailed', error: nativeError });
+  expect(mockNative.completeEmbeddedError).toHaveBeenCalledWith(callId(1), 'r2');
+  warn.mockRestore();
+});
+
+it('does not acknowledge twice when the presenter completes and also returns a promise', async () => {
+  start('upgrade', jest.fn((request: CheckpointErrorRequest) => { request.complete(); return Promise.resolve(); }));
+  emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
+  await Promise.resolve();
+  expect(mockNative.completeEmbeddedError).toHaveBeenCalledTimes(1);
 });
