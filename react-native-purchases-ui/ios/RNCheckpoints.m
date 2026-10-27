@@ -10,7 +10,8 @@ RCT_EXTERN_METHOD(checkpoint:(NSString *)identifier
 // Experimental: needs a build against a local purchases-ios with the embedded checkpoint SPI.
 RCT_EXTERN_METHOD(checkpointEmbedded:(NSString *)identifier
                   customVariables:(NSDictionary *)customVariables
-                  callId:(NSString *)callId)
+                  callId:(NSString *)callId
+                  presentsErrors:(BOOL)presentsErrors)
 RCT_EXTERN_METHOD(cancelEmbedded:(NSString *)callId)
 RCT_EXTERN_METHOD(completeEmbeddedError:(NSString *)callId
                   requestId:(NSString *)requestId)

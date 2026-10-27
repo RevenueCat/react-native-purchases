@@ -54,22 +54,23 @@ export interface CheckpointErrorRequest {
 
 export interface CheckpointParams {
   customVariables?: CustomVariables;
-  /** How the SDK presents the flow. Ignored when `errorPresenter` is set: the flow is then embedded. */
+  /**
+   * How the SDK presents the flow on Android. Ignored on iOS: the flow is embedded in the view controller React
+   * Native is currently showing, so that container decides how it reads on screen (a sheet, full screen, or an
+   * ordinary screen).
+   */
   presentationMode?: FLOW_PRESENTATION_MODE;
   /**
-   * EXPERIMENTAL, iOS only. Presents the errors of the flow with app-owned UI. Setting it makes the native SDK
-   * embed the flow as a child of the view controller React Native is currently showing (the screen's root or an
-   * open `<Modal>`) instead of presenting its own modal, so an ordinary React Native `<Modal>` rendered by the
-   * app appears above the flow. Throws on other platforms.
+   * EXPERIMENTAL, iOS only (throws on Android). Presents the errors of the flow with app-owned UI, for example an
+   * ordinary React Native `<Modal>`, which appears above the flow. Without it, the SDK shows its default error UI.
    *
    * The flow waits for the error to be acknowledged: return a promise that settles once the app's error UI is
-   * gone, or call `request.complete()`. Requires a build against a local purchases-ios with the embedded
-   * checkpoint SPI.
+   * gone, or call `request.complete()`.
    */
   errorPresenter?: (request: CheckpointErrorRequest) => void | Promise<unknown>;
   /**
-   * Called exactly once on every terminal path, after `onPassed` when it ran. Only called when `errorPresenter`
-   * is set: a modal checkpoint has no native signal for the end of its flow.
+   * iOS only. Called exactly once on every terminal path, after `onPassed` when it ran. Android has no native
+   * signal for the end of a flow.
    */
   onFinished?: () => void;
 }
@@ -97,17 +98,21 @@ function nativeCheckpoints() {
  * the user backs out, a blocking error occurs, or another checkpoint owns presentation.
  * Requires iOS 15+ or Android. Checkpoints are an invite-only API.
  *
- * Returns a function that stops the call. Call it when the owning screen unmounts. For a modal checkpoint it
- * removes the callback and does not dismiss a flow already on screen. When `params.errorPresenter` is set it
- * also cancels the embedded flow: `onPassed` is suppressed and `onFinished` still fires.
+ * On iOS the native SDK embeds the flow in the view controller React Native is currently showing instead of
+ * presenting a modal. EXPERIMENTAL: this requires a build against a local purchases-ios with the embedded
+ * checkpoint SPI.
+ *
+ * Returns a function that stops the call. Call it when the owning screen unmounts. On Android it removes the
+ * callback and does not dismiss a flow already on screen. On iOS it also removes the embedded flow:
+ * `onPassed` is suppressed and `onFinished` still fires.
  */
 export function checkpoint(
   identifier: string,
   onPassed: (result: CheckpointResult) => void,
   params: CheckpointParams = {},
 ): () => void {
-  return params.errorPresenter
-    ? embeddedCheckpoint(identifier, onPassed, params, params.errorPresenter)
+  return Platform.OS === 'ios'
+    ? embeddedCheckpoint(identifier, onPassed, params)
     : modalCheckpoint(identifier, onPassed, params);
 }
 
@@ -116,6 +121,9 @@ function modalCheckpoint(
   onPassed: (result: CheckpointResult) => void,
   params: CheckpointParams,
 ): () => void {
+  if (params.errorPresenter) {
+    throw new Error('[RevenueCatUI] A checkpoint errorPresenter requires iOS.');
+  }
   const native = nativeCheckpoints();
   const callId = `${callIdPrefix}-${++nextCallId}`;
   const emitter = new NativeEventEmitter(native);
@@ -176,15 +184,12 @@ function embeddedCheckpoint(
   identifier: string,
   onPassed: (result: CheckpointResult) => void,
   params: CheckpointParams,
-  errorPresenter: NonNullable<CheckpointParams['errorPresenter']>,
 ): () => void {
-  if (Platform.OS !== 'ios') {
-    throw new Error('[RevenueCatUI] Checkpoints with an errorPresenter require iOS.');
-  }
   const native = nativeCheckpoints();
   if (typeof native.checkpointEmbedded !== 'function') {
-    throw new Error('[RevenueCatUI] Checkpoints with an errorPresenter require a build against a local purchases-ios with the experimental SPI.');
+    throw new Error('[RevenueCatUI] iOS checkpoints require a build against a local purchases-ios with the embedded checkpoint SPI.');
   }
+  const { errorPresenter } = params;
   const callId = `${callIdPrefix}-${++nextCallId}`;
   const seenRequests = new Set<string>();
   let finished = false;
@@ -204,7 +209,7 @@ function embeddedCheckpoint(
         break;
       case 'error': {
         const requestId = event.requestId;
-        if (!requestId || !event.kind || !event.error || seenRequests.has(requestId)) {
+        if (!errorPresenter || !requestId || !event.kind || !event.error || seenRequests.has(requestId)) {
           return;
         }
         seenRequests.add(requestId);
@@ -244,7 +249,8 @@ function embeddedCheckpoint(
     }
   });
   try {
-    native.checkpointEmbedded(identifier, convertCustomVariablesToNativeMap(params.customVariables), callId);
+    native.checkpointEmbedded(identifier, convertCustomVariablesToNativeMap(params.customVariables), callId,
+      errorPresenter !== undefined);
   } catch (error) {
     subscription.remove();
     throw error;

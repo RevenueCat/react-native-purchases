@@ -116,12 +116,14 @@ final class RNCheckpoints: RCTEventEmitter {
     }
 
     @MainActor
-    @objc(checkpointEmbedded:customVariables:callId:)
-    func checkpointEmbedded(_ identifier: String, customVariables: [String: Any]?, callId: String) {
+    @objc(checkpointEmbedded:customVariables:callId:presentsErrors:)
+    func checkpointEmbedded(_ identifier: String, customVariables: [String: Any]?, callId: String,
+                            presentsErrors: Bool) {
         guard !self.invalidated, #available(iOS 15.0, *) else { return }
-        // The controller React is showing: the root view's controller or an open <Modal>.
+        // The controller React is showing: the root view's controller or an open <Modal>. Without a JS
+        // error presenter the SDK shows its default error UI.
         self.proxy.start(callId: callId, identifier: identifier, customVariables: customVariables,
-                         parentViewController: RCTPresentedViewController())
+                         parentViewController: RCTPresentedViewController(), presentsErrors: presentsErrors)
     }
 
     @MainActor
