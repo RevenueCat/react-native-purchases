@@ -45,7 +45,7 @@ Install scripts are disabled because the tarballs already contain the SDKs'
 compiled JavaScript. The stable React Native version satisfies the SDKs' peer
 dependencies without legacy peer resolution.
 
-The `spm_ios` CircleCI job builds Debug for the simulator, explicitly resyncs
+The `ios_spm` CircleCI job builds Debug for the simulator, explicitly resyncs
 autolinking, then builds unsigned Release for devices. It checks the JavaScript
 bundles and all six SDK bridge/view-manager classes in both app binaries.
 

@@ -420,7 +420,7 @@ jobs:
             export RCT_NO_LAUNCH_PACKAGER=true \
             && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
 
-  spm_ios:
+  ios_spm:
     description: "Build both packaged SDKs in SPMTestApp (React Native 0.88)"
     executor:
       name: rn/macos
@@ -629,7 +629,7 @@ workflows:
       - analyse_js
       - android
       - ios
-      - spm_ios
+      - ios_spm
       - expo_android
       - expo_ios
       - expo_web
@@ -668,7 +668,7 @@ workflows:
             - analyse_js
             - android
             - ios
-            - spm_ios
+            - ios_spm
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
