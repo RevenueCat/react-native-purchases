@@ -6,6 +6,11 @@ import RevenueCatUI, {
   CustomVariableValue,
   FLOW_PRESENTATION_MODE,
   checkpoint,
+  checkpointEmbedded,
+  EmbeddedCheckpointCallbacks,
+  EmbeddedCheckpointErrorRequest,
+  EmbeddedCheckpointHandle,
+  EmbeddedCheckpointParams,
 } from "react-native-purchases-ui";
 import type {
   CheckpointParams,
@@ -645,3 +650,26 @@ export {
   PaywallScreenWithOffering,
   PaywallScreenWithOfferingAndEvents,
 };
+
+const embeddedCheckpointAPI = () => {
+  const callbacks: EmbeddedCheckpointCallbacks = {
+    onPassed: (result: CheckpointResult) => {
+      const flow: CheckpointResult['flow'] = result.flow;
+      void flow;
+    },
+    onError: (request: EmbeddedCheckpointErrorRequest) => {
+      const requestId: string = request.requestId;
+      const kind: 'flowCouldNotBeShown' | 'flowActionFailed' | 'flowResultSyncFailed' = request.kind;
+      const message: string = request.error.message;
+      void requestId; void kind; void message;
+      request.complete();
+    },
+    onFinished: () => {},
+  };
+  const params: EmbeddedCheckpointParams = { customVariables: { source: CustomVariableValue.string('api') } };
+  const handle: EmbeddedCheckpointHandle = checkpointEmbedded('upgrade', callbacks, params);
+  const staticHandle: EmbeddedCheckpointHandle = RevenueCatUI.checkpointEmbedded('upgrade', callbacks);
+  handle.cancel();
+  staticHandle.cancel();
+};
+void embeddedCheckpointAPI;

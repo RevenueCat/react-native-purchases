@@ -610,6 +610,9 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <TouchableOpacity onPress={() => navigation.navigate('Checkpoints')}>
             <Text style={styles.otherActions}>Checkpoints</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('EmbeddedCheckpoint')}>
+            <Text style={styles.otherActions}>Embedded Checkpoint (experiment)</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('WinBackTesting', {})}>
             <Text style={styles.otherActions}>Win-Back Offer Testing</Text>

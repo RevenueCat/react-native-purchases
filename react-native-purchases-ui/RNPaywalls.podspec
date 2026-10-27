@@ -15,6 +15,12 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => "https://github.com/RevenueCat/react-native-purchases.git" }
   spec.source_files = "ios/**/*.{h,m,swift}"
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+  # Experiment: compile the embedded checkpoint bridge only against the local purchases-ios SPI.
+  if ENV['RC_CHECKPOINT_LOCAL_DEPS'] == '1'
+    spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES',
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) RC_CHECKPOINT_EMBED_ENABLED=1',
+      'SWIFT_ACTIVE_COMPILATION_CONDITIONS' => '$(inherited) RC_CHECKPOINT_EMBED_ENABLED' }
+  end
 
   spec.dependency   "React-Core"
   spec.dependency   "PurchasesHybridCommonUI", '19.16.0'

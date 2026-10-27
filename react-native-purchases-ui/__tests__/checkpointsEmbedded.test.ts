@@ -1,0 +1,153 @@
+type Listener = (event: any) => void;
+const mockListeners = new Map<string, Set<Listener>>();
+const mockNative: {
+  checkpoint: jest.Mock;
+  checkpointEmbedded?: jest.Mock;
+  cancelEmbedded: jest.Mock;
+  completeEmbeddedError: jest.Mock;
+} = {
+  checkpoint: jest.fn(),
+  checkpointEmbedded: jest.fn(),
+  cancelEmbedded: jest.fn(),
+  completeEmbeddedError: jest.fn(),
+};
+let mockPreview = false;
+const mockPlatform = { OS: 'ios', Version: '18.0' };
+
+jest.mock('react-native', () => ({
+  NativeModules: { RNCheckpoints: mockNative },
+  NativeEventEmitter: class {
+    addListener(name: string, listener: Listener) {
+      if (!mockListeners.has(name)) mockListeners.set(name, new Set());
+      mockListeners.get(name)!.add(listener);
+      return { remove: () => mockListeners.get(name)!.delete(listener) };
+    }
+  },
+  Platform: mockPlatform,
+}));
+jest.mock('../src/utils/environment', () => ({ shouldUsePreviewAPIMode: () => mockPreview }));
+
+import { checkpointEmbedded, type EmbeddedCheckpointErrorRequest } from '../src/checkpoints';
+import { CustomVariableValue } from '../src/customVariables';
+
+const EVENT = 'Checkpoints-embedded';
+const emit = (event: any) => mockListeners.get(EVENT)?.forEach(listener => listener(event));
+const listenerCount = () => mockListeners.get(EVENT)?.size ?? 0;
+const callId = (index: number) => mockNative.checkpointEmbedded!.mock.calls[index]![2];
+const result = { flow: null, customer: { originalAppUserId: 'user' } };
+const nativeError = { code: 42, message: 'Simulated', readableErrorCode: 'TEST_STORE_SIMULATED_PURCHASE_ERROR' };
+
+function start(identifier = 'upgrade') {
+  const callbacks = { onPassed: jest.fn(), onError: jest.fn(), onFinished: jest.fn() };
+  const handle = checkpointEmbedded(identifier, callbacks, {
+    customVariables: { name: CustomVariableValue.string('Taylor'), level: CustomVariableValue.number(2) },
+  });
+  return { handle, ...callbacks };
+}
+
+beforeEach(() => {
+  mockPlatform.OS = 'ios';
+  mockPlatform.Version = '18.0';
+  mockPreview = false;
+  mockListeners.clear();
+  jest.clearAllMocks();
+});
+
+it('starts natively with converted custom variables and a per-call id', () => {
+  start();
+  expect(mockNative.checkpointEmbedded).toHaveBeenCalledWith('upgrade', { name: 'Taylor', level: 2 }, expect.any(String));
+  expect(listenerCount()).toBe(1);
+});
+
+it('routes passed, then finished, exactly once for its own call and keeps other calls separate', () => {
+  const first = start('first');
+  const second = start('second');
+  emit({ callId: 'unrelated', type: 'passed', result });
+  emit({ callId: callId(0), type: 'passed', result });
+  emit({ callId: callId(0), type: 'passed', result });
+  expect(first.onPassed).toHaveBeenCalledTimes(1);
+  expect(first.onPassed).toHaveBeenCalledWith(result);
+  expect(first.onFinished).not.toHaveBeenCalled();
+  expect(second.onPassed).not.toHaveBeenCalled();
+  emit({ callId: callId(0), type: 'finished' });
+  emit({ callId: callId(0), type: 'finished' });
+  expect(first.onFinished).toHaveBeenCalledTimes(1);
+  expect(listenerCount()).toBe(1);
+  emit({ callId: callId(1), type: 'finished' });
+  expect(second.onPassed).not.toHaveBeenCalled();
+  expect(second.onFinished).toHaveBeenCalledTimes(1);
+  expect(listenerCount()).toBe(0);
+});
+
+it('surfaces each native error once and acknowledges it natively only when the app completes it', () => {
+  const { onError } = start();
+  emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
+  emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
+  expect(onError).toHaveBeenCalledTimes(1);
+  const request: EmbeddedCheckpointErrorRequest = onError.mock.calls[0]![0];
+  expect(request.requestId).toBe('r1');
+  expect(request.kind).toBe('flowActionFailed');
+  expect(request.error.code).toBe('42');
+  expect(request.error.message).toBe('Simulated');
+  expect(request.error.readableErrorCode).toBe('TEST_STORE_SIMULATED_PURCHASE_ERROR');
+  expect(mockNative.completeEmbeddedError).not.toHaveBeenCalled();
+  request.complete();
+  request.complete();
+  expect(mockNative.completeEmbeddedError).toHaveBeenCalledTimes(1);
+  expect(mockNative.completeEmbeddedError).toHaveBeenCalledWith(callId(0), 'r1');
+});
+
+it('ignores stale replies and events after the call finished', () => {
+  const { onError, onPassed, onFinished } = start();
+  emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowCouldNotBeShown', error: nativeError });
+  const request: EmbeddedCheckpointErrorRequest = onError.mock.calls[0]![0];
+  emit({ callId: callId(0), type: 'finished' });
+  request.complete();
+  emit({ callId: callId(0), type: 'passed', result });
+  emit({ callId: callId(0), type: 'error', requestId: 'r2', kind: 'flowActionFailed', error: nativeError });
+  expect(mockNative.completeEmbeddedError).not.toHaveBeenCalled();
+  expect(onPassed).not.toHaveBeenCalled();
+  expect(onError).toHaveBeenCalledTimes(1);
+  expect(onFinished).toHaveBeenCalledTimes(1);
+});
+
+it('cancels natively once and still waits for the native finished event', () => {
+  const { handle, onFinished } = start();
+  handle.cancel();
+  handle.cancel();
+  expect(mockNative.cancelEmbedded).toHaveBeenCalledTimes(1);
+  expect(mockNative.cancelEmbedded).toHaveBeenCalledWith(callId(0));
+  expect(onFinished).not.toHaveBeenCalled();
+  expect(listenerCount()).toBe(1);
+  emit({ callId: callId(0), type: 'finished' });
+  expect(onFinished).toHaveBeenCalledTimes(1);
+  expect(listenerCount()).toBe(0);
+  handle.cancel();
+  expect(mockNative.cancelEmbedded).toHaveBeenCalledTimes(1);
+});
+
+it('removes the listener if invoking native code fails', () => {
+  mockNative.checkpointEmbedded!.mockImplementationOnce(() => { throw new Error('bridge unavailable'); });
+  expect(() => start()).toThrow('bridge unavailable');
+  expect(listenerCount()).toBe(0);
+});
+
+it('rejects builds without the experimental native method', () => {
+  const method = mockNative.checkpointEmbedded!;
+  delete mockNative.checkpointEmbedded;
+  try {
+    expect(() => start()).toThrow(/local purchases-ios/);
+  } finally {
+    mockNative.checkpointEmbedded = method;
+  }
+});
+
+it.each(['web', 'android', 'preview', 'ios13'])('rejects unsupported environment %s', environment => {
+  if (environment === 'web') mockPlatform.OS = 'web';
+  if (environment === 'android') mockPlatform.OS = 'android';
+  if (environment === 'preview') mockPreview = true;
+  if (environment === 'ios13') mockPlatform.Version = '13.0';
+  expect(() => start()).toThrow(/require/);
+  expect(mockNative.checkpointEmbedded).not.toHaveBeenCalled();
+  expect(listenerCount()).toBe(0);
+});
