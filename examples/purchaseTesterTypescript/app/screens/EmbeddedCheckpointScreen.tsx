@@ -108,7 +108,7 @@ const EmbeddedCheckpointScreen: React.FC = () => {
       />
       <View style={styles.row}>
         <Text>Full screen</Text>
-        <Switch value={fullScreen} onValueChange={setFullScreen} />
+        <Switch accessibilityLabel="Full screen switch" testID="full-screen-switch" value={fullScreen} onValueChange={setFullScreen} />
       </View>
       <Button title="Run checkpoint" onPress={run} />
       <Button title="Run twice (concurrent)" onPress={() => { run(); run(); }} />

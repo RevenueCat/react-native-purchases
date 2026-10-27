@@ -17,6 +17,11 @@ Pod::Spec.new do |spec|
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommonUI", '19.17.0'
+  # Experiment: an unpinned dependency lets the Podfile resolve a local purchases-hybrid-common checkout.
+  if ENV['RC_CHECKPOINT_LOCAL_DEPS'] == '1'
+    spec.dependency "PurchasesHybridCommonUI"
+  else
+    spec.dependency "PurchasesHybridCommonUI", '19.17.0'
+  end
   spec.swift_version    = '5.7'
 end

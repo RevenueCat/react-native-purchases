@@ -25,6 +25,11 @@ Pod::Spec.new do |spec|
   ]
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommon", '19.17.0'
+  # Experiment: an unpinned dependency lets the Podfile resolve a local purchases-hybrid-common checkout.
+  if ENV['RC_CHECKPOINT_LOCAL_DEPS'] == '1'
+    spec.dependency "PurchasesHybridCommon"
+  else
+    spec.dependency "PurchasesHybridCommon", '19.17.0'
+  end
   spec.swift_version    = '5.7'
 end
