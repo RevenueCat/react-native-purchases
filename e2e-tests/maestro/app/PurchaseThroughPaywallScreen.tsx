@@ -4,7 +4,7 @@ import Purchases, {CustomerInfo} from 'react-native-purchases';
 import RevenueCatUI from 'react-native-purchases-ui';
 
 export default function PurchaseThroughPaywallScreen() {
-  const [entitlements, setEntitlements] = useState<string>('none');
+  const [entitlements, setEntitlements] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,7 +43,9 @@ export default function PurchaseThroughPaywallScreen() {
   return (
     <View style={styles.container}>
       <Text testID="entitlements-label" style={styles.label}>
-        Entitlements: {entitlements}
+        {entitlements === null
+          ? 'Loading customer information...'
+          : `Entitlements: ${entitlements}`}
       </Text>
       {error && (
         <Text testID="error-message" style={styles.error}>
