@@ -22,7 +22,10 @@ files_to_update_phc_version = {
     'react-native-purchases-store-galaxy/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:{x}'],
     'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommonUI", \'{x}\''],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
-    'react-native-purchases-ui/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-ui:{x}'],
+    'react-native-purchases-ui/android/build.gradle' => [
+      'com.revenuecat.purchases:purchases-hybrid-common-ui:{x}',
+      'com.revenuecat.purchases:purchases-hybrid-common:{x}'
+    ],
     'package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"', '"@revenuecat/purchases-js-hybrid-mappings": "{x}"'],
     'react-native-purchases-store-galaxy/package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"'],
     'react-native-purchases-ui/package.json' => ['"@revenuecat/purchases-typescript-internal": "{x}"']

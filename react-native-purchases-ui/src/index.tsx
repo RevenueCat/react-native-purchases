@@ -28,6 +28,9 @@ import {
   convertCustomVariablesToNativeMap,
   transformOptionsForNative,
 } from "./customVariables";
+import { checkpoint } from "./checkpoints";
+
+export * from "./checkpoints";
 
 export { PAYWALL_RESULT, type PaywallInteractionEvent } from "@revenuecat/purchases-typescript-internal";
 export { CustomVariableValue, type CustomVariables } from "./customVariables";
@@ -584,6 +587,8 @@ export interface PresentCustomerCenterParams {
 }
 
 export default class RevenueCatUI {
+  public static checkpoint = checkpoint;
+
 
   private static Defaults = {
     PRESENT_PAYWALL_DISPLAY_CLOSE_BUTTON: true

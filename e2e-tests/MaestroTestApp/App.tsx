@@ -5,11 +5,13 @@ import Purchases from 'react-native-purchases';
 import TestCasesScreen from './src/TestCasesScreen';
 import PurchaseThroughPaywallScreen from './src/PurchaseThroughPaywallScreen';
 import PaywallInPagerScreen from './src/PaywallInPagerScreen';
+import CheckpointScreen from './src/CheckpointScreen';
 
 export type RootStackParamList = {
   TestCases: undefined;
   PurchaseThroughPaywall: undefined;
   PaywallInPager: undefined;
+  Checkpoint: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -19,6 +21,7 @@ const API_KEY = 'MAESTRO_TESTS_REVENUECAT_API_KEY';
 const TEST_FLOW_SCREEN_MAP: Record<string, keyof RootStackParamList> = {
   purchase_through_paywall: 'PurchaseThroughPaywall',
   paywall_in_pager: 'PaywallInPager',
+  checkpoint_purchase: 'Checkpoint',
 };
 
 type AppProps = {
@@ -30,7 +33,14 @@ export default function App(props: AppProps) {
 
   useEffect(() => {
     Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
-    Purchases.configure({apiKey: API_KEY});
+    // Maestro's clearState doesn't always reset the SDK's persisted user on iOS,
+    // so each test run gets a fresh customer.
+    Purchases.configure({
+      apiKey: API_KEY,
+      appUserID: props.e2e_test_flow
+        ? `maestro-${props.e2e_test_flow}-${Date.now()}`
+        : undefined,
+    });
     // Wait for the native configuration call before mounting an inline paywall.
     Purchases.isConfigured()
       .then(setIsConfigured)
@@ -62,6 +72,11 @@ export default function App(props: AppProps) {
           name="PaywallInPager"
           component={PaywallInPagerScreen}
           options={{title: 'Paywall in pager'}}
+        />
+        <Stack.Screen
+          name="Checkpoint"
+          component={CheckpointScreen}
+          options={{title: 'Checkpoint'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
