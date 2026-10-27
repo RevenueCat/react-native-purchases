@@ -579,6 +579,8 @@ jobs:
       FORCE_BUNDLING: "1"
     steps:
       - checkout
+      - rn/ios_simulator_start:
+          device: iPhone 17
       - revenuecat/install-mise-tools:
           tools: node@22.14.0,java
       - install-dependencies:
@@ -612,9 +614,8 @@ jobs:
             test -s ../build/DerivedData/Build/Products/Debug-iphonesimulator/SPMTestApp.app/main.jsbundle
           no_output_timeout: 20m
       - run:
-          name: Boot simulator and install SPM Maestro app
+          name: Wait for simulator and install SPM Maestro app
           command: |
-            xcrun simctl boot "iPhone 17" || true
             xcrun simctl bootstatus "iPhone 17" -b
             xcrun simctl install booted e2e-tests/SPMTestApp/build/DerivedData/Build/Products/Debug-iphonesimulator/SPMTestApp.app
       - run:
