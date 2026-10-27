@@ -97,10 +97,3 @@ if you don't use Bundler. Open the `.xcworkspace`. The remaining pods must not
 pull in another copy of React Native or RevenueCat.
 
 </details>
-
-## Returning to CocoaPods
-
-Run `npx react-native spm deinit`. Restore the original Podfile and native project
-configuration from version control, then run `(cd ios && bundle exec pod install)`
-(without `bundle exec` if applicable). Reopen the CocoaPods workspace.
-`deinit` doesn't restore CocoaPods for you.
