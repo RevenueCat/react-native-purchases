@@ -28,7 +28,7 @@ const callId = (index: number) => mockNative.checkpoint.mock.calls[index]![3];
 const result = { flow: null, customer: { originalAppUserId: 'user' } };
 
 beforeEach(() => {
-  mockPlatform.OS = 'android';
+  mockPlatform.OS = 'ios';
   mockPlatform.Version = '18.0';
   mockPreview = false;
   mockListeners.clear();
@@ -94,7 +94,7 @@ it('does not pass automatically when no native result arrives', () => {
 it.each(['web', 'preview', 'ios13'])('rejects unsupported environment %s without installing listeners', environment => {
   if (environment === 'web') mockPlatform.OS = 'web';
   if (environment === 'preview') mockPreview = true;
-  if (environment === 'ios13') { mockPlatform.OS = 'ios'; mockPlatform.Version = '13.0'; }
+  if (environment === 'ios13') mockPlatform.Version = '13.0';
   expect(() => checkpoint('upgrade', jest.fn())).toThrow(/Checkpoints require/);
   expect(mockNative.checkpoint).not.toHaveBeenCalled();
   expect(listenerCount('Checkpoints-onPassed')).toBe(0);

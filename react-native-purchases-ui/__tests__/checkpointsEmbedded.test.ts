@@ -58,7 +58,7 @@ beforeEach(() => {
 
 it('starts natively with converted custom variables and a per-call id', () => {
   start();
-  expect(mockNative.checkpointEmbedded).toHaveBeenCalledWith('upgrade', { name: 'Taylor', level: 2 }, expect.any(String), true);
+  expect(mockNative.checkpointEmbedded).toHaveBeenCalledWith('upgrade', { name: 'Taylor', level: 2 }, expect.any(String));
   expect(listenerCount()).toBe(1);
 });
 
@@ -155,24 +155,10 @@ it.each(['web', 'android', 'preview', 'ios13'])('rejects unsupported environment
   expect(listenerCount()).toBe(0);
 });
 
-it('always embeds on iOS, without a JS error presenter when none is given', () => {
-  const onFinished = jest.fn();
-  const cancel = checkpoint('upgrade', jest.fn(), { onFinished });
-  expect(mockNative.checkpointEmbedded).toHaveBeenCalledWith('upgrade', null, expect.any(String), false);
-  expect(mockNative.checkpoint).not.toHaveBeenCalled();
-  emit({ callId: callId(0), type: 'error', requestId: 'r1', kind: 'flowActionFailed', error: nativeError });
-  expect(mockNative.completeEmbeddedError).not.toHaveBeenCalled();
-  emit({ callId: callId(0), type: 'finished' });
-  expect(onFinished).toHaveBeenCalledTimes(1);
-  cancel();
-});
-
-it('keeps the modal path on Android and rejects an errorPresenter there', () => {
-  mockPlatform.OS = 'android';
+it('does not use the embedded path without an errorPresenter', () => {
   checkpoint('upgrade', jest.fn());
   expect(mockNative.checkpoint).toHaveBeenCalledTimes(1);
   expect(mockNative.checkpointEmbedded).not.toHaveBeenCalled();
-  expect(() => checkpoint('upgrade', jest.fn(), { errorPresenter: jest.fn() })).toThrow(/requires iOS/);
 });
 
 it('acknowledges the error when the promise returned by the presenter settles', async () => {

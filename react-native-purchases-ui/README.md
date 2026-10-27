@@ -164,8 +164,7 @@ const removeCallback = RevenueCatUI.checkpoint('upgrade', result => {
   presentationMode: FLOW_PRESENTATION_MODE.MODAL_SHEET,
 });
 
-// Call it when its screen unmounts. On Android it removes the callback without dismissing native UI.
-// On iOS it also removes the embedded flow.
+// Remove the callback when its screen unmounts. This does not dismiss native UI.
 // removeCallback();
 ```
 
@@ -173,9 +172,4 @@ The callback is called at most once, only when the checkpoint passes. `result.fl
 when there was nothing to present, such as an unconfigured identifier or no matching rule.
 Backing out, a blocking failure, or another checkpoint owning presentation does not invoke
 the callback. Treat a checkpoint as a callback rather than a pending operation to await.
-The SDK handles error presentation by default.
-
-On iOS the SDK embeds the flow in the view controller React Native is showing instead of presenting
-a modal, so `presentationMode` applies to Android only. Pass `errorPresenter` to show errors with your
-own UI, such as a React Native `<Modal>` that appears above the flow, and `onFinished` to learn when the
-flow ends. Return a promise from the presenter, or call `request.complete()`, once your error UI is gone.
+The SDK handles error presentation.
