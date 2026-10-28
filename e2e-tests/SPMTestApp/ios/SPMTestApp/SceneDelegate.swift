@@ -29,15 +29,9 @@ class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate
     reactNativeFactory?.devMenuConfiguration = devMenuConfiguration
     #endif
 
-    var props: [String: Any] = [:]
-    if let testFlow = UserDefaults.standard.string(forKey: "e2e_test_flow") {
-      props["e2e_test_flow"] = testFlow
-    }
-
     reactNativeFactory?.startReactNative(
       withModuleName: "SPMTestApp",
       in: window,
-      initialProperties: props,
       connectionOptions: connectionOptions
     )
 

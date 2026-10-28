@@ -1,7 +1,7 @@
 {
   "name": "react-native-purchases-ui",
   "title": "React Native Purchases UI",
-  "version": "10.15.1",
+  "version": "10.16.0",
   "description": "React Native in-app purchases and subscriptions made easy. Supports iOS and Android.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -81,7 +81,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": ">= 0.80.0",
-    "react-native-purchases": "10.15.1",
+    "react-native-purchases": "10.16.0",
     "react-native-web": "*"
   },
   "peerDependenciesMeta": {
@@ -128,6 +128,6 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-typescript-internal": "19.14.1"
+    "@revenuecat/purchases-typescript-internal": "19.17.0"
   }
 }

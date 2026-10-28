@@ -1,8 +1,8 @@
 import React from 'react';
-import MaestroApp, {MaestroAppProps} from '../maestro/app/App';
+import {Text} from 'react-native';
+import Purchases from 'react-native-purchases';
+import RevenueCatUI from 'react-native-purchases-ui';
 
-const API_KEY = 'MAESTRO_TESTS_REVENUECAT_API_KEY';
-
-export default function App(props: MaestroAppProps) {
-  return <MaestroApp {...props} apiKey={API_KEY} />;
+export default function App() {
+  return <Text>{typeof Purchases.configure} / {typeof RevenueCatUI.presentPaywall}</Text>;
 }

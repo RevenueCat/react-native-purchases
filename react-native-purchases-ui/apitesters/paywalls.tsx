@@ -1,8 +1,18 @@
 import React from "react";
 import type { ComponentProps } from "react";
 
-import RevenueCatUI, { PAYWALL_RESULT, CustomVariableValue } from "react-native-purchases-ui";
+import RevenueCatUI, {
+  PAYWALL_RESULT,
+  CustomVariableValue,
+  FLOW_PRESENTATION_MODE,
+  checkpoint,
+} from "react-native-purchases-ui";
 import type {
+  CheckpointParams,
+  CheckpointResult,
+  FlowResult,
+  ObtainedEntitlement,
+  ObtainedProduct,
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
   PaywallCallbacks,
@@ -23,6 +33,48 @@ import type {
 const paywallResultEnum: typeof PAYWALL_RESULT = RevenueCatUI.PAYWALL_RESULT;
 
 void paywallResultEnum;
+
+const checkpointAPI = () => {
+  const remove = RevenueCatUI.checkpoint('upgrade', (result: CheckpointResult) => {
+    void result.customer.entitlements.active;
+    result.flow?.obtainedEntitlements.forEach(value => { void value.entitlementInfo.identifier; });
+    result.flow?.obtainedProducts.forEach(value => { void value.product.identifier; });
+  }, {
+    presentationMode: FLOW_PRESENTATION_MODE.MODAL_SHEET,
+    customVariables: {level: CustomVariableValue.number(12)},
+  });
+  remove();
+};
+void checkpointAPI;
+
+const namedCheckpointAPI = () => {
+  const removeWithoutOptions: () => void = checkpoint('upgrade', (result: CheckpointResult) => {
+    void result;
+  });
+  removeWithoutOptions();
+
+  const params: CheckpointParams = {
+    presentationMode: FLOW_PRESENTATION_MODE.DEFAULT,
+    customVariables: {level: CustomVariableValue.number(12)},
+  };
+  const removeWithParams = checkpoint('upgrade', () => {}, params);
+  removeWithParams();
+
+  const fullScreenParams: CheckpointParams = {
+    presentationMode: FLOW_PRESENTATION_MODE.MODAL_FULL_SCREEN,
+  };
+  checkpoint('upgrade', () => {}, fullScreenParams)();
+};
+void namedCheckpointAPI;
+
+const checkpointResultTypes = (result: CheckpointResult) => {
+  const flow: FlowResult | null = result.flow;
+  const entitlements: ObtainedEntitlement[] | undefined = flow?.obtainedEntitlements;
+  const products: ObtainedProduct[] | undefined = flow?.obtainedProducts;
+  void entitlements;
+  void products;
+};
+void checkpointResultTypes;
 
 type PaywallComponentProps = ComponentProps<typeof RevenueCatUI.Paywall>;
 

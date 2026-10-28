@@ -3,10 +3,8 @@
 A minimal iOS app based on the React Native 0.88.0 community template, with
 its Xcode project already configured for Swift Package Manager. This version
 includes React Native's fix for preserving library symlinks during autolinking
-resyncs. The app imports the same test UI as `MaestroTestApp` from
-[`../maestro/app`](../maestro/README.md). Build-only jobs leave the API key
-placeholder intact; the separate Maestro job configures RevenueCat Test Store
-and exercises the paywall purchase flow.
+resyncs. The app imports both SDKs so Metro bundles their JavaScript; it does not
+configure purchases or require an API key.
 
 React Native generates the Xcode scheme's autolinking pre-action and the matching
 build phase. Keep these scripts generated; `spm update` refreshes them.
@@ -54,17 +52,3 @@ bundles and all six SDK bridge/view-manager classes in both app binaries.
 To run interactively, start Metro with `npx react-native start` from
 `e2e-tests/SPMTestApp`, then open `ios/SPMTestApp.xcodeproj` and run on a simulator.
 Avoid CocoaPods in this app; the existing iOS CI jobs cover that integration.
-
-The `run-maestro-e2e-tests-spm-ios` job uses the same preparation command as
-`ios_spm_build`, injects the CI Test Store API key, builds Debug with bundled
-JavaScript, installs the app on an iPhone 17 simulator, and runs the shared flows
-with `APP_ID=org.reactjs.native.example.SPMTestApp`. It uploads JUnit results and
-Maestro debug artifacts. Test Store keys require Debug because the SDK blocks
-them in Release. React Native loads the bundled JavaScript when Metro is not
-running; the separate `ios_spm_build` job continues checking both build configurations.
-Keep injected keys out of commits.
-
-This is a temporary native host. The CocoaPods removal PR after December 2, 2026
-must move its SPM setup into `MaestroTestApp` and delete this directory, preserving
-the existing Android tests. See the required consolidation steps in
-[`../maestro/README.md`](../maestro/README.md#required-consolidation-when-cocoapods-support-is-removed).
