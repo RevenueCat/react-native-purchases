@@ -5,6 +5,9 @@
 
 appId: com.revenuecat.automatedsdktests
 name: Paywall in pager
+# The SwiftPM iOS job excludes this tag: SwiftPM cannot build react-native-pager-view.
+tags:
+  - pager-view
 
 ---
 - clearState
