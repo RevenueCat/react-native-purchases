@@ -60,3 +60,21 @@ local dependency mechanism as `examples/purchaseTesterTypescript`:
 
 This ensures E2E tests always exercise the code on the current branch, not a
 published npm version.
+
+## Swift Package Manager
+
+The committed iOS project uses CocoaPods. The `run-maestro-e2e-tests-spm-ios`
+CircleCI job converts a fresh checkout to SwiftPM with React Native's
+`setup-apple-spm.js` and runs the same flows. That job differs from the CocoaPods
+setup in three ways:
+
+- It autolinks packed copies of the SDKs extracted outside the repository, selected
+  by `MAESTRO_SPM_SDKS_DIR` in `react-native.config.js`. SwiftPM autolinking
+  symlinks each library into `ios/build`, so linking the repository root would
+  place a link to the repository inside itself.
+- It generates a `Package.swift` for `react-native-screens`, which ships none,
+  and adds the header search path its `<rnscreens/...>` imports need.
+- It skips flows tagged `pager-view`, because SwiftPM cannot build
+  `react-native-pager-view`.
+
+Do not commit the converted project while CocoaPods is still supported.

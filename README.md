@@ -44,8 +44,8 @@ Or view our React Native sample app:
 
 ## Requirements
 
-The minimum React Native version this SDK requires is `0.73.0`.
-In Android, minimum Kotlin version is `1.8.0`.
+The minimum React Native version this SDK requires is `0.80.0`.
+In Android, minimum Kotlin version is `2.1.0`.
 
 ## SDK Reference
 Our full SDK reference [can be found here](https://revenuecat.github.io/react-native-purchases-docs/).
@@ -53,6 +53,25 @@ Our full SDK reference [can be found here](https://revenuecat.github.io/react-na
 ---
 
 ## Installation
+
+### Experimental Swift Package Manager support (iOS)
+
+Both `react-native-purchases` and `react-native-purchases-ui` include Swift package
+manifests for React Native's experimental Swift Package Manager integration.
+This integration requires React Native **0.88.0 or later**. CocoaPods remains
+supported, with a minimum React Native version of **0.80.0**.
+
+Install or upgrade the SDK packages first, then follow
+[React Native's SwiftPM setup instructions](https://github.com/react/react-native/blob/v0.88.0/packages/react-native/scripts/spm/__docs__/spm-scripts.md#quick-start)
+to configure your app. Both SDK packages include the required SwiftPM manifests,
+so you don't need to scaffold them.
+
+For apps without a Podfile, React Native Community CLI **21.0.0-alpha.1** is
+currently required for project discovery. Library podspecs are still required
+for React Native's dependency discovery,
+including when the app uses SwiftPM.
+
+### Expo
 
 Expo supports in-app payments and is compatible with `react-native-purchases`. To use the SDK, [create a new project](https://docs.expo.dev/get-started/create-a-project/) and set up a [development build](https://docs.expo.dev/get-started/set-up-your-environment/?mode=development-build). Development builds enable native code and provide a complete environment for testing purchases.
 
@@ -62,6 +81,6 @@ $ npx expo install react-native-purchases
 
 In Expo Go, the SDK automatically runs in **Preview API Mode**, replacing native calls with JavaScript mocks so your app loads without errors. Real purchases, however, require a development build.
 
-### Using development builds
+#### Using development builds
 
 To fully test in-app purchases, you’ll need to create a [custom development build](https://docs.expo.dev/develop/development-builds/introduction/) with EAS. This ensures that all native dependencies, including `react-native-purchases`, are properly included.

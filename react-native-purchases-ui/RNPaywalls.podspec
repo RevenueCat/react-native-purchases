@@ -13,10 +13,10 @@ Pod::Spec.new do |spec|
   spec.platform     = :ios, "13.0"
 
   spec.source       = { :git => "https://github.com/RevenueCat/react-native-purchases.git" }
-  spec.source_files = "ios/**/*.{h,m,swift}"
+  spec.source_files = "ios/**/*.{h,m}"
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommonUI", '19.17.0'
+  spec.dependency   "PurchasesHybridCommonUI", '20.1.0'
   spec.swift_version    = '5.7'
 end

@@ -19,8 +19,10 @@ files_with_version_number = {
 }
 files_to_update_phc_version = {
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
+    'Package.swift' => ['purchases-hybrid-common", exact: "{x}"'],
     'react-native-purchases-store-galaxy/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:{x}'],
     'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommonUI", \'{x}\''],
+    'react-native-purchases-ui/Package.swift' => ['purchases-hybrid-common", exact: "{x}"'],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => [
       'com.revenuecat.purchases:purchases-hybrid-common-ui:{x}',
@@ -212,16 +214,17 @@ lane :update_hybrid_common do |options|
   sh('yarn install --no-immutable')
   commit_current_changes(commit_message: 'Update yarn.lock')
 
+  # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
   # Pushing now in case updating podfile fails and needs to retry
-  push_to_git_remote(set_upstream: true)
+  # push_to_git_remote(set_upstream: true)
 
-  # This will update both PurchasesHybridCommonUI and PurchasesHybridCommon
-  update_sample_podfile_lock_with_retry(pod_name: 'PurchasesHybridCommonUI')
+  # This updates both PurchasesHybridCommonUI and PurchasesHybridCommon.
+  # update_sample_podfile_lock_with_retry(pod_name: 'PurchasesHybridCommonUI')
 
   push_to_git_remote(set_upstream: true)
 
   # GitHub merges as soon as the required checks are green, so arming auto-merge
-  # any earlier can drop the Podfile.lock commit pushed above.
+  # any earlier can drop the dependency updates pushed above.
   if options[:open_pr] && options[:automatic_release]
     enable_auto_merge_for_pr(
       github_token: ENV["GITHUB_TOKEN"],
