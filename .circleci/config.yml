@@ -182,6 +182,78 @@ jobs:
           command: |
             xcodebuild -workspace ios/purchaseTesterExpo.xcworkspace -scheme purchaseTesterExpo -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16' -derivedDataPath ~/DerivedData -UseModernBuildSystem=YES
 
+  expo_ios_spm:
+    description: "Build the Expo sample with Expo's Swift Package Manager preview"
+    executor:
+      name: rn/macos
+      resource_class: m4pro.medium
+      xcode_version: '26.6'
+    environment:
+      EXPO_IOS_SWIFTPM: "1"
+      RCT_NO_LAUNCH_PACKAGER: "1"
+    steps:
+      - checkout
+      - revenuecat/install-mise-tools:
+          tools: node@22.23.4,ruby
+      - install-dependencies-ios-build
+      - revenuecat/install-gem-mac-dependencies:
+          cache-version: expo-v3
+      - run:
+          name: Prepare packages for Expo
+          command: yarn prepare-expo
+      - run:
+          name: Install dependencies for Expo app
+          working_directory: examples/purchaseTesterExpo
+          command: yarn install
+      - restore_cache:
+          keys:
+            - expo-spm-ios-v1-{{ checksum "examples/purchaseTesterExpo/package.json" }}
+      - run:
+          name: Generate iOS project with SwiftPM
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            # expo-router's Swift imports RNScreens, which SwiftPM cannot build as a Clang module.
+            npm pkg set 'expo.autolinking.ios.exclude[0]=expo-router'
+            npx expo prebuild --platform ios --no-install
+            config_command='["node","--no-warnings","--eval","require('"'"'expo/bin/autolinking'"'"')","expo-modules-autolinking","react-native-config","--json","--platform","ios"]'
+            # Generates a Package.swift for react-native-screens and @react-native-masked-view/masked-view, which ship none.
+            node node_modules/react-native/scripts/setup-apple-spm.js scaffold --yes --config-command "$config_command"
+            # The generated manifest misses the search path that react-native-screens' <rnscreens/...> imports need.
+            screens_manifest=node_modules/react-native-screens/Package.swift
+            perl -pi -e 's|\.headerSearchPath\("common/cpp"\), |$&.headerSearchPath("common/cpp/react/renderer/components"), |g' "$screens_manifest"
+            grep -Fq '.headerSearchPath("common/cpp/react/renderer/components")' "$screens_manifest"
+            # SwiftPM rejects the masked-view target while a directory sits next to its umbrella header.
+            rm -rf node_modules/@react-native-masked-view/masked-view/ios/RNCMaskedView.xcodeproj
+            # The step `expo prebuild` runs once every library has a manifest. It also removes CocoaPods from the project.
+            node node_modules/react-native/scripts/setup-apple-spm.js add --deintegrate --yes --config-command "$config_command"
+      - run:
+          name: Build iOS Expo app (SwiftPM)
+          working_directory: examples/purchaseTesterExpo
+          command: |
+            mkdir -p build
+            xcodebuild -project ios/purchaseTesterExpo.xcodeproj -scheme purchaseTesterExpo \
+              -configuration Debug -sdk iphonesimulator \
+              -destination 'platform=iOS Simulator,name=iPhone 17' \
+              -derivedDataPath build/DerivedData \
+              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
+              | tee build/xcodebuild.log
+          no_output_timeout: 20m
+      - run:
+          name: Check RevenueCat modules are linked
+          working_directory: examples/purchaseTesterExpo/build/DerivedData/Build/Products/Debug-iphonesimulator/purchaseTesterExpo.app
+          command: |
+            nm -gj purchaseTesterExpo.debug.dylib > /tmp/expo-spm-symbols.txt
+            for class in RNPurchases RNPaywalls RNCustomerCenter RNCheckpoints; do
+              grep -Fxq "_OBJC_CLASS_\$_$class" /tmp/expo-spm-symbols.txt || { echo "$class is not linked"; exit 1; }
+            done
+      - save_cache:
+          key: expo-spm-ios-v1-{{ checksum "examples/purchaseTesterExpo/package.json" }}
+          paths:
+            - ~/Library/Caches/ReactNative/spm-artifacts
+            - ~/Library/Caches/org.swift.swiftpm
+      - store_artifacts:
+          path: examples/purchaseTesterExpo/build/xcodebuild.log
+
   expo_android:
     executor:
       name: rn/linux_android
@@ -719,6 +791,7 @@ workflows:
       - expo_android
       # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
       # - expo_ios
+      - expo_ios_spm
       - expo_web
       # TODO: restore after Nov 7, 2026, once the matching RevenueCat pods are backfilled.
       # - adstester_ios
