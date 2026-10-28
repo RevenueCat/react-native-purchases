@@ -255,10 +255,10 @@ jobs:
           path: examples/purchaseTesterExpo/build/xcodebuild.log
 
   expo_android:
-    executor:
-      name: rn/linux_android
-      resource_class: xlarge
-      build_image_version: latest
+    # The Docker executor's 16 GB isn't enough for the Expo SDK 58 build.
+    machine:
+      image: android:2024.11.1
+    resource_class: xlarge
     steps:
       - checkout
       - revenuecat/install-mise-tools:
@@ -285,7 +285,7 @@ jobs:
           working_directory: examples/purchaseTesterExpo/android
           command: |
             export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
-            # Building the C++ of Expo SDK 58 for every ABI exhausts the machine's memory.
+            # Building the C++ of Expo SDK 58 for every ABI takes over 20 minutes.
             ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
 
   adstester_ios:
