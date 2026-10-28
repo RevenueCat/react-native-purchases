@@ -145,3 +145,31 @@ The `<Paywall />` component supports the following lifecycle listeners:
 - onDismiss
 
 Use these callbacks to respond to user actions such as purchase initiation, completion, dismissal, and error handling.
+
+### Checkpoints (experimental, invite-only)
+
+> **Experimental:** The checkpoints API is experimental and may change or be removed in a future release without a major version bump.
+
+Checkpoints require access to the native SDK's invite-only checkpoints API, iOS 15+ or Android,
+and a native development build. Configure Purchases before calling a checkpoint.
+
+```tsx
+import RevenueCatUI, { CustomVariableValue, FLOW_PRESENTATION_MODE } from 'react-native-purchases-ui';
+
+const removeCallback = RevenueCatUI.checkpoint('upgrade', result => {
+  // Continue to the next screen here. The native SDK decides when the checkpoint passes.
+  console.log(result.customer, result.flow?.obtainedEntitlements, result.flow?.obtainedProducts);
+}, {
+  customVariables: { level: CustomVariableValue.number(12) },
+  presentationMode: FLOW_PRESENTATION_MODE.MODAL_SHEET,
+});
+
+// Remove the callback when its screen unmounts. This does not dismiss native UI.
+// removeCallback();
+```
+
+The callback is called at most once, only when the checkpoint passes. `result.flow` is `null`
+when there was nothing to present, such as an unconfigured identifier or no matching rule.
+Backing out, a blocking failure, or another checkpoint owning presentation does not invoke
+the callback. Treat a checkpoint as a callback rather than a pending operation to await.
+The SDK handles error presentation.

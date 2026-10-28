@@ -1,0 +1,35 @@
+# This flow tests a purchase inside the flow a checkpoint presents.
+# `donottouch_sdk_everyone` presents its paywall to every user with the monthly package preselected.
+# The purchase closes the paywall and passes the checkpoint with the obtained entitlement and product,
+# which covers the native serialization of the checkpoint result.
+# Mirrors purchases-android's maestro/checkpoints/checkpoint_purchase_obtains_entitlement_and_product.yaml,
+# minus the product's offering, which iOS store products don't carry.
+
+appId: com.revenuecat.automatedsdktests
+name: Checkpoint purchase
+
+---
+- clearState
+- pressKey: home
+- launchApp:
+    arguments:
+        e2e_test_flow: checkpoint_purchase
+- extendedWaitUntil:
+    visible: "Hit checkpoint"
+    timeout: 30000
+- tapOn:
+    text: "Hit checkpoint"
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 20000
+- tapOn:
+    text: "Continue"
+- runFlow:
+    file: ../utils/confirm_purchase.yaml
+- extendedWaitUntil:
+    visible: "Callback: passed, entitlements: pro (call #1)"
+    timeout: 20000
+- assertVisible: "Obtained products: pro_monthly_subscription"
+- assertVisible: "Entitlement pro obtained: true"
+- assertVisible: "Product pro_monthly_subscription obtained: true"
+- assertVisible: "Customer active entitlements: pro"
