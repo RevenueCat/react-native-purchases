@@ -285,7 +285,8 @@ jobs:
           working_directory: examples/purchaseTesterExpo/android
           command: |
             export GRADLE_OPTS="-Xmx4096m -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=\"-Xmx4096m\""
-            ./gradlew assembleDebug
+            # Building the C++ of Expo SDK 58 for every ABI exhausts the machine's memory.
+            ./gradlew assembleDebug -PreactNativeArchitectures=x86_64
 
   adstester_ios:
     <<: *base-mac-job-xcode-16
