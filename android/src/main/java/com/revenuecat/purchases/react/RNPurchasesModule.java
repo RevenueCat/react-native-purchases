@@ -51,7 +51,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "10.16.0";
+    public static final String PLUGIN_VERSION = "11.0.0";
 
     private final ReactApplicationContext reactContext;
 
