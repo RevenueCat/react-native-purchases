@@ -171,8 +171,7 @@ jobs:
           working_directory: examples/purchaseTesterExpo
           command: npx expo prebuild --platform ios --no-install
       - revenuecat/install-gem-mac-dependencies:
-          cache-version: expo-v2
-          working_directory: examples/purchaseTesterExpo
+          cache-version: expo-v3
       - rn/pod_install:
           cache: false
           pod_install_directory: examples/purchaseTesterExpo/ios
