@@ -5,6 +5,7 @@ This release updates the Android SDK dependency from v10 to v11, which uses Goog
 ### Migration Guides
 
 - See [Android Native - V11 API Migration Guide](https://github.com/RevenueCat/purchases-android/blob/main/migrations/v11-MIGRATION.md) for a more thorough explanation of the Android changes.
+- See [Migrate the React Native SDK from CocoaPods to Swift Package Manager](https://www.revenuecat.com/docs/sdk-guides/react-native-cocoapods-to-spm-migration) when converting an existing iOS app to the experimental Swift Package Manager integration.
 
 ### New Minimum Versions
 
