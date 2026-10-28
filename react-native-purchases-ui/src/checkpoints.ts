@@ -34,12 +34,34 @@ export interface CheckpointResult {
   customer: CustomerInfo;
 }
 
+/** What kind of failure the native SDK needs an error dialog for. */
+export type CheckpointErrorKind = 'flowCouldNotBeShown' | 'flowActionFailed' | 'flowResultSyncFailed';
+
+export interface CheckpointError {
+  kind: CheckpointErrorKind;
+  code: number;
+  message: string;
+}
+
+/** The content of the native error dialog. */
+export interface CheckpointErrorDialog {
+  message: string;
+  buttonTitle: string;
+}
+
 export interface CheckpointParams {
   customVariables?: CustomVariables;
   presentationMode?: FLOW_PRESENTATION_MODE;
+  /**
+   * Supplies the content of the native error dialog. Called once per error. Return `null` to use the SDK's
+   * default dialog. The SDK also shows its default dialog if the factory throws, returns invalid content, or
+   * takes longer than 5 seconds to answer.
+   */
+  errorDialogFactory?: (error: CheckpointError) => CheckpointErrorDialog | null | Promise<CheckpointErrorDialog | null>;
 }
 
 const PASSED_EVENT = 'Checkpoints-onPassed';
+const ERROR_DIALOG_REQUESTED_EVENT = 'Checkpoints-onErrorDialogRequested';
 let nextCallId = 0;
 const callIdPrefix = `${Date.now()}-${Math.random()}`;
 
@@ -55,6 +77,17 @@ function nativeCheckpoints() {
     throw new Error('[RevenueCatUI] Checkpoint native module not found. Rebuild your app after installing react-native-purchases-ui.');
   }
   return native;
+}
+
+function toErrorDialog(value: unknown): CheckpointErrorDialog | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const { message, buttonTitle } = value as Partial<CheckpointErrorDialog>;
+  if (typeof message !== 'string' || typeof buttonTitle !== 'string') {
+    throw new Error('errorDialogFactory must return null or an object with string message and buttonTitle.');
+  }
+  return { message, buttonTitle };
 }
 
 /**
@@ -73,19 +106,46 @@ export function checkpoint(
   const native = nativeCheckpoints();
   const callId = `${callIdPrefix}-${++nextCallId}`;
   const emitter = new NativeEventEmitter(native);
-  const subscription = emitter.addListener(PASSED_EVENT, event => {
+  const errorDialogFactory = params.errorDialogFactory;
+  let detached = false;
+  const subscriptions: Array<{ remove: () => void }> = [];
+  const removeSubscriptions = () => subscriptions.splice(0).forEach(subscription => subscription.remove());
+
+  subscriptions.push(emitter.addListener(PASSED_EVENT, event => {
     if (event.callId !== callId) {
       return;
     }
-    subscription.remove();
+    removeSubscriptions();
     onPassed(event.result);
-  });
+  }));
+  if (errorDialogFactory) {
+    subscriptions.push(emitter.addListener(ERROR_DIALOG_REQUESTED_EVENT, async event => {
+      if (event.callId !== callId) {
+        return;
+      }
+      let dialog: CheckpointErrorDialog | null = null;
+      try {
+        dialog = toErrorDialog(await errorDialogFactory(event.error));
+      } catch (error) {
+        console.warn('[RevenueCatUI] Using the default checkpoint error dialog because errorDialogFactory failed:', error);
+      }
+      if (!detached) {
+        native.resolveErrorDialog(event.requestId, dialog);
+      }
+    }));
+  }
   try {
     native.checkpoint(identifier, convertCustomVariablesToNativeMap(params.customVariables),
-      params.presentationMode ?? FLOW_PRESENTATION_MODE.DEFAULT, callId);
+      params.presentationMode ?? FLOW_PRESENTATION_MODE.DEFAULT, callId, errorDialogFactory !== undefined);
   } catch (error) {
-    subscription.remove();
+    removeSubscriptions();
     throw error;
   }
-  return () => subscription.remove();
+  return () => {
+    removeSubscriptions();
+    if (errorDialogFactory && !detached) {
+      native.detachErrorDialogFactory(callId);
+    }
+    detached = true;
+  };
 }
