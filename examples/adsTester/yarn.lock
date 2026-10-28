@@ -6016,12 +6016,12 @@ __metadata:
   linkType: hard
 
 "qs@npm:^6.15.2":
-  version: 6.15.3
-  resolution: "qs@npm:6.15.3"
+  version: 6.17.0
+  resolution: "qs@npm:6.17.0"
   dependencies:
     es-define-property: ^1.0.1
     side-channel: ^1.1.1
-  checksum: b59a0f20498f323d1f990f1fad3b808ee328f96c3c45575beeb0d51ec27dc0ed3422d9e9308a7c09f6000cb914b95dfb6eb7cca8636bc4d1befdc2a10cf59d2b
+  checksum: a69b500284902eae17f34743a600d1c8a32f874a550e6dcc1060ff43a22cbc91d439e713fb30445ff7a0378253821d455c485cbf7bd1197bf679000ea8d30ba7
   languageName: node
   linkType: hard
 
