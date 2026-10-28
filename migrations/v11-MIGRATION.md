@@ -2,6 +2,8 @@
 
 This release updates the Android SDK dependency from v10 to v11, which uses Google Play Billing Library 9.1.0 and Kotlin 2.2. The iOS SDK dependency does not change major version.
 
+On iOS, this release adds experimental support for React Native's Swift Package Manager integration, which requires React Native 0.88.0 or later. CocoaPods remains supported.
+
 ### Migration Guides
 
 - See [Android Native - V11 API Migration Guide](https://github.com/RevenueCat/purchases-android/blob/main/migrations/v11-MIGRATION.md) for a more thorough explanation of the Android changes.
