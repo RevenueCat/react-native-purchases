@@ -10,6 +10,7 @@ import RevenueCatUI, {
 import type {
   CheckpointError,
   CheckpointErrorDialog,
+  CheckpointErrorDialogOutcome,
   CheckpointErrorKind,
   CheckpointParams,
   CheckpointResult,
@@ -69,17 +70,22 @@ const namedCheckpointAPI = () => {
   checkpoint('upgrade', () => {}, fullScreenParams)();
 
   const dialogParams: CheckpointParams = {
-    errorDialogFactory: (error: CheckpointError): CheckpointErrorDialog | null => {
+    errorDialogFactory: (error: CheckpointError): CheckpointErrorDialogOutcome => {
       const kind: CheckpointErrorKind = error.kind;
       const code: number = error.code;
       const message: string = error.message;
       void kind;
       void code;
-      return {message, buttonTitle: 'OK'};
+      const dialog: CheckpointErrorDialog = {message, buttonTitle: 'OK'};
+      return {type: 'show', dialog};
     },
   };
   checkpoint('upgrade', () => {}, dialogParams)();
-  checkpoint('upgrade', () => {}, {errorDialogFactory: async () => null})();
+  checkpoint('upgrade', () => {}, {errorDialogFactory: () => ({type: 'useDefault'})})();
+  checkpoint('upgrade', () => {}, {errorDialogFactory: () => ({type: 'suppress'})})();
+  checkpoint('upgrade', () => {}, {
+    errorDialogFactory: async (): Promise<CheckpointErrorDialogOutcome> => ({type: 'useDefault'}),
+  })();
 };
 void namedCheckpointAPI;
 

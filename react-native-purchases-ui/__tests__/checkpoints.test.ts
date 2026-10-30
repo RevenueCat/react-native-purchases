@@ -122,50 +122,76 @@ describe('errorDialogFactory', () => {
     expect(mockNative.detachErrorDialogFactory).not.toHaveBeenCalled();
   });
 
-  it('answers a request with the content the factory returns', async () => {
-    const factory = jest.fn().mockReturnValue({ ...dialog, ignored: true });
+  it.each([
+    { type: 'show', dialog },
+    { type: 'useDefault' },
+    { type: 'suppress' },
+  ])('answers with the explicit $type outcome', async outcome => {
+    const factory = jest.fn().mockReturnValue({ ...outcome, ignored: true });
     checkpoint('upgrade', jest.fn(), { errorDialogFactory: factory });
     expect(mockNative.checkpoint.mock.calls[0]![4]).toBe(true);
     emit(REQUESTED, { callId: callId(0), requestId: 'r1', error });
     await flush();
     expect(factory).toHaveBeenCalledWith(error);
     expect(mockNative.resolveErrorDialog).toHaveBeenCalledTimes(1);
-    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', dialog);
-  });
-
-  it('supports asynchronous factories', async () => {
-    checkpoint('upgrade', jest.fn(), { errorDialogFactory: async () => dialog });
-    request(1, 'r1');
-    await flush();
-    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', dialog);
-  });
-
-  it('answers null when the factory returns null', async () => {
-    checkpoint('upgrade', jest.fn(), { errorDialogFactory: () => null });
-    request(1, 'r1');
-    await flush();
-    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', null);
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', outcome);
     expect(warn).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { type: 'show', dialog },
+    { type: 'useDefault' },
+    { type: 'suppress' },
+  ])('awaits asynchronous $type outcomes', async outcome => {
+    let resolve: (value: any) => void = () => {};
+    checkpoint('upgrade', jest.fn(), {
+      errorDialogFactory: () => new Promise<any>(r => { resolve = r; }),
+    });
+    request(1, 'r1');
+    await flush();
+    expect(mockNative.resolveErrorDialog).not.toHaveBeenCalled();
+
+    resolve(outcome);
+    await flush();
+
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledTimes(1);
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', outcome);
+  });
+
+  it('strips extra properties from custom dialog content', async () => {
+    checkpoint('upgrade', jest.fn(), {
+      errorDialogFactory: () => ({ type: 'show', dialog: { ...dialog, ignored: true } }),
+    });
+    request(1, 'r1');
+    await flush();
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', { type: 'show', dialog });
   });
 
   it.each([
     ['throws', () => { throw new Error('boom'); }],
     ['rejects', () => Promise.reject(new Error('boom'))],
+    ['returns null', () => null],
+    ['returns undefined', () => undefined],
     ['returns a non-object', () => 'oops'],
-    ['returns no button title', () => ({ message: 'x' })],
-    ['returns a non-string message', () => ({ message: 1, buttonTitle: 'OK' })],
-  ])('answers null and warns when the factory %s', async (_name, factory) => {
+    ['returns an unknown outcome', () => ({ type: 'unknown' })],
+    ['returns no dialog', () => ({ type: 'show' })],
+    ['returns a null dialog', () => ({ type: 'show', dialog: null })],
+    ['returns no button title', () => ({ type: 'show', dialog: { message: 'x' } })],
+    ['returns a non-string message', () => ({ type: 'show', dialog: { message: 1, buttonTitle: 'OK' } })],
+    ['returns an empty message', () => ({ type: 'show', dialog: { message: '', buttonTitle: 'OK' } })],
+    ['returns an empty button title', () => ({ type: 'show', dialog: { message: 'Oops', buttonTitle: '' } })],
+  ])('answers useDefault and warns when the factory %s', async (_name, factory) => {
     checkpoint('upgrade', jest.fn(), { errorDialogFactory: factory as any });
     request(1, 'r1');
     await flush();
     expect(mockNative.resolveErrorDialog).toHaveBeenCalledTimes(1);
-    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', null);
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', { type: 'useDefault' });
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn.mock.calls[0]![0]).toMatch(/\[RevenueCatUI\]/);
   });
 
   it('ignores requests addressed to another checkpoint call', async () => {
-    const factory = jest.fn().mockReturnValue(dialog);
+    const factory = jest.fn().mockReturnValue({ type: 'show', dialog });
     checkpoint('first', jest.fn(), { errorDialogFactory: factory });
     emit(REQUESTED, { callId: 'unrelated', requestId: 'r1', error });
     await flush();
@@ -180,12 +206,12 @@ describe('errorDialogFactory', () => {
     request(1, 'r1');
     request(2, 'r2');
     expect(factory.mock.calls.map(call => (call as any)[0].code)).toEqual([1, 2]);
-    resolvers[1]!({ message: 'second', buttonTitle: 'OK' });
-    resolvers[0]!({ message: 'first', buttonTitle: 'OK' });
+    resolvers[1]!({ type: 'show', dialog: { message: 'second', buttonTitle: 'OK' } });
+    resolvers[0]!({ type: 'show', dialog: { message: 'first', buttonTitle: 'OK' } });
     await flush();
     expect(mockNative.resolveErrorDialog.mock.calls).toEqual([
-      ['r2', { message: 'second', buttonTitle: 'OK' }],
-      ['r1', { message: 'first', buttonTitle: 'OK' }],
+      ['r2', { type: 'show', dialog: { message: 'second', buttonTitle: 'OK' } }],
+      ['r1', { type: 'show', dialog: { message: 'first', buttonTitle: 'OK' } }],
     ]);
   });
 
@@ -197,7 +223,7 @@ describe('errorDialogFactory', () => {
     remove();
     expect(mockNative.detachErrorDialogFactory).toHaveBeenCalledWith(callId(0));
     expect(listenerCount(REQUESTED)).toBe(0);
-    resolve(dialog);
+    resolve({ type: 'show', dialog });
     await flush();
     expect(mockNative.resolveErrorDialog).not.toHaveBeenCalled();
     request(2, 'r2');
@@ -206,7 +232,7 @@ describe('errorDialogFactory', () => {
   });
 
   it('stops listening for requests once the checkpoint passes', () => {
-    checkpoint('upgrade', jest.fn(), { errorDialogFactory: () => dialog });
+    checkpoint('upgrade', jest.fn(), { errorDialogFactory: () => ({ type: 'show', dialog }) });
     expect(listenerCount(REQUESTED)).toBe(1);
     emit('Checkpoints-onPassed', { callId: callId(0), result });
     expect(listenerCount(REQUESTED)).toBe(0);
@@ -214,7 +240,7 @@ describe('errorDialogFactory', () => {
 
   it('removes both listeners if invoking native code fails', () => {
     mockNative.checkpoint.mockImplementationOnce(() => { throw new Error('bridge unavailable'); });
-    expect(() => checkpoint('upgrade', jest.fn(), { errorDialogFactory: () => dialog })).toThrow('bridge unavailable');
+    expect(() => checkpoint('upgrade', jest.fn(), { errorDialogFactory: () => ({ type: 'show', dialog }) })).toThrow('bridge unavailable');
     expect(listenerCount(REQUESTED)).toBe(0);
     expect(listenerCount('Checkpoints-onPassed')).toBe(0);
   });

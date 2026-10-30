@@ -49,15 +49,21 @@ export interface CheckpointErrorDialog {
   buttonTitle: string;
 }
 
+/** What to do with a checkpoint error. The SDK owns dialog presentation and acknowledgement. */
+export type CheckpointErrorDialogOutcome =
+  | { type: 'show'; dialog: CheckpointErrorDialog }
+  | { type: 'useDefault' }
+  | { type: 'suppress' };
+
 export interface CheckpointParams {
   customVariables?: CustomVariables;
   presentationMode?: FLOW_PRESENTATION_MODE;
   /**
-   * Supplies the content of the native error dialog. Called once per error. Return `null` to use the SDK's
-   * default dialog. The SDK also shows its default dialog if the factory throws, returns invalid content, or
-   * takes longer than 5 seconds to answer.
+   * Chooses custom dialog content, the SDK's default dialog, or no dialog for each error.
+   * May return a promise. The SDK waits for the result; a pending promise delays error handling.
+   * Throwing, rejecting, or returning an invalid outcome uses the SDK's default dialog.
    */
-  errorDialogFactory?: (error: CheckpointError) => CheckpointErrorDialog | null | Promise<CheckpointErrorDialog | null>;
+  errorDialogFactory?: (error: CheckpointError) => CheckpointErrorDialogOutcome | Promise<CheckpointErrorDialogOutcome>;
 }
 
 const PASSED_EVENT = 'Checkpoints-onPassed';
@@ -79,15 +85,21 @@ function nativeCheckpoints() {
   return native;
 }
 
-function toErrorDialog(value: unknown): CheckpointErrorDialog | null {
-  if (value === null || value === undefined) {
-    return null;
+function toErrorDialogOutcome(value: unknown): CheckpointErrorDialogOutcome {
+  if (typeof value === 'object' && value !== null) {
+    const outcome = value as { type?: unknown; dialog?: unknown };
+    if (outcome.type === 'useDefault' || outcome.type === 'suppress') {
+      return { type: outcome.type };
+    }
+    if (outcome.type === 'show' && typeof outcome.dialog === 'object' && outcome.dialog !== null) {
+      const { message, buttonTitle } = outcome.dialog as Partial<CheckpointErrorDialog>;
+      if (typeof message === 'string' && message.length > 0 &&
+          typeof buttonTitle === 'string' && buttonTitle.length > 0) {
+        return { type: 'show', dialog: { message, buttonTitle } };
+      }
+    }
   }
-  const { message, buttonTitle } = value as Partial<CheckpointErrorDialog>;
-  if (typeof message !== 'string' || typeof buttonTitle !== 'string') {
-    throw new Error('errorDialogFactory must return null or an object with string message and buttonTitle.');
-  }
-  return { message, buttonTitle };
+  throw new Error('errorDialogFactory must return a show outcome with non-empty message and buttonTitle, useDefault, or suppress.');
 }
 
 /**
@@ -123,14 +135,15 @@ export function checkpoint(
       if (event.callId !== callId) {
         return;
       }
-      let dialog: CheckpointErrorDialog | null = null;
+      let outcome: CheckpointErrorDialogOutcome = { type: 'useDefault' };
       try {
-        dialog = toErrorDialog(await errorDialogFactory(event.error));
+        outcome = toErrorDialogOutcome(await errorDialogFactory(event.error));
       } catch (error) {
+        // tslint:disable-next-line:no-console
         console.warn('[RevenueCatUI] Using the default checkpoint error dialog because errorDialogFactory failed:', error);
       }
       if (!detached) {
-        native.resolveErrorDialog(event.requestId, dialog);
+        native.resolveErrorDialog(event.requestId, outcome);
       }
     }));
   }

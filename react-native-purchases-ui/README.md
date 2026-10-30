@@ -176,25 +176,37 @@ The SDK handles error presentation.
 
 #### Customizing the error dialog
 
-When something goes wrong during a checkpoint, the native SDK shows an error dialog. To change its
-text, pass an `errorDialogFactory`. It runs once per error and returns the dialog content, or `null`
-to keep the SDK's default dialog. The SDK still presents the dialog.
+When something goes wrong during a checkpoint, the native SDK shows an error dialog. Pass an
+`errorDialogFactory` to choose custom content, the SDK's default dialog, or no dialog. The factory
+receives the actual error, including its kind, code, and message. The SDK still presents the dialog.
 
 ```tsx
 RevenueCatUI.checkpoint('upgrade', onPassed, {
   errorDialogFactory: error => {
     if (error.kind === 'flowResultSyncFailed') {
-      return { message: 'We could not confirm your purchase. Please try again.', buttonTitle: 'OK' };
+      return {
+        type: 'show',
+        dialog: {
+          message: 'We could not confirm your purchase. Please try again.',
+          buttonTitle: 'OK',
+        },
+      };
     }
-    return null;
+    return { type: 'useDefault' };
   },
 });
 ```
 
-`error` has a `kind` (`flowCouldNotBeShown`, `flowActionFailed` or `flowResultSyncFailed`), a numeric
-`code` and a `message`. The returned content supports `message` and `buttonTitle`, both required strings.
-The factory can be asynchronous.
+`CheckpointErrorDialogOutcome` has three cases:
 
-The SDK shows its default dialog, and logs a warning, when the factory throws or rejects, returns
-invalid content, or does not answer within 5 seconds. It also does so after you call the function
-returned by `checkpoint`. Without a factory, nothing is sent to JavaScript.
+- `{ type: 'show', dialog: { message, buttonTitle } }` shows custom content. Both strings must be non-empty.
+- `{ type: 'useDefault' }` shows the SDK's localized dialog.
+- `{ type: 'suppress' }` skips the dialog and continues as if the user had acknowledged it.
+
+`error.kind` is `flowCouldNotBeShown`, `flowActionFailed`, or `flowResultSyncFailed`.
+`error.code` is numeric and `error.message` contains the error description.
+
+The factory can return a promise. The SDK waits for it to settle; a promise that never settles leaves
+error handling waiting. The SDK shows its default dialog if the factory throws, rejects, or returns
+an invalid outcome. Calling the function returned by `checkpoint` detaches the factory and resolves
+pending requests with the default dialog. Without a factory, no error requests are sent to JavaScript.

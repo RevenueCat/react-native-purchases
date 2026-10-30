@@ -33,7 +33,7 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
 
                 override fun onErrorDialogRequested(requestId: String, error: Map<String, Any?>) {
                     if (invalidated) {
-                        resolveNativeErrorDialog(requestId, null)
+                        resolveNativeErrorDialog(requestId, mapOf("type" to "useDefault"))
                         return
                     }
                     emit(
@@ -51,8 +51,8 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
     }
 
     @ReactMethod
-    fun resolveErrorDialog(requestId: String, dialog: ReadableMap?) {
-        resolveNativeErrorDialog(requestId, dialog?.toHashMap())
+    fun resolveErrorDialog(requestId: String, outcome: ReadableMap?) {
+        resolveNativeErrorDialog(requestId, outcome?.toHashMap())
     }
 
     @ReactMethod
