@@ -95,7 +95,7 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
                     onErrorDialogRequested:^(NSString *requestId, NSDictionary<NSString *, id> *error) {
         RNCheckpoints *strongSelf = weakSelf;
         if (strongSelf == nil || strongSelf.invalidated) {
-            [CheckpointProxy resolveErrorDialogWithRequestId:requestId dialog:nil];
+            [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:@{@"type": @"useDefault"}];
             return;
         }
         [strongSelf sendEventWithName:@"Checkpoints-onErrorDialogRequested"
@@ -104,8 +104,8 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
 }
 
 RCT_EXPORT_METHOD(resolveErrorDialog:(NSString *)requestId
-                  dialog:(NSDictionary *)dialog) {
-    [CheckpointProxy resolveErrorDialogWithRequestId:requestId dialog:dialog];
+                  outcome:(NSDictionary *)outcome) {
+    [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:outcome];
 }
 
 RCT_EXPORT_METHOD(detachErrorDialogFactory:(NSString *)callId) {
