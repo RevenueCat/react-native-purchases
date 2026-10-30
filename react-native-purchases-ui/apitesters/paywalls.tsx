@@ -8,6 +8,10 @@ import RevenueCatUI, {
   checkpoint,
 } from "react-native-purchases-ui";
 import type {
+  CheckpointError,
+  CheckpointErrorDialog,
+  CheckpointErrorDialogOutcome,
+  CheckpointErrorKind,
   CheckpointParams,
   CheckpointResult,
   FlowResult,
@@ -64,6 +68,24 @@ const namedCheckpointAPI = () => {
     presentationMode: FLOW_PRESENTATION_MODE.MODAL_FULL_SCREEN,
   };
   checkpoint('upgrade', () => {}, fullScreenParams)();
+
+  const dialogParams: CheckpointParams = {
+    errorDialogFactory: (error: CheckpointError): CheckpointErrorDialogOutcome => {
+      const kind: CheckpointErrorKind = error.kind;
+      const code: number = error.code;
+      const message: string = error.message;
+      void kind;
+      void code;
+      const dialog: CheckpointErrorDialog = {message, buttonTitle: 'OK'};
+      return {type: 'show', dialog};
+    },
+  };
+  checkpoint('upgrade', () => {}, dialogParams)();
+  checkpoint('upgrade', () => {}, {errorDialogFactory: () => ({type: 'useDefault'})})();
+  checkpoint('upgrade', () => {}, {errorDialogFactory: () => ({type: 'suppress'})})();
+  checkpoint('upgrade', () => {}, {
+    errorDialogFactory: async (): Promise<CheckpointErrorDialogOutcome> => ({type: 'useDefault'}),
+  })();
 };
 void namedCheckpointAPI;
 
