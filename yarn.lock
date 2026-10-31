@@ -9588,9 +9588,9 @@ __metadata:
   linkType: hard
 
 "node-forge@npm:^1":
-  version: 1.4.0
-  resolution: "node-forge@npm:1.4.0"
-  checksum: c97c634d4d483aae815677db5b1bd14bfea4d873ab48817e020610a2b4d8bc6b3e77994860189b44151ff8e0842c0c4ba6faa80b9a6e6fbd6989865e8eb80b96
+  version: 1.4.2
+  resolution: "node-forge@npm:1.4.2"
+  checksum: 8a8e357f23fe27b874eb295545560978271b4c38bddd00dce57631b3e1aa126e31362d936bb69af2b55b75de61dcf015cae590952cde0649af021808d9728639
   languageName: node
   linkType: hard
 
