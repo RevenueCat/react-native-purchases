@@ -25,7 +25,6 @@ type RootStackParamList = {
   CustomVariables: undefined;
   PurchaseLogicPaywall: { offering: PurchasesOffering | null };
   CustomPaywall: undefined;
-  Checkpoints: undefined;
 };
 
 export default RootStackParamList;
