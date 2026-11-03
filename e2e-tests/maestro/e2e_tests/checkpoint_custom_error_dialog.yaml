@@ -1,0 +1,20 @@
+appId: com.revenuecat.automatedsdktests
+name: Checkpoint custom error dialog
+
+---
+- clearState
+- pressKey: home
+- launchApp:
+    arguments:
+        e2e_test_flow: checkpoint_custom_error_dialog
+- extendedWaitUntil:
+    visible: "Hit checkpoint"
+    timeout: 30000
+- tapOn:
+    text: "Hit checkpoint"
+- extendedWaitUntil:
+    visible: "Custom checkpoint error dialog"
+    timeout: 20000
+- assertVisible: "Got it"
+- tapOn:
+    text: "Got it"

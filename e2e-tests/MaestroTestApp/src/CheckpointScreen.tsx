@@ -1,11 +1,20 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import RevenueCatUI, {CheckpointResult} from 'react-native-purchases-ui';
+import RevenueCatUI, {
+  CheckpointErrorDialogOutcome,
+  CheckpointResult,
+} from 'react-native-purchases-ui';
 
 // Presents its paywall to every user, with the monthly package preselected.
 const CHECKPOINT_IDENTIFIER = 'donottouch_sdk_everyone';
 const ENTITLEMENT_ID = 'pro';
 const PRODUCT_ID = 'pro_monthly_subscription';
+const INVALID_CHECKPOINT_IDENTIFIER = '!';
+const CUSTOM_ERROR_DIALOG_MESSAGE = 'Custom checkpoint error dialog';
+
+type CheckpointScreenProps = {
+  route: {params?: {customErrorDialog?: boolean}};
+};
 
 const listOrNone = (values: string[]) =>
   values.length > 0 ? values.sort().join(', ') : 'none';
@@ -37,7 +46,8 @@ const details = (result: CheckpointResult) => {
   ];
 };
 
-export default function CheckpointScreen() {
+export default function CheckpointScreen({route}: CheckpointScreenProps) {
+  const customErrorDialog = route.params?.customErrorDialog ?? false;
   const [status, setStatus] = useState('Callback: not invoked');
   const [lines, setLines] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -50,12 +60,23 @@ export default function CheckpointScreen() {
     setError(null);
     try {
       removeCallback.current = RevenueCatUI.checkpoint(
-        CHECKPOINT_IDENTIFIER,
+        customErrorDialog ? INVALID_CHECKPOINT_IDENTIFIER : CHECKPOINT_IDENTIFIER,
         result => {
           invocations.current += 1;
           setStatus(`${describe(result)} (call #${invocations.current})`);
           setLines(details(result));
         },
+        customErrorDialog
+          ? {
+              errorDialogFactory: (): CheckpointErrorDialogOutcome => ({
+                type: 'show',
+                dialog: {
+                  message: CUSTOM_ERROR_DIALOG_MESSAGE,
+                  buttonTitle: 'Got it',
+                },
+              }),
+            }
+          : undefined,
       );
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
@@ -66,7 +87,9 @@ export default function CheckpointScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Identifier: {CHECKPOINT_IDENTIFIER}</Text>
+      <Text style={styles.label}>
+        Identifier: {customErrorDialog ? INVALID_CHECKPOINT_IDENTIFIER : CHECKPOINT_IDENTIFIER}
+      </Text>
       {error && (
         <Text testID="error-message" style={styles.error}>
           Error: {error}
