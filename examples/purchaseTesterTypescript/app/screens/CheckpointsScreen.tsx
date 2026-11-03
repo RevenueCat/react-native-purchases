@@ -8,7 +8,8 @@ import RevenueCatUI, {
 const CheckpointsScreen: React.FC = () => {
   const [identifier, setIdentifier] = useState('');
   const [fullScreen, setFullScreen] = useState(false);
-  const [status, setStatus] = useState('Enter a dashboard checkpoint identifier.');
+  const [customErrorDialog, setCustomErrorDialog] = useState(false);
+  const [status, setStatus] = useState('Enter a dashboard checkpoint identifier. An invalid one, like "!", shows the error dialog.');
   const callbacks = useRef(new Set<() => void>());
 
   useEffect(() => () => {
@@ -24,6 +25,12 @@ const CheckpointsScreen: React.FC = () => {
       }, {
         presentationMode: fullScreen ? FLOW_PRESENTATION_MODE.MODAL_FULL_SCREEN : FLOW_PRESENTATION_MODE.MODAL_SHEET,
         customVariables: {source: CustomVariableValue.string('react_native_tester')},
+        errorDialogFactory: customErrorDialog
+          ? error => ({
+            type: 'show',
+            dialog: {message: `Custom dialog (${error.kind}, ${error.code}): ${error.message}`, buttonTitle: 'Got it'},
+          })
+          : undefined,
       });
       callbacks.current.add(remove);
     } catch (e) {
@@ -36,6 +43,9 @@ const CheckpointsScreen: React.FC = () => {
       <TextInput accessibilityLabel="Checkpoint identifier" style={styles.input} value={identifier}
         onChangeText={setIdentifier} autoCapitalize="none" placeholder="Checkpoint identifier" />
       <View style={styles.row}><Text>Full screen</Text><Switch value={fullScreen} onValueChange={setFullScreen} /></View>
+      <View style={styles.row}>
+        <Text>Custom error dialog</Text><Switch value={customErrorDialog} onValueChange={setCustomErrorDialog} />
+      </View>
       <Button title="Run checkpoint" onPress={run} />
       <Text numberOfLines={15}>{status}</Text>
     </View>
