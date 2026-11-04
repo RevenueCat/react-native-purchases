@@ -1,0 +1,19 @@
+// Created by Antonio Pallares. Copyright (c) 2026 RevenueCat, Inc.
+tasks.register('verifySdkUpdateDependencies') {
+    doLast {
+        def metadataFile = file('../../../resolved-sdk.json')
+        def metadata = new groovy.json.JsonSlurper().parse(metadataFile)
+        if (project(':react-native-purchases').projectDir.canonicalFile != new File(metadata.path, 'android').canonicalFile) {
+            throw new GradleException('App is not compiling the selected React Native SDK')
+        }
+        def components = configurations.debugRuntimeClasspath.incoming.resolutionResult.allComponents
+        def phc = components.find {
+            it.moduleVersion?.group == 'com.revenuecat.purchases' && it.moduleVersion?.name == 'purchases-hybrid-common'
+        }
+        if (phc?.moduleVersion?.version != metadata.hybrid_common) {
+            throw new GradleException('Android resolved an unexpected hybrid-common version')
+        }
+        new File(metadataFile.parentFile, 'resolved-native-dependencies.txt').text = components
+            .findAll { it.moduleVersion != null }.collect { it.moduleVersion.toString() }.sort().join('\n') + '\n'
+    }
+}
