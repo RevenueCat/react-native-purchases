@@ -138,6 +138,8 @@ function trackAd(
           return;
         }
         state.loadedOnce = true;
+        // A show-time placement only applies to the impression it was given for.
+        state.showPlacement = null;
         state.updateFromResponse(ad.responseInfo);
         AdMobTracker.trackLoaded(state);
         return;

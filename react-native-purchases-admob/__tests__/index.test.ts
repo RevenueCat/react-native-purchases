@@ -210,6 +210,28 @@ describe("interstitial", () => {
     );
   });
 
+  it("drops a show-time placement override when the ad is loaded again", async () => {
+    const ad = RevenueCatAdMob.createInterstitialAd("unit-1", {
+      placement: "home",
+    }) as unknown as FakeAd;
+    ad.responseInfo = responseInfo("resp-1");
+    ad.emit("loaded");
+    await RevenueCatAdMob.showAndTrack(ad as never, {
+      placement: "home_retry",
+    });
+    ad.emit("impression");
+    ad.emit("closed");
+
+    ad.responseInfo = responseInfo("resp-2");
+    ad.emit("loaded");
+    await RevenueCatAdMob.showAndTrack(ad as never);
+    ad.emit("impression");
+
+    expect(adTracker.trackAdDisplayed).toHaveBeenLastCalledWith(
+      expect.objectContaining({ impressionId: "resp-2", placement: "home" })
+    );
+  });
+
   it("tracks load failures but ignores show failures", () => {
     const ad = RevenueCatAdMob.createAppOpenAd("unit-2", {
       placement: "launch",
