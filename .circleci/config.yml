@@ -84,12 +84,6 @@ commands:
           paths:
             - .yarn/cache
 
-  copy-npm-rc:
-    steps:
-      - run:
-          name: Copy npmrc sample file to final location
-          command: cp .npmrc.SAMPLE .npmrc
-
 jobs:
   analyse_js:
     executor:
@@ -527,10 +521,11 @@ jobs:
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - revenuecat/trust-github-key
-      - copy-npm-rc
       - run:
           name: release
-          command: bundle exec fastlane release
+          command: |
+            export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+            bundle exec fastlane release
 
   run-maestro-e2e-tests-ios:
     executor:
