@@ -2,9 +2,10 @@ import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 import {
   type CustomerInfo,
   type PurchasesEntitlementInfo,
+  type PurchasesOffering,
   type PurchasesStoreProduct,
 } from '@revenuecat/purchases-typescript-internal';
-import { convertCustomVariablesToNativeMap, type CustomVariables } from './customVariables';
+import { CustomVariableValue, convertCustomVariablesToNativeMap, type CustomVariables } from './customVariables';
 import { shouldUsePreviewAPIMode } from './utils/environment';
 
 /** How the SDK presents the flow selected by a checkpoint. */
@@ -55,6 +56,26 @@ export type CheckpointErrorDialogOutcome =
   | { type: 'useDefault' }
   | { type: 'suppress' };
 
+/** How an app-owned checkpoint paywall presentation ended. */
+export enum PAYWALL_PRESENTATION_RESULT {
+  CONTINUED = 'CONTINUED',
+  CLOSED = 'CLOSED',
+  NAVIGATED_BACK = 'NAVIGATED_BACK',
+}
+
+export interface PaywallPresentationParams {
+  checkpointIdentifier: string;
+  customVariables: CustomVariables;
+  presentationMode: FLOW_PRESENTATION_MODE.MODAL_FULL_SCREEN | FLOW_PRESENTATION_MODE.MODAL_SHEET;
+  offering: PurchasesOffering;
+}
+
+/** Presents a checkpoint-selected offering and reports how the app-owned UI ended. */
+export type PaywallPresenter = (
+  params: PaywallPresentationParams,
+  completion: (result: PAYWALL_PRESENTATION_RESULT) => void,
+) => void;
+
 type NativeCheckpointErrorDialogOutcome =
   | { type: 'show'; dialog: { message: string; buttonTitle: string } }
   | { type: 'useDefault' }
@@ -69,12 +90,16 @@ export interface CheckpointParams {
    * Throwing, rejecting, or returning an invalid outcome uses the SDK's default dialog.
    */
   errorDialogFactory?: (error: CheckpointError) => CheckpointErrorDialogOutcome | Promise<CheckpointErrorDialogOutcome>;
+  paywallPresenter?: PaywallPresenter;
 }
 
 const PASSED_EVENT = 'Checkpoints-onPassed';
 const ERROR_DIALOG_REQUESTED_EVENT = 'Checkpoints-onErrorDialogRequested';
+const ERROR_EVENT = 'Checkpoints-onError';
+const PRESENT_PAYWALL_EVENT = 'Checkpoints-onPaywallPresentation';
 let nextCallId = 0;
 const callIdPrefix = `${Date.now()}-${Math.random()}`;
+let globalPaywallPresenter: PaywallPresenter | null = null;
 
 function nativeCheckpoints() {
   if (shouldUsePreviewAPIMode() || (Platform.OS !== 'ios' && Platform.OS !== 'android')) {
@@ -132,24 +157,25 @@ export function checkpoint(
 ): () => void {
   const native = nativeCheckpoints();
   const callId = `${callIdPrefix}-${++nextCallId}`;
+  const paywallPresenter = params.paywallPresenter ?? globalPaywallPresenter;
   const emitter = new NativeEventEmitter(native);
   const errorDialogFactory = params.errorDialogFactory;
+  let isCallbackActive = true;
   let detached = false;
   const subscriptions: Array<{ remove: () => void }> = [];
   const removeSubscriptions = () => subscriptions.splice(0).forEach(subscription => subscription.remove());
 
   subscriptions.push(emitter.addListener(PASSED_EVENT, event => {
-    if (event.callId !== callId) {
-      return;
-    }
+    if (event.callId !== callId) return;
     removeSubscriptions();
-    onPassed(event.result);
+    if (isCallbackActive) onPassed(event.result);
+  }));
+  subscriptions.push(emitter.addListener(ERROR_EVENT, event => {
+    if (event.callId === callId) removeSubscriptions();
   }));
   if (errorDialogFactory) {
     subscriptions.push(emitter.addListener(ERROR_DIALOG_REQUESTED_EVENT, async event => {
-      if (event.callId !== callId) {
-        return;
-      }
+      if (event.callId !== callId) return;
       let outcome: CheckpointErrorDialogOutcome = { type: 'useDefault' };
       try {
         outcome = toErrorDialogOutcome(await errorDialogFactory(event.error));
@@ -157,23 +183,54 @@ export function checkpoint(
         // tslint:disable-next-line:no-console
         console.warn('[RevenueCatUI] Using the default checkpoint error dialog because errorDialogFactory failed:', error);
       }
-      if (!detached) {
-        native.resolveErrorDialog(event.requestId, toNativeErrorDialogOutcome(outcome));
+      if (!detached) native.resolveErrorDialog(event.requestId, toNativeErrorDialogOutcome(outcome));
+    }));
+  }
+  if (paywallPresenter) {
+    subscriptions.push(emitter.addListener(PRESENT_PAYWALL_EVENT, event => {
+      if (event.callId !== callId) return;
+      let didComplete = false;
+      const customVariables: CustomVariables = {};
+      Object.entries(event.params.customVariables ?? {}).forEach(([key, value]) => {
+        if (typeof value === 'string') customVariables[key] = CustomVariableValue.string(value);
+        else if (typeof value === 'number') customVariables[key] = CustomVariableValue.number(value);
+        else if (typeof value === 'boolean') customVariables[key] = CustomVariableValue.boolean(value);
+      });
+      const complete = (result: PAYWALL_PRESENTATION_RESULT) => {
+        if (didComplete) return;
+        didComplete = true;
+        native.completePaywallPresentation(event.requestId, result);
+        if (result === PAYWALL_PRESENTATION_RESULT.NAVIGATED_BACK) removeSubscriptions();
+      };
+      try {
+        paywallPresenter({ ...event.params, customVariables }, complete);
+      } catch {
+        complete(PAYWALL_PRESENTATION_RESULT.NAVIGATED_BACK);
       }
     }));
   }
   try {
     native.checkpoint(identifier, convertCustomVariablesToNativeMap(params.customVariables),
-      params.presentationMode ?? FLOW_PRESENTATION_MODE.DEFAULT, callId, errorDialogFactory !== undefined);
+      params.presentationMode ?? FLOW_PRESENTATION_MODE.DEFAULT, callId,
+      errorDialogFactory !== undefined, paywallPresenter != null);
   } catch (error) {
     removeSubscriptions();
     throw error;
   }
   return () => {
+    isCallbackActive = false;
     removeSubscriptions();
     if (errorDialogFactory && !detached) {
       native.detachErrorDialogFactory(callId);
     }
     detached = true;
   };
+}
+
+/**
+ * Sets the default app-owned presenter for checkpoint-selected offerings. A per-checkpoint
+ * `paywallPresenter` overrides this handler. Pass `null` to restore the SDK presenter.
+ */
+export function setPaywallPresenter(presenter: PaywallPresenter | null): void {
+  globalPaywallPresenter = presenter;
 }

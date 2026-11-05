@@ -4,6 +4,11 @@
 //
 
 #import "RNCheckpoints.h"
+#if SWIFT_PACKAGE
+#import <RNCheckpointPresenterBridge/RNCheckpointPresenterBridge-Swift.h>
+#else
+#import "RNPaywalls-Swift.h"
+#endif
 
 #import <os/lock.h>
 
@@ -46,7 +51,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"Checkpoints-onPassed", @"Checkpoints-onErrorDialogRequested"];
+    return @[@"Checkpoints-onPassed", @"Checkpoints-onError", @"Checkpoints-onErrorDialogRequested", @"Checkpoints-onPaywallPresentation"];
 }
 
 // Required for RN 0.79+ NativeEventEmitter (JavaScript class) support.
@@ -64,11 +69,48 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
                   customVariables:(NSDictionary *)customVariables
                   presentationMode:(NSString *)presentationMode
                   callId:(NSString *)callId
-                  hasErrorDialogFactory:(BOOL)hasErrorDialogFactory) {
+                  hasErrorDialogFactory:(BOOL)hasErrorDialogFactory
+                  useCustomPresenter:(BOOL)useCustomPresenter) {
     if (self.invalidated) {
         return;
     }
     __weak RNCheckpoints *weakSelf = self;
+    if (useCustomPresenter) {
+        if (@available(iOS 15.0, *)) {
+            [RNCheckpointPresenterBridge checkpointWithIdentifier:identifier
+                                              customVariables:customVariables
+                                             presentationMode:presentationMode
+                                                       callId:callId
+                                       onPaywallPresentation:^(NSString *requestId, NSDictionary *event) {
+                RNCheckpoints *strongSelf = weakSelf;
+                if (strongSelf == nil || strongSelf.invalidated) {
+                    return;
+                }
+                NSMutableDictionary *body = [event mutableCopy];
+                body[@"requestId"] = requestId;
+                [strongSelf sendEventWithName:@"Checkpoints-onPaywallPresentation" body:body];
+            }
+                                                     onPassed:^(NSDictionary *result) {
+                RNCheckpoints *strongSelf = weakSelf;
+                if (strongSelf == nil || strongSelf.invalidated) {
+                    return;
+                }
+                [strongSelf sendEventWithName:@"Checkpoints-onPassed" body:@{@"callId": callId, @"result": result}];
+            }
+                                                      onError:^(NSString *code, NSString *message) {
+                NSLog(@"[RevenueCatUI] %@ (%@)", message, code);
+                RNCheckpoints *strongSelf = weakSelf;
+                if (strongSelf == nil || strongSelf.invalidated) {
+                    return;
+                }
+                [strongSelf sendEventWithName:@"Checkpoints-onError" body:@{@"callId": callId}];
+            }];
+        } else {
+            NSLog(@"[RevenueCatUI] Checkpoints require iOS 15 or later.");
+        }
+        return;
+    }
+
     void (^onPassed)(NSDictionary<NSString *, id> *) = ^(NSDictionary<NSString *, id> *result) {
         RNCheckpoints *strongSelf = weakSelf;
         if (strongSelf == nil || strongSelf.invalidated) {
@@ -116,6 +158,15 @@ RCT_EXPORT_METHOD(detachErrorDialogFactory:(NSString *)callId) {
     [CheckpointProxy cancelErrorDialogsWithCallId:callId];
 }
 
+RCT_EXPORT_METHOD(completePaywallPresentation:(NSString *)requestId result:(NSString *)result) {
+    if (self.invalidated) {
+        return;
+    }
+    if (@available(iOS 15.0, *)) {
+        [RNCheckpointPresenterBridge completePaywallPresentationWithRequestId:requestId result:result];
+    }
+}
+
 - (void)invalidate {
     // Native UI can outlive a JS reload. Stop events immediately, even when teardown
     // starts off the main queue.
@@ -126,6 +177,9 @@ RCT_EXPORT_METHOD(detachErrorDialogFactory:(NSString *)callId) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [CheckpointProxy cancelErrorDialogsWithCallId:nil];
     });
+    if (@available(iOS 15.0, *)) {
+        [RNCheckpointPresenterBridge clearPendingCompletions];
+    }
     [super invalidate];
 }
 

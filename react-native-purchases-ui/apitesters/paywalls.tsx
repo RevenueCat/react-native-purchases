@@ -5,6 +5,7 @@ import RevenueCatUI, {
   PAYWALL_RESULT,
   CustomVariableValue,
   FLOW_PRESENTATION_MODE,
+  PAYWALL_PRESENTATION_RESULT,
   checkpoint,
 } from "react-native-purchases-ui";
 import type {
@@ -20,6 +21,7 @@ import type {
   FooterPaywallViewOptions,
   FullScreenPaywallViewOptions,
   PaywallCallbacks,
+  PaywallPresenter,
   PaywallViewOptions,
   PresentPaywallIfNeededParams,
   PresentPaywallParams,
@@ -88,6 +90,20 @@ const namedCheckpointAPI = () => {
   })();
 };
 void namedCheckpointAPI;
+
+const customCheckpointPresenterAPI = () => {
+  const presenter: PaywallPresenter = (params, complete) => {
+    const offeringIdentifier: string = params.offering.identifier;
+    const checkpointIdentifier: string = params.checkpointIdentifier;
+    complete(PAYWALL_PRESENTATION_RESULT.CONTINUED);
+    void offeringIdentifier;
+    void checkpointIdentifier;
+  };
+  RevenueCatUI.setPaywallPresenter(presenter);
+  checkpoint('upgrade', () => {}, { paywallPresenter: presenter });
+  RevenueCatUI.setPaywallPresenter(null);
+};
+void customCheckpointPresenterAPI;
 
 const checkpointResultTypes = (result: CheckpointResult) => {
   const flow: FlowResult | null = result.flow;
