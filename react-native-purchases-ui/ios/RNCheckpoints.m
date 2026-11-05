@@ -46,7 +46,7 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"Checkpoints-onPassed"];
+    return @[@"Checkpoints-onPassed", @"Checkpoints-onErrorDialogRequested"];
 }
 
 // Required for RN 0.79+ NativeEventEmitter (JavaScript class) support.
@@ -63,24 +63,53 @@ RCT_EXPORT_METHOD(removeListeners:(double)count) {
 RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
                   customVariables:(NSDictionary *)customVariables
                   presentationMode:(NSString *)presentationMode
-                  callId:(NSString *)callId) {
+                  callId:(NSString *)callId
+                  hasErrorDialogFactory:(BOOL)hasErrorDialogFactory) {
     if (self.invalidated) {
         return;
     }
     __weak RNCheckpoints *weakSelf = self;
-    [CheckpointProxy presentWithIdentifier:identifier
-                           customVariables:customVariables
-                          presentationMode:presentationMode
-                                  onPassed:^(NSDictionary<NSString *, id> *result) {
+    void (^onPassed)(NSDictionary<NSString *, id> *) = ^(NSDictionary<NSString *, id> *result) {
         RNCheckpoints *strongSelf = weakSelf;
         if (strongSelf == nil || strongSelf.invalidated) {
             return;
         }
         [strongSelf sendEventWithName:@"Checkpoints-onPassed" body:@{@"callId": callId, @"result": result}];
+    };
+    // PurchasesHybridCommonUI already logs why the checkpoint could not start.
+    void (^onError)(NSString *, NSString *) = ^(NSString *code, NSString *message) {};
+    if (!hasErrorDialogFactory) {
+        [CheckpointProxy presentWithIdentifier:identifier
+                               customVariables:customVariables
+                              presentationMode:presentationMode
+                                      onPassed:onPassed
+                                       onError:onError];
+        return;
     }
-                                   onError:^(NSString *code, NSString *message) {
-        // PurchasesHybridCommonUI already logs why the checkpoint could not start.
+    [CheckpointProxy presentWithIdentifier:identifier
+                                    callId:callId
+                           customVariables:customVariables
+                          presentationMode:presentationMode
+                                  onPassed:onPassed
+                                   onError:onError
+                    onErrorDialogRequested:^(NSString *requestId, NSDictionary<NSString *, id> *error) {
+        RNCheckpoints *strongSelf = weakSelf;
+        if (strongSelf == nil || strongSelf.invalidated) {
+            [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:@{@"type": @"useDefault"}];
+            return;
+        }
+        [strongSelf sendEventWithName:@"Checkpoints-onErrorDialogRequested"
+                                 body:@{@"callId": callId, @"requestId": requestId, @"error": error}];
     }];
+}
+
+RCT_EXPORT_METHOD(resolveErrorDialog:(NSString *)requestId
+                  outcome:(NSDictionary *)outcome) {
+    [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:outcome];
+}
+
+RCT_EXPORT_METHOD(detachErrorDialogFactory:(NSString *)callId) {
+    [CheckpointProxy cancelErrorDialogsWithCallId:callId];
 }
 
 - (void)invalidate {
@@ -89,6 +118,10 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
     os_unfair_lock_lock(&_invalidationLock);
     _didInvalidate = YES;
     os_unfair_lock_unlock(&_invalidationLock);
+    // Nothing will answer pending dialog requests after a reload, so show the default dialogs.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [CheckpointProxy cancelErrorDialogsWithCallId:nil];
+    });
     [super invalidate];
 }
 

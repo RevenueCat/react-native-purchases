@@ -13,6 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Linking, Platform, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Purchases from 'react-native-purchases';
 import { GALAXY_BILLING_MODE } from 'react-native-purchases-store-galaxy';
@@ -35,6 +36,39 @@ import APIKeys from './app/APIKeys';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const TabIcon = ({ icon, color }: { icon: string; color: string }) => (
+  <Text accessible={false} style={{ color, fontSize: 23, fontWeight: '600', lineHeight: 26 }}>
+    {icon}
+  </Text>
+);
+
+const MainTabs = () => (
+  <Tab.Navigator>
+    <Tab.Screen
+      name="Home"
+      component={HomeScreen}
+      options={({ navigation }) => ({
+        title: 'PurchaseTester',
+        tabBarIcon: ({ color }) => <TabIcon icon="⌂" color={color} />,
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CustomVariables')}
+            style={{ marginRight: 10 }}
+          >
+            <Text style={{ color: '#007AFF', fontSize: 18 }}>{'{ }'}</Text>
+          </TouchableOpacity>
+        ),
+      })}
+    />
+    <Tab.Screen
+      name="Checkpoints"
+      component={CheckpointsScreen}
+      options={{ tabBarIcon: ({ color }) => <TabIcon icon="✓" color={color} /> }}
+    />
+  </Tab.Navigator>
+);
 
 // Set to true to use custom purchase logic (purchasesAreCompletedBy: MY_APP).
 export const purchasesAreCompletedByMyApp = false;
@@ -157,18 +191,8 @@ const App = () => {
         <Stack.Navigator  initialRouteName="Home">
           <Stack.Screen
             name="Home"
-            component={HomeScreen}
-            options={({ navigation }) => ({
-              title: 'PurchaseTester',
-              headerRight: () => (
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('CustomVariables')}
-                  style={{ marginRight: 10 }}
-                >
-                  <Text style={{ color: '#007AFF', fontSize: 18 }}>{'{ }'}</Text>
-                </TouchableOpacity>
-              ),
-            })}
+            component={MainTabs}
+            options={{ headerShown: false }}
           />
           <Stack.Screen name="CustomerInfo" component={CustomerInfoScreen} />
           <Stack.Screen name="OfferingDetail" component={OfferingDetailScreen} />
@@ -204,7 +228,6 @@ const App = () => {
               component={CustomPaywallScreen}
               options={{ title: 'Custom Paywall' }}
           />
-          <Stack.Screen name="Checkpoints" component={CheckpointsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       </CustomVariablesProvider>

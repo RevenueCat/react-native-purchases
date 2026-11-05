@@ -11,7 +11,7 @@ export type RootStackParamList = {
   TestCases: undefined;
   PurchaseThroughPaywall: undefined;
   PaywallInPager: undefined;
-  Checkpoint: undefined;
+  Checkpoint: {customErrorDialog?: boolean} | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,6 +22,7 @@ const TEST_FLOW_SCREEN_MAP: Record<string, keyof RootStackParamList> = {
   purchase_through_paywall: 'PurchaseThroughPaywall',
   paywall_in_pager: 'PaywallInPager',
   checkpoint_purchase: 'Checkpoint',
+  checkpoint_custom_error_dialog: 'Checkpoint',
 };
 
 type AppProps = {
@@ -76,6 +77,10 @@ export default function App(props: AppProps) {
         <Stack.Screen
           name="Checkpoint"
           component={CheckpointScreen}
+          initialParams={{
+            customErrorDialog:
+              props.e2e_test_flow === 'checkpoint_custom_error_dialog',
+          }}
           options={{title: 'Checkpoint'}}
         />
       </Stack.Navigator>
