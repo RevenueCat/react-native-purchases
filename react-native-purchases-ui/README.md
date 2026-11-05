@@ -206,7 +206,7 @@ RevenueCatUI.checkpoint('upgrade', onPassed, {
 `error.kind` is `flowCouldNotBeShown`, `flowActionFailed`, or `flowResultSyncFailed`.
 `error.code` is numeric and `error.message` contains the error description.
 
-The factory can return a promise. The SDK waits for it to settle; a promise that never settles leaves
-error handling waiting. The SDK shows its default dialog if the factory throws, rejects, or returns
-an invalid outcome. Calling the function returned by `checkpoint` detaches the factory and resolves
-pending requests with the default dialog. Without a factory, no error requests are sent to JavaScript.
+The factory may return a promise, which the SDK waits to settle. If it never settles, error handling
+stays pending. If it throws, rejects, or returns an invalid outcome, the SDK shows its default dialog.
+Calling the function returned by `checkpoint` detaches the factory and resolves pending requests with
+that dialog. Without a factory, error requests aren’t sent to JavaScript.
