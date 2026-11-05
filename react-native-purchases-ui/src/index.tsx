@@ -28,7 +28,7 @@ import {
   convertCustomVariablesToNativeMap,
   transformOptionsForNative,
 } from "./customVariables";
-import { checkpoint } from "./checkpoints";
+import { checkpoint, setPaywallPresenter } from "./checkpoints";
 
 export * from "./checkpoints";
 
@@ -588,6 +588,7 @@ export interface PresentCustomerCenterParams {
 
 export default class RevenueCatUI {
   public static checkpoint = checkpoint;
+  public static setPaywallPresenter = setPaywallPresenter;
 
 
   private static Defaults = {
