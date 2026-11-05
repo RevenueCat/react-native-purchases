@@ -178,7 +178,9 @@ RCT_EXPORT_METHOD(completePaywallPresentation:(NSString *)requestId result:(NSSt
         [CheckpointProxy cancelErrorDialogsWithCallId:nil];
     });
     if (@available(iOS 15.0, *)) {
-        [RNCheckpointPresenterBridge clearPendingCompletions];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [RNCheckpointPresenterBridge clearPendingCompletions];
+        });
     }
     [super invalidate];
 }
