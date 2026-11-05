@@ -66,7 +66,7 @@ export enum PAYWALL_PRESENTATION_RESULT {
 export interface PaywallPresentationParams {
   checkpointIdentifier: string;
   customVariables: CustomVariables;
-  presentationMode: FLOW_PRESENTATION_MODE.MODAL_FULL_SCREEN | FLOW_PRESENTATION_MODE.MODAL_SHEET;
+  presentationMode: FLOW_PRESENTATION_MODE;
   offering: PurchasesOffering;
 }
 
