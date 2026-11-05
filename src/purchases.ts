@@ -65,13 +65,16 @@ import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
   PURCHASE_TYPE,
-  PurchasesAreCompletedBy,
-  PurchasesAreCompletedByMyApp,
   PURCHASES_ARE_COMPLETED_BY_TYPE,
   BILLING_FEATURE,
   REFUND_REQUEST_STATUS,
   LOG_LEVEL,
   STOREKIT_VERSION,
+  WebPurchaseRedemptionResultType,
+} from "@revenuecat/purchases-typescript-internal";
+export type {
+  PurchasesAreCompletedBy,
+  PurchasesAreCompletedByMyApp,
   CustomerInfoUpdateListener,
   ShouldPurchasePromoProductListener,
   MakePurchaseResult,
@@ -79,7 +82,6 @@ export {
   LogInResult,
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
-  WebPurchaseRedemptionResultType,
 } from "@revenuecat/purchases-typescript-internal";
 
 import { Platform } from "react-native";
