@@ -70,7 +70,11 @@ export interface PaywallPresentationParams {
   offering: PurchasesOffering;
 }
 
-/** Presents a checkpoint-selected offering and reports how the app-owned UI ended. */
+/**
+ * Presents a checkpoint-selected offering. Dismiss the app-owned UI, then call completion.
+ * Throwing or rejecting a returned promise reports NAVIGATED_BACK. Resolving a promise alone
+ * does not complete presentation; the completion callback determines the outcome.
+ */
 export type PaywallPresenter = (
   params: PaywallPresentationParams,
   completion: (result: PAYWALL_PRESENTATION_RESULT) => void,
@@ -85,7 +89,8 @@ export interface CheckpointParams {
   customVariables?: CustomVariables;
   presentationMode?: FLOW_PRESENTATION_MODE;
   /**
-   * Chooses custom dialog content, the SDK's default dialog, or no dialog for each error.
+   * Chooses custom dialog content, the SDK's default dialog, or no dialog for each error,
+   * including synchronization errors after a custom paywall presenter completes.
    * May return a promise. The SDK waits for the result; a pending promise delays error handling.
    * Throwing, rejecting, or returning an invalid outcome uses the SDK's default dialog.
    */
@@ -148,7 +153,8 @@ function toNativeErrorDialogOutcome(outcome: CheckpointErrorDialogOutcome): Nati
  * Requires iOS 15+ or Android. Checkpoints are an invite-only API.
  *
  * Returns a function that removes the callback. Call it when the owning screen unmounts;
- * removing the callback does not dismiss a flow already on screen.
+ * cleanup cancels custom presentation if its handler has not run yet. Already shown UI stays
+ * open; dismiss it and call its presentation completion as usual.
  */
 export function checkpoint(
   identifier: string,
@@ -162,20 +168,29 @@ export function checkpoint(
   const errorDialogFactory = params.errorDialogFactory;
   let isCallbackActive = true;
   let detached = false;
+  let activePaywallRequestId: string | null = null;
   const subscriptions: Array<{ remove: () => void }> = [];
   const removeSubscriptions = () => subscriptions.splice(0).forEach(subscription => subscription.remove());
 
   subscriptions.push(emitter.addListener(PASSED_EVENT, event => {
-    if (event.callId !== callId) return;
+    if (event.callId !== callId) {
+      return;
+    }
     removeSubscriptions();
-    if (isCallbackActive) onPassed(event.result);
+    if (isCallbackActive) {
+      onPassed(event.result);
+    }
   }));
   subscriptions.push(emitter.addListener(ERROR_EVENT, event => {
-    if (event.callId === callId) removeSubscriptions();
+    if (event.callId === callId) {
+      removeSubscriptions();
+    }
   }));
   if (errorDialogFactory) {
     subscriptions.push(emitter.addListener(ERROR_DIALOG_REQUESTED_EVENT, async event => {
-      if (event.callId !== callId) return;
+      if (event.callId !== callId) {
+        return;
+      }
       let outcome: CheckpointErrorDialogOutcome = { type: 'useDefault' };
       try {
         outcome = toErrorDialogOutcome(await errorDialogFactory(event.error));
@@ -183,27 +198,42 @@ export function checkpoint(
         // tslint:disable-next-line:no-console
         console.warn('[RevenueCatUI] Using the default checkpoint error dialog because errorDialogFactory failed:', error);
       }
-      if (!detached) native.resolveErrorDialog(event.requestId, toNativeErrorDialogOutcome(outcome));
+      if (!detached) {
+        native.resolveErrorDialog(event.requestId, toNativeErrorDialogOutcome(outcome));
+      }
     }));
   }
   if (paywallPresenter) {
     subscriptions.push(emitter.addListener(PRESENT_PAYWALL_EVENT, event => {
-      if (event.callId !== callId) return;
+      if (event.callId !== callId) {
+        return;
+      }
+      activePaywallRequestId = event.requestId;
       let didComplete = false;
       const customVariables: CustomVariables = {};
       Object.entries(event.params.customVariables ?? {}).forEach(([key, value]) => {
-        if (typeof value === 'string') customVariables[key] = CustomVariableValue.string(value);
-        else if (typeof value === 'number') customVariables[key] = CustomVariableValue.number(value);
-        else if (typeof value === 'boolean') customVariables[key] = CustomVariableValue.boolean(value);
+        if (typeof value === 'string') {
+          customVariables[key] = CustomVariableValue.string(value);
+        } else if (typeof value === 'number') {
+          customVariables[key] = CustomVariableValue.number(value);
+        } else if (typeof value === 'boolean') {
+          customVariables[key] = CustomVariableValue.boolean(value);
+        }
       });
       const complete = (result: PAYWALL_PRESENTATION_RESULT) => {
-        if (didComplete) return;
+        if (didComplete) {
+          return;
+        }
         didComplete = true;
+        activePaywallRequestId = null;
         native.completePaywallPresentation(event.requestId, result);
-        if (result === PAYWALL_PRESENTATION_RESULT.NAVIGATED_BACK) removeSubscriptions();
+        if (result === PAYWALL_PRESENTATION_RESULT.NAVIGATED_BACK) {
+          removeSubscriptions();
+        }
       };
       try {
-        paywallPresenter({ ...event.params, customVariables }, complete);
+        Promise.resolve(paywallPresenter({ ...event.params, customVariables }, complete))
+          .catch(() => complete(PAYWALL_PRESENTATION_RESULT.NAVIGATED_BACK));
       } catch {
         complete(PAYWALL_PRESENTATION_RESULT.NAVIGATED_BACK);
       }
@@ -220,6 +250,9 @@ export function checkpoint(
   return () => {
     isCallbackActive = false;
     removeSubscriptions();
+    if (paywallPresenter && !detached) {
+      native.detachPaywallPresenter(callId, activePaywallRequestId);
+    }
     if (errorDialogFactory && !detached) {
       native.detachErrorDialogFactory(callId);
     }
