@@ -5,7 +5,7 @@
 
 #import "RNCheckpoints.h"
 #if SWIFT_PACKAGE
-#import <RNCheckpointPresenterBridge/RNCheckpointPresenterBridge-Swift.h>
+@import RNCheckpointPresenterBridge;
 #else
 #import "RNPaywalls-Swift.h"
 #endif
@@ -81,6 +81,16 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
                                               customVariables:customVariables
                                              presentationMode:presentationMode
                                                        callId:callId
+                                        hasErrorDialogFactory:hasErrorDialogFactory
+                                       onErrorDialogRequested:^(NSString *requestId, NSDictionary *error) {
+                RNCheckpoints *strongSelf = weakSelf;
+                if (strongSelf == nil || strongSelf.invalidated) {
+                    (void)[RNCheckpointPresenterBridge resolveErrorDialogWithRequestId:requestId outcome:@{@"type": @"useDefault"}];
+                    return;
+                }
+                [strongSelf sendEventWithName:@"Checkpoints-onErrorDialogRequested"
+                                         body:@{@"callId": callId, @"requestId": requestId, @"error": error}];
+            }
                                        onPaywallPresentation:^(NSString *requestId, NSDictionary *event) {
                 RNCheckpoints *strongSelf = weakSelf;
                 if (strongSelf == nil || strongSelf.invalidated) {
@@ -151,10 +161,24 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
 
 RCT_EXPORT_METHOD(resolveErrorDialog:(NSString *)requestId
                   outcome:(NSDictionary *)outcome) {
+    if (@available(iOS 15.0, *)) {
+        if ([RNCheckpointPresenterBridge resolveErrorDialogWithRequestId:requestId outcome:outcome]) {
+            return;
+        }
+    }
     [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:outcome];
 }
 
+RCT_EXPORT_METHOD(detachPaywallPresenter:(NSString *)callId activeRequestId:(NSString *)activeRequestId) {
+    if (@available(iOS 15.0, *)) {
+        [RNCheckpointPresenterBridge detachPaywallPresenterWithCallId:callId activeRequestId:activeRequestId];
+    }
+}
+
 RCT_EXPORT_METHOD(detachErrorDialogFactory:(NSString *)callId) {
+    if (@available(iOS 15.0, *)) {
+        [RNCheckpointPresenterBridge detachErrorDialogFactoryWithCallId:callId];
+    }
     [CheckpointProxy cancelErrorDialogsWithCallId:callId];
 }
 

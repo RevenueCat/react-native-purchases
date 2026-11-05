@@ -19,16 +19,28 @@ import com.revenuecat.purchases.hybridcommon.ui.cancelErrorDialogs
 import com.revenuecat.purchases.hybridcommon.ui.presentCheckpoint
 import com.revenuecat.purchases.hybridcommon.ui.resolveErrorDialog as resolveNativeErrorDialog
 import com.revenuecat.purchases.ui.revenuecatui.CustomVariableValue
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointErrorDialog
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointFailureKind
+import com.revenuecat.purchases.ui.revenuecatui.checkpoints.ErrorDialogFactory
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.CheckpointParams
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.FlowPresentationMode
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.PaywallPresenter
 import com.revenuecat.purchases.ui.revenuecatui.checkpoints.checkpoint
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 
 internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     @Volatile private var invalidated = false
-    private val pendingPaywallCompletions = ConcurrentHashMap<String, PaywallPresenter.Completion>()
+    private class CallState {
+        var presenterDetached = false
+        var errorFactoryDetached = false
+    }
+    private data class PendingPaywall(val callId: String, val completion: PaywallPresenter.Completion)
+    private data class PendingErrorDialog(val callId: String, val completion: ErrorDialogFactory.Completion)
+
+    // All state below is accessed on the UI thread, including teardown.
+    private val calls = mutableMapOf<String, CallState>()
+    private val pendingPaywallCompletions = mutableMapOf<String, PendingPaywall>()
+    private val pendingErrorDialogs = mutableMapOf<String, PendingErrorDialog>()
 
     override fun getName(): String = "RNCheckpoints"
 
@@ -49,11 +61,15 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
                     emit("Checkpoints-onError", mapOf("callId" to callId))
                     return@runOnUiThread
                 }
+                val state = CallState()
+                calls[callId] = state
                 val builder = CheckpointParams.Builder()
                     .setCustomVariables(customVariables.toCustomVariableValues())
                     .setPresentationMode(presentationMode.toFlowPresentationMode())
-                    .setPaywallPresenter(createPaywallPresenter(callId))
+                    .setPaywallPresenter(createPaywallPresenter(callId, state))
+                if (hasErrorDialogFactory) builder.setErrorDialogFactory(createErrorDialogFactory(callId, state))
                 Purchases.sharedInstance.checkpoint(identifier, builder.build()) { result ->
+                    calls.remove(callId)
                     emit("Checkpoints-onPassed", mapOf("callId" to callId, "result" to result.toMap()))
                 }
                 return@runOnUiThread
@@ -89,19 +105,46 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
     @ReactMethod
     fun completePaywallPresentation(requestId: String, result: String) {
         UiThreadUtil.runOnUiThread {
-            val completion = pendingPaywallCompletions.remove(requestId) ?: return@runOnUiThread
-            completion.complete(result.toPaywallPresentationResult())
+            val pending = pendingPaywallCompletions.remove(requestId) ?: return@runOnUiThread
+            if (result != "CONTINUED" && result != "CLOSED") calls.remove(pending.callId)
+            pending.completion.complete(result.toPaywallPresentationResult())
+        }
+    }
+
+    @ReactMethod
+    fun detachPaywallPresenter(callId: String, activeRequestId: String?) {
+        UiThreadUtil.runOnUiThread {
+            calls.remove(callId)?.let {
+                it.presenterDetached = true
+                it.errorFactoryDetached = true
+            }
+            detachCustomErrorDialogFactory(callId)
+            // Native may have emitted an event JS has not received yet. Only preserve delivered UI.
+            val requestIds = pendingPaywallCompletions.filter { (id, pending) ->
+                pending.callId == callId && id != activeRequestId
+            }.keys.toList()
+            requestIds.forEach { completePaywallPresentation(it, "NAVIGATED_BACK") }
         }
     }
 
     @ReactMethod
     fun resolveErrorDialog(requestId: String, outcome: ReadableMap?) {
-        resolveNativeErrorDialog(requestId, outcome?.toHashMap())
+        UiThreadUtil.runOnUiThread {
+            val pending = pendingErrorDialogs.remove(requestId)
+            if (pending == null) {
+                resolveNativeErrorDialog(requestId, outcome?.toHashMap())
+            } else {
+                pending.completion.complete(outcome?.toHashMap().toErrorDialogOutcome())
+            }
+        }
     }
 
     @ReactMethod
     fun detachErrorDialogFactory(callId: String) {
-        cancelErrorDialogs(callId)
+        UiThreadUtil.runOnUiThread {
+            detachCustomErrorDialogFactory(callId)
+            cancelErrorDialogs(callId)
+        }
     }
 
     @ReactMethod fun addListener(eventName: String) { /* Required by NativeEventEmitter. */ }
@@ -109,16 +152,31 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
 
     override fun invalidate() {
         invalidated = true
-        // Nothing will answer pending dialog requests after a reload, so show the default dialogs.
-        cancelErrorDialogs(null)
-        pendingPaywallCompletions.clear()
+        UiThreadUtil.runOnUiThread {
+            calls.values.forEach {
+                it.presenterDetached = true
+                it.errorFactoryDetached = true
+            }
+            calls.clear()
+            // Remove entries before invoking completions, which can resume native checkpoint work.
+            val paywalls = pendingPaywallCompletions.values.toList()
+            pendingPaywallCompletions.clear()
+            val errors = pendingErrorDialogs.values.toList()
+            pendingErrorDialogs.clear()
+            cancelErrorDialogs(null)
+            errors.forEach { it.completion.complete(ErrorDialogFactory.Outcome.UseDefault) }
+            paywalls.forEach { it.completion.complete(PaywallPresenter.Completion.Result.NavigatedBack) }
+        }
         super.invalidate()
     }
 
-    private fun createPaywallPresenter(callId: String) = PaywallPresenter { params, completion ->
-        if (invalidated) return@PaywallPresenter
+    private fun createPaywallPresenter(callId: String, state: CallState) = PaywallPresenter { params, completion ->
+        if (invalidated || state.presenterDetached) {
+            completion.complete(PaywallPresenter.Completion.Result.NavigatedBack)
+            return@PaywallPresenter
+        }
         val requestId = UUID.randomUUID().toString()
-        pendingPaywallCompletions[requestId] = completion
+        pendingPaywallCompletions[requestId] = PendingPaywall(callId, completion)
         emit(
             "Checkpoints-onPaywallPresentation",
             mapOf(
@@ -132,6 +190,48 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
                 ),
             ),
         )
+    }
+
+    private fun createErrorDialogFactory(callId: String, state: CallState) = ErrorDialogFactory { params, completion ->
+        if (invalidated || state.errorFactoryDetached) {
+            completion.complete(ErrorDialogFactory.Outcome.UseDefault)
+            return@ErrorDialogFactory
+        }
+        val requestId = UUID.randomUUID().toString()
+        pendingErrorDialogs[requestId] = PendingErrorDialog(callId, completion)
+        val kind = when (params.kind) {
+            CheckpointFailureKind.FLOW_COULD_NOT_BE_SHOWN -> "flowCouldNotBeShown"
+            CheckpointFailureKind.FLOW_ACTION_FAILED -> "flowActionFailed"
+            else -> "flowResultSyncFailed"
+        }
+        emit("Checkpoints-onErrorDialogRequested", mapOf(
+            "callId" to callId,
+            "requestId" to requestId,
+            "error" to mapOf("kind" to kind, "code" to params.error.code.code, "message" to params.error.message),
+        ))
+    }
+
+    private fun detachCustomErrorDialogFactory(callId: String) {
+        calls[callId]?.errorFactoryDetached = true
+        val requestIds = pendingErrorDialogs.filterValues { it.callId == callId }.keys.toList()
+        requestIds.forEach {
+            pendingErrorDialogs.remove(it)?.completion?.complete(ErrorDialogFactory.Outcome.UseDefault)
+        }
+    }
+
+    private fun Map<String, Any?>?.toErrorDialogOutcome(): ErrorDialogFactory.Outcome = when (this?.get("type")) {
+        "suppress" -> ErrorDialogFactory.Outcome.Suppress
+        "show" -> {
+            val dialog = this["dialog"] as? Map<*, *>
+            val message = dialog?.get("message") as? String
+            val buttonTitle = dialog?.get("buttonTitle") as? String
+            if (!message.isNullOrEmpty() && !buttonTitle.isNullOrEmpty()) {
+                ErrorDialogFactory.Outcome.Show(CheckpointErrorDialog(message, buttonTitle))
+            } else {
+                ErrorDialogFactory.Outcome.UseDefault
+            }
+        }
+        else -> ErrorDialogFactory.Outcome.UseDefault
     }
 
     private fun emit(name: String, body: Map<String, Any?>) {

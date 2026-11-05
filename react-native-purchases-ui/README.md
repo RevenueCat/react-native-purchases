@@ -243,3 +243,10 @@ RevenueCatUI.setPaywallPresenter(null);
 `NAVIGATED_BACK` leaves the app at the point that launched the checkpoint and does not call `onPassed`.
 The app-owned presenter is responsible for dismissing its UI and reporting its final outcome; RevenueCat
 synchronizes purchases and updates customer information after `CONTINUED` or `CLOSED`.
+
+Calling the cleanup function returned by `checkpoint` cancels a custom presentation whose handler has not
+run yet. It leaves already shown app UI open; dismiss that UI and call its completion as usual.
+
+A presenter that throws or rejects a returned promise reports `NAVIGATED_BACK`. Resolving a promise alone
+does not finish presentation; the completion callback determines the outcome. `errorDialogFactory` also
+applies with a custom presenter, including purchase synchronization errors after completion.
