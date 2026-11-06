@@ -46,7 +46,7 @@ export interface CheckpointError {
 /** The content of the native error dialog. */
 export interface CheckpointErrorDialog {
   message: string;
-  buttonTitle: string;
+  primaryButtonTitle: string;
 }
 
 /** What to do with a checkpoint error. The SDK owns dialog presentation and acknowledgement. */
@@ -92,14 +92,14 @@ function toErrorDialogOutcome(value: unknown): CheckpointErrorDialogOutcome {
       return { type: outcome.type };
     }
     if (outcome.type === 'show' && typeof outcome.dialog === 'object' && outcome.dialog !== null) {
-      const { message, buttonTitle } = outcome.dialog as Partial<CheckpointErrorDialog>;
+      const { message, primaryButtonTitle } = outcome.dialog as Partial<CheckpointErrorDialog>;
       if (typeof message === 'string' && message.length > 0 &&
-          typeof buttonTitle === 'string' && buttonTitle.length > 0) {
-        return { type: 'show', dialog: { message, buttonTitle } };
+          typeof primaryButtonTitle === 'string' && primaryButtonTitle.length > 0) {
+        return { type: 'show', dialog: { message, primaryButtonTitle } };
       }
     }
   }
-  throw new Error('errorDialogFactory must return a show outcome with non-empty message and buttonTitle, useDefault, or suppress.');
+  throw new Error('errorDialogFactory must return a show outcome with non-empty message and primaryButtonTitle, useDefault, or suppress.');
 }
 
 /**

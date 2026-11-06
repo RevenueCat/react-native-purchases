@@ -188,7 +188,7 @@ RevenueCatUI.checkpoint('upgrade', onPassed, {
         type: 'show',
         dialog: {
           message: 'We could not confirm your purchase. Please try again.',
-          buttonTitle: 'OK',
+          primaryButtonTitle: 'OK',
         },
       };
     }
@@ -199,7 +199,7 @@ RevenueCatUI.checkpoint('upgrade', onPassed, {
 
 `CheckpointErrorDialogOutcome` has three cases:
 
-- `{ type: 'show', dialog: { message, buttonTitle } }` shows custom content. Both strings must be non-empty.
+- `{ type: 'show', dialog: { message, primaryButtonTitle } }` shows custom content. Both strings must be non-empty.
 - `{ type: 'useDefault' }` shows the SDK's localized dialog.
 - `{ type: 'suppress' }` skips the dialog and continues as if the user had acknowledged it.
 
