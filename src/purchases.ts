@@ -125,6 +125,23 @@ const RNPurchases = nativeModule ? normalizingRejections(nativeModule) : nativeM
 // See: https://reactnative.dev/blog/2025/04/08/react-native-0.79 (Breaking Changes section)
 const eventEmitter = !usingBrowserMode && nativeModule ? new NativeEventEmitter(nativeModule) : null;
 
+async function purchaseWithIntroductoryOfferEligibilityJWS(options: {
+  productIdentifier?: string;
+  packageIdentifier?: string;
+  presentedOfferingContext?: PurchasesPackage["presentedOfferingContext"];
+  introductoryOfferEligibilityJWS: string;
+}): Promise<MakePurchaseResult> {
+  if (typeof options.introductoryOfferEligibilityJWS !== "string" ||
+      options.introductoryOfferEligibilityJWS.length === 0) {
+    throw new Error("introductoryOfferEligibilityJWS must be a non-empty string");
+  }
+  if (usingBrowserMode || Platform.OS !== "ios" ||
+      typeof RNPurchases.purchaseWithIntroductoryOfferEligibilityJWS !== "function") {
+    throw new UnsupportedPlatformError();
+  }
+  return RNPurchases.purchaseWithIntroductoryOfferEligibilityJWS(options);
+}
+
 // Helper function to check if native module is available - provides better error message than "Cannot read property X of null"
 function throwIfNativeModuleNotAvailable(): void {
   if (!RNPurchases) {
@@ -933,6 +950,10 @@ export default class Purchases {
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
+   * @param {string | null} introductoryOfferEligibilityJWS Apple StoreKit 2 only. Developer-signed eligibility
+   * JWS to pass unchanged to StoreKit (iOS 15+, native SDK built with Xcode 16.3+). Sign on your server.
+   * Unsupported platforms, browser/preview mode, StoreKit 1, and Test Store reject when a token is supplied.
+   * Null or undefined preserves the default store eligibility. Never retry without a denial token automatically.
    * @returns {Promise<{ productIdentifier: string, customerInfo:CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code,
    * a boolean indicating if the user cancelled the purchase, and an object with more information. The promise will
@@ -941,9 +962,16 @@ export default class Purchases {
   public static async purchaseStoreProduct(
     product: PurchasesStoreProduct,
     productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
-    googleIsPersonalizedPrice?: boolean | null
+    googleIsPersonalizedPrice?: boolean | null,
+    introductoryOfferEligibilityJWS?: string | null
   ): Promise<MakePurchaseResult> {
     await throwIfNotConfigured();
+    if (introductoryOfferEligibilityJWS != null) {
+      return purchaseWithIntroductoryOfferEligibilityJWS({
+        productIdentifier: product.identifier,
+        introductoryOfferEligibilityJWS,
+      });
+    }
     return RNPurchases.purchaseProduct(
       product.identifier,
       productChangeInfo,
@@ -997,6 +1025,10 @@ export default class Purchases {
    * @param {boolean} googleIsPersonalizedPrice Android and Google only. Optional boolean indicates personalized pricing on products available for purchase in the EU.
    * For compliance with EU regulations. User will see "This price has been customized for you" in the purchase dialog when true.
    * See https://developer.android.com/google/play/billing/integrate#personalized-price for more info.
+   * @param {string | null} introductoryOfferEligibilityJWS Apple StoreKit 2 only. Developer-signed eligibility
+   * JWS to pass unchanged to StoreKit (iOS 15+, native SDK built with Xcode 16.3+). Sign on your server.
+   * Unsupported platforms, browser/preview mode, StoreKit 1, and Test Store reject when a token is supplied.
+   * Null or undefined preserves the default store eligibility. Never retry without a denial token automatically.
    * @returns {Promise<{ productIdentifier: string, customerInfo: CustomerInfo }>} A promise of an object containing
    * a customer info object and a product identifier. Rejections return an error code, a boolean indicating if the
    * user cancelled the purchase, and an object with more information. The promise will be also be rejected if configure
@@ -1006,9 +1038,17 @@ export default class Purchases {
     aPackage: PurchasesPackage,
     upgradeInfo?: UpgradeInfo | null,
     productChangeInfo?: GoogleProductChangeInfo | StoreProductChangeInfo | null,
-    googleIsPersonalizedPrice?: boolean | null
+    googleIsPersonalizedPrice?: boolean | null,
+    introductoryOfferEligibilityJWS?: string | null
   ): Promise<MakePurchaseResult> {
     await throwIfNotConfigured();
+    if (introductoryOfferEligibilityJWS != null) {
+      return purchaseWithIntroductoryOfferEligibilityJWS({
+        packageIdentifier: aPackage.identifier,
+        presentedOfferingContext: aPackage.presentedOfferingContext,
+        introductoryOfferEligibilityJWS,
+      });
+    }
     return RNPurchases.purchasePackage(
       aPackage.identifier,
       aPackage.presentedOfferingContext,
