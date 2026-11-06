@@ -186,7 +186,7 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
                     "checkpointIdentifier" to params.checkpointIdentifier,
                     "customVariables" to params.customVariables.mapValues { (_, value) -> value.toPrimitive() },
                     "presentationMode" to params.presentationMode.toPresentationModeName(),
-                    "offering" to params.offering.toMap(),
+                    "offering" to RNPurchasesConverters.offeringToMap(params.offering),
                 ),
             ),
         )
@@ -293,21 +293,6 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
         }
         return mapOf("customer" to customer.map(), "flow" to flowMap)
     }
-
-    private fun com.revenuecat.purchases.Offering.toMap(): Map<String, Any?> = mapOf(
-        "identifier" to identifier,
-        "serverDescription" to serverDescription,
-        "metadata" to metadata,
-        "availablePackages" to availablePackages.map { it.map() },
-        "lifetime" to lifetime?.map(),
-        "annual" to annual?.map(),
-        "sixMonth" to sixMonth?.map(),
-        "threeMonth" to threeMonth?.map(),
-        "twoMonth" to twoMonth?.map(),
-        "monthly" to monthly?.map(),
-        "weekly" to weekly?.map(),
-        "webCheckoutUrl" to webCheckoutURL?.toString(),
-    )
 
     private companion object {
         const val TAG = "Purchases"

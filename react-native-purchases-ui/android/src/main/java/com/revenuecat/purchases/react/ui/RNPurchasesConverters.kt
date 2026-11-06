@@ -5,10 +5,27 @@ import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.bridge.WritableNativeMap
+import com.revenuecat.purchases.Offering
 import com.revenuecat.purchases.PresentedOfferingContext
+import com.revenuecat.purchases.hybridcommon.mappers.map
 import kotlin.collections.get
 
 internal object RNPurchasesConverters {
+
+    fun offeringToMap(offering: Offering): Map<String, Any?> = mapOf(
+        "identifier" to offering.identifier,
+        "serverDescription" to offering.serverDescription,
+        "metadata" to offering.metadata,
+        "availablePackages" to offering.availablePackages.map { it.map() },
+        "lifetime" to offering.lifetime?.map(),
+        "annual" to offering.annual?.map(),
+        "sixMonth" to offering.sixMonth?.map(),
+        "threeMonth" to offering.threeMonth?.map(),
+        "twoMonth" to offering.twoMonth?.map(),
+        "monthly" to offering.monthly?.map(),
+        "weekly" to offering.weekly?.map(),
+        "webCheckoutUrl" to offering.webCheckoutURL?.toString(),
+    )
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
