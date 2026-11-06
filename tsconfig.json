@@ -17,7 +17,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": true,
-    "target": "es5",
+    "target": "es2016",
     "module": "commonjs",
     "lib": ["es6", "dom", "es2016", "esnext.asynciterable"],
     "declaration": true,
