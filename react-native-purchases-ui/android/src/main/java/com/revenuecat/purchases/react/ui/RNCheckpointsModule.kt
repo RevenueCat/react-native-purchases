@@ -8,6 +8,9 @@ import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.revenuecat.purchases.hybridcommon.ui.CheckpointListener
 import com.revenuecat.purchases.hybridcommon.ui.cancelErrorDialogs
+import com.revenuecat.purchases.hybridcommon.ui.completePaywallPresentation as completeNativePaywallPresentation
+import com.revenuecat.purchases.hybridcommon.ui.detachCheckpoint
+import com.revenuecat.purchases.hybridcommon.ui.invalidateCheckpointPresentations
 import com.revenuecat.purchases.hybridcommon.ui.presentCheckpoint
 import com.revenuecat.purchases.hybridcommon.ui.resolveErrorDialog as resolveNativeErrorDialog
 
@@ -23,12 +26,28 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
         presentationMode: String,
         callId: String,
         hasErrorDialogFactory: Boolean,
+        useCustomPresenter: Boolean,
     ) {
         UiThreadUtil.runOnUiThread {
             if (invalidated) return@runOnUiThread
             val listener = object : CheckpointListener {
                 override fun onCheckpointPassed(result: Map<String, Any?>) {
                     emit("Checkpoints-onPassed", mapOf("callId" to callId, "result" to result))
+                }
+
+                override fun onCheckpointError(code: String, message: String) {
+                    emit("Checkpoints-onError", mapOf("callId" to callId))
+                }
+
+                override fun onPaywallPresentationRequested(requestId: String, params: Map<String, Any?>) {
+                    if (invalidated) {
+                        completeNativePaywallPresentation(requestId, "NAVIGATED_BACK")
+                        return
+                    }
+                    emit(
+                        "Checkpoints-onPaywallPresentation",
+                        mapOf("callId" to callId, "requestId" to requestId, "params" to params),
+                    )
                 }
 
                 override fun onErrorDialogRequested(requestId: String, error: Map<String, Any?>) {
@@ -47,7 +66,7 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
                 callId = callId,
                 customVariables = customVariables?.toHashMap(),
                 presentationMode = presentationMode,
-                useCustomPaywallPresenter = false,
+                useCustomPaywallPresenter = useCustomPresenter,
                 hasErrorDialogFactory = hasErrorDialogFactory,
                 listener = listener,
             )
@@ -55,13 +74,31 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
     }
 
     @ReactMethod
+    fun completePaywallPresentation(requestId: String, result: String) {
+        UiThreadUtil.runOnUiThread {
+            completeNativePaywallPresentation(requestId, result)
+        }
+    }
+
+    @ReactMethod
+    fun detachPaywallPresenter(callId: String, activeRequestId: String?) {
+        UiThreadUtil.runOnUiThread {
+            detachCheckpoint(callId, activeRequestId)
+        }
+    }
+
+    @ReactMethod
     fun resolveErrorDialog(requestId: String, outcome: ReadableMap?) {
-        resolveNativeErrorDialog(requestId, outcome?.toHashMap())
+        UiThreadUtil.runOnUiThread {
+            resolveNativeErrorDialog(requestId, outcome?.toHashMap())
+        }
     }
 
     @ReactMethod
     fun detachErrorDialogFactory(callId: String) {
-        cancelErrorDialogs(callId)
+        UiThreadUtil.runOnUiThread {
+            cancelErrorDialogs(callId)
+        }
     }
 
     @ReactMethod fun addListener(eventName: String) { /* Required by NativeEventEmitter. */ }
@@ -69,8 +106,9 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
 
     override fun invalidate() {
         invalidated = true
-        // Nothing will answer pending dialog requests after a reload, so show the default dialogs.
-        cancelErrorDialogs(null)
+        UiThreadUtil.runOnUiThread {
+            invalidateCheckpointPresentations()
+        }
         super.invalidate()
     }
 
