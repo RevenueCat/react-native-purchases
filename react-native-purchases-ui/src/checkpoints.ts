@@ -55,6 +55,11 @@ export type CheckpointErrorDialogOutcome =
   | { type: 'useDefault' }
   | { type: 'suppress' };
 
+type NativeCheckpointErrorDialogOutcome =
+  | { type: 'show'; dialog: { message: string; buttonTitle: string } }
+  | { type: 'useDefault' }
+  | { type: 'suppress' };
+
 export interface CheckpointParams {
   customVariables?: CustomVariables;
   presentationMode?: FLOW_PRESENTATION_MODE;
@@ -102,6 +107,16 @@ function toErrorDialogOutcome(value: unknown): CheckpointErrorDialogOutcome {
   throw new Error('errorDialogFactory must return a show outcome with non-empty message and primaryButtonTitle, useDefault, or suppress.');
 }
 
+function toNativeErrorDialogOutcome(outcome: CheckpointErrorDialogOutcome): NativeCheckpointErrorDialogOutcome {
+  if (outcome.type !== 'show') {
+    return outcome;
+  }
+  return {
+    type: 'show',
+    dialog: { message: outcome.dialog.message, buttonTitle: outcome.dialog.primaryButtonTitle },
+  };
+}
+
 /**
  * Calls onPassed only when the app can continue past the checkpoint. It is not called when
  * the user backs out, a blocking error occurs, or another checkpoint owns presentation.
@@ -143,7 +158,7 @@ export function checkpoint(
         console.warn('[RevenueCatUI] Using the default checkpoint error dialog because errorDialogFactory failed:', error);
       }
       if (!detached) {
-        native.resolveErrorDialog(event.requestId, outcome);
+        native.resolveErrorDialog(event.requestId, toNativeErrorDialogOutcome(outcome));
       }
     }));
   }
