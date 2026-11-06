@@ -42,11 +42,15 @@ internal class RNCheckpointsModule(reactContext: ReactApplicationContext) : Reac
                     )
                 }
             }
-            if (hasErrorDialogFactory) {
-                presentCheckpoint(identifier, callId, customVariables?.toHashMap(), presentationMode, listener)
-            } else {
-                presentCheckpoint(identifier, customVariables?.toHashMap(), presentationMode, listener)
-            }
+            presentCheckpoint(
+                identifier = identifier,
+                callId = callId,
+                customVariables = customVariables?.toHashMap(),
+                presentationMode = presentationMode,
+                useCustomPaywallPresenter = false,
+                hasErrorDialogFactory = hasErrorDialogFactory,
+                listener = listener,
+            )
         }
     }
 

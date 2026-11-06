@@ -80,10 +80,13 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
     void (^onError)(NSString *, NSString *) = ^(NSString *code, NSString *message) {};
     if (!hasErrorDialogFactory) {
         [CheckpointProxy presentWithIdentifier:identifier
+                                        callId:callId
                                customVariables:customVariables
                               presentationMode:presentationMode
                                       onPassed:onPassed
-                                       onError:onError];
+                                       onError:onError
+                onPaywallPresentationRequested:nil
+                        onErrorDialogRequested:nil];
         return;
     }
     [CheckpointProxy presentWithIdentifier:identifier
@@ -92,6 +95,7 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
                           presentationMode:presentationMode
                                   onPassed:onPassed
                                    onError:onError
+            onPaywallPresentationRequested:nil
                     onErrorDialogRequested:^(NSString *requestId, NSDictionary<NSString *, id> *error) {
         RNCheckpoints *strongSelf = weakSelf;
         if (strongSelf == nil || strongSelf.invalidated) {
