@@ -19,25 +19,15 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "RNCheckpointPresenterBridge",
-            dependencies: [
-                .product(name: "PurchasesHybridCommon", package: "purchases-hybrid-common"),
-                .product(name: "PurchasesHybridCommonUI", package: "purchases-hybrid-common"),
-            ],
-            path: "ios",
-            sources: ["RNCheckpointPresenterBridge.swift"]
-        ),
-        .target(
             name: "ReactNativePurchasesUI",
             dependencies: [
-                "RNCheckpointPresenterBridge",
                 .product(name: "ReactHeaders", package: "ReactNative"),
                 .product(name: "ReactNativeHeaders", package: "ReactNative"),
                 .product(name: "ReactNativeDependenciesHeaders", package: "ReactNative"),
                 .product(name: "PurchasesHybridCommonUI", package: "purchases-hybrid-common"),
             ],
             path: "ios",
-            exclude: ["RNPaywalls.xcodeproj", "RNCheckpointPresenterBridge.swift"],
+            exclude: ["RNPaywalls.xcodeproj"],
             publicHeadersPath: ".",
             cSettings: [.headerSearchPath(".")]
         ),

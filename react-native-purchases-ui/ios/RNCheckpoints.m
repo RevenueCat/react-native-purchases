@@ -4,11 +4,6 @@
 //
 
 #import "RNCheckpoints.h"
-#if SWIFT_PACKAGE
-@import RNCheckpointPresenterBridge;
-#else
-#import "RNPaywalls-Swift.h"
-#endif
 
 #import <os/lock.h>
 
@@ -75,52 +70,6 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
         return;
     }
     __weak RNCheckpoints *weakSelf = self;
-    if (useCustomPresenter) {
-        if (@available(iOS 15.0, *)) {
-            [RNCheckpointPresenterBridge checkpointWithIdentifier:identifier
-                                              customVariables:customVariables
-                                             presentationMode:presentationMode
-                                                       callId:callId
-                                        hasErrorDialogFactory:hasErrorDialogFactory
-                                       onErrorDialogRequested:^(NSString *requestId, NSDictionary *error) {
-                RNCheckpoints *strongSelf = weakSelf;
-                if (strongSelf == nil || strongSelf.invalidated) {
-                    (void)[RNCheckpointPresenterBridge resolveErrorDialogWithRequestId:requestId outcome:@{@"type": @"useDefault"}];
-                    return;
-                }
-                [strongSelf sendEventWithName:@"Checkpoints-onErrorDialogRequested"
-                                         body:@{@"callId": callId, @"requestId": requestId, @"error": error}];
-            }
-                                       onPaywallPresentation:^(NSString *requestId, NSDictionary *event) {
-                RNCheckpoints *strongSelf = weakSelf;
-                if (strongSelf == nil || strongSelf.invalidated) {
-                    return;
-                }
-                NSMutableDictionary *body = [event mutableCopy];
-                body[@"requestId"] = requestId;
-                [strongSelf sendEventWithName:@"Checkpoints-onPaywallPresentation" body:body];
-            }
-                                                     onPassed:^(NSDictionary *result) {
-                RNCheckpoints *strongSelf = weakSelf;
-                if (strongSelf == nil || strongSelf.invalidated) {
-                    return;
-                }
-                [strongSelf sendEventWithName:@"Checkpoints-onPassed" body:@{@"callId": callId, @"result": result}];
-            }
-                                                      onError:^(NSString *code, NSString *message) {
-                NSLog(@"[RevenueCatUI] %@ (%@)", message, code);
-                RNCheckpoints *strongSelf = weakSelf;
-                if (strongSelf == nil || strongSelf.invalidated) {
-                    return;
-                }
-                [strongSelf sendEventWithName:@"Checkpoints-onError" body:@{@"callId": callId}];
-            }];
-        } else {
-            NSLog(@"[RevenueCatUI] Checkpoints require iOS 15 or later.");
-        }
-        return;
-    }
-
     void (^onPassed)(NSDictionary<NSString *, id> *) = ^(NSDictionary<NSString *, id> *result) {
         RNCheckpoints *strongSelf = weakSelf;
         if (strongSelf == nil || strongSelf.invalidated) {
@@ -130,16 +79,28 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
     };
     // PurchasesHybridCommonUI already logs why the checkpoint could not start.
     void (^onError)(NSString *, NSString *) = ^(NSString *code, NSString *message) {};
-    if (!hasErrorDialogFactory) {
-        [CheckpointProxy presentWithIdentifier:identifier
-                                        callId:callId
-                               customVariables:customVariables
-                              presentationMode:presentationMode
-                                      onPassed:onPassed
-                                       onError:onError
-                onPaywallPresentationRequested:nil
-                        onErrorDialogRequested:nil];
-        return;
+    void (^onPaywallPresentationRequested)(NSString *, NSDictionary<NSString *, id> *) = nil;
+    if (useCustomPresenter) {
+        onPaywallPresentationRequested = ^(NSString *requestId, NSDictionary<NSString *, id> *params) {
+            RNCheckpoints *strongSelf = weakSelf;
+            if (strongSelf == nil || strongSelf.invalidated) {
+                return;
+            }
+            [strongSelf sendEventWithName:@"Checkpoints-onPaywallPresentation"
+                                     body:@{@"callId": callId, @"requestId": requestId, @"params": params}];
+        };
+    }
+    void (^onErrorDialogRequested)(NSString *, NSDictionary<NSString *, id> *) = nil;
+    if (hasErrorDialogFactory) {
+        onErrorDialogRequested = ^(NSString *requestId, NSDictionary<NSString *, id> *error) {
+            RNCheckpoints *strongSelf = weakSelf;
+            if (strongSelf == nil || strongSelf.invalidated) {
+                [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:@{@"type": @"useDefault"}];
+                return;
+            }
+            [strongSelf sendEventWithName:@"Checkpoints-onErrorDialogRequested"
+                                     body:@{@"callId": callId, @"requestId": requestId, @"error": error}];
+        };
     }
     [CheckpointProxy presentWithIdentifier:identifier
                                     callId:callId
@@ -147,38 +108,24 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
                           presentationMode:presentationMode
                                   onPassed:onPassed
                                    onError:onError
-            onPaywallPresentationRequested:nil
-                    onErrorDialogRequested:^(NSString *requestId, NSDictionary<NSString *, id> *error) {
-        RNCheckpoints *strongSelf = weakSelf;
-        if (strongSelf == nil || strongSelf.invalidated) {
-            [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:@{@"type": @"useDefault"}];
-            return;
-        }
-        [strongSelf sendEventWithName:@"Checkpoints-onErrorDialogRequested"
-                                 body:@{@"callId": callId, @"requestId": requestId, @"error": error}];
-    }];
+            onPaywallPresentationRequested:onPaywallPresentationRequested
+                    onErrorDialogRequested:onErrorDialogRequested];
 }
 
 RCT_EXPORT_METHOD(resolveErrorDialog:(NSString *)requestId
                   outcome:(NSDictionary *)outcome) {
     if (@available(iOS 15.0, *)) {
-        if ([RNCheckpointPresenterBridge resolveErrorDialogWithRequestId:requestId outcome:outcome]) {
-            return;
-        }
+        [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:outcome];
     }
-    [CheckpointProxy resolveErrorDialogWithRequestId:requestId outcome:outcome];
 }
 
 RCT_EXPORT_METHOD(detachPaywallPresenter:(NSString *)callId activeRequestId:(NSString *)activeRequestId) {
     if (@available(iOS 15.0, *)) {
-        [RNCheckpointPresenterBridge detachPaywallPresenterWithCallId:callId activeRequestId:activeRequestId];
+        [CheckpointProxy detachCheckpointWithCallId:callId activePaywallRequestId:activeRequestId];
     }
 }
 
 RCT_EXPORT_METHOD(detachErrorDialogFactory:(NSString *)callId) {
-    if (@available(iOS 15.0, *)) {
-        [RNCheckpointPresenterBridge detachErrorDialogFactoryWithCallId:callId];
-    }
     [CheckpointProxy cancelErrorDialogsWithCallId:callId];
 }
 
@@ -187,7 +134,7 @@ RCT_EXPORT_METHOD(completePaywallPresentation:(NSString *)requestId result:(NSSt
         return;
     }
     if (@available(iOS 15.0, *)) {
-        [RNCheckpointPresenterBridge completePaywallPresentationWithRequestId:requestId result:result];
+        [CheckpointProxy completePaywallPresentationWithRequestId:requestId result:result];
     }
 }
 
@@ -197,15 +144,14 @@ RCT_EXPORT_METHOD(completePaywallPresentation:(NSString *)requestId result:(NSSt
     os_unfair_lock_lock(&_invalidationLock);
     _didInvalidate = YES;
     os_unfair_lock_unlock(&_invalidationLock);
-    // Nothing will answer pending dialog requests after a reload, so show the default dialogs.
+    // Nothing will answer pending presentation requests after a reload.
     dispatch_async(dispatch_get_main_queue(), ^{
-        [CheckpointProxy cancelErrorDialogsWithCallId:nil];
+        if (@available(iOS 15.0, *)) {
+            [CheckpointProxy invalidateCheckpointPresentations];
+        } else {
+            [CheckpointProxy cancelErrorDialogsWithCallId:nil];
+        }
     });
-    if (@available(iOS 15.0, *)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [RNCheckpointPresenterBridge clearPendingCompletions];
-        });
-    }
     [super invalidate];
 }
 
