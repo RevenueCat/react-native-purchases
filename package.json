@@ -8,9 +8,8 @@
   "types": "dist/index.d.ts",
   "source": "src/index",
   "browser": "dist/index.js",
-  "react-native": "src/index",
+  "react-native": "dist/index.js",
   "files": [
-    "src",
     "dist",
     "android",
     "!android/gradlew*",
