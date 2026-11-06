@@ -72,7 +72,7 @@ export default function CheckpointScreen({route}: CheckpointScreenProps) {
                 type: 'show',
                 dialog: {
                   message: CUSTOM_ERROR_DIALOG_MESSAGE,
-                  buttonTitle: 'Got it',
+                  primaryButtonTitle: 'Got it',
                 },
               }),
             }

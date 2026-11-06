@@ -76,7 +76,7 @@ const namedCheckpointAPI = () => {
       const message: string = error.message;
       void kind;
       void code;
-      const dialog: CheckpointErrorDialog = {message, buttonTitle: 'OK'};
+      const dialog: CheckpointErrorDialog = {message, primaryButtonTitle: 'OK'};
       return {type: 'show', dialog};
     },
   };

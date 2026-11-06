@@ -105,7 +105,10 @@ it.each(['web', 'preview', 'ios13'])('rejects unsupported environment %s without
 describe('errorDialogFactory', () => {
   const REQUESTED = 'Checkpoints-onErrorDialogRequested';
   const error = { kind: 'flowActionFailed', code: 7, message: 'offline' };
-  const dialog = { message: 'Try again later', buttonTitle: 'Got it' };
+  const dialog = { message: 'Try again later', primaryButtonTitle: 'Got it' };
+  const nativeOutcome = (outcome: any) => outcome.type === 'show'
+    ? { type: 'show', dialog: { message: outcome.dialog.message, buttonTitle: outcome.dialog.primaryButtonTitle } }
+    : outcome;
   const request = (index: number, requestId: string, callIndex = 0) =>
     emit(REQUESTED, { callId: callId(callIndex), requestId, error: { ...error, code: index } });
   const flush = () => new Promise(resolve => setImmediate(resolve));
@@ -134,7 +137,7 @@ describe('errorDialogFactory', () => {
     await flush();
     expect(factory).toHaveBeenCalledWith(error);
     expect(mockNative.resolveErrorDialog).toHaveBeenCalledTimes(1);
-    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', outcome);
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', nativeOutcome(outcome));
     expect(warn).not.toHaveBeenCalled();
   });
 
@@ -155,7 +158,7 @@ describe('errorDialogFactory', () => {
     await flush();
 
     expect(mockNative.resolveErrorDialog).toHaveBeenCalledTimes(1);
-    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', outcome);
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', nativeOutcome(outcome));
   });
 
   it('strips extra properties from custom dialog content', async () => {
@@ -164,7 +167,9 @@ describe('errorDialogFactory', () => {
     });
     request(1, 'r1');
     await flush();
-    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', { type: 'show', dialog });
+    expect(mockNative.resolveErrorDialog).toHaveBeenCalledWith('r1', {
+      type: 'show', dialog: { message: dialog.message, buttonTitle: dialog.primaryButtonTitle },
+    });
   });
 
   it.each([
@@ -176,10 +181,10 @@ describe('errorDialogFactory', () => {
     ['returns an unknown outcome', () => ({ type: 'unknown' })],
     ['returns no dialog', () => ({ type: 'show' })],
     ['returns a null dialog', () => ({ type: 'show', dialog: null })],
-    ['returns no button title', () => ({ type: 'show', dialog: { message: 'x' } })],
-    ['returns a non-string message', () => ({ type: 'show', dialog: { message: 1, buttonTitle: 'OK' } })],
-    ['returns an empty message', () => ({ type: 'show', dialog: { message: '', buttonTitle: 'OK' } })],
-    ['returns an empty button title', () => ({ type: 'show', dialog: { message: 'Oops', buttonTitle: '' } })],
+    ['returns no primary button title', () => ({ type: 'show', dialog: { message: 'x' } })],
+    ['returns a non-string message', () => ({ type: 'show', dialog: { message: 1, primaryButtonTitle: 'OK' } })],
+    ['returns an empty message', () => ({ type: 'show', dialog: { message: '', primaryButtonTitle: 'OK' } })],
+    ['returns an empty primary button title', () => ({ type: 'show', dialog: { message: 'Oops', primaryButtonTitle: '' } })],
   ])('answers useDefault and warns when the factory %s', async (_name, factory) => {
     checkpoint('upgrade', jest.fn(), { errorDialogFactory: factory as any });
     request(1, 'r1');
@@ -206,8 +211,8 @@ describe('errorDialogFactory', () => {
     request(1, 'r1');
     request(2, 'r2');
     expect(factory.mock.calls.map(call => (call as any)[0].code)).toEqual([1, 2]);
-    resolvers[1]!({ type: 'show', dialog: { message: 'second', buttonTitle: 'OK' } });
-    resolvers[0]!({ type: 'show', dialog: { message: 'first', buttonTitle: 'OK' } });
+    resolvers[1]!({ type: 'show', dialog: { message: 'second', primaryButtonTitle: 'OK' } });
+    resolvers[0]!({ type: 'show', dialog: { message: 'first', primaryButtonTitle: 'OK' } });
     await flush();
     expect(mockNative.resolveErrorDialog.mock.calls).toEqual([
       ['r2', { type: 'show', dialog: { message: 'second', buttonTitle: 'OK' } }],

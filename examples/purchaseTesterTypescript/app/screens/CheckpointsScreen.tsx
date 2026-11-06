@@ -28,7 +28,7 @@ const CheckpointsScreen: React.FC = () => {
         errorDialogFactory: customErrorDialog
           ? error => ({
             type: 'show',
-            dialog: {message: `Custom dialog (${error.kind}, ${error.code}): ${error.message}`, buttonTitle: 'Got it'},
+            dialog: {message: `Custom dialog (${error.kind}, ${error.code}): ${error.message}`, primaryButtonTitle: 'Got it'},
           })
           : undefined,
       });
