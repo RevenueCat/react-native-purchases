@@ -96,6 +96,33 @@ it('does not pass automatically when no native result arrives', () => {
   remove();
 });
 
+it('removes all subscriptions only for the checkpoint that reports a terminal error', () => {
+  const failed = jest.fn();
+  const passed = jest.fn();
+  const params = {
+    paywallPresenter: jest.fn(),
+    errorDialogFactory: jest.fn(),
+  };
+  checkpoint('first', failed, params);
+  checkpoint('second', passed, params);
+  const events = [
+    'Checkpoints-onPassed', 'Checkpoints-onError',
+    'Checkpoints-onErrorDialogRequested', 'Checkpoints-onPaywallPresentation',
+  ];
+  events.forEach(event => expect(listenerCount(event)).toBe(2));
+
+  emit('Checkpoints-onError', { callId: 'unrelated' });
+  events.forEach(event => expect(listenerCount(event)).toBe(2));
+  emit('Checkpoints-onError', { callId: callId(0) });
+  events.forEach(event => expect(listenerCount(event)).toBe(1));
+  emit('Checkpoints-onPassed', { callId: callId(0), result });
+  expect(failed).not.toHaveBeenCalled();
+
+  emit('Checkpoints-onPassed', { callId: callId(1), result });
+  expect(passed).toHaveBeenCalledWith(result);
+  events.forEach(event => expect(listenerCount(event)).toBe(0));
+});
+
 it.each(['web', 'preview', 'ios13'])('rejects unsupported environment %s without installing listeners', environment => {
   if (environment === 'web') mockPlatform.OS = 'web';
   if (environment === 'preview') mockPreview = true;

@@ -78,12 +78,21 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
         [strongSelf sendEventWithName:@"Checkpoints-onPassed" body:@{@"callId": callId, @"result": result}];
     };
     // PurchasesHybridCommonUI already logs why the checkpoint could not start.
-    void (^onError)(NSString *, NSString *) = ^(NSString *code, NSString *message) {};
+    void (^onError)(NSString *, NSString *) = ^(NSString *code, NSString *message) {
+        RNCheckpoints *strongSelf = weakSelf;
+        if (strongSelf == nil || strongSelf.invalidated) {
+            return;
+        }
+        [strongSelf sendEventWithName:@"Checkpoints-onError" body:@{@"callId": callId}];
+    };
     void (^onPaywallPresentationRequested)(NSString *, NSDictionary<NSString *, id> *) = nil;
     if (useCustomPresenter) {
         onPaywallPresentationRequested = ^(NSString *requestId, NSDictionary<NSString *, id> *params) {
             RNCheckpoints *strongSelf = weakSelf;
             if (strongSelf == nil || strongSelf.invalidated) {
+                if (@available(iOS 15.0, *)) {
+                    [CheckpointProxy completePaywallPresentationWithRequestId:requestId result:@"NAVIGATED_BACK"];
+                }
                 return;
             }
             [strongSelf sendEventWithName:@"Checkpoints-onPaywallPresentation"
@@ -130,11 +139,9 @@ RCT_EXPORT_METHOD(detachErrorDialogFactory:(NSString *)callId) {
 }
 
 RCT_EXPORT_METHOD(completePaywallPresentation:(NSString *)requestId result:(NSString *)result) {
-    if (self.invalidated) {
-        return;
-    }
     if (@available(iOS 15.0, *)) {
-        [CheckpointProxy completePaywallPresentationWithRequestId:requestId result:result];
+        [CheckpointProxy completePaywallPresentationWithRequestId:requestId
+                                                        result:self.invalidated ? @"NAVIGATED_BACK" : result];
     }
 }
 
