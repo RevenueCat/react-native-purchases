@@ -17,8 +17,6 @@ class MainApplication : Application(), ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // add(MyReactNativePackage())
         },
-      // Maestro uses the bundled debug JS, even if another workspace has Metro running.
-      useDevSupport = false,
     )
   }
 

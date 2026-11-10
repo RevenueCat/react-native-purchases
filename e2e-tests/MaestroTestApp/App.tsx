@@ -6,14 +6,12 @@ import TestCasesScreen from './src/TestCasesScreen';
 import PurchaseThroughPaywallScreen from './src/PurchaseThroughPaywallScreen';
 import PaywallInPagerScreen from './src/PaywallInPagerScreen';
 import CheckpointScreen from './src/CheckpointScreen';
-import CustomCheckpointPresenterScreen from './src/CustomCheckpointPresenterScreen';
 
 export type RootStackParamList = {
   TestCases: undefined;
   PurchaseThroughPaywall: undefined;
   PaywallInPager: undefined;
   Checkpoint: {customErrorDialog?: boolean} | undefined;
-  CustomCheckpointPresenter: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,14 +23,10 @@ const TEST_FLOW_SCREEN_MAP: Record<string, keyof RootStackParamList> = {
   paywall_in_pager: 'PaywallInPager',
   checkpoint_purchase: 'Checkpoint',
   checkpoint_custom_error_dialog: 'Checkpoint',
-  checkpoint_custom_presenter_purchase: 'CustomCheckpointPresenter',
-  checkpoint_custom_presenter_back: 'CustomCheckpointPresenter',
-  checkpoint_custom_presenter_unmount: 'CustomCheckpointPresenter',
 };
 
 type AppProps = {
   e2e_test_flow?: string;
-  rc_test_api_key?: string;
 };
 
 export default function App(props: AppProps) {
@@ -43,7 +37,7 @@ export default function App(props: AppProps) {
     // Maestro's clearState doesn't always reset the SDK's persisted user on iOS,
     // so each test run gets a fresh customer.
     Purchases.configure({
-      apiKey: props.rc_test_api_key || API_KEY,
+      apiKey: API_KEY,
       appUserID: props.e2e_test_flow
         ? `maestro-${props.e2e_test_flow}-${Date.now()}`
         : undefined,
@@ -79,11 +73,6 @@ export default function App(props: AppProps) {
           name="PaywallInPager"
           component={PaywallInPagerScreen}
           options={{title: 'Paywall in pager'}}
-        />
-        <Stack.Screen
-          name="CustomCheckpointPresenter"
-          component={CustomCheckpointPresenterScreen}
-          options={{title: 'Custom checkpoint presenter'}}
         />
         <Stack.Screen
           name="Checkpoint"

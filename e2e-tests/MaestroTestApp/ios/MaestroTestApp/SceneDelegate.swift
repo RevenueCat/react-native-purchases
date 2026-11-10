@@ -24,9 +24,6 @@ class SceneDelegate: RCTDefaultReactNativeFactoryDelegate, UIWindowSceneDelegate
     if let testFlow = UserDefaults.standard.string(forKey: "e2e_test_flow") {
       props["e2e_test_flow"] = testFlow
     }
-    if let testApiKey = UserDefaults.standard.string(forKey: "rc_test_api_key") {
-      props["rc_test_api_key"] = testApiKey
-    }
 
     reactNativeFactory?.startReactNative(
       withModuleName: "MaestroTestApp",

@@ -33,22 +33,9 @@ In CI, the Fastlane lane replaces this placeholder with the real key from the
 `RC_E2E_TEST_API_KEY_PRODUCTION_TEST_STORE` environment variable (provided by the
 CircleCI `e2e-tests` context) before building.
 
-The custom presenter flows also accept a runtime key through the
-`rc_test_api_key` launch argument, so local runs do not need a key in any source
-file. Read `RC_TEST_API_KEY` from the macOS login Keychain and pass it through
-Maestro's environment:
-
-```bash
-RC_TEST_API_KEY="$(security find-generic-password -s RC_TEST_API_KEY -w "$HOME/Library/Keychains/login.keychain-db")"
-MAESTRO_RC_TEST_API_KEY="$RC_TEST_API_KEY" maestro --device DEVICE_ID test \
-  e2e-tests/maestro/e2e_tests/checkpoint_custom_presenter_purchase.yaml
-```
-
-Run this from the repository root after installing the native app. An omitted
-runtime key falls back to the existing CI placeholder substitution.
-
-The Android app loads its bundled debug JavaScript, so a Metro server running in
-another workspace cannot change which code the tests execute.
+To run locally, either:
+- Replace the placeholder in `App.tsx` with a valid API key (do **not** commit it), or
+- Export the env var and run the same `sed` command the Fastlane lane uses.
 
 ## RevenueCat Project
 
@@ -56,20 +43,6 @@ The test uses a RevenueCat project configured with:
 - A **V2 Paywall** (the test asserts "Paywall V2" is visible)
 - A `pro` entitlement (the test checks entitlement status after purchase)
 - The **Test Store** environment for purchase confirmation
-
-## Custom checkpoint presenter coverage
-
-The `checkpoint_custom_presenter_*` Maestro flows use the existing
-`donottouch_sdk_everyone` checkpoint and buy `pro_monthly_subscription` through
-the real package received by the JS presenter. They cover purchasing before
-explicit completion, navigating back and retrying, and completing app-owned UI
-after its checkpoint owner unmounts. The latter then mounts a fresh owner and
-checks that only its callback runs.
-
-The harness keeps its callback counters outside the removable owner, so a late
-callback from the old owner is observable. It removes the custom UI before
-reporting its result to native. The same flows run in the existing Android and
-iOS Maestro jobs, including SwiftPM; no separate CI configuration is needed.
 
 ## Dependencies
 
