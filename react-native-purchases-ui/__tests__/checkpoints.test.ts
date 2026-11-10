@@ -323,6 +323,35 @@ describe('paywallPresenter', () => {
     expect(mockNative.checkpoint.mock.calls.map(call => call[5])).toEqual([true, false]);
   });
 
+  it('uses the native presenter for a null override without changing the global default', () => {
+    const global = jest.fn();
+    setPaywallPresenter(global);
+    const remove = checkpoint('native', jest.fn(), { paywallPresenter: null });
+    expect(mockNative.checkpoint.mock.calls[0]![5]).toBe(false);
+    expect(listenerCount(PRESENT)).toBe(0);
+    remove();
+    expect(mockNative.detachPaywallPresenter).not.toHaveBeenCalled();
+
+    checkpoint('global', jest.fn(), { paywallPresenter: undefined });
+    expect(mockNative.checkpoint.mock.calls[1]![5]).toBe(true);
+    present('p2', 1);
+    expect(global).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the selected global presenter when the default changes before presentation', () => {
+    const first = jest.fn();
+    const second = jest.fn();
+    setPaywallPresenter(first);
+    checkpoint('first', jest.fn());
+    setPaywallPresenter(second);
+    checkpoint('second', jest.fn());
+    present('p1', 0);
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).not.toHaveBeenCalled();
+    present('p2', 1);
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
   it('routes concurrent presentation requests to their owning calls', () => {
     const first = jest.fn();
     const second = jest.fn();

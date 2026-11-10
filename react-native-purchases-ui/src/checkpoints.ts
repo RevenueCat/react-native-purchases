@@ -58,8 +58,11 @@ export type CheckpointErrorDialogOutcome =
 
 /** How an app-owned checkpoint paywall presentation ended. */
 export enum PAYWALL_PRESENTATION_RESULT {
+  /** The user continued. Permit checkpoint continuation after purchase synchronization. */
   CONTINUED = 'CONTINUED',
+  /** The user closed the paywall. Permit checkpoint continuation after purchase synchronization. */
   CLOSED = 'CLOSED',
+  /** The user navigated back. Stop the checkpoint without calling `onPassed`. */
   NAVIGATED_BACK = 'NAVIGATED_BACK',
 }
 
@@ -78,7 +81,7 @@ export interface PaywallPresentationParams {
 export type PaywallPresenter = (
   params: PaywallPresentationParams,
   completion: (result: PAYWALL_PRESENTATION_RESULT) => void,
-) => void;
+) => void | Promise<void>;
 
 type NativeCheckpointErrorDialogOutcome =
   | { type: 'show'; dialog: { message: string; buttonTitle: string } }
@@ -95,7 +98,8 @@ export interface CheckpointParams {
    * Throwing, rejecting, or returning an invalid outcome uses the SDK's default dialog.
    */
   errorDialogFactory?: (error: CheckpointError) => CheckpointErrorDialogOutcome | Promise<CheckpointErrorDialogOutcome>;
-  paywallPresenter?: PaywallPresenter;
+  /** Overrides the global presenter. Use `undefined` for the global default or `null` for the SDK presenter. */
+  paywallPresenter?: PaywallPresenter | null;
 }
 
 const PASSED_EVENT = 'Checkpoints-onPassed';
@@ -163,7 +167,7 @@ export function checkpoint(
 ): () => void {
   const native = nativeCheckpoints();
   const callId = `${callIdPrefix}-${++nextCallId}`;
-  const paywallPresenter = params.paywallPresenter ?? globalPaywallPresenter;
+  const paywallPresenter = params.paywallPresenter === undefined ? globalPaywallPresenter : params.paywallPresenter;
   const emitter = new NativeEventEmitter(native);
   const errorDialogFactory = params.errorDialogFactory;
   let isCallbackActive = true;
@@ -263,6 +267,8 @@ export function checkpoint(
 /**
  * Sets the default app-owned presenter for checkpoint-selected offerings. A per-checkpoint
  * `paywallPresenter` overrides this handler. Pass `null` to restore the SDK presenter.
+ * Changes affect future checkpoint calls. Each call captures its presenter when `checkpoint` is called,
+ * even if presentation starts after the global presenter changes.
  */
 export function setPaywallPresenter(presenter: PaywallPresenter | null): void {
   globalPaywallPresenter = presenter;

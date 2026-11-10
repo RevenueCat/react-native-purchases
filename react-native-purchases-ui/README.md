@@ -218,6 +218,10 @@ Register a global presenter to show checkpoint-selected offerings with app-owned
 completion when the presentation ends, using the same `CONTINUED`, `CLOSED`, or `NAVIGATED_BACK` outcomes as the
 native SDKs.
 
+Omit `paywallPresenter` or pass `undefined` to use the global default. Pass `null` to use the SDK's native
+presenter for one checkpoint, even when a global custom presenter is set. Changes to the global presenter
+affect future checkpoint calls; existing calls keep the presenter selected when they were created.
+
 ```tsx
 import RevenueCatUI, {
   PAYWALL_PRESENTATION_RESULT,
@@ -234,6 +238,10 @@ RevenueCatUI.setPaywallPresenter(presenter);
 
 RevenueCatUI.checkpoint('upgrade', () => {}, {
   paywallPresenter: presenter, // Optional per-checkpoint override.
+});
+
+RevenueCatUI.checkpoint('native-upgrade', () => {}, {
+  paywallPresenter: null, // Use the SDK's native presenter for this call.
 });
 
 // Restore the SDK's default presenter:
