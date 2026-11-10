@@ -90,6 +90,8 @@ RCT_EXPORT_METHOD(checkpoint:(NSString *)identifier
         onPaywallPresentationRequested = ^(NSString *requestId, NSDictionary<NSString *, id> *params) {
             RNCheckpoints *strongSelf = weakSelf;
             if (strongSelf == nil || strongSelf.invalidated) {
+                // Native checkpoint work can request presentation after a JS reload tears down this bridge.
+                // Back out because the old JS runtime can no longer present the paywall or answer the request.
                 if (@available(iOS 15.0, *)) {
                     [CheckpointProxy completePaywallPresentationWithRequestId:requestId result:@"NAVIGATED_BACK"];
                 }
