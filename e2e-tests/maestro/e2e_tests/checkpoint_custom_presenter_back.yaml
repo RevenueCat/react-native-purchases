@@ -17,8 +17,16 @@ name: Custom checkpoint presenter back and retry
 - runFlow:
     file: ../utils/assert_custom_checkpoint_presenter.yaml
 - assertVisible: "Presentation count: 1"
+# CI's small Android viewport puts the presentation controls below the fold.
+- scrollUntilVisible:
+    element:
+      id: "custom-checkpoint-back-button"
+    direction: DOWN
 - tapOn:
     id: "custom-checkpoint-back-button"
+- scrollUntilVisible:
+    element: "Checkpoint owner: mounted"
+    direction: UP
 - extendedWaitUntil:
     visible: "Completion count: 1"
     timeout: 10000
@@ -32,8 +40,15 @@ name: Custom checkpoint presenter back and retry
     file: ../utils/assert_custom_checkpoint_presenter.yaml
 - assertVisible: "Presentation count: 2"
 - assertVisible: "Callback count: 0"
+- scrollUntilVisible:
+    element:
+      id: "custom-checkpoint-back-button"
+    direction: DOWN
 - tapOn:
     id: "custom-checkpoint-back-button"
+- scrollUntilVisible:
+    element: "Checkpoint owner: mounted"
+    direction: UP
 - extendedWaitUntil:
     visible: "Completion count: 2"
     timeout: 10000
