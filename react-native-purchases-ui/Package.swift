@@ -15,7 +15,7 @@ let package = Package(
         // Resolved from the autolinker's ios/build/generated/autolinking/libs/<SwiftPM name>
         // symlink: four levels up reaches ios/build, where RN generates xcframeworks.
         .package(name: "ReactNative", path: "../../../../xcframeworks"),
-        .package(url: "https://github.com/RevenueCat/purchases-hybrid-common", exact: "20.7.0"),
+        .package(url: "https://github.com/RevenueCat/purchases-hybrid-common", exact: "20.8.0"),
     ],
     targets: [
         .target(
