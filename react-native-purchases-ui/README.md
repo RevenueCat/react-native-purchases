@@ -210,3 +210,51 @@ The factory may return a promise, which the SDK waits to settle. If it never set
 stays pending. If it throws, rejects, or returns an invalid outcome, the SDK shows its default dialog.
 Calling the function returned by `checkpoint` detaches the factory and resolves pending requests with
 that dialog. Without a factory, error requests aren’t sent to JavaScript.
+
+#### Custom checkpoint paywall presentation
+
+Register a global presenter to show checkpoint-selected offerings with app-owned UI. A per-checkpoint
+`paywallPresenter` overrides the global handler. The handler receives the resolved offering and must call its
+completion when the presentation ends, using the same `CONTINUED`, `CLOSED`, or `NAVIGATED_BACK` outcomes as the
+native SDKs.
+
+Omit `paywallPresenter` or pass `undefined` to use the global default. Pass `null` to use the SDK's native
+presenter for one checkpoint, even when a global custom presenter is set. Changes to the global presenter
+affect future checkpoint calls; existing calls keep the presenter selected when they were created.
+
+```tsx
+import RevenueCatUI, {
+  PAYWALL_PRESENTATION_RESULT,
+  type PaywallPresenter,
+} from 'react-native-purchases-ui';
+
+const presenter: PaywallPresenter = (params, complete) => {
+  // Present params.offering with app-owned UI.
+  // `CONTINUED` and `CLOSED` let the checkpoint continue after purchase sync.
+  complete(PAYWALL_PRESENTATION_RESULT.CONTINUED);
+};
+
+RevenueCatUI.setPaywallPresenter(presenter);
+
+RevenueCatUI.checkpoint('upgrade', () => {}, {
+  paywallPresenter: presenter, // Optional per-checkpoint override.
+});
+
+RevenueCatUI.checkpoint('native-upgrade', () => {}, {
+  paywallPresenter: null, // Use the SDK's native presenter for this call.
+});
+
+// Restore the SDK's default presenter:
+RevenueCatUI.setPaywallPresenter(null);
+```
+
+`NAVIGATED_BACK` leaves the app at the point that launched the checkpoint and does not call `onPassed`.
+The app-owned presenter is responsible for dismissing its UI and reporting its final outcome; RevenueCat
+synchronizes purchases and updates customer information after `CONTINUED` or `CLOSED`.
+
+Calling the cleanup function returned by `checkpoint` cancels a custom presentation whose handler has not
+run yet. It leaves already shown app UI open; dismiss that UI and call its completion as usual.
+
+A presenter that throws or rejects a returned promise reports `NAVIGATED_BACK`. Resolving a promise alone
+does not finish presentation; the completion callback determines the outcome. `errorDialogFactory` also
+applies with a custom presenter, including purchase synchronization errors after completion.
