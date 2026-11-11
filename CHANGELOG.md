@@ -1,7 +1,5 @@
 ## 11.0.2
 ## RevenueCat SDK
-### 🐞 Bugfixes
-* fix(ui): rename checkpoint primary button title (#2118) via Cesar de la Vega (@vegaro)
 ### 📦 Dependency Updates
 * [RENOVATE] Update dependency revenuecat to v4.8.0 (#2124) via RevenueCat Git Bot (@RCGitBot)
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 20.7.0 (#2122) via RevenueCat Git Bot (@RCGitBot)
@@ -13,6 +11,7 @@
 * [AUTOMATIC BUMP] Updates purchases-hybrid-common to 20.6.1 (#2117) via RevenueCat Git Bot (@RCGitBot)
 
 ### 🔄 Other Changes
+* fix(ui): rename checkpoint primary button title (#2118) via Cesar de la Vega (@vegaro)
 * chore(deps): bump fast-xml-parser from 5.8.0 to 5.12.0 in /examples/MagicWeather (#2133) via dependabot[bot] (@dependabot[bot])
 * ci: re-enable CocoaPods jobs after trunk freeze (#2123) via Antonio Pallares (@ajpallares)
 * chore(deps): bump fastlane-plugin-revenuecat_internal from `6f0a9ec` to `723f005` (#2132) via dependabot[bot] (@dependabot[bot])
