@@ -26,6 +26,12 @@ export default function TestCasesScreen({navigation}: Props) {
         testID="checkpoint-button">
         <Text style={styles.buttonText}>Checkpoint</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('CustomCheckpointPresenter')}
+        testID="custom-checkpoint-presenter-button">
+        <Text style={styles.buttonText}>Custom checkpoint presenter</Text>
+      </TouchableOpacity>
     </View>
   );
 }
