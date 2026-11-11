@@ -13,8 +13,14 @@ class MainActivity : ReactActivity() {
   override fun createReactActivityDelegate(): ReactActivityDelegate =
       object : DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled) {
           override fun getLaunchOptions(): Bundle? {
-              val testFlow = this@MainActivity.intent?.getStringExtra("e2e_test_flow") ?: return null
-              return Bundle().apply { putString("e2e_test_flow", testFlow) }
+              return Bundle().apply {
+                  this@MainActivity.intent?.getStringExtra("e2e_test_flow")?.let {
+                      putString("e2e_test_flow", it)
+                  }
+                  this@MainActivity.intent?.getStringExtra("rc_test_api_key")?.let {
+                      putString("rc_test_api_key", it)
+                  }
+              }
           }
       }
 }

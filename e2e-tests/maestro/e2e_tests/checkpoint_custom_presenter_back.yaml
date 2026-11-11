@@ -1,0 +1,57 @@
+appId: com.revenuecat.automatedsdktests
+name: Custom checkpoint presenter back and retry
+
+---
+- clearState
+- pressKey: home
+- launchApp:
+    arguments:
+      e2e_test_flow: checkpoint_custom_presenter_back
+      rc_test_api_key: "${typeof MAESTRO_RC_TEST_API_KEY === 'undefined' ? '' : MAESTRO_RC_TEST_API_KEY}"
+- setOrientation: PORTRAIT
+- extendedWaitUntil:
+    visible: "Hit custom checkpoint"
+    timeout: 30000
+- tapOn:
+    id: "hit-custom-checkpoint-button"
+- runFlow:
+    file: ../utils/assert_custom_checkpoint_presenter.yaml
+- assertVisible: "Presentation count: 1"
+# CI's small Android viewport puts the presentation controls below the fold.
+- scrollUntilVisible:
+    element:
+      id: "custom-checkpoint-back-button"
+    direction: DOWN
+- tapOn:
+    id: "custom-checkpoint-back-button"
+- scrollUntilVisible:
+    element: "Checkpoint owner: mounted"
+    direction: UP
+- extendedWaitUntil:
+    visible: "Completion count: 1"
+    timeout: 10000
+- assertVisible: "Last completion: NAVIGATED_BACK"
+- assertVisible: "Callback count: 0"
+- assertNotVisible: "Custom checkpoint paywall"
+# The first presentation must release native state so this call can present again.
+- tapOn:
+    id: "hit-custom-checkpoint-button"
+- runFlow:
+    file: ../utils/assert_custom_checkpoint_presenter.yaml
+- assertVisible: "Presentation count: 2"
+- assertVisible: "Callback count: 0"
+- scrollUntilVisible:
+    element:
+      id: "custom-checkpoint-back-button"
+    direction: DOWN
+- tapOn:
+    id: "custom-checkpoint-back-button"
+- scrollUntilVisible:
+    element: "Checkpoint owner: mounted"
+    direction: UP
+- extendedWaitUntil:
+    visible: "Completion count: 2"
+    timeout: 10000
+- assertVisible: "Callback count: 0"
+- assertVisible: "Stale callbacks: 0"
+- assertNotVisible: "Custom checkpoint paywall"
