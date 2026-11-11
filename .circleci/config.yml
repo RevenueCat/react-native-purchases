@@ -464,8 +464,7 @@ jobs:
               -destination 'generic/platform=iOS Simulator' \
               -derivedDataPath ../build/DerivedData \
               -resultBundlePath ../../../build/spm-ci/Debug.xcresult \
-              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
-              | tee ../../../build/spm-ci/Debug.log
+              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
           no_output_timeout: 20m
       - run:
           name: Resync SwiftPM autolinking
@@ -480,8 +479,7 @@ jobs:
               -destination 'generic/platform=iOS' \
               -derivedDataPath ../build/DerivedData \
               -resultBundlePath ../../../build/spm-ci/Release.xcresult \
-              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
-              | tee ../../../build/spm-ci/Release.log
+              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
           no_output_timeout: 20m
       - run:
           name: Verify JavaScript bundles and linked native modules
@@ -622,8 +620,7 @@ jobs:
               -destination 'platform=iOS Simulator,name=iPhone 17' \
               -derivedDataPath ../build/DerivedData \
               -resultBundlePath ../../../build/spm-maestro/Debug.xcresult \
-              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build 2>&1 \
-              | tee ../../../build/spm-maestro/Debug.log
+              -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
             test -s ../build/DerivedData/Build/Products/Debug-iphonesimulator/MaestroTestApp.app/main.jsbundle
           no_output_timeout: 20m
       - run:
@@ -742,6 +739,7 @@ workflows:
           type: approval
           <<: *release-branches
       - revenuecat/tag-current-branch:
+          context: github-bot-public
           ruby_version: "3.3.0"
           requires:
             - wait-for-pr-approval
@@ -754,13 +752,16 @@ workflows:
             - agp9_test_app_android
           <<: *release-branches
       - make-release:
-          context: npm-publishing
+          context:
+            - npm-publishing
+            - github-bot-public
           <<: *release-tags
       - docs-deploy:
           <<: *release-tags
           requires:
             - make-release
       - revenuecat/merge-release-pr:
+          context: github-bot-public
           repo_name: react-native-purchases
           ruby_version: "3.3.0"
           requires:
@@ -773,6 +774,7 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - revenuecat/danger:
+          context: danger-bot
           ruby_version: "3.3.0"
           filters:
             branches:
@@ -785,6 +787,7 @@ workflows:
         - equal: [ "release-train", << pipeline.schedule.name >> ]
     jobs:
       - revenuecat/automatic-bump:
+          context: github-bot-public
           ruby_version: "3.3.0"
 
   manual-trigger-bump:
@@ -792,6 +795,7 @@ workflows:
       equal: [ bump, << pipeline.parameters.action >> ]
     jobs:
       - revenuecat/automatic-bump:
+          context: github-bot-public
           ruby_version: "3.3.0"
 
   maestro-e2e-tests-ios:
@@ -823,4 +827,5 @@ workflows:
      when:
        equal: [ upgrade-hybrid-common, << pipeline.parameters.action >> ]
      jobs:
-       - update-hybrid-common-versions
+       - update-hybrid-common-versions:
+           context: github-bot-public
