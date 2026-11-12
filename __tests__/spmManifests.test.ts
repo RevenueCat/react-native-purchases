@@ -36,28 +36,34 @@ const phcVersionInPodspec = (podspec: string): string => {
   return match[1];
 };
 
-const phcVersionInManifest = (manifest: string): string => {
+const phcRequirementInManifest = (manifest: string): {kind: string; value: string} => {
   const match = manifest.match(
-    /purchases-hybrid-common",\s*exact:\s*"([^"]+)"/
+    /purchases-hybrid-common",\s*(exact|branch):\s*"([^"]+)"/
   );
   if (!match) {
     throw new Error('Could not find the purchases-hybrid-common pin in Package.swift');
   }
-  return match[1];
+  return {kind: match[1], value: match[2]};
 };
 
 describe.each(spmPackages)('$npmName Package.swift', (spmPackage) => {
-  it('pins the same purchases-hybrid-common version as the podspec', () => {
-    expect(phcVersionInManifest(read(spmPackage.manifestPath))).toBe(
-      phcVersionInPodspec(read(spmPackage.podspecPath))
-    );
+  it('uses the PHC 21 development branch with the matching snapshot pod requirement', () => {
+    const requirement = phcRequirementInManifest(read(spmPackage.manifestPath));
+    const podVersion = phcVersionInPodspec(read(spmPackage.podspecPath));
+    // TODO: remove the branch allowance before merging 12.0-dev into main; require exact pin equality. (SDK-4603)
+    if (requirement.kind === 'branch') {
+      expect(requirement.value).toBe('21.0-dev');
+      expect(podVersion).toBe('21.0.0-SNAPSHOT');
+    } else {
+      expect(requirement.value).toBe(podVersion);
+    }
   });
 });
 
 describe('purchases-hybrid-common version', () => {
   it('is the same across both Package.swift manifests', () => {
     const versions = spmPackages.map((spmPackage) =>
-      phcVersionInManifest(read(spmPackage.manifestPath))
+      JSON.stringify(phcRequirementInManifest(read(spmPackage.manifestPath)))
     );
 
     expect(new Set(versions).size).toBe(1);

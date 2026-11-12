@@ -25,6 +25,7 @@ Pod::Spec.new do |spec|
   ]
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommon", '20.7.0'
+  # TODO: before merging 12.0-dev into main, replace this development reference with the published PHC 21 version. (SDK-4603)
+  spec.dependency   "PurchasesHybridCommon", '21.0.0-SNAPSHOT'
   spec.swift_version    = '5.7'
 end

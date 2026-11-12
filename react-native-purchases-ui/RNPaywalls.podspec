@@ -17,6 +17,7 @@ Pod::Spec.new do |spec|
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
   spec.dependency   "React-Core"
-  spec.dependency   "PurchasesHybridCommonUI", '20.7.0'
+  # TODO: before merging 12.0-dev into main, replace this development reference with the published PHC 21 version. (SDK-4603)
+  spec.dependency   "PurchasesHybridCommonUI", '21.0.0-SNAPSHOT'
   spec.swift_version    = '5.7'
 end
