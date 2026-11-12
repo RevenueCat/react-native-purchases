@@ -104,8 +104,9 @@ describe.each(['files_with_version_number', 'files_to_update_phc_version'])(
         if (match.version === null) {
           continue;
         }
-        // TODO: remove before merging into main. Android pins the PHC 20 snapshot; iOS has no PHC 20 pod yet.
-        if (hashName === 'files_to_update_phc_version' && match.version.endsWith('-SNAPSHOT')) {
+        // TODO: remove this Apple snapshot exception before merging 12.0-dev into main. (SDK-4603)
+        if (hashName === 'files_to_update_phc_version' && match.version === '21.0.0-SNAPSHOT') {
+          expect(match.location).toMatch(/^(RNPurchases\.podspec|react-native-purchases-ui\/RNPaywalls\.podspec):/);
           continue;
         }
         versions.set(match.version, [...(versions.get(match.version) || []), match.location]);

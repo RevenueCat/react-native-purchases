@@ -76,5 +76,6 @@ dependencies {
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
+  // TODO: before merging 12.0-dev into main, use the released PHC 21 artifact here. (SDK-4603)
   implementation 'com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:20.7.0'
 }

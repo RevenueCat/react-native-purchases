@@ -18,11 +18,11 @@ files_with_version_number = {
     './src/browser/nativeModule.ts' => ['packageVersion = \'{x}\'']
 }
 files_to_update_phc_version = {
+    # Restore 'Package.swift' and 'react-native-purchases-ui/Package.swift' entries with exact: {x}.
     'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
-    'Package.swift' => ['purchases-hybrid-common", exact: "{x}"'],
+    # TODO: before merging 12.0-dev into main, restore exact SPM pins and their bump patterns. (SDK-4603)
     'react-native-purchases-store-galaxy/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:{x}'],
     'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommonUI", \'{x}\''],
-    'react-native-purchases-ui/Package.swift' => ['purchases-hybrid-common", exact: "{x}"'],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => [
       'com.revenuecat.purchases:purchases-hybrid-common-ui:{x}',

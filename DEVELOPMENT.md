@@ -49,3 +49,14 @@ Make sure the Android device doesn't have any app with the same package name you
 ---
 
 Make sure your Android emulator has play services and you're logged in
+
+## TODO: before merging 12.0-dev into main
+
+Development integration checklist (SDK-4603):
+
+- [ ] Replace temporary SPM branch references with the published PHC 21 version.
+- [ ] Replace Apple PHC snapshot requirements and align Android, TypeScript, and web PHC dependencies with the released PHC 21 artifacts.
+- [ ] Switch the Git-sourced CocoaPods CI default from `21.0-dev` to the same released PHC tag; keep the four-pod Git overrides and smoke coverage.
+- [ ] Refresh dependency lockfiles and validate the final release version chain through core and UI integrations.
+- [ ] Restore both SPM version-bump patterns and remove the development-only exceptions in the SPM/release-pattern tests.
+- [ ] Keep RN 12 beta while RN or Expo SPM support is experimental; confirm stable support and integration coverage before a final release.
