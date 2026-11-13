@@ -80,6 +80,7 @@ export {
   WebPurchaseRedemption,
   WebPurchaseRedemptionResult,
   WebPurchaseRedemptionResultType,
+  DangerousSettings,
 } from "@revenuecat/purchases-typescript-internal";
 
 import { Platform } from "react-native";
@@ -612,6 +613,7 @@ export default class Purchases {
    * @param {String?} [preferredUILocaleOverride] An optional string. Set this to the preferred UI locale to use for RevenueCat UI components.
    * @param {boolean} [useExternalPurchaseCustomLinks=false] Experimental. An optional boolean. iOS-only. Set this to true to make web purchase buttons that open in the external browser go through Apple's external purchase custom link flow.
    * @param {boolean} [enableExternalPurchasesInSimulator=true] Experimental. An optional boolean. iOS-only. Set this to false to make the simulator behave as a device does for a customer who is not eligible for external purchases.
+   * @param {DangerousSettings} [dangerousSettings] An optional object with settings that turn off safeguards of the SDK. Set forceAllowTestStoreInReleaseBuilds to true to allow a Test Store API key in a release build. Only do this for builds that never reach the stores, such as internal builds compiled in release mode.
    *
    * @warning If you use purchasesAreCompletedBy=PurchasesAreCompletedByMyApp, you must also provide a value for storeKitVersion.
    */
@@ -631,6 +633,7 @@ export default class Purchases {
     preferredUILocaleOverride,
     useExternalPurchaseCustomLinks = false,
     enableExternalPurchasesInSimulator = true,
+    dangerousSettings,
     } = configuration;
     const {
       store,
@@ -708,6 +711,13 @@ export default class Purchases {
       }
     }
 
+    if (dangerousSettings?.forceAllowTestStoreInReleaseBuilds) {
+      // tslint:disable-next-line:no-console
+      console.warn(
+        "Warning: dangerousSettings.forceAllowTestStoreInReleaseBuilds is enabled, so release builds configured with a Test Store API key will not crash. Never upload a build with this setting to the stores."
+      );
+    }
+
     RNPurchases.setupPurchases(
       apiKey,
       appUserID,
@@ -725,6 +735,7 @@ export default class Purchases {
       preferredUILocaleOverride,
       useExternalPurchaseCustomLinks,
       enableExternalPurchasesInSimulator,
+      dangerousSettings,
     );
   }
 
