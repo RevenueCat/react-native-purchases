@@ -33,6 +33,7 @@ import {
   WebPurchaseRedemptionResult,
   WebPurchaseRedemptionResultType,
   SyncPurchasesResult,
+  DangerousSettings,
 } from "../dist";
 
 import Purchases from "../dist/purchases";
@@ -208,6 +209,9 @@ async function checkConfigure() {
   const preferredUILocaleOverride: string = "";
   const useExternalPurchaseCustomLinks: boolean = false;
   const enableExternalPurchasesInSimulator: boolean = true;
+  const dangerousSettings: DangerousSettings = {
+    forceAllowTestStoreInReleaseBuilds: false,
+  };
 
   // PurchasesAreCompletedBy == REVENUECAT
   Purchases.configure({
@@ -300,6 +304,10 @@ async function checkConfigure() {
     preferredUILocaleOverride,
     useExternalPurchaseCustomLinks,
     enableExternalPurchasesInSimulator,
+  });
+  Purchases.configure({
+    apiKey,
+    dangerousSettings,
   });
 
   // PurchasesAreCompletedBy == MY_APP

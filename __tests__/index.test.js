@@ -1063,7 +1063,7 @@ describe("Purchases", () => {
     const defaultVerificationMode = "DISABLED"
 
     Purchases.configure({apiKey: "key", appUserID: "user"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1074,7 +1074,7 @@ describe("Purchases", () => {
       },
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "STOREKIT_1", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "MY_APP", undefined, "STOREKIT_1", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1083,7 +1083,7 @@ describe("Purchases", () => {
       userDefaultsSuiteName: "suite name",
       storeKitVersion: STOREKIT_VERSION.DEFAULT,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1097,7 +1097,7 @@ describe("Purchases", () => {
         Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL,
       pendingTransactionsForPrepaidPlansEnabled: true,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL, true, false, true, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1109,7 +1109,7 @@ describe("Purchases", () => {
       shouldShowInAppMessagesAutomatically: false,
       diagnosticsEnabled: true,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, false, defaultVerificationMode, false, true, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, false, defaultVerificationMode, false, true, true, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1122,7 +1122,7 @@ describe("Purchases", () => {
       diagnosticsEnabled: true,
       automaticDeviceIdentifierCollectionEnabled: false,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, false, defaultVerificationMode, false, true, false, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, false, defaultVerificationMode, false, true, false, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1136,7 +1136,7 @@ describe("Purchases", () => {
       automaticDeviceIdentifierCollectionEnabled: false,
       preferredUILocaleOverride: "es_ES",
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, false, defaultVerificationMode, false, true, false, "es_ES", false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", "suite name", "DEFAULT", true, undefined, undefined, false, defaultVerificationMode, false, true, false, "es_ES", false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1144,9 +1144,21 @@ describe("Purchases", () => {
       useExternalPurchaseCustomLinks: true,
       enableExternalPurchasesInSimulator: false,
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, true, false);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, true, false, undefined);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(8);
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      dangerousSettings: {
+        forceAllowTestStoreInReleaseBuilds: true,
+      },
+    });
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true, {forceAllowTestStoreInReleaseBuilds: true});
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("forceAllowTestStoreInReleaseBuilds"));
+    warnSpy.mockRestore();
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(9);
   })
 
   it("configure passes Galaxy store and billing mode through", async () => {
@@ -1158,7 +1170,7 @@ describe("Purchases", () => {
       store: "GALAXY",
       galaxyBillingMode: "PRODUCTION",
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, "GALAXY", "PRODUCTION", true, defaultVerificationMode, false, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, "GALAXY", "PRODUCTION", true, defaultVerificationMode, false, false, true, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1166,7 +1178,7 @@ describe("Purchases", () => {
       store: "GALAXY",
       galaxyBillingMode: "TEST",
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, "GALAXY", "TEST", true, defaultVerificationMode, false, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, "GALAXY", "TEST", true, defaultVerificationMode, false, false, true, undefined, false, true, undefined);
 
     Purchases.configure({
       apiKey: "key",
@@ -1174,7 +1186,7 @@ describe("Purchases", () => {
       store: "GALAXY",
       galaxyBillingMode: "ALWAYS_FAIL",
     });
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, "GALAXY", "ALWAYS_FAIL", true, defaultVerificationMode, false, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, "GALAXY", "ALWAYS_FAIL", true, defaultVerificationMode, false, false, true, undefined, false, true, undefined);
 
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(3);
   })

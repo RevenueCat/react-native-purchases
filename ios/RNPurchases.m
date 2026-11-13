@@ -91,7 +91,14 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                   automaticDeviceIdentifierCollectionEnabled:(BOOL)automaticDeviceIdentifierCollectionEnabled
                   preferredUILocaleOverride:(nullable NSString *)preferredUILocaleOverride
                   useExternalPurchaseCustomLinks:(BOOL)useExternalPurchaseCustomLinks
-                  enableExternalPurchasesInSimulator:(BOOL)enableExternalPurchasesInSimulator) {
+                  enableExternalPurchasesInSimulator:(BOOL)enableExternalPurchasesInSimulator
+                  dangerousSettings:(nullable NSDictionary *)dangerousSettingsDictionary) {
+    // isEqual:@YES instead of boolValue, which would crash on NSNull.
+    BOOL forceAllowTestStoreInReleaseBuilds = [[dangerousSettingsDictionary.mappingNSNullToNil objectForKey:@"forceAllowTestStoreInReleaseBuilds"] isEqual:@YES];
+    // YES is RCDangerousSettings' default for autoSyncPurchases, which this initializer requires.
+    RCDangerousSettings *dangerousSettings = forceAllowTestStoreInReleaseBuilds
+        ? [[RCDangerousSettings alloc] initWithAutoSyncPurchases:YES forceAllowTestStoreInReleaseBuilds:YES]
+        : nil;
     RCPurchases *purchases = [RCPurchases configureWithAPIKey:apiKey.mappingNSNullToNil
                                                     appUserID:appUserID.mappingNSNullToNil
                                       purchasesAreCompletedBy:purchasesAreCompletedBy.mappingNSNullToNil
@@ -99,7 +106,7 @@ RCT_EXPORT_METHOD(setupPurchases:(NSString *)apiKey
                                                platformFlavor:self.platformFlavor
                                         platformFlavorVersion:self.platformFlavorVersion
                                               storeKitVersion:storeKitVersion.mappingNSNullToNil
-                                            dangerousSettings:nil
+                                            dangerousSettings:dangerousSettings
                          shouldShowInAppMessagesAutomatically:shouldShowInAppMessagesAutomatically
                                              verificationMode:entitlementVerificationMode.mappingNSNullToNil
                                            diagnosticsEnabled:diagnosticsEnabled
