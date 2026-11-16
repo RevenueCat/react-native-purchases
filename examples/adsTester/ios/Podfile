@@ -15,6 +15,15 @@ if linkage != nil
 end
 
 target 'adsTester' do
+  # Git-sourced dependencies for the internal CocoaPods compatibility check.
+  # TODO: before merging 12.0-dev into main, pin the PHC release and change :branch to :tag. (SDK-4603)
+  phc_version = '21.0-dev'
+  native_ios_version = '5.103.0'
+  pod 'RevenueCat', :git => 'https://github.com/RevenueCat/purchases-ios.git', :tag => native_ios_version
+  pod 'RevenueCatUI', :git => 'https://github.com/RevenueCat/purchases-ios.git', :tag => native_ios_version
+  pod 'PurchasesHybridCommon', :git => 'https://github.com/RevenueCat/purchases-hybrid-common.git', :branch => phc_version
+  pod 'PurchasesHybridCommonUI', :git => 'https://github.com/RevenueCat/purchases-hybrid-common.git', :branch => phc_version
+
   config = use_native_modules!
 
   use_react_native!(

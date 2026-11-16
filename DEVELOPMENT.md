@@ -60,3 +60,12 @@ Development integration checklist (SDK-4603):
 - [ ] Refresh dependency lockfiles and validate the final release version chain through core and UI integrations.
 - [ ] Restore both SPM version-bump patterns and remove the development-only exceptions in the SPM/release-pattern tests.
 - [ ] Keep RN 12 beta while RN or Expo SPM support is experimental; confirm stable support and integration coverage before a final release.
+
+## Git-sourced CocoaPods CI
+
+- `examples/purchaseTesterTypescript/ios/Podfile`
+- `examples/adsTester/ios/Podfile`
+- `e2e-tests/MaestroTestApp/ios/Podfile`
+- `examples/purchaseTesterExpo/app.json` (`expo-build-properties` extraPods)
+
+- [ ] TODO (SDK-4603): before merging `12.0-dev` into main, replace every PHC `21.0-dev` Git source above with the final release tag and restore the matching tag bump patterns. Keep native core/UI tags aligned with the PHC podspecs.

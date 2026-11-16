@@ -1,0 +1,7 @@
+appId: ${RC_SMOKE_APP_ID}
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: COCOAPODS_SMOKE_PASSED
+    timeout: 30000

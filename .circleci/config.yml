@@ -155,30 +155,54 @@ jobs:
           tools: node,yarn,ruby
       - install-dependencies-ios-build
       - run:
+          name: Use the committed CocoaPods smoke screen
+          command: |
+            cp e2e-tests/CocoaPodsSmokeTest/App.js 'examples/purchaseTesterExpo/app/(tabs)/index.tsx'
+            cp e2e-tests/CocoaPodsSmokeTest/ExpoLayout.tsx examples/purchaseTesterExpo/app/_layout.tsx
+            cp e2e-tests/CocoaPodsSmokeTest/ExpoLayout.tsx 'examples/purchaseTesterExpo/app/(tabs)/_layout.tsx'
+      - run:
           name: Install Expo CLI
           command: npm install -g expo-cli
       - run:
           name: Prepare packages for Expo
           command: yarn prepare-expo
       - run:
-          name: Install dependencies for Expo app
+          name: Install freshly packed SDKs in the Expo app
           working_directory: examples/purchaseTesterExpo
-          command: yarn install
+          command: npm install
       - run:
           name: Generate iOS project
           working_directory: examples/purchaseTesterExpo
-          command: npx expo prebuild --platform ios --no-install
+          command: |
+            npx expo prebuild --clean --platform ios --no-install
+            cp ios/Podfile /tmp/expo-git-pods-Podfile
+            npx expo prebuild --clean --platform ios --no-install
+            cmp ios/Podfile /tmp/expo-git-pods-Podfile
       - revenuecat/install-gem-mac-dependencies:
           cache-version: expo-v3
       - rn/pod_install:
           cache: false
           pod_install_directory: examples/purchaseTesterExpo/ios
-          pod_install_command: pod install --repo-update
+          pod_install_command: bundle exec pod install --repo-update
       - run:
           name: Build iOS Expo app
           working_directory: examples/purchaseTesterExpo
           command: |
-            xcodebuild -workspace ios/purchaseTesterExpo.xcworkspace -scheme purchaseTesterExpo -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16' -derivedDataPath ~/DerivedData -UseModernBuildSystem=YES
+            xcodebuild -workspace ios/purchaseTesterExpo.xcworkspace -scheme purchaseTesterExpo -configuration Release -destination 'platform=iOS Simulator,name=iPhone 16' -derivedDataPath ../../build/expo-cocoapods -UseModernBuildSystem=YES
+      - revenuecat/install-maestro
+      - run:
+          name: Verify CocoaPods resources and call Purchases through the native bridge
+          command: |
+            set -euo pipefail
+            app=build/expo-cocoapods/Build/Products/Release-iphonesimulator/purchaseTesterExpo.app
+            test -n "$(find "$app" -name PurchasesHybridCommon.bundle -type d -print -quit)"
+            test -n "$(find "$app" -name RevenueCat_RevenueCatUI.bundle -type d -print -quit)"
+            xcrun simctl bootstatus "iPhone 16" -b
+            xcrun simctl install booted "$app"
+            RC_SMOKE_APP_ID=com.revenuecat.sampleapp maestro test \
+              --format junit --output build/expo-cocoapods-results/report.xml e2e-tests/CocoaPodsSmokeTest/flow.yaml
+      - store_test_results:
+          path: build/expo-cocoapods-results
 
   expo_android:
     executor:
@@ -246,8 +270,7 @@ jobs:
           cache-version: adstester-v1
       - run:
           name: Pod Install
-          working_directory: examples/adsTester/ios
-          command: bundle exec pod install --repo-update
+          command: bundle exec pod update RevenueCat RevenueCatUI PurchasesHybridCommon PurchasesHybridCommonUI --project-directory=examples/adsTester/ios
       - run:
           name: Build iOS
           command: |
@@ -408,14 +431,34 @@ jobs:
       - revenuecat/install-gem-mac-dependencies:
           cache-version: v2
       - run:
-          name: Pod Install
-          command: bundle exec fastlane pod_install_and_update_if_needed
+          name: Use the committed CocoaPods smoke screen
+          command: |
+            cp e2e-tests/CocoaPodsSmokeTest/App.js examples/purchaseTesterTypescript/App.tsx
+            yarn build
+            yarn workspace react-native-purchases-ui prepare
+      - run:
+          name: Install Git-sourced CocoaPods dependencies
+          command: bundle exec pod update RevenueCat RevenueCatUI PurchasesHybridCommon PurchasesHybridCommonUI --project-directory=examples/purchaseTesterTypescript/ios
       - run:
           name: Build iOS
           # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
           command: |
             export RCT_NO_LAUNCH_PACKAGER=true \
-            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath ~/DerivedData  -UseModernBuildSystem=YES
+            && xcodebuild -workspace examples/purchaseTesterTypescript/ios/PurchaseTester.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 16' -scheme 'PurchaseTester' -parallelizeTargets -configuration Release -derivedDataPath build/bare-cocoapods  -UseModernBuildSystem=YES
+      - revenuecat/install-maestro
+      - run:
+          name: Verify CocoaPods resources and call Purchases through the native bridge
+          command: |
+            set -euo pipefail
+            app=build/bare-cocoapods/Build/Products/Release-iphonesimulator/PurchaseTester.app
+            test -n "$(find "$app" -name PurchasesHybridCommon.bundle -type d -print -quit)"
+            test -n "$(find "$app" -name RevenueCat_RevenueCatUI.bundle -type d -print -quit)"
+            xcrun simctl bootstatus "iPhone 16" -b
+            xcrun simctl install booted "$app"
+            RC_SMOKE_APP_ID=com.revenuecat.sampleapp maestro test \
+              --format junit --output build/bare-cocoapods-results/report.xml e2e-tests/CocoaPodsSmokeTest/flow.yaml
+      - store_test_results:
+          path: build/bare-cocoapods-results
 
   ios_spm_build:
     description: "Build both packaged SDKs in SPMTestApp (React Native 0.88)"
