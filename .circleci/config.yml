@@ -199,10 +199,7 @@ jobs:
             test -n "$(find "$app" -name RevenueCat_RevenueCatUI.bundle -type d -print -quit)"
             xcrun simctl bootstatus "iPhone 16" -b
             xcrun simctl install booted "$app"
-            maestro test \
-              --format junit --output build/expo-cocoapods-results/report.xml e2e-tests/CocoaPodsSmokeTest/flow.yaml
-      - store_test_results:
-          path: build/expo-cocoapods-results
+            maestro test e2e-tests/CocoaPodsSmokeTest/flow.yaml
 
   expo_android:
     executor:
@@ -271,7 +268,7 @@ jobs:
       - run:
           name: Pod Install
           working_directory: examples/adsTester/ios
-          command: BUNDLE_GEMFILE="$PWD/../../../Gemfile" bundle exec pod update RevenueCat RevenueCatUI PurchasesHybridCommon PurchasesHybridCommonUI
+          command: BUNDLE_GEMFILE="$PWD/../../../Gemfile" bundle exec pod install --repo-update
       - run:
           name: Build iOS
           command: |
@@ -457,10 +454,7 @@ jobs:
             test -n "$(find "$app" -name RevenueCat_RevenueCatUI.bundle -type d -print -quit)"
             xcrun simctl bootstatus "iPhone 16" -b
             xcrun simctl install booted "$app"
-            maestro test \
-              --format junit --output build/bare-cocoapods-results/report.xml e2e-tests/CocoaPodsSmokeTest/flow.yaml
-      - store_test_results:
-          path: build/bare-cocoapods-results
+            maestro test e2e-tests/CocoaPodsSmokeTest/flow.yaml
 
   ios_spm_build:
     description: "Build both packaged SDKs in SPMTestApp (React Native 0.88)"
