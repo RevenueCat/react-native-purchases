@@ -1,6 +1,1 @@
-import React from 'react';
-import {Slot} from 'expo-router';
-
-export default function CocoaPodsSmokeLayout() {
-  return <Slot />;
-}
+export {Slot as default} from 'expo-router';

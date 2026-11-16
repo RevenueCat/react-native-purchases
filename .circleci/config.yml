@@ -270,7 +270,8 @@ jobs:
           cache-version: adstester-v1
       - run:
           name: Pod Install
-          command: bundle exec pod update RevenueCat RevenueCatUI PurchasesHybridCommon PurchasesHybridCommonUI --project-directory=examples/adsTester/ios
+          working_directory: examples/adsTester/ios
+          command: BUNDLE_GEMFILE="$PWD/../../../Gemfile" bundle exec pod update RevenueCat RevenueCatUI PurchasesHybridCommon PurchasesHybridCommonUI
       - run:
           name: Build iOS
           command: |
@@ -438,7 +439,8 @@ jobs:
             yarn workspace react-native-purchases-ui prepare
       - run:
           name: Install Git-sourced CocoaPods dependencies
-          command: bundle exec pod update RevenueCat RevenueCatUI PurchasesHybridCommon PurchasesHybridCommonUI --project-directory=examples/purchaseTesterTypescript/ios
+          working_directory: examples/purchaseTesterTypescript/ios
+          command: BUNDLE_GEMFILE="$PWD/../../../Gemfile" bundle exec pod update RevenueCat RevenueCatUI PurchasesHybridCommon PurchasesHybridCommonUI
       - run:
           name: Build iOS
           # Using command directly instead of rn/ios_build to avoid the using xcpretty which is not installed by default.
