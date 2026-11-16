@@ -199,7 +199,7 @@ jobs:
             test -n "$(find "$app" -name RevenueCat_RevenueCatUI.bundle -type d -print -quit)"
             xcrun simctl bootstatus "iPhone 16" -b
             xcrun simctl install booted "$app"
-            RC_SMOKE_APP_ID=com.revenuecat.sampleapp maestro test \
+            maestro test \
               --format junit --output build/expo-cocoapods-results/report.xml e2e-tests/CocoaPodsSmokeTest/flow.yaml
       - store_test_results:
           path: build/expo-cocoapods-results
@@ -457,7 +457,7 @@ jobs:
             test -n "$(find "$app" -name RevenueCat_RevenueCatUI.bundle -type d -print -quit)"
             xcrun simctl bootstatus "iPhone 16" -b
             xcrun simctl install booted "$app"
-            RC_SMOKE_APP_ID=com.revenuecat.sampleapp maestro test \
+            maestro test \
               --format junit --output build/bare-cocoapods-results/report.xml e2e-tests/CocoaPodsSmokeTest/flow.yaml
       - store_test_results:
           path: build/bare-cocoapods-results

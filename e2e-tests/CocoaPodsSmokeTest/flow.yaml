@@ -1,4 +1,4 @@
-appId: ${RC_SMOKE_APP_ID}
+appId: com.revenuecat.sampleapp
 ---
 - launchApp:
     clearState: true
