@@ -463,7 +463,6 @@ jobs:
               -configuration Debug -sdk iphonesimulator \
               -destination 'generic/platform=iOS Simulator' \
               -derivedDataPath ../build/DerivedData \
-              -resultBundlePath ../../../build/spm-ci/Debug.xcresult \
               -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
           no_output_timeout: 20m
       - run:
@@ -478,7 +477,6 @@ jobs:
               -configuration Release -sdk iphoneos \
               -destination 'generic/platform=iOS' \
               -derivedDataPath ../build/DerivedData \
-              -resultBundlePath ../../../build/spm-ci/Release.xcresult \
               -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
           no_output_timeout: 20m
       - run:
@@ -504,8 +502,6 @@ jobs:
             - ~/.npm
             - ~/Library/Caches/ReactNative/spm-artifacts
             - ~/Library/Caches/org.swift.swiftpm
-      - store_artifacts:
-          path: build/spm-ci
 
   make-release:
     description: "Publishes the new version and creates a github release"
@@ -549,8 +545,6 @@ jobs:
           command: bundle exec fastlane run_maestro_e2e_tests_ios
           no_output_timeout: 15m
       - store_test_results:
-          path: fastlane/test_output
-      - store_artifacts:
           path: fastlane/test_output
 
   run-maestro-e2e-tests-spm-ios:
@@ -619,7 +613,6 @@ jobs:
               -configuration Debug -sdk iphonesimulator \
               -destination 'platform=iOS Simulator,name=iPhone 17' \
               -derivedDataPath ../build/DerivedData \
-              -resultBundlePath ../../../build/spm-maestro/Debug.xcresult \
               -jobs 6 CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
             test -s ../build/DerivedData/Build/Products/Debug-iphonesimulator/MaestroTestApp.app/main.jsbundle
           no_output_timeout: 20m
@@ -643,8 +636,6 @@ jobs:
             - ~/Library/Caches/org.swift.swiftpm
       - store_test_results:
           path: build/spm-maestro/test_output
-      - store_artifacts:
-          path: build/spm-maestro
 
   run-maestro-e2e-tests-android:
     machine:
@@ -675,8 +666,6 @@ jobs:
           command: bundle exec fastlane run_maestro_e2e_tests_android
           no_output_timeout: 15m
       - store_test_results:
-          path: fastlane/test_output
-      - store_artifacts:
           path: fastlane/test_output
 
   update-hybrid-common-versions:
