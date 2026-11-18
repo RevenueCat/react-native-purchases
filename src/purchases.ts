@@ -60,7 +60,6 @@ export interface SyncPurchasesResult {
 
 import { normalizingRejections } from "./normalizingRejections";
 import { shouldUseBrowserMode } from "./utils/environment";
-import { browserNativeModuleRNPurchases } from "./browser/nativeModule";
 
 // This export is kept to keep backwards compatibility to any possible users using this file directly
 export {
@@ -112,9 +111,19 @@ const NATIVE_MODULE_ERROR =
   `- If using bare React Native, run 'pod install' and rebuild the app\n` +
   `- Check that you have rebuilt the app after installing the package\n`;
 
+// Browser Mode is only used on web, and in development builds in Expo Go / Rork Sandbox.
+// In production iOS/Android bundles, Metro inlines `Platform.OS` and `__DEV__`, removes this
+// `require()` and so doesn't bundle the web SDK (`@revenuecat/purchases-js-hybrid-mappings`).
+// See: https://github.com/RevenueCat/react-native-purchases/issues/1643
+const browserNativeModule: typeof import("./browser/nativeModule") | null =
+  // tslint:disable-next-line:no-var-requires
+  Platform.OS === "web" || __DEV__ ? require("./browser/nativeModule") : null;
+
 // Get the native module or use the browser implementation
 const usingBrowserMode = shouldUseBrowserMode();
-const nativeModule = usingBrowserMode ? browserNativeModuleRNPurchases : NativeModules.RNPurchases;
+const nativeModule = usingBrowserMode
+  ? browserNativeModule?.browserNativeModuleRNPurchases
+  : NativeModules.RNPurchases;
 const RNPurchases = nativeModule ? normalizingRejections(nativeModule) : nativeModule;
 
 // Only create event emitter if native module is available to avoid crash on import
