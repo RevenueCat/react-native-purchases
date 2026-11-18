@@ -1059,6 +1059,11 @@ describe("Purchases", () => {
     expect(customerInfo).toEqual(customerInfoStub);
   })
 
+  it("configure passes undefined appUserID to native when none is given", async () => {
+    Purchases.configure({apiKey: "key"});
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", undefined, "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, "DISABLED", false, false, true, undefined, false, true);
+  })
+
   it("configure works", async () => {
     const defaultVerificationMode = "DISABLED"
 
