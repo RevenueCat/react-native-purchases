@@ -14,10 +14,10 @@ PODS:
   - hermes-engine (250829098.0.17):
     - hermes-engine/Pre-built (= 250829098.0.17)
   - hermes-engine/Pre-built (250829098.0.17)
-  - PurchasesHybridCommon (20.10.0):
+  - PurchasesHybridCommon (20.10.1):
     - RevenueCat (= 5.103.1)
-  - PurchasesHybridCommonUI (20.10.0):
-    - PurchasesHybridCommon (= 20.10.0)
+  - PurchasesHybridCommonUI (20.10.1):
+    - PurchasesHybridCommon (= 20.10.1)
     - RevenueCatUI (= 5.103.1)
   - RCT-Folly (2024.11.18.00):
     - RCT-Folly/Default (= 2024.11.18.00)
@@ -1681,11 +1681,11 @@ PODS:
   - RevenueCat (5.103.1)
   - RevenueCatUI (5.103.1):
     - RevenueCat (= 5.103.1)
-  - RNPaywalls (11.0.3):
-    - PurchasesHybridCommonUI (= 20.10.0)
+  - RNPaywalls (11.0.4):
+    - PurchasesHybridCommonUI (= 20.10.1)
     - React-Core
-  - RNPurchases (11.0.3):
-    - PurchasesHybridCommon (= 20.10.0)
+  - RNPurchases (11.0.4):
+    - PurchasesHybridCommon (= 20.10.1)
     - React-Core
   - RNScreens (4.28.0):
     - hermes-engine
@@ -2027,8 +2027,8 @@ SPEC CHECKSUMS:
   fmt: ba0886e864ebb21d14c98b2e12e164b8002f5b93
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 63c5db7d529c36335fada6582fd293ae2a105d77
-  PurchasesHybridCommon: 078b06728adb4edd8fbdd029c49dcb7e7a7ed5db
-  PurchasesHybridCommonUI: f472fac7c7b8c7e41d816400d7ef0e296b1b702b
+  PurchasesHybridCommon: 658f164eb275622416f2ff0e51701acc53983a41
+  PurchasesHybridCommonUI: 3078c009cb67b781b9c669b7e947b7e5e23d17c5
   RCT-Folly: 82921e585c0400eda46fac1068297aa9dfb035e4
   RCTDeprecation: 5cc865306ce4974b7a57ddbc575fd1f3fef41957
   RCTRequired: ea6f2c41f2670961ce9a48a4bf17a190dd53e493
@@ -2108,8 +2108,8 @@ SPEC CHECKSUMS:
   ReactNativeDependencies: 94c922c39e0e6150ee9ad05e2ca1946e0ef55783
   RevenueCat: 8ba92be7c408dcfc3864742a82cd3a61514872b3
   RevenueCatUI: aa6e4f0ebfb0c83b554723963b1b08ed1675302c
-  RNPaywalls: add377d5e2f995c80fe53caf7e5a0717dedba5fd
-  RNPurchases: 1c6d98a95425a044b4735f69c234f1fc199563f6
+  RNPaywalls: f7947aedd9e81b328c4a181da3b27000bf4945a3
+  RNPurchases: d150e236c641fe3862f8cf58d8a43c081967c92c
   RNScreens: 038dc998fe1ab34778d9e8f4a33318a6c7a5bde8
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
