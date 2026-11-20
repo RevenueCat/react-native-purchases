@@ -12,12 +12,6 @@
 @import PurchasesHybridCommonUI;
 @import RevenueCatUI;
 
-@interface PaywallViewManager ()
-
-@property (nonatomic, strong) id proxyIfAvailable;
-
-@end
-
 @implementation PaywallViewManager
 
 RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary);
@@ -39,33 +33,19 @@ RCT_EXPORT_VIEW_PROPERTY(onInteraction, RCTDirectEventBlock)
 
 RCT_EXPORT_MODULE(PaywallView)
 
-- (instancetype)init {
-    if ((self = [super init])) {
-        if (@available(iOS 15.0, *)) {
-            _proxyIfAvailable = [[PaywallProxy alloc] init];
-        }
-    }
-
-    return self;
-}
-
-- (PaywallProxy *)proxy API_AVAILABLE(ios(15.0)){
-    return (PaywallProxy *)self.proxyIfAvailable;
-}
-
 - (UIView *)view
 {
     if (@available(iOS 15.0, *)) {
+        PaywallProxy *proxy = [[PaywallProxy alloc] init];
         PaywallViewCreationParams *params = [PaywallViewCreationParams new];
-        RCPaywallViewController *viewController = [self.proxy createPaywallViewWithParams:params];
+        RCPaywallViewController *viewController = [proxy createPaywallViewWithParams:params];
         PaywallViewWrapper *wrapper = [[PaywallViewWrapper alloc] initWithPaywallViewController:viewController];
-        PaywallProxy *proxy = self.proxy;
         wrapper.createViewController = ^UIViewController * _Nullable(HybridPurchaseLogicBridge * _Nonnull bridge) {
             PaywallViewCreationParams *params = [PaywallViewCreationParams new];
             params.purchaseLogicBridge = bridge;
             return [proxy createPaywallViewWithParams:params];
         };
-        self.proxy.delegate = wrapper.eventForwarder;
+        proxy.delegate = wrapper.eventForwarder;
 
         return wrapper;
     } else {
