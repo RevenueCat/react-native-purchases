@@ -107,6 +107,20 @@ lane :automatic_bump do |options|
   bump(options)
 end
 
+desc "Open a hotfix release PR that patches an older release with a PR merged into main. Usage: fastlane hotfix pr:1234 version:9.16.0"
+lane :hotfix do |options|
+  create_hotfix(
+    pr_number: options[:pr],
+    version: options[:version],
+    changelog_latest_path: changelog_latest_path,
+    changelog_path: changelog_path,
+    files_to_update: files_with_version_number,
+    files_to_update_on_latest_stable_releases: files_to_update_on_latest_stable_releases,
+    repo_name: internal_repo_name,
+    dry_run: options[:dry_run]
+  )
+end
+
 desc "Make github release"
 lane :github_release do |options|
   create_github_release(

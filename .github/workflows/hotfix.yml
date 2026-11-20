@@ -1,0 +1,17 @@
+name: Hotfix
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  hotfix:
+    if: github.repository_visibility != 'public'
+    permissions:
+      issues: write
+      pull-requests: write
+    uses: revenuecat/sdk-github-workflows/.github/workflows/hotfix.yml@221e47fa39eca4babbd96a999a5140ba6a44ec4a # v11.1.1
+    secrets:
+      CIRCLECI_TOKEN: ${{ secrets.CIRCLECI_TOKEN }}

@@ -37,8 +37,14 @@ aliases:
 parameters:
   action:
     type: enum
-    enum: [build, upgrade-hybrid-common, bump]
+    enum: [build, upgrade-hybrid-common, bump, hotfix]
     default: build
+  hotfix_pr:
+    type: integer
+    default: 0
+  hotfix_version:
+    type: string
+    default: ''
   version:
     type: string
     default: ''
@@ -694,6 +700,8 @@ workflows:
           equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
       - not:
           equal: [ bump, << pipeline.parameters.action >> ]
+      - not:
+          equal: [ hotfix, << pipeline.parameters.action >> ]
     jobs:
       # Testing phase - runs on all branches
       - analyse_js
@@ -801,6 +809,16 @@ workflows:
       - revenuecat/automatic-bump:
           context: github-bot-internal
           ruby_version: "3.3.0"
+
+  manual-trigger-hotfix:
+    when:
+      equal: [ hotfix, << pipeline.parameters.action >> ]
+    jobs:
+      - revenuecat/hotfix:
+          context: github-bot-internal
+          ruby_version: "3.3.0"
+          pr_number: << pipeline.parameters.hotfix_pr >>
+          version: << pipeline.parameters.hotfix_version >>
 
   maestro-e2e-tests-ios:
     when:
