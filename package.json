@@ -129,7 +129,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-js-hybrid-mappings": "20.10.1",
-    "@revenuecat/purchases-typescript-internal": "20.10.1"
+    "@revenuecat/purchases-js-hybrid-mappings": "20.11.0",
+    "@revenuecat/purchases-typescript-internal": "20.11.0"
   }
 }
