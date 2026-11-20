@@ -41,7 +41,7 @@ checksum = "sha256:525c9b29bb0263d687de60a4cec0e2a6db876a8eb032369e5795eca71e7c3
 url = "https://nodejs.org/dist/v26.13.0/node-v26.13.0-darwin-x64.tar.gz"
 
 [[tools.ruby]]
-version = "3.3.0"
+version = "3.3.14"
 backend = "core:ruby"
 
 [tools.ruby.options]
@@ -51,23 +51,23 @@ ruby_build_repo = "https://github.com/rbenv/ruby-build.git"
 ruby_install = "false"
 
 [tools.ruby."platforms.linux-arm64"]
-checksum = "sha256:d03e0e1dc566aa6512baffb9373be48d36d4fde3ca9b58e0184eb5113a507eda"
-url = "https://github.com/jdx/ruby/releases/download/3.3.0-4/ruby-3.3.0.arm64_linux.tar.gz"
+checksum = "sha256:0cc7d58912e0eb507cd122cdf46e48f48352a9a247752187471e4eac04bf3337"
+url = "https://github.com/jdx/ruby/releases/download/3.3.14-1/ruby-3.3.14.arm64_linux.tar.gz"
 provenance = "github-attestations"
 
 [tools.ruby."platforms.linux-x64"]
-checksum = "sha256:7b2cec2a09b60b225b2b216938332ea009cf17dd21b9a2096aeaf963df957641"
-url = "https://github.com/jdx/ruby/releases/download/3.3.0-4/ruby-3.3.0.x86_64_linux.tar.gz"
+checksum = "sha256:0d9eeb16d9a962fd5ff3e2bf7f2c2df7017e7ffe98fb2af5418381429f3ee333"
+url = "https://github.com/jdx/ruby/releases/download/3.3.14-1/ruby-3.3.14.x86_64_linux.tar.gz"
 provenance = "github-attestations"
 
 [tools.ruby."platforms.macos-arm64"]
-checksum = "sha256:0f3be0a98f46c6771f546ae753a6affd5f87dda4e5fbb222424c39a7fa82a99a"
-url = "https://github.com/jdx/ruby/releases/download/3.3.0-4/ruby-3.3.0.macos.tar.gz"
+checksum = "sha256:f06fa214ee67e5642aa99ff9ba1ed2afbe09892c0b4731f1b266fd9fc433e02c"
+url = "https://github.com/jdx/ruby/releases/download/3.3.14-1/ruby-3.3.14.macos.tar.gz"
 provenance = "github-attestations"
 
 [tools.ruby."platforms.macos-x64"]
-checksum = "sha256:96518814d9832bece92a85415a819d4893b307db5921ae1f0f751a9a89a56b7d"
-url = "https://cache.ruby-lang.org/pub/ruby/3.3/ruby-3.3.0.tar.gz"
+checksum = "sha256:d0438ee291b0cacaf97c7a71df4c939d7f3265c8c2d1b8ffe27311f71fc680b0"
+url = "https://cache.ruby-lang.org/pub/ruby/3.3/ruby-3.3.14.tar.gz"
 
 [[tools.yarn]]
 version = "3.6.1"

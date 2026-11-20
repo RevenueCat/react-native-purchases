@@ -733,7 +733,7 @@ workflows:
           <<: *release-branches
       - revenuecat/tag-current-branch:
           context: github-bot-internal
-          ruby_version: "3.3.0"
+          ruby_version: "3.3.14"
           requires:
             - wait-for-pr-approval
             - analyse_js
@@ -761,7 +761,7 @@ workflows:
       - revenuecat/merge-release-pr:
           context: github-bot-internal
           repo_name: react-native-purchases_internal
-          ruby_version: "3.3.0"
+          ruby_version: "3.3.14"
           requires:
             - docs-deploy
           <<: *release-tags
@@ -787,7 +787,7 @@ workflows:
     jobs:
       - revenuecat/danger:
           context: danger-bot
-          ruby_version: "3.3.0"
+          ruby_version: "3.3.14"
           filters:
             branches:
               ignore: main
@@ -800,7 +800,7 @@ workflows:
     jobs:
       - revenuecat/automatic-bump:
           context: github-bot-internal
-          ruby_version: "3.3.0"
+          ruby_version: "3.3.14"
 
   manual-trigger-bump:
     when:
@@ -808,7 +808,7 @@ workflows:
     jobs:
       - revenuecat/automatic-bump:
           context: github-bot-internal
-          ruby_version: "3.3.0"
+          ruby_version: "3.3.14"
 
   manual-trigger-hotfix:
     when:

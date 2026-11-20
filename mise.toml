@@ -8,4 +8,4 @@ compile = false
 
 [tools]
 java = "liberica-17.0.6"
-ruby = "3.3.0"
+ruby = "3.3.14"
