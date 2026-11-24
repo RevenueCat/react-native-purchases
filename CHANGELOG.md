@@ -1,3 +1,8 @@
+## 10.16.1
+## RevenueCat SDK
+### 🐞 Bugfixes
+* fix: Use the native default for entitlementVerificationMode via Álvaro Brey (@AlvaroBrey)
+
 ## 10.16.0
 ## RevenueCat SDK
 ### 🐞 Bugfixes

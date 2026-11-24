@@ -30,7 +30,8 @@ files_to_update_phc_version = {
 files_to_update_on_latest_stable_releases = {
   './scripts/docs/index.html' => ['react-native-purchases-docs/{x}/']
 }
-repo_name = 'react-native-purchases'
+internal_repo_name = 'react-native-purchases_internal'
+public_repo_name = 'react-native-purchases'
 package_name = 'react-native-purchases'
 changelog_latest_path = './CHANGELOG.latest.md'
 changelog_path = './CHANGELOG.md'
@@ -51,7 +52,7 @@ lane :bump do |options|
     files_to_update: files_with_version_number,
     files_to_update_without_prerelease_modifiers: {},
     files_to_update_on_latest_stable_releases: files_to_update_on_latest_stable_releases,
-    repo_name: repo_name,
+    repo_name: internal_repo_name,
     github_rate_limit: options[:github_rate_limit],
     editor: options[:editor],
     next_version: options[:next_version],
@@ -59,7 +60,8 @@ lane :bump do |options|
     hybrid_common_version: phc_version,
     versions_file_path: versions_path,
     is_prerelease: options[:is_prerelease],
-    include_purchases_js: true
+    include_purchases_js: true,
+    omit_pr_references_in_changelog_files: true
   )
   update_hybrids_versions_file(
     versions_file_path: versions_path,
@@ -85,7 +87,7 @@ end
 desc "Automatically bumps version, edit changelog, and create pull request"
 lane :automatic_bump do |options|
   next_version, type_of_bump = determine_next_version_using_labels(
-    repo_name: repo_name,
+    repo_name: internal_repo_name,
     github_rate_limit: options[:github_rate_limit]
   )
   options[:next_version] = next_version
@@ -104,7 +106,7 @@ desc "Make github release"
 lane :github_release do |options|
   create_github_release(
     version: options[:version],
-    repo_name: repo_name,
+    repo_name: public_repo_name,
     github_api_token: ENV["GITHUB_TOKEN"],
     changelog_latest_path: changelog_latest_path,
     upload_assets: []
@@ -197,7 +199,7 @@ lane :update_hybrid_common do |options|
   end
 
   bump_phc_version(
-    repo_name: 'react-native-purchases',
+    repo_name: internal_repo_name,
     files_to_update: files_to_update_phc_version,
     current_version: current_phc_version,
     next_version: new_version_number,
@@ -222,7 +224,7 @@ lane :update_hybrid_common do |options|
   if options[:open_pr] && options[:automatic_release]
     enable_auto_merge_for_pr(
       github_token: ENV["GITHUB_TOKEN"],
-      repo_name: 'react-native-purchases',
+      repo_name: internal_repo_name,
       base_branch: 'main',
       merge_method: 'SQUASH'
     )
@@ -286,7 +288,7 @@ end
 
 desc "Trigger bump"
 lane :trigger_bump do
-  trigger_action_in_circle_ci(action: 'bump', repo_name: repo_name)
+  trigger_action_in_circle_ci(action: 'bump', repo_name: internal_repo_name)
 end
 
 ###############################################################################
