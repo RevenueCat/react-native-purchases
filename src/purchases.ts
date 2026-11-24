@@ -601,7 +601,7 @@ export default class Purchases {
    * @param {String?} appUserID An optional unique id for identifying the user. Needs to be a string.
    * @param {PurchasesAreCompletedBy} [purchasesAreCompletedBy=PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT] Set this to an instance of PurchasesAreCompletedByMyApp if you have your own IAP implementation and want to use only RevenueCat's backend. Default is PURCHASES_ARE_COMPLETED_BY_TYPE.REVENUECAT.
    * @param {STOREKIT_VERSION} [storeKitVersion=DEFAULT] iOS-only. Defaults to STOREKIT_2. StoreKit 2 is only available on iOS 16+. StoreKit 1 will be used for previous iOS versions regardless of this setting.
-   * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode=ENTITLEMENT_VERIFICATION_MODE.DISABLED] Sets the entitlement verifciation mode to use. For more details, check https://rev.cat/trusted-entitlements
+   * @param {ENTITLEMENT_VERIFICATION_MODE} [entitlementVerificationMode] Sets the entitlement verifciation mode to use. If not set, the native SDK's default is used (ENTITLEMENT_VERIFICATION_MODE.INFORMATIONAL). For more details, check https://rev.cat/trusted-entitlements
    * @param {boolean} [useAmazon=false] An optional boolean. Android-only. Set this to true to enable Amazon on compatible devices.
    * @param {String?} userDefaultsSuiteName An optional string. iOS-only, will be ignored for Android.
    * Set this if you would like the RevenueCat SDK to store its preferences in a different NSUserDefaults suite, otherwise it will use standardUserDefaults.
@@ -624,7 +624,7 @@ export default class Purchases {
     storeKitVersion = STOREKIT_VERSION.DEFAULT,
     useAmazon = false,
     shouldShowInAppMessagesAutomatically = true,
-    entitlementVerificationMode = ENTITLEMENT_VERIFICATION_MODE.DISABLED,
+    entitlementVerificationMode,
     pendingTransactionsForPrepaidPlansEnabled = false,
     diagnosticsEnabled = false,
     automaticDeviceIdentifierCollectionEnabled = true,

@@ -1061,11 +1061,11 @@ describe("Purchases", () => {
 
   it("configure passes undefined appUserID to native when none is given", async () => {
     Purchases.configure({apiKey: "key"});
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", undefined, "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, "DISABLED", false, false, true, undefined, false, true);
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", undefined, "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, undefined, false, false, true, undefined, false, true);
   })
 
   it("configure works", async () => {
-    const defaultVerificationMode = "DISABLED"
+    const defaultVerificationMode = undefined
 
     Purchases.configure({apiKey: "key", appUserID: "user"});
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, false, true);
@@ -1151,11 +1151,19 @@ describe("Purchases", () => {
     });
     expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, defaultVerificationMode, false, false, true, undefined, true, false);
 
-    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(8);
+    Purchases.configure({
+      apiKey: "key",
+      appUserID: "user",
+      entitlementVerificationMode:
+        Purchases.ENTITLEMENT_VERIFICATION_MODE.DISABLED,
+    });
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledWith("key", "user", "REVENUECAT", undefined, "DEFAULT", false, undefined, undefined, true, Purchases.ENTITLEMENT_VERIFICATION_MODE.DISABLED, false, false, true, undefined, false, true);
+
+    expect(NativeModules.RNPurchases.setupPurchases).toBeCalledTimes(9);
   })
 
   it("configure passes Galaxy store and billing mode through", async () => {
-    const defaultVerificationMode = "DISABLED"
+    const defaultVerificationMode = undefined
 
     Purchases.configure({
       apiKey: "key",
