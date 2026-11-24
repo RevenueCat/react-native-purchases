@@ -130,6 +130,7 @@
   },
   "dependencies": {
     "@revenuecat/purchases-js-hybrid-mappings": "20.13.0",
-    "@revenuecat/purchases-typescript-internal": "20.13.0"
+    "@revenuecat/purchases-typescript-internal": "20.13.0",
+    "tslib": "^2.0.1"
   }
 }

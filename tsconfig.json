@@ -24,6 +24,7 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
+    "importHelpers": true,
     "resolveJsonModule": true,
     "stripInternal": true
   },
