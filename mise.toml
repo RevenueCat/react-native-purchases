@@ -7,5 +7,5 @@ minimum_release_age = "1d"
 compile = false
 
 [tools]
-java = "liberica-17.0.6"
+java = "liberica-17.0.21.1+5"
 ruby = "3.3.14"
