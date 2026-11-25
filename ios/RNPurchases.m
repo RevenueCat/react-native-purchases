@@ -31,6 +31,14 @@ NSString *RNPurchasesLogHandlerEvent = @"Purchases-LogHandlerEvent";
 NSString *RNPurchasesTrackedEvent = @"Purchases-TrackedEvent";
 NSString *RNPurchasesDebugEvent = @"Purchases-DebugEvent";
 
+// Declare the additive PHC selector so older PHC versions remain buildable. The runtime check below
+// rejects instead of allowing an older implementation to ignore a token that denies an intro offer.
+@interface RCCommonFunctionality (IntroductoryOfferEligibility)
++ (void)purchase:(NSDictionary *)options
+    introductoryOfferEligibilityJWS:(NSString *)jws
+    completionBlock:(void (^)(NSDictionary * _Nullable, RCErrorContainer * _Nullable))completion;
+@end
+
 @implementation RNPurchases
 
 - (dispatch_queue_t)methodQueue {
@@ -186,6 +194,23 @@ RCT_REMAP_METHOD(purchasePackage,
                   presentedOfferingContext:presentedOfferingContext.mappingNSNullToNil
                    signedDiscountTimestamp:signedDiscountTimestamp.mappingNSNullToNil
                            completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
+}
+
+RCT_EXPORT_METHOD(purchaseWithIntroductoryOfferEligibilityJWS:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (![RCCommonFunctionality respondsToSelector:@selector(purchase:introductoryOfferEligibilityJWS:completionBlock:)]) {
+        [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"This PurchasesHybridCommon version does not support introductory offer eligibility JWS."];
+        return;
+    }
+    id jws = options[@"introductoryOfferEligibilityJWS"];
+    if (![jws isKindOfClass:[NSString class]] || [(NSString *)jws length] == 0) {
+        [self rejectPromiseWithBlock:reject unsupportedErrorDescription:@"introductoryOfferEligibilityJWS must be a non-empty string."];
+        return;
+    }
+    [RCCommonFunctionality purchase:options
+        introductoryOfferEligibilityJWS:jws
+        completionBlock:[self getResponseCompletionBlockWithResolve:resolve reject:reject]];
 }
 
 RCT_REMAP_METHOD(restorePurchases,
