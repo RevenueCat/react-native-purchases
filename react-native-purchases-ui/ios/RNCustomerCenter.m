@@ -92,6 +92,8 @@ RCT_EXPORT_METHOD(presentCustomerCenter:(RCTPromiseResolveBlock)resolve
         if (self.customerCenterProxy) {
             [_customerCenterProxy presentWithResultHandler:^{
                 resolve(nil);
+            } errorHandler:^(NSError * _Nonnull error) {
+                reject(@"CUSTOMER_CENTER_ERROR", error.localizedDescription, error);
             }];
         } else {
             reject(@"CUSTOMER_CENTER_ERROR", @"Failed to initialize Customer Center Proxy", nil);
