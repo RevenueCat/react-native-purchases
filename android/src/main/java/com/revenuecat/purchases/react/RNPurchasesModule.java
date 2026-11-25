@@ -14,6 +14,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.revenuecat.purchases.CustomerInfo;
@@ -51,7 +52,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
     private static final String TRACKED_EVENT = "Purchases-TrackedEvent";
     private static final String DEBUG_EVENT = "Purchases-DebugEvent";
     public static final String PLATFORM_NAME = "react-native";
-    public static final String PLUGIN_VERSION = "11.0.4";
+    public static final String PLUGIN_VERSION = "11.0.5";
 
     private final ReactApplicationContext reactContext;
 
@@ -98,13 +99,21 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
                                boolean automaticDeviceIdentifierCollectionEnabled,
                                @Nullable String preferredUILocaleOverride,
                                boolean useExternalPurchaseCustomLinks,
-                               boolean enableExternalPurchasesInSimulator) {
+                               boolean enableExternalPurchasesInSimulator,
+                               @Nullable ReadableMap dangerousSettingsMap) {
         PlatformInfo platformInfo = new PlatformInfo(PLATFORM_NAME, PLUGIN_VERSION);
         Store store = Store.PLAY_STORE;
         if ("GALAXY".equals(storeString)) {
             store = Store.GALAXY;
         } else if (useAmazon) {
             store = Store.AMAZON;
+        }
+        DangerousSettings dangerousSettings = new DangerousSettings();
+        if (dangerousSettingsMap != null
+                && dangerousSettingsMap.hasKey("forceAllowTestStoreInReleaseBuilds")
+                && dangerousSettingsMap.getType("forceAllowTestStoreInReleaseBuilds") == ReadableType.Boolean
+                && dangerousSettingsMap.getBoolean("forceAllowTestStoreInReleaseBuilds")) {
+            dangerousSettings.forceAllowTestStoreInReleaseBuilds();
         }
         CommonKt.configure(
             reactContext,
@@ -113,7 +122,7 @@ public class RNPurchasesModule extends ReactContextBaseJavaModule implements Upd
             purchasesAreCompletedBy,
             platformInfo,
             store,
-            new DangerousSettings(),
+            dangerousSettings,
             shouldShowInAppMessagesAutomatically,
             entitlementVerificationMode,
             pendingTransactionsForPrepaidPlansEnabled,

@@ -1,4 +1,5 @@
 import {
+  DangerousSettings,
   INTRO_ELIGIBILITY_STATUS,
   MakePurchaseResult,
 } from '@revenuecat/purchases-typescript-internal';
@@ -10,7 +11,7 @@ import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPack
 import type { RewardedAdTrackingMetadata, SyncAmazonPurchaseOptions } from '../purchases';
 
 
-const packageVersion = '11.0.4';
+const packageVersion = '11.0.5';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
@@ -32,7 +33,8 @@ export const browserNativeModuleRNPurchases = {
     _automaticDeviceIdentifierCollectionEnabled: boolean,
     _preferredUILocaleOverride: string | null,
     _useExternalPurchaseCustomLinks: boolean,
-    _enableExternalPurchasesInSimulator: boolean
+    _enableExternalPurchasesInSimulator: boolean,
+    _dangerousSettings: DangerousSettings | undefined
   ) => {
     try {
       // Make sure that when running in Expo Go or Rork sandbox a web-compatible API key is used, because the underlying purchases-js error message isn't super clear when a non-compatible API key type is used in this case
