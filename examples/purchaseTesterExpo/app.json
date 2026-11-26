@@ -33,7 +33,36 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "extraPods": [
+              {
+                "name": "RevenueCat",
+                "git": "https://github.com/RevenueCat/purchases-ios.git",
+                "tag": "5.103.2"
+              },
+              {
+                "name": "RevenueCatUI",
+                "git": "https://github.com/RevenueCat/purchases-ios.git",
+                "tag": "5.103.2"
+              },
+              {
+                "name": "PurchasesHybridCommon",
+                "git": "https://github.com/RevenueCat/purchases-hybrid-common.git",
+                "tag": "21.0.0"
+              },
+              {
+                "name": "PurchasesHybridCommonUI",
+                "git": "https://github.com/RevenueCat/purchases-hybrid-common.git",
+                "tag": "21.0.0"
+              }
+            ]
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

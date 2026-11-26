@@ -18,11 +18,11 @@ files_with_version_number = {
     './src/browser/nativeModule.ts' => ['packageVersion = \'{x}\'']
 }
 files_to_update_phc_version = {
-    'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
     'Package.swift' => ['purchases-hybrid-common", exact: "{x}"'],
+    'react-native-purchases-ui/Package.swift' => ['purchases-hybrid-common", exact: "{x}"'],
+    'RNPurchases.podspec' => ['"PurchasesHybridCommon", \'{x}\''],
     'react-native-purchases-store-galaxy/android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common-store-galaxy:{x}'],
     'react-native-purchases-ui/RNPaywalls.podspec' => ['"PurchasesHybridCommonUI", \'{x}\''],
-    'react-native-purchases-ui/Package.swift' => ['purchases-hybrid-common", exact: "{x}"'],
     'android/build.gradle' => ['com.revenuecat.purchases:purchases-hybrid-common:{x}'],
     'react-native-purchases-ui/android/build.gradle' => [
       'com.revenuecat.purchases:purchases-hybrid-common-ui:{x}',
@@ -35,6 +35,15 @@ files_to_update_phc_version = {
 files_to_update_on_latest_stable_releases = {
   './scripts/docs/index.html' => ['react-native-purchases-docs/{x}/']
 }
+cocoapods_test_podfiles = %w[
+  examples/purchaseTesterTypescript/ios/Podfile
+  examples/adsTester/ios/Podfile
+  e2e-tests/MaestroTestApp/ios/Podfile
+]
+cocoapods_test_podfiles.each do |podfile|
+  files_to_update_phc_version[podfile] = ["phc_version = '{x}'"]
+end
+files_to_update_phc_version['examples/purchaseTesterExpo/app.json'] = ['"tag": "{x}"']
 internal_repo_name = 'react-native-purchases_internal'
 public_repo_name = 'react-native-purchases'
 package_name = 'react-native-purchases'
@@ -218,13 +227,36 @@ lane :update_hybrid_common do |options|
     next
   end
 
+  # Git-sourced pods must use the native version required by the new PHC podspec.
+  require 'fastlane/plugin/revenuecat_internal/helper/update_hybrids_versions_file_helper'
+  native_ios_version = Fastlane::Helper::UpdateHybridsVersionsFileHelper.get_ios_version_for_hybrid_common_version(
+    new_version_number, ENV["GITHUB_TOKEN"]
+  )
+
   bump_phc_version(
     repo_name: internal_repo_name,
     files_to_update: files_to_update_phc_version,
     current_version: current_phc_version,
     next_version: new_version_number,
     open_pr: options[:open_pr] || false,
-    automatic_release: options[:automatic_release] || false
+    automatic_release: options[:automatic_release] || false,
+    before_commit: lambda do
+      cocoapods_test_podfiles.each do |path|
+        podfile = File.join(get_root_folder, path)
+        contents = File.read(podfile)
+        updated = contents.sub(/native_ios_version = '[^']+'/, "native_ios_version = '#{native_ios_version}'")
+        next if updated == contents
+        File.write(podfile, updated)
+      end
+      expo_config_path = File.join(get_root_folder, 'examples/purchaseTesterExpo/app.json')
+      expo_config = JSON.parse(File.read(expo_config_path))
+      build_properties = expo_config.fetch('expo').fetch('plugins').find { |plugin| plugin.is_a?(Array) && plugin.first == 'expo-build-properties' }
+      build_properties.last.fetch('ios').fetch('extraPods').each do |pod|
+        next unless %w[RevenueCat RevenueCatUI].include?(pod['name'])
+        pod['tag'] = native_ios_version
+      end
+      File.write(expo_config_path, JSON.pretty_generate(expo_config) + "\n")
+    end
   )
 
   # Update `yarn.lock` too

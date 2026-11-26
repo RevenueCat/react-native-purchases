@@ -8,8 +8,9 @@
   "types": "dist/index.d.ts",
   "source": "src/index",
   "browser": "dist/index.js",
-  "react-native": "dist/index.js",
+  "react-native": "src/index",
   "files": [
+    "src",
     "dist",
     "android",
     "!android/gradlew*",
@@ -129,7 +130,7 @@
     ]
   },
   "dependencies": {
-    "@revenuecat/purchases-js-hybrid-mappings": "20.15.0",
-    "@revenuecat/purchases-typescript-internal": "20.15.0"
+    "@revenuecat/purchases-js-hybrid-mappings": "21.0.0",
+    "@revenuecat/purchases-typescript-internal": "21.0.0"
   }
 }
