@@ -11,7 +11,7 @@ import { purchaseSimulatedPackage } from './simulatedstore/purchaseSimulatedPack
 import type { RewardedAdTrackingMetadata, SyncAmazonPurchaseOptions } from '../purchases';
 
 
-const packageVersion = '11.0.5';
+const packageVersion = '11.1.0';
 
 /**
  * Browser implementation of the native module. This will be used in the browser and Expo Go.
