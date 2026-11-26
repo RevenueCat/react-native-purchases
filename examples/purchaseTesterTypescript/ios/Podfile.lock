@@ -14,10 +14,10 @@ PODS:
   - hermes-engine (250829098.0.17):
     - hermes-engine/Pre-built (= 250829098.0.17)
   - hermes-engine/Pre-built (250829098.0.17)
-  - PurchasesHybridCommon (20.14.0):
+  - PurchasesHybridCommon (21.0.0):
     - RevenueCat (= 5.103.2)
-  - PurchasesHybridCommonUI (20.14.0):
-    - PurchasesHybridCommon (= 20.14.0)
+  - PurchasesHybridCommonUI (21.0.0):
+    - PurchasesHybridCommon (= 21.0.0)
     - RevenueCatUI (= 5.103.2)
   - RCT-Folly (2024.11.18.00):
     - RCT-Folly/Default (= 2024.11.18.00)
@@ -1681,11 +1681,11 @@ PODS:
   - RevenueCat (5.103.2)
   - RevenueCatUI (5.103.2):
     - RevenueCat (= 5.103.2)
-  - RNPaywalls (11.0.4):
-    - PurchasesHybridCommonUI (= 20.14.0)
+  - RNPaywalls (11.1.0):
+    - PurchasesHybridCommonUI (= 21.0.0)
     - React-Core
-  - RNPurchases (11.0.4):
-    - PurchasesHybridCommon (= 20.14.0)
+  - RNPurchases (11.1.0):
+    - PurchasesHybridCommon (= 21.0.0)
     - React-Core
   - RNScreens (4.28.0):
     - hermes-engine
@@ -1747,6 +1747,8 @@ DEPENDENCIES:
   - fmt (from `build/rndeps-facades/fmt`)
   - glog (from `build/rndeps-facades/glog`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - PurchasesHybridCommon (from `https://github.com/RevenueCat/purchases-hybrid-common.git`, tag `21.0.0`)
+  - PurchasesHybridCommonUI (from `https://github.com/RevenueCat/purchases-hybrid-common.git`, tag `21.0.0`)
   - RCT-Folly (from `build/rndeps-facades/RCT-Folly`)
   - RCTDeprecation (from `build/rncore-facades/RCTDeprecation`)
   - RCTRequired (from `build/rncore-facades/RCTRequired`)
@@ -1825,18 +1827,13 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios/ReactCodegen`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
+  - RevenueCat (from `https://github.com/RevenueCat/purchases-ios.git`, tag `5.103.2`)
+  - RevenueCatUI (from `https://github.com/RevenueCat/purchases-ios.git`, tag `5.103.2`)
   - RNPaywalls (from `../../../react-native-purchases-ui`)
   - RNPurchases (from `../../..`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - SocketRocket (from `build/rndeps-facades/SocketRocket`)
   - Yoga (from `build/rncore-facades/Yoga`)
-
-SPEC REPOS:
-  trunk:
-    - PurchasesHybridCommon
-    - PurchasesHybridCommonUI
-    - RevenueCat
-    - RevenueCatUI
 
 EXTERNAL SOURCES:
   boost:
@@ -1854,6 +1851,12 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-v250829098.0.17
+  PurchasesHybridCommon:
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
+    :tag: 21.0.0
+  PurchasesHybridCommonUI:
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
+    :tag: 21.0.0
   RCT-Folly:
     :path: build/rndeps-facades/RCT-Folly
   RCTDeprecation:
@@ -2008,6 +2011,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativeDependencies:
     :podspec: "../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec"
+  RevenueCat:
+    :git: https://github.com/RevenueCat/purchases-ios.git
+    :tag: 5.103.2
+  RevenueCatUI:
+    :git: https://github.com/RevenueCat/purchases-ios.git
+    :tag: 5.103.2
   RNPaywalls:
     :path: "../../../react-native-purchases-ui"
   RNPurchases:
@@ -2019,6 +2028,20 @@ EXTERNAL SOURCES:
   Yoga:
     :path: build/rncore-facades/Yoga
 
+CHECKOUT OPTIONS:
+  PurchasesHybridCommon:
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
+    :tag: 21.0.0
+  PurchasesHybridCommonUI:
+    :git: https://github.com/RevenueCat/purchases-hybrid-common.git
+    :tag: 21.0.0
+  RevenueCat:
+    :git: https://github.com/RevenueCat/purchases-ios.git
+    :tag: 5.103.2
+  RevenueCatUI:
+    :git: https://github.com/RevenueCat/purchases-ios.git
+    :tag: 5.103.2
+
 SPEC CHECKSUMS:
   boost: 8502bfdc46e2804408af2e163049ece181009af4
   DoubleConversion: 501a575c40c0b50c89685762dd3e415e6bb26fb0
@@ -2027,8 +2050,8 @@ SPEC CHECKSUMS:
   fmt: ba0886e864ebb21d14c98b2e12e164b8002f5b93
   glog: 3cf7cb46f743c4bc758ae3e6d9c15bd1b4cfd6d4
   hermes-engine: 63c5db7d529c36335fada6582fd293ae2a105d77
-  PurchasesHybridCommon: fe2f1d51ee7c1d3ec1d81e0cd8543f6606fd13d1
-  PurchasesHybridCommonUI: c6d870b73994a7ec483da44a7e093f775c8530ba
+  PurchasesHybridCommon: 57c0f332bed8264a4d75d7f628d1ec211da7d7e0
+  PurchasesHybridCommonUI: a772ae0e80824385b75fc739171da5f4ca9ad345
   RCT-Folly: 82921e585c0400eda46fac1068297aa9dfb035e4
   RCTDeprecation: 5cc865306ce4974b7a57ddbc575fd1f3fef41957
   RCTRequired: ea6f2c41f2670961ce9a48a4bf17a190dd53e493
@@ -2108,12 +2131,12 @@ SPEC CHECKSUMS:
   ReactNativeDependencies: 94c922c39e0e6150ee9ad05e2ca1946e0ef55783
   RevenueCat: 6c1a2275cb24de3701c8d038fa2d3026b93f7c52
   RevenueCatUI: 32eddea459f74f6bac44ed75c4ca449c1072c4a4
-  RNPaywalls: be174836e71a989f5a73bb3b38c896aef1e5a155
-  RNPurchases: 1a9e923f1bbcde457548c7b328419db722245a71
+  RNPaywalls: 300a0138a3f116aa8e34f93f3e383ec35db8c361
+  RNPurchases: f31539fafabea3249ed618e48e52b81d3ebe44cb
   RNScreens: 038dc998fe1ab34778d9e8f4a33318a6c7a5bde8
   SocketRocket: 37aec555668fb852ec12e3c0de59a86ca58f0871
   Yoga: d1c536142c5ff8ec8cd856ab2a7c227a1d875c8e
 
-PODFILE CHECKSUM: 4eab8fc1513ec2caaabc2a6dca9d2d5e550ff3ad
+PODFILE CHECKSUM: ae5adfe8d7ef094e0f14ecc888b0406eb2c99929
 
 COCOAPODS: 1.17.0

@@ -1,0 +1,7 @@
+appId: com.revenuecat.sampleapp
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: COCOAPODS_SMOKE_PASSED
+    timeout: 30000

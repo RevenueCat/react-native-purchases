@@ -15,6 +15,14 @@ if linkage != nil
 end
 
 target 'adsTester' do
+  # Git-sourced dependencies for the internal CocoaPods compatibility check.
+  phc_version = '21.0.0'
+  native_ios_version = '5.103.2'
+  pod 'RevenueCat', :git => 'https://github.com/RevenueCat/purchases-ios.git', :tag => native_ios_version
+  pod 'RevenueCatUI', :git => 'https://github.com/RevenueCat/purchases-ios.git', :tag => native_ios_version
+  pod 'PurchasesHybridCommon', :git => 'https://github.com/RevenueCat/purchases-hybrid-common.git', :tag => phc_version
+  pod 'PurchasesHybridCommonUI', :git => 'https://github.com/RevenueCat/purchases-hybrid-common.git', :tag => phc_version
+
   config = use_native_modules!
 
   use_react_native!(

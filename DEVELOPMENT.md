@@ -49,3 +49,10 @@ Make sure the Android device doesn't have any app with the same package name you
 ---
 
 Make sure your Android emulator has play services and you're logged in
+
+## Git-sourced CocoaPods CI
+
+- `examples/purchaseTesterTypescript/ios/Podfile`
+- `examples/adsTester/ios/Podfile`
+- `e2e-tests/MaestroTestApp/ios/Podfile`
+- `examples/purchaseTesterExpo/app.json` (`expo-build-properties` extraPods)

@@ -9,10 +9,10 @@ configure purchases or require an API key.
 React Native generates the Xcode scheme's autolinking pre-action and the matching
 build phase. Keep these scripts generated; `spm update` refreshes them.
 
-React Native CLI 21.0.0-alpha.1 discovers the SPM-configured project directly,
-so the app has no Podfile. The CLI version is pinned alongside React Native.
-This app is installed independently of the root Yarn workspace; the alpha CLI
-is used only by this fixture.
+React Native Community CLI 21.0.0 discovers the SPM-configured project without
+a Podfile. The fixture declares `@react-native/community-cli-plugin` at the same
+version as React Native so the CLI can load the SPM and Metro commands. It is
+installed independently of the root Yarn workspace.
 
 The committed npm lockfile pins the app's React Native and tooling dependencies.
 The SDKs are installed separately from freshly packed tarballs, so SDK changes

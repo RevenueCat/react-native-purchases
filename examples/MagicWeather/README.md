@@ -8,8 +8,9 @@ Sign up for a free RevenueCat account [here](https://www.revenuecat.com).
 
 This sample uses:
 
-- React Native 0.80.0
-- [react-native-purchases: ^8.11.4](https://www.npmjs.com/package/react-native-purchases)
+- React Native 0.88.0
+- [react-native-purchases: ^11.0.4](https://www.npmjs.com/package/react-native-purchases)
+- React Native's Swift Package Manager integration on iOS, which is experimental. See the [CocoaPods to SPM migration guide](https://www.revenuecat.com/docs/sdk-guides/react-native-cocoapods-to-spm-migration).
 
 See minimum react-native version requirements for RevenueCat's _Purchases_ SDK [here](https://github.com/RevenueCat/react-native-purchases#requirements).
 
@@ -50,11 +51,10 @@ See minimum react-native version requirements for RevenueCat's _Purchases_ SDK [
    npm install
    ```
 
-4. Navigate into the `ios` directory and install the pod file.
+4. On macOS, generate the Swift packages that the iOS project depends on.
 
    ```
-   cd ios
-   pod install
+   npx react-native spm update --yes
    ```
 
 5. Open the `Xcode project` file (ios/MagicWeatherReactNative.xcodeproj) and match the `bundle ID` to your App Store package in App Store Connect and RevenueCat.

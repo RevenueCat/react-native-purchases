@@ -47,10 +47,10 @@ const phcVersionInManifest = (manifest: string): string => {
 };
 
 describe.each(spmPackages)('$npmName Package.swift', (spmPackage) => {
-  it('pins the same purchases-hybrid-common version as the podspec', () => {
-    expect(phcVersionInManifest(read(spmPackage.manifestPath))).toBe(
-      phcVersionInPodspec(read(spmPackage.podspecPath))
-    );
+  it('uses the same exact PHC version as the podspec', () => {
+    const requirement = phcVersionInManifest(read(spmPackage.manifestPath));
+    const podVersion = phcVersionInPodspec(read(spmPackage.podspecPath));
+    expect(requirement).toBe(podVersion);
   });
 });
 
