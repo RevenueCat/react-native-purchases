@@ -1,7 +1,7 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable, Text } from 'react-native';
+import { type ColorValue, Pressable, Text } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -9,11 +9,12 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { useCustomVariables } from '@/components/CustomVariablesContext';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
+function TabBarIcon({ name, color }: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
+  color: ColorValue;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  const iconColor = typeof color === 'number' ? undefined : color ?? undefined;
+  return <FontAwesome name={name} color={iconColor} size={28} style={{ marginBottom: -3 }} />;
 }
 
 function CustomVariablesButton() {

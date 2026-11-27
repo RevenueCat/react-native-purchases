@@ -13,6 +13,7 @@
 		7563D19D59AC4E289E8C5514 /* Ubuntu.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */; };
 		75D149C82D6DBE99008918BC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 75D149C72D6DBE99008918BC /* PrivacyInfo.xcprivacy */; };
 		75D149CC2D6DBED7008918BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D149CB2D6DBED7008918BC /* AppDelegate.swift */; };
+		761780EF2CA45674006654EF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EE2CA45674006654EF /* SceneDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A8B80DA7C45D49CB8DC8B3F1 /* Ubuntu_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B9A261A2D1B4257B086700E /* Ubuntu_bold.ttf */; };
 		AA0D2F9F35D34524BAC7B267 /* Ubuntu_italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */; };
@@ -33,6 +34,7 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-PurchaseTester.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PurchaseTester.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		75D149C72D6DBE99008918BC /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		75D149CB2D6DBED7008918BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = PurchaseTester/AppDelegate.swift; sourceTree = "<group>"; };
+		761780EE2CA45674006654EF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = PurchaseTester/SceneDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PurchaseTester/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A9FF6F236A78466B8B1A6882 /* Ubuntu_italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu_italic.ttf; path = ../assets/fonts/Ubuntu_italic.ttf; sourceTree = "<group>"; };
 		AB45BEADFAB348CB81EE7344 /* Ubuntu.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ubuntu.ttf; path = ../assets/fonts/Ubuntu.ttf; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				75D149CB2D6DBED7008918BC /* AppDelegate.swift */,
+				761780EE2CA45674006654EF /* SceneDelegate.swift */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				75D149C72D6DBE99008918BC /* PrivacyInfo.xcprivacy */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -299,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75D149CC2D6DBED7008918BC /* AppDelegate.swift in Sources */,
+				761780EF2CA45674006654EF /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

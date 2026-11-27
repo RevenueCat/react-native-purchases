@@ -74,7 +74,7 @@ export default function TabOneScreen() {
     title: string;
     message?: string;
   } | null>(null);
-  const notificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const notificationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {

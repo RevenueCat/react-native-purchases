@@ -39,5 +39,15 @@ target 'adsTester' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Xcode 27 rejects old deployment targets on pod resource bundles too.
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |build_config|
+        settings = build_config.build_settings
+        if settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < min_ios_version_supported.to_f
+          settings['IPHONEOS_DEPLOYMENT_TARGET'] = min_ios_version_supported
+        end
+      end
+    end
   end
 end

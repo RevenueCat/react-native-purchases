@@ -33,7 +33,7 @@ export const useCustomVariables = () => {
 export const customVariablesToStringMap = (vars: CustomVariables): { [key: string]: string } => {
   const result: { [key: string]: string } = {};
   for (const key of Object.keys(vars)) {
-    result[key] = vars[key].value;
+    result[key] = String(vars[key].value);
   }
   return result;
 };

@@ -49,7 +49,7 @@
     "example": "yarn workspace purchasetester",
     "ui": "yarn workspace react-native-purchases-ui",
     "bootstrap": "yarn && yarn prepare-expo && yarn example pods && yarn workspace MaestroTestApp pods",
-    "prepare-expo": "yarn build && yarn ui prepare && yarn pack && yarn ui pack && touch examples/purchaseTesterExpo/yarn.lock"
+    "prepare-expo": "yarn build && yarn ui prepare && yarn pack && yarn ui pack && bash examples/purchaseTesterExpo/install-dependencies.sh"
   },
   "workspaces": [
     "examples/purchaseTesterTypescript",
