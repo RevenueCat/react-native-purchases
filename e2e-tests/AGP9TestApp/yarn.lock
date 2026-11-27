@@ -2008,15 +2008,15 @@ __metadata:
   linkType: hard
 
 "joi@npm:^17.2.1":
-  version: 17.13.7
-  resolution: "joi@npm:17.13.7"
+  version: 17.13.9
+  resolution: "joi@npm:17.13.9"
   dependencies:
     "@hapi/hoek": ^9.3.0
     "@hapi/topo": ^5.1.0
     "@sideway/address": ^4.1.5
     "@sideway/formula": ^3.0.1
     "@sideway/pinpoint": ^2.0.0
-  checksum: 2f9af4cd84c60b9c493184f8eb127454f2577faae8f868c9acb57ac6f0ca80b75f2d5baaa26c14e6a1bdca391738acec8a3e2dd3430dfb500f2f82c042a90071
+  checksum: 4beeaa7e3bd1ba2d073b8b00d2f0723115104f08f1b384032321110d74af9fea2f5286baaf02332af3e87edafa05182179f1a712af6d21e9547bdf0879a7da34
   languageName: node
   linkType: hard
 
