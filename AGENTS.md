@@ -122,7 +122,7 @@ Files like `customerInfo.ts`, `errors.ts`, `offerings.ts` re-export from `@reven
 | Platform | Minimum Version |
 |----------|-----------------|
 | React | >= 16.6.3 |
-| React Native | >= 0.73.0 |
+| React Native | >= 0.88.0 |
 | iOS | 13.0+ |
 | Android | API 21+ |
 | TypeScript | 5.2.2 |

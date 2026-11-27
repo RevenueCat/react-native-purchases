@@ -67,7 +67,7 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": ">= 0.80.0",
+    "react-native": ">= 0.88.0",
     "react-native-purchases": "11.1.0",
     "react-native-web": "*"
   },

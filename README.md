@@ -10,8 +10,8 @@ The RevenueCat SDK for React Native and Expo. It wraps StoreKit, Google Play Bil
 
 | Requirement | Minimum |
 |---|---|
-| React Native | 0.88 (0.80 if you don't build for iOS) |
-| Expo SDK | 58 (54 if you don't build for iOS) |
+| React Native | 0.88 or later |
+| Expo SDK | 58 or later |
 | iOS (bare React Native) | 15.1 |
 | iOS (Expo SDK 58) | 16.4, with Xcode 26.4 |
 | Android | 7.0 (API level 24) |

@@ -6,4 +6,6 @@ Before upgrading, follow the [React Native CocoaPods-to-SPM migration guide](htt
 
 ### React Native and Expo compatibility
 
-SPM availability and stability depend on the React Native and Expo versions your app uses. Follow the migration guide for the current framework requirements and recommendations.
+Upgrade to React Native 0.88 or later before installing version 12. This minimum applies to iOS, Android, and web. Expo apps need SDK 58 or later. If you cannot upgrade React Native or Expo yet, stay on version 11 of the RevenueCat SDK.
+
+Follow the migration guide for Swift Package Manager requirements and recommendations.

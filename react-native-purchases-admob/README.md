@@ -88,5 +88,8 @@ The `useInterstitialAd` / `useRewardedAd` hooks create their ads internally and 
 ## Requirements
 
 - iOS 15.0+ (ad tracking is unavailable below that; calls are ignored with a warning)
-- `react-native-google-mobile-ads` 17.x (17.0.0 needs React Native 0.76+, 17.1.0+ needs 0.86+) and the New Architecture
-- `react-native-purchases` 10.14.0
+- React Native 0.88 or later
+- `react-native-google-mobile-ads` 17.x
+- `react-native-purchases` at the same version as the AdMob adapter
+
+If you're upgrading an older app, remove any explicit Legacy Architecture opt-out (`newArchEnabled=false` on Android or `RCT_NEW_ARCH_ENABLED=0` on iOS). Google Mobile Ads 17 can reject these settings during native setup.
