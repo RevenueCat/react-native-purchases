@@ -10381,6 +10381,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.87.1
     ts-jest: ^29.1.2
+    tslib: ^2.0.1
     tslint: ^5.20.0
     tslint-config-prettier: ^1.18.0
     typedoc: ^0.25.11
